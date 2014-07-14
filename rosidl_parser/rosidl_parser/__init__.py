@@ -117,6 +117,9 @@ class BaseType(object):
         return self.pkg_name == other.pkg_name and \
             self.type == other.type
 
+    def __hash__(self):
+        return hash(str(self))
+
     def __str__(self):
         if self.pkg_name is None:
             return self.type
@@ -154,6 +157,9 @@ class Type(BaseType):
         return super(Type, self).__eq__(other) and \
             self.is_array == other.is_array and \
             self.array_size == other.array_size
+
+    def __hash__(self):
+        return hash(str(self))
 
     def __str__(self):
         super_str = super(Type, self).__str__()

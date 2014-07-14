@@ -25,7 +25,6 @@ message("   - dependencies: ${_dependencies}")
 
 add_custom_command(
   OUTPUT ${_generated_files}
-  # TODO needs ament environment
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_dds_idl_BIN}
   --pkg-name ${PROJECT_NAME}
   --interface-files ${rosidl_generate_interfaces_IDL_FILES}
@@ -33,8 +32,11 @@ add_custom_command(
   --output-dir ${_output_path}
   --template-dir ${rosidl_generator_dds_idl_TEMPLATE_DIR}
   DEPENDS
-  # TODO needs to depend on template files
-  ${rosidl_generator_dds_idl_BIN} ${rosidl_generate_interfaces_IDL_FILES} ${_dependency_files}
+  ${rosidl_generator_dds_idl_BIN}
+  ${rosidl_generator_dds_idl_DIR}/../../../${PYTHON_INSTALL_DIR}/rosidl_generator_dds_idl/__init__.py
+  ${rosidl_generator_dds_idl_TEMPLATE_DIR}/msg.idl.template
+  ${rosidl_generate_interfaces_IDL_FILES}
+  ${_dependency_files}
   COMMENT "Generating DDS interfaces"
   VERBATIM
 )

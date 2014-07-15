@@ -7,7 +7,7 @@ set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_dds_idl/${PROJECT
 set(_generated_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(name "${_idl_file}" NAME_WE)
-  list(APPEND _generated_files "${_output_path}/${name}.idl")
+  list(APPEND _generated_files "${_output_path}/${name}_.idl")
 endforeach()
 
 set(_dependency_files "")

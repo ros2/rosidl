@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>rosidl_default_generators</name>
+  <name>rosidl_generator_dds_opensplice_cpp</name>
   <version>0.0.0</version>
-  <description>A configuration package defining the default ROS interface generrators.</description>
+  <description>Generate the C++ interfaces for PrismTech OpenSplice.</description>
   <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+  <buildtool_depend>rosidl_cmake</buildtool_depend>
 
+  <buildtool_export_depend>ament_cmake</buildtool_export_depend>
   <buildtool_export_depend>rosidl_cmake</buildtool_export_depend>
-
-  <buildtool_export_depend>rosidl_generator_cpp</buildtool_export_depend>
   <buildtool_export_depend>rosidl_generator_dds_idl</buildtool_export_depend>
-  <buildtool_export_depend>rosidl_generator_dds_opensplice_cpp</buildtool_export_depend>
 </package>

@@ -7,7 +7,6 @@ from rosidl_parser import parse_message_file
 def generate_dds_idl(
         pkg_name, interface_files, deps, output_dir, template_dir):
     template_file = os.path.join(template_dir, 'msg.idl.template')
-    print(template_file)
     assert(os.path.exists(template_file))
 
     try:
@@ -17,7 +16,7 @@ def generate_dds_idl(
 
     for idl_file in interface_files:
         spec = parse_message_file(pkg_name, idl_file)
-        generated_file = os.path.join(output_dir, spec.base_type.type + '.idl')
+        generated_file = os.path.join(output_dir, '%s_.idl' % spec.base_type.type)
         print('Generating: %s' % generated_file)
 
         # TODO only touch generated file if its content actually changes

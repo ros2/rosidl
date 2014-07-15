@@ -27,14 +27,6 @@ def main(argv=sys.argv[1:]):
         required=True,
         help='The location of the generated C++ interfaces')
     parser.add_argument(
-        '--ospl-home',
-        required=True,
-        help='The OSPL home path')
-    parser.add_argument(
-        '--ospl-tmpl-path',
-        required=True,
-        help='The OSPL template path')
-    parser.add_argument(
         '--idl-pp',
         required=True,
         help='The location of the IDL preprocessor')
@@ -45,8 +37,6 @@ def main(argv=sys.argv[1:]):
         args.interface_files,
         args.deps,
         args.output_dir,
-        args.ospl_home,
-        args.ospl_tmpl_path,
         args.idl_pp,
     )
 

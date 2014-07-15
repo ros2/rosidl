@@ -46,8 +46,6 @@ add_custom_command(
   --interface-files ${_dds_idl_files}
   --deps ${_dependencies}
   --output-dir "${_output_path}"
-  --ospl-home "${OPENSPLICE_PREFIX}"
-  --ospl-tmpl-path "${OPENSPLICE_PREFIX}/etc/opensplice/idlpp"
   --idl-pp "${OPENSPLICE_IDLPP}"
   DEPENDS
   ${rosidl_generator_dds_opensplice_cpp_BIN}

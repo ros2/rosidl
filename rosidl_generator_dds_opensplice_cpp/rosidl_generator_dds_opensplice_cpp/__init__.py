@@ -1,14 +1,9 @@
-import copy
-import em
 import os
 import subprocess
 
-from rosidl_parser import parse_message_file
-
 
 def generate_dds_opensplice_cpp(
-        pkg_name, interface_files, deps, output_dir, ospl_home,
-        ospl_tmpl_path, idl_pp):
+        pkg_name, interface_files, deps, output_dir, idl_pp):
     try:
         os.makedirs(output_dir)
     except FileExistsError:
@@ -40,29 +35,6 @@ def generate_dds_opensplice_cpp(
             '-d', output_dir,
             idl_file
         ]
-        env = copy.copy(os.environ)
-        env['OSPL_HOME'] = ospl_home
-        env['OSPL_TMPL_PATH'] = ospl_tmpl_path
-
-        subprocess.check_call(cmd, env=env)
-
-    # for idl_file in interface_files:
-    #     spec = parse_message_file(pkg_name, idl_file)
-    #     generated_file = os.path.join(output_dir, spec.base_type.type + '.idl')
-    #     print('Generating: %s' % generated_file)
-
-    #     # TODO only touch generated file if its content actually changes
-    #     ofile = open(generated_file, 'w')
-    #     # TODO reuse interpreter
-    #     interpreter = em.Interpreter(
-    #         output=ofile,
-    #         options={
-    #             em.RAW_OPT: True,
-    #             em.BUFFERED_OPT: True,
-    #         },
-    #         globals={'spec': spec},
-    #     )
-    #     interpreter.file(open(template_file))
-    #     interpreter.shutdown()
+        subprocess.check_call(cmd)
 
     return 0

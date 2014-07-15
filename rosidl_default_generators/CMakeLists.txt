@@ -6,6 +6,7 @@ find_package(ament_cmake REQUIRED)
 
 ament_export_dependencies(rosidl_cmake)
 ament_export_dependencies(rosidl_generator_cpp)
+ament_export_dependencies(rosidl_generator_dds_cpp)
 ament_export_dependencies(rosidl_generator_dds_idl)
 ament_export_dependencies(rosidl_generator_dds_opensplice_cpp)
 

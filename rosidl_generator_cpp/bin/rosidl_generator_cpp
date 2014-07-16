@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 import argparse
-import os
 import sys
+
+from rosidl_generator_cpp import generate_cpp
 
 
 def main(argv=sys.argv[1:]):
@@ -16,7 +17,7 @@ def main(argv=sys.argv[1:]):
     parser.add_argument(
         '--interface-files',
         nargs='*',
-        help='The interface files')
+        help='The ROS interface files')
     parser.add_argument(
         '--deps',
         nargs='*',
@@ -24,27 +25,20 @@ def main(argv=sys.argv[1:]):
     parser.add_argument(
         '--output-dir',
         required=True,
-        help='The location of the generated files')
+        help='The location of the generated C++ interfaces')
     parser.add_argument(
         '--template-dir',
         required=True,
         help='The location of the template files')
     args = parser.parse_args(argv)
 
-    try:
-        os.makedirs(args.output_dir)
-    except FileExistsError:
-        pass
-
-    for idl_file in args.interface_files:
-        basename = os.path.basename(idl_file)
-        assert(basename.endswith('.msg'))
-        generated_file = os.path.join(args.output_dir, basename[:-4] + '.h')
-        print('Generating: %s' % generated_file)
-        with open(generated_file, 'w') as h:
-            h.write('')
-
-    return 0
+    return generate_cpp(
+        args.pkg_name,
+        args.interface_files,
+        args.deps,
+        args.output_dir,
+        args.template_dir,
+    )
 
 
 if __name__ == '__main__':

@@ -6,8 +6,8 @@ include(CMakeParseArguments)
 #
 # Execute the extension point ``rosidl_generate_interfaces``.
 #
-# :param target: the name of the generation target,
-#   specific generators might use the name as a prefix for their own
+# :param target: the _name of the generation target,
+#   specific generators might use the _name as a prefix for their own
 #   generation step
 # :type target: string
 # :param ARGN: a list of include directories where each value might
@@ -39,110 +39,103 @@ macro(rosidl_generate_interfaces target)
   _rosidl_cmake_register_package_hook()
   ament_export_dependencies(${_ARG_DEPENDENCIES})
 
-  _rosidl_generate_interfaces(${target} ${ARGN})
-endmacro()
-
-function(_rosidl_generate_interfaces target)
-  cmake_parse_arguments(ARG "SKIP_INSTALL" "" "DEPENDENCIES" ${ARGN})
-
   # check all interface files
-  set(idl_files "")
-  foreach(idl_file ${ARG_UNPARSED_ARGUMENTS})
-    if(NOT IS_ABSOLUTE "${idl_file}")
-      set(idl_file "${CMAKE_CURRENT_SOURCE_DIR}/${idl_file}")
+  set(_idl_files "")
+  foreach(_idl_file ${_ARG_UNPARSED_ARGUMENTS})
+    if(NOT IS_ABSOLUTE "${_idl_file}")
+      set(_idl_file "${CMAKE_CURRENT_SOURCE_DIR}/${_idl_file}")
     endif()
-    if(NOT EXISTS "${idl_file}")
+    if(NOT EXISTS "${_idl_file}")
       message(FATAL_ERROR "rosidl_generate_interfaces() the passed idl file "
-        "'${idl_file}' does not exist")
+        "'${_idl_file}' does not exist")
     endif()
-    #message("   - generate interface for: ${idl_file}")
-    list(APPEND idl_files "${idl_file}")
+    #message("   - generate interface for: ${_idl_file}")
+    list(APPEND _idl_files "${_idl_file}")
   endforeach()
 
   # collect all interface files from dependencies
-  set(dep_files)
-  foreach(dep ${ARG_DEPENDENCIES})
-    if(NOT ${dep}_FOUND)
+  set(_dep_files)
+  foreach(_dep ${_ARG_DEPENDENCIES})
+    if(NOT ${_dep}_FOUND)
       message(FATAL_ERROR "rosidl_generate_interfaces() the passed dependency "
-        "'${dep}' has not been found before using find_package()")
+        "'${_dep}' has not been found before using find_package()")
     endif()
-    foreach(idl_file ${${dep}_INTERFACE_FILES})
-      list(APPEND dep_files "${${dep}_DIR}/../${idl_file}")
+    foreach(_idl_file ${${_dep}_INTERFACE_FILES})
+      list(APPEND _dep_files "${${_dep}_DIR}/../${_idl_file}")
     endforeach()
   endforeach()
 
   # stamp all interface files
-  foreach(idl_file ${idl_files})
-    stamp("${idl_file}")
+  foreach(_idl_file ${_idl_files})
+    stamp("${_idl_file}")
   endforeach()
 
   add_custom_target(
     ${target} ALL
     DEPENDS
-    ${idl_files}
-    ${dep_files}
+    ${_idl_files}
+    ${_dep_files}
     SOURCES
-    ${idl_files}
+    ${_idl_files}
   )
 
   # generators must be executed in topological order
   # which is ensured by every generator finding its dependencies first
   # and then registering itself as an extension
   set(rosidl_generate_interfaces_TARGET ${target})
-  set(rosidl_generate_interfaces_IDL_FILES ${idl_files})
-  set(rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES ${ARG_DEPENDENCIES})
+  set(rosidl_generate_interfaces_IDL_FILES ${_idl_files})
+  set(rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES ${_ARG_DEPENDENCIES})
   ament_execute_extensions("rosidl_generate_interfaces")
 
-  if(NOT SKIP_INSTALL)
+  if(NOT _ARG_SKIP_INSTALL)
     # generate derived interface files
-    # foreach(idl_file ${idl_files})
-    #   get_filename_component(extension "${idl_file}" EXT)
+    # foreach(_idl_file ${_idl_files})
+    #   get_filename_component(_extension "${_idl_file}" EXT)
     #   # generate services and feedback messages for actions
-    #   if("${extension}" STREQUAL ".action")
-    #     file(READ "${idl_file}" action_content)
-    #     string(REGEX REPLACE "(.*\n--\n.*\n)--\n.*" "\\1" service_content "${action_content}")
-    #     string(REGEX REPLACE ".*\n--\n.*\n--\n(.*)" "\\1" feedback_content "${action_content}")
-    #     get_filename_component(name "${idl_file}" NAME_WE)
-    #     set(service_file "${CMAKE_CURRENT_BINARY_DIR}/srv/${name}.srv")
-    #     set(feedback_file "${CMAKE_CURRENT_BINARY_DIR}/msg/${name}_Feedback.msg")
-    #     set(feedback_with_header_file "${CMAKE_CURRENT_BINARY_DIR}/msg/${name}_FeedbackWithHeader.msg")
-    #     file(WRITE "${service_file}" "${service_content}")
-    #     file(WRITE "${feedback_file}" "${feedback_content}")
-    #     file(WRITE "${feedback_with_header_file}" "rosidl_cmake/FeedbackHeader header\n${name}_Feedback feedback\n")
-    #     list(APPEND idl_files "${service_file}" "${feedback_file}" "${feedback_with_header_file}")
+    #   if("${_extension}" STREQUAL ".action")
+    #     file(READ "${_idl_file}" action_content)
+    #     string(REGEX REPLACE "(.*\n--\n.*\n)--\n.*" "\\1" _service_content "${action_content}")
+    #     string(REGEX REPLACE ".*\n--\n.*\n--\n(.*)" "\\1" _feedback_content "${action_content}")
+    #     get_filename_component(_name "${_idl_file}" NAME_WE)
+    #     set(_service_file "${CMAKE_CURRENT_BINARY_DIR}/srv/${_name}.srv")
+    #     set(_feedback_file "${CMAKE_CURRENT_BINARY_DIR}/msg/${_name}_Feedback.msg")
+    #     set(_feedback_with_header_file "${CMAKE_CURRENT_BINARY_DIR}/msg/${_name}_FeedbackWithHeader.msg")
+    #     file(WRITE "${_service_file}" "${_service_content}")
+    #     file(WRITE "${_feedback_file}" "${_feedback_content}")
+    #     file(WRITE "${_feedback_with_header_file}" "rosidl_cmake/FeedbackHeader header\n${_name}_Feedback feedback\n")
+    #     list(APPEND _idl_files "${_service_file}" "${_feedback_file}" "${_feedback_with_header_file}")
     #   endif()
     # endforeach()
-    # foreach(idl_file ${idl_files})
-    #   get_filename_component(extension "${idl_file}" EXT)
+    # foreach(_idl_file ${_idl_files})
+    #   get_filename_component(_extension "${_idl_file}" EXT)
     #   # generate request and response messages for services
-    #   if("${extension}" STREQUAL ".srv")
-    #     file(READ "${idl_file}" service_content)
-    #     string(REGEX REPLACE "(.*\n)--\n.*" "\\1" request_content "${service_content}")
-    #     string(REGEX REPLACE ".*\n--\n(.*)" "\\1" response_content "${service_content}")
-    #     get_filename_component(name "${idl_file}" NAME_WE)
-    #     set(request_file "${CMAKE_CURRENT_BINARY_DIR}/msg/${name}_Request.msg")
-    #     set(request_with_header_file "${CMAKE_CURRENT_BINARY_DIR}/msg/${name}_RequestWithHeader.msg")
-    #     set(response_file "${CMAKE_CURRENT_BINARY_DIR}/msg/${name}_Response.msg")
-    #     set(response_with_header_file "${CMAKE_CURRENT_BINARY_DIR}/msg/${name}_ResponseWithHeader.msg")
-    #     file(WRITE "${request_file}" "${request_content}")
-    #     file(WRITE "${request_with_header_file}" "rosidl_cmake/RequestHeader header\n${name}_Request request\n")
-    #     file(WRITE "${response_file}" "${response_content}")
-    #     file(WRITE "${response_with_header_file}" "rosidl_cmake/ResponseHeader header\n${name}_Response reponse\n")
-    #     list(APPEND idl_files "${request_file}" "${response_file}" "${request_with_header_file}" "${response_with_header_file}")
+    #   if("${_extension}" STREQUAL ".srv")
+    #     file(READ "${_idl_file}" _service_content)
+    #     string(REGEX REPLACE "(.*\n)--\n.*" "\\1" _request_content "${_service_content}")
+    #     string(REGEX REPLACE ".*\n--\n(.*)" "\\1" _response_content "${_service_content}")
+    #     get_filename_component(_name "${_idl_file}" NAME_WE)
+    #     set(_request_file "${CMAKE_CURRENT_BINARY_DIR}/msg/${_name}_Request.msg")
+    #     set(_request_with_header_file "${CMAKE_CURRENT_BINARY_DIR}/msg/${_name}_RequestWithHeader.msg")
+    #     set(_response_file "${CMAKE_CURRENT_BINARY_DIR}/msg/${_name}_Response.msg")
+    #     set(_response_with_header_file "${CMAKE_CURRENT_BINARY_DIR}/msg/${_name}_ResponseWithHeader.msg")
+    #     file(WRITE "${_request_file}" "${_request_content}")
+    #     file(WRITE "${_request_with_header_file}" "rosidl_cmake/RequestHeader header\n${_name}_Request request\n")
+    #     file(WRITE "${_response_file}" "${_response_content}")
+    #     file(WRITE "${_response_with_header_file}" "rosidl_cmake/ResponseHeader header\n${_name}_Response reponse\n")
+    #     list(APPEND _idl_files "${_request_file}" "${_response_file}" "${_request_with_header_file}" "${_response_with_header_file}")
     #   endif()
     # endforeach()
 
     # install interface files to subfolders based on their extension
-    foreach(idl_file ${idl_files})
-      get_filename_component(extension "${idl_file}" EXT)
-      string(SUBSTRING "${extension}" 1 -1 extension)
+    foreach(_idl_file ${_idl_files})
+      get_filename_component(_extension "${_idl_file}" EXT)
+      string(SUBSTRING "${_extension}" 1 -1 _extension)
       install(
-        FILES ${idl_file}
-        DESTINATION "share/${PROJECT_NAME}/${extension}"
+        FILES ${_idl_file}
+        DESTINATION "share/${PROJECT_NAME}/${_extension}"
       )
-      get_filename_component(name "${idl_file}" NAME)
-      list(APPEND _rosidl_cmake_INTERFACE_FILES "${extension}/${name}")
+      get_filename_component(_name "${_idl_file}" NAME)
+      list(APPEND _rosidl_cmake_INTERFACE_FILES "${_extension}/${_name}")
     endforeach()
-    set(_rosidl_cmake_INTERFACE_FILES ${_rosidl_cmake_INTERFACE_FILES} PARENT_SCOPE)
   endif()
-endfunction()
+endmacro()

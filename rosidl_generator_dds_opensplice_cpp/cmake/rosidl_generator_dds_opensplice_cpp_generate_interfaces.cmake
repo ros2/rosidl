@@ -92,4 +92,4 @@ install(
 )
 
 ament_export_include_directories(include)
-ament_export_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix})
+ament_export_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} ${OPENSPLICE_LIBRARIES})

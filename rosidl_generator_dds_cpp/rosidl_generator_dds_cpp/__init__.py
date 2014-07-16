@@ -20,18 +20,22 @@ def generate_dds_cpp(
             output_dir, '%s__conversion.h' % spec.base_type.type)
         print('Generating: %s' % generated_file)
 
-        # TODO only touch generated file if its content actually changes
-        ofile = open(generated_file, 'w')
-        # TODO reuse interpreter
-        interpreter = em.Interpreter(
-            output=ofile,
-            options={
-                em.RAW_OPT: True,
-                em.BUFFERED_OPT: True,
-            },
-            globals={'spec': spec},
-        )
-        interpreter.file(open(template_file))
-        interpreter.shutdown()
+        try:
+            # TODO only touch generated file if its content actually changes
+            ofile = open(generated_file, 'w')
+            # TODO reuse interpreter
+            interpreter = em.Interpreter(
+                output=ofile,
+                options={
+                    em.RAW_OPT: True,
+                    em.BUFFERED_OPT: True,
+                },
+                globals={'spec': spec},
+            )
+            interpreter.file(open(template_file))
+            interpreter.shutdown()
+        except Exception:
+            os.remove(generated_file)
+            raise
 
     return 0

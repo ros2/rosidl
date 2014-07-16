@@ -5,4 +5,4 @@ ament_register_extension("rosidl_generate_interfaces" "rosidl_generator_cpp"
   "rosidl_generator_cpp_generate_interfaces.cmake")
 
 set(rosidl_generator_cpp_BIN "${rosidl_generator_cpp_DIR}/../../../lib/rosidl_generator_cpp/rosidl_generator_cpp")
-set(rosidl_generator_cpp_TEMPLATE_DIR "${rosidl_generator_cpp_DIR}/../template")
+set(rosidl_generator_cpp_TEMPLATE_DIR "${rosidl_generator_cpp_DIR}/../resource")

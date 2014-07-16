@@ -25,7 +25,6 @@ message("   - dependencies: ${_dependencies}")
 
 add_custom_command(
   OUTPUT ${_generated_files}
-  # TODO needs ament environment
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_cpp_BIN}
   --pkg-name ${PROJECT_NAME}
   --interface-files ${rosidl_generate_interfaces_IDL_FILES}
@@ -33,8 +32,11 @@ add_custom_command(
   --output-dir ${_output_path}
   --template-dir ${rosidl_generator_cpp_TEMPLATE_DIR}
   DEPENDS
-  # TODO needs to depend on template files
-  ${rosidl_generator_cpp_BIN} ${rosidl_generate_interfaces_IDL_FILES} ${_dependency_files}
+  ${rosidl_generator_cpp_BIN}
+  ${rosidl_generator_cpp_DIR}/../../../${PYTHON_INSTALL_DIR}/rosidl_generator_cpp/__init__.py
+  ${rosidl_generator_cpp_TEMPLATE_DIR}/msg.h.template
+   ${rosidl_generate_interfaces_IDL_FILES}
+   ${_dependency_files}
   COMMENT "Generating C++ code for interfaces"
   VERBATIM
 )
@@ -51,5 +53,7 @@ add_dependencies(
 
 install(
   FILES ${_generated_files}
-  DESTINATION "include/${PROJECT_NAME}/msg"
+  DESTINATION "include/${PROJECT_NAME}"
 )
+
+ament_export_include_directories(include)

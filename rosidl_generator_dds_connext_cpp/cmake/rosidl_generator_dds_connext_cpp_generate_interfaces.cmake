@@ -1,4 +1,4 @@
-message(" - rosidl_generator_dds_opensplice_cpp_generate_interfaces.cmake")
+message(" - rosidl_generator_dds_connext_cpp_generate_interfaces.cmake")
 message("   - target: ${rosidl_generate_interfaces_TARGET}")
 message("   - interface files: ${rosidl_generate_interfaces_IDL_FILES}")
 message("   - dependency package names: ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES}")
@@ -10,19 +10,16 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   list(APPEND _dds_idl_files "${_dds_idl_path}/${name}_.idl")
 endforeach()
 
-set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_dds_opensplice_cpp/${PROJECT_NAME}")
+set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_dds_connext_cpp/${PROJECT_NAME}")
 set(_generated_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(name "${_idl_file}" NAME_WE)
   list(APPEND _generated_files "${_output_path}/${name}_.h")
-  list(APPEND _generated_files "${_output_path}/${name}_.cpp")
-  list(APPEND _generated_files "${_output_path}/${name}_Dcps.h")
-  list(APPEND _generated_files "${_output_path}/${name}_Dcps.cpp")
-  list(APPEND _generated_files "${_output_path}/${name}_Dcps_impl.h")
-  list(APPEND _generated_files "${_output_path}/${name}_Dcps_impl.cpp")
-  list(APPEND _generated_files "${_output_path}/${name}_SplDcps.h")
-  list(APPEND _generated_files "${_output_path}/${name}_SplDcps.cpp")
-  list(APPEND _generated_files "${_output_path}/ccpp_${name}_.h")
+  list(APPEND _generated_files "${_output_path}/${name}_.cxx")
+  list(APPEND _generated_files "${_output_path}/${name}_Plugin.h")
+  list(APPEND _generated_files "${_output_path}/${name}_Plugin.cxx")
+  list(APPEND _generated_files "${_output_path}/${name}_Support.h")
+  list(APPEND _generated_files "${_output_path}/${name}_Support.cxx")
 endforeach()
 
 set(_dependency_files "")
@@ -41,26 +38,28 @@ message("   - dependencies: ${_dependencies}")
 
 add_custom_command(
   OUTPUT ${_generated_files}
-  COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_dds_opensplice_cpp_BIN}
+  COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_dds_connext_cpp_BIN}
   --pkg-name ${PROJECT_NAME}
   --interface-files ${_dds_idl_files}
   --deps ${_dependencies}
   --output-dir "${_output_path}"
-  --idl-pp "${OPENSPLICE_IDLPP}"
+  --idl-pp "${CONNEXT_DDSGEN2}"
   DEPENDS
-  ${rosidl_generator_dds_opensplice_cpp_BIN}
-  ${rosidl_generator_dds_opensplice_cpp_DIR}/../../../${PYTHON_INSTALL_DIR}/rosidl_generator_dds_opensplice_cpp/__init__.py
+  ${rosidl_generator_dds_connext_cpp_BIN}
+  ${rosidl_generator_dds_connext_cpp_DIR}/../../../${PYTHON_INSTALL_DIR}/rosidl_generator_dds_connext_cpp/__init__.py
   ${_dds_idl_files}
   ${_dependency_files}
-  COMMENT "Generating C++ interfaces for PrismTech OpenSplice"
+  COMMENT "Generating C++ interfaces for RTI Connext"
   VERBATIM
 )
 
-set(_target_suffix "__dds_opensplice_cpp")
+set(_target_suffix "__dds_connext_cpp")
 
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED ${_generated_files})
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-  PUBLIC ${OPENSPLICE_INCLUDE_DIRS})
+  PUBLIC ${CONNEXT_INCLUDE_DIRS})
+target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  PUBLIC "-DRTI_UNIX")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PUBLIC
@@ -70,7 +69,7 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     ${${_pkg_name}_LIBRARIES})
 endforeach()
-target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} ${OPENSPLICE_LIBRARIES})
+target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} ${CONNEXT_LIBRARIES})
 
 add_dependencies(
   ${rosidl_generate_interfaces_TARGET}
@@ -91,4 +90,4 @@ install(
 )
 
 ament_export_include_directories(include)
-ament_export_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} ${OPENSPLICE_LIBRARIES})
+ament_export_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} ${CONNEXT_LIBRARIES})

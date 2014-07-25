@@ -59,7 +59,7 @@ add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED ${_gene
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PUBLIC ${CONNEXT_INCLUDE_DIRS})
 target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-  PUBLIC "-DRTI_UNIX")
+  PUBLIC ${CONNEXT_DEFINITIONS})
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PUBLIC

@@ -1,7 +1,7 @@
 #ifndef __rosidl_generator_dds_cpp__Resolver__h__
 #define __rosidl_generator_dds_cpp__Resolver__h__
 
-namespace dds_impl
+namespace dds_idl
 {
 
 template<typename T>
@@ -22,6 +22,6 @@ struct DDSTypeResolver
   static void convert_dds_message_to_ros(void*, void*);
 };
 
-}  // namespace dds_impl
+}  // namespace dds_idl
 
 #endif  // __rosidl_generator_dds_cpp__Resolver__h__

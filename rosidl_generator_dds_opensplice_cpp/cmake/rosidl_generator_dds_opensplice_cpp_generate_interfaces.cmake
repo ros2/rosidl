@@ -65,7 +65,7 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PUBLIC
     ${${_pkg_name}_INCLUDE_DIRS}
-    ${${_pkg_name}_DIR}/../../../include/${_pkg_name}/dds_impl
+    ${${_pkg_name}_DIR}/../../../include/${_pkg_name}/dds_idl
   )
   target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     ${${_pkg_name}_LIBRARIES})
@@ -83,7 +83,7 @@ add_dependencies(
 
 install(
   FILES ${_generated_files}
-  DESTINATION "include/${PROJECT_NAME}/dds_impl"
+  DESTINATION "include/${PROJECT_NAME}/dds_idl"
 )
 install(
   TARGETS ${rosidl_generate_interfaces_TARGET}${_target_suffix}

@@ -53,5 +53,5 @@ add_dependencies(
 
 install(
   FILES ${_generated_files}
-  DESTINATION "include/${PROJECT_NAME}/dds_impl"
+  DESTINATION "include/${PROJECT_NAME}/dds_idl"
 )

@@ -76,7 +76,7 @@ def msg_type_to_idl(type_):
     if type_.is_primitive_type():
         idl_type = MSG_TYPE_TO_IDL[type_.type]
     else:
-        idl_type = '%s::dds_impl::%s_' % (type_.pkg_name, type_.type)
+        idl_type = '%s::dds_idl::%s_' % (type_.pkg_name, type_.type)
 
     if type_.is_array:
         if type_.array_size is None:

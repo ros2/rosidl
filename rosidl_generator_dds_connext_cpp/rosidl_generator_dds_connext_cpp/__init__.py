@@ -32,6 +32,7 @@ def generate_dds_connext_cpp(
             '-d', output_dir,
             '-language', 'C++',
             '-namespace',
+            '-replace',
             idl_file
         ]
         subprocess.check_call(cmd)

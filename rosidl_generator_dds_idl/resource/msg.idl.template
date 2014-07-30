@@ -46,7 +46,7 @@ for field in spec.fields:
 module @(spec.base_type.pkg_name)
 {
 
-module dds_impl
+module dds_idl
 {
 
 @##################
@@ -89,7 +89,7 @@ struct @(spec.base_type.type)_
 
 #pragma keylist @(spec.base_type.type)_
 
-}; // namespace dds_impl
+}; // namespace dds_idl
 
 }; // namespace @(spec.base_type.pkg_name)
 

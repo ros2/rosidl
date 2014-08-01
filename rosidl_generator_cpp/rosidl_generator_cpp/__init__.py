@@ -8,7 +8,6 @@ def generate_cpp(pkg_name, interface_files, deps, output_dir, template_dir):
     mapping = {
         os.path.join(template_dir, 'msg.h.template'): '%s.h',
         os.path.join(template_dir, 'msg_Struct.h.template'): '%s_Struct.h',
-        os.path.join(template_dir, 'msg_TypeSupport.h.template'): '%s_TypeSupport.h',
     }
     for template_file in mapping.keys():
         assert(os.path.exists(template_file))

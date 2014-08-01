@@ -5,21 +5,15 @@
 namespace rosidl_generator_cpp
 {
 
-typedef struct MessageTypeSupportMember {
-  const char * _name;
-  const char * _type;
-  unsigned long _offset;
-} MessageTypeSupportMember;
-
-typedef struct MessageTypeSupportMembers {
-  unsigned long _size;
-  const MessageTypeSupportMember * _members;
-} MessageTypeSupportMembers;
+typedef struct MessageTypeSupportHandle {
+  const char * _implementation_identifier;
+  void * _data;
+} MessageTypeSupportHandle;
 
 template<typename T>
 struct MessageTypeSupport
 {
-  static const MessageTypeSupportMembers& get_members();
+  static const MessageTypeSupportHandle& get_type_support_handle();
 };
 
 }  // namespace rosidl_generator_cpp

@@ -8,6 +8,7 @@ ament_export_dependencies(rosidl_cmake)
 ament_export_dependencies(rosidl_generator_cpp)
 ament_export_dependencies(rosidl_generator_dds_cpp)
 ament_export_dependencies(rosidl_generator_dds_idl)
+ament_export_dependencies(ros_dds_cpp_dynamic_typesupport)
 
 set(_dds_vendor "$ENV{ROS_DDS_IMPLEMENTATION}")
 if("${_dds_vendor}" STREQUAL "connext")

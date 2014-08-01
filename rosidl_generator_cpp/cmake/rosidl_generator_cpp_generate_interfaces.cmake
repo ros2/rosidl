@@ -7,7 +7,11 @@ set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp/${PROJECT_NAM
 set(_generated_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(name "${_idl_file}" NAME_WE)
-  list(APPEND _generated_files "${_output_path}/${name}.h")
+  list(APPEND _generated_files
+    "${_output_path}/${name}.h"
+    "${_output_path}/${name}_Struct.h"
+    "${_output_path}/${name}_TypeSupport.h"
+  )
 endforeach()
 
 set(_dependency_files "")
@@ -35,8 +39,10 @@ add_custom_command(
   ${rosidl_generator_cpp_BIN}
   ${rosidl_generator_cpp_DIR}/../../../${PYTHON_INSTALL_DIR}/rosidl_generator_cpp/__init__.py
   ${rosidl_generator_cpp_TEMPLATE_DIR}/msg.h.template
-   ${rosidl_generate_interfaces_IDL_FILES}
-   ${_dependency_files}
+  ${rosidl_generator_cpp_TEMPLATE_DIR}/msg_Struct.h.template
+  ${rosidl_generator_cpp_TEMPLATE_DIR}/msg_TypeSupport.h.template
+  ${rosidl_generate_interfaces_IDL_FILES}
+  ${_dependency_files}
   COMMENT "Generating C++ code for interfaces"
   VERBATIM
 )

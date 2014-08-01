@@ -1,0 +1,160 @@
+@###############################################
+@#
+@# ROS message struct code generation for C++
+@#
+@# EmPy template for generating <msg>.h files
+@#
+@###############################################
+@# Start of Template
+@#
+@# Context:
+@#  - spec (rosidl_parser.MessageSpecification)
+@#    Parsed specification of the .msg file
+@###############################################
+
+@{
+from rosidl_generator_cpp import escape_string
+from rosidl_generator_cpp import msg_type_to_cpp
+from rosidl_generator_cpp import MSG_TYPE_TO_CPP
+
+cpp_namespace = '::%s::' % (spec.base_type.pkg_name)
+cpp_class = '%s_' % spec.base_type.type
+cpp_full_name = '%s%s' % (cpp_namespace, cpp_class)
+cpp_full_name_with_alloc = '%s<ContainerAllocator>' % (cpp_full_name)
+}@
+
+#ifndef __@(spec.base_type.pkg_name)__@(spec.base_type.type)_Struct__h__
+#define __@(spec.base_type.pkg_name)__@(spec.base_type.type)_Struct__h__
+
+@##############################
+@# Generic Includes
+@##############################
+
+#include <memory>
+
+//#include <map>
+//#include <string>
+//#include <vector>
+
+//#include <ros/types.h>
+//#include <ros/serialization.h>
+//#include <ros/builtin_message_traits.h>
+//#include <ros/message_operations.h>
+
+@##############################
+@# Includes for dependencies
+@##############################
+@{
+for field in spec.fields:
+  if not field.type.is_primitive_type():
+    print('#include <%s/%s.h>' % (field.type.pkg_name, field.type.type))
+}@
+
+namespace @(spec.base_type.pkg_name)
+{
+
+template<class ContainerAllocator>
+struct @(spec.base_type.type)_
+{
+  typedef @(spec.base_type.type)_<ContainerAllocator> Type;
+
+@# constructors (with and without allocator)
+@[for (alloc_type, alloc_name) in [['', ''], ['const ContainerAllocator& ', '_alloc']]]@
+  @(spec.base_type.type)_(@(alloc_type + alloc_name))
+@# Write initializer list
+@{
+op = ':'
+for field in spec.fields:
+  if field.type.is_array:
+    if field.array_size is None:
+      print('  %s %s(_alloc)' % (op, field.name))
+    else:
+      print('  %s %s()' % (op, field.name))
+  else:
+    if not field.type.is_primitive_type() or field.type.type == 'string':
+      print('  %s %s(_alloc)' % (op, field.name))
+    else:
+      value = '0'
+      if field.type.type in ['bool']:
+        value = 'false'
+      elif field.type.type in ['float32', 'float64']:
+        value = '0.0'
+      print('  %s %s(%s)' % (op, field.name, value))
+  op = ','
+}@
+  {
+@# Fixed length arrays
+@{
+for field in spec.fields:
+  if not field.type.is_array or field.type.array_size is None:
+    continue
+
+  if not field.type.is_primitive_type() or field.type.type == 'string':
+      # String is a special case, as it is the only builtin type that takes an allocator
+      if field.type.type == 'string':
+          print('    %s.assign(%s(_alloc));' % (field.name, MSG_TYPE_TO_CPP['string']))
+      else:
+          (cpp_msg_unqualified, cpp_msg_with_alloc, _) = cpp_message_declarations(cpp_name_prefix, field.base_type)
+          print('    %s.assign(::%s::%s_<ContainerAllocator>(_alloc));' % (field.name, field.type.pkg_name, field.type.type))
+  else:
+      value = ''
+      if field.type.type in ['int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64', 'char', 'byte']:
+        value = '0'
+      elif field.type.type in ['bool']:
+        value = 'false'
+      elif field.type.type in ['float32', 'float64']:
+        value = '0.0'
+      if len(value) > 0:
+        print('    %s.assign(%s);' % (field.name, value))
+}@
+  }
+@[end for]
+
+@[for field in spec.fields]
+  typedef @(msg_type_to_cpp(field.type)) _@(field.name)_type;
+  _@(field.name)_type @(field.name);
+@[end for]
+
+@# Constants
+@[for constant in spec.constants]@
+ @[if (constant.type in ['byte', 'int8', 'int16', 'int32', 'int64', 'char'])]@
+   enum { @(constant.name) = @(int(constant.value)) };
+ @[elif (constant.type in ['uint8', 'uint16', 'uint32', 'uint64'])]@
+   enum { @(constant.name) = @(int(constant.value))u };
+ @[else]@
+   static const @(msg_type_to_cpp(constant.type)) @(constant.name);
+ @[end if]@
+@[end for]
+
+@# Shared pointer typedefs
+  typedef std::shared_ptr< @(cpp_full_name)<ContainerAllocator> > Ptr;
+  typedef std::shared_ptr< @(cpp_full_name)<ContainerAllocator> const> ConstPtr;
+
+}; // struct @(cpp_class)
+
+@# Typedef of template instance using std::allocator
+typedef @(cpp_full_name)<std::allocator<void> > @(spec.base_type.type);
+
+@# Shared pointer typedefs
+typedef std::shared_ptr< @(cpp_namespace + spec.base_type.type) > @(spec.base_type.type)Ptr;
+typedef std::shared_ptr< @(cpp_namespace + spec.base_type.type) const> @(spec.base_type.type)ConstPtr;
+
+// constants requiring out of line definition
+@[for c in spec.constants]
+   @[if c.primitive_type not in ['byte', 'int8', 'int16', 'int32', 'int64', 'char', 'uint8', 'uint16', 'uint32', 'uint64']]
+   template<typename ContainerAllocator> const @(msg_type_to_cpp(c.primitive_type))
+      @(spec.base_type.type)_<ContainerAllocator>::@(c.name) =
+        @[if c.primitive_type == 'string']
+          "@(escape_string(c.value))";
+        @[elif c.primitive_type == 'bool']
+           @(int(c.value));
+        @[else]
+          @(c.value);
+        @[end if]
+   @[end if]
+@[end for]
+
+@# End of namespace
+}  // namespace @(spec.base_type.pkg_name)
+
+#endif  // __@(spec.base_type.pkg_name)__@(spec.base_type.type)_Struct__h__

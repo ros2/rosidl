@@ -5,8 +5,13 @@ from rosidl_parser import parse_message_file
 
 
 def generate_cpp(pkg_name, interface_files, deps, output_dir, template_dir):
-    template_file = os.path.join(template_dir, 'msg.h.template')
-    assert(os.path.exists(template_file))
+    mapping = {
+        os.path.join(template_dir, 'msg.h.template'): '%s.h',
+        os.path.join(template_dir, 'msg_Struct.h.template'): '%s_Struct.h',
+        os.path.join(template_dir, 'msg_TypeSupport.h.template'): '%s_TypeSupport.h',
+    }
+    for template_file in mapping.keys():
+        assert(os.path.exists(template_file))
 
     try:
         os.makedirs(output_dir)
@@ -15,26 +20,27 @@ def generate_cpp(pkg_name, interface_files, deps, output_dir, template_dir):
 
     for idl_file in interface_files:
         spec = parse_message_file(pkg_name, idl_file)
-        generated_file = os.path.join(output_dir, '%s.h' % spec.base_type.type)
-        print('Generating: %s' % generated_file)
+        for template_file, generated_filename in mapping.items():
+            generated_file = os.path.join(output_dir, generated_filename % spec.base_type.type)
+            print('Generating: %s' % generated_file)
 
-        try:
-            # TODO only touch generated file if its content actually changes
-            ofile = open(generated_file, 'w')
-            # TODO reuse interpreter
-            interpreter = em.Interpreter(
-                output=ofile,
-                options={
-                    em.RAW_OPT: True,
-                    em.BUFFERED_OPT: True,
-                },
-                globals={'spec': spec},
-            )
-            interpreter.file(open(template_file))
-            interpreter.shutdown()
-        except Exception:
-            os.remove(generated_file)
-            raise
+            try:
+                # TODO only touch generated file if its content actually changes
+                ofile = open(generated_file, 'w')
+                # TODO reuse interpreter
+                interpreter = em.Interpreter(
+                    output=ofile,
+                    options={
+                        em.RAW_OPT: True,
+                        em.BUFFERED_OPT: True,
+                    },
+                    globals={'spec': spec},
+                )
+                interpreter.file(open(template_file))
+                interpreter.shutdown()
+            except Exception:
+                os.remove(generated_file)
+                raise
 
     return 0
 

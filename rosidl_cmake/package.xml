@@ -2,7 +2,7 @@
 <package format="2">
   <name>rosidl_cmake</name>
   <version>0.0.0</version>
-  <description>The CMake functionality to trigger rosidl code generation.</description>
+  <description>The CMake functionality to invoke code generation for ROS interface files.</description>
   <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
   <license>Apache License 2.0</license>
 

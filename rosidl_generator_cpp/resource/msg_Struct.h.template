@@ -67,12 +67,12 @@ op = ':'
 for field in spec.fields:
   if field.type.is_array:
     if field.array_size is None:
-      print('  %s %s(_alloc)' % (op, field.name))
+      print('  %s %s(%s)' % (op, field.name, alloc_name))
     else:
       print('  %s %s()' % (op, field.name))
   else:
     if not field.type.is_primitive_type() or field.type.type == 'string':
-      print('  %s %s(_alloc)' % (op, field.name))
+      print('  %s %s(%s)' % (op, field.name, alloc_name))
     else:
       value = '0'
       if field.type.type in ['bool']:
@@ -92,10 +92,10 @@ for field in spec.fields:
   if not field.type.is_primitive_type() or field.type.type == 'string':
       # String is a special case, as it is the only builtin type that takes an allocator
       if field.type.type == 'string':
-          print('    %s.assign(%s(_alloc));' % (field.name, MSG_TYPE_TO_CPP['string']))
+          print('    %s.assign(%s(%s));' % (field.name, MSG_TYPE_TO_CPP['string'], alloc_name))
       else:
           (cpp_msg_unqualified, cpp_msg_with_alloc, _) = cpp_message_declarations(cpp_name_prefix, field.base_type)
-          print('    %s.assign(::%s::%s_<ContainerAllocator>(_alloc));' % (field.name, field.type.pkg_name, field.type.type))
+          print('    %s.assign(::%s::%s_<ContainerAllocator>(%s));' % (field.name, field.type.pkg_name, field.type.type, alloc_name))
   else:
       value = ''
       if field.type.type in ['int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64', 'char', 'byte']:

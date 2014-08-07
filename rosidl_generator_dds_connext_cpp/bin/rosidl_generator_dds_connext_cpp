@@ -3,7 +3,7 @@
 import argparse
 import sys
 
-from rosidl_generator_dds_connext_cpp import generate_dds_connext_cpp
+from rosidl_generator_dds_connext_cpp import generate_dds_connext_cpp, generate_cpp
 
 
 def main(argv=sys.argv[1:]):
@@ -14,6 +14,10 @@ def main(argv=sys.argv[1:]):
         '--pkg-name',
         required=True,
         help='The package name to generate interfaces for')
+    parser.add_argument(
+        '--ros-interface-files',
+        nargs='*',
+        help='The ROS interface files')
     parser.add_argument(
         '--interface-files',
         nargs='*',
@@ -30,14 +34,27 @@ def main(argv=sys.argv[1:]):
         '--idl-pp',
         required=True,
         help='The location of the IDL preprocessor')
+    parser.add_argument(
+        '--template-dir',
+        required=True,
+        help='The location of the template files')
     args = parser.parse_args(argv)
 
-    return generate_dds_connext_cpp(
+    rc = generate_dds_connext_cpp(
         args.pkg_name,
         args.interface_files,
         args.deps,
         args.output_dir,
         args.idl_pp,
+    )
+    if rc:
+        return rc
+    return generate_cpp(
+        args.pkg_name,
+        args.ros_interface_files,
+        args.deps,
+        args.output_dir,
+        args.template_dir,
     )
 
 

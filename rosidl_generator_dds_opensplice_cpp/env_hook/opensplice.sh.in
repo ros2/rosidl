@@ -1,3 +1,0 @@
-export OSPL_HOME=@OPENSPLICE_PREFIX@
-export OSPL_URI=file://$OSPL_HOME/etc/opensplice/config/ospl.xml
-export OSPL_TMPL_PATH=$OSPL_HOME/etc/opensplice/idlpp

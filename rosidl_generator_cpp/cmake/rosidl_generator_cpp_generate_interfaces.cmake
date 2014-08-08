@@ -30,7 +30,7 @@ add_custom_command(
   OUTPUT ${_generated_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_cpp_BIN}
   --pkg-name ${PROJECT_NAME}
-  --interface-files ${rosidl_generate_interfaces_IDL_FILES}
+  --ros-interface-files ${rosidl_generate_interfaces_IDL_FILES}
   --deps ${_dependencies}
   --output-dir ${_output_path}
   --template-dir ${rosidl_generator_cpp_TEMPLATE_DIR}
@@ -41,18 +41,18 @@ add_custom_command(
   ${rosidl_generator_cpp_TEMPLATE_DIR}/msg_Struct.h.template
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files}
-  COMMENT "Generating C++ code for interfaces"
+  COMMENT "Generating C++ code for ROS interfaces"
   VERBATIM
 )
 
 add_custom_target(
-  ${rosidl_generate_interfaces_TARGET}_cpp
+  ${rosidl_generate_interfaces_TARGET}__cpp
   DEPENDS
   ${_generated_files}
 )
 add_dependencies(
   ${rosidl_generate_interfaces_TARGET}
-  ${rosidl_generate_interfaces_TARGET}_cpp
+  ${rosidl_generate_interfaces_TARGET}__cpp
 )
 
 install(

@@ -4,7 +4,7 @@ import os
 from rosidl_parser import parse_message_file
 
 
-def generate_cpp(pkg_name, interface_files, deps, output_dir, template_dir):
+def generate_cpp(pkg_name, ros_interface_files, deps, output_dir, template_dir):
     mapping = {
         os.path.join(template_dir, 'msg.h.template'): '%s.h',
         os.path.join(template_dir, 'msg_Struct.h.template'): '%s_Struct.h',
@@ -17,8 +17,8 @@ def generate_cpp(pkg_name, interface_files, deps, output_dir, template_dir):
     except FileExistsError:
         pass
 
-    for idl_file in interface_files:
-        spec = parse_message_file(pkg_name, idl_file)
+    for ros_interface_file in ros_interface_files:
+        spec = parse_message_file(pkg_name, ros_interface_file)
         for template_file, generated_filename in mapping.items():
             generated_file = os.path.join(output_dir, generated_filename % spec.base_type.type)
             print('Generating: %s' % generated_file)

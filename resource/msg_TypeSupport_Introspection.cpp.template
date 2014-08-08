@@ -2,7 +2,7 @@
 @#
 @# ROS message type support code generation for C++
 @#
-@# EmPy template for generating <msg>_TypeSupport.h files
+@# EmPy template for generating <msg>_TypeSupport_Introspection.cpp files
 @#
 @###############################################
 @# Start of Template
@@ -17,7 +17,7 @@
 
 #include "@(spec.base_type.pkg_name)/@(spec.base_type.type)_Struct.h"
 #include "rosidl_generator_cpp/MessageTypeSupport.h"
-#include "rosidl_typesupport_introspection_cpp/MessageTypeSupport.h"
+#include "rosidl_typesupport_introspection_cpp/MessageIntrospection.h"
 
 namespace @(spec.base_type.pkg_name)
 {
@@ -25,7 +25,7 @@ namespace @(spec.base_type.pkg_name)
 namespace type_support
 {
 
-static rosidl_typesupport_introspection_cpp::MessageTypeSupportMember member_array[@(len(spec.fields))] = {
+static rosidl_typesupport_introspection_cpp::MessageMember member_array[@(len(spec.fields))] = {
 @{
 for index, field in enumerate(spec.fields):
     print('    {')
@@ -41,7 +41,7 @@ for index, field in enumerate(spec.fields):
 }@
 };
 
-static rosidl_typesupport_introspection_cpp::MessageTypeSupportMembers members = {
+static rosidl_typesupport_introspection_cpp::MessageMembers members = {
     "@(spec.base_type.pkg_name)",
     "@(spec.base_type.type)",
     @(len(spec.fields)),
@@ -49,7 +49,7 @@ static rosidl_typesupport_introspection_cpp::MessageTypeSupportMembers members =
 };
 
 static rosidl_generator_cpp::MessageTypeSupportHandle handle = {
-    rosidl_typesupport_introspection_cpp::_dynamic_identifier,
+    rosidl_typesupport_introspection_cpp::typesupport_introspection_identifier,
     &members
 };
 
@@ -58,17 +58,14 @@ static rosidl_generator_cpp::MessageTypeSupportHandle handle = {
 }  // namespace @(spec.base_type.pkg_name)
 
 
-namespace rosidl_generator_cpp
+namespace rosidl_typesupport_introspection_cpp
 {
 
 template<>
-struct MessageTypeSupport<@(spec.base_type.pkg_name)::@(spec.base_type.type)>
+const rosidl_generator_cpp::MessageTypeSupportHandle& get_type_support_handle<@(spec.base_type.pkg_name)::@(spec.base_type.type)>()
 {
-    static const rosidl_generator_cpp::MessageTypeSupportHandle& get_type_support_handle()
-    {
-        return @(spec.base_type.pkg_name)::type_support::handle;
-    }
-};
+    return @(spec.base_type.pkg_name)::type_support::handle;
+}
 
 }  // namespace rosidl_generator_cpp
 

@@ -15,7 +15,7 @@ def main(argv=sys.argv[1:]):
         required=True,
         help='The package name to generate interfaces for')
     parser.add_argument(
-        '--interface-files',
+        '--ros-interface-files',
         nargs='*',
         help='The ROS interface files')
     parser.add_argument(
@@ -34,7 +34,7 @@ def main(argv=sys.argv[1:]):
 
     return generate_cpp(
         args.pkg_name,
-        args.interface_files,
+        args.ros_interface_files,
         args.deps,
         args.output_dir,
         args.template_dir,

@@ -6,7 +6,7 @@ find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 
 ament_export_dependencies(rosidl_cmake)
-ament_export_include_directories(include)
+ament_export_include_directories(include include/${PROJECT_NAME}/impl)
 
 ament_python_install_package(${PROJECT_NAME})
 

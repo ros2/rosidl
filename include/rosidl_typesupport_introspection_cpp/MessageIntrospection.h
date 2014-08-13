@@ -5,7 +5,7 @@
 namespace rosidl_typesupport_introspection_cpp
 {
 
-const char * typesupport_introspection_identifier = "introspection";
+extern const char * typesupport_introspection_identifier;
 
 typedef struct MessageMember {
   const char * name_;

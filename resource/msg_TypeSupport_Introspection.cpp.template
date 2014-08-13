@@ -22,10 +22,10 @@
 namespace @(spec.base_type.pkg_name)
 {
 
-namespace type_support
+namespace rosidl_typesupport_introspection_cpp
 {
 
-static rosidl_typesupport_introspection_cpp::MessageMember member_array[@(len(spec.fields))] = {
+static ::rosidl_typesupport_introspection_cpp::MessageMember @(spec.base_type.type)_message_member_array[@(len(spec.fields))] = {
 @{
 for index, field in enumerate(spec.fields):
     print('    {')
@@ -41,19 +41,19 @@ for index, field in enumerate(spec.fields):
 }@
 };
 
-static rosidl_typesupport_introspection_cpp::MessageMembers members = {
+static ::rosidl_typesupport_introspection_cpp::MessageMembers @(spec.base_type.type)_message_members = {
     "@(spec.base_type.pkg_name)",
     "@(spec.base_type.type)",
     @(len(spec.fields)),
-    member_array
+    @(spec.base_type.type)_message_member_array
 };
 
-static rosidl_generator_cpp::MessageTypeSupportHandle handle = {
-    rosidl_typesupport_introspection_cpp::typesupport_introspection_identifier,
-    &members
+static ::rosidl_generator_cpp::MessageTypeSupportHandle @(spec.base_type.type)_message_type_support_handle = {
+    ::rosidl_typesupport_introspection_cpp::typesupport_introspection_identifier,
+    &@(spec.base_type.type)_message_members
 };
 
-}  // namespace type_support
+}  // namespace rosidl_typesupport_introspection_cpp
 
 }  // namespace @(spec.base_type.pkg_name)
 
@@ -62,9 +62,9 @@ namespace rosidl_typesupport_introspection_cpp
 {
 
 template<>
-const rosidl_generator_cpp::MessageTypeSupportHandle& get_type_support_handle<@(spec.base_type.pkg_name)::@(spec.base_type.type)>()
+const ::rosidl_generator_cpp::MessageTypeSupportHandle& get_type_support_handle<@(spec.base_type.pkg_name)::@(spec.base_type.type)>()
 {
-    return @(spec.base_type.pkg_name)::type_support::handle;
+    return ::@(spec.base_type.pkg_name)::rosidl_typesupport_introspection_cpp::@(spec.base_type.type)_message_type_support_handle;
 }
 
 }  // namespace rosidl_generator_cpp

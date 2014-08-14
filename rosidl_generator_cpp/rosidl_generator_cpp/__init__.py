@@ -45,7 +45,9 @@ def generate_cpp(pkg_name, ros_interface_files, deps, output_dir, template_dir):
 
 
 MSG_TYPE_TO_CPP = {
-    'bool': 'uint8_t',
+    'bool': 'bool',
+    'byte': 'uint8_t',
+    'char': 'char',
     'float32': 'float',
     'float64': 'double',
     'uint8': 'uint8_t',
@@ -56,10 +58,8 @@ MSG_TYPE_TO_CPP = {
     'int32': 'int32_t',
     'uint64': 'uint64_t',
     'int64': 'int64_t',
-    'string': 'std::basic_string<char, std::char_traits<char>, ' +
+    'string': '::std::basic_string<char, ::std::char_traits<char>, ' +
               'typename ContainerAllocator::template rebind<char>::other>',
-    'byte': 'int8_t',
-    'char': 'uint8_t',
 }
 
 
@@ -82,10 +82,10 @@ def msg_type_to_cpp(type_):
 
     if type_.is_array:
         if type_.array_size is None:
-            return 'std::vector<%s, typename ContainerAllocator::template ' + \
+            return '::std::vector<%s, typename ContainerAllocator::template ' + \
                 'rebind<%s>::other > ' % (cpp_type, cpp_type)
         else:
-            return 'boost::array<%s, %s> ' % (cpp_type, type_.array_size)
+            return '::std::array<%s, %u> ' % (cpp_type, type_.array_size)
     else:
         return cpp_type
 

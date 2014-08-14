@@ -5,9 +5,11 @@ PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR = '/'
 COMMENT_DELIMITER = '#'
 CONSTANT_SEPARATOR = '='
 
-# TODO reconsider final set of primitive types
 PRIMITIVE_TYPES = [
     'bool',
+    'byte',
+    'char',
+    # TODO reconsider wchar
     'float32',
     'float64',
     'int8',
@@ -19,8 +21,8 @@ PRIMITIVE_TYPES = [
     'int64',
     'uint64',
     'string',
-    'char',  # deprecated
-    'byte',  # deprecated
+    # TODO reconsider wstring / u16string / u32string
+    # TODO duration and time
     'duration',  # for compatibility only
     'time',  # for compatibility only
 ]
@@ -134,7 +136,7 @@ class Type(BaseType):
         # check for array brackets
         self.is_array = type_string[-1] == ']'
 
-        # check for array size, explicit or infinite
+        # check for array size, explicit or dynamic
         self.array_size = None
         if self.is_array:
             try:

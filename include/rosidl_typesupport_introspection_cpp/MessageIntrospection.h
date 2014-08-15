@@ -1,6 +1,8 @@
 
-#ifndef __rosidl_typesupport_introspection_cpp__MessageTypeSupport__h__
-#define __rosidl_typesupport_introspection_cpp__MessageTypeSupport__h__
+#ifndef __rosidl_typesupport_introspection_cpp__MessageIntrospection__h__
+#define __rosidl_typesupport_introspection_cpp__MessageIntrospection__h__
+
+#include <cstdint>
 
 namespace rosidl_typesupport_introspection_cpp
 {
@@ -9,7 +11,7 @@ extern const char * typesupport_introspection_identifier;
 
 typedef struct MessageMember {
   const char * name_;
-  const char * type_;
+  const uint8_t type_id_;
   unsigned long offset_;
 } MessageMember;
 
@@ -25,4 +27,4 @@ const rosidl_generator_cpp::MessageTypeSupportHandle& get_type_support_handle();
 
 }  // namespace rosidl_typesupport_introspection_cpp
 
-#endif  // __rosidl_typesupport_introspection_cpp__MessageTypeSupport__h__
+#endif  // __rosidl_typesupport_introspection_cpp__MessageIntrospection__h__

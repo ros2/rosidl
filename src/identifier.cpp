@@ -1,3 +1,7 @@
+#include <cstdint>
+
+#include "rosidl_typesupport_introspection_cpp/FieldTypes.h"
+
 namespace rosidl_typesupport_introspection_cpp
 {
 

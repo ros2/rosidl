@@ -17,6 +17,7 @@
 
 #include "@(spec.base_type.pkg_name)/@(spec.base_type.type)_Struct.h"
 #include "rosidl_generator_cpp/MessageTypeSupport.h"
+#include "rosidl_typesupport_introspection_cpp/FieldTypes.h"
 #include "rosidl_typesupport_introspection_cpp/MessageIntrospection.h"
 
 namespace @(spec.base_type.pkg_name)
@@ -31,7 +32,10 @@ for index, field in enumerate(spec.fields):
     print('    {')
 
     print('        "%s",' % field.name)
-    print('        "%s",' % field.type.type)  # TODO use type id
+    if field.type.is_primitive_type():
+        print('        ::rosidl_typesupport_introspection_cpp::ROS_TYPE_%s,' % field.type.type.upper())
+    else:
+        print('        ::rosidl_typesupport_introspection_cpp::ROS_TYPE_OTHER,')
     print('        __builtin_offsetof(%s::%s, %s)' % (spec.base_type.pkg_name, spec.base_type.type, field.name))
 
     if index < len(spec.fields) - 1:

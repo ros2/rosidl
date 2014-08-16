@@ -169,7 +169,7 @@ class Type(BaseType):
             return super_str
         if self.array_size is None:
             return '%s[]' % super_str
-        return '%s[%d]' % (super_str, self._array_size)
+        return '%s[%d]' % (super_str, self.array_size)
 
 
 class Constant(object):

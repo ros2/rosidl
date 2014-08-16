@@ -35,7 +35,7 @@ cpp_full_name_with_alloc = '%s<ContainerAllocator>' % (cpp_full_name)
 
 //#include <map>
 //#include <string>
-//#include <vector>
+#include <vector>
 
 //#include <ros/types.h>
 //#include <ros/serialization.h>
@@ -67,7 +67,7 @@ struct @(spec.base_type.type)_
 op = ':'
 for field in spec.fields:
   if field.type.is_array:
-    if field.array_size is None:
+    if field.type.array_size is None:
       print('  %s %s(%s)' % (op, field.name, alloc_name))
     else:
       print('  %s %s()' % (op, field.name))
@@ -99,10 +99,7 @@ for field in spec.fields:
   if not field.type.is_array or field.type.array_size is None:
     continue
 
-  if field.type.type == 'string':
-      # string is a special case, as it is the only builtin type that takes an allocator
-      print('    %s.assign(%s(%s));' % (field.name, MSG_TYPE_TO_CPP['string'], alloc_name))
-  elif not field.type.is_primitive_type():
+  if not field.type.is_primitive_type():
       (cpp_msg_unqualified, cpp_msg_with_alloc, _) = cpp_message_declarations(cpp_name_prefix, field.base_type)
       print('    %s.assign(::%s::%s_<ContainerAllocator>(%s));' % (field.name, field.type.pkg_name, field.type.type, alloc_name))
   else:
@@ -120,9 +117,11 @@ for field in spec.fields:
         value = '0'
       elif field.type.type in ['float32', 'float64']:
         value = '0.0'
+      elif field.type.type in ['string']:
+        value = '%s(%s)' % (MSG_TYPE_TO_CPP['string'], alloc_name)
       else:
         assert False, "unsupported field type '%s'" % field.type.type
-      print('    %s.assign(%s);' % (field.name, value))
+      print('    %s.fill(%s);' % (field.name, value))
 }@
   }
 @[end for]

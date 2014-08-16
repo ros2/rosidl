@@ -82,8 +82,9 @@ def msg_type_to_cpp(type_):
 
     if type_.is_array:
         if type_.array_size is None:
-            return '::std::vector<%s, typename ContainerAllocator::template ' + \
-                'rebind<%s>::other > ' % (cpp_type, cpp_type)
+            return ('::std::vector<{0}, ' +
+                'typename ContainerAllocator::template rebind<{1}>::other > ' +
+                '').format(cpp_type, cpp_type)
         else:
             return '::std::array<%s, %u> ' % (cpp_type, type_.array_size)
     else:

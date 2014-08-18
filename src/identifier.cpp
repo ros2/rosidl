@@ -1,4 +1,4 @@
-#include <cstdint>
+#include <stdint.h>
 
 #include "rosidl_typesupport_introspection_cpp/FieldTypes.h"
 

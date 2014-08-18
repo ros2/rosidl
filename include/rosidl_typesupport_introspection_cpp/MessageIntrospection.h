@@ -2,7 +2,7 @@
 #ifndef __rosidl_typesupport_introspection_cpp__MessageIntrospection__h__
 #define __rosidl_typesupport_introspection_cpp__MessageIntrospection__h__
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace rosidl_typesupport_introspection_cpp
 {

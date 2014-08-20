@@ -9,9 +9,11 @@ namespace rosidl_typesupport_introspection_cpp
 
 extern const char * typesupport_introspection_identifier;
 
+struct MessageMembers;
 typedef struct MessageMember {
   const char * name_;
   const uint8_t type_id_;
+  const rosidl_generator_cpp::MessageTypeSupportHandle* members_;
   unsigned long offset_;
 } MessageMember;
 

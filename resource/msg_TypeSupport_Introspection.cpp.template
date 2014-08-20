@@ -34,8 +34,10 @@ for index, field in enumerate(spec.fields):
     print('        "%s",' % field.name)
     if field.type.is_primitive_type():
         print('        ::rosidl_typesupport_introspection_cpp::ROS_TYPE_%s,' % field.type.type.upper())
+        print('        nullptr,')
     else:
-        print('        ::rosidl_typesupport_introspection_cpp::ROS_TYPE_OTHER,')
+        print('        ::rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE,')
+        print('        &::rosidl_typesupport_introspection_cpp::get_type_support_handle<%s::%s>(),' % (field.type.pkg_name, field.type.type))
     print('        __builtin_offsetof(%s::%s, %s)' % (spec.base_type.pkg_name, spec.base_type.type, field.name))
 
     if index < len(spec.fields) - 1:

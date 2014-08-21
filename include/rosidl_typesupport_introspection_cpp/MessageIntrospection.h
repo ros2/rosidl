@@ -12,8 +12,11 @@ extern const char * typesupport_introspection_identifier;
 struct MessageMembers;
 typedef struct MessageMember {
   const char * name_;
-  const uint8_t type_id_;
+  uint8_t type_id_;
   const rosidl_generator_cpp::MessageTypeSupportHandle* members_;
+  bool is_array;
+  size_t array_size;
+  size_t upper_bound;
   unsigned long offset_;
 } MessageMember;
 

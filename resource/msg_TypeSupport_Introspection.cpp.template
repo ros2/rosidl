@@ -26,7 +26,7 @@ namespace @(spec.base_type.pkg_name)
 namespace rosidl_typesupport_introspection_cpp
 {
 
-static ::rosidl_typesupport_introspection_cpp::MessageMember @(spec.base_type.type)_message_member_array[@(len(spec.fields))] = {
+static const ::rosidl_typesupport_introspection_cpp::MessageMember @(spec.base_type.type)_message_member_array[@(len(spec.fields))] = {
 @{
 for index, field in enumerate(spec.fields):
     print('    {')
@@ -38,6 +38,9 @@ for index, field in enumerate(spec.fields):
     else:
         print('        ::rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE,')
         print('        &::rosidl_typesupport_introspection_cpp::get_type_support_handle<%s::%s>(),' % (field.type.pkg_name, field.type.type))
+    print('        %s,' % ('true' if field.type.is_array else 'false'))
+    print('        %d,' % (field.type.array_size if field.type.array_size else 0))
+    print('        %d,' % (field.type.upper_bound if field.type.upper_bound else 0))
     print('        __builtin_offsetof(%s::%s, %s)' % (spec.base_type.pkg_name, spec.base_type.type, field.name))
 
     if index < len(spec.fields) - 1:
@@ -47,14 +50,14 @@ for index, field in enumerate(spec.fields):
 }@
 };
 
-static ::rosidl_typesupport_introspection_cpp::MessageMembers @(spec.base_type.type)_message_members = {
+static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(spec.base_type.type)_message_members = {
     "@(spec.base_type.pkg_name)",
     "@(spec.base_type.type)",
     @(len(spec.fields)),
     @(spec.base_type.type)_message_member_array
 };
 
-static ::rosidl_generator_cpp::MessageTypeSupportHandle @(spec.base_type.type)_message_type_support_handle = {
+static const ::rosidl_generator_cpp::MessageTypeSupportHandle @(spec.base_type.type)_message_type_support_handle = {
     ::rosidl_typesupport_introspection_cpp::typesupport_introspection_identifier,
     &@(spec.base_type.type)_message_members
 };

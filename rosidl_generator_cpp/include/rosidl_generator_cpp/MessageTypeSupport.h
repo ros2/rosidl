@@ -7,7 +7,7 @@ namespace rosidl_generator_cpp
 
 typedef struct MessageTypeSupportHandle {
   const char * _typesupport_identifier;
-  void * _data;
+  const void * _data;
 } MessageTypeSupportHandle;
 
 template<typename T>

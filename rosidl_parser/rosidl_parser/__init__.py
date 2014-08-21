@@ -4,6 +4,7 @@ import re
 PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR = '/'
 COMMENT_DELIMITER = '#'
 CONSTANT_SEPARATOR = '='
+UPPER_BOUND_SEPARATOR = '<='
 
 PRIMITIVE_TYPES = [
     'bool',
@@ -130,27 +131,47 @@ class BaseType(object):
 
 class Type(BaseType):
 
-    __slots__ = ['is_array', 'array_size']
+    __slots__ = ['is_array', 'array_size', 'upper_bound']
 
     def __init__(self, type_string, context_package_name=None):
+        # split upper bound information
+        parts = type_string.split(UPPER_BOUND_SEPARATOR)
+        if len(parts) > 2:
+            raise UnknownMessageType(type_string)
+        self.upper_bound = None
+        if len(parts) == 2:
+            # extract and check the upper bound
+            self.upper_bound = int(parts[1])
+            if self.upper_bound <= 0:
+                raise UnknownMessageType(type_string)
+        rest = parts[0]
+
         # check for array brackets
-        self.is_array = type_string[-1] == ']'
+        self.is_array = rest[-1] == ']'
 
         # check for array size, explicit or dynamic
         self.array_size = None
         if self.is_array:
             try:
-                index = type_string.rindex('[')
+                index = rest.rindex('[')
             except ValueError:
-                raise InvalidResourceName(type_string)
-            if index < len(type_string) - 2:
-                self.array_size = int(type_string[index + 1:-1])
+                raise UnknownMessageType(type_string)
+            if index < len(rest) - 2:
+                self.array_size = int(rest[index + 1:-1])
                 if self.array_size <= 0:
-                    raise InvalidResourceName(type_string)
-            type_string = type_string[:index]
+                    raise UnknownMessageType(type_string)
+            rest = rest[:index]
+
+        # check if upper bound is allowed
+        # must be either a dynamic array or a string
+        if self.upper_bound:
+            if self.is_array and self.array_size:
+                raise UnknownMessageType(type_string)
+            if not self.is_array and rest != 'string':
+                raise UnknownMessageType(type_string)
 
         super(Type, self).__init__(
-            type_string,
+            rest,
             context_package_name=context_package_name)
 
     def __eq__(self, other):
@@ -158,18 +179,23 @@ class Type(BaseType):
             return False
         return super(Type, self).__eq__(other) and \
             self.is_array == other.is_array and \
-            self.array_size == other.array_size
+            self.array_size == other.array_size and \
+            self.upper_bound == other.upper_bound
 
     def __hash__(self):
         return hash(str(self))
 
     def __str__(self):
-        super_str = super(Type, self).__str__()
-        if not self.is_array:
-            return super_str
-        if self.array_size is None:
-            return '%s[]' % super_str
-        return '%s[%d]' % (super_str, self.array_size)
+        s = super(Type, self).__str__()
+        if self.is_array:
+            if self.array_size is None:
+                s = '%s[]' % s
+            else:
+                s = '%s[%s]' % (s, self.array_size)
+        if self.upper_bound:
+            s = '%s%s%u' % \
+                (s, UPPER_BOUND_SEPARATOR, self.upper_bound)
+        return s
 
 
 class Constant(object):

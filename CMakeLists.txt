@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
 project(rosidl_typesupport_introspection_cpp)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)

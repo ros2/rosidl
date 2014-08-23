@@ -31,10 +31,10 @@ PRIMITIVE_TYPES = [
 
 VALID_PACKAGE_NAME_PATTERN = re.compile('^[a-z][a-z0-9_]*$')
 # TODO replace relaxed patterns used for compatibility
-#VALID_FIELD_NAME_PATTERN = re.compile('^[a-z][a-z0-9_]*$')
+# VALID_FIELD_NAME_PATTERN = re.compile('^[a-z][a-z0-9_]*$')
 VALID_FIELD_NAME_PATTERN = re.compile('^[A-Za-z][A-Za-z0-9_]*$')
 # TODO replace relaxed patterns used for compatibility
-#VALID_MESSAGE_NAME_PATTERN = re.compile('^[A-Z][A-Za-z0-9]*$')
+# VALID_MESSAGE_NAME_PATTERN = re.compile('^[A-Z][A-Za-z0-9]*$')
 VALID_MESSAGE_NAME_PATTERN = re.compile('^[A-Za-z][A-Za-z0-9]*$')
 VALID_CONSTANT_NAME_PATTERN = re.compile('^[A-Z][A-Z0-9_]*$')
 
@@ -273,7 +273,8 @@ class Field(object):
 
     def __init__(self, type_, name, default_value_string=None):
         if not isinstance(type_, Type):
-            raise TypeError("the field type '%s' must be a 'Type' instance" % type_)
+            raise TypeError(
+                "the field type '%s' must be a 'Type' instance" % type_)
         self.type = type_
         if not is_valid_field_name(name):
             raise NameError("the field name '%s' is not valid" % name)
@@ -332,7 +333,7 @@ class MessageSpecification(object):
         # ensure that there are no duplicate constant names
         constant_names = [c.name for c in self.constants]
         duplicate_constant_names = set([n for n in constant_names
-                                     if constant_names.count(n) > 1])
+                                        if constant_names.count(n) > 1])
         if duplicate_constant_names:
             raise ValueError(
                 'the constants iterable contains duplicate names: %s' %

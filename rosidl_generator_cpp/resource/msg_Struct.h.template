@@ -16,6 +16,7 @@
 from rosidl_generator_cpp import escape_string
 from rosidl_generator_cpp import msg_type_to_cpp
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
+from rosidl_generator_cpp import value_to_cpp
 
 cpp_namespace = '::%s::' % (spec.base_type.pkg_name)
 cpp_class = '%s_' % spec.base_type.type
@@ -32,23 +33,15 @@ cpp_full_name_with_alloc = '%s<ContainerAllocator>' % (cpp_full_name)
 
 #include <array>
 #include <memory>
-
-//#include <map>
-//#include <string>
 #include <vector>
-
-//#include <ros/types.h>
-//#include <ros/serialization.h>
-//#include <ros/builtin_message_traits.h>
-//#include <ros/message_operations.h>
 
 @##############################
 @# Includes for dependencies
 @##############################
 @{
 for field in spec.fields:
-  if not field.type.is_primitive_type():
-    print('#include <%s/%s.h>' % (field.type.pkg_name, field.type.type))
+    if not field.type.is_primitive_type():
+        print('#include <%s/%s.h>' % (field.type.pkg_name, field.type.type))
 }@
 
 namespace @(spec.base_type.pkg_name)
@@ -62,66 +55,31 @@ struct @(spec.base_type.type)_
 @# constructors (with and without allocator)
 @[for (alloc_type, alloc_name) in [['', ''], ['const ContainerAllocator& ', '_alloc']]]@
   @(spec.base_type.type)_(@(alloc_type + alloc_name))
-@# Write initializer list
+@# generate initializer lists
 @{
 op = ':'
 for field in spec.fields:
-  if field.type.is_array:
-    if field.type.array_size is None:
-      print('  %s %s(%s)' % (op, field.name, alloc_name))
-    else:
-      print('  %s %s()' % (op, field.name))
-  else:
-    if field.type.type in ['bool']:
-      value = 'false'
-    elif field.type.type in ['float32', 'float64']:
-      value = '0.0'
-    elif field.type.type in [
-        'byte',
-        'char',
-        'int8', 'uint8',
-        'int16', 'uint16',
-        'int32', 'uint32',
-        'int64', 'uint64',
-    ]:
-      value = '0'
-    elif field.type.type == 'string' or not field.type.is_primitive_type():
-      value = alloc_name
-    else:
-      assert False, "unsupported field type '%s'" % field.type.type
-    print('  %s %s(%s)' % (op, field.name, value))
-  op = ','
+    # dynamic arrays require allocator if available
+    if alloc_name and field.type.is_array and \
+            (field.type.array_size is None or field.type.is_upper_bound):
+        print('  %s %s(%s)' % (op, field.name, alloc_name))
+
+    # if default value is available set it in initializer list
+    elif field.type.is_primitive_type() and field.default_value is not None:
+        cpp_value = value_to_cpp(field.type, field.default_value)
+        print('  %s %s(%s)' % (op, field.name, cpp_value))
+    op = ','
 }@
   {
-@# Fixed length arrays
+@# generate constructor body
 @{
 for field in spec.fields:
-  if not field.type.is_array or field.type.array_size is None:
-    continue
-
-  if not field.type.is_primitive_type():
-      (cpp_msg_unqualified, cpp_msg_with_alloc, _) = cpp_message_declarations(cpp_name_prefix, field.base_type)
-      print('    %s.assign(::%s::%s_<ContainerAllocator>(%s));' % (field.name, field.type.pkg_name, field.type.type, alloc_name))
-  else:
-      value = ''
-      if field.type.type in ['bool']:
-        value = 'false'
-      elif field.type.type in [
-          'byte',
-          'char',
-          'int8', 'uint8',
-          'int16', 'uint16',
-          'int32', 'uint32',
-          'int64', 'uint64'
-      ]:
-        value = '0'
-      elif field.type.type in ['float32', 'float64']:
-        value = '0.0'
-      elif field.type.type in ['string']:
-        value = '%s(%s)' % (MSG_TYPE_TO_CPP['string'], alloc_name)
-      else:
-        assert False, "unsupported field type '%s'" % field.type.type
-      print('    %s.fill(%s);' % (field.name, value))
+    # default values of dynamic arrays with allocators if available
+    if alloc_name and field.type.is_array and \
+            (field.type.array_size is None or field.type.is_upper_bound) and \
+            field.type.is_primitive_type() and field.default_value is not None:
+        cpp_value = value_to_cpp(field.type, field.default_value)
+        print('    %s = %s;' % (field.name, cpp_value))
 }@
   }
 @[end for]

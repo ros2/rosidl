@@ -31,16 +31,29 @@ static const ::rosidl_typesupport_introspection_cpp::MessageMember @(spec.base_t
 for index, field in enumerate(spec.fields):
     print('    {')
 
+    # const char * name_
     print('        "%s",' % field.name)
     if field.type.is_primitive_type():
+        # uint8_t type_id_
         print('        ::rosidl_typesupport_introspection_cpp::ROS_TYPE_%s,' % field.type.type.upper())
+        # size_t string_upper_bound
+        print('        %u,' % (field.type.string_upper_bound if field.type.string_upper_bound is not None else 0))
+        # const rosidl_generator_cpp::MessageTypeSupportHandle * members_
         print('        nullptr,')
     else:
+        # uint8_t type_id_
         print('        ::rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE,')
+        # size_t string_upper_bound
+        print('        0,')
+        # const rosidl_generator_cpp::MessageTypeSupportHandle * members_
         print('        &::rosidl_typesupport_introspection_cpp::get_type_support_handle<%s::%s>(),' % (field.type.pkg_name, field.type.type))
+    # bool is_array_
     print('        %s,' % ('true' if field.type.is_array else 'false'))
-    print('        %d,' % (field.type.array_size if field.type.array_size else 0))
-    print('        %d,' % (field.type.upper_bound if field.type.upper_bound else 0))
+    # size_t array_size_
+    print('        %u,' % (field.type.array_size if field.type.array_size and not field.type.is_upper_bound else 0))
+    # bool is_upper_bound_
+    print('        %s,' % ('true' if field.type.is_upper_bound else 'false'))
+    # unsigned long offset_
     print('        __builtin_offsetof(%s::%s, %s)' % (spec.base_type.pkg_name, spec.base_type.type, field.name))
 
     if index < len(spec.fields) - 1:

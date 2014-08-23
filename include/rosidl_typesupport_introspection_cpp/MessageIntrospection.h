@@ -10,17 +10,22 @@ namespace rosidl_typesupport_introspection_cpp
 extern const char * typesupport_introspection_identifier;
 
 struct MessageMembers;
-typedef struct MessageMember {
+
+typedef struct MessageMember
+{
   const char * name_;
   uint8_t type_id_;
+  size_t string_upper_bound_;
   const rosidl_generator_cpp::MessageTypeSupportHandle* members_;
-  bool is_array;
-  size_t array_size;
-  size_t upper_bound;
+  bool is_array_;
+  size_t array_size_;
+  bool is_upper_bound_;
   unsigned long offset_;
+  const void * default_value_;
 } MessageMember;
 
-typedef struct MessageMembers {
+typedef struct MessageMembers
+{
   const char * package_name_;
   const char * message_name_;
   unsigned long member_count_;

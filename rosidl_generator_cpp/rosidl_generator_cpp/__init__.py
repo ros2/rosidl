@@ -104,7 +104,10 @@ def value_to_cpp(type_, value):
     for single_value in value:
         cpp_value = primitive_value_to_cpp(type_, single_value)
         cpp_values.append(cpp_value)
-    return '{%s}' % ', '.join(cpp_values)
+    cpp_value = '{%s}' % ', '.join(cpp_values)
+    if type_.array_size is not None and not type_.is_upper_bound:
+        cpp_value = '{%s}' % cpp_value
+    return cpp_value
 
 
 def primitive_value_to_cpp(type_, value):

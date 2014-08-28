@@ -49,18 +49,15 @@ add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED ${_gene
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PUBLIC
   ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp
-  ${rosidl_generator_cpp_INCLUDE_DIRS}
 )
-target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-  ${rosidl_typesupport_introspection_cpp_LIBRARIES})
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
-  target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    PUBLIC
-    ${${_pkg_name}_INCLUDE_DIRS}
-  )
-  target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    ${${_pkg_name}_LIBRARIES})
+  ament_target_dependencies(
+    ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    ${_pkg_name})
 endforeach()
+ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  "rosidl_generator_cpp"
+  "rosidl_typesupport_introspection_cpp")
 
 add_dependencies(
   ${rosidl_generate_interfaces_TARGET}

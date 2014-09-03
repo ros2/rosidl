@@ -63,12 +63,13 @@ for field in spec.fields:
     if alloc_name and field.type.is_array and \
             (field.type.array_size is None or field.type.is_upper_bound):
         print('  %s %s(%s)' % (op, field.name, alloc_name))
+        op = ','
 
     # if default value is available set it in initializer list
     elif field.type.is_primitive_type() and field.default_value is not None:
         cpp_value = value_to_cpp(field.type, field.default_value)
         print('  %s %s(%s)' % (op, field.name, cpp_value))
-    op = ','
+        op = ','
 }@
   {
 @# generate constructor body

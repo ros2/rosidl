@@ -33,6 +33,7 @@ cpp_full_name_with_alloc = '%s<ContainerAllocator>' % (cpp_full_name)
 
 #include <array>
 #include <memory>
+#include <string>
 #include <vector>
 
 @##############################

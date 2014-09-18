@@ -37,7 +37,7 @@ add_custom_command(
   --template-dir ${rosidl_generator_cpp_TEMPLATE_DIR}
   DEPENDS
   ${rosidl_generator_cpp_BIN}
-  ${rosidl_generator_cpp_DIR}/../../../${PYTHON_INSTALL_DIR}/rosidl_generator_cpp/__init__.py
+  ${rosidl_generator_cpp_GENERATOR_FILES}
   ${rosidl_generator_cpp_TEMPLATE_DIR}/msg.h.template
   ${rosidl_generator_cpp_TEMPLATE_DIR}/msg_Struct.h.template
   ${rosidl_generate_interfaces_IDL_FILES}

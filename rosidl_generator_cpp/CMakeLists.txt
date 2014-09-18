@@ -11,7 +11,7 @@ ament_export_include_directories(include)
 ament_python_install_package(${PROJECT_NAME})
 
 ament_package(
-  CONFIG_EXTRAS "rosidl_generator_cpp-extras.cmake"
+  CONFIG_EXTRAS "rosidl_generator_cpp-extras.cmake.in"
 )
 
 install(

@@ -17,7 +17,7 @@ add_library(rosidl_typesupport_introspection_cpp SHARED src/identifier.cpp)
 ament_export_libraries(rosidl_typesupport_introspection_cpp)
 
 ament_package(
-  CONFIG_EXTRAS "rosidl_typesupport_introspection_cpp-extras.cmake"
+  CONFIG_EXTRAS "rosidl_typesupport_introspection_cpp-extras.cmake.in"
 )
 
 install(

@@ -36,7 +36,7 @@ add_custom_command(
   --template-dir ${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}
   DEPENDS
   ${rosidl_typesupport_introspection_cpp_BIN}
-  ${rosidl_typesupport_introspection_cpp_DIR}/../../../${PYTHON_INSTALL_DIR}/rosidl_typesupport_introspection_cpp/__init__.py
+  ${rosidl_typesupport_introspection_cpp_GENERATOR_FILES}
   ${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/msg_TypeSupport_Introspection.cpp.template
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files}

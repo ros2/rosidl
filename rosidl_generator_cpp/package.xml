@@ -12,4 +12,6 @@
 
   <buildtool_export_depend>ament_cmake</buildtool_export_depend>
   <buildtool_export_depend>rosidl_cmake</buildtool_export_depend>
+
+  <exec_depend>rosidl_parser</exec_depend>
 </package>

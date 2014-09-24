@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 
-project(rosidl_cmake)
+project(rosidl_cmake NONE)
 
 find_package(ament_cmake REQUIRED)
 

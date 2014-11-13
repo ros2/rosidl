@@ -1,0 +1,6 @@
+#ifndef __@(spec.base_type.pkg_name)__@(spec.base_type.type)__h__
+#define __@(spec.base_type.pkg_name)__@(spec.base_type.type)__h__
+
+#include "@(spec.base_type.pkg_name)/@(spec.base_type.type)_Struct-c.h"
+
+#endif  // __@(spec.base_type.pkg_name)__@(spec.base_type.type)__h__

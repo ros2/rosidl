@@ -1,0 +1,121 @@
+#include <Python.h>
+
+#include "@(spec.base_type.pkg_name)/@(spec.base_type.type)-c.h"
+
+@{
+from rosidl_generator_py import MSG_TYPE_TO_PYTHON_FORMAT
+from rosidl_generator_py import msg_type_to_py
+from rosidl_generator_py import msg_type_to_py_format
+}@
+
+static PyObject * @(spec.base_type.pkg_name)_@(spec.base_type.type)_create(
+    PyObject * self, PyObject * args) {
+
+    /* Hold the GIL */
+    PyGILState_STATE gstate = PyGILState_Ensure();
+
+    @(spec.base_type.pkg_name)_@(spec.base_type.type) * value =
+        (@(spec.base_type.pkg_name)_@(spec.base_type.type) *)PyMem_Malloc(
+            sizeof(@(spec.base_type.pkg_name)_@(spec.base_type.type)));
+
+    /* Release the GIL */
+    PyGILState_Release(gstate);
+
+    /* Create a PyCapsule (an opaque value) to store a handle to the underlying value */
+    PyObject * ret = PyCapsule_New(
+        (void *)value, "@(spec.base_type.pkg_name)_@(spec.base_type.type)_ptr", NULL);
+    Py_INCREF(ret);
+    return ret;
+}
+
+static PyObject * @(spec.base_type.pkg_name)_@(spec.base_type.type)_destroy(
+    PyObject * self, PyObject * args) {
+    PyObject * pyvalue;
+    if (!PyArg_ParseTuple(args, "O", &pyvalue)) {
+        return NULL;
+    }
+
+    /* Retrieve the underlying value via a PyCapsule */
+    @(spec.base_type.pkg_name)_@(spec.base_type.type) * cvalue =
+        PyCapsule_GetPointer(pyvalue, "@(spec.base_type.pkg_name)_@(spec.base_type.type)_ptr");
+
+    /* Hold the GIL */
+    PyGILState_STATE gstate = PyGILState_Ensure();
+
+    PyMem_Free(cvalue);
+
+    /* Release the GIL */
+    PyGILState_Release(gstate);
+
+    Py_RETURN_NONE;
+}
+
+@[for field in spec.fields]
+@[if field.type.is_primitive_type()]
+
+static PyObject * @(spec.base_type.pkg_name)_@(spec.base_type.type)_set_@(field.name)(
+    PyObject * self, PyObject * args) {
+    PyObject * pyobj;
+
+    @(msg_type_to_py(field.type, "cvalue"));
+
+    if (!PyArg_ParseTuple(args, "O@(msg_type_to_py_format(field.type))", &pyobj, &cvalue)) {
+        return NULL;
+    }
+
+    @(spec.base_type.pkg_name)_@(spec.base_type.type) * cobj =
+        PyCapsule_GetPointer(pyobj, "@(spec.base_type.pkg_name)_@(spec.base_type.type)_ptr");
+    cobj->data = cvalue;
+
+    Py_RETURN_NONE;
+}
+
+static PyObject * @(spec.base_type.pkg_name)_@(spec.base_type.type)_get_@(field.name)(
+    PyObject * self, PyObject * args) {
+    PyObject * pyobj;
+
+    if (!PyArg_ParseTuple(args, "O", &pyobj)) {
+        return NULL;
+    }
+
+    @(spec.base_type.pkg_name)_@(spec.base_type.type) * cobj =
+        PyCapsule_GetPointer(pyobj, "@(spec.base_type.pkg_name)_@(spec.base_type.type)_ptr");
+
+    PyObject * ret = Py_BuildValue("@(msg_type_to_py_format(field.type))", cobj->data);
+    Py_INCREF(ret);
+
+    return ret;
+}
+@[end if]
+@[end for]
+
+static PyMethodDef @(spec.base_type.pkg_name)_@(spec.base_type.type)_methods[] = {
+  { "create",
+    @(spec.base_type.pkg_name)_@(spec.base_type.type)_create, METH_NOARGS,
+    "Create a @(spec.base_type.pkg_name)_@(spec.base_type.type)." },
+  { "destroy",
+    @(spec.base_type.pkg_name)_@(spec.base_type.type)_destroy, METH_VARARGS,
+    "Destroy a @(spec.base_type.pkg_name)_@(spec.base_type.type)." },
+
+@[for field in spec.fields]
+@[if field.type.is_primitive_type()]
+  { "set_@(field.name)",
+    @(spec.base_type.pkg_name)_@(spec.base_type.type)_set_@(field.name), METH_VARARGS,
+    "Set the value of a @(spec.base_type.pkg_name)_@(spec.base_type.type)." },
+  { "get_@(field.name)",
+    @(spec.base_type.pkg_name)_@(spec.base_type.type)_get_@(field.name), METH_VARARGS,
+    "Get the value of a @(spec.base_type.pkg_name)_@(spec.base_type.type)." },
+@[end if]
+@[end for]
+  { NULL, NULL, 0, NULL }
+};
+
+static struct PyModuleDef @(spec.base_type.pkg_name)_@(spec.base_type.type)_c = {
+  PyModuleDef_HEAD_INIT, "@(spec.base_type.pkg_name)_@(spec.base_type.type)_c", NULL, -1,
+  @(spec.base_type.pkg_name)_@(spec.base_type.type)_methods
+};
+
+PyMODINIT_FUNC PyInit_@(spec.base_type.pkg_name)_@(spec.base_type.type)_c(void)
+{
+  return PyModule_Create(&@(spec.base_type.pkg_name)_@(spec.base_type.type)_c);
+}

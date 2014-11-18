@@ -38,7 +38,7 @@ class @(spec.base_type.type):
 @[if field.type.is_primitive_type()]
         return @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.get_@(field.name)(self.__obj_handle)
 @[else]
-        msg = @(field.type.pkg_name)_@(field.type.type).@(field.type.type)()
+        msg = @(field.type.pkg_name).@(field.type.type).@(field.type.type)()
         msg._handle = @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.get_@(field.name)(self.__obj_handle)
         return msg
 @[end if]

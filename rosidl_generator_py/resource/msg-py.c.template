@@ -51,21 +51,33 @@ static PyObject * @(spec.base_type.pkg_name)_@(spec.base_type.type)_destroy(
 }
 
 @[for field in spec.fields]
-@[if field.type.is_primitive_type()]
-
 static PyObject * @(spec.base_type.pkg_name)_@(spec.base_type.type)_set_@(field.name)(
     PyObject * self, PyObject * args) {
     PyObject * pyobj;
 
+    @[if field.type.is_primitive_type()]
     @(msg_type_to_py(field.type, "cvalue"));
-
     if (!PyArg_ParseTuple(args, "O@(msg_type_to_py_format(field.type))", &pyobj, &cvalue)) {
+    @[else]
+    PyObject * pyvalue;
+
+    if (!PyArg_ParseTuple(args, "OO", &pyobj, &pyvalue)) {
+    @[end if]
         return NULL;
     }
 
     @(spec.base_type.pkg_name)_@(spec.base_type.type) * cobj =
         PyCapsule_GetPointer(pyobj, "@(spec.base_type.pkg_name)_@(spec.base_type.type)_ptr");
-    cobj->data = cvalue;
+
+    @[if field.type.is_primitive_type()]
+    cobj->@(field.name) = cvalue;
+    @[else]
+
+    @(spec.base_type.pkg_name)_@(spec.base_type.type) * objvalue =
+        PyCapsule_GetPointer(pyvalue, "@(field.type.pkg_name)_@(field.type.type)_ptr");
+
+    cobj->@(field.name) = *objvalue;
+    @[end if]
 
     Py_RETURN_NONE;
 }
@@ -81,12 +93,17 @@ static PyObject * @(spec.base_type.pkg_name)_@(spec.base_type.type)_get_@(field.
     @(spec.base_type.pkg_name)_@(spec.base_type.type) * cobj =
         PyCapsule_GetPointer(pyobj, "@(spec.base_type.pkg_name)_@(spec.base_type.type)_ptr");
 
-    PyObject * ret = Py_BuildValue("@(msg_type_to_py_format(field.type))", cobj->data);
+    @[if field.type.is_primitive_type()]
+    PyObject * ret = Py_BuildValue("@(msg_type_to_py_format(field.type))", cobj->@(field.name));
+    @[else]
+    PyObject * pyvalue = Py_BuildValue("O", &(cobj->@(field.name)));
+    PyObject * ret = PyCapsule_New(
+        (void *)pyvalue, "@(field.type.pkg_name)_@(field.type.type)_ptr");
+    @[end if]
     Py_INCREF(ret);
 
     return ret;
 }
-@[end if]
 @[end for]
 
 static PyMethodDef @(spec.base_type.pkg_name)_@(spec.base_type.type)_methods[] = {

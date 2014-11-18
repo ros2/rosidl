@@ -2,26 +2,44 @@ import @(spec.base_type.pkg_name)_@(spec.base_type.type)_c
 
 class @(spec.base_type.type):
 
-    __SETTERS = {
-@[for field in spec.fields]
-        '@(field.name)': @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.set_@(field.name),
-@[end for]
-    }
+    @@_handle.setter
+    def _handle(self, handle):
+        self.__obj_handle = handle
 
-    __GETTERS = {
-@[for field in spec.fields]
-        '@(field.name)': @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.get_@(field.name),
-@[end for]
-    }
-
-    def __init__(self, data=None):
-        object.__setattr__(self, '__obj_handle', @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.create())
-
-    def __getattr__(self, key):
-        return self.__GETTERS[key](object.__getattribute__(self, '__obj_handle'))
-
-    def __setattr__(self, key, value):
-        self.__SETTERS[key](object.__getattribute__(self, '__obj_handle'), value)
+    def __init__(self, handle=None):
+        if handle is None:
+            self.__obj_handle = @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.create()
+        else:
+            self.__obj_handle = handle
 
     def __del__(self):
-        @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.destroy(object.__getattribute__(self, '__obj_handle'))
+        @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.destroy(self.__obj_handle)
+
+    @@property
+    def _handle(self):
+        return self.__obj_handle
+
+    @@_handle.setter
+    def _handle(self, handle):
+        self.__obj_handle = handle
+
+@[for field in spec.fields]
+    @@property
+    def @(field.name)(self):
+@[if field.type.is_primitive_type()]
+        return @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.get_@(field.name)(self.__obj_handle)
+@[else]
+        msg = @(field.type.pkg_name)_@(field.type.type)()
+        msg._handle = @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.get_@(field.name)(self.__obj_handle)
+        return msg
+@[end if]
+
+    @@(field.name).setter
+    def @(field.name)(self, value):
+@[if field.type.is_primitive_type()]
+        @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.set_@(field.name)(self.__obj_handle, value)
+@[else]
+        @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.set_@(field.name)(self.__obj_handle, value._handle)
+
+@[end if]
+@[end for]

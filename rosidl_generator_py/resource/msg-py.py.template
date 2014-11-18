@@ -5,7 +5,7 @@ import_modules = set()
 @[for field in spec.fields]
 @[if not field.type.is_primitive_type()]
 @{
-import_modules.add('%s_%s' % (field.type.pkg_name, field.type.type))
+import_modules.add('%s.%s' % (field.type.pkg_name, field.type.type))
 }@
 @[end if]
 @[end for]
@@ -14,10 +14,6 @@ import @import_module
 @[end for]
 
 class @(spec.base_type.type):
-
-    @@_handle.setter
-    def _handle(self, handle):
-        self.__obj_handle = handle
 
     def __init__(self, handle=None):
         if handle is None:
@@ -47,7 +43,7 @@ class @(spec.base_type.type):
         return msg
 @[end if]
 
-    @@(field.name).setter
+    @@@(field.name).setter
     def @(field.name)(self, value):
 @[if field.type.is_primitive_type()]
         @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.set_@(field.name)(self.__obj_handle, value)

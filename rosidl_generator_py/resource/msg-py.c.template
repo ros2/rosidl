@@ -8,6 +8,20 @@ from rosidl_generator_py import msg_type_to_py
 from rosidl_generator_py import msg_type_to_py_format
 }@
 
+static void @(spec.base_type.pkg_name)_@(spec.base_type.type)_destroy(PyObject * pyvalue) {
+    /* Retrieve the underlying value via a PyCapsule */
+    @(spec.base_type.pkg_name)_@(spec.base_type.type) * cvalue =
+        PyCapsule_GetPointer(pyvalue, "@(spec.base_type.pkg_name)_@(spec.base_type.type)_ptr");
+
+    /* Hold the GIL */
+    PyGILState_STATE gstate = PyGILState_Ensure();
+
+    PyMem_Free(cvalue);
+
+    /* Release the GIL */
+    PyGILState_Release(gstate);
+}
+
 static PyObject * @(spec.base_type.pkg_name)_@(spec.base_type.type)_create(
     PyObject * self, PyObject * args) {
 
@@ -23,31 +37,10 @@ static PyObject * @(spec.base_type.pkg_name)_@(spec.base_type.type)_create(
 
     /* Create a PyCapsule (an opaque value) to store a handle to the underlying value */
     PyObject * ret = PyCapsule_New(
-        (void *)value, "@(spec.base_type.pkg_name)_@(spec.base_type.type)_ptr", NULL);
+        (void *)value, "@(spec.base_type.pkg_name)_@(spec.base_type.type)_ptr",
+        &@(spec.base_type.pkg_name)_@(spec.base_type.type)_destroy);
     Py_INCREF(ret);
     return ret;
-}
-
-static PyObject * @(spec.base_type.pkg_name)_@(spec.base_type.type)_destroy(
-    PyObject * self, PyObject * args) {
-    PyObject * pyvalue;
-    if (!PyArg_ParseTuple(args, "O", &pyvalue)) {
-        return NULL;
-    }
-
-    /* Retrieve the underlying value via a PyCapsule */
-    @(spec.base_type.pkg_name)_@(spec.base_type.type) * cvalue =
-        PyCapsule_GetPointer(pyvalue, "@(spec.base_type.pkg_name)_@(spec.base_type.type)_ptr");
-
-    /* Hold the GIL */
-    PyGILState_STATE gstate = PyGILState_Ensure();
-
-    PyMem_Free(cvalue);
-
-    /* Release the GIL */
-    PyGILState_Release(gstate);
-
-    Py_RETURN_NONE;
 }
 
 @[for field in spec.fields]
@@ -110,9 +103,6 @@ static PyMethodDef @(spec.base_type.pkg_name)_@(spec.base_type.type)_methods[] =
   { "create",
     @(spec.base_type.pkg_name)_@(spec.base_type.type)_create, METH_NOARGS,
     "Create a @(spec.base_type.pkg_name)_@(spec.base_type.type)." },
-  { "destroy",
-    @(spec.base_type.pkg_name)_@(spec.base_type.type)_destroy, METH_VARARGS,
-    "Destroy a @(spec.base_type.pkg_name)_@(spec.base_type.type)." },
 
 @[for field in spec.fields]
   { "set_@(field.name)",

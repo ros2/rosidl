@@ -21,9 +21,6 @@ class @(spec.base_type.type):
         else:
             self.__obj_handle = handle
 
-    def __del__(self):
-        @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.destroy(self.__obj_handle)
-
     @@property
     def _handle(self):
         return self.__obj_handle

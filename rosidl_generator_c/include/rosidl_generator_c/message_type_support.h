@@ -22,15 +22,8 @@ typedef struct rosidl_message_type_support_t
   const void * data;
 } rosidl_message_type_support_t;
 
-/* Macro for function that returns type support for a particular message type.
- *
- * Usage:
- *
- *   ROSIDL_CREATE_GET_TYPE_SUPPORT_FUNCTION(msg_type_name) {...}
- *
- */
-#define ROSIDL_CREATE_GET_TYPE_SUPPORT_FUNCTION(type_name) \
+#define ROSIDL_GET_TYPE_SUPPORT(MsgPkgName, MsgName) \
 rosidl_message_type_support_t * \
-rosidl_get_type_support_##type_name()
+rosidl_get_type_support_##MsgPkgName_##MsgName();
 
 #endif  /* ROSIDL_GENERATOR_C_ROSIDL_GENERATOR_C_MESSAGE_TYPE_SUPPORT_H_ */

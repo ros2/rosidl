@@ -1,4 +1,17 @@
 import @(spec.base_type.pkg_name)_@(spec.base_type.type)_c
+@{
+import_modules = set()
+}@
+@[for field in spec.fields]
+@[if not field.type.is_primitive_type()]
+@{
+import_modules.add('%s_%s' % (field.type.pkg_name, field.type.type))
+}@
+@[end if]
+@[end for]
+@[for import_module in import_modules]
+import @import_module
+@[end for]
 
 class @(spec.base_type.type):
 

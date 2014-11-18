@@ -73,7 +73,7 @@ static PyObject * @(spec.base_type.pkg_name)_@(spec.base_type.type)_set_@(field.
     cobj->@(field.name) = cvalue;
     @[else]
 
-    @(spec.base_type.pkg_name)_@(spec.base_type.type) * objvalue =
+    @(field.type.pkg_name)_@(field.type.type) * objvalue =
         PyCapsule_GetPointer(pyvalue, "@(field.type.pkg_name)_@(field.type.type)_ptr");
 
     cobj->@(field.name) = *objvalue;
@@ -98,7 +98,7 @@ static PyObject * @(spec.base_type.pkg_name)_@(spec.base_type.type)_get_@(field.
     @[else]
     PyObject * pyvalue = Py_BuildValue("O", &(cobj->@(field.name)));
     PyObject * ret = PyCapsule_New(
-        (void *)pyvalue, "@(field.type.pkg_name)_@(field.type.type)_ptr");
+        (void *)pyvalue, "@(field.type.pkg_name)_@(field.type.type)_ptr", NULL);
     @[end if]
     Py_INCREF(ret);
 
@@ -115,14 +115,12 @@ static PyMethodDef @(spec.base_type.pkg_name)_@(spec.base_type.type)_methods[] =
     "Destroy a @(spec.base_type.pkg_name)_@(spec.base_type.type)." },
 
 @[for field in spec.fields]
-@[if field.type.is_primitive_type()]
   { "set_@(field.name)",
     @(spec.base_type.pkg_name)_@(spec.base_type.type)_set_@(field.name), METH_VARARGS,
     "Set the value of a @(spec.base_type.pkg_name)_@(spec.base_type.type)." },
   { "get_@(field.name)",
     @(spec.base_type.pkg_name)_@(spec.base_type.type)_get_@(field.name), METH_VARARGS,
     "Get the value of a @(spec.base_type.pkg_name)_@(spec.base_type.type)." },
-@[end if]
 @[end for]
   { NULL, NULL, 0, NULL }
 };

@@ -25,7 +25,7 @@ class @(spec.base_type.type):
     def materialize(self):
         handle = @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.create()
 @[for field in spec.fields]
-        if self.@(field.name):
+        if self.@(field.name) is not None:
 @[if field.type.is_primitive_type()]
             @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.set_@(field.name)(handle, self.@(field.name))
 @[else]

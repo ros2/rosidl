@@ -89,9 +89,8 @@ static PyObject * @(spec.base_type.pkg_name)_@(spec.base_type.type)_get_@(field.
     @[if field.type.is_primitive_type()]
     PyObject * ret = Py_BuildValue("@(msg_type_to_py_format(field.type))", cobj->@(field.name));
     @[else]
-    PyObject * pyvalue = Py_BuildValue("O", &(cobj->@(field.name)));
     PyObject * ret = PyCapsule_New(
-        (void *)pyvalue, "@(field.type.pkg_name)_@(field.type.type)_ptr", NULL);
+        (void *)&(cobj->@(field.name)), "@(field.type.pkg_name)_@(field.type.type)_ptr", NULL);
     @[end if]
     Py_INCREF(ret);
 

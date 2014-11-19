@@ -15,37 +15,34 @@ import @import_module
 
 class @(spec.base_type.type):
 
-    def __init__(self, handle=None):
-        if handle is None:
-            self.__obj_handle = @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.create()
-        else:
-            self.__obj_handle = handle
+    __slots__ = [ @(', '.join(["'%s'" % field.name for field in spec.fields])) ]
 
-    @@property
-    def _handle(self):
-        return self.__obj_handle
-
-    @@_handle.setter
-    def _handle(self, handle):
-        self.__obj_handle = handle
-
+    def __init__(self, @(', '.join(["%s=None" % field.name for field in spec.fields]))):
 @[for field in spec.fields]
-    @@property
-    def @(field.name)(self):
-@[if field.type.is_primitive_type()]
-        return @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.get_@(field.name)(self.__obj_handle)
-@[else]
-        msg = @(field.type.pkg_name).@(field.type.type).@(field.type.type)()
-        msg._handle = @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.get_@(field.name)(self.__obj_handle)
-        return msg
-@[end if]
+        self.@(field.name) = @(field.name)
+@[end for]
 
-    @@@(field.name).setter
-    def @(field.name)(self, value):
+    def materialize(self):
+        handle = @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.create()
+@[for field in spec.fields]
+        if self.@(field.name):
 @[if field.type.is_primitive_type()]
-        @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.set_@(field.name)(self.__obj_handle, value)
+            @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.set_@(field.name)(handle, self.@(field.name))
 @[else]
-        @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.set_@(field.name)(self.__obj_handle, value._handle)
-
+            @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.set_@(field.name)(handle, self.@(field.name).materialize())
 @[end if]
 @[end for]
+        return handle
+
+    @@classmethod
+    def load(cls, handle):
+        msg = cls()
+@[for field in spec.fields]
+@[if field.type.is_primitive_type()]
+        msg.@(field.name) = @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.get_@(field.name)(handle)
+@[else]
+        @(field.name)_handle = @(spec.base_type.pkg_name)_@(spec.base_type.type)_c.get_@(field.name)(handle)
+        msg.@(field.name) = @(field.type.pkg_name).@(field.type.type).@(field.type.type).load(@(field.name)_handle)
+@[end if]
+@[end for]
+        return msg

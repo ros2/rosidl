@@ -63,7 +63,7 @@ MSG_TYPE_TO_C = {
 }
 
 
-def msg_type_to_c(type_, name_):
+def msg_type_to_c(type_, name_, containing_msg_name='notset'):
     """
     Convert a message type into the C declaration.
 
@@ -83,8 +83,10 @@ def msg_type_to_c(type_, name_):
 
     if type_.is_array:
         if type_.array_size is None:
-            return '%s * %s' % (c_type, name_)
+            # Dynamic sized array
+            return 'ROSIDL_Array__%s %s' % ('' + c_type, name_)
         else:
-            return '%s %s[%s]' % (c_type, name_, type_.array_size)
+            # Static sized array (field specific)
+            return 'ROSIDL_Array__%s__%s %s' % (containing_msg_name, name_, name_)
     else:
         return '%s %s' % (c_type, name_)

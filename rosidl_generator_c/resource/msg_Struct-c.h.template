@@ -19,8 +19,8 @@ c_namespace = '%s_' % (spec.base_type.pkg_name)
 c_struct = '%s' % spec.base_type.type
 c_full_name = '%s%s' % (c_namespace, c_struct)
 }@
-#ifndef __@(spec.base_type.pkg_name)__@(spec.base_type.type)_Struct__h__
-#define __@(spec.base_type.pkg_name)__@(spec.base_type.type)_Struct__h__
+#ifndef @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())_STRUCT_H_
+#define @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())_STRUCT_H_
 
 @##############################
 @# Generic Includes
@@ -32,15 +32,30 @@ c_full_name = '%s%s' % (c_namespace, c_struct)
 @##############################
 @# Includes for dependencies
 @##############################
+#include <rosidl_generator_c/arrays.h>
 @{
+# Include headers of non-primitive field types
 for field in spec.fields:
+    pkg_name, type = field.type.pkg_name, field.type.type
     if not field.type.is_primitive_type():
-        print('#include <%s/%s-c.h>' % (field.type.pkg_name, field.type.type))
+        print("#include <%s/%s-c.h>" % (pkg_name, type))
+}@
+
+@{
+# Call out macro to generate static array types
+for field in spec.fields:
+    if field.type.is_array and field.type.array_size is not None:
+        print("/* Structs for static arrays(containing message, field name, C type, size) */")
+        break
+for field in spec.fields:
+    if field.type.is_array and field.type.array_size is not None:
+        print("ROSIDL_GENERATE_STATIC_ARRAY(%s, %s, %s, %s);" %
+              (c_full_name, field.name, MSG_TYPE_TO_C[field.type.type], field.type.array_size))
 }@
 
 typedef struct @(c_full_name)
 {@[for field in spec.fields]
-  @(msg_type_to_c(field.type, field.name));
+  @(msg_type_to_c(field.type, field.name, c_full_name));
 @[end for]
 } @(c_full_name);
 @# Constants
@@ -59,5 +74,7 @@ enum
 static const @(MSG_TYPE_TO_C[constant.primitive_type]) @(c_full_name + "_" + constant.name) = @(constant.value);
 @[end if]@
 @[end for]@
+@# Array and DynamicArray structs
+ROSIDL_GENERATE_ARRAY(@(c_full_name), @(c_full_name));
 
-#endif  // __@(spec.base_type.pkg_name)__@(spec.base_type.type)_Struct__h__
+#endif  // @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())_STRUCT_H_

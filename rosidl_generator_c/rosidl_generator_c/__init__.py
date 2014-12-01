@@ -84,7 +84,7 @@ def msg_type_to_c(type_, name_, containing_msg_name='notset'):
     if type_.is_array:
         if type_.array_size is None:
             # Dynamic sized array
-            return 'ROSIDL_Array__%s %s' % ('' + c_type, name_)
+            return 'ROSIDL_Array__%s %s' % (type_.type, name_)
         else:
             # Static sized array (field specific)
             return 'ROSIDL_Array__%s__%s %s' % (containing_msg_name, name_, name_)

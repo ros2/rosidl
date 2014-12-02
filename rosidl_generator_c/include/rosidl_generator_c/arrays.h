@@ -41,7 +41,7 @@
       ROSIDL_Array__##ContainingMsg##__##Field##__create()                    \
   {                                                                           \
     ROSIDL_Array__##ContainingMsg##__##Field init = {                         \
-        .data = 0, .size = Size, .capacity = Size, .is_fixed = true};         \
+        .size = Size, .capacity = Size, .is_fixed = true};                    \
     ROSIDL_Array__##ContainingMsg##__##Field *pointer =                       \
         malloc(sizeof(ROSIDL_Array__##ContainingMsg##__##Field));             \
     memcpy(pointer, &init, sizeof(ROSIDL_Array__##ContainingMsg##__##Field)); \

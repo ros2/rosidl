@@ -6,11 +6,20 @@ message("   - dependency package names: ${rosidl_generate_interfaces_DEPENDENCY_
 set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp/${PROJECT_NAME}")
 set(_generated_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
-  get_filename_component(name "${_idl_file}" NAME_WE)
-  list(APPEND _generated_files
-    "${_output_path}/${name}.h"
-    "${_output_path}/${name}_Struct.h"
-  )
+  get_filename_component(_extension "${_idl_file}" EXT)
+  if("${_extension}" STREQUAL ".msg")
+    get_filename_component(name "${_idl_file}" NAME_WE)
+    list(APPEND _generated_files
+      "${_output_path}/${name}.h"
+      "${_output_path}/${name}_Struct.h"
+    )
+  elseif("${_extension}" STREQUAL ".srv")
+    get_filename_component(name "${_idl_file}" NAME_WE)
+    list(APPEND _generated_files
+      "${_output_path}/${name}.h"
+      "${_output_path}/${name}_Service.h"
+    )
+  endif()
 endforeach()
 
 set(_dependency_files "")
@@ -40,6 +49,8 @@ add_custom_command(
   ${rosidl_generator_cpp_GENERATOR_FILES}
   ${rosidl_generator_cpp_TEMPLATE_DIR}/msg.h.template
   ${rosidl_generator_cpp_TEMPLATE_DIR}/msg_Struct.h.template
+  ${rosidl_generator_cpp_TEMPLATE_DIR}/srv.h.template
+  ${rosidl_generator_cpp_TEMPLATE_DIR}/srv_Service.h.template
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files}
   COMMENT "Generating C++ code for ROS interfaces"

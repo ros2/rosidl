@@ -1,0 +1,6 @@
+#ifndef __@(spec.pkg_name)__@(spec.srv_name)__h__
+#define __@(spec.pkg_name)__@(spec.srv_name)__h__
+
+#include "@(spec.pkg_name)/@(spec.srv_name)_Service.h"
+
+#endif  // __@(spec.pkg_name)__@(spec.srv_name)__h__

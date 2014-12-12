@@ -6,20 +6,31 @@ message("   - dependency package names: ${rosidl_generate_interfaces_DEPENDENCY_
 set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_introspection_cpp/${PROJECT_NAME}")
 set(_generated_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
-  get_filename_component(name "${_idl_file}" NAME_WE)
-  list(APPEND _generated_files
-    "${_output_path}/${name}_TypeSupport_Introspection.cpp"
-  )
+  get_filename_component(_extension "${_idl_file}" EXT)
+  if("${_extension}" STREQUAL ".msg")
+    get_filename_component(name "${_idl_file}" NAME_WE)
+    list(APPEND _generated_files
+      "${_output_path}/${name}_TypeSupport_Introspection.cpp"
+    )
+  elseif("${_extension}" STREQUAL ".srv")
+    get_filename_component(name "${_idl_file}" NAME_WE)
+    list(APPEND _generated_files
+      "${_output_path}/${name}_ServiceTypeSupport_Introspection.cpp"
+    )
+  endif()
 endforeach()
 
 set(_dependency_files "")
 set(_dependencies "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   foreach(_idl_file ${${_pkg_name}_INTERFACE_FILES})
+  get_filename_component(_extension "${_idl_file}" EXT)
+  if("${_extension}" STREQUAL ".msg")
     set(_abs_idl_file "${${_pkg_name}_DIR}/../${_idl_file}")
     normalize_path(_abs_idl_file "${_abs_idl_file}")
     list(APPEND _dependency_files "${_abs_idl_file}")
     list(APPEND _dependencies "${_pkg_name}:${_abs_idl_file}")
+  endif()
   endforeach()
 endforeach()
 
@@ -38,6 +49,7 @@ add_custom_command(
   ${rosidl_typesupport_introspection_cpp_BIN}
   ${rosidl_typesupport_introspection_cpp_GENERATOR_FILES}
   ${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/msg_TypeSupport_Introspection.cpp.template
+  ${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/srv_ServiceTypeSupport_Introspection.cpp.template
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files}
   COMMENT "Generating C++ introspection for ROS interfaces"

@@ -1,0 +1,31 @@
+@###############################################
+@#
+@# ROS message type support code generation for C++
+@#
+@# EmPy template for generating <msg>_ServiceTypeSupport.cpp files
+@#
+@###############################################
+@# Start of Template
+@#
+@# Context:
+@#  - spec (rosidl_parser.ServiceSpecification)
+@#    Parsed specification of the .srv file
+@###############################################
+
+#include <iostream>
+
+#include "@(spec.pkg_name)/@(spec.srv_name)_Service.h"
+#include "rosidl_generator_cpp/ServiceTypeSupport.h"
+#include "rosidl_typesupport_introspection_cpp/ServiceIntrospection.h"
+
+namespace rosidl_typesupport_introspection_cpp
+{
+
+template <>
+const rosidl_generator_cpp::ServiceTypeSupportHandle& get_service_type_support_handle<@(spec.pkg_name)::@(spec.srv_name)>()
+{
+    rosidl_generator_cpp::ServiceTypeSupportHandle handle;
+    return handle;
+}
+
+}  // namespace rosidl_typesupport_introspection_cpp

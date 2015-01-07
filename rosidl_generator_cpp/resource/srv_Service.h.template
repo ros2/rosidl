@@ -2,12 +2,14 @@
 #define __@(spec.pkg_name)__@(spec.srv_name)_Service__h__
 
 #include "@(spec.pkg_name)/@(spec.srv_name)Request.h"
+#include "@(spec.pkg_name)/@(spec.srv_name)RequestWithHeader.h"
 #include "@(spec.pkg_name)/@(spec.srv_name)Response.h"
 
 namespace @(spec.pkg_name)
 {
     struct @(spec.srv_name) {
         typedef @(spec.pkg_name)::@(spec.srv_name)Request Request;
+        typedef @(spec.pkg_name)::@(spec.srv_name)RequestWithHeader RequestWithHeader;
         typedef @(spec.pkg_name)::@(spec.srv_name)Response Response;
     };
 }

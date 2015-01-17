@@ -545,3 +545,22 @@ def validate_field_types(spec, known_msg_types):
         base_type = BaseType(BaseType.__str__(field.type))
         if base_type not in known_msg_types:
             raise UnknownMessageType(str(field))
+
+
+class ServiceSpecification(object):
+
+    def __init__(self, pkg_name, srv_name):
+        self.pkg_name = pkg_name
+        self.srv_name = srv_name
+
+
+def parse_service_file(pkg_name, interface_filename):
+    basename = os.path.basename(interface_filename)
+    srv_name = os.path.splitext(basename)[0]
+    with open(interface_filename, 'r') as h:
+        return parse_service_string(
+            pkg_name, srv_name, h.read())
+
+
+def parse_service_string(pkg_name, srv_name, message_string):
+    return ServiceSpecification(pkg_name, srv_name)

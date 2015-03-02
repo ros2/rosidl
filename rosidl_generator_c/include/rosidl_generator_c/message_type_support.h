@@ -22,7 +22,11 @@ typedef struct rosidl_message_type_support_t
   const void * data;
 } rosidl_message_type_support_t;
 
+/* This macro is used to create the symbol of the get_type_support function
+ * for a specific message type. The library of the message package which
+ * defines a given message will provide the symbol to which this macro expands.
+ */
 #define ROSIDL_GET_TYPE_SUPPORT(MsgPkgName, MsgName) \
-rosidl_get_type_support__##MsgPkgName##__##MsgName##()
+rosidl_get_type_support__##MsgPkgName##__##MsgName()
 
 #endif  /* ROSIDL_GENERATOR_C_ROSIDL_GENERATOR_C_MESSAGE_TYPE_SUPPORT_H_ */

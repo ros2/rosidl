@@ -4,8 +4,8 @@
 #include <rosidl_generator_c/message_type_support.h>
 
 // Forward declaration which is implemented in the dds vendor specific package
-rosidl_message_type_support_t
-rosidl_get_type_support_@(spec.base_type.pkg_name)_@(spec.base_type.type)();
+rosidl_message_type_support_t *
+ROSIDL_GET_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(spec.base_type.type));
 
 #include "@(spec.base_type.pkg_name)/@(spec.base_type.type)_Struct-c.h"
 

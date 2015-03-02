@@ -15,7 +15,7 @@
 from rosidl_generator_c import msg_type_to_c
 from rosidl_generator_c import MSG_TYPE_TO_C
 
-c_namespace = '%s_' % (spec.base_type.pkg_name)
+c_namespace = '%s__' % (spec.base_type.pkg_name)
 c_struct = '%s' % spec.base_type.type
 c_full_name = '%s%s' % (c_namespace, c_struct)
 }@
@@ -40,41 +40,48 @@ for field in spec.fields:
     if not field.type.is_primitive_type():
         print("#include <%s/%s-c.h>" % (pkg_name, type))
 }@
-
 @{
 # Call out macro to generate static array types
 for field in spec.fields:
     if field.type.is_array and field.type.array_size is not None:
-        print("/* Structs for static arrays(containing message, field name, C type, size) */")
+        print("""
+/* Structs for static arrays(containing message name,
+                             field name, C type, static size) */""")
         break
 for field in spec.fields:
     if field.type.is_array and field.type.array_size is not None:
-        print("ROSIDL_GENERATE_STATIC_ARRAY(%s, %s, %s, %s);" %
+        print("""\
+ROSIDL_GENERATE_STATIC_ARRAY(%s,
+                             %s, %s, %s);
+""" %
               (c_full_name, field.name, MSG_TYPE_TO_C[field.type.type], field.type.array_size))
 }@
-
+/* Data structure for @(c_full_name) */
 typedef struct @(c_full_name)
-{@[for field in spec.fields]
+{
+@[for field in spec.fields]@
   @(msg_type_to_c(field.type, field.name, c_full_name));
-@[end for]
+
+@[end for]@
 } @(c_full_name);
 @# Constants
 @[for constant in spec.constants]@
 @[if (constant.primitive_type in ['byte', 'int8', 'int16', 'int32', 'int64', 'char'])]@
 enum
 {
-  @(c_full_name + "_" + constant.name) = @(int(constant.value))
+  @(c_full_name + "__" + constant.name) = @(int(constant.value))
 };
 @[elif (constant.primitive_type in ['uint8', 'uint16', 'uint32', 'uint64'])]@
 enum
 {
-  @(c_full_name + "_" + constant.name) = @(int(constant.value))u
+  @(c_full_name + "__" + constant.name) = @(int(constant.value))u
 };
 @[else]@
-static const @(MSG_TYPE_TO_C[constant.primitive_type]) @(c_full_name + "_" + constant.name) = @(constant.value);
+static const @(MSG_TYPE_TO_C[constant.primitive_type]) @(c_full_name + "__" + constant.name) = @(constant.value);
 @[end if]@
 @[end for]@
-@# Array and DynamicArray structs
-ROSIDL_GENERATE_ARRAY(@(c_full_name), @(c_full_name));
+
+/* Generate symbols for arrays of type @(c_full_name) */
+ROSIDL_GENERATE_ARRAY(@(c_full_name));
 
 #endif  // @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())_STRUCT_H_

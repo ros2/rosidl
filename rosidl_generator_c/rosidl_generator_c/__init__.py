@@ -79,14 +79,14 @@ def msg_type_to_c(type_, name_, containing_msg_name='notset'):
     if type_.is_primitive_type():
         c_type = MSG_TYPE_TO_C[type_.type]
     else:
-        c_type = '%s_%s' % (type_.pkg_name, type_.type)
+        c_type = '%s__%s' % (type_.pkg_name, type_.type)
 
     if type_.is_array:
         if type_.array_size is None:
             # Dynamic sized array
-            return 'ROSIDL_Array__%s %s' % (type_.type, name_)
+            return 'ROSIDL_Array__%s\n  %s' % (type_.type, name_)
         else:
             # Static sized array (field specific)
-            return 'ROSIDL_Array__%s__%s %s' % (containing_msg_name, name_, name_)
+            return 'ROSIDL_Array__%s__%s\n  %s' % (containing_msg_name, name_, name_)
     else:
         return '%s %s' % (c_type, name_)

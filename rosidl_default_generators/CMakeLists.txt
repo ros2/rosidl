@@ -8,8 +8,6 @@ ament_export_dependencies(rosidl_cmake)
 
 ament_export_dependencies(rosidl_generator_c)
 ament_export_dependencies(rosidl_generator_cpp)
-ament_export_dependencies(rosidl_generator_py)
-ament_export_dependencies(rosidl_generator_rb)
 
 ament_export_dependencies(rosidl_typesupport_introspection_cpp)
 

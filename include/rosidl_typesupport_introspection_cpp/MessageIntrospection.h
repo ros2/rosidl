@@ -1,8 +1,10 @@
-
 #ifndef __rosidl_typesupport_introspection_cpp__MessageIntrospection__h__
 #define __rosidl_typesupport_introspection_cpp__MessageIntrospection__h__
 
+#include <cstddef>
 #include <stdint.h>
+
+#include <rosidl_generator_c/message_type_support.h>
 
 namespace rosidl_typesupport_introspection_cpp
 {
@@ -16,7 +18,7 @@ typedef struct MessageMember
   const char * name_;
   uint8_t type_id_;
   size_t string_upper_bound_;
-  const rosidl_generator_cpp::MessageTypeSupportHandle* members_;
+  const rosidl_message_type_support_t * members_;
   bool is_array_;
   size_t array_size_;
   bool is_upper_bound_;
@@ -33,7 +35,7 @@ typedef struct MessageMembers
 } MessageMembers;
 
 template<typename T>
-const rosidl_generator_cpp::MessageTypeSupportHandle& get_type_support_handle();
+const rosidl_message_type_support_t * get_type_support_handle();
 
 }  // namespace rosidl_typesupport_introspection_cpp
 

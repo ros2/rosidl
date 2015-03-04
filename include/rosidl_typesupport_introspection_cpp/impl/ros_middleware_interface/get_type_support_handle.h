@@ -7,7 +7,7 @@
 namespace ros_middleware_interface
 {
 template<typename T>
-const rosidl_generator_cpp::MessageTypeSupportHandle& get_type_support_handle()
+const rosidl_message_type_support_t * get_type_support_handle()
 {
   return rosidl_typesupport_introspection_cpp::get_type_support_handle<T>();
 }

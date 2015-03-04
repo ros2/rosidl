@@ -16,6 +16,11 @@
 #ifndef ROSIDL_GENERATOR_C_ROSIDL_GENERATOR_C_MESSAGE_TYPE_SUPPORT_H_
 #define ROSIDL_GENERATOR_C_ROSIDL_GENERATOR_C_MESSAGE_TYPE_SUPPORT_H_
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 typedef struct rosidl_message_type_support_t
 {
   const char * typesupport_identifier;
@@ -28,5 +33,9 @@ typedef struct rosidl_message_type_support_t
  */
 #define ROSIDL_GET_TYPE_SUPPORT(MsgPkgName, MsgName) \
 rosidl_get_type_support__##MsgPkgName##__##MsgName()
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* ROSIDL_GENERATOR_C_ROSIDL_GENERATOR_C_MESSAGE_TYPE_SUPPORT_H_ */

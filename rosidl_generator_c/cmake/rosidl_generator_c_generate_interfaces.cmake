@@ -1,16 +1,26 @@
+set(rosidl_generate_interfaces_c_IDL_FILES ${rosidl_generate_interfaces_IDL_FILES})
 message(" - rosidl_generator_c_generate_interfaces.cmake")
 message("   - target: ${rosidl_generate_interfaces_TARGET}")
-message("   - interface files: ${rosidl_generate_interfaces_IDL_FILES}")
+message("   - interface files: ${rosidl_generate_interfaces_c_IDL_FILES}")
 message("   - dependency package names: ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES}")
 
 set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c/${PROJECT_NAME}")
 set(_generated_files "")
-foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
-  get_filename_component(name "${_idl_file}" NAME_WE)
-  list(APPEND _generated_files
-    "${_output_path}/${name}-c.h"
-    "${_output_path}/${name}_Struct-c.h"
-  )
+foreach(_idl_file ${rosidl_generate_interfaces_c_IDL_FILES})
+  # TODO(wjwwood): Enable support for things others than .msg
+  # Conditionally process interface files if they end with .msg
+  string(LENGTH ${_idl_file} _idl_file_len)
+  math(EXPR _idl_file_ext_pos "${_idl_file_len} - 4")
+  string(SUBSTRING ${_idl_file} ${_idl_file_ext_pos} -1 _idl_file_ext)
+  if (${_idl_file_ext} STREQUAL ".msg")
+    get_filename_component(name "${_idl_file}" NAME_WE)
+    list(APPEND _generated_files
+      "${_output_path}/${name}-c.h"
+      "${_output_path}/${name}_Struct-c.h"
+    )
+  else()
+    list(REMOVE_ITEM rosidl_generate_interfaces_c_IDL_FILES ${_idl_file})
+  endif()
 endforeach()
 
 set(_dependency_files "")
@@ -38,7 +48,7 @@ add_custom_command(
   OUTPUT ${_generated_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_c_BIN}
   --pkg-name ${PROJECT_NAME}
-  --ros-interface-files ${rosidl_generate_interfaces_IDL_FILES}
+  --ros-interface-files ${rosidl_generate_interfaces_c_IDL_FILES}
   --deps ${_dependencies}
   --output-dir ${_output_path}
   --template-dir ${rosidl_generator_c_TEMPLATE_DIR}
@@ -47,7 +57,7 @@ add_custom_command(
   ${rosidl_generator_c_GENERATOR_FILES}
   ${rosidl_generator_c_TEMPLATE_DIR}/msg-c.h.template
   ${rosidl_generator_c_TEMPLATE_DIR}/msg_Struct-c.h.template
-  ${rosidl_generate_interfaces_IDL_FILES}
+  ${rosidl_generate_interfaces_c_IDL_FILES}
   ${_dependency_files}
   COMMENT "Generating C code for ROS interfaces"
   VERBATIM

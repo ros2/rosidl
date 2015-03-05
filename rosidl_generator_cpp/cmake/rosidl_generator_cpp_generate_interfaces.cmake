@@ -19,6 +19,8 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
       "${_output_path}/${name}.h"
       "${_output_path}/${name}_Service.h"
     )
+  else()
+    message(FATAL_ERROR "Interface file with unknown extension: ${_idl_file}")
   endif()
 endforeach()
 

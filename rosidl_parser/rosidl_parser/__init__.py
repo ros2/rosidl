@@ -377,6 +377,7 @@ def parse_message_string(pkg_name, msg_name, message_string):
         type_string, _, rest = line.partition(' ')
         rest = rest.lstrip()
         if not rest:
+            print("Error with:", pkg_name, msg_name)
             raise InvalidFieldDefinition(line)
         index = rest.find(CONSTANT_SEPARATOR)
         if index == -1:

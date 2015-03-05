@@ -31,7 +31,6 @@ def generate_cpp(
                 generated_file = os.path.join(
                     output_dir, generated_filename % spec.base_type.type)
                 print('Generating MESSAGE: %s' % generated_file)
-         
                 try:
                     # TODO only touch generated file if its content actually changes
                     ofile = open(generated_file, 'w')
@@ -73,8 +72,6 @@ def generate_cpp(
                 except Exception:
                     os.remove(generated_file)
                     raise
-
-
     return 0
 
 

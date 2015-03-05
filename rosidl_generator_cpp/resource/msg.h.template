@@ -14,6 +14,6 @@ get_type_support_handle<
   @(spec.base_type.pkg_name)::@(spec.base_type.type)
 >();
 
-}
+}  // namespace rosidl_generator_cpp
 
 #endif  // __@(spec.base_type.pkg_name)__@(spec.base_type.type)__h__

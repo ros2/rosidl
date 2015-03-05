@@ -11,7 +11,8 @@
 @#  - spec (rosidl_parser.ServiceSpecification)
 @#    Parsed specification of the .srv file
 @###############################################
-
+// This file was generated from:
+//   rosidl_typesupport_introspection_cpp/resource/srv_ServiceTypeSupport_Introspection.cpp.template
 #include <iostream>
 
 #include "@(spec.pkg_name)/@(spec.srv_name)_Service.h"
@@ -21,11 +22,16 @@
 namespace rosidl_typesupport_introspection_cpp
 {
 
-template <>
-const rosidl_generator_cpp::ServiceTypeSupportHandle& get_service_type_support_handle<@(spec.pkg_name)::@(spec.srv_name)>()
+namespace impl
 {
-    rosidl_generator_cpp::ServiceTypeSupportHandle handle;
-    return handle;
+static rosidl_service_type_support_t handle;
+}
+
+template <>
+const rosidl_service_type_support_t *
+get_service_type_support_handle<@(spec.pkg_name)::@(spec.srv_name)>()
+{
+    return &impl::handle;
 }
 
 }  // namespace rosidl_typesupport_introspection_cpp

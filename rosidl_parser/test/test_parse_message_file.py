@@ -3,7 +3,7 @@ import os
 import shutil
 import tempfile
 
-from rosidl_parser import *
+from rosidl_parser import parse_message_file
 
 
 def test_parse_message_file():

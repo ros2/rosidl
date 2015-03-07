@@ -1,6 +1,7 @@
 from nose.tools import assert_raises
 
-from rosidl_parser import *
+from rosidl_parser import Field
+from rosidl_parser import Type
 
 
 def test_field_constructor():

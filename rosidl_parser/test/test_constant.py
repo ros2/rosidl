@@ -1,6 +1,6 @@
 from nose.tools import assert_raises
 
-from rosidl_parser import *
+from rosidl_parser import Constant
 
 
 def test_constant_constructor():

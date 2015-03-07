@@ -1,6 +1,10 @@
 from nose.tools import assert_raises
 
-from rosidl_parser import *
+from rosidl_parser import InvalidResourceName
+from rosidl_parser import is_valid_constant_name
+from rosidl_parser import is_valid_field_name
+from rosidl_parser import is_valid_message_name
+from rosidl_parser import is_valid_package_name
 
 
 def test_is_valid_package_name():

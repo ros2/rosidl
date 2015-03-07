@@ -1,6 +1,7 @@
 from nose.tools import assert_raises
 
-from rosidl_parser import *
+from rosidl_parser import BaseType
+from rosidl_parser import InvalidResourceName
 
 
 def test_base_type_constructor():

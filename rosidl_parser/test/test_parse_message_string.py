@@ -1,6 +1,8 @@
 from nose.tools import assert_raises
 
-from rosidl_parser import *
+from rosidl_parser import InvalidFieldDefinition
+from rosidl_parser import InvalidResourceName
+from rosidl_parser import parse_message_string
 
 
 def test_parse_message_string():

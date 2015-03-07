@@ -32,7 +32,7 @@ def generate_cpp(
                     output_dir, generated_filename % spec.base_type.type)
                 print('Generating MESSAGE: %s' % generated_file)
                 try:
-                    # TODO only touch generated file if its content actually changes
+                    # TODO only write generated file if its different
                     ofile = open(generated_file, 'w')
                     # TODO reuse interpreter
                     interpreter = em.Interpreter(
@@ -56,7 +56,7 @@ def generate_cpp(
                     output_dir, generated_filename % spec.srv_name)
                 print('Generating SERVICE: %s' % spec.srv_name)
                 try:
-                    # TODO only touch generated file if its content actually changes
+                    # TODO only write generated file if its different
                     ofile = open(generated_file, 'w')
                     # TODO reuse interpreter
                     interpreter = em.Interpreter(

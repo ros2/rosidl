@@ -1,6 +1,9 @@
 from nose.tools import assert_raises
 
-from rosidl_parser import *
+from rosidl_parser import Constant
+from rosidl_parser import Field
+from rosidl_parser import MessageSpecification
+from rosidl_parser import Type
 
 
 def test_message_specification_constructor():

@@ -1,6 +1,11 @@
 from nose.tools import assert_raises
 
-from rosidl_parser import *
+from rosidl_parser import BaseType
+from rosidl_parser import Field
+from rosidl_parser import MessageSpecification
+from rosidl_parser import Type
+from rosidl_parser import UnknownMessageType
+from rosidl_parser import validate_field_types
 
 
 def test_validate_field_types():

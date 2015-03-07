@@ -16,6 +16,11 @@ include_directories(include)
 add_library(rosidl_typesupport_introspection_cpp SHARED src/identifier.cpp)
 ament_export_libraries(rosidl_typesupport_introspection_cpp)
 
+if(AMENT_ENABLE_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+endif()
+
 ament_package(
   CONFIG_EXTRAS "rosidl_typesupport_introspection_cpp-extras.cmake.in"
 )

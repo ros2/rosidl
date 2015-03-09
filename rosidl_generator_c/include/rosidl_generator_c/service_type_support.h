@@ -31,9 +31,8 @@ typedef struct rosidl_service_type_support_t
  * for a specific service type. The library of the message package which
  * defines a given service will provide the symbol to which this macro expands.
  */
-// TODO(esteve): Uncomment this when services are supported in C.
-//#define ROSIDL_GET_SERVICE_TYPE_SUPPORT(SrvPkgName, SrvName) \
-//rosidl_get_service_type_support__##SrvPkgName##__##SrvName()
+#define ROSIDL_GET_SERVICE_TYPE_SUPPORT(SrvPkgName, SrvName) \
+rosidl_get_service_type_support__##SrvPkgName##__##SrvName()
 
 #ifdef __cplusplus
 }

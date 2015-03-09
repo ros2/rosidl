@@ -15,9 +15,7 @@
 
   <buildtool_export_depend>rosidl_typesupport_introspection_cpp</buildtool_export_depend>
 
-<!--
   <buildtool_export_depend>rosidl_typesupport_connext_cpp</buildtool_export_depend>
--->
   <buildtool_export_depend>rosidl_typesupport_opensplice_cpp</buildtool_export_depend>
 
   <test_depend>ament_lint_auto</test_depend>

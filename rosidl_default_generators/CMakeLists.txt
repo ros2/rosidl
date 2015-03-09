@@ -11,7 +11,7 @@ ament_export_dependencies(rosidl_generator_cpp)
 
 ament_export_dependencies(rosidl_typesupport_introspection_cpp)
 
-#ament_export_dependencies(rosidl_typesupport_connext_cpp)
+ament_export_dependencies(rosidl_typesupport_connext_cpp)
 ament_export_dependencies(rosidl_typesupport_opensplice_cpp)
 
 if(AMENT_ENABLE_TESTING)

@@ -20,6 +20,15 @@
 #include "rosidl_typesupport_introspection_cpp/FieldTypes.h"
 #include "rosidl_typesupport_introspection_cpp/MessageIntrospection.h"
 
+@{
+import os
+
+IS_WINDOWS = os.name == 'nt'
+
+if not IS_WINDOWS:
+    print('#define offsetof __builtin_offsetof')
+}@
+
 namespace @(spec.base_type.pkg_name)
 {
 
@@ -55,7 +64,7 @@ for index, field in enumerate(spec.fields):
     # bool is_upper_bound_
     print('        %s,' % ('true' if field.type.is_upper_bound else 'false'))
     # unsigned long offset_
-    print('        __builtin_offsetof(%s::%s, %s)' % (spec.base_type.pkg_name, spec.base_type.type, field.name))
+    print('        offsetof(%s::%s, %s)' % (spec.base_type.pkg_name, spec.base_type.type, field.name))
 
     if index < len(spec.fields) - 1:
         print('    },')

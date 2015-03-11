@@ -26,6 +26,7 @@ namespace @(spec.base_type.pkg_name)
 namespace rosidl_typesupport_introspection_cpp
 {
 
+@[if spec.fields]@
 static const ::rosidl_typesupport_introspection_cpp::MessageMember @(spec.base_type.type)_message_member_array[@(len(spec.fields))] = {
 @{
 for index, field in enumerate(spec.fields):
@@ -62,12 +63,17 @@ for index, field in enumerate(spec.fields):
         print('    }')
 }@
 };
+@[end if]@
 
 static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(spec.base_type.type)_message_members = {
     "@(spec.base_type.pkg_name)",
     "@(spec.base_type.type)",
     @(len(spec.fields)),
+@[if spec.fields]@
     @(spec.base_type.type)_message_member_array
+@[else]@
+    0
+@[end if]@
 };
 
 static const rosidl_message_type_support_t @(spec.base_type.type)_message_type_support_handle = {

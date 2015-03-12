@@ -149,13 +149,18 @@ def primitive_value_to_cpp(type_, value):
     if type_.type in [
         'byte',
         'char',
-        'float32', 'float64',
         'int8', 'uint8',
         'int16', 'uint16',
         'int32', 'uint32',
         'int64', 'uint64',
     ]:
         return str(value)
+
+    if type_.type in ['float32']:
+        return '%sf' % value
+
+    if type_.type in ['float64']:
+        return '%sl' % value
 
     if type_.type == 'string':
         return '"%s"' % escape_string(value)

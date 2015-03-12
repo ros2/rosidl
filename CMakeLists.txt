@@ -15,6 +15,10 @@ ament_python_install_package(${PROJECT_NAME})
 include_directories(include)
 add_library(rosidl_typesupport_introspection_cpp SHARED src/identifier.cpp)
 ament_export_libraries(rosidl_typesupport_introspection_cpp)
+if(WIN32)
+  target_compile_definitions(rosidl_typesupport_introspection_cpp
+    PRIVATE "ROSIDL_TSI_CPP_BUILDING_DLL")
+endif()
 
 if(AMENT_ENABLE_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -39,6 +43,7 @@ install(
 )
 install(
   TARGETS rosidl_typesupport_introspection_cpp
-  LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
 )

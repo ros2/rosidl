@@ -6,14 +6,14 @@
 
 #include <rosidl_generator_c/message_type_support.h>
 
+#include "impl/visibility_control.h"
+
 namespace rosidl_typesupport_introspection_cpp
 {
 
-extern const char * typesupport_introspection_identifier;
+struct ROSIDL_TSI_CPP_PUBLIC MessageMembers;
 
-struct MessageMembers;
-
-typedef struct MessageMember
+typedef struct ROSIDL_TSI_CPP_PUBLIC MessageMember
 {
   const char * name_;
   uint8_t type_id_;
@@ -26,7 +26,7 @@ typedef struct MessageMember
   const void * default_value_;
 } MessageMember;
 
-typedef struct MessageMembers
+typedef struct ROSIDL_TSI_CPP_PUBLIC MessageMembers
 {
   const char * package_name_;
   const char * message_name_;
@@ -35,6 +35,7 @@ typedef struct MessageMembers
 } MessageMembers;
 
 template<typename T>
+ROSIDL_TSI_CPP_PUBLIC
 const rosidl_message_type_support_t * get_type_support_handle();
 
 }  // namespace rosidl_typesupport_introspection_cpp

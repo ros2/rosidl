@@ -37,14 +37,11 @@ extern "C"
       #define ROSIDL_TSI_CPP_PUBLIC __declspec(dllexport)
     #endif
   #else
-    #ifdef __GNUC__
-      #define ROSIDL_TSI_CPP_PUBLIC __attribute__ ((dllimport))
-    #else
-      #define ROSIDL_TSI_CPP_PUBLIC __declspec(dllimport)
-    #endif
+    #define ROSIDL_TSI_CPP_PUBLIC ROSIDL_TSI_CPP_DLLIMPORT
   #endif
   #define ROSIDL_TSI_CPP_LOCAL
 #else
+  #define ROSIDL_TSI_CPP_DLLIMPORT __attribute__ ((visibility ("hidden")))
   #if __GNUC__ >= 4
     #define ROSIDL_TSI_CPP_PUBLIC __attribute__ ((visibility ("default")))
     #define ROSIDL_TSI_CPP_LOCAL __attribute__ ((visibility ("hidden")))

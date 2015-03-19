@@ -15,23 +15,15 @@
 #ifndef __@(spec.base_type.pkg_name)__@(spec.base_type.type)_TypeSupport__h__
 #define __@(spec.base_type.pkg_name)__@(spec.base_type.type)_TypeSupport__h__
 
+// Include cstddef for offsetof().
+#include <cstddef>
+
 #include "@(spec.base_type.pkg_name)/@(spec.base_type.type)_Struct.h"
 #include "rosidl_generator_cpp/MessageTypeSupport.h"
 #include "rosidl_typesupport_introspection_cpp/FieldTypes.h"
 #include "rosidl_typesupport_introspection_cpp/Identifier.h"
 #include "rosidl_typesupport_introspection_cpp/MessageIntrospection.h"
 #include "rosidl_typesupport_introspection_cpp/impl/visibility_control.h"
-
-@{
-import os
-
-IS_WINDOWS = os.name == 'nt'
-
-if not IS_WINDOWS:
-    print('#ifndef offsetof')
-    print('  #define offsetof __builtin_offsetof')
-    print('#endif')
-}@
 
 namespace @(spec.base_type.pkg_name)
 {

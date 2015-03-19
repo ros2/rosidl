@@ -27,7 +27,9 @@ import os
 IS_WINDOWS = os.name == 'nt'
 
 if not IS_WINDOWS:
-    print('#define offsetof __builtin_offsetof')
+    print('#ifndef offsetof')
+    print('  #define offsetof __builtin_offsetof')
+    print('#endif')
 }@
 
 namespace rosidl_typesupport_introspection_cpp

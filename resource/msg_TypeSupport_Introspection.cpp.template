@@ -18,6 +18,7 @@
 #include "@(spec.base_type.pkg_name)/@(spec.base_type.type)_Struct.h"
 #include "rosidl_generator_cpp/MessageTypeSupport.h"
 #include "rosidl_typesupport_introspection_cpp/FieldTypes.h"
+#include "rosidl_typesupport_introspection_cpp/Identifier.h"
 #include "rosidl_typesupport_introspection_cpp/MessageIntrospection.h"
 #include "rosidl_typesupport_introspection_cpp/impl/visibility_control.h"
 
@@ -31,14 +32,6 @@ if not IS_WINDOWS:
     print('  #define offsetof __builtin_offsetof')
     print('#endif')
 }@
-
-namespace rosidl_typesupport_introspection_cpp
-{
-
-ROSIDL_TSI_CPP_DLLIMPORT
-const char * typesupport_introspection_identifier;
-
-}  // namespace rosidl_generator_cpp
 
 namespace @(spec.base_type.pkg_name)
 {

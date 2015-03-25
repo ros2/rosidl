@@ -6,7 +6,7 @@
 
 #include <rosidl_generator_c/message_type_support.h>
 
-#include "impl/visibility_control.h"
+#include "visibility_control.h"
 
 namespace rosidl_typesupport_introspection_cpp
 {

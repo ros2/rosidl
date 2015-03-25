@@ -5,7 +5,7 @@
 #include <rosidl_generator_c/service_type_support.h>
 #include <rosidl_generator_cpp/ServiceTypeSupport.h>
 
-#include "impl/visibility_control.h"
+#include "visibility_control.h"
 
 namespace rosidl_typesupport_introspection_cpp
 {

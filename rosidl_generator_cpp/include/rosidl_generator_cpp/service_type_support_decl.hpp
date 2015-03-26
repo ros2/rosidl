@@ -13,17 +13,19 @@
  * limitations under the License.
  */
 
-#ifndef __rosidl_generator_cpp__ServiceTypeSupport__h__
-#define __rosidl_generator_cpp__ServiceTypeSupport__h__
+#ifndef __rosidl_generator_cpp__service_type_support_decl__hpp__
+#define __rosidl_generator_cpp__service_type_support_decl__hpp__
 
 #include <rosidl_generator_c/service_type_support.h>
+#include <rosidl_generator_c/visibility_control.h>
 
 namespace rosidl_generator_cpp
 {
 
 template<typename T>
+ROSIDL_PUBLIC
 const rosidl_service_type_support_t * get_service_type_support_handle();
 
 }  // namespace rosidl_generator_cpp
 
-#endif  // __rosidl_generator_cpp__ServiceTypeSupport__h__
+#endif  // __rosidl_generator_cpp__service_type_support_decl__hpp__

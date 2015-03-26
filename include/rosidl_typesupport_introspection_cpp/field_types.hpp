@@ -1,8 +1,7 @@
+#ifndef __rosidl_typesupport_introspection_cpp__field_types__hpp__
+#define __rosidl_typesupport_introspection_cpp__field_types__hpp__
 
-#ifndef __rosidl_typesupport_introspection_cpp__FieldTypes__h__
-#define __rosidl_typesupport_introspection_cpp__FieldTypes__h__
-
-#include <stdint.h>
+#include <cstdint>
 
 namespace rosidl_typesupport_introspection_cpp
 {
@@ -26,4 +25,4 @@ const uint8_t ROS_TYPE_MESSAGE = 15;
 
 }  // namespace rosidl_typesupport_introspection_cpp
 
-#endif  // __rosidl_typesupport_introspection_cpp__FieldTypes__h__
+#endif  // __rosidl_typesupport_introspection_cpp__field_types__hpp__

@@ -15,9 +15,12 @@
 //   rosidl_typesupport_introspection_cpp/resource/srv_ServiceTypeSupport_Introspection.cpp.template
 #include <iostream>
 
+#include <rosidl_generator_c/service_type_support.h>
+// This is defined in the rosidl_typesupport_introspection_cpp package and
+// is in the include/rosidl_typesupport_introspection_cpp/impl folder.
+#include <rosidl_generator_cpp/service_type_support.hpp>
+
 #include "@(spec.pkg_name)/@(spec.srv_name)_Service.h"
-#include "rosidl_generator_cpp/ServiceTypeSupport.h"
-#include "rosidl_typesupport_introspection_cpp/ServiceIntrospection.h"
 
 namespace rosidl_typesupport_introspection_cpp
 {
@@ -28,8 +31,9 @@ static rosidl_service_type_support_t handle;
 }
 
 template <>
+ROSIDL_PUBLIC
 const rosidl_service_type_support_t *
-get_service_type_support_handle<@(spec.pkg_name)::@(spec.srv_name)>()
+get_service_type_support_handle_introspection<@(spec.pkg_name)::@(spec.srv_name)>()
 {
     return &impl::handle;
 }

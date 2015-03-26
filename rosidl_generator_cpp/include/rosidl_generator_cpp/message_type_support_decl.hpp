@@ -13,17 +13,19 @@
  * limitations under the License.
  */
 
-#ifndef __rosidl_generator_cpp__MessageTypeSupport__h__
-#define __rosidl_generator_cpp__MessageTypeSupport__h__
+#ifndef __rosidl_generator_cpp__message_type_support_decl__hpp__
+#define __rosidl_generator_cpp__message_type_support_decl__hpp__
 
 #include <rosidl_generator_c/message_type_support.h>
+#include <rosidl_generator_c/visibility_control.h>
 
 namespace rosidl_generator_cpp
 {
 
 template<typename T>
-const rosidl_message_type_support_t * get_type_support_handle();
+ROSIDL_PUBLIC
+const rosidl_message_type_support_t * get_message_type_support_handle();
 
 }  // namespace rosidl_generator_cpp
 
-#endif  // __rosidl_generator_cpp__MessageTypeSupport__h__
+#endif  // __rosidl_generator_cpp__message_type_support_decl__hpp__

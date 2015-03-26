@@ -1,19 +1,6 @@
 #ifndef __@(spec.base_type.pkg_name)__@(spec.base_type.type)__h__
 #define __@(spec.base_type.pkg_name)__@(spec.base_type.type)__h__
 
-#include <rosidl_generator_cpp/MessageTypeSupport.h>
-
 #include "@(spec.base_type.pkg_name)/@(spec.base_type.type)_Struct.h"
-
-namespace rosidl_generator_cpp
-{
-
-template<>
-const rosidl_message_type_support_t *
-get_type_support_handle<
-  @(spec.base_type.pkg_name)::@(spec.base_type.type)
->();
-
-}  // namespace rosidl_generator_cpp
 
 #endif  // __@(spec.base_type.pkg_name)__@(spec.base_type.type)__h__

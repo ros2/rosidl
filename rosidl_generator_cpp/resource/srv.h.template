@@ -1,19 +1,6 @@
 #ifndef __@(spec.pkg_name)__@(spec.srv_name)__h__
 #define __@(spec.pkg_name)__@(spec.srv_name)__h__
 
-#include <rosidl_generator_cpp/MessageTypeSupport.h>
-
 #include "@(spec.pkg_name)/@(spec.srv_name)_Service.h"
-
-namespace rosidl_generator_cpp
-{
-
-template<>
-const rosidl_service_type_support_t *
-get_service_type_support_handle<
-  @(spec.pkg_name)::@(spec.srv_name)
->();
-
-}  // namespace rosidl_generator_cpp
 
 #endif  // __@(spec.pkg_name)__@(spec.srv_name)__h__

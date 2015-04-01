@@ -6,11 +6,13 @@ from rosidl_parser import parse_message_file, parse_service_file
 
 def generate_cpp(pkg_name, ros_interface_files, deps, output_dir, template_dir):
     mapping_msgs = {
-        os.path.join(template_dir, 'msg_TypeSupport_Introspection.cpp.template'): '%s_TypeSupport_Introspection.cpp',
+        os.path.join(template_dir, 'msg_TypeSupport_Introspection.cpp.template'):
+        '%s_TypeSupport_Introspection.cpp',
     }
 
     mapping_srvs = {
-        os.path.join(template_dir, 'srv_ServiceTypeSupport_Introspection.cpp.template'): '%s_ServiceTypeSupport_Introspection.cpp',
+        os.path.join(template_dir, 'srv_ServiceTypeSupport_Introspection.cpp.template'):
+        '%s_ServiceTypeSupport_Introspection.cpp',
     }
 
     for template_file in mapping_msgs.keys():
@@ -55,7 +57,7 @@ def generate_cpp(pkg_name, ros_interface_files, deps, output_dir, template_dir):
             for template_file, generated_filename in mapping_srvs.items():
                 generated_file = os.path.join(output_dir, generated_filename % spec.srv_name)
                 print('Generating SERVICE: %s' % generated_file)
-         
+
                 try:
                     # TODO only touch generated file if its content actually changes
                     ofile = open(generated_file, 'w')

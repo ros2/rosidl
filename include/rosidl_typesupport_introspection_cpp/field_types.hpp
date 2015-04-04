@@ -33,7 +33,7 @@ const uint8_t ROS_TYPE_INT32 = 10;
 const uint8_t ROS_TYPE_UINT32 = 11;
 const uint8_t ROS_TYPE_INT64 = 12;
 const uint8_t ROS_TYPE_UINT64 = 13;
-const uint8_t ROS_TYPE_STRING  = 14;
+const uint8_t ROS_TYPE_STRING = 14;
 
 const uint8_t ROS_TYPE_MESSAGE = 15;
 

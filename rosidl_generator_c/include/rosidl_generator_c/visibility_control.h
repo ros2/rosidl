@@ -38,11 +38,11 @@ extern "C"
   #endif
   #define ROSIDL_LOCAL
 #else
-  #define ROSIDL_EXPORT __attribute__ ((visibility ("default")))
+  #define ROSIDL_EXPORT __attribute__ ((visibility("default")))
   #define ROSIDL_IMPORT
   #if __GNUC__ >= 4
-    #define ROSIDL_PUBLIC __attribute__ ((visibility ("default")))
-    #define ROSIDL_LOCAL  __attribute__ ((visibility ("hidden")))
+    #define ROSIDL_PUBLIC __attribute__ ((visibility("default")))
+    #define ROSIDL_LOCAL  __attribute__ ((visibility("hidden")))
   #else
     #define ROSIDL_PUBLIC
     #define ROSIDL_LOCAL

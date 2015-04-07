@@ -34,7 +34,7 @@ typedef struct ROSIDL_PUBLIC rosidl_message_type_support_t
  * expands.
  */
 #define ROSIDL_GET_TYPE_SUPPORT(MsgPkgName, MsgName) \
-rosidl_get_message_type_support__##MsgPkgName##__##MsgName()
+  rosidl_get_message_type_support__##MsgPkgName##__##MsgName()
 
 #ifdef __cplusplus
 }

@@ -37,8 +37,6 @@ include(CMakeParseArguments)
 # @public
 #
 macro(rosidl_generate_interfaces target)
-  #message(" - rosidl_generate_interfaces(${target} ${ARGN})")
-
   cmake_parse_arguments(_ARG "SKIP_INSTALL" "" "DEPENDENCIES" ${ARGN})
   if(NOT _ARG_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "rosidl_generate_interfaces() called without any idl "
@@ -63,7 +61,6 @@ macro(rosidl_generate_interfaces target)
       message(FATAL_ERROR "rosidl_generate_interfaces() the passed idl file "
         "'${_idl_file}' does not exist")
     endif()
-    #message("   - generate interface for: ${_idl_file}")
     list(APPEND _idl_files "${_idl_file}")
   endforeach()
 

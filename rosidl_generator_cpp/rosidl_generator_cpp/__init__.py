@@ -44,7 +44,7 @@ def generate_cpp(
             for template_file, generated_filename in mapping_msgs.items():
                 generated_file = os.path.join(
                     output_dir, generated_filename % spec.base_type.type)
-                print('Generating MESSAGE: %s' % generated_file)
+
                 try:
                     # TODO only write generated file if its different
                     ofile = open(generated_file, 'w')
@@ -62,13 +62,14 @@ def generate_cpp(
                 except Exception:
                     os.remove(generated_file)
                     raise
+
         elif extension == '.srv':
             spec = parse_service_file(pkg_name, ros_interface_file)
             # TODO(esteve): actually generate service code
             for template_file, generated_filename in mapping_srvs.items():
                 generated_file = os.path.join(
                     output_dir, generated_filename % spec.srv_name)
-                print('Generating SERVICE: %s' % spec.srv_name)
+
                 try:
                     # TODO only write generated file if its different
                     ofile = open(generated_file, 'w')

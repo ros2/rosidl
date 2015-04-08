@@ -12,11 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-message(" - rosidl_generator_cpp_generate_interfaces.cmake")
-message("   - target: ${rosidl_generate_interfaces_TARGET}")
-message("   - interface files: ${rosidl_generate_interfaces_IDL_FILES}")
-message("   - dependency package names: ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES}")
-
 set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp/${PROJECT_NAME}")
 set(_generated_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
@@ -48,9 +43,6 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
     list(APPEND _dependencies "${_pkg_name}:${_abs_idl_file}")
   endforeach()
 endforeach()
-
-message("   - generated files: ${_generated_files}")
-message("   - dependencies: ${_dependencies}")
 
 add_custom_command(
   OUTPUT ${_generated_files}

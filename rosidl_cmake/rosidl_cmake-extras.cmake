@@ -19,11 +19,11 @@ macro(_rosidl_cmake_register_package_hook)
   if(NOT DEFINED _ROSIDL_CMAKE_PACKAGE_HOOK_REGISTERED)
     set(_ROSIDL_CMAKE_PACKAGE_HOOK_REGISTERED TRUE)
 
-    find_package(ament_cmake_core REQUIRED)
+    find_package(ament_cmake_core QUIET REQUIRED)
     ament_register_extension("ament_package" "rosidl_cmake"
       "rosidl_cmake_package_hook.cmake")
 
-    find_package(ament_cmake_export_dependencies REQUIRED)
+    find_package(ament_cmake_export_dependencies QUIET REQUIRED)
   endif()
 endmacro()
 

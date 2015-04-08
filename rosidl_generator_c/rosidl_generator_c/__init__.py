@@ -36,7 +36,6 @@ def generate_c(pkg_name, ros_interface_files, deps, output_dir, template_dir):
         for template_file, generated_filename in mapping.items():
             generated_file = os.path.join(
                 output_dir, generated_filename % spec.base_type.type)
-            print('Generating (C): %s' % generated_file)
 
             try:
                 # TODO only write generated file if its different

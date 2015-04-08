@@ -46,7 +46,6 @@ def generate_cpp(pkg_name, ros_interface_files, deps, output_dir, template_dir):
             spec = parse_message_file(pkg_name, ros_interface_file)
             for template_file, generated_filename in mapping_msgs.items():
                 generated_file = os.path.join(output_dir, generated_filename % spec.base_type.type)
-                print('Generating MESSAGE: %s' % generated_file)
 
                 try:
                     # TODO only touch generated file if its content actually changes
@@ -70,7 +69,6 @@ def generate_cpp(pkg_name, ros_interface_files, deps, output_dir, template_dir):
             spec = parse_service_file(pkg_name, ros_interface_file)
             for template_file, generated_filename in mapping_srvs.items():
                 generated_file = os.path.join(output_dir, generated_filename % spec.srv_name)
-                print('Generating SERVICE: %s' % generated_file)
 
                 try:
                     # TODO only touch generated file if its content actually changes

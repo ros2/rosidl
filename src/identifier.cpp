@@ -1,4 +1,4 @@
-// Copyright 2014 Open Source Robotics Foundation, Inc.
+// Copyright 2015 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,17 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_IDENTIFIER_HPP_
-#define ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_IDENTIFIER_HPP_
-
-#include <rosidl_typesupport_introspection_cpp/visibility_control.h>
+#include <rosidl_typesupport_introspection_cpp/identifier.hpp>
 
 namespace rosidl_typesupport_introspection_cpp
 {
 
-ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
-extern const char * typesupport_introspection_identifier;
+const char * typesupport_introspection_identifier = "introspection";
 
 }  // namespace rosidl_typesupport_introspection_cpp
-
-#endif  // ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_IDENTIFIER_HPP_

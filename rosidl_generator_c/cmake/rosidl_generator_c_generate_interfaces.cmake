@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set(rosidl_generate_interfaces_c_IDL_FILES ${rosidl_generate_interfaces_IDL_FILES})
+set(rosidl_generate_interfaces_c_IDL_FILES
+  ${rosidl_generate_interfaces_IDL_FILES})
 set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c/${PROJECT_NAME}")
 set(_generated_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_c_IDL_FILES})

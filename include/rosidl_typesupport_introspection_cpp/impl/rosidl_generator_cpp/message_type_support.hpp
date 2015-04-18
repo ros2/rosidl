@@ -20,18 +20,18 @@
 
 // Provides the definition of the rosidl_message_type_support_t struct.
 #include <rosidl_generator_c/message_type_support.h>
-// Provides visibility macros like ROSIDL_PUBLIC.
-#include <rosidl_generator_c/visibility_control.h>
 // Provides the declaration of the function
 // rosidl_generator_cpp::get_message_type_support_handle.
 #include <rosidl_generator_cpp/message_type_support_decl.hpp>
+// Provides visibility macros like ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC.
+#include <rosidl_typesupport_introspection_cpp/visibility_control.h>
 
 namespace rosidl_typesupport_introspection_cpp
 {
 
 // This is implemented in the shared library provided by this package.
 template<typename T>
-ROSIDL_PUBLIC
+ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_message_type_support_t * get_message_type_support_handle_introspection();
 
 }  // namespace rosidl_typesupport_introspection_cpp

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import em
+from io import StringIO
 import os
 
 from rosidl_parser import parse_message_file
@@ -38,11 +39,10 @@ def generate_c(pkg_name, ros_interface_files, deps, output_dir, template_dir):
                 output_dir, generated_filename % spec.base_type.type)
 
             try:
-                # TODO only write generated file if its different
-                ofile = open(generated_file, 'w')
+                output = StringIO()
                 # TODO reuse interpreter
                 interpreter = em.Interpreter(
-                    output=ofile,
+                    output=output,
                     options={
                         em.RAW_OPT: True,
                         em.BUFFERED_OPT: True,
@@ -50,11 +50,19 @@ def generate_c(pkg_name, ros_interface_files, deps, output_dir, template_dir):
                     globals={'spec': spec},
                 )
                 interpreter.file(open(template_file))
+                content = output.getvalue()
                 interpreter.shutdown()
             except Exception:
                 os.remove(generated_file)
                 raise
 
+            # only overwrite file if necessary
+            if os.path.exists(generated_file):
+                with open(generated_file, 'r') as h:
+                    if h.read() == content:
+                        continue
+            with open(generated_file, 'w') as h:
+                h.write(content)
     return 0
 
 

@@ -15,12 +15,14 @@
 #ifndef ROSIDL_GENERATOR_C_ROSIDL_GENERATOR_C_SERVICE_TYPE_SUPPORT_H_
 #define ROSIDL_GENERATOR_C_ROSIDL_GENERATOR_C_SERVICE_TYPE_SUPPORT_H_
 
+#include "rosidl_generator_c/visibility_control.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-typedef struct rosidl_service_type_support_t
+typedef struct ROSIDL_PUBLIC rosidl_service_type_support_t
 {
   const char * typesupport_identifier;
   const void * data;

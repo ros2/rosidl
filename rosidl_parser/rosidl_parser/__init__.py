@@ -21,6 +21,10 @@ CONSTANT_SEPARATOR = '='
 ARRAY_UPPER_BOUND_TOKEN = '<='
 STRING_UPPER_BOUND_TOKEN = '<='
 
+SERVICE_REQUEST_RESPONSE_SEPARATOR = '---'
+SERVICE_REQUEST_MESSAGE_SUFFIX = 'Request'
+SERVICE_RESPONSE_MESSAGE_SUFFIX = 'Response'
+
 PRIMITIVE_TYPES = [
     'bool',
     'byte',
@@ -53,19 +57,23 @@ VALID_MESSAGE_NAME_PATTERN = re.compile('^[A-Za-z][A-Za-z0-9]*$')
 VALID_CONSTANT_NAME_PATTERN = re.compile('^[A-Z][A-Z0-9_]*$')
 
 
-class InvalidMessageSpecification(Exception):
+class InvalidSpecification(Exception):
     pass
 
 
-class InvalidResourceName(InvalidMessageSpecification):
+class InvalidServiceSpecification(InvalidSpecification):
     pass
 
 
-class InvalidFieldDefinition(InvalidMessageSpecification):
+class InvalidResourceName(InvalidSpecification):
     pass
 
 
-class UnknownMessageType(InvalidMessageSpecification):
+class InvalidFieldDefinition(InvalidSpecification):
+    pass
+
+
+class UnknownMessageType(InvalidSpecification):
     pass
 
 
@@ -564,9 +572,11 @@ def validate_field_types(spec, known_msg_types):
 
 class ServiceSpecification(object):
 
-    def __init__(self, pkg_name, srv_name):
+    def __init__(self, pkg_name, srv_name, request_message, response_message):
         self.pkg_name = pkg_name
         self.srv_name = srv_name
+        self.request = request_message
+        self.response = response_message
 
 
 def parse_service_file(pkg_name, interface_filename):
@@ -578,4 +588,24 @@ def parse_service_file(pkg_name, interface_filename):
 
 
 def parse_service_string(pkg_name, srv_name, message_string):
-    return ServiceSpecification(pkg_name, srv_name)
+    lines = message_string.splitlines()
+    separator_indices = [
+        index for index, l in enumerate(lines) if l == SERVICE_REQUEST_RESPONSE_SEPARATOR]
+    if not separator_indices:
+        raise InvalidServiceSpecification(
+            "Could not find separator '%s' between request and response" %
+            SERVICE_REQUEST_RESPONSE_SEPARATOR)
+    if len(separator_indices) != 1:
+        raise InvalidServiceSpecification(
+            "Could not find unique separator '%s' between request and response" %
+            SERVICE_REQUEST_RESPONSE_SEPARATOR)
+
+    request_message_string = '\n'.join(lines[:separator_indices[0]])
+    request_message = parse_message_string(
+        pkg_name, srv_name + SERVICE_REQUEST_MESSAGE_SUFFIX, request_message_string)
+
+    response_message_string = '\n'.join(lines[separator_indices[0] + 1:])
+    response_message = parse_message_string(
+        pkg_name, srv_name + SERVICE_RESPONSE_MESSAGE_SUFFIX, response_message_string)
+
+    return ServiceSpecification(pkg_name, srv_name, request_message, response_message)

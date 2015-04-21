@@ -1,8 +1,8 @@
 @###############################################
 @#
-@# ROS message type support code generation for C++
+@# ROS service type support code generation for C++
 @#
-@# EmPy template for generating <msg>_ServiceTypeSupport.cpp files
+@# EmPy template for generating <msg>_ServiceTypeSupport_Introspection.cpp files
 @#
 @###############################################
 @# Start of Template
@@ -11,31 +11,68 @@
 @#  - spec (rosidl_parser.ServiceSpecification)
 @#    Parsed specification of the .srv file
 @###############################################
-// This file was generated from:
-//   rosidl_typesupport_introspection_cpp/resource/srv_ServiceTypeSupport_Introspection.cpp.template
-#include <iostream>
+
+#ifndef __@(spec.pkg_name)__@(spec.srv_name)_ServiceTypeSupport__h__
+#define __@(spec.pkg_name)__@(spec.srv_name)_ServiceTypeSupport__h__
+
+// Include cstddef for offsetof().
+#include <cstddef>
 
 #include <rosidl_generator_c/service_type_support.h>
 // This is defined in the rosidl_typesupport_introspection_cpp package and
 // is in the include/rosidl_typesupport_introspection_cpp/impl folder.
+#include <rosidl_generator_cpp/message_type_support.hpp>
 #include <rosidl_generator_cpp/service_type_support.hpp>
 
 #include "@(spec.pkg_name)/@(spec.srv_name)_Service.h"
+#include "rosidl_typesupport_introspection_cpp/identifier.hpp"
+#include "rosidl_typesupport_introspection_cpp/service_introspection.hpp"
+
+#include "@(spec.pkg_name)/@(spec.request.base_type.type).h"
+#include "@(spec.pkg_name)/@(spec.response.base_type.type).h"
+
+namespace @(spec.pkg_name)
+{
 
 namespace rosidl_typesupport_introspection_cpp
 {
 
-namespace impl
-{
-static rosidl_service_type_support_t handle;
-}
+static const ::rosidl_typesupport_introspection_cpp::ServiceMembers @(spec.srv_name)_service_members = {
+  "@(spec.pkg_name)",
+  "@(spec.srv_name)",
+  static_cast<const ::rosidl_typesupport_introspection_cpp::MessageMembers*>(
+    ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle_introspection<
+      ::@(spec.pkg_name)::@(spec.request.base_type.type)
+    >()->data
+  ),
+  static_cast<const ::rosidl_typesupport_introspection_cpp::MessageMembers*>(
+    ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle_introspection<
+      ::@(spec.pkg_name)::@(spec.response.base_type.type)
+    >()->data
+  )
+};
 
-template <>
+static const rosidl_service_type_support_t @(spec.srv_name)_service_type_support_handle = {
+  ::rosidl_typesupport_introspection_cpp::typesupport_introspection_identifier,
+  &@(spec.srv_name)_service_members
+};
+
+}  // namespace rosidl_typesupport_introspection_cpp
+
+}  // namespace @(spec.pkg_name)
+
+
+namespace rosidl_typesupport_introspection_cpp
+{
+
+template<>
 ROSIDL_PUBLIC
 const rosidl_service_type_support_t *
 get_service_type_support_handle_introspection<@(spec.pkg_name)::@(spec.srv_name)>()
 {
-    return &impl::handle;
+    return &::@(spec.pkg_name)::rosidl_typesupport_introspection_cpp::@(spec.srv_name)_service_type_support_handle;
 }
 
 }  // namespace rosidl_typesupport_introspection_cpp
+
+#endif  // __@(spec.pkg_name)__@(spec.srv_name)_ServiceTypeSupport__h__

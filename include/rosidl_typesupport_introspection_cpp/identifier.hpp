@@ -20,7 +20,7 @@
 namespace rosidl_typesupport_introspection_cpp
 {
 
-ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
+ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_IMPORT
 extern const char * typesupport_introspection_identifier;
 
 }  // namespace rosidl_typesupport_introspection_cpp

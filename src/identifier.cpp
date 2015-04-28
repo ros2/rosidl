@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <rosidl_typesupport_introspection_cpp/identifier.hpp>
+#include <rosidl_typesupport_introspection_cpp/visibility_control.h>
 
 namespace rosidl_typesupport_introspection_cpp
 {
 
+ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_EXPORT
 const char * typesupport_introspection_identifier = "introspection";
 
 }  // namespace rosidl_typesupport_introspection_cpp

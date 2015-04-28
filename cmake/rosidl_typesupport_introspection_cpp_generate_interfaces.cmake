@@ -63,7 +63,7 @@ add_custom_command(
   VERBATIM
 )
 
-set(_target_suffix "__typesupport_introspection_cpp")
+set(_target_suffix "__rosidl_typesupport_introspection_cpp")
 
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED ${_generated_files})
 if(WIN32)

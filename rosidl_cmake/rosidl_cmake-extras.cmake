@@ -28,3 +28,4 @@ macro(_rosidl_cmake_register_package_hook)
 endmacro()
 
 include("${rosidl_cmake_DIR}/rosidl_generate_interfaces.cmake")
+include("${rosidl_cmake_DIR}/rosidl_target_interfaces.cmake")

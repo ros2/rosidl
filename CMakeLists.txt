@@ -20,7 +20,7 @@ ament_python_install_package(${PROJECT_NAME})
 add_library(${PROJECT_NAME} SHARED src/identifier.cpp)
 if(WIN32)
   target_compile_definitions(${PROJECT_NAME}
-    PRIVATE "-DROSIDL_TYPESUPPORT_INTROSPECTION_CPP_BUILDING_DLL")
+    PRIVATE "ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_BUILDING_DLL")
 endif()
 target_include_directories(${PROJECT_NAME}
   PUBLIC

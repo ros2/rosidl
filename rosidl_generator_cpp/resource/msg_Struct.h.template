@@ -2,7 +2,7 @@
 @#
 @# ROS message struct code generation for C++
 @#
-@# EmPy template for generating <msg>.h files
+@# EmPy template for generating <msg>_Struct.h files
 @#
 @###############################################
 @# Start of Template
@@ -105,6 +105,21 @@ for field in spec.fields:
 @# Shared pointer typedefs
   typedef std::shared_ptr< @(cpp_full_name)<ContainerAllocator> > Ptr;
   typedef std::shared_ptr< @(cpp_full_name)<ContainerAllocator> const> ConstPtr;
+
+@# generate comparion operators
+  bool operator==(const @(spec.base_type.type)_ & other) const
+  {
+@[for field in spec.fields]@
+    if (this->@(field.name) != other.@(field.name)) {
+      return false;
+    }
+@[end for]@
+    return true;
+  }
+  bool operator!=(const @(spec.base_type.type)_ & other) const
+  {
+    return !this->operator==(other);
+  }
 
 }; // struct @(cpp_class)
 

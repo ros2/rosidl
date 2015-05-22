@@ -562,12 +562,22 @@ def parse_primitive_value_string(type_, value_string):
 
 
 def validate_field_types(spec, known_msg_types):
-    for field in spec.fields:
+    if isinstance(spec, MessageSpecification):
+        spec_type = 'Message'
+        fields = spec.fields
+    elif isinstance(spec, ServiceSpecification):
+        spec_type = 'Service'
+        fields = spec.request.fields + spec.response.fields
+    else:
+        assert False, 'Unknown specification type: %s' % type(spec)
+    for field in fields:
         if field.type.is_primitive_type():
             continue
         base_type = BaseType(BaseType.__str__(field.type))
         if base_type not in known_msg_types:
-            raise UnknownMessageType(str(field))
+            raise UnknownMessageType(
+                "%s interface '%s' contains an unknown field type: %s" %
+                (spec_type, spec.base_type, field))
 
 
 class ServiceSpecification(object):

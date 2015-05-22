@@ -16,7 +16,10 @@ import em
 from io import StringIO
 import os
 
-from rosidl_parser import parse_message_file, parse_service_file
+from rosidl_cmake import extract_message_types
+from rosidl_parser import parse_message_file
+from rosidl_parser import parse_service_file
+from rosidl_parser import validate_field_types
 
 
 def generate_cpp(pkg_name, ros_interface_files, deps, output_dir, template_dir):
@@ -41,10 +44,13 @@ def generate_cpp(pkg_name, ros_interface_files, deps, output_dir, template_dir):
     except FileExistsError:
         pass
 
+    known_msg_types = extract_message_types(pkg_name, ros_interface_files, deps)
+
     for ros_interface_file in ros_interface_files:
         filename, extension = os.path.splitext(ros_interface_file)
         if extension == '.msg':
             spec = parse_message_file(pkg_name, ros_interface_file)
+            validate_field_types(spec, known_msg_types)
             for template_file, generated_filename in mapping_msgs.items():
                 generated_file = os.path.join(output_dir, generated_filename % spec.base_type.type)
 
@@ -76,6 +82,7 @@ def generate_cpp(pkg_name, ros_interface_files, deps, output_dir, template_dir):
 
         elif extension == '.srv':
             spec = parse_service_file(pkg_name, ros_interface_file)
+            validate_field_types(spec, known_msg_types)
             for template_file, generated_filename in mapping_srvs.items():
                 generated_file = os.path.join(output_dir, generated_filename % spec.srv_name)
 

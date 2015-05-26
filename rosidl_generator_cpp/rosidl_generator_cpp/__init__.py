@@ -122,7 +122,7 @@ MSG_TYPE_TO_CPP = {
     'int32': 'int32_t',
     'uint64': 'uint64_t',
     'int64': 'int64_t',
-    'string': '::std::basic_string<char, ::std::char_traits<char>, ' +
+    'string': 'std::basic_string<char, std::char_traits<char>, ' +
               'typename ContainerAllocator::template rebind<char>::other>',
 }
 
@@ -141,16 +141,16 @@ def msg_type_to_cpp(type_):
     if type_.is_primitive_type():
         cpp_type = MSG_TYPE_TO_CPP[type_.type]
     else:
-        cpp_type = '::%s::%s_<ContainerAllocator> ' % \
+        cpp_type = '%s::%s_<ContainerAllocator> ' % \
             (type_.pkg_name, type_.type)
 
     if type_.is_array:
         if type_.array_size is None:
             return \
-                ('::std::vector<%s, typename ContainerAllocator::template ' +
+                ('std::vector<%s, typename ContainerAllocator::template ' +
                  'rebind<%s>::other > ') % (cpp_type, cpp_type)
         else:
-            return '::std::array<%s, %u> ' % (cpp_type, type_.array_size)
+            return 'std::array<%s, %u> ' % (cpp_type, type_.array_size)
     else:
         return cpp_type
 

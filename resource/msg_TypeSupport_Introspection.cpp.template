@@ -1,26 +1,22 @@
-@###############################################
-@#
-@# ROS message type support code generation for C++
-@#
+// generated from rosidl_typesupport_introspection_cpp/resource/msg_TypeSupport_Introspection.cpp.template
+
+@#######################################################################
 @# EmPy template for generating <msg>_TypeSupport_Introspection.cpp files
-@#
-@###############################################
-@# Start of Template
 @#
 @# Context:
 @#  - spec (rosidl_parser.MessageSpecification)
 @#    Parsed specification of the .msg file
-@###############################################
-
+@#######################################################################
+@
 #ifndef __@(spec.base_type.pkg_name)__@(spec.base_type.type)_TypeSupport__h__
 #define __@(spec.base_type.pkg_name)__@(spec.base_type.type)_TypeSupport__h__
 
-// Include cstddef for offsetof().
+// providing offsetof()
 #include <cstddef>
 
 #include <rosidl_generator_c/message_type_support.h>
-// This is defined in the rosidl_typesupport_introspection_cpp package and
-// is in the include/rosidl_typesupport_introspection_cpp/impl folder.
+// this is defined in the rosidl_typesupport_introspection_cpp package and
+// is in the include/rosidl_typesupport_introspection_cpp/impl folder
 #include <rosidl_generator_cpp/message_type_support.hpp>
 
 #include "@(spec.base_type.pkg_name)/@(spec.base_type.type)_Struct.h"
@@ -39,55 +35,55 @@ namespace rosidl_typesupport_introspection_cpp
 static const ::rosidl_typesupport_introspection_cpp::MessageMember @(spec.base_type.type)_message_member_array[@(len(spec.fields))] = {
 @{
 for index, field in enumerate(spec.fields):
-    print('    {')
+    print('  {')
 
     # const char * name_
-    print('        "%s",' % field.name)
+    print('    "%s",  // name' % field.name)
     if field.type.is_primitive_type():
         # uint8_t type_id_
-        print('        ::rosidl_typesupport_introspection_cpp::ROS_TYPE_%s,' % field.type.type.upper())
+        print('    ::rosidl_typesupport_introspection_cpp::ROS_TYPE_%s,  // type' % field.type.type.upper())
         # size_t string_upper_bound
-        print('        %u,' % (field.type.string_upper_bound if field.type.string_upper_bound is not None else 0))
+        print('    %u,  // upper bound of string' % (field.type.string_upper_bound if field.type.string_upper_bound is not None else 0))
         # const rosidl_generator_cpp::MessageTypeSupportHandle * members_
-        print('        nullptr,')
+        print('    nullptr,  // members of sub message')
     else:
         # uint8_t type_id_
-        print('        ::rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE,')
+        print('    ::rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE,  // type')
         # size_t string_upper_bound
-        print('        0,')
+        print('    0,  // upper bound of string')
         # const rosidl_message_type_support_t * members_
-        print('        ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle_introspection<%s::%s>(),' % (field.type.pkg_name, field.type.type))
+        print('    ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle_introspection<%s::%s>(),  // members of sub message' % (field.type.pkg_name, field.type.type))
     # bool is_array_
-    print('        %s,' % ('true' if field.type.is_array else 'false'))
+    print('    %s,  // is array' % ('true' if field.type.is_array else 'false'))
     # size_t array_size_
-    print('        %u,' % (field.type.array_size if field.type.array_size and not field.type.is_upper_bound else 0))
+    print('    %u,  // array size' % (field.type.array_size if field.type.array_size and not field.type.is_upper_bound else 0))
     # bool is_upper_bound_
-    print('        %s,' % ('true' if field.type.is_upper_bound else 'false'))
+    print('    %s,  // is upper bound' % ('true' if field.type.is_upper_bound else 'false'))
     # unsigned long offset_
-    print('        offsetof(%s::%s, %s)' % (spec.base_type.pkg_name, spec.base_type.type, field.name))
+    print('    offsetof(%s::%s, %s)  // bytes offset in struct' % (spec.base_type.pkg_name, spec.base_type.type, field.name))
 
     if index < len(spec.fields) - 1:
-        print('    },')
+        print('  },')
     else:
-        print('    }')
+        print('  }')
 }@
 };
-@[end if]@
 
+@[end if]@
 static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(spec.base_type.type)_message_members = {
-    "@(spec.base_type.pkg_name)",
-    "@(spec.base_type.type)",
-    @(len(spec.fields)),
+  "@(spec.base_type.pkg_name)",  // package name
+  "@(spec.base_type.type)",  // message name
+  @(len(spec.fields)),  // number of fields
 @[if spec.fields]@
-    @(spec.base_type.type)_message_member_array
+  @(spec.base_type.type)_message_member_array  // message members
 @[else]@
-    0
+  0  // message members
 @[end if]@
 };
 
 static const rosidl_message_type_support_t @(spec.base_type.type)_message_type_support_handle = {
-    ::rosidl_typesupport_introspection_cpp::typesupport_introspection_identifier,
-    &@(spec.base_type.type)_message_members
+  ::rosidl_typesupport_introspection_cpp::typesupport_introspection_identifier,
+  &@(spec.base_type.type)_message_members
 };
 
 }  // namespace rosidl_typesupport_introspection_cpp
@@ -103,7 +99,7 @@ ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_message_type_support_t *
 get_message_type_support_handle_introspection<@(spec.base_type.pkg_name)::@(spec.base_type.type)>()
 {
-    return &::@(spec.base_type.pkg_name)::rosidl_typesupport_introspection_cpp::@(spec.base_type.type)_message_type_support_handle;
+  return &::@(spec.base_type.pkg_name)::rosidl_typesupport_introspection_cpp::@(spec.base_type.type)_message_type_support_handle;
 }
 
 }  // namespace rosidl_typesupport_introspection_cpp

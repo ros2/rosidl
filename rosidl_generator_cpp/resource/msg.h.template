@@ -1,3 +1,13 @@
+// generated from rosidl_generator_cpp/resource/msg.h.template
+
+@#######################################################################
+@# EmPy template for generating <msg>.h files
+@#
+@# Context:
+@#  - spec (rosidl_parser.MessageSpecification)
+@#    Parsed specification of the .msg file
+@#######################################################################
+@
 #ifndef __@(spec.base_type.pkg_name)__@(spec.base_type.type)__h__
 #define __@(spec.base_type.pkg_name)__@(spec.base_type.type)__h__
 

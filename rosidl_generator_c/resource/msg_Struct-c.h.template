@@ -1,16 +1,13 @@
-@###############################################
-@#
-@# ROS message struct code generation for C
-@#
+// generated from rosidl_generator_c/resource/msg_Struct-c.h.template
+
+@#######################################################################
 @# EmPy template for generating <msg>-c.h files
-@#
-@###############################################
-@# Start of Template
 @#
 @# Context:
 @#  - spec (rosidl_parser.MessageSpecification)
 @#    Parsed specification of the .msg file
-@###############################################
+@#######################################################################
+@
 @{
 from rosidl_generator_c import msg_type_to_c
 from rosidl_generator_c import MSG_TYPE_TO_C
@@ -19,52 +16,41 @@ c_namespace = '%s__' % (spec.base_type.pkg_name)
 c_struct = '%s' % spec.base_type.type
 c_full_name = '%s%s' % (c_namespace, c_struct)
 }@
+@
 #ifndef @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())_STRUCT_H_
 #define @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())_STRUCT_H_
 
-@##############################
-@# Generic Includes
-@##############################
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
-@##############################
-@# Includes for dependencies
-@##############################
 #include <rosidl_generator_c/arrays.h>
+
+// include message dependencies
 @{
-# Include headers of non-primitive field types
 for field in spec.fields:
     pkg_name, type = field.type.pkg_name, field.type.type
     if not field.type.is_primitive_type():
-        print("#include <%s/%s-c.h>" % (pkg_name, type))
+        print('#include <%s/%s-c.h>' % (pkg_name, type))
 }@
+
+// types for static array fields
 @{
-# Call out macro to generate static array types
 for field in spec.fields:
     if field.type.is_array and field.type.array_size is not None:
-        print("""
-/* Structs for static arrays(containing message name,
-                             field name, C type, static size) */""")
-        break
-for field in spec.fields:
-    if field.type.is_array and field.type.array_size is not None:
-        print("""\
-ROSIDL_GENERATE_STATIC_ARRAY(%s,
-                             %s, %s, %s);
-""" %
+        print('ROSIDL_GENERATE_STATIC_ARRAY(%s, %s, %s, %s);' %
               (c_full_name, field.name, MSG_TYPE_TO_C[field.type.type], field.type.array_size))
 }@
-/* Data structure for @(c_full_name) */
+
+// message struct
 typedef struct @(c_full_name)
 {
 @[for field in spec.fields]@
   @(msg_type_to_c(field.type, field.name, c_full_name));
-
 @[end for]@
 } @(c_full_name);
-@# Constants
+
+// constants
 @[for constant in spec.constants]@
 @[if (constant.primitive_type in ['byte', 'int8', 'int16', 'int32', 'int64', 'char'])]@
 enum
@@ -81,7 +67,7 @@ static const @(MSG_TYPE_TO_C[constant.primitive_type]) @(c_full_name + "__" + co
 @[end if]@
 @[end for]@
 
-/* Generate symbols for arrays of type @(c_full_name) */
+// symbols for arrays of the message type
 ROSIDL_GENERATE_ARRAY(@(c_full_name));
 
 #endif  // @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())_STRUCT_H_

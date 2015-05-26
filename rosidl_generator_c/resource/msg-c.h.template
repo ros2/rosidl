@@ -1,9 +1,11 @@
+// generated from rosidl_generator_c/resource/msg-c.h.template
+
 #ifndef __@(spec.base_type.pkg_name)__@(spec.base_type.type)__h__
 #define __@(spec.base_type.pkg_name)__@(spec.base_type.type)__h__
 
 #include <rosidl_generator_c/message_type_support.h>
 
-// Forward declaration which is implemented in the dds vendor specific package
+// Forward declaration which is implemented in the DDS specific rmw package
 rosidl_message_type_support_t *
 ROSIDL_GET_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(spec.base_type.type));
 

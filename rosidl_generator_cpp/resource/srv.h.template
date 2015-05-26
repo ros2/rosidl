@@ -1,3 +1,13 @@
+// generated from rosidl_generator_cpp/resource/srv.h.template
+
+@#######################################################################
+@# EmPy template for generating <srv>.h files
+@#
+@# Context:
+@#  - spec (rosidl_parser.ServiceSpecification)
+@#    Parsed specification of the .srv file
+@#######################################################################
+@
 #ifndef __@(spec.pkg_name)__@(spec.srv_name)__h__
 #define __@(spec.pkg_name)__@(spec.srv_name)__h__
 

@@ -13,9 +13,20 @@
 # limitations under the License.
 
 import os
+import re
 
 from rosidl_parser import BaseType
 from rosidl_parser import PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR
+
+
+def convert_camel_case_to_lower_case_underscore(value):
+    # insert an underscore before any upper case letter
+    # which is not followed by another upper case letter
+    value = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', value)
+    # insert an underscore before any upper case letter
+    # which is preseded by a lower case letter or number
+    value = re.sub('([a-z0-9])([A-Z])', r'\1_\2', value)
+    return value.lower()
 
 
 def extract_message_types(pkg_name, ros_interface_files, deps):

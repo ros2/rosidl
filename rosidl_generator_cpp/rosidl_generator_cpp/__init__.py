@@ -16,38 +16,45 @@ import em
 from io import StringIO
 import os
 
-from rosidl_parser import parse_message_file, parse_service_file
+from rosidl_cmake import convert_camel_case_to_lower_case_underscore
+from rosidl_parser import parse_message_file
+from rosidl_parser import parse_service_file
 
 
 def generate_cpp(
         pkg_name, ros_interface_files, deps, output_dir, template_dir):
     mapping_msgs = {
-        os.path.join(template_dir, 'msg.h.template'): '%s.h',
-        os.path.join(template_dir, 'msg_Struct.h.template'): '%s_Struct.h',
+        os.path.join(template_dir, 'msg.hpp.template'): '%s.hpp',
+        os.path.join(template_dir, 'msg__struct.hpp.template'): '%s__struct.hpp',
     }
 
     mapping_srvs = {
-        os.path.join(template_dir, 'srv.h.template'): '%s.h',
-        os.path.join(template_dir, 'srv_Service.h.template'): '%s_Service.h',
+        os.path.join(template_dir, 'srv.hpp.template'): '%s.hpp',
+        os.path.join(template_dir, 'srv__struct.hpp.template'): '%s__struct.hpp',
     }
     for template_file in mapping_msgs.keys():
-        assert(os.path.exists(template_file))
+        assert os.path.exists(template_file)
+    for template_file in mapping_srvs.keys():
+        assert os.path.exists(template_file)
 
-    try:
-        os.makedirs(output_dir)
-    except FileExistsError:
-        pass
+    functions = {
+        'get_header_filename_from_msg_name': convert_camel_case_to_lower_case_underscore,
+    }
 
     for ros_interface_file in ros_interface_files:
-        filename, extension = os.path.splitext(ros_interface_file)
+        extension = os.path.splitext(ros_interface_file)[1]
+        subfolder = os.path.basename(os.path.dirname(ros_interface_file))
         if extension == '.msg':
             spec = parse_message_file(pkg_name, ros_interface_file)
             for template_file, generated_filename in mapping_msgs.items():
                 generated_file = os.path.join(
-                    output_dir, generated_filename % spec.base_type.type)
+                    output_dir, subfolder, generated_filename %
+                    convert_camel_case_to_lower_case_underscore(spec.base_type.type))
 
                 try:
                     output = StringIO()
+                    data = {'spec': spec, 'subfolder': subfolder}
+                    data.update(functions)
                     # TODO reuse interpreter
                     interpreter = em.Interpreter(
                         output=output,
@@ -55,13 +62,14 @@ def generate_cpp(
                             em.RAW_OPT: True,
                             em.BUFFERED_OPT: True,
                         },
-                        globals={'spec': spec},
+                        globals=data
                     )
                     interpreter.file(open(template_file))
                     content = output.getvalue()
                     interpreter.shutdown()
                 except Exception:
-                    os.remove(generated_file)
+                    if os.path.exists(generated_file):
+                        os.remove(generated_file)
                     raise
 
                 # only overwrite file if necessary
@@ -69,18 +77,24 @@ def generate_cpp(
                     with open(generated_file, 'r') as h:
                         if h.read() == content:
                             continue
+                try:
+                    os.makedirs(os.path.dirname(generated_file))
+                except FileExistsError:
+                    pass
                 with open(generated_file, 'w') as h:
                     h.write(content)
 
         elif extension == '.srv':
             spec = parse_service_file(pkg_name, ros_interface_file)
-            # TODO(esteve): actually generate service code
             for template_file, generated_filename in mapping_srvs.items():
                 generated_file = os.path.join(
-                    output_dir, generated_filename % spec.srv_name)
+                    output_dir, subfolder, generated_filename %
+                    convert_camel_case_to_lower_case_underscore(spec.srv_name))
 
                 try:
                     output = StringIO()
+                    data = {'spec': spec}
+                    data.update(functions)
                     # TODO reuse interpreter
                     interpreter = em.Interpreter(
                         output=output,
@@ -88,13 +102,14 @@ def generate_cpp(
                             em.RAW_OPT: True,
                             em.BUFFERED_OPT: True,
                         },
-                        globals={'spec': spec},
+                        globals=data,
                     )
                     interpreter.file(open(template_file))
                     content = output.getvalue()
                     interpreter.shutdown()
                 except Exception:
-                    os.remove(generated_file)
+                    if os.path.exists(generated_file):
+                        os.remove(generated_file)
                     raise
 
                 # only overwrite file if necessary
@@ -102,6 +117,10 @@ def generate_cpp(
                     with open(generated_file, 'r') as h:
                         if h.read() == content:
                             continue
+                try:
+                    os.makedirs(os.path.dirname(generated_file))
+                except FileExistsError:
+                    pass
                 with open(generated_file, 'w') as h:
                     h.write(content)
 
@@ -141,7 +160,7 @@ def msg_type_to_cpp(type_):
     if type_.is_primitive_type():
         cpp_type = MSG_TYPE_TO_CPP[type_.type]
     else:
-        cpp_type = '%s::%s_<ContainerAllocator>' % \
+        cpp_type = '%s::msg::%s_<ContainerAllocator>' % \
             (type_.pkg_name, type_.type)
 
     if type_.is_array:

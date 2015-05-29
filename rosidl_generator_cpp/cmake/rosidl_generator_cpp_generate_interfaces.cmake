@@ -14,23 +14,26 @@
 
 set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp/${PROJECT_NAME}")
-set(_generated_files "")
+set(_generated_msg_files "")
+set(_generated_srv_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
-  get_filename_component(_extension "${_idl_file}" EXT)
-  if("${_extension}" STREQUAL ".msg")
-    get_filename_component(name "${_idl_file}" NAME_WE)
-    list(APPEND _generated_files
-      "${_output_path}/${name}.h"
-      "${_output_path}/${name}_Struct.h"
+  get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
+  get_filename_component(_parent_folder "${_parent_folder}" NAME)
+  get_filename_component(_msg_name "${_idl_file}" NAME_WE)
+  string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
+
+  if("${_parent_folder} " STREQUAL "msg ")
+    list(APPEND _generated_msg_files
+      "${_output_path}/${_parent_folder}/${_header_name}.hpp"
+      "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
     )
-  elseif("${_extension}" STREQUAL ".srv")
-    get_filename_component(name "${_idl_file}" NAME_WE)
-    list(APPEND _generated_files
-      "${_output_path}/${name}.h"
-      "${_output_path}/${name}_Service.h"
+  elseif("${_parent_folder} " STREQUAL "srv ")
+    list(APPEND _generated_srv_files
+      "${_output_path}/${_parent_folder}/${_header_name}.hpp"
+      "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
     )
   else()
-    message(FATAL_ERROR "Interface file with unknown extension: ${_idl_file}")
+    message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
   endif()
 endforeach()
 
@@ -46,7 +49,7 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
 endforeach()
 
 add_custom_command(
-  OUTPUT ${_generated_files}
+  OUTPUT ${_generated_msg_files} ${_generated_srv_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_cpp_BIN}
   --pkg-name ${PROJECT_NAME}
   --ros-interface-files ${rosidl_generate_interfaces_IDL_FILES}
@@ -56,10 +59,10 @@ add_custom_command(
   DEPENDS
   ${rosidl_generator_cpp_BIN}
   ${rosidl_generator_cpp_GENERATOR_FILES}
-  ${rosidl_generator_cpp_TEMPLATE_DIR}/msg.h.template
-  ${rosidl_generator_cpp_TEMPLATE_DIR}/msg_Struct.h.template
-  ${rosidl_generator_cpp_TEMPLATE_DIR}/srv.h.template
-  ${rosidl_generator_cpp_TEMPLATE_DIR}/srv_Service.h.template
+  ${rosidl_generator_cpp_TEMPLATE_DIR}/msg.hpp.template
+  ${rosidl_generator_cpp_TEMPLATE_DIR}/msg__struct.hpp.template
+  ${rosidl_generator_cpp_TEMPLATE_DIR}/srv.hpp.template
+  ${rosidl_generator_cpp_TEMPLATE_DIR}/srv__struct.hpp.template
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files}
   COMMENT "Generating C++ code for ROS interfaces"
@@ -69,16 +72,24 @@ add_custom_command(
 add_custom_target(
   ${rosidl_generate_interfaces_TARGET}__cpp
   DEPENDS
-  ${_generated_files}
+  ${_generated_msg_files} ${_generated_srv_files}
 )
 add_dependencies(
   ${rosidl_generate_interfaces_TARGET}
   ${rosidl_generate_interfaces_TARGET}__cpp
 )
 
-install(
-  FILES ${_generated_files}
-  DESTINATION "include/${PROJECT_NAME}"
-)
+if(NOT "${_generated_msg_files} " STREQUAL " ")
+  install(
+    FILES ${_generated_msg_files}
+    DESTINATION "include/${PROJECT_NAME}/msg"
+  )
+endif()
+if(NOT "${_generated_srv_files} " STREQUAL " ")
+  install(
+    FILES ${_generated_srv_files}
+    DESTINATION "include/${PROJECT_NAME}/srv"
+  )
+endif()
 
 ament_export_include_directories(include)

@@ -1,24 +1,28 @@
-// generated from rosidl_generator_c/resource/msg_Struct-c.h.template
+// generated from rosidl_generator_c/resource/msg__struct.h.template
 
 @#######################################################################
-@# EmPy template for generating <msg>-c.h files
+@# EmPy template for generating <msg>__struct.h files
 @#
 @# Context:
 @#  - spec (rosidl_parser.MessageSpecification)
 @#    Parsed specification of the .msg file
+@#  - subfolder (string)
+@#    The subfolder / subnamespace of the message
+@#    Either 'msg' or 'srv'
+@#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @
 @{
 from rosidl_generator_c import msg_type_to_c
 from rosidl_generator_c import MSG_TYPE_TO_C
 
-c_namespace = '%s__' % (spec.base_type.pkg_name)
+c_namespace = '%s__%s__' % (spec.base_type.pkg_name, subfolder)
 c_struct = '%s' % spec.base_type.type
 c_full_name = '%s%s' % (c_namespace, c_struct)
 }@
 @
-#ifndef @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())_STRUCT_H_
-#define @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())_STRUCT_H_
+#ifndef @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())__STRUCT_H_
+#define @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())__STRUCT_H_
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -70,4 +74,4 @@ static const @(MSG_TYPE_TO_C[constant.primitive_type]) @(c_full_name + "__" + co
 // symbols for arrays of the message type
 ROSIDL_GENERATE_ARRAY(@(c_full_name));
 
-#endif  // @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())_STRUCT_H_
+#endif  // @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())__STRUCT_H_

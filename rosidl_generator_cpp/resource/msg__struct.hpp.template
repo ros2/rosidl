@@ -1,11 +1,15 @@
-// generated from rosidl_generator_cpp/resource/msg_Struct.h.template
+// generated from rosidl_generator_cpp/resource/msg__struct.hpp.template
 
 @#######################################################################
-@# EmPy template for generating <msg>_Struct.h files
+@# EmPy template for generating <msg>__struct.hpp files
 @#
 @# Context:
 @#  - spec (rosidl_parser.MessageSpecification)
 @#    Parsed specification of the .msg file
+@#  - subfolder (string)
+@#    The subfolder / subnamespace of the message
+@#    Either 'msg' or 'srv'
+@#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @
 @{
@@ -14,14 +18,14 @@ from rosidl_generator_cpp import msg_type_to_cpp
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 from rosidl_generator_cpp import value_to_cpp
 
-cpp_namespace = '%s::' % (spec.base_type.pkg_name)
+cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
 cpp_class = '%s_' % spec.base_type.type
 cpp_full_name = '%s%s' % (cpp_namespace, cpp_class)
 cpp_full_name_with_alloc = '%s<ContainerAllocator>' % (cpp_full_name)
 }@
 @
-#ifndef __@(spec.base_type.pkg_name)__@(spec.base_type.type)_Struct__h__
-#define __@(spec.base_type.pkg_name)__@(spec.base_type.type)_Struct__h__
+#ifndef __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__struct__hpp__
+#define __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__struct__hpp__
 
 #include <array>
 #include <memory>
@@ -32,10 +36,15 @@ cpp_full_name_with_alloc = '%s<ContainerAllocator>' % (cpp_full_name)
 @{
 for field in spec.fields:
     if not field.type.is_primitive_type():
-        print('#include <%s/%s.h>' % (field.type.pkg_name, field.type.type))
+        print(
+            '#include <%s/msg/%s.hpp>' %
+            (field.type.pkg_name, get_header_filename_from_msg_name(field.type.type)))
 }@
 
 namespace @(spec.base_type.pkg_name)
+{
+
+namespace @(subfolder)
 {
 
 // message struct
@@ -75,14 +84,14 @@ for field in spec.fields:
         print('    %s = %s;' % (field.name, cpp_value))
 }@
   }
-@[end for]
+@[end for]@
 
   // field types and members
-@[for field in spec.fields]
+@[for field in spec.fields]@
   typedef @(msg_type_to_cpp(field.type))
     _@(field.name)_type;
   _@(field.name)_type @(field.name);
-@[end for]
+@[end for]@
 
   // constants
 @[for constant in spec.constants]@
@@ -143,7 +152,8 @@ template<typename ContainerAllocator> const @(MSG_TYPE_TO_CPP[c.primitive_type])
 @[end if]@
 @[end for]@
 
-@# End of namespace
+}  // namespace @(subfolder)
+
 }  // namespace @(spec.base_type.pkg_name)
 
-#endif  // __@(spec.base_type.pkg_name)__@(spec.base_type.type)_Struct__h__
+#endif  // __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__struct__hpp__

@@ -15,18 +15,17 @@
 set(rosidl_generate_interfaces_c_IDL_FILES
   ${rosidl_generate_interfaces_IDL_FILES})
 set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c/${PROJECT_NAME}")
-set(_generated_files "")
+set(_generated_msg_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_c_IDL_FILES})
   # TODO(wjwwood): Enable support for things others than .msg
-  # Conditionally process interface files if they end with .msg
-  string(LENGTH ${_idl_file} _idl_file_len)
-  math(EXPR _idl_file_ext_pos "${_idl_file_len} - 4")
-  string(SUBSTRING ${_idl_file} ${_idl_file_ext_pos} -1 _idl_file_ext)
-  if(${_idl_file_ext} STREQUAL ".msg")
-    get_filename_component(name "${_idl_file}" NAME_WE)
-    list(APPEND _generated_files
-      "${_output_path}/${name}-c.h"
-      "${_output_path}/${name}_Struct-c.h"
+  get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
+  get_filename_component(_parent_folder "${_parent_folder}" NAME)
+  get_filename_component(_msg_name "${_idl_file}" NAME_WE)
+  string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
+  if("${_parent_folder} " STREQUAL "msg ")
+    list(APPEND _generated_msg_files
+      "${_output_path}/${_parent_folder}/${_header_name}.h"
+      "${_output_path}/${_parent_folder}/${_header_name}__struct.h"
     )
   else()
     list(REMOVE_ITEM rosidl_generate_interfaces_c_IDL_FILES ${_idl_file})
@@ -51,38 +50,40 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   endforeach()
 endforeach()
 
-add_custom_command(
-  OUTPUT ${_generated_files}
-  COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_c_BIN}
-  --pkg-name ${PROJECT_NAME}
-  --ros-interface-files ${rosidl_generate_interfaces_c_IDL_FILES}
-  --deps ${_dependencies}
-  --output-dir ${_output_path}
-  --template-dir ${rosidl_generator_c_TEMPLATE_DIR}
-  DEPENDS
-  ${rosidl_generator_c_BIN}
-  ${rosidl_generator_c_GENERATOR_FILES}
-  ${rosidl_generator_c_TEMPLATE_DIR}/msg-c.h.template
-  ${rosidl_generator_c_TEMPLATE_DIR}/msg_Struct-c.h.template
-  ${rosidl_generate_interfaces_c_IDL_FILES}
-  ${_dependency_files}
-  COMMENT "Generating C code for ROS interfaces"
-  VERBATIM
-)
+if(NOT "${_generated_msg_files} " STREQUAL " ")
+  add_custom_command(
+    OUTPUT ${_generated_msg_files}
+    COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_c_BIN}
+    --pkg-name ${PROJECT_NAME}
+    --ros-interface-files ${rosidl_generate_interfaces_c_IDL_FILES}
+    --deps ${_dependencies}
+    --output-dir ${_output_path}
+    --template-dir ${rosidl_generator_c_TEMPLATE_DIR}
+    DEPENDS
+    ${rosidl_generator_c_BIN}
+    ${rosidl_generator_c_GENERATOR_FILES}
+    ${rosidl_generator_c_TEMPLATE_DIR}/msg.h.template
+    ${rosidl_generator_c_TEMPLATE_DIR}/msg__struct.h.template
+    ${rosidl_generate_interfaces_c_IDL_FILES}
+    ${_dependency_files}
+    COMMENT "Generating C code for ROS interfaces"
+    VERBATIM
+  )
 
-add_custom_target(
-  ${rosidl_generate_interfaces_TARGET}__c
-  DEPENDS
-  ${_generated_files}
-)
-add_dependencies(
-  ${rosidl_generate_interfaces_TARGET}
-  ${rosidl_generate_interfaces_TARGET}__c
-)
+  add_custom_target(
+    ${rosidl_generate_interfaces_TARGET}__c
+    DEPENDS
+    ${_generated_msg_files}
+  )
+  add_dependencies(
+    ${rosidl_generate_interfaces_TARGET}
+    ${rosidl_generate_interfaces_TARGET}__c
+  )
 
-install(
-  FILES ${_generated_files}
-  DESTINATION "include/${PROJECT_NAME}"
-)
+  install(
+    FILES ${_generated_msg_files}
+    DESTINATION "include/${PROJECT_NAME}/msg"
+  )
+endif()
 
 ament_export_include_directories(include)

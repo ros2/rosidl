@@ -16,53 +16,64 @@ import em
 from io import StringIO
 import os
 
+from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 from rosidl_parser import parse_message_file
 
 
 def generate_c(pkg_name, ros_interface_files, deps, output_dir, template_dir):
     mapping = {
-        os.path.join(template_dir, 'msg-c.h.template'): '%s-c.h',
-        os.path.join(template_dir, 'msg_Struct-c.h.template'): '%s_Struct-c.h',
+        os.path.join(template_dir, 'msg.h.template'): '%s.h',
+        os.path.join(template_dir, 'msg__struct.h.template'): '%s__struct.h',
     }
     for template_file in mapping.keys():
-        assert(os.path.exists(template_file))
+        assert os.path.exists(template_file), 'Could not find template: ' + template_file
 
-    try:
-        os.makedirs(output_dir)
-    except FileExistsError:
-        pass
+    functions = {
+        'get_header_filename_from_msg_name': convert_camel_case_to_lower_case_underscore,
+    }
 
     for ros_interface_file in ros_interface_files:
-        spec = parse_message_file(pkg_name, ros_interface_file)
-        for template_file, generated_filename in mapping.items():
-            generated_file = os.path.join(
-                output_dir, generated_filename % spec.base_type.type)
+        extension = os.path.splitext(ros_interface_file)[1]
+        subfolder = os.path.basename(os.path.dirname(ros_interface_file))
+        if extension == '.msg':
+            spec = parse_message_file(pkg_name, ros_interface_file)
+            for template_file, generated_filename in mapping.items():
+                generated_file = os.path.join(
+                    output_dir, subfolder, generated_filename %
+                    convert_camel_case_to_lower_case_underscore(spec.base_type.type))
 
-            try:
-                output = StringIO()
-                # TODO reuse interpreter
-                interpreter = em.Interpreter(
-                    output=output,
-                    options={
-                        em.RAW_OPT: True,
-                        em.BUFFERED_OPT: True,
-                    },
-                    globals={'spec': spec},
-                )
-                interpreter.file(open(template_file))
-                content = output.getvalue()
-                interpreter.shutdown()
-            except Exception:
-                os.remove(generated_file)
-                raise
+                try:
+                    output = StringIO()
+                    data = {'spec': spec, 'subfolder': subfolder}
+                    data.update(functions)
+                    # TODO reuse interpreter
+                    interpreter = em.Interpreter(
+                        output=output,
+                        options={
+                            em.RAW_OPT: True,
+                            em.BUFFERED_OPT: True,
+                        },
+                        globals=data,
+                    )
+                    interpreter.file(open(template_file))
+                    content = output.getvalue()
+                    interpreter.shutdown()
+                except Exception:
+                    if os.path.exists(generated_file):
+                        os.remove(generated_file)
+                    raise
 
-            # only overwrite file if necessary
-            if os.path.exists(generated_file):
-                with open(generated_file, 'r') as h:
-                    if h.read() == content:
-                        continue
-            with open(generated_file, 'w') as h:
-                h.write(content)
+                # only overwrite file if necessary
+                if os.path.exists(generated_file):
+                    with open(generated_file, 'r') as h:
+                        if h.read() == content:
+                            continue
+                try:
+                    os.makedirs(os.path.dirname(generated_file))
+                except FileExistsError:
+                    pass
+                with open(generated_file, 'w') as h:
+                    h.write(content)
     return 0
 
 

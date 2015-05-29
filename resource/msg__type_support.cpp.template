@@ -1,15 +1,19 @@
-// generated from rosidl_typesupport_introspection_cpp/resource/msg_TypeSupport_Introspection.cpp.template
+// generated from rosidl_typesupport_introspection_cpp/resource/msg__type_support.cpp.template
 
 @#######################################################################
-@# EmPy template for generating <msg>_TypeSupport_Introspection.cpp files
+@# EmPy template for generating <msg>__type_support.cpp files
 @#
 @# Context:
 @#  - spec (rosidl_parser.MessageSpecification)
 @#    Parsed specification of the .msg file
+@#  - subfolder (string)
+@#    The subfolder / subnamespace of the message
+@#    Either 'msg' or 'srv'
+@#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @
-#ifndef __@(spec.base_type.pkg_name)__@(spec.base_type.type)_TypeSupport__h__
-#define __@(spec.base_type.pkg_name)__@(spec.base_type.type)_TypeSupport__h__
+#ifndef __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__type_support__h__
+#define __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__type_support__h__
 
 // providing offsetof()
 #include <cstddef>
@@ -19,13 +23,16 @@
 // is in the include/rosidl_typesupport_introspection_cpp/impl folder
 #include <rosidl_generator_cpp/message_type_support.hpp>
 
-#include "@(spec.base_type.pkg_name)/@(spec.base_type.type)_Struct.h"
+#include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.hpp"
 #include "rosidl_typesupport_introspection_cpp/field_types.hpp"
 #include "rosidl_typesupport_introspection_cpp/identifier.hpp"
 #include "rosidl_typesupport_introspection_cpp/message_introspection.hpp"
 #include "rosidl_typesupport_introspection_cpp/visibility_control.h"
 
 namespace @(spec.base_type.pkg_name)
+{
+
+namespace @(subfolder)
 {
 
 namespace rosidl_typesupport_introspection_cpp
@@ -52,7 +59,7 @@ for index, field in enumerate(spec.fields):
         # size_t string_upper_bound
         print('    0,  // upper bound of string')
         # const rosidl_message_type_support_t * members_
-        print('    ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle_introspection<%s::%s>(),  // members of sub message' % (field.type.pkg_name, field.type.type))
+        print('    ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle_introspection<%s::msg::%s>(),  // members of sub message' % (field.type.pkg_name, field.type.type))
     # bool is_array_
     print('    %s,  // is array' % ('true' if field.type.is_array else 'false'))
     # size_t array_size_
@@ -60,7 +67,7 @@ for index, field in enumerate(spec.fields):
     # bool is_upper_bound_
     print('    %s,  // is upper bound' % ('true' if field.type.is_upper_bound else 'false'))
     # unsigned long offset_
-    print('    offsetof(%s::%s, %s)  // bytes offset in struct' % (spec.base_type.pkg_name, spec.base_type.type, field.name))
+    print('    offsetof(%s::%s::%s, %s)  // bytes offset in struct' % (spec.base_type.pkg_name, subfolder, spec.base_type.type, field.name))
 
     if index < len(spec.fields) - 1:
         print('  },')
@@ -88,6 +95,8 @@ static const rosidl_message_type_support_t @(spec.base_type.type)_message_type_s
 
 }  // namespace rosidl_typesupport_introspection_cpp
 
+}  // namespace @(subfolder)
+
 }  // namespace @(spec.base_type.pkg_name)
 
 
@@ -97,11 +106,11 @@ namespace rosidl_typesupport_introspection_cpp
 template<>
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_message_type_support_t *
-get_message_type_support_handle_introspection<@(spec.base_type.pkg_name)::@(spec.base_type.type)>()
+get_message_type_support_handle_introspection<@(spec.base_type.pkg_name)::@(subfolder)::@(spec.base_type.type)>()
 {
-  return &::@(spec.base_type.pkg_name)::rosidl_typesupport_introspection_cpp::@(spec.base_type.type)_message_type_support_handle;
+  return &::@(spec.base_type.pkg_name)::@(subfolder)::rosidl_typesupport_introspection_cpp::@(spec.base_type.type)_message_type_support_handle;
 }
 
 }  // namespace rosidl_typesupport_introspection_cpp
 
-#endif  // __@(spec.base_type.pkg_name)__@(spec.base_type.type)_TypeSupport__h__
+#endif  // __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__type_support__h__

@@ -16,17 +16,16 @@ set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_introspection_cpp/${PROJECT_NAME}")
 set(_generated_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
-  get_filename_component(_extension "${_idl_file}" EXT)
-  if("${_extension}" STREQUAL ".msg")
-    get_filename_component(name "${_idl_file}" NAME_WE)
+  get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
+  get_filename_component(_parent_folder "${_parent_folder}" NAME)
+  if("${_parent_folder} " STREQUAL "msg " OR "${_parent_folder} " STREQUAL "srv ")
+    get_filename_component(_msg_name "${_idl_file}" NAME_WE)
+    string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
     list(APPEND _generated_files
-      "${_output_path}/${name}_TypeSupport_Introspection.cpp"
+      "${_output_path}/${_parent_folder}/${_header_name}__type_support.cpp"
     )
-  elseif("${_extension}" STREQUAL ".srv")
-    get_filename_component(name "${_idl_file}" NAME_WE)
-    list(APPEND _generated_files
-      "${_output_path}/${name}_ServiceTypeSupport_Introspection.cpp"
-    )
+  else()
+    message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
   endif()
 endforeach()
 
@@ -55,8 +54,8 @@ add_custom_command(
   DEPENDS
   ${rosidl_typesupport_introspection_cpp_BIN}
   ${rosidl_typesupport_introspection_cpp_GENERATOR_FILES}
-  ${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/msg_TypeSupport_Introspection.cpp.template
-  ${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/srv_ServiceTypeSupport_Introspection.cpp.template
+  ${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/msg__type_support.cpp.template
+  ${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/srv__type_support.cpp.template
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files}
   COMMENT "Generating C++ introspection for ROS interfaces"

@@ -185,7 +185,14 @@ def value_to_cpp(type_, value):
     for single_value in value:
         cpp_value = primitive_value_to_cpp(type_, single_value)
         cpp_values.append(cpp_value)
-    cpp_value = '{{%s}}' % ', '.join(cpp_values)
+    cpp_value = '{%s}' % ', '.join(cpp_values)
+    if len(cpp_values) > 1:
+        # Only wrap in a second set of {} if the array length is > 1.
+        # This avoids warngings like this:
+        #  ... warning: braces around scalar initializer
+        #  , my_uint8({{5}})
+        #              ^~~
+        cpp_value = '{%s}' % cpp_value
     return cpp_value
 
 

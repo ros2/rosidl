@@ -22,8 +22,8 @@ ARRAY_UPPER_BOUND_TOKEN = '<='
 STRING_UPPER_BOUND_TOKEN = '<='
 
 SERVICE_REQUEST_RESPONSE_SEPARATOR = '---'
-SERVICE_REQUEST_MESSAGE_SUFFIX = 'Request'
-SERVICE_RESPONSE_MESSAGE_SUFFIX = 'Response'
+SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
+SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
 
 PRIMITIVE_TYPES = [
     'bool',
@@ -105,8 +105,15 @@ def is_valid_field_name(name):
 
 def is_valid_message_name(name):
     try:
+        prefix = 'Sample_'
+        if name.startswith(prefix):
+            name = name[len(prefix):]
+        for service_suffix in ['_Request', '_Response']:
+            if name.endswith(service_suffix):
+                name = name[:-len(service_suffix)]
+                break
         m = VALID_MESSAGE_NAME_PATTERN.match(name)
-    except TypeError:
+    except (AttributeError, TypeError):
         raise InvalidResourceName(name)
     return m is not None and m.group(0) == name
 

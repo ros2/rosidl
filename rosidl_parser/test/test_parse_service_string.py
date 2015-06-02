@@ -27,11 +27,11 @@ def test_parse_service_string():
     assert srv_spec.pkg_name == 'pkg'
     assert srv_spec.srv_name == 'Foo'
     assert srv_spec.request.base_type.pkg_name == 'pkg'
-    assert srv_spec.request.base_type.type == 'FooRequest'
+    assert srv_spec.request.base_type.type == 'Foo_Request'
     assert len(srv_spec.request.fields) == 0
     assert len(srv_spec.request.constants) == 0
     assert srv_spec.response.base_type.pkg_name == 'pkg'
-    assert srv_spec.response.base_type.type == 'FooResponse'
+    assert srv_spec.response.base_type.type == 'Foo_Response'
     assert len(srv_spec.response.fields) == 0
     assert len(srv_spec.response.constants) == 0
 

@@ -33,8 +33,11 @@ typedef struct ROSIDL_PUBLIC rosidl_message_type_support_t
  * which defines a given message will provide the symbol to which this macro
  * expands.
  */
-#define ROSIDL_GET_TYPE_SUPPORT(MsgPkgName, MsgName) \
-  rosidl_get_message_type_support__##MsgPkgName##__##MsgName()
+#define ROSIDL_GET_TYPE_SUPPORT(MsgPkgName, MsgSubfolder, MsgName) \
+  rosidl_get_message_type_support__##MsgPkgName##__##MsgSubfolder##__##MsgName()
+
+#define ROSIDL_GET_MESSAGE_TYPE_SUPPORT(MsgPkgName, MsgName) \
+  ROSIDL_GET_TYPE_SUPPORT(MsgPkgName, msg, MsgName)
 
 #ifdef __cplusplus
 }

@@ -1,0 +1,34 @@
+// generated from rosidl_generator_cpp/resource/msg__struct.hpp.template
+
+@#######################################################################
+@# EmPy template for generating <srv>__struct.hpp files
+@#
+@# Context:
+@#  - spec (rosidl_parser.ServiceSpecification)
+@#    Parsed specification of the .srv file
+@#  - get_header_filename_from_msg_name (function)
+@#######################################################################
+@
+#ifndef __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__struct__hpp__
+#define __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__struct__hpp__
+
+#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__request.hpp"
+#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__response.hpp"
+
+namespace @(spec.pkg_name)
+{
+
+namespace srv
+{
+
+struct @(spec.srv_name)
+{
+  typedef @(spec.pkg_name)::srv::@(spec.srv_name)_Request Request;
+  typedef @(spec.pkg_name)::srv::@(spec.srv_name)_Response Response;
+};
+
+}  // namespace srv
+
+}  // namespace @(spec.pkg_name)
+
+#endif  // __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__struct__hpp__

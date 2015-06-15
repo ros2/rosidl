@@ -15,6 +15,8 @@
   <buildtool_export_depend>rosidl_cmake</buildtool_export_depend>
 
   <exec_depend>rosidl_cmake</exec_depend>
+  <exec_depend>rosidl_generator_c</exec_depend>
+  <exec_depend>rosidl_generator_cpp</exec_depend>
   <exec_depend>rosidl_parser</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>

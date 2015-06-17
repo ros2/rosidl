@@ -93,6 +93,15 @@ for field in spec.fields:
   _@(field.name)_type @(field.name);
 @[end for]@
 
+  // setters for named parameter idiom
+@[for field in spec.fields]@
+  Type* set__@(field.name)(const @(msg_type_to_cpp(field.type)) & _arg)
+  {
+    this->@(field.name) = _arg;
+    return this;
+  }
+@[end for]@
+
   // constants
 @[for constant in spec.constants]@
 @[if (constant.primitive_type in ['byte', 'int8', 'int16', 'int32', 'int64', 'char'])]@
@@ -104,11 +113,25 @@ for field in spec.fields:
 @[end if]@
 @[end for]@
 
-  // shared pointer types
-  typedef std::shared_ptr<@(cpp_full_name)<ContainerAllocator>>
+  // pointer types
+  typedef @(cpp_full_name)<ContainerAllocator> *
     Ptr;
-  typedef std::shared_ptr<@(cpp_full_name)<ContainerAllocator> const>
+  typedef const @(cpp_full_name)<ContainerAllocator> *
     ConstPtr;
+  typedef std::shared_ptr<@(cpp_full_name)<ContainerAllocator>>
+    SharedPtr;
+  typedef std::shared_ptr<@(cpp_full_name)<ContainerAllocator> const>
+    ConstSharedPtr;
+
+  typedef std::unique_ptr<@(cpp_full_name)<ContainerAllocator>>
+    UniquePtr;
+  typedef std::unique_ptr<@(cpp_full_name)<ContainerAllocator> const>
+    ConstUniquePtr;
+
+  typedef std::weak_ptr<@(cpp_full_name)<ContainerAllocator>>
+    WeakPtr;
+  typedef std::weak_ptr<@(cpp_full_name)<ContainerAllocator> const>
+    ConstWeakPtr;
 
   //comparison operators
   bool operator==(const @(spec.base_type.type)_ & other) const
@@ -127,15 +150,9 @@ for field in spec.fields:
 
 }; // struct @(cpp_class)
 
-// typedef of template instance using std::allocator
+// typedef to use template instance with default allocator
 typedef @(cpp_full_name)<std::allocator<void>>
   @(spec.base_type.type);
-
-// shared pointer typedefs
-typedef std::shared_ptr<@(cpp_namespace + spec.base_type.type)>
-  @(spec.base_type.type)Ptr;
-typedef std::shared_ptr<@(cpp_namespace + spec.base_type.type) const>
-  @(spec.base_type.type)ConstPtr;
 
 // constants requiring out of line definition
 @[for c in spec.constants]@

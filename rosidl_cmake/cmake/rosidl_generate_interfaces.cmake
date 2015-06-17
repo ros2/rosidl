@@ -110,6 +110,18 @@ macro(rosidl_generate_interfaces target)
     ${_idl_files}
   )
 
+  if(NOT _ARG_SKIP_INSTALL)
+    # register interfaces with the ament index
+    set(_idl_files_lines)
+    foreach(_idl_file ${_ARG_UNPARSED_ARGUMENTS})
+      get_filename_component(_interface_name "${_idl_file}" NAME)
+      list(APPEND _idl_files_lines "${_interface_name}")
+    endforeach()
+    list(SORT _idl_files_lines)
+    string(REPLACE ";" "\n" _idl_files_lines "${_idl_files_lines}")
+    ament_index_register_resource("rosidl_interfaces" CONTENT "${_idl_files_lines}")
+  endif()
+
   # generators must be executed in topological order
   # which is ensured by every generator finding its dependencies first
   # and then registering itself as an extension

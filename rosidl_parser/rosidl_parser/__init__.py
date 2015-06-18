@@ -415,9 +415,15 @@ def parse_message_string(pkg_name, msg_name, message_string):
             default_value_string = default_value_string.lstrip()
             if not default_value_string:
                 default_value_string = None
-            fields.append(Field(
-                Type(type_string, context_package_name=pkg_name),
-                field_name, default_value_string))
+            try:
+                fields.append(Field(
+                    Type(type_string, context_package_name=pkg_name),
+                    field_name, default_value_string))
+            except Exception as err:
+                print("Error processing '{line}' of '{pkg}/{msg}': '{err}'".format(
+                    line=line, pkg=pkg_name, msg=msg_name, err=err,
+                ))
+                raise
         else:
             # line contains a constant
             name, _, value = rest.partition(CONSTANT_SEPARATOR)

@@ -167,7 +167,7 @@ def msg_type_to_cpp(type_):
         if type_.array_size is None:
             return \
                 ('std::vector<%s, typename ContainerAllocator::template ' +
-                 'rebind<%s>::other >') % (cpp_type, cpp_type)
+                 'rebind<%s>::other>') % (cpp_type, cpp_type)
         else:
             return 'std::array<%s, %u>' % (cpp_type, type_.array_size)
     else:

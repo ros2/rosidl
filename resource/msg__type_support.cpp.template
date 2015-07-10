@@ -39,6 +39,54 @@ namespace rosidl_typesupport_introspection_cpp
 {
 
 @[if spec.fields]@
+@[for field in spec.fields]@
+@[if not field.type.is_primitive_type() and field.type.is_array]@
+size_t size_function__@(spec.base_type.type)__@(field.name)(const void * untyped_member)
+{
+@[if field.type.array_size and not field.type.is_upper_bound]@
+  return @(field.type.array_size);
+@[else]@
+  const std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> * member =
+    reinterpret_cast<const std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> *>(untyped_member);
+  return member->size();
+@[end if]@
+}
+
+const void * get_const_function__@(spec.base_type.type)__@(field.name)(const void * untyped_member, size_t index)
+{
+@[if field.type.array_size and not field.type.is_upper_bound]@
+  const @(field.type.pkg_name)::msg::@(field.type.type) * member =
+    reinterpret_cast<const @(field.type.pkg_name)::msg::@(field.type.type) *>(untyped_member);
+@[else]@
+  const std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> & member =
+    *reinterpret_cast<const std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> *>(untyped_member);
+@[end if]@
+  return &member[index];
+}
+
+void * get_function__@(spec.base_type.type)__@(field.name)(void * untyped_member, size_t index)
+{
+@[if field.type.array_size and not field.type.is_upper_bound]@
+  @(field.type.pkg_name)::msg::@(field.type.type) * member =
+    reinterpret_cast<@(field.type.pkg_name)::msg::@(field.type.type) *>(untyped_member);
+@[else]@
+  std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> & member =
+    *reinterpret_cast<std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> *>(untyped_member);
+@[end if]@
+  return &member[index];
+}
+
+@[if not field.type.array_size or field.type.is_upper_bound]@
+void resize_function__@(spec.base_type.type)__@(field.name)(void * untyped_member, size_t size)
+{
+  std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> * member =
+    reinterpret_cast<std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> *>(untyped_member);
+  member->resize(size);
+}
+
+@[end if]@
+@[end if]@
+@[end for]@
 static const ::rosidl_typesupport_introspection_cpp::MessageMember @(spec.base_type.type)_message_member_array[@(len(spec.fields))] = {
 @{
 for index, field in enumerate(spec.fields):
@@ -67,7 +115,20 @@ for index, field in enumerate(spec.fields):
     # bool is_upper_bound_
     print('    %s,  // is upper bound' % ('true' if field.type.is_upper_bound else 'false'))
     # unsigned long offset_
-    print('    offsetof(%s::%s::%s, %s)  // bytes offset in struct' % (spec.base_type.pkg_name, subfolder, spec.base_type.type, field.name))
+    print('    offsetof(%s::%s::%s, %s),  // bytes offset in struct' % (spec.base_type.pkg_name, subfolder, spec.base_type.type, field.name))
+    # void * default_value_
+    print('    nullptr,  // default value')  # TODO default value to be set
+
+    function_suffix = '%s__%s' % (spec.base_type.type, field.name) if not field.type.is_primitive_type() and field.type.is_array else None
+
+    # size_t(const void *) size_function
+    print('    %s,  // size() function pointer' % ('size_function__%s' % function_suffix if function_suffix else 'nullptr'))
+    # const void *(const void *, size_t) get_const_function
+    print('    %s,  // get_const(index) function pointer' % ('get_const_function__%s' % function_suffix if function_suffix else 'nullptr'))
+    # void *(void *, size_t) get_function
+    print('    %s,  // get(index) function pointer' % ('get_function__%s' % function_suffix if function_suffix else 'nullptr'))
+    # void(void *, size_t) resize_function
+    print('    %s  // resize(index) function pointer' % ('resize_function__%s' % function_suffix if function_suffix and (not field.type.array_size or field.type.is_upper_bound) else 'nullptr'))
 
     if index < len(spec.fields) - 1:
         print('  },')

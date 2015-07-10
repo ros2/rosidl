@@ -38,10 +38,10 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember
   bool is_upper_bound_;
   unsigned long offset_;
   const void * default_value_;
-  size_t(*size_function)(const void *);
-  const void *(*get_const_function)(const void *, size_t index);
-  void *(*get_function)(void *, size_t index);
-  void(*resize_function)(void *, size_t size);
+  size_t (* size_function)(const void *);
+  const void * (*get_const_function)(const void *, size_t index);
+  void * (*get_function)(void *, size_t index);
+  void (* resize_function)(void *, size_t size);
 } MessageMember;
 
 typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMembers

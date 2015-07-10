@@ -40,7 +40,7 @@ def extract_message_types(pkg_name, ros_interface_files, deps):
     for dep in deps:
         # only take the first : for separation, as Windows follows with a C:\
         dep_parts = dep.split(':', 1)
-        assert(len(dep_parts) == 2)
+        assert len(dep_parts) == 2, "The dependency '%s' must contain a double colon" % dep
         pkg_name = dep_parts[0]
         base_type = _get_base_type(pkg_name, dep_parts[1])
         if base_type:

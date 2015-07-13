@@ -12,34 +12,14 @@ def main(argv=sys.argv[1:]):
         description='Generate the C++ type support to dynamically handle ROS messages.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
-        '--pkg-name',
+        '--generator-arguments-file',
         required=True,
-        help='The package name to generate interfaces for')
-    parser.add_argument(
-        '--ros-interface-files',
-        nargs='*',
-        help='The ROS interface files')
-    parser.add_argument(
-        '--deps',
-        nargs='*',
-        help="The dependencies (each as '<pkgname>:<abs_interface_file>')")
-    parser.add_argument(
-        '--output-dir',
-        required=True,
-        help='The location of the generated C++ interfaces')
-    parser.add_argument(
-        '--template-dir',
-        required=True,
-        help='The location of the template files')
+        help='The location of the file containing the generator arguments')
     args = parser.parse_args(argv)
 
     try:
         return generate_cpp(
-            args.pkg_name,
-            args.ros_interface_files,
-            args.deps,
-            args.output_dir,
-            args.template_dir,
+            args.generator_arguments_file,
         )
     except UnknownMessageType as e:
         print(str(e), file=sys.stderr)

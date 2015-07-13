@@ -43,21 +43,35 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   endforeach()
 endforeach()
 
+set(target_dependencies
+  "${rosidl_typesupport_introspection_cpp_BIN}"
+  ${rosidl_typesupport_introspection_cpp_GENERATOR_FILES}
+  "${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/msg__type_support.cpp.template"
+  "${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/srv__type_support.cpp.template"
+  ${rosidl_generate_interfaces_IDL_FILES}
+  ${_dependency_files})
+foreach(dep ${target_dependencies})
+  if(NOT EXISTS "${dep}")
+    message(FATAL_ERROR "Target dependency '${dep}' does not exist")
+  endif()
+endforeach()
+
+set(generator_arguments_file "${CMAKE_BINARY_DIR}/rosidl_typesupport_introspection_cpp__arguments.json")
+rosidl_write_generator_arguments(
+  "${generator_arguments_file}"
+  PACKAGE_NAME "${PROJECT_NAME}"
+  ROS_INTERFACE_FILES "${rosidl_generate_interfaces_IDL_FILES}"
+  ROS_INTERFACE_DEPENDENCIES "${_dependencies}"
+  OUTPUT_DIR "${_output_path}"
+  TEMPLATE_DIR "${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}"
+  TARGET_DEPENDENCIES ${target_dependencies}
+)
+
 add_custom_command(
   OUTPUT ${_generated_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_typesupport_introspection_cpp_BIN}
-  --pkg-name ${PROJECT_NAME}
-  --ros-interface-files ${rosidl_generate_interfaces_IDL_FILES}
-  --deps ${_dependencies}
-  --output-dir ${_output_path}
-  --template-dir ${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}
-  DEPENDS
-  ${rosidl_typesupport_introspection_cpp_BIN}
-  ${rosidl_typesupport_introspection_cpp_GENERATOR_FILES}
-  ${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/msg__type_support.cpp.template
-  ${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/srv__type_support.cpp.template
-  ${rosidl_generate_interfaces_IDL_FILES}
-  ${_dependency_files}
+  --generator-arguments-file "${generator_arguments_file}"
+  DEPENDS ${target_dependencies}
   COMMENT "Generating C++ introspection for ROS interfaces"
   VERBATIM
 )

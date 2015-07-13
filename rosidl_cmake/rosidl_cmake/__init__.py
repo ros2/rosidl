@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import em
+from io import StringIO
+import json
 import os
 import re
 
@@ -55,3 +58,56 @@ def _get_base_type(pkg_name, idl_path):
     if extension != '.msg':
         return None
     return BaseType(pkg_name + PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR + msg_name)
+
+
+def read_generator_arguments(input_file):
+    with open(input_file, 'r') as h:
+        return json.load(h)
+
+
+def get_newest_modification_time(target_dependencies):
+    newest_timestamp = None
+    for dep in target_dependencies:
+        ts = os.path.getmtime(dep)
+        if newest_timestamp is None or ts > newest_timestamp:
+            newest_timestamp = ts
+    return newest_timestamp
+
+
+def expand_template(template_file, data, output_file, minimum_timestamp=None):
+    output = StringIO()
+    interpreter = em.Interpreter(
+        output=output,
+        options={
+            em.BUFFERED_OPT: True,
+            em.RAW_OPT: True,
+        },
+        globals=data,
+    )
+    with open(template_file, 'r') as h:
+        try:
+            interpreter.file(h)
+        except Exception:
+            if os.path.exists(output_file):
+                os.remove(output_file)
+            raise
+    content = output.getvalue()
+    interpreter.shutdown()
+
+    # only overwrite file if necessary
+    # which is either when the timestamp is too old or when the content is different
+    if os.path.exists(output_file):
+        timestamp = os.path.getmtime(output_file)
+        if minimum_timestamp is None or timestamp > minimum_timestamp:
+            with open(output_file, 'r') as h:
+                if h.read() == content:
+                    return
+    else:
+        # create folder if necessary
+        try:
+            os.makedirs(os.path.dirname(output_file))
+        except FileExistsError:
+            pass
+
+    with open(output_file, 'w') as h:
+        h.write(content)

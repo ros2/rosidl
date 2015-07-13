@@ -12,17 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import em
-from io import StringIO
 import os
 
 from rosidl_cmake import convert_camel_case_to_lower_case_underscore
+from rosidl_cmake import expand_template
+from rosidl_cmake import get_newest_modification_time
+from rosidl_cmake import read_generator_arguments
 from rosidl_parser import parse_message_file
 from rosidl_parser import parse_service_file
 
 
-def generate_cpp(
-        pkg_name, ros_interface_files, deps, output_dir, template_dir):
+def generate_cpp(generator_arguments_file):
+    args = read_generator_arguments(generator_arguments_file)
+
+    template_dir = args['template_dir']
     mapping_msgs = {
         os.path.join(template_dir, 'msg.hpp.template'): '%s.hpp',
         os.path.join(template_dir, 'msg__struct.hpp.template'): '%s__struct.hpp',
@@ -40,89 +43,34 @@ def generate_cpp(
     functions = {
         'get_header_filename_from_msg_name': convert_camel_case_to_lower_case_underscore,
     }
+    latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
 
-    for ros_interface_file in ros_interface_files:
+    for ros_interface_file in args['ros_interface_files']:
         extension = os.path.splitext(ros_interface_file)[1]
         subfolder = os.path.basename(os.path.dirname(ros_interface_file))
         if extension == '.msg':
-            spec = parse_message_file(pkg_name, ros_interface_file)
+            spec = parse_message_file(args['package_name'], ros_interface_file)
             for template_file, generated_filename in mapping_msgs.items():
+                data = {'spec': spec, 'subfolder': subfolder}
+                data.update(functions)
                 generated_file = os.path.join(
-                    output_dir, subfolder, generated_filename %
+                    args['output_dir'], subfolder, generated_filename %
                     convert_camel_case_to_lower_case_underscore(spec.base_type.type))
-
-                try:
-                    output = StringIO()
-                    data = {'spec': spec, 'subfolder': subfolder}
-                    data.update(functions)
-                    # TODO reuse interpreter
-                    interpreter = em.Interpreter(
-                        output=output,
-                        options={
-                            em.RAW_OPT: True,
-                            em.BUFFERED_OPT: True,
-                        },
-                        globals=data
-                    )
-                    interpreter.file(open(template_file))
-                    content = output.getvalue()
-                    interpreter.shutdown()
-                except Exception:
-                    if os.path.exists(generated_file):
-                        os.remove(generated_file)
-                    raise
-
-                # only overwrite file if necessary
-                if os.path.exists(generated_file):
-                    with open(generated_file, 'r') as h:
-                        if h.read() == content:
-                            continue
-                try:
-                    os.makedirs(os.path.dirname(generated_file))
-                except FileExistsError:
-                    pass
-                with open(generated_file, 'w') as h:
-                    h.write(content)
+                expand_template(
+                    template_file, data, generated_file,
+                    minimum_timestamp=latest_target_timestamp)
 
         elif extension == '.srv':
-            spec = parse_service_file(pkg_name, ros_interface_file)
+            spec = parse_service_file(args['package_name'], ros_interface_file)
             for template_file, generated_filename in mapping_srvs.items():
+                data = {'spec': spec}
+                data.update(functions)
                 generated_file = os.path.join(
-                    output_dir, subfolder, generated_filename %
+                    args['output_dir'], subfolder, generated_filename %
                     convert_camel_case_to_lower_case_underscore(spec.srv_name))
-
-                try:
-                    output = StringIO()
-                    data = {'spec': spec}
-                    data.update(functions)
-                    # TODO reuse interpreter
-                    interpreter = em.Interpreter(
-                        output=output,
-                        options={
-                            em.RAW_OPT: True,
-                            em.BUFFERED_OPT: True,
-                        },
-                        globals=data,
-                    )
-                    interpreter.file(open(template_file))
-                    content = output.getvalue()
-                    interpreter.shutdown()
-                except Exception:
-                    if os.path.exists(generated_file):
-                        os.remove(generated_file)
-                    raise
-
-                # only overwrite file if necessary
-                if os.path.exists(generated_file):
-                    with open(generated_file, 'r') as h:
-                        if h.read() == content:
-                            continue
-                try:
-                    os.makedirs(os.path.dirname(generated_file))
-                except FileExistsError:
-                    pass
-                with open(generated_file, 'w') as h:
-                    h.write(content)
+                expand_template(
+                    template_file, data, generated_file,
+                    minimum_timestamp=latest_target_timestamp)
 
     return 0
 

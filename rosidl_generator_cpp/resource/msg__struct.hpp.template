@@ -148,6 +148,29 @@ for field in spec.fields:
     return !this->operator==(other);
   }
 
+  // Message introspection
+  bool is_dynamic()
+  {
+    @[dynamic = True]@
+    @[for field in spec.fields]@
+        @[if field.type.is_array and field.type.array_size is None:]@
+            @[dynamic = False]@
+            @[break]@
+        @[end if]@
+    @[end for]@
+    @[if not dynamic]@
+    return false;
+    @[else]@
+    bool dynamic = true;
+        @[for field in spec.fields]@
+            @[if not field.type.is_array and not field.type.is_primitive_type()]@
+        dynamic &= this->@(field.type.name).is_dynamic();
+            @[end if]@
+        @[end for]@
+    return dynamic;
+    @[end if]@
+  }
+
 }; // struct @(cpp_class)
 
 // typedef to use template instance with default allocator

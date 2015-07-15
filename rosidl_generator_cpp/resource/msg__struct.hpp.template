@@ -15,6 +15,7 @@
 @{
 from rosidl_generator_cpp import escape_string
 from rosidl_generator_cpp import msg_type_to_cpp
+from rosidl_generator_cpp import cpp_type_of_array 
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 from rosidl_generator_cpp import value_to_cpp
 
@@ -147,6 +148,12 @@ for field in spec.fields:
   {
     return !this->operator==(other);
   }
+
+@[if spec.has_bounded_size()]@
+  static const bool has_bounded_size = true;
+@[else]@
+  static const bool has_bounded_size = false;
+@[end if]@
 
 }; // struct @(cpp_class)
 

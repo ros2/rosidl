@@ -49,7 +49,7 @@ def generate_cpp(generator_arguments_file):
         extension = os.path.splitext(ros_interface_file)[1]
         subfolder = os.path.basename(os.path.dirname(ros_interface_file))
         if extension == '.msg':
-            spec = parse_message_file(args['package_name'], ros_interface_file)
+            spec = parse_message_file(args['package_name'], ros_interface_file, interface_dependencies=args['ros_interface_files'])
             for template_file, generated_filename in mapping_msgs.items():
                 data = {'spec': spec, 'subfolder': subfolder}
                 data.update(functions)
@@ -120,6 +120,21 @@ def msg_type_to_cpp(type_):
             return 'std::array<%s, %u>' % (cpp_type, type_.array_size)
     else:
         return cpp_type
+
+def cpp_type_of_array(array_type_):
+    """
+    Get the C++ type of an array message type.
+
+    Example input: uint32[3], std_msgs/String[5]
+    Example output: uint32_t, std_msgs::String_<ContainerAllocator>
+    @param array_type_ Array message type.
+    @type array_type_: rosidl_parser.Type
+    """
+    assert array_type_.is_array, "cpp_type_of_array must be called on an array type"
+    if array_type_.is_primitive_type():
+        return MSG_TYPE_TO_CPP[array_type_.type]
+    else:
+        return '%s::msg::%s_<ContainerAllocator>' % (array_type_.pkg_name, array_type_.type)
 
 
 def value_to_cpp(type_, value):

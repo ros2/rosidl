@@ -128,9 +128,10 @@ def is_valid_constant_name(name):
 
 class BaseType(object):
 
-    __slots__ = ['pkg_name', 'type', 'string_upper_bound']
+    __slots__ = ['pkg_name', 'type', 'string_upper_bound', 'spec']
 
-    def __init__(self, type_string, context_package_name=None):
+    def __init__(self, type_string, interface_dependencies=None, context_package_name=None):
+        self.spec = None
         # check for primitive types
         if type_string in PRIMITIVE_TYPES:
             self.pkg_name = None
@@ -173,6 +174,12 @@ class BaseType(object):
                 raise InvalidResourceName(self.type)
             self.string_upper_bound = None
 
+            if interface_dependencies is not None:
+                for dep in interface_dependencies:
+                    if self.type + '.msg' in dep:
+                        self.spec = parse_message_file(self.pkg_name, dep, interface_dependencies=interface_dependencies)
+                        break
+
     def is_primitive_type(self):
         return self.pkg_name is None
 
@@ -196,12 +203,15 @@ class BaseType(object):
                 (STRING_UPPER_BOUND_TOKEN, self.string_upper_bound)
         return s
 
+    def is_unbounded_string(self):
+        return self.type == 'string' and self.string_upper_bound is None
+
 
 class Type(BaseType):
 
     __slots__ = ['is_array', 'array_size', 'is_upper_bound']
 
-    def __init__(self, type_string, context_package_name=None):
+    def __init__(self, type_string, context_package_name=None, interface_dependencies=None):
         # check for array brackets
         self.is_array = type_string[-1] == ']'
 
@@ -241,7 +251,7 @@ class Type(BaseType):
 
         super(Type, self).__init__(
             type_string,
-            context_package_name=context_package_name)
+            context_package_name=context_package_name, interface_dependencies=interface_dependencies)
 
     def __eq__(self, other):
         if other is None or not isinstance(other, Type):
@@ -264,6 +274,10 @@ class Type(BaseType):
                 s += '%u' % self.array_size
             s += ']'
         return s
+
+    def is_unbounded_array(self):
+        return self.array_size is None and not self.is_upper_bound and \
+            self.is_array
 
 
 class Constant(object):
@@ -335,7 +349,7 @@ class Field(object):
 
 class MessageSpecification(object):
 
-    def __init__(self, pkg_name, msg_name, fields, constants):
+    def __init__(self, pkg_name, msg_name, fields, constants, interface_dependencies=None):
         self.base_type = BaseType(
             pkg_name + PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR + msg_name)
 
@@ -377,16 +391,27 @@ class MessageSpecification(object):
             len(self.constants) == len(other.constants) and \
             self.constants == other.constants
 
+    def has_bounded_size(self):
+        nested_fields_bounded = True
+        nested_fields_bounded = all([field.type.spec.has_bounded_size() for field in self.fields if field.type.spec is not None] )
+        # base case
+        contains_unbounded_array = \
+            any([field.type.is_unbounded_array() for field in self.fields])
+        contains_unbounded_string = \
+            any([field.type.is_unbounded_string() for field in self.fields])
+        all_fields_bounded = not (contains_unbounded_array or contains_unbounded_string)
+        return all_fields_bounded and nested_fields_bounded
 
-def parse_message_file(pkg_name, interface_filename):
+
+def parse_message_file(pkg_name, interface_filename, interface_dependencies=None):
     basename = os.path.basename(interface_filename)
     msg_name = os.path.splitext(basename)[0]
     with open(interface_filename, 'r') as h:
         return parse_message_string(
-            pkg_name, msg_name, h.read())
+            pkg_name, msg_name, h.read(), interface_dependencies=interface_dependencies)
 
 
-def parse_message_string(pkg_name, msg_name, message_string):
+def parse_message_string(pkg_name, msg_name, message_string, interface_dependencies=None):
     fields = []
     constants = []
 
@@ -417,7 +442,7 @@ def parse_message_string(pkg_name, msg_name, message_string):
                 default_value_string = None
             try:
                 fields.append(Field(
-                    Type(type_string, context_package_name=pkg_name),
+                    Type(type_string, context_package_name=pkg_name, interface_dependencies=interface_dependencies),
                     field_name, default_value_string))
             except Exception as err:
                 print("Error processing '{line}' of '{pkg}/{msg}': '{err}'".format(
@@ -431,7 +456,7 @@ def parse_message_string(pkg_name, msg_name, message_string):
             value = value.lstrip()
             constants.append(Constant(type_string, name, value))
 
-    return MessageSpecification(pkg_name, msg_name, fields, constants)
+    return MessageSpecification(pkg_name, msg_name, fields, constants, interface_dependencies=interface_dependencies)
 
 
 def parse_value_string(type_, value_string):

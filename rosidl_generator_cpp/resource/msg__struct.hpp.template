@@ -149,25 +149,11 @@ for field in spec.fields:
     return !this->operator==(other);
   }
 
-  // Message type introspection
-  static bool has_bounded_size()
-  {
-@[if not spec.has_bounded_size()]@
-    return false;
-@[elif spec.base_type.is_primitive_type() or all([field.type.is_primitive_type() for field in spec.fields])]@
-    return true;
+@[if spec.has_bounded_size()]@
+  static const bool has_bounded_size = true;
 @[else]@
-    bool has_bounded_size = true;
-@[for msg_field in [field for field in spec.fields if not field.type.is_primitive_type()]]@
-@[if msg_field.type.is_array]@
-    has_bounded_size &= @(cpp_type_of_array(msg_field.type))::has_bounded_size();
-@[else]@
-    has_bounded_size &= @(msg_type_to_cpp(msg_field.type))::has_bounded_size();
+  static const bool has_bounded_size = false;
 @[end if]@
-@[end for]@
-    return has_bounded_size;
-@[end if]@
-  }
 
 }; // struct @(cpp_class)
 

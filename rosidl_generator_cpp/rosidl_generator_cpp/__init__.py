@@ -49,7 +49,7 @@ def generate_cpp(generator_arguments_file):
         extension = os.path.splitext(ros_interface_file)[1]
         subfolder = os.path.basename(os.path.dirname(ros_interface_file))
         if extension == '.msg':
-            spec = parse_message_file(args['package_name'], ros_interface_file)
+            spec = parse_message_file(args['package_name'], ros_interface_file, interface_dependencies=args['ros_interface_files'])
             for template_file, generated_filename in mapping_msgs.items():
                 data = {'spec': spec, 'subfolder': subfolder}
                 data.update(functions)

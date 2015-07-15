@@ -149,26 +149,25 @@ for field in spec.fields:
   }
 
   // Message introspection
-  bool is_dynamic()
+  bool is_dynamic() const
   {
-    @[dynamic = True]@
-    @[for field in spec.fields]@
-        @[if field.type.is_array and field.type.array_size is None:]@
-            @[dynamic = False]@
-            @[break]@
-        @[end if]@
-    @[end for]@
-    @[if not dynamic]@
+@[if spec.is_dynamic()]@
+    return true;
+@#@[else]@
+@#    return false;
+@[elif spec.base_type.is_primitive_type() or all([field.type.is_primitive_type() for field in spec.fields])]@
     return false;
-    @[else]@
-    bool dynamic = true;
-        @[for field in spec.fields]@
-            @[if not field.type.is_array and not field.type.is_primitive_type()]@
-        dynamic &= this->@(field.type.name).is_dynamic();
-            @[end if]@
-        @[end for]@
+@[else]@
+    bool dynamic = false;
+@[for msg_field in [field for field in spec.fields if not field.type.is_primitive_type()]]@
+@[if msg_field.type.is_array]@
+    dynamic |= @(msg_field.name)[0].is_dynamic();
+@[else]
+    dynamic |= @(msg_field.name).is_dynamic();
+@[end if]@
+@[end for]@
     return dynamic;
-    @[end if]@
+@[end if]@
   }
 
 }; // struct @(cpp_class)

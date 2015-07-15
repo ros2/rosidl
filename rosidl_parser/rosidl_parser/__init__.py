@@ -265,6 +265,13 @@ class Type(BaseType):
             s += ']'
         return s
 
+    def is_dynamic(self):
+        if self.is_array and self.array_size is None:
+            return True
+        if self.type == 'string' and self.string_upper_bound == None:
+            return True
+        return False
+
 
 class Constant(object):
 
@@ -376,6 +383,10 @@ class MessageSpecification(object):
             self.fields == other.fields and \
             len(self.constants) == len(other.constants) and \
             self.constants == other.constants
+
+    def is_dynamic(self):
+        # If any of the fields are dynamically sized, return true.
+        return any([field.type.is_dynamic() for field in self.fields])
 
 
 def parse_message_file(pkg_name, interface_filename):

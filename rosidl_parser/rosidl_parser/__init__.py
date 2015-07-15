@@ -176,9 +176,6 @@ class BaseType(object):
     def is_primitive_type(self):
         return self.pkg_name is None
 
-    def has_bounded_size(self):
-        return not((self.type == 'string') and (self.string_upper_bound is None))
-
     def __eq__(self, other):
         if other is None or not isinstance(other, BaseType):
             return False
@@ -198,6 +195,9 @@ class BaseType(object):
             s += '%s%u' % \
                 (STRING_UPPER_BOUND_TOKEN, self.string_upper_bound)
         return s
+
+    def is_unbounded_string(self):
+        return self.type == 'string' and self.string_upper_bound is None
 
 
 class Type(BaseType):
@@ -268,10 +268,15 @@ class Type(BaseType):
             s += ']'
         return s
 
-    def has_bounded_size(self):
-        if self.is_array and (self.array_size is None) and (not self.is_upper_bound):
-            return False
-        return super(Type, self).has_bounded_size()
+    def is_unbounded_array(self):
+        # is_upper_bound is True: a dynamically sized, bounded array
+        # array_size is None: dynamically sized array
+        return self.array_size is None and not self.is_upper_bound and self.is_array
+
+#    def has_bounded_size(self):
+#        unbounded_array = self.is_array and (self.array_size is None or self.is_upper_bound is False)
+#        unbounded_string = super(Type, self).type == 'string' and super(Type, self).string_upper_bound is None
+#        return not (unbounded_array or unbounded_string)
 
 
 class Constant(object):
@@ -386,9 +391,9 @@ class MessageSpecification(object):
             self.constants == other.constants
 
     def has_bounded_size(self):
-        if len(self.fields) == 0:
-            return True
-        return all([field.type.has_bounded_size() for field in self.fields])
+        contains_unbounded_array = any([field.type.is_unbounded_array() for field in self.fields])
+        contains_unbounded_string = any([field.type.is_unbounded_string() for field in self.fields])
+        return not (contains_unbounded_array or contains_unbounded_string)
 
 
 def parse_message_file(pkg_name, interface_filename):

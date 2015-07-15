@@ -176,6 +176,9 @@ class BaseType(object):
     def is_primitive_type(self):
         return self.pkg_name is None
 
+    def has_bounded_size(self):
+        return not((self.type == 'string') and (self.string_upper_bound is None))
+
     def __eq__(self, other):
         if other is None or not isinstance(other, BaseType):
             return False
@@ -265,12 +268,10 @@ class Type(BaseType):
             s += ']'
         return s
 
-    def is_dynamic(self):
-        if self.is_array and self.array_size is None:
-            return True
-        if self.type == 'string' and self.string_upper_bound == None:
-            return True
-        return False
+    def has_bounded_size(self):
+        if self.is_array and (self.array_size is None) and (not self.is_upper_bound):
+            return False
+        return super(Type, self).has_bounded_size()
 
 
 class Constant(object):
@@ -384,9 +385,10 @@ class MessageSpecification(object):
             len(self.constants) == len(other.constants) and \
             self.constants == other.constants
 
-    def is_dynamic(self):
-        # If any of the fields are dynamically sized, return true.
-        return any([field.type.is_dynamic() for field in self.fields])
+    def has_bounded_size(self):
+        if len(self.fields) == 0:
+            return True
+        return all([field.type.has_bounded_size() for field in self.fields])
 
 
 def parse_message_file(pkg_name, interface_filename):

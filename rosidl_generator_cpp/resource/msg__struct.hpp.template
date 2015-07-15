@@ -15,6 +15,7 @@
 @{
 from rosidl_generator_cpp import escape_string
 from rosidl_generator_cpp import msg_type_to_cpp
+from rosidl_generator_cpp import cpp_type_of_array 
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 from rosidl_generator_cpp import value_to_cpp
 
@@ -148,25 +149,23 @@ for field in spec.fields:
     return !this->operator==(other);
   }
 
-  // Message introspection
-  bool is_dynamic() const
+  // Message type introspection
+  static bool has_bounded_size()
   {
-@[if spec.is_dynamic()]@
-    return true;
-@#@[else]@
-@#    return false;
-@[elif spec.base_type.is_primitive_type() or all([field.type.is_primitive_type() for field in spec.fields])]@
+@[if not spec.has_bounded_size()]@
     return false;
+@[elif spec.base_type.is_primitive_type() or all([field.type.is_primitive_type() for field in spec.fields])]@
+    return true;
 @[else]@
-    bool dynamic = false;
+    bool has_bounded_size = true;
 @[for msg_field in [field for field in spec.fields if not field.type.is_primitive_type()]]@
 @[if msg_field.type.is_array]@
-    dynamic |= @(msg_field.name)[0].is_dynamic();
-@[else]
-    dynamic |= @(msg_field.name).is_dynamic();
+    has_bounded_size &= @(cpp_type_of_array(msg_field.type))::has_bounded_size();
+@[else]@
+    has_bounded_size &= @(msg_type_to_cpp(msg_field.type))::has_bounded_size();
 @[end if]@
 @[end for]@
-    return dynamic;
+    return has_bounded_size;
 @[end if]@
   }
 

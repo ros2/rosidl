@@ -269,14 +269,8 @@ class Type(BaseType):
         return s
 
     def is_unbounded_array(self):
-        # is_upper_bound is True: a dynamically sized, bounded array
-        # array_size is None: dynamically sized array
-        return self.array_size is None and not self.is_upper_bound and self.is_array
-
-#    def has_bounded_size(self):
-#        unbounded_array = self.is_array and (self.array_size is None or self.is_upper_bound is False)
-#        unbounded_string = super(Type, self).type == 'string' and super(Type, self).string_upper_bound is None
-#        return not (unbounded_array or unbounded_string)
+        return self.array_size is None and not self.is_upper_bound and \
+            self.is_array
 
 
 class Constant(object):
@@ -391,8 +385,10 @@ class MessageSpecification(object):
             self.constants == other.constants
 
     def has_bounded_size(self):
-        contains_unbounded_array = any([field.type.is_unbounded_array() for field in self.fields])
-        contains_unbounded_string = any([field.type.is_unbounded_string() for field in self.fields])
+        contains_unbounded_array = \
+            any([field.type.is_unbounded_array() for field in self.fields])
+        contains_unbounded_string = \
+            any([field.type.is_unbounded_string() for field in self.fields])
         return not (contains_unbounded_array or contains_unbounded_string)
 
 

@@ -15,7 +15,6 @@
 @{
 from rosidl_generator_cpp import escape_string
 from rosidl_generator_cpp import msg_type_to_cpp
-from rosidl_generator_cpp import cpp_type_of_array 
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 from rosidl_generator_cpp import value_to_cpp
 
@@ -151,29 +150,6 @@ for field in spec.fields:
     return !this->operator==(other);
   }
 
-  // Message type introspection
-  /*
-  static bool has_bounded_size()
-  {
-@[if not spec.has_bounded_size()]@
-    return false;
-@[elif spec.base_type.is_primitive_type() or all([field.type.is_primitive_type() for field in spec.fields])]@
-    return true;
-@[else]@
-    bool has_bounded_size = true;
-@[for msg_field in [field for field in spec.fields if not field.type.is_primitive_type()]]@
-@[if msg_field.type.is_array]@
-    has_bounded_size &= @(cpp_type_of_array(msg_field.type))::has_bounded_size();
-@[else]@
-    has_bounded_size &= @(msg_type_to_cpp(msg_field.type))::has_bounded_size();
-@[end if]@
-@[end for]@
-    return has_bounded_size;
-@[end if]@
-  }
-  */
-
-
 }; // struct @(cpp_class)
 
 // typedef to use template instance with default allocator
@@ -212,7 +188,7 @@ const @(MSG_TYPE_TO_CPP[c.primitive_type])
   struct has_bounded_size<@(bounded_type)> { static const bool value = true; };
 @[end for]@
 
-  // TODO(jacquelinekay): for now, all vectors and strings are considered unbounded
+  // TODO(jacquelinekay): for now, all dynamically sized arrays and strings are considered unbounded
   template<>
   struct has_bounded_size<std::string> { static const bool value = false; };
 

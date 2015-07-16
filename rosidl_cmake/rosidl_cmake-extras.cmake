@@ -29,4 +29,5 @@ endmacro()
 
 include("${rosidl_cmake_DIR}/rosidl_generate_interfaces.cmake")
 include("${rosidl_cmake_DIR}/rosidl_target_interfaces.cmake")
+include("${rosidl_cmake_DIR}/rosidl_write_generator_arguments.cmake")
 include("${rosidl_cmake_DIR}/string_camel_case_to_lower_case_underscore.cmake")

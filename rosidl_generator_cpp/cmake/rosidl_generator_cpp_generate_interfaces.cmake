@@ -48,23 +48,37 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   endforeach()
 endforeach()
 
+set(target_dependencies
+  "${rosidl_generator_cpp_BIN}"
+  ${rosidl_generator_cpp_GENERATOR_FILES}
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/msg.hpp.template"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__struct.hpp.template"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/srv.hpp.template"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__struct.hpp.template"
+  ${rosidl_generate_interfaces_IDL_FILES}
+  ${_dependency_files})
+foreach(dep ${target_dependencies})
+  if(NOT EXISTS "${dep}")
+    message(FATAL_ERROR "Target dependency '${dep}' does not exist")
+  endif()
+endforeach()
+
+set(generator_arguments_file "${CMAKE_BINARY_DIR}/rosidl_generator_cpp__arguments.json")
+rosidl_write_generator_arguments(
+  "${generator_arguments_file}"
+  PACKAGE_NAME "${PROJECT_NAME}"
+  ROS_INTERFACE_FILES "${rosidl_generate_interfaces_IDL_FILES}"
+  ROS_INTERFACE_DEPENDENCIES "${_dependencies}"
+  OUTPUT_DIR "${_output_path}"
+  TEMPLATE_DIR "${rosidl_generator_cpp_TEMPLATE_DIR}"
+  TARGET_DEPENDENCIES ${target_dependencies}
+)
+
 add_custom_command(
   OUTPUT ${_generated_msg_files} ${_generated_srv_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_cpp_BIN}
-  --pkg-name ${PROJECT_NAME}
-  --ros-interface-files ${rosidl_generate_interfaces_IDL_FILES}
-  --deps ${_dependencies}
-  --output-dir ${_output_path}
-  --template-dir ${rosidl_generator_cpp_TEMPLATE_DIR}
-  DEPENDS
-  ${rosidl_generator_cpp_BIN}
-  ${rosidl_generator_cpp_GENERATOR_FILES}
-  ${rosidl_generator_cpp_TEMPLATE_DIR}/msg.hpp.template
-  ${rosidl_generator_cpp_TEMPLATE_DIR}/msg__struct.hpp.template
-  ${rosidl_generator_cpp_TEMPLATE_DIR}/srv.hpp.template
-  ${rosidl_generator_cpp_TEMPLATE_DIR}/srv__struct.hpp.template
-  ${rosidl_generate_interfaces_IDL_FILES}
-  ${_dependency_files}
+  --generator-arguments-file "${generator_arguments_file}"
+  DEPENDS ${target_dependencies}
   COMMENT "Generating C++ code for ROS interfaces"
   VERBATIM
 )

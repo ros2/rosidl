@@ -3,8 +3,16 @@
 import argparse
 import sys
 
-from rosidl_generator_cpp import generate_cpp
-
+try:
+    from rosidl_generator_cpp import generate_cpp
+except ImportError:
+    # If rosidl_generator_cpp was not installed, find the source relative to this file
+    rosidl_generator_cpp_root = os.path.dirname(os.path.dirname(__file__))
+    rosidl_generator_cpp_package = os.path.join(rosidl_generator_cpp_root, 'rosidl_generator_cpp')
+    if not os.path.exists(rosidl_generator_cpp_package):
+        raise
+    sys.path.insert(0, os.path.abspath(rosidl_generator_cpp_root))
+    from rosidl_generator_cpp import generate_cpp
 
 def main(argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(

@@ -1,0 +1,69 @@
+// generated from rosidl_generator_cpp/resource/msg__traits.hpp.template
+
+@#######################################################################
+@# EmPy template for generating <msg>__traits.hpp files
+@#
+@# Context:
+@#  - spec (rosidl_parser.MessageSpecification)
+@#    Parsed specification of the .msg file
+@#  - subfolder (string)
+@#    The subfolder / subnamespace of the message
+@#    Either 'msg' or 'srv'
+@#  - get_header_filename_from_msg_name (function)
+@#######################################################################
+@
+@{
+from rosidl_generator_cpp import MSG_TYPE_TO_CPP
+
+cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
+}@
+#include <array>
+#include <stdint.h>
+#include <string>
+#include <vector>
+
+namespace rosidl_generator_traits
+{
+
+#ifndef __ROSIDL_GENERATOR_CPP_TRAITS
+#define __ROSIDL_GENERATOR_CPP_TRAITS
+
+template<typename T>
+struct has_fixed_size {};
+
+#endif  /* __ROSIDL_GENERATOR_CPP_TRAITS */
+
+#ifndef __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__traits__hpp__
+#define __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__traits__hpp__
+
+#include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.hpp"
+
+@{
+fixed_template_strings = []
+fixed = True
+
+for field in spec.fields:
+   if field.type.type == 'string':
+       fixed = False
+       break
+   elif field.type.is_array and (field.type.is_upper_bound or field.type.array_size is None):
+       fixed = False
+       break
+   elif not field.type.is_primitive_type():
+       fixed_template_strings.append("has_fixed_size<{}::msg::{}>::value".format(field.type.pkg_name, field.type.type))
+
+if fixed:
+    fixed_template_string = ' && '.join(fixed_template_strings) if fixed_template_strings else 'true'
+else:
+    fixed_template_string = 'false'
+}@
+
+template<>
+struct has_fixed_size<@(cpp_namespace)@(spec.base_type.type)>
+{
+  static const bool value = @(fixed_template_string);
+};
+
+#endif  /* __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__traits__hpp__ */
+
+}  /* rosidl_generator_cpp_traits */

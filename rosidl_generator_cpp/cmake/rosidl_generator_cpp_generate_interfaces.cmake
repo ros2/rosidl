@@ -26,11 +26,13 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
     list(APPEND _generated_msg_files
       "${_output_path}/${_parent_folder}/${_header_name}.hpp"
       "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
+      "${_output_path}/${_parent_folder}/${_header_name}__traits.hpp"
     )
   elseif("${_parent_folder} " STREQUAL "srv ")
     list(APPEND _generated_srv_files
       "${_output_path}/${_parent_folder}/${_header_name}.hpp"
       "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
+      "${_output_path}/${_parent_folder}/${_header_name}__traits.hpp"
     )
   else()
     message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
@@ -53,8 +55,10 @@ set(target_dependencies
   ${rosidl_generator_cpp_GENERATOR_FILES}
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg.hpp.template"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__struct.hpp.template"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__traits.hpp.template"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv.hpp.template"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__struct.hpp.template"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__traits.hpp.template"
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files})
 foreach(dep ${target_dependencies})
@@ -83,11 +87,16 @@ add_custom_command(
   VERBATIM
 )
 
-add_custom_target(
+if (TARGET ${rosidl_generate_interfaces_TARGET}__cpp)
+  message(WARNING "Custom target ${rosidl_generate_interfaces_TARGET}__cpp already exists")
+else()
+  add_custom_target(
   ${rosidl_generate_interfaces_TARGET}__cpp
   DEPENDS
   ${_generated_msg_files} ${_generated_srv_files}
 )
+endif()
+
 add_dependencies(
   ${rosidl_generate_interfaces_TARGET}
   ${rosidl_generate_interfaces_TARGET}__cpp

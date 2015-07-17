@@ -50,7 +50,7 @@ cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
 @{
 template_string=""
 if len(spec.fields) == 0:
-  template_string = "true"
+  template_string = " true"
 else:
     for field in spec.fields:
         if field.type.type == 'string':

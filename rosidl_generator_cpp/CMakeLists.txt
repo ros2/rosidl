@@ -15,7 +15,6 @@ if(AMENT_ENABLE_TESTING)
   find_package(ament_cmake_nose REQUIRED)
   find_package(rosidl_cmake REQUIRED)
   find_package(rosidl_generator_c REQUIRED)
-  find_package(rosidl_generator_cpp REQUIRED)
 
   set(message_files
     "msg/DynamicArrayNested.msg"
@@ -56,7 +55,6 @@ if(AMENT_ENABLE_TESTING)
   )
 
 endif()
-
 ament_package(
   CONFIG_EXTRAS "rosidl_generator_cpp-extras.cmake.in"
 )
@@ -81,5 +79,5 @@ if(AMENT_ENABLE_TESTING)
 
   add_executable(test_messages_cpp "test/test_messages.cpp")
   add_dependencies(test_messages_cpp ${PROJECT_NAME})
-  ament_target_dependencies(test_messages_cpp ${PROJECT_NAME})
+  include_directories($ENV{AMENT_PREFIX_PATH}/include)
 endif()

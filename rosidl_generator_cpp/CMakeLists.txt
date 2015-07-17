@@ -30,6 +30,12 @@ if(AMENT_ENABLE_TESTING)
     "msg/StaticArrayBounded.msg"
   )
 
+  set(service_files
+    "srv/Empty.srv"
+    "srv/PrimitivesBounded.srv"
+    "srv/DynamicArray.srv"
+  )
+
   include(cmake/register_cpp.cmake)
   set(rosidl_generator_cpp_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -39,13 +45,16 @@ if(AMENT_ENABLE_TESTING)
     "${CMAKE_CURRENT_SOURCE_DIR}/resource"
   )
 
-  rosidl_generate_interfaces(${PROJECT_NAME} ${message_files} SKIP_INSTALL)
+  rosidl_generate_interfaces(${PROJECT_NAME} ${message_files} ${service_files}
+    SKIP_INSTALL
+  )
+
   if(NOT WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
   endif()
 
-  add_executable(test_messages_cpp "test/test_messages.cpp")
-  add_dependencies(test_messages_cpp ${PROJECT_NAME} ${rosidl_generate_interfaces_TARGET})
+  add_executable(test_interfaces_cpp "test/test_interfaces.cpp")
+  add_dependencies(test_interfaces_cpp ${PROJECT_NAME} ${rosidl_generate_interfaces_TARGET})
   # include the built files directly, instead of their install location
   include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
 endif()

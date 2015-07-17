@@ -64,6 +64,8 @@ else:
 }@
 
   template<>
-  struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)> { static const bool value =@(template_string); };
+  struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)> {
+    static const bool value =@(template_string);
+  };
 
 #endif  /* __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__TEMPLATES */

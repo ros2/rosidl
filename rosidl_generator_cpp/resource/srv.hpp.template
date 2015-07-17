@@ -13,5 +13,6 @@
 #define __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__hpp__
 
 #include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__struct.hpp"
+#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__meta.hpp"
 
 #endif  // __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__hpp__

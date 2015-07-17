@@ -30,33 +30,28 @@ if(AMENT_ENABLE_TESTING)
     "msg/StaticArrayBounded.msg"
   )
 
-  ament_register_extension(
-    "rosidl_generate_interfaces"
-    "rosidl_generator_cpp"
-    "rosidl_generator_cpp_generate_interfaces.cmake")
-
+  include(cmake/register_cpp.cmake)
   set(rosidl_generator_cpp_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-  set(rosidl_generator_cpp_BIN
-    "${rosidl_generator_cpp_DIR}/../bin/rosidl_generator_cpp")
-  normalize_path(rosidl_generator_cpp_BIN "${rosidl_generator_cpp_BIN}")
 
-  set(rosidl_generator_cpp_GENERATOR_FILES
-    "${rosidl_generator_cpp_DIR}/../rosidl_generator_cpp/__init__.py")
-  normalize_path(rosidl_generator_cpp_GENERATOR_FILES
-    "${rosidl_generator_cpp_GENERATOR_FILES}")
-
-  set(rosidl_generator_cpp_TEMPLATE_DIR
-    "${rosidl_generator_cpp_DIR}/../resource")
-  normalize_path(rosidl_generator_cpp_TEMPLATE_DIR
-    "${rosidl_generator_cpp_TEMPLATE_DIR}")
-
-  rosidl_generate_interfaces(${PROJECT_NAME} ${message_files}
-    SKIP_INSTALL
+  rosidl_generator_cpp_extras(
+    "${CMAKE_CURRENT_SOURCE_DIR}/bin/rosidl_generator_cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/rosidl_generator_cpp/__init__.py"
+    "${CMAKE_CURRENT_SOURCE_DIR}/resource"
   )
 
+  rosidl_generate_interfaces(${PROJECT_NAME} ${message_files} SKIP_INSTALL)
+  if(NOT WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
+  endif()
+
+  add_executable(test_messages_cpp "test/test_messages.cpp")
+  add_dependencies(test_messages_cpp ${PROJECT_NAME} ${rosidl_generate_interfaces_TARGET})
+  # include the built files directly, instead of their install location
+  include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
 endif()
+
 ament_package(
-  CONFIG_EXTRAS "rosidl_generator_cpp-extras.cmake.in"
+  CONFIG_EXTRAS "cmake/register_cpp.cmake" "rosidl_generator_cpp-extras.cmake.in"
 )
 
 install(
@@ -71,13 +66,3 @@ install(
   DIRECTORY include/
   DESTINATION include
 )
-
-if(AMENT_ENABLE_TESTING)
-  if(NOT WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
-  endif()
-
-  add_executable(test_messages_cpp "test/test_messages.cpp")
-  add_dependencies(test_messages_cpp ${PROJECT_NAME})
-  include_directories($ENV{AMENT_PREFIX_PATH}/include)
-endif()

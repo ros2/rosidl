@@ -34,6 +34,7 @@ def generate_cpp(generator_arguments_file):
 
     mapping_srvs = {
         os.path.join(template_dir, 'srv.hpp.template'): '%s.hpp',
+        os.path.join(template_dir, 'srv__meta.hpp.template'): '%s__meta.hpp',
         os.path.join(template_dir, 'srv__struct.hpp.template'): '%s__struct.hpp',
     }
     for template_file in mapping_msgs.keys():

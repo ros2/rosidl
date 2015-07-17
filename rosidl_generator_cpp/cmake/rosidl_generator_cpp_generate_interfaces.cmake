@@ -32,6 +32,7 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
     list(APPEND _generated_srv_files
       "${_output_path}/${_parent_folder}/${_header_name}.hpp"
       "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
+      "${_output_path}/${_parent_folder}/${_header_name}__meta.hpp"
     )
   else()
     message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
@@ -56,6 +57,7 @@ set(target_dependencies
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__meta.hpp.template"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__struct.hpp.template"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv.hpp.template"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__meta.hpp.template"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__struct.hpp.template"
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files})

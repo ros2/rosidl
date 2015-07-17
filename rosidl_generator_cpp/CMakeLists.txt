@@ -11,10 +11,11 @@ ament_export_include_directories(include)
 ament_python_install_package(${PROJECT_NAME})
 
 if(AMENT_ENABLE_TESTING)
-
-  find_package(ament_cmake_nose REQUIRED)
-  find_package(rosidl_cmake REQUIRED)
-  find_package(rosidl_generator_c REQUIRED)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+  #find_package(ament_cmake_nose REQUIRED)
+  #find_package(rosidl_cmake REQUIRED)
+  #find_package(rosidl_generator_c REQUIRED)
 
   set(message_files
     "msg/DynamicArrayNested.msg"

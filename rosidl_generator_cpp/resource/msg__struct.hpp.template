@@ -22,7 +22,6 @@ cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
 cpp_class = '%s_' % spec.base_type.type
 cpp_full_name = '%s%s' % (cpp_namespace, cpp_class)
 cpp_full_name_with_alloc = '%s<ContainerAllocator>' % (cpp_full_name)
-
 }@
 @
 #ifndef __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__struct__hpp__

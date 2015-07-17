@@ -13,9 +13,6 @@ ament_python_install_package(${PROJECT_NAME})
 if(AMENT_ENABLE_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
-  #find_package(ament_cmake_nose REQUIRED)
-  #find_package(rosidl_cmake REQUIRED)
-  #find_package(rosidl_generator_c REQUIRED)
 
   set(message_files
     "msg/DynamicArrayNested.msg"
@@ -31,12 +28,6 @@ if(AMENT_ENABLE_TESTING)
     "msg/StaticArrayBounded.msg"
   )
 
-  set(service_files
-    "srv/Empty.srv"
-    "srv/PrimitivesBounded.srv"
-    "srv/DynamicArray.srv"
-  )
-
   include(cmake/register_cpp.cmake)
   set(rosidl_generator_cpp_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -46,7 +37,7 @@ if(AMENT_ENABLE_TESTING)
     "${CMAKE_CURRENT_SOURCE_DIR}/resource"
   )
 
-  rosidl_generate_interfaces(${PROJECT_NAME} ${message_files} ${service_files}
+  rosidl_generate_interfaces(${PROJECT_NAME} ${message_files}
     SKIP_INSTALL
   )
 

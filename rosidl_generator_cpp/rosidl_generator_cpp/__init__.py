@@ -28,13 +28,13 @@ def generate_cpp(generator_arguments_file):
     template_dir = args['template_dir']
     mapping_msgs = {
         os.path.join(template_dir, 'msg.hpp.template'): '%s.hpp',
-        os.path.join(template_dir, 'msg__meta.hpp.template'): '%s__meta.hpp',
+        os.path.join(template_dir, 'msg__traits.hpp.template'): '%s__traits.hpp',
         os.path.join(template_dir, 'msg__struct.hpp.template'): '%s__struct.hpp',
     }
 
     mapping_srvs = {
         os.path.join(template_dir, 'srv.hpp.template'): '%s.hpp',
-        os.path.join(template_dir, 'srv__meta.hpp.template'): '%s__meta.hpp',
+        os.path.join(template_dir, 'srv__traits.hpp.template'): '%s__traits.hpp',
         os.path.join(template_dir, 'srv__struct.hpp.template'): '%s__struct.hpp',
     }
     for template_file in mapping_msgs.keys():

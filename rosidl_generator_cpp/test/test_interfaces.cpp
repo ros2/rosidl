@@ -27,10 +27,6 @@
 #include <rosidl_generator_cpp/msg/static_array_nested_bounded.hpp>
 #include <rosidl_generator_cpp/msg/nested_bounded.hpp>
 
-#include <rosidl_generator_cpp/srv/empty.hpp>
-#include <rosidl_generator_cpp/srv/primitives_bounded.hpp>
-#include <rosidl_generator_cpp/srv/dynamic_array.hpp>
-
 template<typename T1, bool B>
 struct expect_bounded :
     std::enable_if<has_bounded_size<T1>::value == B, std::true_type> {};
@@ -61,8 +57,4 @@ int main(int argc, char ** argv)
   expect_bounded<rosidl_generator_cpp::msg::StaticArrayNested, false>::type static_array_nested;
 
   expect_bounded<rosidl_generator_cpp::msg::StaticArrayNestedBounded, true>::type static_array_nested_bounded;
-
-  expect_bounded<rosidl_generator_cpp::srv::Empty, true>::type empty_srv;
-  expect_bounded<rosidl_generator_cpp::srv::PrimitivesBounded, true>::type bounded_srv;
-  expect_bounded<rosidl_generator_cpp::srv::DynamicArray, false>::type dynamic_srv;
 }

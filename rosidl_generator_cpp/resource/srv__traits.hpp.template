@@ -1,0 +1,35 @@
+// generated from rosidl_generator_cpp/resource/srv__traits.hpp.template
+
+@#######################################################################
+@# EmPy template for generating <srv>__traits.hpp files
+@#
+@# Context:
+@#  - spec (rosidl_parser.ServiceSpecification)
+@#    Parsed specification of the .srv file
+@#  - get_header_filename_from_msg_name (function)
+@#######################################################################
+@
+@{
+cpp_namespace = '%s::srv::' % (spec.pkg_name)
+}@
+
+#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__struct.hpp"
+
+#ifndef __ALL_MSG__BASIC_TEMPLATES
+#define __ALL_MSG__BASIC_TEMPLATES
+
+  template<typename T>
+  struct has_bounded_size { };
+
+#endif  /* __ALL_MSG__BASIC_TEMPLATES */
+
+#ifndef __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__TEMPLATES
+#define __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__TEMPLATES
+  template <>
+  struct has_bounded_size<@(cpp_namespace)@(spec.srv_name)>
+  {
+    static const bool value = has_bounded_size<@(cpp_namespace)@(spec.srv_name)_Request>::value
+      && has_bounded_size<@(cpp_namespace)@(spec.srv_name)_Response>::value;
+  };
+
+#endif  // __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__TEMPLATES

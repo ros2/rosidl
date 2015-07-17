@@ -1,7 +1,7 @@
-// generated from rosidl_generator_cpp/resource/msg__meta.hpp.template
+// generated from rosidl_generator_cpp/resource/msg__traits.hpp.template
 
 @#######################################################################
-@# EmPy template for generating <msg>__meta.hpp files
+@# EmPy template for generating <msg>__traits.hpp files
 @#
 @# Context:
 @#  - spec (rosidl_parser.MessageSpecification)
@@ -51,7 +51,7 @@ cpp_bounded_types = ['bool', 'char', 'uint8_t', 'int8_t', 'uint16_t', 'int16_t',
 
 @{
 template_string=""
-if len(spec.fields) == 0:
+if not spec.fields:
   template_string = " true"
 else:
     for field in spec.fields:

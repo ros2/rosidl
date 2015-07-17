@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <cstdio>
 #include <type_traits>
 
 #include <rosidl_generator_cpp/msg/empty.hpp>
@@ -33,10 +32,8 @@
 #include <rosidl_generator_cpp/srv/dynamic_array.hpp>
 
 template<typename T1, bool B>
-struct expect_bounded : std::enable_if<has_bounded_size<T1>::value == B, std::true_type>
-{
-};
-
+struct expect_bounded :
+    std::enable_if<has_bounded_size<T1>::value == B, std::true_type> {};
 
 int main(int argc, char ** argv)
 {

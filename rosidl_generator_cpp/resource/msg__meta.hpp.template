@@ -16,8 +16,11 @@
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 
 cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
+
+cpp_bounded_types = ['bool', 'char', 'uint8_t', 'int8_t', 'uint16_t', 'int16_t', 'uint32_t', 'int32_t', 'uint64_t', 'int64_t', 'float', 'double']
 }@
 #include <stdint.h>
+#include <array>
 #include <string>
 #include <vector>
 
@@ -27,8 +30,7 @@ cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
   template<typename T>
   struct has_bounded_size { };
 
-@#@[for bounded_type in ['int8', 'int16', 'int32', 'int64', 'char', 'uint8', 'uint16', 'uint32', 'uint64']]@
-@[for bounded_type in ['bool', 'char', 'uint8_t', 'int8_t', 'uint16_t', 'int16_t', 'uint32_t', 'int32_t', 'uint64_t', 'int64_t', 'float', 'double']]@
+@[for bounded_type in cpp_bounded_types]@
   template<>
   struct has_bounded_size<@(bounded_type)> { static const bool value = true; };
 @[end for]@
@@ -67,5 +69,9 @@ else:
   struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)> {
     static const bool value =@(template_string);
   };
+
+//////////////////////////////////////
+
+
 
 #endif  /* __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__TEMPLATES */

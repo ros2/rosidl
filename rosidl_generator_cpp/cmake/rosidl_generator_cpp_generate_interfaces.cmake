@@ -78,9 +78,14 @@ rosidl_write_generator_arguments(
   TARGET_DEPENDENCIES ${target_dependencies}
 )
 
+get_filename_component(generator_module_path ${rosidl_generator_cpp_GENERATOR_FILES} DIRECTORY)
+get_filename_component(generator_module_path ${generator_module_path} DIRECTORY)
+
+set(TMP_PYTHONPATH $ENV{PYTHONPATH}:${generator_module_path})
+
 add_custom_command(
   OUTPUT ${_generated_msg_files} ${_generated_srv_files}
-  COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_cpp_BIN}
+  COMMAND PYTHONPATH=${TMP_PYTHONPATH} ${PYTHON_EXECUTABLE} ${rosidl_generator_cpp_BIN}
   --generator-arguments-file "${generator_arguments_file}"
   DEPENDS ${target_dependencies}
   COMMENT "Generating C++ code for ROS interfaces"

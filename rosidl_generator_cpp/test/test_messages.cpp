@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <cstdio>
+#include <type_traits>
 
 #include <rosidl_generator_cpp/msg/empty.hpp>
 #include <rosidl_generator_cpp/msg/primitives.hpp>
@@ -27,39 +28,45 @@
 #include <rosidl_generator_cpp/msg/static_array_nested_bounded.hpp>
 #include <rosidl_generator_cpp/msg/nested_bounded.hpp>
 
+template<typename T1, bool B>
+struct expect_bounded : std::enable_if<has_bounded_size<T1>::value == B, std::true_type>
+{
+};
+
+
 int main(int argc, char ** argv)
 {
 
-  int retcode = 0;
-  if (!has_bounded_size<rosidl_generator_cpp::msg::Empty>::value) {
-    fprintf(stderr, "Empty::has_bounded_size returned false!\n");
-    retcode = 1;
-  }
+  expect_bounded<rosidl_generator_cpp::msg::Empty, true>::type empty_test;
 
-  if (has_bounded_size<rosidl_generator_cpp::msg::Primitives>::value) {
-    fprintf(stderr, "Primitives::has_bounded_size returned true!\n");
-    retcode = 1;
-  }
+  expect_bounded<rosidl_generator_cpp::msg::Primitives, false>::type primitives_test;
 
-  if (!has_bounded_size<rosidl_generator_cpp::msg::PrimitivesBounded>::value) {
-    fprintf(stderr, "PrimitivesBounded::has_bounded_size returned false!\n");
-    retcode = 1;
-  }
+  expect_bounded<rosidl_generator_cpp::msg::PrimitivesBounded, true>::type primitives_bounded_test;
 
-  if (has_bounded_size<rosidl_generator_cpp::msg::StaticArrayPrimitives>::value) {
-    fprintf(stderr, "StaticArrayPrimitives::has_bounded_size returned true!\n");
-    retcode = 1;
-  }
+  expect_bounded<rosidl_generator_cpp::msg::StaticArrayPrimitives, false>::type static_array_test;
 
-  if (!has_bounded_size<rosidl_generator_cpp::msg::StaticArrayBounded>::value) {
-    fprintf(stderr, "StaticArrayBounded::has_bounded_size returned false!\n");
-    retcode = 1;
-  }
+  expect_bounded<rosidl_generator_cpp::msg::StaticArrayBounded, true>::type static_bounded_test;
 
-  if (has_bounded_size<rosidl_generator_cpp::msg::DynamicArrayPrimitives>::value) {
-    fprintf(stderr, "DynamicArrayPrimitives::has_bounded_size returned true!\n");
-    retcode = 1;
-  }
+  expect_bounded<rosidl_generator_cpp::msg::StaticArrayPrimitives, false>::type static_primitives_test;
+
+  expect_bounded<rosidl_generator_cpp::msg::StaticArrayBounded, true>::type static_bounded;
+
+  expect_bounded<rosidl_generator_cpp::msg::DynamicArrayPrimitives, false>::type dynamic_array_primitives;
+
+  expect_bounded<rosidl_generator_cpp::msg::Nested, false>::type nested;
+
+  expect_bounded<rosidl_generator_cpp::msg::NestedBounded, true>::type nested_bounded;
+
+  expect_bounded<rosidl_generator_cpp::msg::DynamicArrayNested, false>::type dynamic_array_nested;
+
+  expect_bounded<rosidl_generator_cpp::msg::StaticArrayNested, false>::type static_array_nested;
+
+  expect_bounded<rosidl_generator_cpp::msg::StaticArrayNestedBounded, true>::type static_array_nested_bounded;
+
+  // TODO: Check these values at compile time.
+
+/*
+
 
   if (has_bounded_size<rosidl_generator_cpp::msg::Nested>::value) {
     fprintf(stderr, "Nested::has_bounded_size returned true!\n");
@@ -91,4 +98,5 @@ int main(int argc, char ** argv)
   }
 
   return retcode;
+*/
 }

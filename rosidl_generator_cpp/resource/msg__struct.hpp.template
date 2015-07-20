@@ -133,9 +133,12 @@ for field in spec.fields:
   typedef std::weak_ptr<@(cpp_full_name)<ContainerAllocator> const>
     ConstWeakPtr;
 
-  //comparison operators
+  // comparison operators
   bool operator==(const @(spec.base_type.type)_ & other) const
   {
+@[if not spec.fields]@
+    (void)other;
+@[end if]@
 @[for field in spec.fields]@
     if (this->@(field.name) != other.@(field.name)) {
       return false;

@@ -30,12 +30,12 @@
 
 
 template<typename T1, bool B>
-struct expect_fixed :
-    std::enable_if<has_fixed_size<T1>::value == B, std::true_type> {};
+struct expect_fixed
+  : std::enable_if<has_fixed_size<T1>::value == B, std::true_type>{};
 
 template<typename T1, bool B>
-struct expect_bounded :
-    std::enable_if<has_bounded_size<T1>::value == B, std::true_type> {};
+struct expect_bounded
+  : std::enable_if<has_bounded_size<T1>::value == B, std::true_type>{};
 
 int main(int argc, char ** argv)
 {
@@ -45,12 +45,14 @@ int main(int argc, char ** argv)
     expect_fixed<rosidl_generator_cpp::msg::PrimitivesBounded, true>::type primitives_bounded;
     expect_fixed<rosidl_generator_cpp::msg::StaticArrayPrimitives, false>::type static_array;
     expect_fixed<rosidl_generator_cpp::msg::StaticArrayBounded, true>::type static_bounded;
-    expect_fixed<rosidl_generator_cpp::msg::DynamicArrayPrimitives, false>::type dynamic_array_primitives;
+    expect_fixed<rosidl_generator_cpp::msg::DynamicArrayPrimitives,
+    false>::type dynamic_array_primitives;
     expect_fixed<rosidl_generator_cpp::msg::Nested, false>::type nested;
     expect_fixed<rosidl_generator_cpp::msg::NestedBounded, true>::type nested_bounded;
     expect_fixed<rosidl_generator_cpp::msg::DynamicArrayNested, false>::type dynamic_array_nested;
     expect_fixed<rosidl_generator_cpp::msg::StaticArrayNested, false>::type static_array_nested;
-    expect_fixed<rosidl_generator_cpp::msg::StaticArrayNestedBounded, true>::type static_array_nested_bounded;
+    expect_fixed<rosidl_generator_cpp::msg::StaticArrayNestedBounded,
+    true>::type static_array_nested_bounded;
 
     //expect_fixed<rosidl_generator_cpp::msg::DynamicArrayBounded, false>::type dynamic_array_bounded;
   }
@@ -62,23 +64,26 @@ int main(int argc, char ** argv)
     // StaticArrayPrimitives contains an array of unbounded strings, so it is not bounded
     expect_bounded<rosidl_generator_cpp::msg::StaticArrayPrimitives, false>::type static_array;
     expect_bounded<rosidl_generator_cpp::msg::StaticArrayBounded, true>::type static_bounded;
-    expect_bounded<rosidl_generator_cpp::msg::DynamicArrayPrimitives, false>::type dynamic_array_primitives;
+    expect_bounded<rosidl_generator_cpp::msg::DynamicArrayPrimitives,
+    false>::type dynamic_array_primitives;
     expect_bounded<rosidl_generator_cpp::msg::Nested, true>::type nested;
 
     expect_bounded<rosidl_generator_cpp::msg::NestedBounded, true>::type nested_bounded;
     expect_bounded<rosidl_generator_cpp::msg::DynamicArrayNested, false>::type dynamic_array_nested;
     expect_bounded<rosidl_generator_cpp::msg::StaticArrayNested, true>::type static_array_nested;
-    expect_bounded<rosidl_generator_cpp::msg::StaticArrayNestedBounded, true>::type static_array_nested_bounded;
-    expect_bounded<rosidl_generator_cpp::msg::DynamicArrayBounded, true>::type dynamic_array_bounded;
+    expect_bounded<rosidl_generator_cpp::msg::StaticArrayNestedBounded,
+    true>::type static_array_nested_bounded;
+    expect_bounded<rosidl_generator_cpp::msg::DynamicArrayBounded,
+    true>::type dynamic_array_bounded;
   }
 
-  size_t primitive_size_diff = bounded_size<rosidl_generator_cpp::msg::Primitives>::value - bounded_size<rosidl_generator_cpp::msg::PrimitivesBounded>::value;
-  if (primitive_size_diff != 10 + sizeof(std::string))
-  {
+  size_t primitive_size_diff = bounded_size<rosidl_generator_cpp::msg::Primitives>::value -
+    bounded_size<rosidl_generator_cpp::msg::PrimitivesBounded>::value;
+  if (primitive_size_diff != 10 + sizeof(std::string)) {
     fprintf(stderr, "Computed incorrect bounded_size for PrimitivesBounded!\n");
     return 1;
   }
 
-    fprintf(stderr, "All message tests passed.\n");
+  fprintf(stderr, "All message tests passed.\n");
   return 0;
 }

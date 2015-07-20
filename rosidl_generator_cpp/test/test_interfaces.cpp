@@ -84,6 +84,13 @@ int main(int argc, char ** argv)
     return 1;
   }
 
+  size_t nested_size_diff = bounded_size<rosidl_generator_cpp::msg::Nested>::value -
+    bounded_size<rosidl_generator_cpp::msg::NestedBounded>::value;
+  if (nested_size_diff != 10 + sizeof(std::string)) {
+    fprintf(stderr, "Computed incorrect bounded_size for NestedBounded!\n");
+    return 1;
+  }
+
   fprintf(stderr, "All message tests passed.\n");
   return 0;
 }

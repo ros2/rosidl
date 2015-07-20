@@ -122,7 +122,7 @@ for field in spec.fields:
             typestring = MSG_TYPE_TO_CPP[field.type.type]
         else:
             typestring = "{}::msg::{}".format(field.type.pkg_name, field.type.type)
-        size_template_string += "+ {} * sizeof({})".format(field.type.array_size, typestring)
+        size_template_string += "+ {} * bounded_size<{}>::value".format(field.type.array_size, typestring)
     elif not field.type.is_primitive_type():
         typestring = "{}::msg::{}".format(field.type.pkg_name, field.type.type)
         size_template_string += " + bounded_size<{}>::value - sizeof({})".format(typestring, typestring)

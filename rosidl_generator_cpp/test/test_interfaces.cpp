@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <iostream>
 #include <type_traits>
 
 #include <rosidl_generator_cpp/msg/empty.hpp>
@@ -68,8 +69,16 @@ int main(int argc, char ** argv)
     expect_bounded<rosidl_generator_cpp::msg::DynamicArrayNested, false>::type dynamic_array_nested;
     expect_bounded<rosidl_generator_cpp::msg::StaticArrayNested, true>::type static_array_nested;
     expect_bounded<rosidl_generator_cpp::msg::StaticArrayNestedBounded, true>::type static_array_nested_bounded;
-
-
     expect_bounded<rosidl_generator_cpp::msg::DynamicArrayBounded, true>::type dynamic_array_bounded;
   }
+
+  size_t primitive_size_diff = bounded_size<rosidl_generator_cpp::msg::Primitives>::value - bounded_size<rosidl_generator_cpp::msg::PrimitivesBounded>::value;
+  if (primitive_size_diff != 10 + sizeof(std::string))
+  {
+    fprintf(stderr, "Computed incorrect bounded_size for PrimitivesBounded!\n");
+    return 1;
+  }
+
+    fprintf(stderr, "All message tests passed.\n");
+  return 0;
 }

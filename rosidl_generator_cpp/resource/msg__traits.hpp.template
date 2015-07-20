@@ -33,9 +33,15 @@ cpp_bounded_types = ['bool', 'char', 'uint8_t', 'int8_t', 'uint16_t', 'int16_t',
   template<typename T>
   struct has_bounded_size { static const bool value = true; };
 
+  template<typename T>
+  struct bounded_size {};
+
 @[for bounded_type in cpp_bounded_types]@
   template<>
   struct has_fixed_size<@(bounded_type)> { static const bool value = true; };
+
+  template<>
+  struct bounded_size<@(bounded_type)> { static const size_t value = sizeof(@(bounded_type)); };
 @[end for]@
 
   template<>
@@ -76,7 +82,6 @@ else:
 bounded_template_string=""
 bounded = True
 
-
 bounded_template_string = ""
 if len(spec.fields):
     for field in spec.fields:
@@ -88,23 +93,44 @@ if len(spec.fields):
             break
 
     if not bounded:
-      bounded_template_string = " false"
+      bounded_template_string = "false "
     else:
         for field in spec.fields:
             if field.type.is_primitive_type() and field.type.type != 'string':
-              bounded_template_string += " has_bounded_size<{}>::value &&".format(MSG_TYPE_TO_CPP[field.type.type])
+              bounded_template_string += "has_bounded_size<{}>::value && ".format(MSG_TYPE_TO_CPP[field.type.type])
             elif not field.type.is_primitive_type():
-                bounded_template_string += "has_bounded_size<{}::msg::{}>::value &&".format(field.type.pkg_name, field.type.type)
+                bounded_template_string += "has_bounded_size<{}::msg::{}>::value && ".format(field.type.pkg_name, field.type.type)
 
-        bounded_template_string = bounded_template_string[:len(bounded_template_string)-3]
+        bounded_template_string = bounded_template_string[:len(bounded_template_string)-4]
 
 if not len(bounded_template_string):
-    bounded_template_string = " true"
+    bounded_template_string = "true"
 }@
 
   template<>
   struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)> {
-    static const bool value =@(bounded_template_string);
+    static const bool value = @(bounded_template_string);
+  };
+
+@{
+size_template_string = "sizeof({}{})".format(cpp_namespace, spec.base_type.type)
+for field in spec.fields:
+    if field.type.type == 'string' and (field.type.string_upper_bound is not None):
+        size_template_string += "+ {} * sizeof(char) ".format(field.type.string_upper_bound)
+    elif field.type.is_array and field.type.array_size is not None and field.type.is_upper_bound:
+        if field.type.is_primitive_type():
+            typestring = MSG_TYPE_TO_CPP[field.type.type]
+        else:
+            typestring = "{}::msg::{}".format(field.type.pkg_name, field.type.type)
+        size_template_string += "+ {} * sizeof({})".format(field.type.array_size, typestring)
+    elif not field.type.is_primitive_type():
+        typestring = "{}::msg::{}".format(field.type.pkg_name, field.type.type)
+        size_template_string += " + bounded_size<{}>::value - sizeof({})".format(typestring, typestring)
+}@
+
+  template<>
+  struct bounded_size<@(cpp_namespace)@(spec.base_type.type)>{
+    static const size_t value = @(size_template_string);
   };
 
 //////////////////////////////////////

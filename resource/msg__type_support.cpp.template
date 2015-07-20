@@ -44,6 +44,7 @@ namespace rosidl_typesupport_introspection_cpp
 size_t size_function__@(spec.base_type.type)__@(field.name)(const void * untyped_member)
 {
 @[if field.type.array_size and not field.type.is_upper_bound]@
+  (void)untyped_member;
   return @(field.type.array_size);
 @[else]@
   const std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> * member =

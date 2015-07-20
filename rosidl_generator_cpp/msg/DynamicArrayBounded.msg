@@ -1,0 +1,13 @@
+bool[<=2] bool_values
+byte[<=3] byte_values
+char[<=4] char_values
+float32[<=5] float32_values
+float64[<=6] float64_values
+int8[<=7] int8_values
+uint8[<=8] uint8_values
+int16[<=9] int16_values
+uint16[<=10] uint16_values
+int32[<=11] int32_values
+uint32[<=12] uint32_values
+int64[<=13] int64_values
+uint64[<=14] uint64_values

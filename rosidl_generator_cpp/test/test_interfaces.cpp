@@ -16,17 +16,22 @@
 #include <type_traits>
 
 #include <rosidl_generator_cpp/msg/empty.hpp>
-#include <rosidl_generator_cpp/msg/dynamic_array_bounded.hpp>
-#include <rosidl_generator_cpp/msg/dynamic_array_nested.hpp>
-#include <rosidl_generator_cpp/msg/dynamic_array_primitives.hpp>
-#include <rosidl_generator_cpp/msg/nested.hpp>
-#include <rosidl_generator_cpp/msg/nested_bounded.hpp>
-#include <rosidl_generator_cpp/msg/primitives.hpp>
+
+#include <rosidl_generator_cpp/msg/bounded_array_bounded.hpp>
+#include <rosidl_generator_cpp/msg/bounded_array_static.hpp>
+#include <rosidl_generator_cpp/msg/bounded_array_unbounded.hpp>
+
 #include <rosidl_generator_cpp/msg/primitives_bounded.hpp>
+#include <rosidl_generator_cpp/msg/primitives_static.hpp>
+#include <rosidl_generator_cpp/msg/primitives_unbounded.hpp>
+
 #include <rosidl_generator_cpp/msg/static_array_bounded.hpp>
-#include <rosidl_generator_cpp/msg/static_array_nested_bounded.hpp>
-#include <rosidl_generator_cpp/msg/static_array_nested.hpp>
-#include <rosidl_generator_cpp/msg/static_array_primitives.hpp>
+#include <rosidl_generator_cpp/msg/static_array_static.hpp>
+#include <rosidl_generator_cpp/msg/static_array_unbounded.hpp>
+
+#include <rosidl_generator_cpp/msg/unbounded_array_bounded.hpp>
+#include <rosidl_generator_cpp/msg/unbounded_array_static.hpp>
+#include <rosidl_generator_cpp/msg/unbounded_array_unbounded.hpp>
 
 
 template<typename T1, bool B>
@@ -37,56 +42,82 @@ template<typename T1, bool B>
 struct expect_bounded
   : std::enable_if<has_bounded_size<T1>::value == B, std::true_type>{};
 
+/*
+Covered cases:
+Empty message (fixed, bounded)
+
+PrimitivesStatic: Contains static (fixed, bounded)
+PrimitivesBounded: Contains bounded, dynamic (!fixed, bounded)
+PrimitivesUnbounded: Contains unbounded, dynamic (!fixed, !bounded)
+
+(Nested case)
+Static arrays of:
+PrimitivesStatic (StaticArrayStatic) (fixed, bounded)
+PrimitivesBounded (StaticArrayBounded) (!fixed, bounded)
+PrimitivesUnbounded (StaticArrayUnbounded) (!fixed, !bounded)
+
+Bounded arrays of:
+PrimitivesStatic (BoundedArrayStatic) (!fixed, bounded)
+PrimitivesBounded (BoundedArrayBounded) (!fixed, bounded)
+PrimitivesUnounded (BoundedArrayUnbounded) (!fixed, !bounded)
+
+Unbounded arrays of:
+PrimitivesStatic (UnboundedArrayStatic) (!fixed, !bounded)
+PrimitivesBounded (UnboundedArrayBounded) (!fixed, !bounded)
+PrimitivesUnbounded (UnboundedArrayUnbounded) (!fixed, !bounded)
+*/
+
 int main(int argc, char ** argv)
 {
-  {
-    expect_fixed<rosidl_generator_cpp::msg::Empty, true>::type empty;
-    expect_fixed<rosidl_generator_cpp::msg::Primitives, false>::type primitives;
-    expect_fixed<rosidl_generator_cpp::msg::PrimitivesBounded, true>::type primitives_bounded;
-    expect_fixed<rosidl_generator_cpp::msg::StaticArrayPrimitives, false>::type static_array;
-    expect_fixed<rosidl_generator_cpp::msg::StaticArrayBounded, true>::type static_bounded;
-    expect_fixed<rosidl_generator_cpp::msg::DynamicArrayPrimitives,
-    false>::type dynamic_array_primitives;
-    expect_fixed<rosidl_generator_cpp::msg::Nested, false>::type nested;
-    expect_fixed<rosidl_generator_cpp::msg::NestedBounded, true>::type nested_bounded;
-    expect_fixed<rosidl_generator_cpp::msg::DynamicArrayNested, false>::type dynamic_array_nested;
-    expect_fixed<rosidl_generator_cpp::msg::StaticArrayNested, false>::type static_array_nested;
-    expect_fixed<rosidl_generator_cpp::msg::StaticArrayNestedBounded,
-    true>::type static_array_nested_bounded;
+  { expect_fixed<rosidl_generator_cpp::msg::Empty, true>::type x; }
+  { expect_bounded<rosidl_generator_cpp::msg::Empty, true>::type x; }
 
-    //expect_fixed<rosidl_generator_cpp::msg::DynamicArrayBounded, false>::type dynamic_array_bounded;
-  }
+  { expect_fixed<rosidl_generator_cpp::msg::PrimitivesStatic, true>::type x; }
+  { expect_bounded<rosidl_generator_cpp::msg::PrimitivesStatic, true>::type x; }
 
-  {
-    expect_bounded<rosidl_generator_cpp::msg::Empty, true>::type empty;
-    expect_bounded<rosidl_generator_cpp::msg::Primitives, true>::type primitives;
-    expect_bounded<rosidl_generator_cpp::msg::PrimitivesBounded, true>::type primitives_bounded;
-    // StaticArrayPrimitives contains an array of unbounded strings, so it is not bounded
-    expect_bounded<rosidl_generator_cpp::msg::StaticArrayPrimitives, false>::type static_array;
-    expect_bounded<rosidl_generator_cpp::msg::StaticArrayBounded, true>::type static_bounded;
-    expect_bounded<rosidl_generator_cpp::msg::DynamicArrayPrimitives,
-    false>::type dynamic_array_primitives;
-    expect_bounded<rosidl_generator_cpp::msg::Nested, true>::type nested;
+  { expect_fixed<rosidl_generator_cpp::msg::PrimitivesBounded, false>::type x; }
+  { expect_bounded<rosidl_generator_cpp::msg::PrimitivesBounded, true>::type x; }
 
-    expect_bounded<rosidl_generator_cpp::msg::NestedBounded, true>::type nested_bounded;
-    expect_bounded<rosidl_generator_cpp::msg::DynamicArrayNested, false>::type dynamic_array_nested;
-    expect_bounded<rosidl_generator_cpp::msg::StaticArrayNested, true>::type static_array_nested;
-    expect_bounded<rosidl_generator_cpp::msg::StaticArrayNestedBounded,
-    true>::type static_array_nested_bounded;
-    expect_bounded<rosidl_generator_cpp::msg::DynamicArrayBounded,
-    true>::type dynamic_array_bounded;
-  }
+  { expect_fixed<rosidl_generator_cpp::msg::PrimitivesUnbounded, false>::type x; }
+  { expect_bounded<rosidl_generator_cpp::msg::PrimitivesUnbounded, false>::type x; }
 
-  size_t primitive_size_diff = bounded_size<rosidl_generator_cpp::msg::Primitives>::value -
-    bounded_size<rosidl_generator_cpp::msg::PrimitivesBounded>::value;
+  { expect_fixed<rosidl_generator_cpp::msg::StaticArrayStatic, true>::type x; }
+  { expect_bounded<rosidl_generator_cpp::msg::StaticArrayStatic, true>::type x; }
+
+  { expect_fixed<rosidl_generator_cpp::msg::StaticArrayBounded, false>::type x; }
+  { expect_bounded<rosidl_generator_cpp::msg::StaticArrayBounded, true>::type x; }
+
+  { expect_fixed<rosidl_generator_cpp::msg::StaticArrayUnbounded, false>::type x; }
+  { expect_bounded<rosidl_generator_cpp::msg::StaticArrayUnbounded, false>::type x; }
+
+  { expect_fixed<rosidl_generator_cpp::msg::BoundedArrayStatic, false>::type x; }
+  { expect_bounded<rosidl_generator_cpp::msg::BoundedArrayStatic, true>::type x; }
+
+  { expect_fixed<rosidl_generator_cpp::msg::BoundedArrayBounded, false>::type x; }
+  { expect_bounded<rosidl_generator_cpp::msg::BoundedArrayBounded, true>::type x; }
+
+  { expect_fixed<rosidl_generator_cpp::msg::BoundedArrayUnbounded, false>::type x; }
+  { expect_bounded<rosidl_generator_cpp::msg::BoundedArrayUnbounded, false>::type x; }
+
+  { expect_fixed<rosidl_generator_cpp::msg::UnboundedArrayStatic, false>::type x; }
+  { expect_bounded<rosidl_generator_cpp::msg::UnboundedArrayStatic, false>::type x; }
+
+  { expect_fixed<rosidl_generator_cpp::msg::UnboundedArrayBounded, false>::type x; }
+  { expect_bounded<rosidl_generator_cpp::msg::UnboundedArrayBounded, false>::type x; }
+
+  { expect_fixed<rosidl_generator_cpp::msg::UnboundedArrayUnbounded, false>::type x; }
+  { expect_bounded<rosidl_generator_cpp::msg::UnboundedArrayUnbounded, false>::type x; }
+
+  size_t primitive_size_diff = bounded_size<rosidl_generator_cpp::msg::PrimitivesBounded>::value -
+    bounded_size<rosidl_generator_cpp::msg::PrimitivesStatic>::value;
   if (primitive_size_diff != 10 + sizeof(std::string)) {
-    fprintf(stderr, "Computed incorrect bounded_size for PrimitivesBounded!\n");
+    fprintf(stderr, "Computed incorrect bounded_size for PrimitivesStatic!\n");
     return 1;
   }
 
-  size_t nested_size_diff = bounded_size<rosidl_generator_cpp::msg::Nested>::value -
-    bounded_size<rosidl_generator_cpp::msg::NestedBounded>::value;
-  if (nested_size_diff != 10 + sizeof(std::string)) {
+  size_t nested_size_diff = bounded_size<rosidl_generator_cpp::msg::StaticArrayBounded>::value -
+    bounded_size<rosidl_generator_cpp::msg::StaticArrayStatic>::value;
+  if (nested_size_diff != (10 + sizeof(std::string))*3) {
     fprintf(stderr, "Computed incorrect bounded_size for NestedBounded!\n");
     return 1;
   }

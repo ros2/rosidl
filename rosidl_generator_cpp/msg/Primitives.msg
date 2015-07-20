@@ -11,4 +11,4 @@ int32 int32_value
 uint32 uint32_value
 int64 int64_value
 uint64 uint64_value
-string string_value
+string<=8 string_value

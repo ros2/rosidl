@@ -28,19 +28,21 @@ cpp_bounded_types = ['bool', 'char', 'uint8_t', 'int8_t', 'uint16_t', 'int16_t',
 #define __ALL_MSG__BASIC_TEMPLATES
 
   template<typename T>
-  struct has_bounded_size { };
+  struct has_fixed_size { };
+
+  template<typename T>
+  struct has_bounded_size { static const bool value = true; };
 
 @[for bounded_type in cpp_bounded_types]@
   template<>
-  struct has_bounded_size<@(bounded_type)> { static const bool value = true; };
+  struct has_fixed_size<@(bounded_type)> { static const bool value = true; };
 @[end for]@
 
-  // TODO(jacquelinekay): for now, all dynamically sized arrays and strings are considered unbounded
   template<>
-  struct has_bounded_size<std::string> { static const bool value = false; };
+  struct has_fixed_size<std::string> { static const bool value = false; };
 
   template<typename T>
-  struct has_bounded_size<std::vector<T>> { static const bool value = false; };
+  struct has_fixed_size<std::vector<T>> { static const bool value = false; };
 
 #endif  /* __ALL_MSG__BASIC_TEMPLATES */
 
@@ -50,24 +52,59 @@ cpp_bounded_types = ['bool', 'char', 'uint8_t', 'int8_t', 'uint16_t', 'int16_t',
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.hpp"
 
 @{
-template_string=""
+fixed_template_string=""
 if not spec.fields:
-  template_string = " true"
+  fixed_template_string = " true"
 else:
     for field in spec.fields:
         if field.type.type == 'string':
-            template_string += " has_bounded_size<std::string>::value &&"
+            fixed_template_string += " has_fixed_size<std::string>::value &&"
         elif field.type.is_primitive_type():
-            template_string += " has_bounded_size<{}>::value &&".format(MSG_TYPE_TO_CPP[field.type.type])
+            fixed_template_string += " has_fixed_size<{}>::value &&".format(MSG_TYPE_TO_CPP[field.type.type])
         else:
-            template_string += " has_bounded_size<{}::msg::{}>::value &&".format(field.type.pkg_name, field.type.type)
+            fixed_template_string += " has_fixed_size<{}::msg::{}>::value &&".format(field.type.pkg_name, field.type.type)
 
-    template_string = template_string[:len(template_string)-3]
+    fixed_template_string = fixed_template_string[:len(fixed_template_string)-3]
+}@
+
+  template<>
+  struct has_fixed_size<@(cpp_namespace)@(spec.base_type.type)> {
+    static const bool value =@(fixed_template_string);
+  };
+
+@{
+bounded_template_string=""
+bounded = True
+
+
+bounded_template_string = ""
+if len(spec.fields):
+    for field in spec.fields:
+        if field.type.type == 'string' and (field.type.string_upper_bound is None):
+            bounded = False
+            break
+        elif field.type.is_array and field.type.array_size is None and (not field.type.is_upper_bound):
+            bounded = False
+            break
+
+    if not bounded:
+      bounded_template_string = " false"
+    else:
+        for field in spec.fields:
+            if field.type.is_primitive_type() and field.type.type != 'string':
+              bounded_template_string += " has_bounded_size<{}>::value &&".format(MSG_TYPE_TO_CPP[field.type.type])
+            elif not field.type.is_primitive_type():
+                bounded_template_string += "has_bounded_size<{}::msg::{}>::value &&".format(field.type.pkg_name, field.type.type)
+
+        bounded_template_string = bounded_template_string[:len(bounded_template_string)-3]
+
+if not len(bounded_template_string):
+    bounded_template_string = " true"
 }@
 
   template<>
   struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)> {
-    static const bool value =@(template_string);
+    static const bool value =@(bounded_template_string);
   };
 
 //////////////////////////////////////

@@ -15,17 +15,18 @@ if(AMENT_ENABLE_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   set(message_files
-    "msg/DynamicArrayNested.msg"
+    "msg/DynamicArrayBounded.msg"
     "msg/DynamicArrayPrimitives.msg"
+    "msg/DynamicArrayNested.msg"
     "msg/Empty.msg"
     "msg/Nested.msg"
     "msg/NestedBounded.msg"
     "msg/Primitives.msg"
     "msg/PrimitivesBounded.msg"
+    "msg/StaticArrayBounded.msg"
     "msg/StaticArrayNested.msg"
     "msg/StaticArrayNestedBounded.msg"
     "msg/StaticArrayPrimitives.msg"
-    "msg/StaticArrayBounded.msg"
   )
 
   include(cmake/register_cpp.cmake)

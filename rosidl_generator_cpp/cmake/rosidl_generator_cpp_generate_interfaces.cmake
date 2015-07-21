@@ -25,12 +25,14 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   if("${_parent_folder} " STREQUAL "msg ")
     list(APPEND _generated_msg_files
       "${_output_path}/${_parent_folder}/${_header_name}.hpp"
+      "${_output_path}/${_parent_folder}/${_header_name}__traits.hpp"
       "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
     )
   elseif("${_parent_folder} " STREQUAL "srv ")
     list(APPEND _generated_srv_files
       "${_output_path}/${_parent_folder}/${_header_name}.hpp"
       "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
+      "${_output_path}/${_parent_folder}/${_header_name}__traits.hpp"
     )
   else()
     message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
@@ -52,8 +54,10 @@ set(target_dependencies
   "${rosidl_generator_cpp_BIN}"
   ${rosidl_generator_cpp_GENERATOR_FILES}
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg.hpp.template"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__traits.hpp.template"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__struct.hpp.template"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv.hpp.template"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__traits.hpp.template"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__struct.hpp.template"
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files})
@@ -74,20 +78,30 @@ rosidl_write_generator_arguments(
   TARGET_DEPENDENCIES ${target_dependencies}
 )
 
+get_filename_component(generator_module_path ${rosidl_generator_cpp_GENERATOR_FILES} DIRECTORY)
+get_filename_component(generator_module_path ${generator_module_path} DIRECTORY)
+
+set(TMP_PYTHONPATH $ENV{PYTHONPATH}:${generator_module_path})
+
 add_custom_command(
   OUTPUT ${_generated_msg_files} ${_generated_srv_files}
-  COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_cpp_BIN}
+  COMMAND PYTHONPATH=${TMP_PYTHONPATH} ${PYTHON_EXECUTABLE} ${rosidl_generator_cpp_BIN}
   --generator-arguments-file "${generator_arguments_file}"
   DEPENDS ${target_dependencies}
   COMMENT "Generating C++ code for ROS interfaces"
   VERBATIM
 )
 
-add_custom_target(
+if (TARGET ${rosidl_generate_interfaces_TARGET}__cpp)
+  message(WARNING "Custom target ${rosidl_generate_interfaces_TARGET}__cpp already exists")
+else()
+  add_custom_target(
   ${rosidl_generate_interfaces_TARGET}__cpp
   DEPENDS
   ${_generated_msg_files} ${_generated_srv_files}
 )
+endif()
+
 add_dependencies(
   ${rosidl_generate_interfaces_TARGET}
   ${rosidl_generate_interfaces_TARGET}__cpp

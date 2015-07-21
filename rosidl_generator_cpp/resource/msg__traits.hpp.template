@@ -1,0 +1,156 @@
+// generated from rosidl_generator_cpp/resource/msg__traits.hpp.template
+
+@#######################################################################
+@# EmPy template for generating <msg>__traits.hpp files
+@#
+@# Context:
+@#  - spec (rosidl_parser.MessageSpecification)
+@#    Parsed specification of the .msg file
+@#  - subfolder (string)
+@#    The subfolder / subnamespace of the message
+@#    Either 'msg' or 'srv'
+@#  - get_header_filename_from_msg_name (function)
+@#######################################################################
+@
+@{
+from rosidl_generator_cpp import MSG_TYPE_TO_CPP
+
+cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
+
+cpp_bounded_types = ['bool', 'char', 'uint8_t', 'int8_t', 'uint16_t', 'int16_t', 'uint32_t', 'int32_t', 'uint64_t', 'int64_t', 'float', 'double']
+}@
+#include <stdint.h>
+#include <array>
+#include <string>
+#include <vector>
+
+#ifndef __ALL_MSG__BASIC_TEMPLATES
+#define __ALL_MSG__BASIC_TEMPLATES
+
+template<typename T>
+struct has_fixed_size {};
+
+template<typename T>
+struct has_bounded_size
+{
+  static const bool value = true;
+};
+
+template<typename T, typename Enable, typename = typename Enable::type>
+struct bounded_size_enable {};
+
+@[for bounded_type in cpp_bounded_types]@
+template<>
+struct has_fixed_size<@(bounded_type)>
+{
+  static const bool value = true;
+};
+
+template<typename Enable>
+struct bounded_size_enable<@(bounded_type), Enable>
+{
+  static const size_t value = sizeof(@(bounded_type));
+};
+
+@[end for]@
+
+template<typename T>
+struct bounded_size
+  : public bounded_size_enable<T, std::enable_if<has_bounded_size<T>::value>>{};
+
+#endif  /* __ALL_MSG__BASIC_TEMPLATES */
+
+#ifndef __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__TEMPLATES
+#define __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__TEMPLATES
+
+#include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.hpp"
+
+@{
+fixed_template_string=""
+if not spec.fields:
+    fixed_template_string = "true"
+else:
+    fixed = True
+    for field in spec.fields:
+        if field.type.type == 'string':
+            fixed = False
+            break
+        elif field.type.is_array and (field.type.is_upper_bound or field.type.array_size is None):
+            fixed = False
+            break
+        elif field.type.is_primitive_type():
+            fixed_template_string += "has_fixed_size<{}>::value && ".format(MSG_TYPE_TO_CPP[field.type.type])
+        else:
+            fixed_template_string += "has_fixed_size<{}::msg::{}>::value && ".format(field.type.pkg_name, field.type.type)
+    if not fixed:
+        fixed_template_string = "false"
+    else:
+        fixed_template_string = fixed_template_string[:len(fixed_template_string)-4]
+}@
+
+template<>
+struct has_fixed_size<@(cpp_namespace)@(spec.base_type.type)>
+{
+  static const bool value = @(fixed_template_string);
+};
+
+@{
+bounded_template_string=""
+bounded = True
+
+bounded_template_string = ""
+if len(spec.fields):
+    for field in spec.fields:
+        if field.type.type == 'string' and field.type.string_upper_bound is None:
+            bounded = False
+            break
+        elif field.type.is_array and field.type.array_size is None and not field.type.is_upper_bound:
+            bounded = False
+            break
+
+    if not bounded:
+      bounded_template_string = "false "
+    else:
+        for field in spec.fields:
+            if field.type.is_primitive_type() and field.type.type != 'string':
+              bounded_template_string += "has_bounded_size<{}>::value && ".format(MSG_TYPE_TO_CPP[field.type.type])
+            elif not field.type.is_primitive_type():
+                bounded_template_string += "has_bounded_size<{}::msg::{}>::value && ".format(field.type.pkg_name, field.type.type)
+
+        bounded_template_string = bounded_template_string[:len(bounded_template_string)-4]
+
+if not len(bounded_template_string):
+    bounded_template_string = "true"
+}@
+
+template<>
+struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)>
+{
+  static const bool value = @(bounded_template_string);
+};
+
+@{
+size_template_string = "sizeof({}{})".format(cpp_namespace, spec.base_type.type)
+for field in spec.fields:
+    if field.type.type == 'string' and (field.type.string_upper_bound is not None):
+        size_template_string += "+ {} * sizeof(char) ".format(field.type.string_upper_bound)
+    elif field.type.is_array and field.type.array_size is not None and field.type.is_upper_bound:
+        if field.type.is_primitive_type():
+            typestring = MSG_TYPE_TO_CPP[field.type.type]
+        else:
+            typestring = "{}::msg::{}".format(field.type.pkg_name, field.type.type)
+        size_template_string += "+ {} * bounded_size_enable<{}, Enable>::value".format(field.type.array_size, typestring)
+    elif not field.type.is_primitive_type():
+        typestring = "{}::msg::{}".format(field.type.pkg_name, field.type.type)
+        size_template_string += " + bounded_size_enable<{}, Enable>::value - sizeof({})".format(typestring, typestring)
+}@
+
+template<typename Enable>
+struct bounded_size_enable<@(cpp_namespace)@(spec.base_type.type), Enable>
+{
+  static const size_t value = @(size_template_string);
+};
+
+//////////////////////////////////////
+
+#endif  /* __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__TEMPLATES */

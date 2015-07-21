@@ -18,4 +18,7 @@
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_cmake_nose</test_depend>
+  <test_depend>rosidl_cmake</test_depend>
+  <test_depend>rosidl_generator_c</test_depend>
 </package>

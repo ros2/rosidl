@@ -58,19 +58,25 @@ struct @(spec.base_type.type)_
   @(spec.base_type.type)_(@(alloc_type + alloc_name))
 @# generate initializer lists
 @{
-op = ':'
+leading_colon = ':'
 for field in spec.fields:
     # dynamic arrays require allocator if available
     if alloc_name and field.type.is_array and \
             (field.type.array_size is None or field.type.is_upper_bound):
-        print('  %s %s(%s)' % (op, field.name, alloc_name))
-        op = ','
+        if leading_colon == ' ':
+            print(',')
+        print('  %s %s(%s)' % (leading_colon, field.name, alloc_name), end='')
+        leading_colon = ' '
 
     # if default value is available set it in initializer list
     elif field.type.is_primitive_type() and field.default_value is not None:
         cpp_value = value_to_cpp(field.type, field.default_value)
-        print('  %s %s(%s)' % (op, field.name, cpp_value))
-        op = ','
+        if leading_colon == ' ':
+            print(',')
+        print('  %s %s(%s)' % (leading_colon, field.name, cpp_value), end='')
+        leading_colon = ' '
+if leading_colon == ' ':
+    print()
 }@
   {
 @# generate constructor body

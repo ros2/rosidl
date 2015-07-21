@@ -19,7 +19,7 @@
 
 // Forward declaration which is implemented in the DDS specific rmw package
 rosidl_message_type_support_t *
-ROSIDL_GET_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.base_type.type));
+  ROSIDL_GET_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.base_type.type));
 
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.h"
 

@@ -58,6 +58,7 @@ struct @(spec.base_type.type)_
   @(spec.base_type.type)_(@(alloc_type + alloc_name))
 @# generate initializer lists
 @{
+used_alloc_name = False
 leading_colon = ':'
 for field in spec.fields:
     # dynamic arrays require allocator if available
@@ -66,6 +67,7 @@ for field in spec.fields:
         if leading_colon == ' ':
             print(',')
         print('  %s %s(%s)' % (leading_colon, field.name, alloc_name), end='')
+        used_alloc_name = True
         leading_colon = ' '
 
     # if default value is available set it in initializer list
@@ -80,6 +82,9 @@ if leading_colon == ' ':
 }@
   {
 @# generate constructor body
+@[if alloc_name and not used_alloc_name]@
+    (void)@(alloc_name);
+@[end if]@
 @{
 for field in spec.fields:
     # default values of dynamic arrays with allocators if available

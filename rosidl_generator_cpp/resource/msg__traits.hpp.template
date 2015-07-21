@@ -33,16 +33,21 @@ cpp_bounded_types = ['bool', 'char', 'uint8_t', 'int8_t', 'uint16_t', 'int16_t',
   template<typename T>
   struct has_bounded_size { static const bool value = true; };
 
-  template<typename T>
-  struct bounded_size {};
+  template<typename T, typename Enable, typename = typename Enable::type>
+  struct bounded_size_enable { };
 
 @[for bounded_type in cpp_bounded_types]@
   template<>
   struct has_fixed_size<@(bounded_type)> { static const bool value = true; };
 
-  template<>
-  struct bounded_size<@(bounded_type)> { static const size_t value = sizeof(@(bounded_type)); };
+  template<typename Enable>
+  struct bounded_size_enable<@(bounded_type), Enable> { static const size_t value = sizeof(@(bounded_type)); };
+
 @[end for]@
+
+  template<typename T>
+  struct bounded_size : public bounded_size_enable<T, std::enable_if<has_bounded_size<T>::value>>
+  { };
 
 #endif  /* __ALL_MSG__BASIC_TEMPLATES */
 
@@ -123,16 +128,17 @@ for field in spec.fields:
             typestring = MSG_TYPE_TO_CPP[field.type.type]
         else:
             typestring = "{}::msg::{}".format(field.type.pkg_name, field.type.type)
-        size_template_string += "+ {} * bounded_size<{}>::value".format(field.type.array_size, typestring)
+        size_template_string += "+ {} * bounded_size_enable<{}, Enable>::value".format(field.type.array_size, typestring)
     elif not field.type.is_primitive_type():
         typestring = "{}::msg::{}".format(field.type.pkg_name, field.type.type)
-        size_template_string += " + bounded_size<{}>::value - sizeof({})".format(typestring, typestring)
+        size_template_string += " + bounded_size_enable<{}, Enable>::value - sizeof({})".format(typestring, typestring)
 }@
 
-  template<>
-  struct bounded_size<@(cpp_namespace)@(spec.base_type.type)>{
+  template<typename Enable>
+  struct bounded_size_enable<@(cpp_namespace)@(spec.base_type.type), Enable>{
     static const size_t value = @(size_template_string);
   };
+
 
 //////////////////////////////////////
 

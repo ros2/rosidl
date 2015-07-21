@@ -27,27 +27,36 @@ cpp_bounded_types = ['bool', 'char', 'uint8_t', 'int8_t', 'uint16_t', 'int16_t',
 #ifndef __ALL_MSG__BASIC_TEMPLATES
 #define __ALL_MSG__BASIC_TEMPLATES
 
-  template<typename T>
-  struct has_fixed_size { };
+template<typename T>
+struct has_fixed_size {};
 
-  template<typename T>
-  struct has_bounded_size { static const bool value = true; };
+template<typename T>
+struct has_bounded_size
+{
+  static const bool value = true;
+};
 
-  template<typename T, typename Enable, typename = typename Enable::type>
-  struct bounded_size_enable { };
+template<typename T, typename Enable, typename = typename Enable::type>
+struct bounded_size_enable {};
 
 @[for bounded_type in cpp_bounded_types]@
-  template<>
-  struct has_fixed_size<@(bounded_type)> { static const bool value = true; };
+template<>
+struct has_fixed_size<@(bounded_type)>
+{
+  static const bool value = true;
+};
 
-  template<typename Enable>
-  struct bounded_size_enable<@(bounded_type), Enable> { static const size_t value = sizeof(@(bounded_type)); };
+template<typename Enable>
+struct bounded_size_enable<@(bounded_type), Enable>
+{
+  static const size_t value = sizeof(@(bounded_type));
+};
 
 @[end for]@
 
-  template<typename T>
-  struct bounded_size : public bounded_size_enable<T, std::enable_if<has_bounded_size<T>::value>>
-  { };
+template<typename T>
+struct bounded_size
+  : public bounded_size_enable<T, std::enable_if<has_bounded_size<T>::value>>{};
 
 #endif  /* __ALL_MSG__BASIC_TEMPLATES */
 
@@ -59,7 +68,7 @@ cpp_bounded_types = ['bool', 'char', 'uint8_t', 'int8_t', 'uint16_t', 'int16_t',
 @{
 fixed_template_string=""
 if not spec.fields:
-  fixed_template_string = "true"
+    fixed_template_string = "true"
 else:
     fixed = True
     for field in spec.fields:
@@ -79,10 +88,11 @@ else:
         fixed_template_string = fixed_template_string[:len(fixed_template_string)-4]
 }@
 
-  template<>
-  struct has_fixed_size<@(cpp_namespace)@(spec.base_type.type)> {
-    static const bool value =@(fixed_template_string);
-  };
+template<>
+struct has_fixed_size<@(cpp_namespace)@(spec.base_type.type)>
+{
+  static const bool value = @(fixed_template_string);
+};
 
 @{
 bounded_template_string=""
@@ -113,10 +123,11 @@ if not len(bounded_template_string):
     bounded_template_string = "true"
 }@
 
-  template<>
-  struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)> {
-    static const bool value = @(bounded_template_string);
-  };
+template<>
+struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)>
+{
+  static const bool value = @(bounded_template_string);
+};
 
 @{
 size_template_string = "sizeof({}{})".format(cpp_namespace, spec.base_type.type)
@@ -134,14 +145,12 @@ for field in spec.fields:
         size_template_string += " + bounded_size_enable<{}, Enable>::value - sizeof({})".format(typestring, typestring)
 }@
 
-  template<typename Enable>
-  struct bounded_size_enable<@(cpp_namespace)@(spec.base_type.type), Enable>{
-    static const size_t value = @(size_template_string);
-  };
-
+template<typename Enable>
+struct bounded_size_enable<@(cpp_namespace)@(spec.base_type.type), Enable>
+{
+  static const size_t value = @(size_template_string);
+};
 
 //////////////////////////////////////
-
-
 
 #endif  /* __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__TEMPLATES */

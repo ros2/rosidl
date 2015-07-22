@@ -102,17 +102,19 @@ add_dependencies(
   ${rosidl_generate_interfaces_TARGET}__cpp
 )
 
-if(NOT "${_generated_msg_files} " STREQUAL " ")
-  install(
-    FILES ${_generated_msg_files}
-    DESTINATION "include/${PROJECT_NAME}/msg"
-  )
-endif()
-if(NOT "${_generated_srv_files} " STREQUAL " ")
-  install(
-    FILES ${_generated_srv_files}
-    DESTINATION "include/${PROJECT_NAME}/srv"
-  )
+if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
+  if(NOT "${_generated_msg_files} " STREQUAL " ")
+    install(
+      FILES ${_generated_msg_files}
+      DESTINATION "include/${PROJECT_NAME}/msg"
+    )
+  endif()
+  if(NOT "${_generated_srv_files} " STREQUAL " ")
+    install(
+      FILES ${_generated_srv_files}
+      DESTINATION "include/${PROJECT_NAME}/srv"
+    )
+  endif()
 endif()
 
 ament_export_include_directories(include)

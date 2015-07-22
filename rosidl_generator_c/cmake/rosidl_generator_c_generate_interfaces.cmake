@@ -94,10 +94,12 @@ if(NOT "${_generated_msg_files} " STREQUAL " ")
     ${rosidl_generate_interfaces_TARGET}__c
   )
 
-  install(
-    FILES ${_generated_msg_files}
-    DESTINATION "include/${PROJECT_NAME}/msg"
-  )
+  if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
+    install(
+      FILES ${_generated_msg_files}
+      DESTINATION "include/${PROJECT_NAME}/msg"
+    )
+  endif()
 
   ament_export_include_directories(include)
 endif()

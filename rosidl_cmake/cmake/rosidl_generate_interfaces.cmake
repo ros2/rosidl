@@ -122,12 +122,21 @@ macro(rosidl_generate_interfaces target)
     ament_index_register_resource("rosidl_interfaces" CONTENT "${_idl_files_lines}")
   endif()
 
+  # collect package names of recursive dependencies
+  set(_recursive_dependencies)
+  foreach(_dep ${_ARG_DEPENDENCIES})
+    list_append_unique(_recursive_dependencies "${_dep}")
+    foreach(_dep2 ${${_dep}_RECURSIVE_DEPENDENCIES})
+      list_append_unique(_recursive_dependencies "${_dep2}")
+    endforeach()
+  endforeach()
+
   # generators must be executed in topological order
   # which is ensured by every generator finding its dependencies first
   # and then registering itself as an extension
   set(rosidl_generate_interfaces_TARGET ${target})
   set(rosidl_generate_interfaces_IDL_FILES ${_idl_files})
-  set(rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES ${_ARG_DEPENDENCIES})
+  set(rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES ${_recursive_dependencies})
   set(rosidl_generate_interfaces_SKIP_INSTALL ${_ARG_SKIP_INSTALL})
   ament_execute_extensions("rosidl_generate_interfaces")
 

@@ -1,0 +1,13 @@
+bool[3] bool_value
+byte[3] byte_value
+char[3] char_value
+float32[3] float32_value
+float64[3] float64_value
+int8[3] int8_value
+uint8[3] uint8_value
+int16[3] int16_value
+uint16[3] uint16_value
+int32[3] int32_value
+uint32[3] uint32_value
+int64[3] int64_value
+uint64[3] uint64_value

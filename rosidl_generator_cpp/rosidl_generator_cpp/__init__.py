@@ -29,11 +29,13 @@ def generate_cpp(generator_arguments_file):
     mapping_msgs = {
         os.path.join(template_dir, 'msg.hpp.template'): '%s.hpp',
         os.path.join(template_dir, 'msg__struct.hpp.template'): '%s__struct.hpp',
+        os.path.join(template_dir, 'msg__traits.hpp.template'): '%s__traits.hpp',
     }
 
     mapping_srvs = {
         os.path.join(template_dir, 'srv.hpp.template'): '%s.hpp',
         os.path.join(template_dir, 'srv__struct.hpp.template'): '%s__struct.hpp',
+        os.path.join(template_dir, 'srv__traits.hpp.template'): '%s__traits.hpp',
     }
     for template_file in mapping_msgs.keys():
         assert os.path.exists(template_file)

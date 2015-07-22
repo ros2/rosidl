@@ -12,6 +12,7 @@
 #ifndef __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__hpp__
 #define __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__hpp__
 
+#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__traits.hpp"
 #include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__struct.hpp"
 
 #endif  // __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__hpp__

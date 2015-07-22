@@ -104,11 +104,13 @@ add_dependencies(
   ${rosidl_generate_interfaces_TARGET}__cpp
 )
 
-install(
-  TARGETS ${rosidl_generate_interfaces_TARGET}${_target_suffix}
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
-)
+if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
+  install(
+    TARGETS ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+  )
+endif()
 
 ament_export_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix})

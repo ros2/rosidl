@@ -128,6 +128,7 @@ macro(rosidl_generate_interfaces target)
   set(rosidl_generate_interfaces_TARGET ${target})
   set(rosidl_generate_interfaces_IDL_FILES ${_idl_files})
   set(rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES ${_ARG_DEPENDENCIES})
+  set(rosidl_generate_interfaces_SKIP_INSTALL ${_ARG_SKIP_INSTALL})
   ament_execute_extensions("rosidl_generate_interfaces")
 
   if(NOT _ARG_SKIP_INSTALL)

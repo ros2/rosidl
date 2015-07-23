@@ -7,13 +7,18 @@ import sys
 try:
     from rosidl_generator_cpp import generate_cpp
 except ImportError:
-    # If rosidl_generator_cpp was not installed, find the source relative to this file
+    # modifying sys.path and importing the Python package with the same
+    # name as this script does not work on Windows
     rosidl_generator_cpp_root = os.path.dirname(os.path.dirname(__file__))
-    rosidl_generator_cpp_package = os.path.join(rosidl_generator_cpp_root, 'rosidl_generator_cpp')
-    if not os.path.exists(rosidl_generator_cpp_package):
+    rosidl_generator_cpp_module = os.path.join(
+        rosidl_generator_cpp_root, 'rosidl_generator_cpp', '__init__.py')
+    if not os.path.exists(rosidl_generator_cpp_module):
         raise
-    sys.path.insert(0, os.path.abspath(rosidl_generator_cpp_root))
-    from rosidl_generator_cpp import generate_cpp
+    from importlib.machinery import SourceFileLoader
+
+    loader = SourceFileLoader('rosidl_generator_cpp', rosidl_generator_cpp_module)
+    rosidl_generator_cpp = loader.load_module()
+    generate_cpp = rosidl_generator_cpp.generate_cpp
 
 
 def main(argv=sys.argv[1:]):

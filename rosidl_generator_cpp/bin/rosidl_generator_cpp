@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 import sys
 
 try:
@@ -13,6 +14,7 @@ except ImportError:
         raise
     sys.path.insert(0, os.path.abspath(rosidl_generator_cpp_root))
     from rosidl_generator_cpp import generate_cpp
+
 
 def main(argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(

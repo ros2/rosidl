@@ -87,14 +87,14 @@ add_custom_command(
   VERBATIM
 )
 
-if (TARGET ${rosidl_generate_interfaces_TARGET}__cpp)
+if(TARGET ${rosidl_generate_interfaces_TARGET}__cpp)
   message(WARNING "Custom target ${rosidl_generate_interfaces_TARGET}__cpp already exists")
 else()
   add_custom_target(
-  ${rosidl_generate_interfaces_TARGET}__cpp
-  DEPENDS
-  ${_generated_msg_files} ${_generated_srv_files}
-)
+    ${rosidl_generate_interfaces_TARGET}__cpp
+    DEPENDS
+    ${_generated_msg_files} ${_generated_srv_files}
+  )
 endif()
 
 add_dependencies(

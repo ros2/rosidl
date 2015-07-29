@@ -22,7 +22,6 @@ namespace rosidl_generator_cpp
 {
 
 template<typename T>
-ROSIDL_PUBLIC
 const rosidl_service_type_support_t * get_service_type_support_handle();
 
 }  // namespace rosidl_generator_cpp

@@ -31,22 +31,22 @@
 #endif
 
 #define ROSIDL_GENERATE_STATIC_ARRAY_CREATE(ContainingMsg, Field, Size) \
-  ROSIDL_Array__##ContainingMsg##__##Field * \
-  ROSIDL_Array__##ContainingMsg##__##Field##__create() \
+  ROSIDL_Array__ ## ContainingMsg ## __ ## Field * \
+  ROSIDL_Array__ ## ContainingMsg ## __ ## Field ## __create() \
   { \
     /* Initialize const parts on the stack */ \
-    ROSIDL_Array__##ContainingMsg##__##Field init = { \
+    ROSIDL_Array__ ## ContainingMsg ## __ ## Field init = { \
       .size = Size, .capacity = Size, .is_fixed = true}; \
     /* Allocate space for the returned pointer */ \
-    ROSIDL_Array__##ContainingMsg##__##Field * pointer = \
-      ROSIDL_ALLOC(ROSIDL_Array__##ContainingMsg##__##Field); \
+    ROSIDL_Array__ ## ContainingMsg ## __ ## Field * pointer = \
+      ROSIDL_ALLOC(ROSIDL_Array__ ## ContainingMsg ## __ ## Field); \
     /* Copy from the stack to the heap */ \
-    memcpy(pointer, &init, sizeof(ROSIDL_Array__##ContainingMsg##__##Field)); \
+    memcpy(pointer, &init, sizeof(ROSIDL_Array__ ## ContainingMsg ## __ ## Field)); \
     return pointer; \
   }
 
 #define ROSIDL_GENERATE_STATIC_ARRAY_DESTROY(Name, Size) \
-  void ROSIDL_Array__##Name##__destroy(ROSIDL_Array__##Name * array) \
+  void ROSIDL_Array__ ## Name ## __destroy(ROSIDL_Array__ ## Name * array) \
   { \
     free(array); \
   }
@@ -58,14 +58,14 @@
 
 // TODO(wjwwood): Error check malloc.
 #define ROSIDL_GENERATE_STATIC_ARRAY(ContainingMsg, Field, Type, Size) \
-  typedef Type ContainingMsg##__##Field##_t[Size]; \
-  typedef struct ROSIDL_Array__##ContainingMsg##__##Field \
+  typedef Type ContainingMsg ## __ ## Field ## _t[Size]; \
+  typedef struct ROSIDL_Array__ ## ContainingMsg ## __ ## Field \
   { \
-    ContainingMsg##__##Field##_t data; \
+    ContainingMsg ## __ ## Field ## _t data; \
     const size_t size; \
     const size_t capacity; \
     const bool is_fixed; \
-  } ROSIDL_Array__##ContainingMsg##__##Field; \
+  } ROSIDL_Array__ ## ContainingMsg ## __ ## Field; \
   ROSIDL_GENERATE_STATIC_ARRAY_CREATE(ContainingMsg, Field, Size) \
   ROSIDL_GENERATE_STATIC_ARRAY_DESTROY(ContainingMsg, Field, Size)
 
@@ -82,21 +82,21 @@
 //                and allocation without reproducing stuff in rmw.
 #define ROSIDL_GENERATE_PRIMITIVE_ARRAY(Name, Type) \
   /* Structure for containing dynamic length array of given type */ \
-  typedef struct ROSIDL_Array__##Name \
+  typedef struct ROSIDL_Array__ ## Name \
   { \
     Type * data; \
     size_t size; \
     size_t capacity; \
     const bool is_fixed; \
-  } ROSIDL_Array__##Name; \
+  } ROSIDL_Array__ ## Name; \
   /* Construction function for dynamic array structure */ \
-  ROSIDL_Array__##Name * ROSIDL_Array__##Name##__create(size_t size) \
+  ROSIDL_Array__ ## Name * ROSIDL_Array__ ## Name ## __create(size_t size) \
   { \
-    ROSIDL_Array__##Name * p = ROSIDL_ALLOC_ARRAY(ROSIDL_Array__##Name, size); \
+    ROSIDL_Array__ ## Name * p = ROSIDL_ALLOC_ARRAY(ROSIDL_Array__ ## Name, size); \
     return p; \
   } \
   /* Destructor function for dynamic array structure */ \
-  void ROSIDL_Array__##Name##__destroy(ROSIDL_Array__##Name * array) \
+  void ROSIDL_Array__ ## Name ## __destroy(ROSIDL_Array__ ## Name * array) \
   { \
     free(array); \
   }

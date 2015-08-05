@@ -34,7 +34,7 @@ typedef struct ROSIDL_PUBLIC rosidl_service_type_support_t
  * expands.
  */
 #define ROSIDL_GET_SERVICE_TYPE_SUPPORT(SrvPkgName, SrvName) \
-  rosidl_get_service_type_support__##SrvPkgName##__##SrvName()
+  rosidl_get_service_type_support__ ## SrvPkgName ## __ ## SrvName()
 
 #ifdef __cplusplus
 }

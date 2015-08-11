@@ -39,7 +39,15 @@ for field in spec.fields:
         print(
             '#include <%s/msg/%s.hpp>' %
             (field.type.pkg_name, get_header_filename_from_msg_name(field.type.type)))
+deprecated_macro_name = \
+    '_'.join(['DEPRECATED', spec.base_type.pkg_name, subfolder, spec.base_type.type])
 }@
+
+#ifndef _WIN32
+# define @(deprecated_macro_name) __attribute__((deprecated))
+#else
+# define @(deprecated_macro_name) __declspec(deprecated)
+#endif
 
 namespace @(spec.base_type.pkg_name)
 {
@@ -126,9 +134,9 @@ for field in spec.fields:
 
   // pointer types
   typedef @(cpp_full_name)<ContainerAllocator> *
-    Ptr;
+    RawPtr;
   typedef const @(cpp_full_name)<ContainerAllocator> *
-    ConstPtr;
+    ConstRawPtr;
   typedef std::shared_ptr<@(cpp_full_name)<ContainerAllocator>>
     SharedPtr;
   typedef std::shared_ptr<@(cpp_full_name)<ContainerAllocator> const>
@@ -143,6 +151,14 @@ for field in spec.fields:
     WeakPtr;
   typedef std::weak_ptr<@(cpp_full_name)<ContainerAllocator> const>
     ConstWeakPtr;
+
+  // pointer types similar to ROS 1, use SharedPtr / ConstSharedPtr instead
+  typedef @(deprecated_macro_name)
+    std::shared_ptr<@(cpp_full_name)<ContainerAllocator>>
+    Ptr;
+  typedef @(deprecated_macro_name)
+    std::shared_ptr<@(cpp_full_name)<ContainerAllocator> const>
+    ConstPtr;
 
   // comparison operators
   bool operator==(const @(spec.base_type.type)_ & other) const

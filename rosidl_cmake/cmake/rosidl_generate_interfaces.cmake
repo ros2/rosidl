@@ -133,7 +133,7 @@ macro(rosidl_generate_interfaces target)
 
   # check that all dependencies are actually valid message packages
   foreach(_dep ${_recursive_dependencies})
-    if (NOT DEFINED ${_dep}_INTERFACE_FILES)
+    if(NOT DEFINED ${_dep}_INTERFACE_FILES)
       message(FATAL_ERROR "The message package '${_dep}' does not declare the interface files")
     endif()
   endforeach()

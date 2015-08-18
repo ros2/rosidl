@@ -23,8 +23,8 @@ namespace srv
 
 struct @(spec.srv_name)
 {
-  typedef @(spec.pkg_name)::srv::@(spec.srv_name)_Request Request;
-  typedef @(spec.pkg_name)::srv::@(spec.srv_name)_Response Response;
+  using Request = @(spec.pkg_name)::srv::@(spec.srv_name)_Request;
+  using Response = @(spec.pkg_name)::srv::@(spec.srv_name)_Response;
 };
 
 }  // namespace srv

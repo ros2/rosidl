@@ -59,7 +59,7 @@ namespace @(subfolder)
 template<class ContainerAllocator>
 struct @(spec.base_type.type)_
 {
-  typedef @(spec.base_type.type)_<ContainerAllocator> Type;
+  using Type = @(spec.base_type.type)_<ContainerAllocator>;
 
 @# constructors (with and without allocator)
 @[for (alloc_type, alloc_name) in [['', ''], ['const ContainerAllocator & ', '_alloc']]]@
@@ -107,8 +107,8 @@ for field in spec.fields:
 
   // field types and members
 @[for field in spec.fields]@
-  typedef @(msg_type_to_cpp(field.type))
-    _@(field.name)_type;
+  using _@(field.name)_type =
+      @(msg_type_to_cpp(field.type));
   _@(field.name)_type @(field.name);
 @[end for]@
 
@@ -133,26 +133,27 @@ for field in spec.fields:
 @[end for]@
 
   // pointer types
-  typedef @(cpp_full_name)<ContainerAllocator> *
-    RawPtr;
-  typedef const @(cpp_full_name)<ContainerAllocator> *
-    ConstRawPtr;
-  typedef std::shared_ptr<@(cpp_full_name)<ContainerAllocator>>
-    SharedPtr;
-  typedef std::shared_ptr<@(cpp_full_name)<ContainerAllocator> const>
-    ConstSharedPtr;
+  using RawPtr =
+    @(cpp_full_name)<ContainerAllocator> *;
+  using ConstRawPtr =
+    const @(cpp_full_name)<ContainerAllocator> *;
+  using SharedPtr =
+    std::shared_ptr<@(cpp_full_name)<ContainerAllocator>>;
+  using ConstSharedPtr =
+    std::shared_ptr<@(cpp_full_name)<ContainerAllocator> const>;
 
-  typedef std::unique_ptr<@(cpp_full_name)<ContainerAllocator>>
-    UniquePtr;
-  typedef std::unique_ptr<@(cpp_full_name)<ContainerAllocator> const>
-    ConstUniquePtr;
+  using UniquePtr =
+    std::unique_ptr<@(cpp_full_name)<ContainerAllocator>>;
+  using ConstUniquePtr =
+    std::unique_ptr<@(cpp_full_name)<ContainerAllocator> const>;
 
-  typedef std::weak_ptr<@(cpp_full_name)<ContainerAllocator>>
-    WeakPtr;
-  typedef std::weak_ptr<@(cpp_full_name)<ContainerAllocator> const>
-    ConstWeakPtr;
+  using WeakPtr =
+    std::weak_ptr<@(cpp_full_name)<ContainerAllocator>>;
+  using ConstWeakPtr =
+    std::weak_ptr<@(cpp_full_name)<ContainerAllocator> const>;
 
   // pointer types similar to ROS 1, use SharedPtr / ConstSharedPtr instead
+  // NOTE: Can't use 'using' here because GNU C++ can't parse attributes properly
   typedef @(deprecated_macro_name)
     std::shared_ptr<@(cpp_full_name)<ContainerAllocator>>
     Ptr;
@@ -180,9 +181,9 @@ for field in spec.fields:
 
 }; // struct @(cpp_class)
 
-// typedef to use template instance with default allocator
-typedef @(cpp_full_name)<std::allocator<void>>
-  @(spec.base_type.type);
+// alias to use template instance with default allocator
+using @(spec.base_type.type) =
+    @(cpp_full_name)<std::allocator<void>>;
 
 // constants requiring out of line definition
 @[for c in spec.constants]@

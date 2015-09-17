@@ -15,5 +15,6 @@ endif()
 ament_package()
 
 if(AMENT_ENABLE_TESTING)
+  find_package(ament_cmake_nose REQUIRED)
   ament_add_nose_test(nosetests test)
 endif()

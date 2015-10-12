@@ -142,10 +142,16 @@ for field in spec.fields:
   using ConstSharedPtr =
     std::shared_ptr<@(cpp_full_name)<ContainerAllocator> const>;
 
-  using UniquePtr =
-    std::unique_ptr<@(cpp_full_name)<ContainerAllocator>>;
-  using ConstUniquePtr =
-    std::unique_ptr<@(cpp_full_name)<ContainerAllocator> const>;
+  template<typename Deleter = std::default_delete<@(cpp_full_name)<ContainerAllocator>>>
+  using UniquePtrWithDeleter =
+    std::unique_ptr<@(cpp_full_name)<ContainerAllocator>, Deleter>;
+
+  using UniquePtr = UniquePtrWithDeleter<>;
+
+  template<typename Deleter = std::default_delete<@(cpp_full_name)<ContainerAllocator>>>
+  using ConstUniquePtrWithDeleter =
+    std::unique_ptr<@(cpp_full_name)<ContainerAllocator> const, Deleter>;
+  using ConstUniquePtr = ConstUniquePtrWithDeleter<>;
 
   using WeakPtr =
     std::weak_ptr<@(cpp_full_name)<ContainerAllocator>>;

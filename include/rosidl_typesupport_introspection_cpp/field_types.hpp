@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef __rosidl_typesupport_introspection_cpp__field_types__hpp__
-#define __rosidl_typesupport_introspection_cpp__field_types__hpp__
+#ifndef ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__FIELD_TYPES_HPP_
+#define ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__FIELD_TYPES_HPP_
 
 #include <cstdint>
 
@@ -39,4 +39,4 @@ const uint8_t ROS_TYPE_MESSAGE = 15;
 
 }  // namespace rosidl_typesupport_introspection_cpp
 
-#endif  // __rosidl_typesupport_introspection_cpp__field_types__hpp__
+#endif  // ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__FIELD_TYPES_HPP_

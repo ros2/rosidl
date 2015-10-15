@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef __rosidl_typesupport_introspection_cpp__ServiceIntrospection__h__
-#define __rosidl_typesupport_introspection_cpp__ServiceIntrospection__h__
+#ifndef ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__SERVICE_INTROSPECTION_HPP_
+#define ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__SERVICE_INTROSPECTION_HPP_
 
 #include <cstddef>
 #include <cstdint>
 
-#include <rosidl_generator_c/service_type_support.h>
-#include <rosidl_generator_c/visibility_control.h>
+#include "rosidl_generator_c/service_type_support.h"
+#include "rosidl_generator_c/visibility_control.h"
 
-#include <rosidl_typesupport_introspection_cpp/message_introspection.hpp>
+#include "rosidl_typesupport_introspection_cpp/message_introspection.hpp"
 
 namespace rosidl_typesupport_introspection_cpp
 {
@@ -36,4 +36,4 @@ typedef struct ROSIDL_PUBLIC ServiceMembers
 
 }  // namespace rosidl_typesupport_introspection_cpp
 
-#endif  // __rosidl_typesupport_introspection_cpp__ServiceIntrospection__h__
+#endif  // ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__SERVICE_INTROSPECTION_HPP_

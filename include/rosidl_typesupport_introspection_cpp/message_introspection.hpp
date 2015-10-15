@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef __rosidl_typesupport_introspection_cpp__MessageIntrospection__h__
-#define __rosidl_typesupport_introspection_cpp__MessageIntrospection__h__
+#ifndef ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__MESSAGE_INTROSPECTION_HPP_
+#define ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__MESSAGE_INTROSPECTION_HPP_
 
 #include <cstddef>
 #include <cstdint>
 
-#include <rosidl_generator_c/message_type_support.h>
+#include "rosidl_generator_c/message_type_support.h"
 
 #include "rosidl_typesupport_introspection_cpp/visibility_control.h"
 
@@ -54,4 +54,4 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMembers
 
 }  // namespace rosidl_typesupport_introspection_cpp
 
-#endif  // __rosidl_typesupport_introspection_cpp__MessageIntrospection__h__
+#endif  // ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__MESSAGE_INTROSPECTION_HPP_

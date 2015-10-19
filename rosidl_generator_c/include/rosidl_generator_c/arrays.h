@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_C_ROSIDL_GENERATOR_C_ARRAYS_H_
-#define ROSIDL_GENERATOR_C_ROSIDL_GENERATOR_C_ARRAYS_H_
+#ifndef ROSIDL_GENERATOR_C__ARRAYS_H_
+#define ROSIDL_GENERATOR_C__ARRAYS_H_
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string>
 
 #ifdef __cplusplus
 #define ROSIDL_ALLOC(Type) static_cast<Type *>(malloc(sizeof(Type)))
@@ -118,4 +118,4 @@ ROSIDL_GENERATE_PRIMITIVE_ARRAY(uint64, uint64_t);
 ROSIDL_GENERATE_PRIMITIVE_ARRAY(int64, int64_t);
 ROSIDL_GENERATE_PRIMITIVE_ARRAY(string, char *);
 
-#endif /* ROSIDL_GENERATOR_C_ROSIDL_GENERATOR_C_ARRAYS_H_ */
+#endif  // ROSIDL_GENERATOR_C__ARRAYS_H_

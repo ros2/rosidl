@@ -61,6 +61,9 @@ struct @(spec.base_type.type)_
 {
   using Type = @(spec.base_type.type)_<ContainerAllocator>;
 
+  template<typename T>
+  using AllocRebind = typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<T>;
+
 @# constructors (with and without allocator)
 @[for (alloc_type, alloc_name) in [['', ''], ['const ContainerAllocator & ', '_alloc']]]@
   @(spec.base_type.type)_(@(alloc_type + alloc_name))

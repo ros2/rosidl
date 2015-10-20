@@ -55,6 +55,9 @@ if(AMENT_ENABLE_TESTING)
 
   add_executable(test_interfaces_cpp "test/test_interfaces.cpp")
   add_dependencies(test_interfaces_cpp ${PROJECT_NAME} ${rosidl_generate_interfaces_TARGET})
+
+  add_executable(test_allocator_interface_cpp "test/test_allocator_interface.cpp" "test/null_allocator.hpp")
+  add_dependencies(test_allocator_interface_cpp ${PROJECT_NAME} ${rosidl_generate_interfaces_TARGET})
   # include the built files directly, instead of their install location
   include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
 endif()

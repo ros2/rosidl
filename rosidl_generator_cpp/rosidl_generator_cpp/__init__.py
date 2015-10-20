@@ -92,7 +92,7 @@ MSG_TYPE_TO_CPP = {
     'uint64': 'uint64_t',
     'int64': 'int64_t',
     'string': 'std::basic_string<char, std::char_traits<char>, ' +
-              'std::allocator_traits<ContainerAllocator>::rebind_alloc<char>',
+              'AllocRebind<char>>',
 }
 
 
@@ -116,8 +116,7 @@ def msg_type_to_cpp(type_):
     if type_.is_array:
         if type_.array_size is None:
             return \
-                ('std::vector<%s, typename ContainerAllocator::template ' +
-                 'rebind<%s>::other>') % (cpp_type, cpp_type)
+                ('std::vector<%s, AllocRebind<%s>>') % (cpp_type, cpp_type)
         else:
             return 'std::array<%s, %u>' % (cpp_type, type_.array_size)
     else:

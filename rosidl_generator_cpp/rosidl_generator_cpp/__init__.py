@@ -92,7 +92,7 @@ MSG_TYPE_TO_CPP = {
     'uint64': 'uint64_t',
     'int64': 'int64_t',
     'string': 'std::basic_string<char, std::char_traits<char>, ' +
-              'typename ContainerAllocator::template rebind<char>::other>',
+              'std::allocator_traits<ContainerAllocator>::rebind_alloc<char>',
 }
 
 

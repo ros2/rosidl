@@ -19,8 +19,24 @@
 namespace rosidl_generator_cpp {
 namespace test {
 
+// Necessary for using custom allocator with std::basic_string in GCC 4.8
+// See: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=56437
 template<typename T>
-struct null_allocator {
+struct allocator_pointer_traits {
+  using size_type = std::size_t;
+  using pointer = T*;
+  using const_pointer = const pointer;
+  using difference_type = typename std::pointer_traits<pointer>::difference_type;
+  using reference = T&;
+  using const_reference = const reference;
+};
+
+template<>
+struct allocator_pointer_traits<void> {
+};
+
+template<typename T>
+struct null_allocator : public allocator_pointer_traits<T> {
   using value_type = T;
 
   null_allocator() {}
@@ -37,6 +53,14 @@ struct null_allocator {
     (void) ptr;
     (void) size;
   }
+
+  // Workaround for bug mentioned above
+  // rebind should not be required to implement allocator_traits
+  template<typename U>
+  struct rebind
+  {
+    typedef null_allocator<U> other;
+  };
 };
 
 template<typename T, typename U>

@@ -20,13 +20,10 @@
 #include "null_allocator.hpp"
 
 using namespace rosidl_generator_cpp;
+using namespace rosidl_generator_cpp::test;
 
 int main(int /*argc*/, char ** /*argv*/)
 {
-  // make sure null_allocator follows allocator_traits
-  test::null_allocator<void> alloc;
-  void * ptr = std::allocator_traits<test::null_allocator<void>>::allocate(alloc, 1);
-
   // Try to instantiate messages with a custom allocator
   msg::PrimitivesUnbounded_<test::null_allocator<void>> primitives;
 

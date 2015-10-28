@@ -36,7 +36,7 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember
   bool is_array_;
   size_t array_size_;
   bool is_upper_bound_;
-  unsigned long offset_;
+  uint32_t offset_;
   const void * default_value_;
   size_t (* size_function)(const void *);
   const void * (*get_const_function)(const void *, size_t index);
@@ -48,7 +48,7 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMembers
 {
   const char * package_name_;
   const char * message_name_;
-  unsigned long member_count_;
+  uint32_t member_count_;
   const MessageMember * members_;
 } MessageMembers;
 

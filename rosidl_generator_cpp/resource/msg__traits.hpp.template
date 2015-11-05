@@ -29,7 +29,7 @@ namespace rosidl_generator_traits
 #define __ROSIDL_GENERATOR_CPP_TRAITS
 
 template<typename T>
-struct has_fixed_size {};
+struct has_fixed_size : std::false_type {};
 
 #endif  /* __ROSIDL_GENERATOR_CPP_TRAITS */
 
@@ -59,10 +59,8 @@ else:
 }@
 
 template<>
-struct has_fixed_size<@(cpp_namespace)@(spec.base_type.type)>
-{
-  static const bool value = @(fixed_template_string);
-};
+struct has_fixed_size<@(cpp_namespace)@(spec.base_type.type)> :
+std::integral_constant<bool, @(fixed_template_string)> {};
 
 #endif  /* __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__traits__hpp__ */
 

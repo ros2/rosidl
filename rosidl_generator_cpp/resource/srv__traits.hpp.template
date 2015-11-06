@@ -22,18 +22,18 @@ namespace rosidl_generator_traits
 #define __ROSIDL_GENERATOR_CPP_TRAITS
 
 template<typename T>
-struct has_fixed_size {};
+struct has_fixed_size : std::false_type {};
 
 #endif  /* __ROSIDL_GENERATOR_CPP_TRAITS */
 
 #ifndef __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__traits__hpp__
 #define __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__traits__hpp__
 template <>
-struct has_fixed_size<@(cpp_namespace)@(spec.srv_name)>
-{
-  static const bool value = has_fixed_size<@(cpp_namespace)@(spec.srv_name)_Request>::value
-    && has_fixed_size<@(cpp_namespace)@(spec.srv_name)_Response>::value;
-};
+struct has_fixed_size<@(cpp_namespace)@(spec.srv_name)> :
+std::integral_constant<
+  bool,
+  has_fixed_size<@(cpp_namespace)@(spec.srv_name)_Request>::value &&
+  has_fixed_size<@(cpp_namespace)@(spec.srv_name)_Response>::value> {};
 
 #endif  // __@(spec.pkg_name)__srv__@(get_header_filename_from_msg_name(spec.srv_name))__traits__hpp__
 }  /* rosidl_generator_traits */

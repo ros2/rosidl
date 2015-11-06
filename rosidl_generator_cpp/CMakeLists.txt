@@ -53,8 +53,7 @@ if(AMENT_ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
   endif()
 
-  add_executable(test_interfaces_cpp "test/test_interfaces.cpp")
-  add_dependencies(test_interfaces_cpp ${PROJECT_NAME} ${rosidl_generate_interfaces_TARGET})
+  ament_add_gtest(test_interfaces_cpp test/test_interfaces.cpp)
   # include the built files directly, instead of their install location
   include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
 endif()

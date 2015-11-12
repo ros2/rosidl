@@ -19,7 +19,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <string>
+#include <string.h>
 
 #ifdef __cplusplus
 #define ROSIDL_ALLOC(Type) static_cast<Type *>(malloc(sizeof(Type)))

@@ -1,4 +1,5 @@
 // generated from rosidl_generator_cpp/resource/msg__traits.hpp.template
+// generated code does not contain a copyright notice
 
 @#######################################################################
 @# EmPy template for generating <msg>__traits.hpp files
@@ -13,12 +14,22 @@
 @#######################################################################
 @
 @{
+header_guard_parts = [
+    spec.base_type.pkg_name, subfolder,
+    get_header_filename_from_msg_name(spec.base_type.type) + '__traits_hpp']
+header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
+}@
+#ifndef @(header_guard_variable)
+#define @(header_guard_variable)
+
+@{
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 
 cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
 }@
-#include <array>
 #include <stdint.h>
+
+#include <array>
 #include <string>
 #include <vector>
 
@@ -31,10 +42,7 @@ namespace rosidl_generator_traits
 template<typename T>
 struct has_fixed_size : std::false_type {};
 
-#endif  /* __ROSIDL_GENERATOR_CPP_TRAITS */
-
-#ifndef __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__traits__hpp__
-#define __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__traits__hpp__
+#endif  // __ROSIDL_GENERATOR_CPP_TRAITS
 
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.hpp"
 
@@ -62,6 +70,6 @@ template<>
 struct has_fixed_size<@(cpp_namespace)@(spec.base_type.type)> :
 std::integral_constant<bool, @(fixed_template_string)> {};
 
-#endif  /* __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__traits__hpp__ */
+}  // namespace rosidl_generator_traits
 
-}  /* rosidl_generator_cpp_traits */
+#endif  // @(header_guard_variable)

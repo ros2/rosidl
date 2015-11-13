@@ -32,9 +32,7 @@ if(AMENT_ENABLE_TESTING)
   )
 
   add_executable(test_compilation_c test/test_compilation.c)
-  if(TARGET test_interfaces_c)
-    add_dependencies(test_interfaces_c ${PROJECT_NAME})
-  endif()
+  add_dependencies(test_compilation_c ${PROJECT_NAME})
   # include the built files directly, instead of their install location
   include_directories(include "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
 endif()

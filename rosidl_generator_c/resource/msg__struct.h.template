@@ -54,7 +54,7 @@ for field in spec.fields:
             array_type = MSG_TYPE_TO_C[field.type.type]
         else:
             # use the name of the complex type
-            array_type = field.type.type
+            array_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
         print('ROSIDL_GENERATE_STATIC_ARRAY(%s, %s, %s, %s);' %
              (c_full_name, field.name, array_type, field.type.array_size))
 }@

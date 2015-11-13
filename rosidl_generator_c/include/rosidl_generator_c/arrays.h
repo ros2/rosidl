@@ -45,8 +45,8 @@
     return pointer; \
   }
 
-#define ROSIDL_GENERATE_STATIC_ARRAY_DESTROY(Name, Size) \
-  void ROSIDL_Array__ ## Name ## __destroy(ROSIDL_Array__ ## Name * array) \
+#define ROSIDL_GENERATE_STATIC_ARRAY_DESTROY(ContainingMsg, Field) \
+  void ROSIDL_Array__ ## ContainingMsg ## __ ## Field ## __destroy(ROSIDL_Array__ ## ContainingMsg ## __ ## Field * array) \
   { \
     free(array); \
   }
@@ -67,7 +67,7 @@
     const bool is_fixed; \
   } ROSIDL_Array__ ## ContainingMsg ## __ ## Field; \
   ROSIDL_GENERATE_STATIC_ARRAY_CREATE(ContainingMsg, Field, Size) \
-  ROSIDL_GENERATE_STATIC_ARRAY_DESTROY(ContainingMsg, Field, Size)
+  ROSIDL_GENERATE_STATIC_ARRAY_DESTROY(ContainingMsg, Field)
 
 /* Used to create a struct and create and destroy functions for arrays.
  *

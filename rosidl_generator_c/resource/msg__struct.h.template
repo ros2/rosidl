@@ -39,9 +39,10 @@ c_full_name = '%s%s' % (c_namespace, c_struct)
 // include message dependencies
 @{
 for field in spec.fields:
-    pkg_name, type = field.type.pkg_name, field.type.type
     if not field.type.is_primitive_type():
-        print('#include "%s/%s-c.h"' % (pkg_name, type))
+        print(
+            '#include "%s/msg/%s.h"' %
+            (field.type.pkg_name, get_header_filename_from_msg_name(field.type.type)))
 }@
 
 // types for static array fields

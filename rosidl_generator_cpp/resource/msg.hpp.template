@@ -1,4 +1,5 @@
 // generated from rosidl_generator_cpp/resource/msg.hpp.template
+// generated code does not contain a copyright notice
 
 @#######################################################################
 @# EmPy template for generating <msg>.hpp files
@@ -12,10 +13,16 @@
 @#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @
-#ifndef __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__hpp__
-#define __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__hpp__
+@{
+header_guard_parts = [
+    spec.base_type.pkg_name, subfolder,
+    get_header_filename_from_msg_name(spec.base_type.type) + '_hpp']
+header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
+}@
+#ifndef @(header_guard_variable)
+#define @(header_guard_variable)
 
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.hpp"
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__traits.hpp"
 
-#endif  // __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__hpp__
+#endif  // @(header_guard_variable)

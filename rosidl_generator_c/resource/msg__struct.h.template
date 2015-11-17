@@ -1,4 +1,5 @@
 // generated from rosidl_generator_c/resource/msg__struct.h.template
+// generated code does not contain a copyright notice
 
 @#######################################################################
 @# EmPy template for generating <msg>__struct.h files
@@ -13,6 +14,15 @@
 @#######################################################################
 @
 @{
+header_guard_parts = [
+    spec.base_type.pkg_name, subfolder,
+    get_header_filename_from_msg_name(spec.base_type.type) + '__struct_h']
+header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
+}@
+#ifndef @(header_guard_variable)
+#define @(header_guard_variable)
+
+@{
 from rosidl_generator_c import msg_type_to_c
 from rosidl_generator_c import MSG_TYPE_TO_C
 
@@ -20,22 +30,19 @@ c_namespace = '%s__%s__' % (spec.base_type.pkg_name, subfolder)
 c_struct = '%s' % spec.base_type.type
 c_full_name = '%s%s' % (c_namespace, c_struct)
 }@
-@
-#ifndef @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())__STRUCT_H_
-#define @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())__STRUCT_H_
-
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
-#include <rosidl_generator_c/arrays.h>
+#include "rosidl_generator_c/arrays.h"
 
 // include message dependencies
 @{
 for field in spec.fields:
-    pkg_name, type = field.type.pkg_name, field.type.type
     if not field.type.is_primitive_type():
-        print('#include <%s/%s-c.h>' % (pkg_name, type))
+        print(
+            '#include "%s/msg/%s.h"' %
+            (field.type.pkg_name, get_header_filename_from_msg_name(field.type.type)))
 }@
 
 // types for static array fields
@@ -47,7 +54,7 @@ for field in spec.fields:
             array_type = MSG_TYPE_TO_C[field.type.type]
         else:
             # use the name of the complex type
-            array_type = field.type.type
+            array_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
         print('ROSIDL_GENERATE_STATIC_ARRAY(%s, %s, %s, %s);' %
              (c_full_name, field.name, array_type, field.type.array_size))
 }@
@@ -80,4 +87,4 @@ static const @(MSG_TYPE_TO_C[constant.primitive_type]) @(c_full_name + "__" + co
 // symbols for arrays of the message type
 ROSIDL_GENERATE_ARRAY(@(c_full_name));
 
-#endif  // @(spec.base_type.pkg_name.upper())_@(c_full_name.upper())__STRUCT_H_
+#endif  // @(header_guard_variable)

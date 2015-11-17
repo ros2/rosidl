@@ -36,6 +36,7 @@ extern "C"
   #else
     #define ROSIDL_PUBLIC ROSIDL_IMPORT
   #endif
+  #define ROSIDL_PUBLIC_TYPE ROSIDL_PUBLIC
   #define ROSIDL_LOCAL
 #else
   #define ROSIDL_EXPORT __attribute__ ((visibility("default")))
@@ -47,6 +48,7 @@ extern "C"
     #define ROSIDL_PUBLIC
     #define ROSIDL_LOCAL
   #endif
+  #define ROSIDL_PUBLIC_TYPE
 #endif
 
 #if __cplusplus

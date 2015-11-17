@@ -1,4 +1,5 @@
 // generated from rosidl_generator_cpp/resource/msg__struct.hpp.template
+// generated code does not contain a copyright notice
 
 @#######################################################################
 @# EmPy template for generating <msg>__struct.hpp files
@@ -13,6 +14,15 @@
 @#######################################################################
 @
 @{
+header_guard_parts = [
+    spec.base_type.pkg_name, subfolder,
+    get_header_filename_from_msg_name(spec.base_type.type) + '__struct_hpp']
+header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
+}@
+#ifndef @(header_guard_variable)
+#define @(header_guard_variable)
+
+@{
 from rosidl_generator_cpp import escape_string
 from rosidl_generator_cpp import msg_type_to_cpp
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
@@ -23,10 +33,6 @@ cpp_class = '%s_' % spec.base_type.type
 cpp_full_name = '%s%s' % (cpp_namespace, cpp_class)
 cpp_full_name_with_alloc = '%s<ContainerAllocator>' % (cpp_full_name)
 }@
-@
-#ifndef __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__struct__hpp__
-#define __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__struct__hpp__
-
 #include <array>
 #include <memory>
 #include <string>
@@ -37,7 +43,7 @@ cpp_full_name_with_alloc = '%s<ContainerAllocator>' % (cpp_full_name)
 for field in spec.fields:
     if not field.type.is_primitive_type():
         print(
-            '#include <%s/msg/%s.hpp>' %
+            '#include "%s/msg/%s.hpp"' %
             (field.type.pkg_name, get_header_filename_from_msg_name(field.type.type)))
 deprecated_macro_name = \
     '_'.join(['DEPRECATED', spec.base_type.pkg_name, subfolder, spec.base_type.type])
@@ -63,7 +69,7 @@ struct @(spec.base_type.type)_
 
 @# constructors (with and without allocator)
 @[for (alloc_type, alloc_name) in [['', ''], ['const ContainerAllocator & ', '_alloc']]]@
-  @(spec.base_type.type)_(@(alloc_type + alloc_name))
+  @('explicit ' if alloc_type else '')@(spec.base_type.type)_(@(alloc_type + alloc_name))
 @# generate initializer lists
 @{
 used_alloc_name = False
@@ -114,7 +120,8 @@ for field in spec.fields:
 
   // setters for named parameter idiom
 @[for field in spec.fields]@
-  Type * set__@(field.name)(const @(msg_type_to_cpp(field.type)) & _arg)
+  Type * set__@(field.name)(
+    const @(msg_type_to_cpp(field.type)) & _arg)
   {
     this->@(field.name) = _arg;
     return this;
@@ -142,13 +149,15 @@ for field in spec.fields:
   using ConstSharedPtr =
     std::shared_ptr<@(cpp_full_name)<ContainerAllocator> const>;
 
-  template<typename Deleter = std::default_delete<@(cpp_full_name)<ContainerAllocator>>>
+  template<typename Deleter = std::default_delete<
+    @(cpp_full_name)<ContainerAllocator>>>
   using UniquePtrWithDeleter =
     std::unique_ptr<@(cpp_full_name)<ContainerAllocator>, Deleter>;
 
   using UniquePtr = UniquePtrWithDeleter<>;
 
-  template<typename Deleter = std::default_delete<@(cpp_full_name)<ContainerAllocator>>>
+  template<typename Deleter = std::default_delete<
+    @(cpp_full_name)<ContainerAllocator>>>
   using ConstUniquePtrWithDeleter =
     std::unique_ptr<@(cpp_full_name)<ContainerAllocator> const, Deleter>;
   using ConstUniquePtr = ConstUniquePtrWithDeleter<>;
@@ -184,8 +193,7 @@ for field in spec.fields:
   {
     return !this->operator==(other);
   }
-
-}; // struct @(cpp_class)
+};  // struct @(cpp_class)
 
 // alias to use template instance with default allocator
 using @(spec.base_type.type) =
@@ -211,4 +219,4 @@ const @(MSG_TYPE_TO_CPP[c.primitive_type])
 
 }  // namespace @(spec.base_type.pkg_name)
 
-#endif  // __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__struct__hpp__
+#endif  // @(header_guard_variable)

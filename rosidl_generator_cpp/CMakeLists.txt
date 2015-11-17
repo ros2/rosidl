@@ -62,7 +62,7 @@ if(AMENT_ENABLE_TESTING)
 endif()
 
 ament_package(
-  CONFIG_EXTRAS "cmake/register_cpp.cmake" "rosidl_generator_cpp-extras.cmake.in"
+  CONFIG_EXTRAS "rosidl_generator_cpp-extras.cmake.in"
 )
 
 install(

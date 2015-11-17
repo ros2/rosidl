@@ -1,4 +1,5 @@
 // generated from rosidl_generator_c/resource/msg.h.template
+// generated code does not contain a copyright notice
 
 @#######################################################################
 @# EmPy template for generating <msg>-c.h files
@@ -12,10 +13,16 @@
 @#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @
-#ifndef __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__h__
-#define __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__h__
+@{
+header_guard_parts = [
+    spec.base_type.pkg_name, subfolder,
+    get_header_filename_from_msg_name(spec.base_type.type) + '_h']
+header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
+}@
+#ifndef @(header_guard_variable)
+#define @(header_guard_variable)
 
-#include <rosidl_generator_c/message_type_support.h>
+#include "rosidl_generator_c/message_type_support.h"
 
 // Forward declaration which is implemented in the DDS specific rmw package
 rosidl_message_type_support_t *
@@ -23,4 +30,4 @@ rosidl_message_type_support_t *
 
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.h"
 
-#endif  // __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__h__
+#endif  // @(header_guard_variable)

@@ -8,6 +8,7 @@ ament_export_dependencies(rosidl_cmake)
 
 ament_export_dependencies(rosidl_generator_c)
 ament_export_dependencies(rosidl_generator_cpp)
+ament_export_dependencies(rosidl_generator_py)
 
 if(AMENT_ENABLE_TESTING)
   find_package(ament_lint_auto REQUIRED)

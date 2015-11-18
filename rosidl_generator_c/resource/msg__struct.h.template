@@ -65,6 +65,9 @@ typedef struct @(c_full_name)
 @[for field in spec.fields]@
   @(msg_type_to_c(field.type, field.name, c_full_name));
 @[end for]@
+@[if not spec.fields]@
+  bool _dummy;
+@[end if]@
 } @(c_full_name);
 
 // constants

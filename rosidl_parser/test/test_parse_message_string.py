@@ -60,7 +60,7 @@ def test_parse_message_string():
     msg_spec = parse_message_string('pkg', 'Foo', 'bool FOO=1')
     assert len(msg_spec.fields) == 0
     assert len(msg_spec.constants) == 1
-    assert msg_spec.constants[0].primitive_type == 'bool'
+    assert msg_spec.constants[0].type == 'bool'
     assert msg_spec.constants[0].name == 'FOO'
     assert msg_spec.constants[0].value
 

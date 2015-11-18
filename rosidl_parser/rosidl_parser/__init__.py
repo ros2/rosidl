@@ -243,6 +243,12 @@ class Type(BaseType):
             type_string,
             context_package_name=context_package_name)
 
+    def is_dynamic_array(self):
+        return self.is_array and (not self.array_size or self.is_upper_bound)
+
+    def is_fixed_size_array(self):
+        return self.is_array and self.array_size and not self.is_upper_bound
+
     def __eq__(self, other):
         if other is None or not isinstance(other, Type):
             return False
@@ -268,13 +274,13 @@ class Type(BaseType):
 
 class Constant(object):
 
-    __slots__ = ['primitive_type', 'name', 'value']
+    __slots__ = ['type', 'name', 'value']
 
     def __init__(self, primitive_type, name, value_string):
         if primitive_type not in PRIMITIVE_TYPES:
             raise TypeError("the constant type '%s' must be a primitive type" %
                             primitive_type)
-        self.primitive_type = primitive_type
+        self.type = primitive_type
         if not is_valid_constant_name(name):
             raise NameError("the constant name '%s' is not valid" % name)
         self.name = name
@@ -287,15 +293,15 @@ class Constant(object):
     def __eq__(self, other):
         if other is None or not isinstance(other, Constant):
             return False
-        return self.primitive_type == other.primitive_type and \
+        return self.type == other.type and \
             self.name == other.name and \
             self.value == other.value
 
     def __str__(self):
         value = self.value
-        if self.primitive_type == 'string':
+        if self.type == 'string':
             value = "'%s'" % value
-        return '%s %s=%s' % (self.primitive_type, self.name, value)
+        return '%s %s=%s' % (self.type, self.name, value)
 
 
 class Field(object):

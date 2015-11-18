@@ -148,7 +148,7 @@ def primitive_value_to_cpp(type_, value):
     assert value is not None
 
     if type_.type == 'bool':
-        return 'true' if value else'false'
+        return 'true' if value else 'false'
 
     if type_.type in [
         'byte',

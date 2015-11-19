@@ -15,6 +15,7 @@
 from nose.tools import assert_raises
 
 from rosidl_parser import Field
+from rosidl_parser import InvalidValue
 from rosidl_parser import Type
 
 
@@ -33,6 +34,18 @@ def test_field_constructor():
 
     with assert_raises(NameError):
         Field(type_, 'foo bar')
+
+    type_ = Type('bool[2]')
+    field = Field(type_, 'foo', '[false, true]')
+    assert field.default_value == [False, True]
+
+    type_ = Type('bool[]')
+    field = Field(type_, 'foo', '[false, true, false]')
+    assert field.default_value == [False, True, False]
+
+    type_ = Type('bool[3]')
+    with assert_raises(InvalidValue):
+        Field(type_, 'foo', '[false, true]')
 
 
 def test_field_methods():

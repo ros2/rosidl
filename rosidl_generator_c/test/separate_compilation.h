@@ -12,33 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <stdio.h>
-#include <string.h>
+#ifndef SEPARATE_COMPILATION_H_
+#define SEPARATE_COMPILATION_H_
 
-#include "rosidl_generator_c/msg/various.h"
+int func();
 
-#include "./separate_compilation.h"
-
-int main(int argc, char ** argv)
-{
-  (void)argc;
-  (void)argv;
-
-  if (!rosidl_generator_c__msg__Various__FOO) {
-    fprintf(stderr, "wrong boolean constant\n");
-    return 1;
-  }
-
-  if (rosidl_generator_c__msg__Various__BAZ != 42) {
-    fprintf(stderr, "wrong integer constant\n");
-    return 1;
-  }
-
-  int rc = func();
-
-  if (!rc) {
-    printf("all checks passed\n");
-  }
-
-  return 0;
-}
+#endif  // SEPARATE_COMPILATION_H_

@@ -71,11 +71,11 @@ def test_parse_service_string():
     srv_spec = parse_service_string('pkg', 'Foo', 'bool FOO=1\n---\nint8 BAR=2')
     assert len(srv_spec.request.fields) == 0
     assert len(srv_spec.request.constants) == 1
-    assert srv_spec.request.constants[0].primitive_type == 'bool'
+    assert srv_spec.request.constants[0].type == 'bool'
     assert srv_spec.request.constants[0].name == 'FOO'
     assert srv_spec.request.constants[0].value
     assert len(srv_spec.response.fields) == 0
     assert len(srv_spec.response.constants) == 1
-    assert srv_spec.response.constants[0].primitive_type == 'int8'
+    assert srv_spec.response.constants[0].type == 'int8'
     assert srv_spec.response.constants[0].name == 'BAR'
     assert srv_spec.response.constants[0].value == 2

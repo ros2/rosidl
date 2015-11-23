@@ -27,6 +27,8 @@ def generate_c(generator_arguments_file):
     template_dir = args['template_dir']
     mapping = {
         os.path.join(template_dir, 'msg.h.template'): '%s.h',
+        os.path.join(template_dir, 'msg__functions.c.template'): '%s__functions.c',
+        os.path.join(template_dir, 'msg__functions.h.template'): '%s__functions.h',
         os.path.join(template_dir, 'msg__struct.h.template'): '%s__struct.h',
     }
     for template_file in mapping.keys():
@@ -68,11 +70,20 @@ MSG_TYPE_TO_C = {
     'int32': 'int32_t',
     'uint64': 'uint64_t',
     'int64': 'int64_t',
-    'string': "char *",
+    'string': "rosidl_generator_c__String",
 }
 
 
-def msg_type_to_c(type_, name_, containing_msg_name='notset'):
+def get_typename_of_base_type(type_):
+    if not type_.is_primitive_type():
+        return '%s__%s__%s' % (type_.pkg_name, 'msg', type_.type)
+    suffix = type_.type
+    if suffix == 'string':
+        suffix = 'String'
+    return 'rosidl_generator_c__' + suffix
+
+
+def msg_type_to_c(type_, name_):
     """
     Convert a message type into the C declaration.
 
@@ -91,14 +102,63 @@ def msg_type_to_c(type_, name_, containing_msg_name='notset'):
         c_type = '%s__msg__%s' % (type_.pkg_name, type_.type)
 
     if type_.is_array:
-        if type_.array_size is None:
+        if type_.array_size is None or type_.is_upper_bound:
             # Dynamic sized array
-            if type_.is_primitive_type():
-                c_type = type_.type
-            return 'ROSIDL_Array__%s %s' % (c_type, name_)
+            if type_.is_primitive_type() and type_.type != 'string':
+                c_type = 'rosidl_generator_c__%s' % type_.type
+            return '%s__Array %s' % (c_type, name_)
         else:
             # Static sized array (field specific)
-            return 'ROSIDL_Array__%s__%s %s' % \
-                (containing_msg_name, name_, name_)
+            return '%s %s[%d]' % \
+                (c_type, name_, type_.array_size)
     else:
         return '%s %s' % (c_type, name_)
+
+
+def value_to_c(type_, value):
+    assert type_.is_primitive_type()
+    assert value is not None
+
+    if not type_.is_array:
+        return primitive_value_to_c(type_.type, value)
+
+    c_values = []
+    for single_value in value:
+        c_value = primitive_value_to_c(type_.type, single_value)
+        c_values.append(c_value)
+    c_value = '{%s}' % ', '.join(c_values)
+    if len(c_values) > 1:
+        # Only wrap in a second set of {} if the array length is > 1.
+        # This avoids "warning: braces around scalar initializer"
+        c_value = '{%s}' % c_value
+    return c_value
+
+
+def primitive_value_to_c(type_, value):
+    assert value is not None
+
+    if type_ == 'bool':
+        return 'true' if value else 'false'
+
+    if type_ in ['byte', 'char', 'int8', 'int16', 'int32', 'int64']:
+        return str(value)
+
+    if type_ in ['uint8', 'uint16', 'uint32', 'uint64']:
+        return str(value) + 'u'
+
+    if type_ in ['float32']:
+        return '%sf' % value
+
+    if type_ in ['float64']:
+        return '%sl' % value
+
+    if type_ == 'string':
+        return '"%s"' % escape_string(value)
+
+    assert False, "unknown primitive type '%s'" % type_
+
+
+def escape_string(s):
+    s = s.replace('\\', '\\\\')
+    s = s.replace('"', '\\"')
+    return s

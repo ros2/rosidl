@@ -12,33 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <stdio.h>
-#include <string.h>
+#ifndef ROSIDL_GENERATOR_C__STRING_H_
+#define ROSIDL_GENERATOR_C__STRING_H_
 
-#include "rosidl_generator_c/msg/various.h"
+#include <stddef.h>
 
-#include "./separate_compilation.h"
+#include "rosidl_generator_c/primitives_array.h"
 
-int main(int argc, char ** argv)
+/// String struct
+typedef struct rosidl_generator_c__String
 {
-  (void)argc;
-  (void)argv;
+  char * data;
+  /// The length of the string (excluding the null byte).
+  size_t size;
+  /// The capacity represents the number of allocated bytes (including the null byte).
+  size_t capacity;
+} rosidl_generator_c__String;
 
-  if (!rosidl_generator_c__msg__Various__FOO) {
-    fprintf(stderr, "wrong boolean constant\n");
-    return 1;
-  }
+ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(String, rosidl_generator_c__String)
 
-  if (rosidl_generator_c__msg__Various__BAZ != 42) {
-    fprintf(stderr, "wrong integer constant\n");
-    return 1;
-  }
-
-  int rc = func();
-
-  if (!rc) {
-    printf("all checks passed\n");
-  }
-
-  return 0;
-}
+#endif  // ROSIDL_GENERATOR_C__STRING_H_

@@ -2,11 +2,30 @@ cmake_minimum_required(VERSION 2.8.3)
 
 project(rosidl_generator_c C)
 
+if(NOT WIN32)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall -Wextra")
+endif()
+
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 
+include_directories(include)
+add_library(${PROJECT_NAME} SHARED
+  "src/primitives_array_functions.c"
+  "src/string_functions.c"
+)
+if(NOT WIN32)
+  set_target_properties(${PROJECT_NAME} PROPERTIES
+    COMPILE_FLAGS "-std=c11 -Wall -Wextra")
+endif()
+if(WIN32)
+  target_compile_definitions(${PROJECT_NAME}
+    PRIVATE "ROSIDL_GENERATOR_C_BUILDING_DLL")
+endif()
+
 ament_export_dependencies(rosidl_cmake)
 ament_export_include_directories(include)
+ament_export_libraries(${PROJECT_NAME})
 
 ament_python_install_package(${PROJECT_NAME})
 
@@ -16,10 +35,14 @@ if(AMENT_ENABLE_TESTING)
 
   set(message_files
     "msg/Empty.msg"
+    "msg/Nested.msg"
+    "msg/Primitives.msg"
+    "msg/Various.msg"
   )
 
   include(cmake/register_c.cmake)
   set(rosidl_generator_c_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+  set(rosidl_generator_c_LIBRARIES "${PROJECT_NAME}")
 
   rosidl_generator_c_extras(
     "${CMAKE_CURRENT_SOURCE_DIR}/bin/rosidl_generator_c"
@@ -27,14 +50,14 @@ if(AMENT_ENABLE_TESTING)
     "${CMAKE_CURRENT_SOURCE_DIR}/resource"
   )
 
-  rosidl_generate_interfaces(${PROJECT_NAME} ${message_files}
+  rosidl_generate_interfaces(${PROJECT_NAME}_interfaces ${message_files}
     SKIP_INSTALL
   )
 
-  add_executable(test_compilation_c test/test_compilation.c)
-  add_dependencies(test_compilation_c ${PROJECT_NAME})
+  add_executable(test_compilation_c test/test_compilation.c test/separate_compilation.c)
   # include the built files directly, instead of their install location
-  include_directories(include "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
+  include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
+  target_link_libraries(test_compilation_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
 endif()
 
 ament_package(
@@ -52,4 +75,10 @@ install(
 install(
   DIRECTORY include/
   DESTINATION include
+)
+install(
+  TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
 )

@@ -14,80 +14,149 @@
 @#######################################################################
 @
 @{
+from rosidl_generator_c import msg_type_to_c
+from rosidl_generator_c import MSG_TYPE_TO_C
+from rosidl_generator_c import primitive_value_to_c
+
 header_guard_parts = [
     spec.base_type.pkg_name, subfolder,
     get_header_filename_from_msg_name(spec.base_type.type) + '__struct_h']
 header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
+
+msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_type.type)
+array_typename = '%s__Array' % msg_typename
 }@
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
-@{
-from rosidl_generator_c import msg_type_to_c
-from rosidl_generator_c import MSG_TYPE_TO_C
-
-c_namespace = '%s__%s__' % (spec.base_type.pkg_name, subfolder)
-c_struct = '%s' % spec.base_type.type
-c_full_name = '%s%s' % (c_namespace, c_struct)
-}@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
-#include "rosidl_generator_c/arrays.h"
-
-// include message dependencies
+@#######################################################################
+@# include message dependencies
+@#######################################################################
 @{
+from collections import OrderedDict
+includes = OrderedDict()
 for field in spec.fields:
-    if not field.type.is_primitive_type():
-        print(
-            '#include "%s/msg/%s.h"' %
-            (field.type.pkg_name, get_header_filename_from_msg_name(field.type.type)))
-}@
-
-// types for static array fields
-@{
-for field in spec.fields:
-    if field.type.is_array and field.type.array_size is not None:
-        if field.type.is_primitive_type():
-            # find the C primitive type
-            array_type = MSG_TYPE_TO_C[field.type.type]
+    if field.type.is_primitive_type():
+        if field.type.type == 'string':
+            field_names = includes.setdefault('rosidl_generator_c/string.h', [])
+            field_names.append(field.name)
         else:
-            # use the name of the complex type
-            array_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
-        print('ROSIDL_GENERATE_STATIC_ARRAY(%s, %s, %s, %s);' %
-             (c_full_name, field.name, array_type, field.type.array_size))
+            if field.type.is_dynamic_array():
+                field_names = includes.setdefault('rosidl_generator_c/primitives_array.h', [])
+                field_names.append(field.name)
+    else:
+        field_names = includes.setdefault(
+            '%s/msg/%s__struct.h' %
+            (field.type.pkg_name, get_header_filename_from_msg_name(field.type.type)),
+            [])
+        field_names.append(field.name)
 }@
+@[if includes]@
+// include message dependencies
+@[for header_file, field_names in includes.items()]@
+@[for field_name in field_names]@
+// @(field_name)
+@[end for]@
+#include "@(header_file)"
+@[end for]@
 
-// message struct
-typedef struct @(c_full_name)
+@[end if]@
+@
+@#######################################################################
+@# constants defined in the message
+@#######################################################################
+@{
+constants = []
+for constant in spec.constants:
+    if constant.type in ['byte', 'char', 'int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64']:
+        constants.append((
+            'enum',
+            constant.name,
+            '%s__%s' % (msg_typename, constant.name),
+            primitive_value_to_c(constant.type, constant.value),
+        ))
+    else:
+        constants.append((
+            'static',
+            constant.name,
+            '%s %s' % (MSG_TYPE_TO_C[constant.type], msg_typename + '__' + constant.name),
+            primitive_value_to_c(constant.type, constant.value),
+        ))
+}@
+@[if constants]@
+// constants defined in the message
+@[for constant_type, constant_name, key, value in constants]@
+// @(constant_name)
+@[if constant_type == 'enum']@
+enum
+{
+  @(key) = @(value)
+};
+@[else]@
+static const @(key) = @(value);
+@[end if]@
+@[end for]@
+
+@[end if]@
+@
+@#######################################################################
+@# Constants for array fields with an upper bound
+@#######################################################################
+@{
+upper_bounds = []
+for field in spec.fields:
+    if field.type.type == 'string' and field.type.string_upper_bound is not None:
+        upper_bounds.append((
+            field.name,
+            '%s__%s__MAX_STRING_SIZE' % (msg_typename, field.name),
+            field.type.string_upper_bound,
+        ))
+    if field.type.is_array and field.type.array_size and field.type.is_upper_bound:
+        upper_bounds.append((
+            field.name,
+            '%s__%s__MAX_SIZE' % (msg_typename, field.name),
+            field.type.array_size,
+        ))
+}@
+@[if upper_bounds]@
+// constants for array fields with an upper bound
+@[for field_name, enum_name, enum_value in upper_bounds]@
+// @(field_name)
+enum
+{
+  @(enum_name) = @(enum_value)
+};
+@[end for]@
+
+@[end if]@
+@
+@#######################################################################
+@# Struct of message
+@#######################################################################
+/// Struct of message @(spec.base_type.pkg_name)/@(spec.base_type.type)
+typedef struct @(msg_typename)
 {
 @[for field in spec.fields]@
-  @(msg_type_to_c(field.type, field.name, c_full_name));
+  @(msg_type_to_c(field.type, field.name));
 @[end for]@
 @[if not spec.fields]@
   bool _dummy;
 @[end if]@
-} @(c_full_name);
+} @(msg_typename);
 
-// constants
-@[for constant in spec.constants]@
-@[if (constant.primitive_type in ['byte', 'int8', 'int16', 'int32', 'int64', 'char'])]@
-enum
+@#######################################################################
+@# Struct for an array of messages
+@#######################################################################
+/// Struct for an array of messages
+typedef struct @(array_typename)
 {
-  @(c_full_name + "__" + constant.name) = @(int(constant.value))
-};
-@[elif (constant.primitive_type in ['uint8', 'uint16', 'uint32', 'uint64'])]@
-enum
-{
-  @(c_full_name + "__" + constant.name) = @(int(constant.value))u
-};
-@[else]@
-static const @(MSG_TYPE_TO_C[constant.primitive_type]) @(c_full_name + "__" + constant.name) = @(constant.value);
-@[end if]@
-@[end for]@
-
-// symbols for arrays of the message type
-ROSIDL_GENERATE_ARRAY(@(c_full_name));
+  @(msg_typename) * data;
+  size_t size;
+  size_t capacity;
+} @(array_typename);
 
 #endif  // @(header_guard_variable)

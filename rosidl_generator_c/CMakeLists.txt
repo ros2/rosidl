@@ -38,8 +38,6 @@ if(AMENT_ENABLE_TESTING)
     "msg/Nested.msg"
     "msg/Primitives.msg"
     "msg/Various.msg"
-    "msg/PrimitivesStatic.msg"
-    "msg/BoundedArrayBounded.msg"
   )
 
   include(cmake/register_c.cmake)
@@ -62,6 +60,7 @@ if(AMENT_ENABLE_TESTING)
   # include the built files directly, instead of their install location
   include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
   target_link_libraries(test_compilation_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
+  target_link_libraries(test_interfaces_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
 endif()
 
 ament_package(

@@ -16,43 +16,43 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "rosidl_generator_c/msg/empty.h"
-#include "rosidl_generator_c/msg/primitives_static.h"
-
+#include "rosidl_generator_c/msg/various.h"
 
 int main(void)
 {
   fprintf(stderr, "Testing rosidl_generator_c message types...\n");
-  fprintf(stderr, "Testing Empty message...\n");
-  test_empty();
-  fprintf(stderr, "Testing PrimitivesStatic message...\n");
-  test_primitives_static();
-  fprintf(stderr, "Testing rosidl_generator_c message types was successful!\n");
+  fprintf(stderr, "Testing Various message...\n");
+  test_size_of_various();
+  fprintf(stderr, "All tests were good!\n");
   return 0;
 }
 
-void test_empty(void)
+void test_size_of_various(void)
 {
-  rosidl_generator_c__msg__Empty Empty;
+  rosidl_generator_c__msg__Various various;
+  int expectSize;
 
-  assert(0 == sizeof(Empty));
-}
+  expectSize = sizeof(various.bool_value);
+  expectSize += sizeof(various.byte_value);
+  expectSize += sizeof(various.char_value);
+  expectSize += sizeof(various.float32_value);
+  expectSize += sizeof(various.float64_value);
+  expectSize += sizeof(various.int8_value);
+  expectSize += sizeof(various.two_uint16_value) * 2;
+  expectSize += sizeof(rosidl_generator_c__int32__Array);
+  expectSize += sizeof(rosidl_generator_c__int32__Array);
+  expectSize += sizeof(rosidl_generator_c__uint64__Array);
+  expectSize += sizeof(rosidl_generator_c__msg__Empty);
+  expectSize += sizeof(rosidl_generator_c__msg__Empty) * 2;
+  expectSize += sizeof(rosidl_generator_c__msg__Empty__Array);
+  expectSize += sizeof(rosidl_generator_c__msg__Nested);
+  expectSize += sizeof(rosidl_generator_c__msg__Nested) * 2;
+  expectSize += sizeof(rosidl_generator_c__msg__Nested__Array);
+  expectSize += sizeof(rosidl_generator_c__msg__Nested__Array);
 
-void test_primitives_static(void)
-{
-  rosidl_generator_c__msg__PrimitivesStatic PrimitivesStatic;
-
-  assert(1 == sizeof(PrimitivesStatic.bool_value));
-  assert(1 == sizeof(PrimitivesStatic.byte_value));
-  assert(1 == sizeof(PrimitivesStatic.char_value));
-  assert(4 == sizeof(PrimitivesStatic.float32_value));
-  assert(8 == sizeof(PrimitivesStatic.float64_value));
-  assert(1 == sizeof(PrimitivesStatic.int8_value));
-  assert(1 == sizeof(PrimitivesStatic.uint8_value));
-  assert(2 == sizeof(PrimitivesStatic.int16_value));
-  assert(2 == sizeof(PrimitivesStatic.uint16_value));
-  assert(4 == sizeof(PrimitivesStatic.int32_value));
-  assert(4 == sizeof(PrimitivesStatic.uint32_value));
-  assert(8 == sizeof(PrimitivesStatic.int64_value));
-  assert(8 == sizeof(PrimitivesStatic.uint64_value));
+  fprintf(stderr, "Expected size of Various = %d bytes\n", expectSize);
+  fprintf(stderr, "Actual size of Various = %d bytes\n", sizeof(various));
+  // the actual size can be a bit greater than the expected because of the word
+  // boundary padding in the struct
+  assert(sizeof(various) >= expectSize);
 }

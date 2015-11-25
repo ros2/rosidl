@@ -38,9 +38,9 @@ def generate_cpp(generator_arguments_file):
         os.path.join(template_dir, 'srv__traits.hpp.template'): '%s__traits.hpp',
     }
     for template_file in mapping_msgs.keys():
-        assert os.path.exists(template_file)
+        assert os.path.exists(template_file), 'Could not find template: ' + template_file
     for template_file in mapping_srvs.keys():
-        assert os.path.exists(template_file)
+        assert os.path.exists(template_file), 'Could not find template: ' + template_file
 
     functions = {
         'get_header_filename_from_msg_name': convert_camel_case_to_lower_case_underscore,

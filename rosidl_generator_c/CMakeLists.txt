@@ -38,6 +38,19 @@ if(AMENT_ENABLE_TESTING)
     "msg/Nested.msg"
     "msg/Primitives.msg"
     "msg/Various.msg"
+    "msg/Bool.msg"
+    "msg/Byte.msg"
+    "msg/Char.msg"
+    "msg/Float32.msg"
+    "msg/Float64.msg"
+    "msg/Int8.msg"
+    "msg/Int16.msg"
+    "msg/Int32.msg"
+    "msg/Int64.msg"
+    "msg/Uint8.msg"
+    "msg/Uint16.msg"
+    "msg/Uint32.msg"
+    "msg/Uint64.msg"
   )
 
   include(cmake/register_c.cmake)

@@ -21,6 +21,11 @@
 #include "rosidl_generator_c/primitives_array.h"
 #include "rosidl_generator_c/visibility_control.h"
 
+#if __cplusplus
+extern "C"
+{
+#endif
+
 #define ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_ARRAY_FUNCTIONS(STRUCT_NAME, TYPE_NAME) \
   ROSIDL_GENERATOR_C_PUBLIC \
   bool rosidl_generator_c__ ## STRUCT_NAME ## __Array__init( \
@@ -44,5 +49,9 @@ ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_ARRAY_FUNCTIONS(int32, int32_t);
 ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_ARRAY_FUNCTIONS(uint32, uint32_t);
 ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_ARRAY_FUNCTIONS(int64, int64_t);
 ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_ARRAY_FUNCTIONS(uint64, uint64_t);
+
+#if __cplusplus
+}
+#endif
 
 #endif  // ROSIDL_GENERATOR_C__PRIMITIVES_ARRAY_FUNCTIONS_H_

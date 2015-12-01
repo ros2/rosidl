@@ -2,6 +2,7 @@
 # rosidl_default_generators/rosidl_default_generators-extras.cmake.in
 
 set(_exported_dependencies
+  "rosidl_typesupport_introspection_c"
   "rosidl_typesupport_introspection_cpp"
   "rosidl_typesupport_connext_cpp"
   "rosidl_typesupport_opensplice_cpp"

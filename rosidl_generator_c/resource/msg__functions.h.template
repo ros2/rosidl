@@ -32,7 +32,7 @@ array_typename = '%s__Array' % msg_typename
 #include <stdlib.h>
 
 #include "rosidl_generator_c/visibility_control.h"
-#include "@(spec.base_type.pkg_name)/@(subfolder)/rosidl_generator_c__visibility_control.h"
+#include "@(spec.base_type.pkg_name)/msg/rosidl_generator_c__visibility_control.h"
 
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.h"
 

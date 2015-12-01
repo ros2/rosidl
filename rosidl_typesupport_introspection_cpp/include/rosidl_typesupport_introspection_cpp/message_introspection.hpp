@@ -25,8 +25,6 @@
 namespace rosidl_typesupport_introspection_cpp
 {
 
-struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMembers;
-
 typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember
 {
   const char * name_;

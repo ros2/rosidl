@@ -34,17 +34,26 @@
 #include "rosidl_generator_c/msg/uint16.h"
 #include "rosidl_generator_c/msg/uint32.h"
 #include "rosidl_generator_c/msg/uint64.h"
+#include "rosidl_generator_c/msg/primitive_values.h"
 
+
+void test_primitives(void);
+void test_primitives_default_value(void);
 
 int main(void)
 {
   fprintf(stderr, "Testing rosidl_generator_c message types...\n");
   fprintf(stderr, "Testing simple primitive message types...\n");
   test_primitives();
+  fprintf(stderr, "Testing simple primitives with default values...\n");
+  test_primitives_default_value();
   fprintf(stderr, "All tests were good!\n");
   return 0;
 }
 
+/**
+ * Test message with simple primitive types.
+ */
 void test_primitives(void)
 {
   rosidl_generator_c__msg__Bool bool_msg;
@@ -138,4 +147,33 @@ void test_primitives(void)
 
   uint64_msg.empty_uint64 = UINT64_MAX;
   assert(uint64_msg.empty_uint64 == UINT64_MAX);
+}
+
+/**
+ * Test message with simple primitive types using a default value initializer.
+ */
+void test_primitives_default_value(void)
+{
+  rosidl_generator_c__msg__PrimitiveValues * primitive_values = NULL;
+
+  primitive_values = rosidl_generator_c__msg__PrimitiveValues__create();
+
+  assert(primitive_values != NULL);
+
+  assert(true == primitive_values->def_bool_1);
+  assert(false == primitive_values->def_bool_2);
+  assert(66 == primitive_values->def_byte);
+  assert(-66 == primitive_values->def_char);
+  assert(3.1416f == primitive_values->def_float32);
+  assert(3.14159265 == primitive_values->def_float64);
+  assert(3 == primitive_values->def_int8);
+  assert(6 == primitive_values->def_int16);
+  assert(10 == primitive_values->def_int32);
+  assert(15 == primitive_values->def_int64);
+  assert(33 == primitive_values->def_uint8);
+  assert(36 == primitive_values->def_uint16);
+  assert(310 == primitive_values->def_uint32);
+  assert(315 == primitive_values->def_uint64);
+
+  rosidl_generator_c__msg__PrimitiveValues__destroy(primitive_values);
 }

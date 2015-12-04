@@ -20,6 +20,7 @@ from rosidl_cmake import extract_message_types
 from rosidl_cmake import get_newest_modification_time
 from rosidl_cmake import read_generator_arguments
 from rosidl_parser import parse_message_file
+from rosidl_parser import parse_service_file
 from rosidl_parser import validate_field_types
 
 
@@ -33,8 +34,15 @@ def generate_c(generator_arguments_file):
         os.path.join(template_dir, 'msg__introspection_type_support.h.template'):
         '%s__introspection_type_support.h',
     }
+    mapping_srvs = {
+        os.path.join(template_dir, 'srv__type_support.c.template'):
+        '%s__type_support.c',
+    }
 
     for template_file in mapping_msgs.keys():
+        assert os.path.exists(template_file), 'Could not find template: ' + template_file
+
+    for template_file in mapping_srvs.keys():
         assert os.path.exists(template_file), 'Could not find template: ' + template_file
 
     pkg_name = args['package_name']
@@ -58,6 +66,20 @@ def generate_c(generator_arguments_file):
                     convert_camel_case_to_lower_case_underscore(spec.base_type.type))
 
                 data = {'spec': spec, 'subfolder': subfolder}
+                data.update(functions)
+                expand_template(
+                    template_file, data, generated_file,
+                    minimum_timestamp=latest_target_timestamp)
+
+        elif extension == '.srv':
+            spec = parse_service_file(pkg_name, ros_interface_file)
+            validate_field_types(spec, known_msg_types)
+            for template_file, generated_filename in mapping_srvs.items():
+                generated_file = os.path.join(
+                    args['output_dir'], subfolder, generated_filename %
+                    convert_camel_case_to_lower_case_underscore(spec.srv_name))
+
+                data = {'spec': spec}
                 data.update(functions)
                 expand_template(
                     template_file, data, generated_file,

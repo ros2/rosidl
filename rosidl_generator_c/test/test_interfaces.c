@@ -19,6 +19,9 @@
 #include <limits.h>
 #include <float.h>
 #include <stdint.h>
+#include <string.h>
+
+#include "rosidl_generator_c/string_functions.h"
 
 #include "rosidl_generator_c/msg/various.h"
 #include "rosidl_generator_c/msg/bool.h"
@@ -35,10 +38,15 @@
 #include "rosidl_generator_c/msg/uint32.h"
 #include "rosidl_generator_c/msg/uint64.h"
 #include "rosidl_generator_c/msg/primitive_values.h"
+#include "rosidl_generator_c/msg/strings.h"
 
+#define TEST_STRING \
+  "Deep into that darkness peering, long I stood there wondering, fearing, \
+  doubting, dreaming dreams no mortal ever dared to dream before."
 
 void test_primitives(void);
 void test_primitives_default_value(void);
+void test_strings(void);
 
 int main(void)
 {
@@ -47,6 +55,8 @@ int main(void)
   test_primitives();
   fprintf(stderr, "Testing simple primitives with default values...\n");
   test_primitives_default_value();
+  fprintf(stderr, "Testing string types...\n");
+  test_strings();
   fprintf(stderr, "All tests were good!\n");
   return 0;
 }
@@ -176,4 +186,28 @@ void test_primitives_default_value(void)
   assert(315 == primitive_values->def_uint64);
 
   rosidl_generator_c__msg__PrimitiveValues__destroy(primitive_values);
+}
+
+/**
+ * Test message with different string types.
+ */
+void test_strings(void)
+{
+  bool res = false;
+  rosidl_generator_c__msg__Strings * strings = NULL;
+
+  strings = rosidl_generator_c__msg__Strings__create();
+  assert(strings != NULL);
+
+  res = rosidl_generator_c__String__assign(&strings->empty_string, TEST_STRING);
+  assert(true == res);
+  assert(0 == strcmp(strings->empty_string.data, TEST_STRING));
+  assert(0 == strcmp(strings->def_string.data, "Hello world!"));
+  // since upper-bound checking is not implemented yet, we restrict the string copying
+  res = rosidl_generator_c__String__assignn(&strings->ub_string, TEST_STRING, 22);
+  assert(true == res);
+  assert(0 == strcmp(strings->ub_string.data, "Deep into that darknes"));
+  assert(0 == strcmp(strings->ub_def_string.data, "Upper bounded string."));
+
+  rosidl_generator_c__msg__Strings__destroy(strings);
 }

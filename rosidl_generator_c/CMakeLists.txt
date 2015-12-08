@@ -52,6 +52,7 @@ if(AMENT_ENABLE_TESTING)
     "msg/Uint32.msg"
     "msg/Uint64.msg"
     "msg/PrimitiveValues.msg"
+    "msg/Strings.msg"
   )
 
   include(cmake/register_c.cmake)

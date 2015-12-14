@@ -22,7 +22,7 @@ extern "C"
 {
 #endif
 
-typedef struct ROSIDL_PUBLIC rosidl_service_type_support_t
+typedef struct ROSIDL_PUBLIC_TYPE rosidl_service_type_support_t
 {
   const char * typesupport_identifier;
   const void * data;

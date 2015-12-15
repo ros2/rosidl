@@ -54,6 +54,8 @@ if(AMENT_ENABLE_TESTING)
     "msg/PrimitiveValues.msg"
     "msg/Strings.msg"
     "msg/PrimitivesUnboundedArrays.msg"
+    "msg/PrimitivesBoundedArrays.msg"
+    "msg/PrimitivesStaticArrays.msg"
   )
 
   include(cmake/register_c.cmake)

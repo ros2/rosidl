@@ -40,15 +40,20 @@
 #include "rosidl_generator_c/msg/primitive_values.h"
 #include "rosidl_generator_c/msg/strings.h"
 #include "rosidl_generator_c/msg/primitives_unbounded_arrays.h"
+#include "rosidl_generator_c/msg/primitives_bounded_arrays.h"
+#include "rosidl_generator_c/msg/primitives_static_arrays.h"
 
 #define TEST_STRING \
   "Deep into that darkness peering, long I stood there wondering, fearing, \
   doubting, dreaming dreams no mortal ever dared to dream before."
+#define ARRAY_SIZE 7
 
 void test_primitives(void);
 void test_primitives_default_value(void);
 void test_strings(void);
 void test_primitives_unbounded_arrays(void);
+void test_primitives_bounded_arrays(void);
+void test_primitives_static_arrays(void);
 
 int main(void)
 {
@@ -61,6 +66,10 @@ int main(void)
   test_strings();
   fprintf(stderr, "Testing primitives unbounded arrays types...\n");
   test_primitives_unbounded_arrays();
+  fprintf(stderr, "Testing primitives bounded arrays types...\n");
+  test_primitives_bounded_arrays();
+  fprintf(stderr, "Testing primitives static arrays types...\n");
+  test_primitives_static_arrays();
   fprintf(stderr, "All tests were good!\n");
   return 0;
 }
@@ -216,21 +225,23 @@ void test_strings(void)
   rosidl_generator_c__msg__Strings__destroy(strings);
 }
 
+/**
+ * Test message with different unbounded array types
+ */
 void test_primitives_unbounded_arrays(void)
 {
   bool res = false;
   int i;
-  int array_size = 7;
   rosidl_generator_c__msg__PrimitivesUnboundedArrays * arrays = NULL;
 
   arrays = rosidl_generator_c__msg__PrimitivesUnboundedArrays__create();
   assert(NULL != arrays);
 
   // bool_array
-  res = rosidl_generator_c__bool__Array__init(&arrays->bool_array, array_size);
+  res = rosidl_generator_c__bool__Array__init(&arrays->bool_array, ARRAY_SIZE);
   assert(true == res);
   // load values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     if (0 == (i % 2)) {
       arrays->bool_array.data[i] = true;
     } else {
@@ -238,7 +249,7 @@ void test_primitives_unbounded_arrays(void)
     }
   }
   // test values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     if (0 == (i % 2)) {
       assert(true == arrays->bool_array.data[i]);
     } else {
@@ -247,161 +258,521 @@ void test_primitives_unbounded_arrays(void)
   }
 
   // byte_array
-  res = rosidl_generator_c__byte__Array__init(&arrays->byte_array, array_size);
+  res = rosidl_generator_c__byte__Array__init(&arrays->byte_array, ARRAY_SIZE);
   assert(true == res);
   uint8_t test_array_byte[7] = {0, 57, 110, 177, 201, 240, 255};
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->byte_array.data[i] = test_array_byte[i];
   }
   // test values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     assert(test_array_byte[i] == arrays->byte_array.data[i]);
   }
 
 
   // char array
-  res = rosidl_generator_c__char__Array__init(&arrays->char_array, array_size);
+  res = rosidl_generator_c__char__Array__init(&arrays->char_array, ARRAY_SIZE);
   assert(true == res);
   char test_array_char[7] = {'a', '5', '#', 'Z', '@', '-', ' '};
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->char_array.data[i] = test_array_char[i];
   }
   // test values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     assert(test_array_char[i] == arrays->char_array.data[i]);
   }
 
   // float32 array
-  res = rosidl_generator_c__float32__Array__init(&arrays->float32_array, array_size);
+  res = rosidl_generator_c__float32__Array__init(&arrays->float32_array, ARRAY_SIZE);
   assert(true == res);
   float test_array_float32[7] =
   {-3.000001, 22143.541325, 6331.00432, -214.66241, 0.000001, 1415555.12345,
    -1.11154};
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->float32_array.data[i] = test_array_float32[i];
   }
   // test values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     assert(test_array_float32[i] == arrays->float32_array.data[i]);
   }
 
   // float64 array
-  res = rosidl_generator_c__float64__Array__init(&arrays->float64_array, array_size);
+  res = rosidl_generator_c__float64__Array__init(&arrays->float64_array, ARRAY_SIZE);
   assert(true == res);
   double test_array_float64[7] =
   {-120310.00843902140001, 22143.54483920141325, 6331.0048392104432,
    -214.62850432596241, 0.0000000000001, 1415555.128294031432345,
    -1.111184329208454};
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->float64_array.data[i] = test_array_float64[i];
   }
   // test values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     assert(test_array_float64[i] == arrays->float64_array.data[i]);
   }
 
   // int8 array
-  res = rosidl_generator_c__int8__Array__init(&arrays->int8_array, array_size);
+  res = rosidl_generator_c__int8__Array__init(&arrays->int8_array, ARRAY_SIZE);
   assert(true == res);
   int8_t test_array_int8[7] = {-127, -55, -30, 0, 58, 100, 127};
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int8_array.data[i] = test_array_int8[i];
   }
   // test values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     assert(test_array_int8[i] == arrays->int8_array.data[i]);
   }
 
   // int16 array
-  res = rosidl_generator_c__int16__Array__init(&arrays->int16_array, array_size);
+  res = rosidl_generator_c__int16__Array__init(&arrays->int16_array, ARRAY_SIZE);
   assert(true == res);
   int16_t test_array_int16[7] =
   {-32767, -22222, -11111, 0, 11111, 22222, 32767};
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int16_array.data[i] = test_array_int16[i];
   }
   // test values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     assert(test_array_int16[i] == arrays->int16_array.data[i]);
   }
 
   // int32 array
-  res = rosidl_generator_c__int32__Array__init(&arrays->int32_array, array_size);
+  res = rosidl_generator_c__int32__Array__init(&arrays->int32_array, ARRAY_SIZE);
   assert(true == res);
   int32_t test_array_int32[7] =
   {-2147483648, -2000000000, -1111111111, 0, 1111111111, 2000000000, 2147483647};
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int32_array.data[i] = test_array_int32[i];
   }
   // test values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     assert(test_array_int32[i] == arrays->int32_array.data[i]);
   }
 
   // int64 array
-  res = rosidl_generator_c__int64__Array__init(&arrays->int64_array, array_size);
+  res = rosidl_generator_c__int64__Array__init(&arrays->int64_array, ARRAY_SIZE);
   assert(true == res);
   int64_t test_array_int64[7] =
   {-9223372036854775808, -5000000000000000000, -1111111111111111111, 0,
    1111111111111111111, 5000000000000000000, 9223372036854775807};
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int64_array.data[i] = test_array_int64[i];
   }
   // test values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     assert(test_array_int64[i] == arrays->int64_array.data[i]);
   }
 
   // uint8 array
-  res = rosidl_generator_c__uint8__Array__init(&arrays->uint8_array, array_size);
+  res = rosidl_generator_c__uint8__Array__init(&arrays->uint8_array, ARRAY_SIZE);
   assert(true == res);
   uint8_t test_array_uint8[7] = {0, 5, 70, 128, 180, 220, 255};
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint8_array.data[i] = test_array_uint8[i];
   }
   // test values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     assert(test_array_uint8[i] == arrays->uint8_array.data[i]);
   }
 
   // uint16 array
-  res = rosidl_generator_c__uint16__Array__init(&arrays->uint16_array, array_size);
+  res = rosidl_generator_c__uint16__Array__init(&arrays->uint16_array, ARRAY_SIZE);
   assert(true == res);
   uint16_t test_array_uint16[7] = {0, 11111, 22222, 33333, 44444, 55555, 65535};
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint16_array.data[i] = test_array_uint16[i];
   }
   // test values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     assert(test_array_uint16[i] == arrays->uint16_array.data[i]);
   }
 
   // uint32 array
-  res = rosidl_generator_c__uint32__Array__init(&arrays->uint32_array, array_size);
+  res = rosidl_generator_c__uint32__Array__init(&arrays->uint32_array, ARRAY_SIZE);
   assert(true == res);
   uint32_t test_array_uint32[7] =
   {0, 100, 2000, 30000, 444444, 567890123, 4294967295};
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint32_array.data[i] = test_array_uint32[i];
   }
   // test values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     assert(test_array_uint32[i] == arrays->uint32_array.data[i]);
   }
 
   // uint64 array
-  res = rosidl_generator_c__uint64__Array__init(&arrays->uint64_array, array_size);
+  res = rosidl_generator_c__uint64__Array__init(&arrays->uint64_array, ARRAY_SIZE);
   assert(true == res);
   uint64_t test_array_uint64[7] =
   {0, 10000, 30000000, 444444444, 567890123456789, 429496729578901234,
    18446744073709551615};
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint64_array.data[i] = test_array_uint64[i];
   }
   // test values
-  for (i = 0; i < array_size; i++) {
+  for (i = 0; i < ARRAY_SIZE; i++) {
     assert(test_array_uint64[i] == arrays->uint64_array.data[i]);
   }
 
   rosidl_generator_c__msg__PrimitivesUnboundedArrays__destroy(arrays);
+}
+
+/**
+ * Test message with different bounded array types
+ */
+void test_primitives_bounded_arrays(void)
+{
+  bool res = false;
+  int i;
+  rosidl_generator_c__msg__PrimitivesBoundedArrays * arrays = NULL;
+
+  arrays = rosidl_generator_c__msg__PrimitivesBoundedArrays__create();
+  assert(NULL != arrays);
+
+  // bool_array
+  res = rosidl_generator_c__bool__Array__init(&arrays->bool_array, ARRAY_SIZE);
+  assert(true == res);
+  // load values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    if (0 == (i % 2)) {
+      arrays->bool_array.data[i] = true;
+    } else {
+      arrays->bool_array.data[i] = false;
+    }
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    if (0 == (i % 2)) {
+      assert(true == arrays->bool_array.data[i]);
+    } else {
+      assert(false == arrays->bool_array.data[i]);
+    }
+  }
+
+  // byte_array
+  res = rosidl_generator_c__byte__Array__init(&arrays->byte_array, ARRAY_SIZE);
+  assert(true == res);
+  uint8_t test_array_byte[8] = {0, 57, 110, 177, 201, 240, 255, 111};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->byte_array.data[i] = test_array_byte[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_byte[i] == arrays->byte_array.data[i]);
+  }
+
+
+  // char array
+  res = rosidl_generator_c__char__Array__init(&arrays->char_array, ARRAY_SIZE);
+  assert(true == res);
+  char test_array_char[7] = {'a', '5', '#', 'Z', '@', '-', ' '};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->char_array.data[i] = test_array_char[i];
+  }
+
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_char[i] == arrays->char_array.data[i]);
+  }
+
+  // float32 array
+  res = rosidl_generator_c__float32__Array__init(&arrays->float32_array, ARRAY_SIZE);
+  assert(true == res);
+  float test_array_float32[7] =
+  {-3.000001, 22143.541325, 6331.00432, -214.66241, 0.000001, 1415555.12345,
+   -1.11154};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->float32_array.data[i] = test_array_float32[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_float32[i] == arrays->float32_array.data[i]);
+  }
+
+  // float64 array
+  res = rosidl_generator_c__float64__Array__init(&arrays->float64_array, ARRAY_SIZE);
+  assert(true == res);
+  double test_array_float64[7] =
+  {-120310.00843902140001, 22143.54483920141325, 6331.0048392104432,
+   -214.62850432596241, 0.0000000000001, 1415555.128294031432345,
+   -1.111184329208454};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->float64_array.data[i] = test_array_float64[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_float64[i] == arrays->float64_array.data[i]);
+  }
+
+  // int8 array
+  res = rosidl_generator_c__int8__Array__init(&arrays->int8_array, ARRAY_SIZE);
+  assert(true == res);
+  int8_t test_array_int8[7] = {-127, -55, -30, 0, 58, 100, 127};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->int8_array.data[i] = test_array_int8[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_int8[i] == arrays->int8_array.data[i]);
+  }
+
+  // int16 array
+  res = rosidl_generator_c__int16__Array__init(&arrays->int16_array, ARRAY_SIZE);
+  assert(true == res);
+  int16_t test_array_int16[7] =
+  {-32767, -22222, -11111, 0, 11111, 22222, 32767};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->int16_array.data[i] = test_array_int16[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_int16[i] == arrays->int16_array.data[i]);
+  }
+
+  // int32 array
+  res = rosidl_generator_c__int32__Array__init(&arrays->int32_array, ARRAY_SIZE);
+  assert(true == res);
+  int32_t test_array_int32[7] =
+  {-2147483648, -2000000000, -1111111111, 0, 1111111111, 2000000000, 2147483647};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->int32_array.data[i] = test_array_int32[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_int32[i] == arrays->int32_array.data[i]);
+  }
+
+  // int64 array
+  res = rosidl_generator_c__int64__Array__init(&arrays->int64_array, ARRAY_SIZE);
+  assert(true == res);
+  int64_t test_array_int64[7] =
+  {-9223372036854775808, -5000000000000000000, -1111111111111111111, 0,
+   1111111111111111111, 5000000000000000000, 9223372036854775807};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->int64_array.data[i] = test_array_int64[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_int64[i] == arrays->int64_array.data[i]);
+  }
+
+  // uint8 array
+  res = rosidl_generator_c__uint8__Array__init(&arrays->uint8_array, ARRAY_SIZE);
+  assert(true == res);
+  uint8_t test_array_uint8[7] = {0, 5, 70, 128, 180, 220, 255};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->uint8_array.data[i] = test_array_uint8[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_uint8[i] == arrays->uint8_array.data[i]);
+  }
+
+  // uint16 array
+  res = rosidl_generator_c__uint16__Array__init(&arrays->uint16_array, ARRAY_SIZE);
+  assert(true == res);
+  uint16_t test_array_uint16[7] = {0, 11111, 22222, 33333, 44444, 55555, 65535};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->uint16_array.data[i] = test_array_uint16[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_uint16[i] == arrays->uint16_array.data[i]);
+  }
+
+  // uint32 array
+  res = rosidl_generator_c__uint32__Array__init(&arrays->uint32_array, ARRAY_SIZE);
+  assert(true == res);
+  uint32_t test_array_uint32[7] =
+  {0, 100, 2000, 30000, 444444, 567890123, 4294967295};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->uint32_array.data[i] = test_array_uint32[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_uint32[i] == arrays->uint32_array.data[i]);
+  }
+
+  // uint64 array
+  res = rosidl_generator_c__uint64__Array__init(&arrays->uint64_array, ARRAY_SIZE);
+  assert(true == res);
+  uint64_t test_array_uint64[7] =
+  {0, 10000, 30000000, 444444444, 567890123456789, 429496729578901234,
+   18446744073709551615};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->uint64_array.data[i] = test_array_uint64[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_uint64[i] == arrays->uint64_array.data[i]);
+  }
+
+  rosidl_generator_c__msg__PrimitivesBoundedArrays__destroy(arrays);
+}
+
+/**
+ * Test message with different static array types
+ */
+void test_primitives_static_arrays(void)
+{
+  bool res = false;
+  int i;
+  rosidl_generator_c__msg__PrimitivesStaticArrays * arrays = NULL;
+
+  arrays = rosidl_generator_c__msg__PrimitivesStaticArrays__create();
+  assert(NULL != arrays);
+
+  // bool_array
+  // load values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    if (0 == (i % 2)) {
+      arrays->bool_array[i] = true;
+    } else {
+      arrays->bool_array[i] = false;
+    }
+  }
+
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    if (0 == (i % 2)) {
+      assert(true == arrays->bool_array[i]);
+    } else {
+      assert(false == arrays->bool_array[i]);
+    }
+  }
+
+  // byte_array
+  uint8_t test_array_byte[ARRAY_SIZE] = {0, 57, 110, 177, 201, 240, 255};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->byte_array[i] = test_array_byte[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_byte[i] == arrays->byte_array[i]);
+  }
+
+  // char array
+  char test_array_char[ARRAY_SIZE] = {'a', '5', '#', 'Z', '@', '-', ' '};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->char_array[i] = test_array_char[i];
+  }
+
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_char[i] == arrays->char_array[i]);
+  }
+
+  // float32 array
+  float test_array_float32[ARRAY_SIZE] =
+  {-3.000001, 22143.541325, 6331.00432, -214.66241, 0.000001, 1415555.12345,
+   -1.11154};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->float32_array[i] = test_array_float32[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_float32[i] == arrays->float32_array[i]);
+  }
+
+  // float64 array
+  double test_array_float64[ARRAY_SIZE] =
+  {-120310.00843902140001, 22143.54483920141325, 6331.0048392104432,
+   -214.62850432596241, 0.0000000000001, 1415555.128294031432345,
+   -1.111184329208454};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->float64_array[i] = test_array_float64[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_float64[i] == arrays->float64_array[i]);
+  }
+
+  // int8 array
+  int8_t test_array_int8[ARRAY_SIZE] = {-127, -55, -30, 0, 58, 100, 127};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->int8_array[i] = test_array_int8[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_int8[i] == arrays->int8_array[i]);
+  }
+
+  // int16 array
+  int16_t test_array_int16[ARRAY_SIZE] =
+  {-32767, -22222, -11111, 0, 11111, 22222, 32767};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->int16_array[i] = test_array_int16[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_int16[i] == arrays->int16_array[i]);
+  }
+
+  // int32 array
+  int32_t test_array_int32[ARRAY_SIZE] =
+  {-2147483648, -2000000000, -1111111111, 0, 1111111111, 2000000000, 2147483647};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->int32_array[i] = test_array_int32[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_int32[i] == arrays->int32_array[i]);
+  }
+
+  // int64 array
+  int64_t test_array_int64[ARRAY_SIZE] =
+  {-9223372036854775808, -5000000000000000000, -1111111111111111111, 0,
+   1111111111111111111, 5000000000000000000, 9223372036854775807};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->int64_array[i] = test_array_int64[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_int64[i] == arrays->int64_array[i]);
+  }
+
+  // uint8 array
+  uint8_t test_array_uint8[ARRAY_SIZE] = {0, 5, 70, 128, 180, 220, 255};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->uint8_array[i] = test_array_uint8[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_uint8[i] == arrays->uint8_array[i]);
+  }
+
+  // uint16 array
+  uint16_t test_array_uint16[ARRAY_SIZE] = {0, 11111, 22222, 33333, 44444, 55555, 65535};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->uint16_array[i] = test_array_uint16[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_uint16[i] == arrays->uint16_array[i]);
+  }
+
+  // uint32 array
+  uint32_t test_array_uint32[ARRAY_SIZE] =
+  {0, 100, 2000, 30000, 444444, 567890123, 4294967295};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->uint32_array[i] = test_array_uint32[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_uint32[i] == arrays->uint32_array[i]);
+  }
+
+  // uint64 array
+  uint64_t test_array_uint64[ARRAY_SIZE] =
+  {0, 10000, 30000000, 444444444, 567890123456789, 429496729578901234,
+   18446744073709551615};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->uint64_array[i] = test_array_uint64[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    assert(test_array_uint64[i] == arrays->uint64_array[i]);
+  }
+
+  rosidl_generator_c__msg__PrimitivesStaticArrays__destroy(arrays);
 }

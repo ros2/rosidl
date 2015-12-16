@@ -12,9 +12,6 @@
 #ifndef __@(spec.pkg_name)__@(get_header_filename_from_msg_name(spec.srv_name))__type_support__h__
 #define __@(spec.pkg_name)__@(get_header_filename_from_msg_name(spec.srv_name))__type_support__h__
 
-// providing offsetof()
-#include <cstddef>
-
 #include <rosidl_generator_c/service_type_support.h>
 // this is defined in the rosidl_typesupport_introspection_cpp package and
 // is in the include/rosidl_typesupport_introspection_cpp/impl folder

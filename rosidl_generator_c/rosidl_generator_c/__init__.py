@@ -30,6 +30,7 @@ def generate_c(generator_arguments_file):
         os.path.join(template_dir, 'msg__functions.c.template'): '%s__functions.c',
         os.path.join(template_dir, 'msg__functions.h.template'): '%s__functions.h',
         os.path.join(template_dir, 'msg__struct.h.template'): '%s__struct.h',
+        os.path.join(template_dir, 'msg__type_support.h.template'): '%s__type_support.h',
     }
     for template_file in mapping.keys():
         assert os.path.exists(template_file), 'Could not find template: ' + template_file

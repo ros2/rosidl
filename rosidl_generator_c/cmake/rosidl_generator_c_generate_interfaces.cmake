@@ -32,6 +32,7 @@ foreach(_idl_file ${rosidl_generate_interfaces_c_IDL_FILES})
         "${_output_path}/${_parent_folder}/${_header_name}.h"
         "${_output_path}/${_parent_folder}/${_header_name}__functions.h"
         "${_output_path}/${_parent_folder}/${_header_name}__struct.h"
+        "${_output_path}/${_parent_folder}/${_header_name}__type_support.h"
       )
       list(APPEND _generated_msg_sources
         "${_output_path}/${_parent_folder}/${_header_name}__functions.c"
@@ -41,6 +42,7 @@ foreach(_idl_file ${rosidl_generate_interfaces_c_IDL_FILES})
         "${_output_path}/${_parent_folder}/${_header_name}.h"
         "${_output_path}/${_parent_folder}/${_header_name}__functions.h"
         "${_output_path}/${_parent_folder}/${_header_name}__struct.h"
+        "${_output_path}/${_parent_folder}/${_header_name}__type_support.h"
       )
       list(APPEND _generated_srv_sources
         "${_output_path}/${_parent_folder}/${_header_name}__functions.c"
@@ -75,6 +77,7 @@ set(target_dependencies
   "${rosidl_generator_c_TEMPLATE_DIR}/msg__functions.c.template"
   "${rosidl_generator_c_TEMPLATE_DIR}/msg__functions.h.template"
   "${rosidl_generator_c_TEMPLATE_DIR}/msg__struct.h.template"
+  "${rosidl_generator_c_TEMPLATE_DIR}/msg__type_support.h.template"
   ${rosidl_generate_interfaces_c_IDL_FILES}
   ${_dependency_files})
 foreach(dep ${target_dependencies})

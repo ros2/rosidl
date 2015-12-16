@@ -20,6 +20,11 @@
 #include "rosidl_generator_c/string.h"
 #include "rosidl_generator_c/visibility_control.h"
 
+#if __cplusplus
+extern "C"
+{
+#endif
+
 ROSIDL_GENERATOR_C_PUBLIC
 void
 rosidl_generator_c__String__init(rosidl_generator_c__String * str);
@@ -56,5 +61,9 @@ ROSIDL_GENERATOR_C_PUBLIC
 void
 rosidl_generator_c__String__Array__destroy(
   rosidl_generator_c__String__Array * array);
+
+#if __cplusplus
+}
+#endif
 
 #endif  // ROSIDL_GENERATOR_C__STRING_FUNCTIONS_H_

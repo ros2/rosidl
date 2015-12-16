@@ -1,4 +1,4 @@
-// Copyright 2014 Open Source Robotics Foundation, Inc.
+// Copyright 2014-2015 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__MESSAGE_INTROSPECTION_HPP_
-#define ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__MESSAGE_INTROSPECTION_HPP_
+#ifndef ROSIDL_TYPESUPPORT_INTROSPECTION_C__MESSAGE_INTROSPECTION_H_
+#define ROSIDL_TYPESUPPORT_INTROSPECTION_C__MESSAGE_INTROSPECTION_H_
 
-#include <cstddef>
-#include <cstdint>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #include "rosidl_generator_c/message_type_support.h"
 
-#include "rosidl_typesupport_introspection_cpp/visibility_control.h"
+#include "rosidl_typesupport_introspection_c/visibility_control.h"
 
-namespace rosidl_typesupport_introspection_cpp
-{
-
-typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember
+typedef struct rosidl_typesupport_introspection_c__MessageMember
 {
   const char * name_;
   uint8_t type_id_;
@@ -39,17 +37,15 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember
   size_t (* size_function)(const void *);
   const void * (*get_const_function)(const void *, size_t index);
   void * (*get_function)(void *, size_t index);
-  void (* resize_function)(void *, size_t size);
-} MessageMember;
+  bool (* resize_function)(void *, size_t size);
+} rosidl_typesupport_introspection_c__MessageMember;
 
-typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMembers
+typedef struct rosidl_typesupport_introspection_c__MessageMembers
 {
   const char * package_name_;
   const char * message_name_;
   uint32_t member_count_;
-  const MessageMember * members_;
-} MessageMembers;
+  const rosidl_typesupport_introspection_c__MessageMember * members_;
+} rosidl_typesupport_introspection_c__MessageMembers;
 
-}  // namespace rosidl_typesupport_introspection_cpp
-
-#endif  // ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__MESSAGE_INTROSPECTION_HPP_
+#endif  // ROSIDL_TYPESUPPORT_INTROSPECTION_C__MESSAGE_INTROSPECTION_H_

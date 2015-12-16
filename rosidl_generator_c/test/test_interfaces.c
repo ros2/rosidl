@@ -42,6 +42,9 @@
 #include "rosidl_generator_c/msg/primitives_unbounded_arrays.h"
 #include "rosidl_generator_c/msg/primitives_bounded_arrays.h"
 #include "rosidl_generator_c/msg/primitives_static_arrays.h"
+#include "rosidl_generator_c/msg/telegram1.h"
+#include "rosidl_generator_c/msg/telegram2.h"
+#include "rosidl_generator_c/msg/wire.h"
 
 #define TEST_STRING \
   "Deep into that darkness peering, long I stood there wondering, fearing, \
@@ -54,6 +57,7 @@ void test_strings(void);
 void test_primitives_unbounded_arrays(void);
 void test_primitives_bounded_arrays(void);
 void test_primitives_static_arrays(void);
+void test_submessages(void);
 
 int main(void)
 {
@@ -70,6 +74,8 @@ int main(void)
   test_primitives_bounded_arrays();
   fprintf(stderr, "Testing primitives static arrays types...\n");
   test_primitives_static_arrays();
+  fprintf(stderr, "Testing nested sub-messages...\n");
+  test_submessages();
   fprintf(stderr, "All tests were good!\n");
   return 0;
 }
@@ -615,7 +621,6 @@ void test_primitives_bounded_arrays(void)
  */
 void test_primitives_static_arrays(void)
 {
-  bool res = false;
   int i;
   rosidl_generator_c__msg__PrimitivesStaticArrays * arrays = NULL;
 
@@ -775,4 +780,42 @@ void test_primitives_static_arrays(void)
   }
 
   rosidl_generator_c__msg__PrimitivesStaticArrays__destroy(arrays);
+}
+
+/**
+ * Test message with sub-messages types
+ */
+void test_submessages(void)
+{
+  int i;
+  bool res;
+  rosidl_generator_c__msg__Wire * wire_msg = rosidl_generator_c__msg__Wire__create();
+
+  for (i = 0; i < 3; i++) {
+    res = rosidl_generator_c__String__assign(&wire_msg->cablegram1[i].text, TEST_STRING);
+    assert(true == res);
+    wire_msg->cablegram1[i].number = 3.1415f;
+  }
+  res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[0], "Test 1");
+  assert(true == res);
+  res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[1], "Test 2");
+  assert(true == res);
+  res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[2], "Test 3");
+  assert(true == res);
+  wire_msg->cablegram2.number_array[0] = 3.1f;
+  wire_msg->cablegram2.number_array[1] = 3.14f;
+  wire_msg->cablegram2.number_array[2] = 3.141f;
+
+  for (i = 0; i < 3; i++) {
+    assert(0 == strcmp(wire_msg->cablegram1[i].text.data, TEST_STRING));
+    assert(3.1415f == wire_msg->cablegram1[i].number);
+  }
+  assert(0 == strcmp(wire_msg->cablegram2.text_array[0].data, "Test 1"));
+  assert(0 == strcmp(wire_msg->cablegram2.text_array[1].data, "Test 2"));
+  assert(0 == strcmp(wire_msg->cablegram2.text_array[2].data, "Test 3"));
+  assert(3.1f == wire_msg->cablegram2.number_array[0]);
+  assert(3.14f == wire_msg->cablegram2.number_array[1]);
+  assert(3.141f == wire_msg->cablegram2.number_array[2]);
+
+  rosidl_generator_c__msg__Wire__destroy(wire_msg);
 }

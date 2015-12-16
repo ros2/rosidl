@@ -56,6 +56,9 @@ if(AMENT_ENABLE_TESTING)
     "msg/PrimitivesUnboundedArrays.msg"
     "msg/PrimitivesBoundedArrays.msg"
     "msg/PrimitivesStaticArrays.msg"
+    "msg/Telegram1.msg"
+    "msg/Telegram2.msg"
+    "msg/Wire.msg"
   )
 
   include(cmake/register_c.cmake)

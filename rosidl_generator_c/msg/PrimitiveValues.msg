@@ -1,0 +1,14 @@
+bool def_bool_1 true
+bool def_bool_2 false
+byte def_byte 66
+char def_char -66
+float32 def_float32 3.1416
+float64 def_float64 3.14159265
+int8 def_int8 3
+int16 def_int16 6
+int32 def_int32 10
+int64 def_int64 15
+uint8 def_uint8 33
+uint16 def_uint16 36
+uint32 def_uint32 310
+uint64 def_uint64 315

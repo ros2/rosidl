@@ -38,6 +38,27 @@ if(AMENT_ENABLE_TESTING)
     "msg/Nested.msg"
     "msg/Primitives.msg"
     "msg/Various.msg"
+    "msg/Bool.msg"
+    "msg/Byte.msg"
+    "msg/Char.msg"
+    "msg/Float32.msg"
+    "msg/Float64.msg"
+    "msg/Int8.msg"
+    "msg/Int16.msg"
+    "msg/Int32.msg"
+    "msg/Int64.msg"
+    "msg/Uint8.msg"
+    "msg/Uint16.msg"
+    "msg/Uint32.msg"
+    "msg/Uint64.msg"
+    "msg/PrimitiveValues.msg"
+    "msg/Strings.msg"
+    "msg/PrimitivesUnboundedArrays.msg"
+    "msg/PrimitivesBoundedArrays.msg"
+    "msg/PrimitivesStaticArrays.msg"
+    "msg/Telegram1.msg"
+    "msg/Telegram2.msg"
+    "msg/Wire.msg"
   )
 
   include(cmake/register_c.cmake)
@@ -55,9 +76,12 @@ if(AMENT_ENABLE_TESTING)
   )
 
   add_executable(test_compilation_c test/test_compilation.c test/separate_compilation.c)
+  add_executable(test_interfaces_c test/test_interfaces.c)
+  add_dependencies(test_interfaces_c ${PROJECT_NAME})
   # include the built files directly, instead of their install location
   include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
   target_link_libraries(test_compilation_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
+  target_link_libraries(test_interfaces_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
 endif()
 
 ament_package(

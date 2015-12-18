@@ -47,8 +47,8 @@
 #include "rosidl_generator_c/msg/wire.h"
 
 #define TEST_STRING \
-  "Deep into that darkness peering, long I stood there wondering, fearing, \
-  doubting, dreaming dreams no mortal ever dared to dream before."
+  "Deep into that darkness peering, long I stood there wondering, fearing"
+
 #define ARRAY_SIZE 7
 
 void test_primitives(void);

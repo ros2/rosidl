@@ -2,7 +2,7 @@
 <package format="2">
   <name>rosidl_default_generators</name>
   <version>0.0.0</version>
-  <description>A configuration package defining the default ROS interface generrators.</description>
+  <description>A configuration package defining the default ROS interface generators.</description>
   <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
   <license>Apache License 2.0</license>
 

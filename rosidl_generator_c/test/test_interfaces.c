@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "rosidl_generator_c/primitives_array_functions.h"
 #include "rosidl_generator_c/string_functions.h"
 
 #include "rosidl_generator_c/msg/various.h"

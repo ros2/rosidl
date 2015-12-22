@@ -293,8 +293,8 @@ void test_primitives_unbounded_arrays(void)
   res = rosidl_generator_c__float32__Array__init(&arrays->float32_array, ARRAY_SIZE);
   assert(true == res);
   float test_array_float32[7] =
-  {-3.000001, 22143.541325, 6331.00432, -214.66241, 0.000001, 1415555.12345,
-   -1.11154};
+  {-3.000001f, 22143.541325f, 6331.00432f, -214.66241f, 0.000001f, 1415555.12345f,
+   -1.11154f};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->float32_array.data[i] = test_array_float32[i];
   }
@@ -347,7 +347,7 @@ void test_primitives_unbounded_arrays(void)
   res = rosidl_generator_c__int32__Array__init(&arrays->int32_array, ARRAY_SIZE);
   assert(true == res);
   int32_t test_array_int32[7] =
-  {-2147483648, -2000000000, -1111111111, 0, 1111111111, 2000000000, 2147483647};
+  {-2147483648L, -2000000000L, -1111111111L, 0L, 1111111111L, 2000000000L, 2147483647L};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int32_array.data[i] = test_array_int32[i];
   }
@@ -385,7 +385,7 @@ void test_primitives_unbounded_arrays(void)
   // uint16 array
   res = rosidl_generator_c__uint16__Array__init(&arrays->uint16_array, ARRAY_SIZE);
   assert(true == res);
-  uint16_t test_array_uint16[7] = {0, 11111, 22222, 33333, 44444, 55555, 65535};
+  uint16_t test_array_uint16[7] = {0U, 11111U, 22222U, 33333U, 44444U, 55555U, 65535U};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint16_array.data[i] = test_array_uint16[i];
   }
@@ -398,7 +398,7 @@ void test_primitives_unbounded_arrays(void)
   res = rosidl_generator_c__uint32__Array__init(&arrays->uint32_array, ARRAY_SIZE);
   assert(true == res);
   uint32_t test_array_uint32[7] =
-  {0, 100, 2000, 30000, 444444, 567890123, 4294967295};
+  {0UL, 100UL, 2000UL, 30000UL, 444444UL, 567890123UL, 4294967295UL};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint32_array.data[i] = test_array_uint32[i];
   }
@@ -411,7 +411,7 @@ void test_primitives_unbounded_arrays(void)
   res = rosidl_generator_c__uint64__Array__init(&arrays->uint64_array, ARRAY_SIZE);
   assert(true == res);
   uint64_t test_array_uint64[7] =
-  {0, 10000, 30000000, 444444444, 567890123456789, 429496729578901234,
+  {0ULL, 10000ULL, 30000000ULL, 444444444ULL, 567890123456789ULL, 429496729578901234ULL,
    18446744073709551615ULL};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint64_array.data[i] = test_array_uint64[i];
@@ -486,8 +486,8 @@ void test_primitives_bounded_arrays(void)
   res = rosidl_generator_c__float32__Array__init(&arrays->float32_array, ARRAY_SIZE);
   assert(true == res);
   float test_array_float32[7] =
-  {-3.000001, 22143.541325, 6331.00432, -214.66241, 0.000001, 1415555.12345,
-   -1.11154};
+  {-3.000001f, 22143.541325f, 6331.00432f, -214.66241f, 0.000001f, 1415555.12345f,
+   -1.11154f};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->float32_array.data[i] = test_array_float32[i];
   }
@@ -540,7 +540,7 @@ void test_primitives_bounded_arrays(void)
   res = rosidl_generator_c__int32__Array__init(&arrays->int32_array, ARRAY_SIZE);
   assert(true == res);
   int32_t test_array_int32[7] =
-  {-2147483648, -2000000000, -1111111111, 0, 1111111111, 2000000000, 2147483647};
+  {-2147483648L, -2000000000L, -1111111111L, 0L, 1111111111L, 2000000000L, 2147483647L};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int32_array.data[i] = test_array_int32[i];
   }
@@ -578,7 +578,7 @@ void test_primitives_bounded_arrays(void)
   // uint16 array
   res = rosidl_generator_c__uint16__Array__init(&arrays->uint16_array, ARRAY_SIZE);
   assert(true == res);
-  uint16_t test_array_uint16[7] = {0, 11111, 22222, 33333, 44444, 55555, 65535};
+  uint16_t test_array_uint16[7] = {0U, 11111U, 22222U, 33333U, 44444U, 55555U, 65535U};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint16_array.data[i] = test_array_uint16[i];
   }
@@ -591,7 +591,7 @@ void test_primitives_bounded_arrays(void)
   res = rosidl_generator_c__uint32__Array__init(&arrays->uint32_array, ARRAY_SIZE);
   assert(true == res);
   uint32_t test_array_uint32[7] =
-  {0, 100, 2000, 30000, 444444, 567890123, 4294967295};
+  {0UL, 100UL, 2000UL, 30000UL, 444444UL, 567890123UL, 4294967295UL};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint32_array.data[i] = test_array_uint32[i];
   }
@@ -604,7 +604,7 @@ void test_primitives_bounded_arrays(void)
   res = rosidl_generator_c__uint64__Array__init(&arrays->uint64_array, ARRAY_SIZE);
   assert(true == res);
   uint64_t test_array_uint64[7] =
-  {0, 10000, 30000000, 444444444, 567890123456789, 429496729578901234,
+  {0ULL, 10000ULL, 30000000ULL, 444444444ULL, 567890123456789ULL, 429496729578901234ULL,
    18446744073709551615ULL};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint64_array.data[i] = test_array_uint64[i];
@@ -670,8 +670,8 @@ void test_primitives_static_arrays(void)
 
   // float32 array
   float test_array_float32[ARRAY_SIZE] =
-  {-3.000001, 22143.541325, 6331.00432, -214.66241, 0.000001, 1415555.12345,
-   -1.11154};
+  {-3.000001f, 22143.541325f, 6331.00432f, -214.66241f, 0.000001f, 1415555.12345f,
+   -1.11154f};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->float32_array[i] = test_array_float32[i];
   }
@@ -716,7 +716,7 @@ void test_primitives_static_arrays(void)
 
   // int32 array
   int32_t test_array_int32[ARRAY_SIZE] =
-  {-2147483648, -2000000000, -1111111111, 0, 1111111111, 2000000000, 2147483647};
+  {-2147483648L, -2000000000L, -1111111111L, 0L, 1111111111L, 2000000000L, 2147483647L};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int32_array[i] = test_array_int32[i];
   }
@@ -748,7 +748,7 @@ void test_primitives_static_arrays(void)
   }
 
   // uint16 array
-  uint16_t test_array_uint16[ARRAY_SIZE] = {0, 11111, 22222, 33333, 44444, 55555, 65535};
+  uint16_t test_array_uint16[ARRAY_SIZE] = {0U, 11111U, 22222U, 33333U, 44444U, 55555U, 65535U};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint16_array[i] = test_array_uint16[i];
   }
@@ -759,7 +759,7 @@ void test_primitives_static_arrays(void)
 
   // uint32 array
   uint32_t test_array_uint32[ARRAY_SIZE] =
-  {0, 100, 2000, 30000, 444444, 567890123, 4294967295};
+  {0UL, 100UL, 2000UL, 30000UL, 444444UL, 567890123UL, 4294967295UL};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint32_array[i] = test_array_uint32[i];
   }
@@ -770,7 +770,7 @@ void test_primitives_static_arrays(void)
 
   // uint64 array
   uint64_t test_array_uint64[ARRAY_SIZE] =
-  {0, 10000, 30000000, 444444444, 567890123456789, 429496729578901234,
+  {0ULL, 10000ULL, 30000000ULL, 444444444ULL, 567890123456789ULL, 429496729578901234ULL,
    18446744073709551615ULL};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint64_array[i] = test_array_uint64[i];

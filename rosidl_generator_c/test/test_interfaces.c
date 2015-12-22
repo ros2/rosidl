@@ -360,8 +360,8 @@ void test_primitives_unbounded_arrays(void)
   res = rosidl_generator_c__int64__Array__init(&arrays->int64_array, ARRAY_SIZE);
   assert(true == res);
   int64_t test_array_int64[7] =
-  {-9223372036854775808, -5000000000000000000, -1111111111111111111, 0,
-   1111111111111111111, 5000000000000000000, 9223372036854775807};
+  {-9223372036854775807LL, -5000000000000000000LL, -1111111111111111111LL, 0,
+   1111111111111111111LL, 5000000000000000000LL, 9223372036854775807LL};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int64_array.data[i] = test_array_int64[i];
   }
@@ -412,7 +412,7 @@ void test_primitives_unbounded_arrays(void)
   assert(true == res);
   uint64_t test_array_uint64[7] =
   {0, 10000, 30000000, 444444444, 567890123456789, 429496729578901234,
-   18446744073709551615};
+   18446744073709551615ULL};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint64_array.data[i] = test_array_uint64[i];
   }
@@ -553,8 +553,8 @@ void test_primitives_bounded_arrays(void)
   res = rosidl_generator_c__int64__Array__init(&arrays->int64_array, ARRAY_SIZE);
   assert(true == res);
   int64_t test_array_int64[7] =
-  {-9223372036854775808, -5000000000000000000, -1111111111111111111, 0,
-   1111111111111111111, 5000000000000000000, 9223372036854775807};
+  {-9223372036854775807LL, -5000000000000000000LL, -1111111111111111111, 0,
+   1111111111111111111LL, 5000000000000000000LL, 9223372036854775807LL};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int64_array.data[i] = test_array_int64[i];
   }
@@ -605,7 +605,7 @@ void test_primitives_bounded_arrays(void)
   assert(true == res);
   uint64_t test_array_uint64[7] =
   {0, 10000, 30000000, 444444444, 567890123456789, 429496729578901234,
-   18446744073709551615};
+   18446744073709551615ULL};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint64_array.data[i] = test_array_uint64[i];
   }
@@ -727,8 +727,8 @@ void test_primitives_static_arrays(void)
 
   // int64 array
   int64_t test_array_int64[ARRAY_SIZE] =
-  {-9223372036854775808, -5000000000000000000, -1111111111111111111, 0,
-   1111111111111111111, 5000000000000000000, 9223372036854775807};
+  {-9223372036854775807LL, -5000000000000000000LL, -1111111111111111111LL, 0,
+   1111111111111111111ULL, 5000000000000000000ULL, 9223372036854775807ULL};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int64_array[i] = test_array_int64[i];
   }
@@ -771,7 +771,7 @@ void test_primitives_static_arrays(void)
   // uint64 array
   uint64_t test_array_uint64[ARRAY_SIZE] =
   {0, 10000, 30000000, 444444444, 567890123456789, 429496729578901234,
-   18446744073709551615};
+   18446744073709551615ULL};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint64_array[i] = test_array_uint64[i];
   }

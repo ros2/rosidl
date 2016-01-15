@@ -14,13 +14,7 @@
 
 from nose.tools import assert_raises
 
-from rosidl_generator_py.msg import Bool
 from rosidl_generator_py.msg import Constants
-from rosidl_generator_py.msg import Empty
-from rosidl_generator_py.msg import Float32
-from rosidl_generator_py.msg import Float64
-from rosidl_generator_py.msg import Int32
-from rosidl_generator_py.msg import Int64
 from rosidl_generator_py.msg import Strings
 
 

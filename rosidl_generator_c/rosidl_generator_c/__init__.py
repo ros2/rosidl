@@ -154,12 +154,12 @@ def primitive_value_to_c(type_, value):
         return '%sl' % value
 
     if type_ == 'string':
-        return "'%s'" % escape_string(value)
+        return '"%s"' % escape_string(value)
 
     assert False, "unknown primitive type '%s'" % type_
 
 
 def escape_string(s):
     s = s.replace('\\', '\\\\')
-    s = s.replace("'", "\\'")
+    s = s.replace('"', '\\"')
     return s

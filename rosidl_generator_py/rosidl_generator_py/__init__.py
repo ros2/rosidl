@@ -143,12 +143,12 @@ def constant_value_to_py(type_, value):
         return '%s' % value
 
     if type_ == 'string':
-        return '"%s"' % escape_string(value)
+        return "'%s'" % escape_string(value)
 
     assert False, "unknown constant type '%s'" % type_
 
 
 def escape_string(s):
     s = s.replace('\\', '\\\\')
-    s = s.replace('"', '\\"')
+    s = s.replace("'", "\\'")
     return s

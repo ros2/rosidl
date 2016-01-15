@@ -1,0 +1,56 @@
+# generated from rosidl_generator_py/resource/_msg.py.template
+# generated code does not contain a copyright notice
+
+class @(spec.base_type.type)__Constants(type):
+@[for constant in spec.constants]@
+
+    @@property
+    def @(constant.name)(cls):
+        """Message constant '@(constant.name)'"""
+        return @constant_value_to_py(constant.type, constant.value)
+@[end for]@
+
+    def __setattr__(cls, name, value):
+        raise AttributeError("Class variables are read-only")
+
+    @@classmethod
+    def __prepare__(cls, name, bases, **kwargs):
+        return {
+@[for constant in spec.constants]@
+            '@(constant.name)': @constant_value_to_py(constant.type, constant.value),
+@[end for]@
+        }
+
+
+class @(spec.base_type.type)(metaclass=@(spec.base_type.type)__Constants):
+
+    __slots__ = [
+@[for field in spec.fields]@
+        '__@(field.name)',
+@[end for]@
+    ]
+
+@[if len(spec.fields) > 0]@
+    def __init__(self, **kwargs):
+        assert(all(['__' + key in self.__slots__ for key in kwargs.keys()])), \
+            "Invalid arguments passed to constructor: %r" % kwargs.keys()
+@[for field in spec.fields]@
+@[if field.default_value]@
+        self.__@(field.name) = kwargs.get(
+            '@(field.name)', @value_to_py(field.type, field.default_value))
+@[else]@
+        self.__@(field.name) = kwargs.get('@(field.name)')
+@[end if]@
+@[end for]@
+@[end if]@
+@[for field in spec.fields]@
+
+    @@property
+    def @(field.name)(self):
+        """Message field '@(field.name)'"""
+        return self.__@(field.name)
+
+    @@@(field.name).setter
+    def @(field.name)(self, value):
+        self.__@(field.name) = value
+@[end for]@

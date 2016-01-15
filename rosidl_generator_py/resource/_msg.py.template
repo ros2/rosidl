@@ -36,10 +36,10 @@ class @(spec.base_type.type)(metaclass=@(spec.base_type.type)__Constants):
             "Invalid arguments passed to constructor: %r" % kwargs.keys()
 @[for field in spec.fields]@
 @[if field.default_value]@
-        self.__@(field.name) = kwargs.get(
+        self.@(field.name) = kwargs.get(
             '@(field.name)', @value_to_py(field.type, field.default_value))
 @[else]@
-        self.__@(field.name) = kwargs.get('@(field.name)')
+        self.@(field.name) = kwargs.get('@(field.name)')
 @[end if]@
 @[end for]@
 @[end if]@

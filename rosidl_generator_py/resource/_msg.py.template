@@ -26,20 +26,20 @@ class @(spec.base_type.type)(metaclass=@(spec.base_type.type)__Constants):
 
     __slots__ = [
 @[for field in spec.fields]@
-        '__@(field.name)',
+        '_@(field.name)',
 @[end for]@
     ]
 
 @[if len(spec.fields) > 0]@
     def __init__(self, **kwargs):
-        assert(all(['__' + key in self.__slots__ for key in kwargs.keys()])), \
+        assert(all(['_' + key in self.__slots__ for key in kwargs.keys()])), \
             "Invalid arguments passed to constructor: %r" % kwargs.keys()
 @[for field in spec.fields]@
 @[if field.default_value]@
-        self.__@(field.name) = kwargs.get(
+        self.@(field.name) = kwargs.get(
             '@(field.name)', @value_to_py(field.type, field.default_value))
 @[else]@
-        self.__@(field.name) = kwargs.get('@(field.name)')
+        self.@(field.name) = kwargs.get('@(field.name)')
 @[end if]@
 @[end for]@
 @[end if]@
@@ -48,9 +48,9 @@ class @(spec.base_type.type)(metaclass=@(spec.base_type.type)__Constants):
     @@property
     def @(field.name)(self):
         """Message field '@(field.name)'"""
-        return self.__@(field.name)
+        return self._@(field.name)
 
     @@@(field.name).setter
     def @(field.name)(self, value):
-        self.__@(field.name) = value
+        self._@(field.name) = value
 @[end for]@

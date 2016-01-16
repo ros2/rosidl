@@ -82,7 +82,7 @@ def generate_py(generator_arguments_file):
     return 0
 
 
-def value_to_py(type_, value):
+def value_to_py(type_, value, array_as_tuple=False):
     assert type_.is_primitive_type()
     assert value is not None
 
@@ -93,8 +93,10 @@ def value_to_py(type_, value):
     for single_value in value:
         py_value = primitive_value_to_py(type_, single_value)
         py_values.append(py_value)
-    py_value = '[%s]' % ', '.join(py_values)
-    return py_value
+    if array_as_tuple:
+        return '(%s)' % ', '.join(py_values)
+    else:
+        return '[%s]' % ', '.join(py_values)
 
 
 def primitive_value_to_py(type_, value):

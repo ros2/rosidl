@@ -16,6 +16,7 @@ from nose.tools import assert_raises
 
 from rosidl_generator_py.msg import Constants
 from rosidl_generator_py.msg import Strings
+from rosidl_generator_py.msg import Various
 
 
 def test_strings():
@@ -47,3 +48,17 @@ def test_constants():
     assert(Constants.FOO == "foo")
 
     assert_raises(AttributeError, setattr, Constants, "FOO", "bar")
+
+
+def test_default_values():
+    a = Strings()
+
+    assert(a.empty_string is None)
+    assert(a.def_string == "Hello world!")
+    a.def_string = "Bye world"
+    assert(a.def_string == "Bye world")
+    assert(Strings.DEF_STRING__DEFAULT == "Hello world!")
+    assert(a.DEF_STRING__DEFAULT == "Hello world!")
+    assert_raises(AttributeError, setattr, Strings, "DEF_STRING__DEFAULT", "bar")
+
+    assert(Various.TWO_UINT16_VALUE__DEFAULT == (5, 23))

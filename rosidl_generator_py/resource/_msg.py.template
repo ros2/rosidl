@@ -9,6 +9,15 @@ class @(spec.base_type.type)__Constants(type):
         """Message constant '@(constant.name)'"""
         return @constant_value_to_py(constant.type, constant.value)
 @[end for]@
+@[for field in spec.fields]@
+@[if field.default_value]@
+
+    @@property
+    def @(field.name.upper())__DEFAULT(cls):
+        """Default value for message field '@(field.name)'"""
+        return @value_to_py(field.type, field.default_value, array_as_tuple=True)
+@[end if]@
+@[end for]@
 
     def __setattr__(cls, name, value):
         raise AttributeError("Class variables are read-only")
@@ -18,6 +27,12 @@ class @(spec.base_type.type)__Constants(type):
         return {
 @[for constant in spec.constants]@
             '@(constant.name)': @constant_value_to_py(constant.type, constant.value),
+@[end for]@
+@[for field in spec.fields]@
+@[if field.default_value]@
+            '@(field.name.upper())__DEFAULT': @value_to_py(field.type, field.default_value,
+                                                           array_as_tuple=True),
+@[end if]@
 @[end for]@
         }
 
@@ -37,7 +52,7 @@ class @(spec.base_type.type)(metaclass=@(spec.base_type.type)__Constants):
 @[for field in spec.fields]@
 @[if field.default_value]@
         self.@(field.name) = kwargs.get(
-            '@(field.name)', @value_to_py(field.type, field.default_value))
+            '@(field.name)', @(spec.base_type.type).@(field.name.upper())__DEFAULT)
 @[else]@
         self.@(field.name) = kwargs.get('@(field.name)')
 @[end if]@

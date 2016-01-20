@@ -26,6 +26,7 @@ if(AMENT_ENABLE_TESTING)
     "msg/Int64.msg"
     "msg/Int8.msg"
     "msg/Nested.msg"
+    "msg/Primitives.msg"
     "msg/Strings.msg"
     "msg/Uint16.msg"
     "msg/Uint32.msg"

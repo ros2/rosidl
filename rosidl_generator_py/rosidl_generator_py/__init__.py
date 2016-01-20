@@ -43,6 +43,7 @@ def generate_py(generator_arguments_file):
 
     functions = {
         'constant_value_to_py': constant_value_to_py,
+        'get_python_type': get_python_type,
         'value_to_py': value_to_py,
     }
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
@@ -154,3 +155,37 @@ def escape_string(s):
     s = s.replace('\\', '\\\\')
     s = s.replace("'", "\\'")
     return s
+
+
+def get_python_type(type_):
+    if not type_.is_primitive_type():
+        return type_.type
+
+    if type_.string_upper_bound:
+        return 'str'
+
+    if type_.is_array:
+        if type_.type == 'byte':
+            return 'bytes'
+
+        if type_.type == 'char':
+            return 'str'
+
+    if type_.type == 'bool':
+        return 'bool'
+
+    if type_.type in [
+        'int8', 'uint8',
+        'int16', 'uint16',
+        'int32', 'uint32',
+        'int64', 'uint64',
+    ]:
+        return 'int'
+
+    if type_.type in ['float32', 'float64']:
+        return 'float'
+
+    if type_.type in ['char', 'string']:
+        return 'str'
+
+    assert False, "unknown type '%s'" % type_

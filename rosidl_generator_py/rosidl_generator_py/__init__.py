@@ -74,7 +74,6 @@ def generate_py(generator_arguments_file):
                 template_file, data, generated_file,
                 minimum_timestamp=latest_target_timestamp)
 
-    open(os.path.join(args['output_dir'], '__init__.py'), 'w').close()
     for module in modules:
         with open(os.path.join(args['output_dir'], module, '__init__.py'), 'w') as f:
             for module_, type_ in modules[module]:

@@ -35,6 +35,22 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   endif()
 endforeach()
 
+if(NOT "${_generated_msg_files} " STREQUAL " ")
+  list(GET _generated_msg_files 0 _msg_file)
+  get_filename_component(_parent_folder "${_msg_file}" DIRECTORY)
+  list(APPEND _generated_msg_files
+    "${_parent_folder}/__init__.py"
+  )
+endif()
+
+if(NOT "${_generated_srv_files} " STREQUAL " ")
+  list(GET _generated_srv_files 0 _srv_file)
+  get_filename_component(_parent_folder "${_srv_file}" DIRECTORY)
+  list(APPEND _generated_srv_files
+    "${_parent_folder}/__init__.py"
+  )
+endif()
+
 set(_dependency_files "")
 set(_dependencies "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
@@ -70,6 +86,8 @@ rosidl_write_generator_arguments(
   TARGET_DEPENDENCIES ${target_dependencies}
 )
 
+file(MAKE_DIRECTORY "${_output_path}")
+file(WRITE "${_output_path}/__init__.py" "")
 add_custom_command(
   OUTPUT ${_generated_msg_files} ${_generated_srv_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_py_BIN}
@@ -96,15 +114,9 @@ add_dependencies(
 
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   if(NOT "${_generated_msg_files} " STREQUAL " ")
-    install(
-      FILES ${_generated_msg_files}
-      DESTINATION "lib/${PROJECT_NAME}/msg"
-    )
-  endif()
-  if(NOT "${_generated_srv_files} " STREQUAL " ")
-    install(
-      FILES ${_generated_srv_files}
-      DESTINATION "lib/${PROJECT_NAME}/srv"
-    )
+    list(GET _generated_msg_files 0 _msg_file)
+    get_filename_component(_msg_package_dir "${_msg_file}" DIRECTORY)
+    get_filename_component(_msg_package_dir "${_msg_package_dir}" DIRECTORY)
+    ament_python_install_package("${PROJECT_NAME}" PACKAGE_DIR "${_msg_package_dir}")
   endif()
 endif()

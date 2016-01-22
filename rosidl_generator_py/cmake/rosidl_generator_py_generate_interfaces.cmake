@@ -35,6 +35,22 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   endif()
 endforeach()
 
+if(NOT "${_generated_msg_files} " STREQUAL " ")
+  list(GET _generated_msg_files 0 _msg_file)
+  get_filename_component(_parent_folder "${_msg_file}" DIRECTORY)
+  list(APPEND _generated_msg_files
+    "${_parent_folder}/__init__.py"
+  )
+endif()
+
+if(NOT "${_generated_srv_files} " STREQUAL " ")
+  list(GET _generated_srv_files 0 _srv_file)
+  get_filename_component(_parent_folder "${_srv_file}" DIRECTORY)
+  list(APPEND _generated_srv_files
+    "${_parent_folder}/__init__.py"
+  )
+endif()
+
 set(_dependency_files "")
 set(_dependencies "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
@@ -96,15 +112,36 @@ add_dependencies(
 
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   if(NOT "${_generated_msg_files} " STREQUAL " ")
+    _ament_cmake_python_get_python_install_dir()
+
+    list(GET _generated_msg_files 0 _msg_file)
+    get_filename_component(_msg_package_dir "${_msg_file}" DIRECTORY)
+    get_filename_component(_msg_package_dir "${_msg_package_dir}" DIRECTORY)
+
+    install(
+      FILES "${_msg_package_dir}/__init__.py"
+      DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}"
+    )
+
     install(
       FILES ${_generated_msg_files}
-      DESTINATION "lib/${PROJECT_NAME}/msg"
+      DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/msg"
     )
-  endif()
-  if(NOT "${_generated_srv_files} " STREQUAL " ")
-    install(
-      FILES ${_generated_srv_files}
-      DESTINATION "lib/${PROJECT_NAME}/srv"
-    )
+
+    if(NOT "${_generated_srv_files} " STREQUAL " ")
+      install(
+        FILES ${_generated_srv_files}
+        DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/srv"
+      )
+    endif()
+
+# NOTE(esteve): this should work, but there must be something wrong with the dependencies
+# because when this is invoked, it invariably fails to find the generated __init__.py file
+# in builtin_interfaces. However, this doesn't fail when using install()
+#    list(GET _generated_msg_files 0 _msg_file)
+#    get_filename_component(_msg_package_dir "${_msg_file}" DIRECTORY)
+#    get_filename_component(_msg_package_dir "${_msg_package_dir}" DIRECTORY)
+#    ament_python_install_package("${PROJECT_NAME}" PACKAGE_DIR "${_msg_package_dir}")
+
   endif()
 endif()

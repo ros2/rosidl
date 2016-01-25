@@ -15,7 +15,7 @@
 #ifndef ROSIDL_GENERATOR_CPP__MESSAGE_TYPE_SUPPORT_DECL_HPP_
 #define ROSIDL_GENERATOR_CPP__MESSAGE_TYPE_SUPPORT_DECL_HPP_
 
-#include <rosidl_generator_c/message_type_support.h>
+#include <rosidl_generator_c/message_type_support_struct.h>
 #include <rosidl_generator_c/visibility_control.h>
 
 namespace rosidl_generator_cpp

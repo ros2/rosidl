@@ -19,7 +19,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "rosidl_generator_c/message_type_support.h"
+#include "rosidl_generator_c/message_type_support_struct.h"
 
 #include "rosidl_typesupport_introspection_c/visibility_control.h"
 

@@ -21,7 +21,7 @@ function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.base_type
 // providing offsetof()
 #include <stddef.h>
 
-#include <rosidl_generator_c/message_type_support.h>
+#include <rosidl_generator_c/message_type_support_struct.h>
 
 #include "rosidl_typesupport_introspection_c/field_types.h"
 #include "rosidl_typesupport_introspection_c/identifier.h"

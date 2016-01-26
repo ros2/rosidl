@@ -15,7 +15,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "rosidl_generator_c/msg/various.h"
+#include "rosidl_generator_c/msg/various__struct.h"
+#include "rosidl_generator_c/msg/various__functions.h"
 
 #include "./separate_compilation.h"
 

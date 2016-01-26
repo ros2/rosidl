@@ -344,6 +344,7 @@ class MessageSpecification(object):
     def __init__(self, pkg_name, msg_name, fields, constants):
         self.base_type = BaseType(
             pkg_name + PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR + msg_name)
+        self.msg_name = msg_name
 
         self.fields = []
         for index, field in enumerate(fields):

@@ -15,8 +15,8 @@
 // This header contains the opensplice specific macros used to generate the
 // name of the function used to retrieve the type support for a message.
 
-#ifndef ROSIDL_TYPESUPPORT_INTROSPECTION_C__IMPL__ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_HPP_
-#define ROSIDL_TYPESUPPORT_INTROSPECTION_C__IMPL__ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_HPP_
+#ifndef ROSIDL_TYPESUPPORT_INTROSPECTION_C__IMPL__ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_H_
+#define ROSIDL_TYPESUPPORT_INTROSPECTION_C__IMPL__ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_H_
 
 // Provides the definition of the rosidl_message_type_support_t struct.
 #include <rosidl_generator_c/message_type_support_struct.h>
@@ -40,4 +40,4 @@
 
 #define USING_ROSIDL_TYPESUPPORT_INTROSPECTION_C 1
 
-#endif  // ROSIDL_TYPESUPPORT_INTROSPECTION_C__IMPL__ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_HPP_
+#endif  // ROSIDL_TYPESUPPORT_INTROSPECTION_C__IMPL__ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_H_

@@ -12,9 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# NOTE(esteve): required for CMake-2.8 in Ubuntu 14.04
+set(Python_ADDITIONAL_VERSIONS 3.4)
+find_package(PythonLibs REQUIRED)
+
 set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py/${PROJECT_NAME}")
-set(_generated_msg_files "")
+set(_generated_msg_py_files "")
+set(_generated_msg_c_files "")
 set(_generated_srv_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
@@ -23,8 +28,11 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   string_camel_case_to_lower_case_underscore("${_msg_name}" _module_name)
 
   if("${_parent_folder} " STREQUAL "msg ")
-    list(APPEND _generated_msg_files
+    list(APPEND _generated_msg_py_files
       "${_output_path}/${_parent_folder}/_${_module_name}.py"
+    )
+    list(APPEND _generated_msg_c_files
+      "${_output_path}/${_parent_folder}/_${_module_name}_support.c"
     )
   elseif("${_parent_folder} " STREQUAL "srv ")
     list(APPEND _generated_srv_files
@@ -35,10 +43,10 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   endif()
 endforeach()
 
-if(NOT "${_generated_msg_files} " STREQUAL " ")
-  list(GET _generated_msg_files 0 _msg_file)
+if(NOT "${_generated_msg_py_files} " STREQUAL " ")
+  list(GET _generated_msg_py_files 0 _msg_file)
   get_filename_component(_parent_folder "${_msg_file}" DIRECTORY)
-  list(APPEND _generated_msg_files
+  list(APPEND _generated_msg_py_files
     "${_parent_folder}/__init__.py"
   )
 endif()
@@ -65,6 +73,7 @@ endforeach()
 set(target_dependencies
   "${rosidl_generator_py_BIN}"
   ${rosidl_generator_py_GENERATOR_FILES}
+  "${rosidl_generator_py_TEMPLATE_DIR}/_msg_support.c.template"
   "${rosidl_generator_py_TEMPLATE_DIR}/_msg.py.template"
   "${rosidl_generator_py_TEMPLATE_DIR}/_srv.py.template"
   ${rosidl_generate_interfaces_IDL_FILES}
@@ -87,7 +96,7 @@ rosidl_write_generator_arguments(
 )
 
 add_custom_command(
-  OUTPUT ${_generated_msg_files} ${_generated_srv_files}
+  OUTPUT ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_py_BIN}
   --generator-arguments-file "${generator_arguments_file}"
   DEPENDS ${target_dependencies}
@@ -95,26 +104,82 @@ add_custom_command(
   VERBATIM
 )
 
+set(_generated_extension_files "")
+set(_extension_dependencies "")
+if(NOT "${_generated_msg_c_files} " STREQUAL " ")
+
+  foreach(_generated_msg_c_file ${_generated_msg_c_files})
+    get_filename_component(_parent_folder "${_generated_msg_c_file}" DIRECTORY)
+    get_filename_component(_parent_folder "${_parent_folder}" NAME)
+    get_filename_component(_msg_name "${_generated_msg_c_file}" NAME_WE)
+
+    add_library(${_msg_name}__pyext SHARED
+      ${_generated_msg_c_files})
+    set(_extension_compile_flags "")
+    if(NOT WIN32)
+      set(_extension_compile_flags "-std=c11 -Wall -Wextra")
+    endif()
+
+    # TODO(esteve): obtain extension suffix (e.g. cpython-34m) via
+    # sysconfig.get_config_var('EXT_SUFFIX') or sysconfig.get_config_var('SOABI')
+    # See PEP-3149: https://www.python.org/dev/peps/pep-3149/
+    set_target_properties(${_msg_name}__pyext PROPERTIES
+      COMPILE_FLAGS "${_extension_compile_flags}" PREFIX ""
+      OUTPUT_NAME "${_msg_name}.cpython-34m")
+    target_link_libraries(
+      ${_msg_name}__pyext
+      ${PYTHON_LIBRARIES}
+      "${PROJECT_NAME}__rosidl_typesupport_introspection_c")
+
+    get_property(_extension_location TARGET "${_msg_name}__pyext" PROPERTY LOCATION)
+    list(APPEND _generated_extension_files
+      "${_extension_location}"
+    )
+
+    target_include_directories(${_msg_name}__pyext
+      PUBLIC
+      ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c
+      ${PYTHON_INCLUDE_DIRS}
+    )
+
+    list(APPEND _extension_dependencies ${_msg_name}__pyext)
+  endforeach()
+
+  add_custom_target(
+    ${rosidl_generate_interfaces_TARGET}__pyext
+    DEPENDS
+    ${_extension_dependencies}
+  )
+
+  add_dependencies(
+    ${rosidl_generate_interfaces_TARGET}
+    ${rosidl_generate_interfaces_TARGET}__py
+    ${rosidl_generate_interfaces_TARGET}__pyext
+  )
+else()
+  add_dependencies(
+    ${rosidl_generate_interfaces_TARGET}
+    ${rosidl_generate_interfaces_TARGET}__py
+  )
+endif()
+
 if(TARGET ${rosidl_generate_interfaces_TARGET}__py)
   message(WARNING "Custom target ${rosidl_generate_interfaces_TARGET}__py already exists")
 else()
   add_custom_target(
     ${rosidl_generate_interfaces_TARGET}__py
     DEPENDS
-    ${_generated_msg_files} ${_generated_srv_files}
+    ${_generated_msg_py_files}
+    ${_generated_msg_c_files}
+    ${_generated_srv_files}
   )
 endif()
 
-add_dependencies(
-  ${rosidl_generate_interfaces_TARGET}
-  ${rosidl_generate_interfaces_TARGET}__py
-)
-
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
-  if(NOT "${_generated_msg_files} " STREQUAL " ")
+  if(NOT "${_generated_msg_py_files} " STREQUAL " ")
     _ament_cmake_python_get_python_install_dir()
 
-    list(GET _generated_msg_files 0 _msg_file)
+    list(GET _generated_msg_py_files 0 _msg_file)
     get_filename_component(_msg_package_dir "${_msg_file}" DIRECTORY)
     get_filename_component(_msg_package_dir "${_msg_package_dir}" DIRECTORY)
 
@@ -124,7 +189,12 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
     )
 
     install(
-      FILES ${_generated_msg_files}
+      FILES ${_generated_msg_py_files}
+      DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/msg"
+    )
+
+    install(
+      FILES ${_generated_extension_files}
       DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/msg"
     )
 
@@ -138,7 +208,7 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
 # NOTE(esteve): this should work, but there must be something wrong with the dependencies
 # because when this is invoked, it invariably fails to find the generated __init__.py file
 # in builtin_interfaces. However, this doesn't fail when using install()
-#    list(GET _generated_msg_files 0 _msg_file)
+#    list(GET _generated_msg_py_files 0 _msg_file)
 #    get_filename_component(_msg_package_dir "${_msg_file}" DIRECTORY)
 #    get_filename_component(_msg_package_dir "${_msg_package_dir}" DIRECTORY)
 #    ament_python_install_package("${PROJECT_NAME}" PACKAGE_DIR "${_msg_package_dir}")

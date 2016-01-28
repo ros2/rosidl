@@ -1,0 +1,78 @@
+#include <Python.h>
+
+#include <rosidl_generator_c/message_type_support.h>
+#include <@(spec.base_type.pkg_name)/@(subfolder)/@(module_name).h>
+
+static PyMethodDef @(spec.base_type.pkg_name)_@(module_name)__methods[] = {
+  {NULL, NULL, 0, NULL} /* sentinel */
+};
+
+static struct PyModuleDef @(spec.base_type.pkg_name)_@(module_name)__module = {
+   PyModuleDef_HEAD_INIT,
+   "_@(module_name)_support",
+   "_@(module_name)_doc",
+   -1, /* -1 means that the module keeps state in global variables */
+   @(spec.base_type.pkg_name)_@(module_name)__methods,
+   NULL,
+   NULL,
+   NULL,
+   NULL,
+};
+
+/* TODO(esteve): implement conversion function */
+void * @(spec.base_type.pkg_name)_@(module_name)__converter(PyObject *pymsg)
+{
+  (void)pymsg;
+  return NULL;
+}
+
+PyMODINIT_FUNC
+PyInit__@(module_name)_support(void)
+{
+  PyObject *m = NULL;
+  m = PyModule_Create(&@(spec.base_type.pkg_name)_@(module_name)__module);
+  if (m != NULL)
+  {
+    PyObject *pyconverter = NULL;
+    pyconverter = PyCapsule_New((void *)&@(spec.base_type.pkg_name)_@(module_name)__converter, NULL, NULL);
+    if(pyconverter != NULL)
+    {
+      if(PyModule_AddObject(m, "converter", pyconverter))
+      {
+        Py_XDECREF(pyconverter);
+        pyconverter = NULL;
+        Py_XDECREF(m);
+        m = NULL;
+      }
+
+      PyObject *pytype_support = NULL;
+      pytype_support = PyCapsule_New(
+        (void *)ROSIDL_GET_MESSAGE_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(spec.base_type.type)),
+        NULL, NULL);
+
+      if(pytype_support == NULL)
+      {
+        Py_XDECREF(pyconverter);
+        pyconverter = NULL;
+        Py_XDECREF(m);
+        m = NULL;
+      } else
+      {
+        if(PyModule_AddObject(m, "type_support", pytype_support))
+        {
+          Py_XDECREF(pytype_support);
+          pytype_support = NULL;
+          Py_XDECREF(pyconverter);
+          pyconverter = NULL;
+          Py_XDECREF(m);
+          m = NULL;
+        }
+      }
+    } else
+    {
+      Py_XDECREF(m);
+      m = NULL;
+    }
+  }
+  return m;
+}

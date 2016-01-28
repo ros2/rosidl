@@ -29,11 +29,13 @@ def generate_py(generator_arguments_file):
     template_dir = args['template_dir']
     mapping_msgs = {
         os.path.join(template_dir, '_msg.py.template'): '_%s.py',
+        os.path.join(template_dir, '_msg_support.c.template'): '_%s_support.c',
     }
 
     mapping_srvs = {
         os.path.join(template_dir, '_srv.py.template'): '_%s.py',
     }
+
     for template_file in mapping_msgs.keys():
         assert os.path.exists(template_file), \
             'Messages template file %s not found' % template_file
@@ -66,7 +68,7 @@ def generate_py(generator_arguments_file):
         module_name = convert_camel_case_to_lower_case_underscore(type_name)
         modules[subfolder].append((module_name, type_name))
         for template_file, generated_filename in mapping.items():
-            data = {'package_name': args['package_name'], 'spec': spec}
+            data = {'module_name': module_name, 'package_name': args['package_name'], 'spec': spec, 'subfolder': subfolder}
             data.update(functions)
             generated_file = os.path.join(
                 args['output_dir'], subfolder, generated_filename % module_name)

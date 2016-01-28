@@ -1,7 +1,15 @@
 # generated from rosidl_generator_py/resource/_msg.py.template
 # generated code does not contain a copyright notice
 
-class @(spec.base_type.type)__Constants(type):
+from @(spec.base_type.pkg_name).@(subfolder)._@(module_name)_support import converter
+from @(spec.base_type.pkg_name).@(subfolder)._@(module_name)_support import type_support
+
+class @(spec.base_type.type)__Metadata(type):
+
+    _CONVERTER = converter
+
+    _TYPE_SUPPORT = type_support
+
 @[for constant in spec.constants]@
 
     @@property
@@ -37,7 +45,7 @@ class @(spec.base_type.type)__Constants(type):
         }
 
 
-class @(spec.base_type.type)(metaclass=@(spec.base_type.type)__Constants):
+class @(spec.base_type.type)(metaclass=@(spec.base_type.type)__Metadata):
 
     __slots__ = [
 @[for field in spec.fields]@

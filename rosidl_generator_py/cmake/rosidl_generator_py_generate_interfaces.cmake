@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+find_package(rosidl_generator_c REQUIRED)
+
 # NOTE(esteve): required for CMake-2.8 in Ubuntu 14.04
 set(Python_ADDITIONAL_VERSIONS 3.4)
 find_package(PythonLibs REQUIRED)
@@ -104,6 +106,8 @@ add_custom_command(
   VERBATIM
 )
 
+ament_export_dependencies("${PROJECT_NAME}__rosidl_generator_c")
+
 set(_generated_extension_files "")
 set(_extension_dependencies "")
 if(NOT "${_generated_msg_c_files} " STREQUAL " ")
@@ -138,9 +142,13 @@ if(NOT "${_generated_msg_c_files} " STREQUAL " ")
 
     target_include_directories(${_msg_name}__pyext
       PUBLIC
-      ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c
       ${PYTHON_INCLUDE_DIRS}
+      "${${PROJECT_NAME}__rosidl_generator_c_INCLUDE_DIRS}"
     )
+
+    ament_target_dependencies(${_msg_name}__pyext
+      "rosidl_generator_c"
+      "${PROJECT_NAME}__rosidl_generator_c")
 
     list(APPEND _extension_dependencies ${_msg_name}__pyext)
   endforeach()

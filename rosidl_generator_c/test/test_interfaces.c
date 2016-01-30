@@ -46,6 +46,7 @@
 #include "rosidl_generator_c/msg/telegram1__struct.h"
 #include "rosidl_generator_c/msg/telegram2__struct.h"
 #include "rosidl_generator_c/msg/wire__struct.h"
+#include "rosidl_generator_c/msg/constants__struct.h"
 
 #include "rosidl_generator_c/msg/various__functions.h"
 #include "rosidl_generator_c/msg/bool__functions.h"
@@ -69,6 +70,7 @@
 #include "rosidl_generator_c/msg/telegram1__functions.h"
 #include "rosidl_generator_c/msg/telegram2__functions.h"
 #include "rosidl_generator_c/msg/wire__functions.h"
+#include "rosidl_generator_c/msg/constants__functions.h"
 
 #define TEST_STRING \
   "Deep into that darkness peering, long I stood there wondering, fearing"
@@ -134,6 +136,10 @@ void test_primitives(void)
 
   byte_msg.empty_byte = 255;
   assert(byte_msg.empty_byte == 255);
+
+  assert(rosidl_generator_c__msg__Constants__X == 123);
+  assert(rosidl_generator_c__msg__Constants__Y == -123);
+  assert(strncmp(rosidl_generator_c__msg__Constants__FOO, "foo", 3) == 0);
 
   char_msg.empty_char = CHAR_MIN;
   assert(char_msg.empty_char == CHAR_MIN);

@@ -59,6 +59,7 @@ if(AMENT_ENABLE_TESTING)
     "msg/Telegram1.msg"
     "msg/Telegram2.msg"
     "msg/Wire.msg"
+    "msg/Constants.msg"
   )
 
   include(cmake/register_c.cmake)

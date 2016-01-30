@@ -106,70 +106,71 @@ add_custom_command(
   VERBATIM
 )
 
-ament_export_dependencies("${PROJECT_NAME}__rosidl_generator_c")
-
 set(_generated_extension_files "")
 set(_extension_dependencies "")
-if(NOT "${_generated_msg_c_files} " STREQUAL " ")
 
-  foreach(_generated_msg_c_file ${_generated_msg_c_files})
-    get_filename_component(_parent_folder "${_generated_msg_c_file}" DIRECTORY)
-    get_filename_component(_parent_folder "${_parent_folder}" NAME)
-    get_filename_component(_msg_name "${_generated_msg_c_file}" NAME_WE)
+foreach(_generated_msg_c_file ${_generated_msg_c_files})
+  get_filename_component(_parent_folder "${_generated_msg_c_file}" DIRECTORY)
+  get_filename_component(_parent_folder "${_parent_folder}" NAME)
+  get_filename_component(_msg_name "${_generated_msg_c_file}" NAME_WE)
 
-    add_library(${_msg_name}__pyext SHARED
-      ${_generated_msg_c_files})
-    set(_extension_compile_flags "")
-    if(NOT WIN32)
-      set(_extension_compile_flags "-std=c11 -Wall -Wextra")
-    endif()
+  add_library(${_msg_name}__pyext SHARED
+    ${_generated_msg_c_files})
 
-    # TODO(esteve): obtain extension suffix (e.g. cpython-34m) via
-    # sysconfig.get_config_var('EXT_SUFFIX') or sysconfig.get_config_var('SOABI')
-    # See PEP-3149: https://www.python.org/dev/peps/pep-3149/
-    set_target_properties(${_msg_name}__pyext PROPERTIES
-      COMPILE_FLAGS "${_extension_compile_flags}" PREFIX ""
-      OUTPUT_NAME "${_msg_name}.cpython-34m")
-    target_link_libraries(
+  # TODO(esteve): obtain extension suffix (e.g. cpython-34m) via
+  # sysconfig.get_config_var('EXT_SUFFIX') or sysconfig.get_config_var('SOABI')
+  # See PEP-3149: https://www.python.org/dev/peps/pep-3149/
+  set_target_properties(${_msg_name}__pyext PROPERTIES
+    COMPILE_FLAGS "${_extension_compile_flags}" PREFIX ""
+    OUTPUT_NAME "${_msg_name}.cpython-34m")
+
+  add_dependencies(
+    ${_msg_name}__pyext
+    ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
+    "${PROJECT_NAME}__rosidl_typesupport_introspection_c"
+  )
+
+  set(_extension_compile_flags "")
+  if(NOT WIN32)
+    set(_extension_compile_flags "-std=c11 -Wall -Wextra")
+  endif()
+
+
+  target_link_libraries(
+    ${_msg_name}__pyext
+    ${PYTHON_LIBRARIES}
+    "${${PROJECT_NAME}_LIBRARIES}")
+
+  get_property(_extension_location TARGET "${_msg_name}__pyext" PROPERTY LOCATION)
+  list(APPEND _generated_extension_files
+    "${_extension_location}"
+  )
+
+  target_include_directories(${_msg_name}__pyext
+    PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c
+    ${PYTHON_INCLUDE_DIRS}
+    "${${PROJECT_NAME}__rosidl_generator_c_INCLUDE_DIRS}"
+  )
+
+  foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
+    ament_target_dependencies(
       ${_msg_name}__pyext
-      ${PYTHON_LIBRARIES}
-      "${PROJECT_NAME}__rosidl_typesupport_introspection_c")
-
-    get_property(_extension_location TARGET "${_msg_name}__pyext" PROPERTY LOCATION)
-    list(APPEND _generated_extension_files
-      "${_extension_location}"
-    )
-
-    target_include_directories(${_msg_name}__pyext
-      PUBLIC
-      ${PYTHON_INCLUDE_DIRS}
-      "${${PROJECT_NAME}__rosidl_generator_c_INCLUDE_DIRS}"
-    )
-
-    ament_target_dependencies(${_msg_name}__pyext
-      "rosidl_generator_c"
-      "${PROJECT_NAME}__rosidl_generator_c")
-
-    list(APPEND _extension_dependencies ${_msg_name}__pyext)
+      ${_pkg_name})
   endforeach()
+  ament_target_dependencies(${_msg_name}__pyext
+    "rosidl_generator_c"
+    "${PROJECT_NAME}__rosidl_generator_c")
 
-  add_custom_target(
-    ${rosidl_generate_interfaces_TARGET}__pyext
-    DEPENDS
-    ${_extension_dependencies}
-  )
+  list(APPEND _extension_dependencies ${_msg_name}__pyext)
+endforeach()
 
-  add_dependencies(
-    ${rosidl_generate_interfaces_TARGET}
-    ${rosidl_generate_interfaces_TARGET}__py
-    ${rosidl_generate_interfaces_TARGET}__pyext
-  )
-else()
-  add_dependencies(
-    ${rosidl_generate_interfaces_TARGET}
-    ${rosidl_generate_interfaces_TARGET}__py
-  )
-endif()
+add_custom_target(
+  ${rosidl_generate_interfaces_TARGET}__pyext
+  DEPENDS
+  ${_extension_dependencies}
+  ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
+)
 
 if(TARGET ${rosidl_generate_interfaces_TARGET}__py)
   message(WARNING "Custom target ${rosidl_generate_interfaces_TARGET}__py already exists")
@@ -180,8 +181,23 @@ else()
     ${_generated_msg_py_files}
     ${_generated_msg_c_files}
     ${_generated_srv_files}
+    ${_generated_extension_files}
+    ${rosidl_generate_interfaces_TARGET}__pyext
+    ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
   )
 endif()
+
+
+add_dependencies(
+  ${rosidl_generate_interfaces_TARGET}__py
+  ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
+)
+
+add_dependencies(
+  ${rosidl_generate_interfaces_TARGET}
+  ${rosidl_generate_interfaces_TARGET}__py
+  ${rosidl_generate_interfaces_TARGET}__pyext
+)
 
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   if(NOT "${_generated_msg_py_files} " STREQUAL " ")

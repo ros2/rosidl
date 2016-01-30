@@ -4,6 +4,7 @@ project(rosidl_generator_py)
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
+find_package(rosidl_generator_c REQUIRED)
 
 ament_export_dependencies(rosidl_cmake)
 
@@ -47,6 +48,8 @@ if(AMENT_ENABLE_TESTING)
   rosidl_generate_interfaces(${PROJECT_NAME} ${message_files}
     SKIP_INSTALL
   )
+
+  add_dependencies(${PROJECT_NAME}__py ${PROJECT_NAME}__rosidl_generator_c)
 
   ament_add_nose_test(test_interfaces_py "test/test_interfaces.py"
     APPEND_ENV PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py:${CMAKE_CURRENT_SOURCE_DIR}

@@ -115,7 +115,7 @@ foreach(_generated_msg_c_file ${_generated_msg_c_files})
   get_filename_component(_msg_name "${_generated_msg_c_file}" NAME_WE)
 
   add_library(${_msg_name}__pyext SHARED
-    ${_generated_msg_c_files})
+    ${_generated_msg_c_file})
 
   # TODO(esteve): obtain extension suffix (e.g. cpython-34m) via
   # sysconfig.get_config_var('EXT_SUFFIX') or sysconfig.get_config_var('SOABI')

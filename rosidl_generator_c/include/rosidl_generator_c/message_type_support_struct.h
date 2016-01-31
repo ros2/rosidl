@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_H_
-#define ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_H_
+#ifndef ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_STRUCT_H_
+#define ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_STRUCT_H_
 
 #include "rosidl_generator_c/visibility_control.h"
 
@@ -28,19 +28,8 @@ typedef struct ROSIDL_PUBLIC_TYPE rosidl_message_type_support_t
   const void * data;
 } rosidl_message_type_support_t;
 
-/* This macro is used to create the symbol of the get_message_type_support
- * function for a specific message type. The library of the message package
- * which defines a given message will provide the symbol to which this macro
- * expands.
- */
-#define ROSIDL_GET_TYPE_SUPPORT(MsgPkgName, MsgSubfolder, MsgName) \
-  rosidl_get_message_type_support__ ## MsgPkgName ## __ ## MsgSubfolder ## __ ## MsgName()
-
-#define ROSIDL_GET_MESSAGE_TYPE_SUPPORT(MsgPkgName, MsgName) \
-  ROSIDL_GET_TYPE_SUPPORT(MsgPkgName, msg, MsgName)
-
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_H_
+#endif  // ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_STRUCT_H_

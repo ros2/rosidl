@@ -16,8 +16,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "rosidl_generator_c/msg/nested.h"
-#include "rosidl_generator_c/msg/various.h"
+#include "rosidl_generator_c/msg/nested__struct.h"
+#include "rosidl_generator_c/msg/nested__functions.h"
+#include "rosidl_generator_c/msg/various__struct.h"
+#include "rosidl_generator_c/msg/various__functions.h"
 #include "rosidl_generator_c/primitives_array_functions.h"
 #include "rosidl_generator_c/string_functions.h"
 

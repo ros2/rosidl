@@ -49,7 +49,13 @@ def generate_c(generator_arguments_file):
                 generated_file = os.path.join(
                     args['output_dir'], subfolder, generated_filename %
                     convert_camel_case_to_lower_case_underscore(spec.base_type.type))
-                data = {'spec': spec, 'subfolder': subfolder}
+                data = {
+                    'spec': spec,
+                    'pkg': spec.base_type.pkg_name,
+                    'msg': spec.msg_name,
+                    'type': spec.base_type.type,
+                    'subfolder': subfolder,
+                }
                 data.update(functions)
                 expand_template(
                     template_file, data, generated_file,

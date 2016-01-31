@@ -19,7 +19,7 @@
 #define ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__IMPL__ROSIDL_GENERATOR_CPP__MESSAGE_TYPE_SUPPORT_HPP_
 
 // Provides the definition of the rosidl_message_type_support_t struct.
-#include "rosidl_generator_c/message_type_support.h"
+#include "rosidl_generator_c/message_type_support_struct.h"
 // Provides the declaration of the function
 // rosidl_generator_cpp::get_message_type_support_handle.
 #include "rosidl_generator_cpp/message_type_support_decl.hpp"

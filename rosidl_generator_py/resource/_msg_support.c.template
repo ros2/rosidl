@@ -4,14 +4,14 @@
 #include <@(spec.base_type.pkg_name)/@(subfolder)/@(module_name).h>
 
 static PyMethodDef @(spec.base_type.pkg_name)_@(module_name)__methods[] = {
-  {NULL, NULL, 0, NULL} /* sentinel */
+  {NULL, NULL, 0, NULL}  /* sentinel */
 };
 
 static struct PyModuleDef @(spec.base_type.pkg_name)_@(module_name)__module = {
    PyModuleDef_HEAD_INIT,
    "_@(module_name)_support",
    "_@(module_name)_doc",
-   -1, /* -1 means that the module keeps state in global variables */
+   -1,  /* -1 means that the module keeps state in global variables */
    @(spec.base_type.pkg_name)_@(module_name)__methods,
    NULL,
    NULL,
@@ -35,9 +35,9 @@ PyInit__@(module_name)_support(void)
   {
     PyObject *pyconverter = NULL;
     pyconverter = PyCapsule_New((void *)&@(spec.base_type.pkg_name)_@(module_name)__converter, NULL, NULL);
-    if(pyconverter != NULL)
+    if (pyconverter != NULL)
     {
-      if(PyModule_AddObject(m, "converter", pyconverter))
+      if (PyModule_AddObject(m, "converter", pyconverter))
       {
         Py_XDECREF(pyconverter);
         pyconverter = NULL;
@@ -50,7 +50,7 @@ PyInit__@(module_name)_support(void)
         (void *)ROSIDL_GET_MESSAGE_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(spec.base_type.type)),
         NULL, NULL);
 
-      if(pytype_support == NULL)
+      if (pytype_support == NULL)
       {
         Py_XDECREF(pyconverter);
         pyconverter = NULL;
@@ -58,7 +58,7 @@ PyInit__@(module_name)_support(void)
         m = NULL;
       } else
       {
-        if(PyModule_AddObject(m, "type_support", pytype_support))
+        if (PyModule_AddObject(m, "type_support", pytype_support))
         {
           Py_XDECREF(pytype_support);
           pytype_support = NULL;

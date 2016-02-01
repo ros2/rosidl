@@ -96,13 +96,4 @@ TEST(Test_rosidl_generator_traits, has_fixed_size) {
     !rosidl_generator_traits::has_fixed_size<
       rosidl_generator_cpp::msg::UnboundedArrayUnbounded>::value,
     "UnboundedArrayUnbounded::has_fixed_size is true");
-
-  // Showing that sizeof returns accurate values for messages containing static arrays
-  constexpr size_t primitive_size = sizeof(rosidl_generator_cpp::msg::PrimitivesStatic);
-  constexpr size_t array_primitives_size = sizeof(rosidl_generator_cpp::msg::StaticArrayStatic);
-  constexpr size_t primitive_static_array_size =
-    sizeof(rosidl_generator_cpp::msg::PrimitiveStaticArrays);
-
-  static_assert(array_primitives_size == 3 * primitive_size, "Wrong size");
-  static_assert(primitive_static_array_size == 3 * primitive_size, "Wrong size");
 }

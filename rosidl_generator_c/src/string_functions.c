@@ -64,7 +64,7 @@ rosidl_generator_c__String__assignn(
   if (n == SIZE_MAX) {
     return false;
   }
-  char * data = malloc(n + 1);
+  char * data = (char *)malloc(n + 1);
   if (!data) {
     return false;
   }
@@ -101,7 +101,7 @@ rosidl_generator_c__String__Array__init(
   }
   rosidl_generator_c__String * data = NULL;
   if (size) {
-    data = malloc(sizeof(rosidl_generator_c__String) * size);
+    data = (rosidl_generator_c__String *)malloc(sizeof(rosidl_generator_c__String) * size);
     if (!data) {
       return false;
     }
@@ -144,7 +144,8 @@ rosidl_generator_c__String__Array__fini(
 rosidl_generator_c__String__Array *
 rosidl_generator_c__String__Array__create(size_t size)
 {
-  rosidl_generator_c__String__Array * array = malloc(sizeof(rosidl_generator_c__String__Array));
+  rosidl_generator_c__String__Array * array =
+    (rosidl_generator_c__String__Array *)malloc(sizeof(rosidl_generator_c__String__Array));
   if (!array) {
     return NULL;
   }

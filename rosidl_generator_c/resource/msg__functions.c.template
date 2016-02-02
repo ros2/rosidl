@@ -185,7 +185,7 @@ for line in lines:
 @(msg_typename) *
 @(msg_typename)__create()
 {
-  @(msg_typename) * msg = malloc(sizeof(@(msg_typename)));
+  @(msg_typename) * msg = (@(msg_typename) *)malloc(sizeof(@(msg_typename)));
   if (!msg) {
     return NULL;
   }
@@ -219,7 +219,7 @@ bool
   }
   @(msg_typename) * data = NULL;
   if (size) {
-    data = malloc(sizeof(@(msg_typename)) * size);
+    data = (@(msg_typename) *)malloc(sizeof(@(msg_typename)) * size);
     if (!data) {
       return false;
     }
@@ -273,7 +273,7 @@ void
 @(array_typename) *
 @(array_typename)__create(size_t size)
 {
-  @(array_typename) * array = malloc(sizeof(@(array_typename)));
+  @(array_typename) * array = (@(array_typename) *)malloc(sizeof(@(array_typename)));
   if (!array) {
     return NULL;
   }

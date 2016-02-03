@@ -32,7 +32,7 @@ void * @(spec.base_type.pkg_name)_@(module_name)__converter(PyObject *pymsg)
 }
 
 PyMODINIT_FUNC
-PyInit__@(module_name)_support(void)
+PyInit__@(module_name)_support__@(typesupport_impl)(void)
 {
   PyObject *m = NULL;
   m = PyModule_Create(&@(spec.base_type.pkg_name)_@(module_name)__module);
@@ -52,7 +52,7 @@ PyInit__@(module_name)_support(void)
 
       PyObject *pytype_support = NULL;
       pytype_support = PyCapsule_New(
-        (void *) ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(spec.msg_name)),
+        (void *)ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(spec.msg_name)),
         NULL, NULL);
 
       if (pytype_support == NULL)

@@ -13,6 +13,8 @@
 # limitations under the License.
 
 find_package(rosidl_generator_c REQUIRED)
+find_package(rmw_implementation_cmake REQUIRED)
+find_package(rmw REQUIRED)
 
 # NOTE(esteve): required for CMake-2.8 in Ubuntu 14.04
 set(Python_ADDITIONAL_VERSIONS 3.4)
@@ -109,63 +111,94 @@ add_custom_command(
 set(_generated_extension_files "")
 set(_extension_dependencies "")
 set(_target_suffix "__py")
-set(_pyext_suffix "__pyext")
 
-foreach(_generated_msg_c_file ${_generated_msg_c_files})
-  get_filename_component(_parent_folder "${_generated_msg_c_file}" DIRECTORY)
-  get_filename_component(_parent_folder "${_parent_folder}" NAME)
-  get_filename_component(_msg_name "${_generated_msg_c_file}" NAME_WE)
 
-  add_library(${_msg_name}${_pyext_suffix} SHARED
-    ${_generated_msg_c_file})
+macro(target_interface)
+  #get_rmw_typesupport(typesupport_impls ${rmw_implementation})
+  set(typesupport_impls "rosidl_typesupport_introspection_c")
+  foreach(typesupport_impl ${typesupport_impls})
+    find_package(${typesupport_impl} REQUIRED)
+    set(_pyext_suffix "__pyext__${typesupport_impl}")
 
-  # TODO(esteve): obtain extension suffix (e.g. cpython-34m) via
-  # sysconfig.get_config_var('EXT_SUFFIX') or sysconfig.get_config_var('SOABI')
-  # See PEP-3149: https://www.python.org/dev/peps/pep-3149/
-  set_target_properties(${_msg_name}${_pyext_suffix} PROPERTIES
-    COMPILE_FLAGS "${_extension_compile_flags}" PREFIX ""
-    OUTPUT_NAME "${_msg_name}.cpython-34m")
+    if(TARGET ${_msg_name}${_pyext_suffix})
+      message(STATUS "Whoops, we got an existing message support library")
+    else()
+    add_library(${_msg_name}${_pyext_suffix} SHARED
+      ${_generated_msg_c_file})
 
-  add_dependencies(
-    ${_msg_name}${_pyext_suffix}
-    ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
-  )
+    # TODO(esteve): obtain extension suffix (e.g. cpython-34m) via
+    # sysconfig.get_config_var('EXT_SUFFIX') or sysconfig.get_config_var('SOABI')
+    # See PEP-3149: https://www.python.org/dev/peps/pep-3149/
 
-  set(_extension_compile_flags "")
-  if(NOT WIN32)
-    set(_extension_compile_flags "-std=c11 -Wall -Wextra")
-  endif()
+    set_target_properties(${_msg_name}${_pyext_suffix} PROPERTIES
+      COMPILE_FLAGS "${_extension_compile_flags}" PREFIX ""
+      OUTPUT_NAME "${_msg_name}__${typesupport_impl}.cpython-34m")
 
-  target_link_libraries(
-    ${_msg_name}${_pyext_suffix}
-    ${PYTHON_LIBRARIES}
-  )
-
-  get_property(_extension_location TARGET "${_msg_name}${_pyext_suffix}" PROPERTY LOCATION)
-  list(APPEND _generated_extension_files
-    "${_extension_location}"
-  )
-
-  target_include_directories(${_msg_name}${_pyext_suffix}
-    PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c
-    ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py
-    ${PYTHON_INCLUDE_DIRS}
-  )
-
-  foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
-    ament_target_dependencies(
+    add_dependencies(
       ${_msg_name}${_pyext_suffix}
-      ${_pkg_name}
+      ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
     )
+
+    set(_extension_compile_flags "")
+    if(NOT WIN32)
+      set(_extension_compile_flags "-Wall -Wextra")
+    endif()
+
+    target_link_libraries(
+      ${_msg_name}${_pyext_suffix}
+      ${PYTHON_LIBRARIES}
+      ${PROJECT_NAME}__${typesupport_impl}
+    )
+
+    get_property(_extension_location TARGET "${_msg_name}${_pyext_suffix}" PROPERTY LOCATION)
+    list(APPEND _generated_extension_files
+      "${_extension_location}"
+    )
+
+    target_include_directories(${_msg_name}${_pyext_suffix}
+      PUBLIC
+      ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c
+      ${PYTHON_INCLUDE_DIRS}
+    )
+
+    foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
+      ament_target_dependencies(
+        ${_msg_name}${_pyext_suffix}
+        ${_pkg_name}
+      )
+    endforeach()
+    ament_target_dependencies(${_msg_name}${_pyext_suffix}
+      "rosidl_generator_c"
+    )
+
+    list(APPEND _extension_dependencies ${_msg_name}${_pyext_suffix})
+
+
+    message(STATUS "Targeting dependency on ${typesupport_impl} for ${_msg_name}${_pyext_suffix}")
+    ament_target_dependencies(${_msg_name}${_pyext_suffix}
+      ${typesupport_impl}
+    )
+    add_dependencies(${_msg_name}${_pyext_suffix}
+      ${rosidl_generate_interfaces_TARGET}__${typesupport_impl}
+    )
+
+    endif()
   endforeach()
   ament_target_dependencies(${_msg_name}${_pyext_suffix}
     "rosidl_generator_c"
     "rosidl_generator_py"
     "${PROJECT_NAME}__rosidl_generator_c"
   )
+endmacro()
 
-  list(APPEND _extension_dependencies ${_msg_name}${_pyext_suffix})
+foreach(_generated_msg_c_file ${_generated_msg_c_files})
+  get_filename_component(_parent_folder "${_generated_msg_c_file}" DIRECTORY)
+  get_filename_component(_parent_folder "${_parent_folder}" NAME)
+  get_filename_component(_msg_name "${_generated_msg_c_file}" NAME_WE)
+
+  #call_for_each_rmw_implementation(target_interface)
+  target_interface("")
+
 endforeach()
 
 if(TARGET ${rosidl_generate_interfaces_TARGET}${_target_suffix})

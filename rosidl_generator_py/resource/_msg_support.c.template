@@ -1,12 +1,7 @@
 #include <Python.h>
 
 #include <rosidl_generator_c/message_type_support.h>
-#include <rosidl_generator_py/identifier.h>
 #include <@(spec.base_type.pkg_name)/@(subfolder)/@(module_name).h>
-
-// Forward declare the get type support function for this type.
-const rosidl_message_type_support_t *
-ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name))();
 
 static PyMethodDef @(spec.base_type.pkg_name)_@(module_name)__methods[] = {
   {NULL, NULL, 0, NULL}  /* sentinel */
@@ -80,19 +75,4 @@ PyInit__@(module_name)_support__@(typesupport_impl)(void)
     }
   }
   return m;
-}
-
-
-static rosidl_message_type_support_t __type_support = {
-  // Cannot be set since it is not a constexpr, it is set in the get type support function below.
-  .typesupport_identifier = 0,
-};
-
-const rosidl_message_type_support_t *
-ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name))()
-{
-  if (!__type_support.typesupport_identifier) {
-    __type_support.typesupport_identifier = rosidl_generator_py__identifier;
-  }
-  return &__type_support;
 }

@@ -13,12 +13,12 @@
   <buildtool_export_depend>rosidl_generator_c</buildtool_export_depend>
 
   <build_depend>rosidl_generator_c</build_depend>
-  <build_depend>rmw_implementation_cmake</build_depend>
   <!-- export??? -->
   <build_depend>rmw</build_depend>
 
   <depend>rmw_implementation</depend>
 
+  <exec_depend>rmw_implementation_cmake</exec_depend>
   <exec_depend>rosidl_generator_c</exec_depend>
   <exec_depend>rosidl_parser</exec_depend>
 

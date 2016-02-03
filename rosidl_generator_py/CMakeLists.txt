@@ -10,7 +10,7 @@ ament_export_dependencies(rosidl_cmake)
 
 ament_python_install_package(${PROJECT_NAME})
 
-if(AMENT_ENABLE_TESTING)
+#if(AMENT_ENABLE_TESTING)
 #  find_package(ament_lint_auto REQUIRED)
 #  ament_lint_auto_find_test_dependencies()
 #
@@ -53,8 +53,7 @@ if(AMENT_ENABLE_TESTING)
 #    APPEND_ENV PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py:${CMAKE_CURRENT_SOURCE_DIR}
 #    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py"
 #  )
-endif()
-ament_export_include_directories(include include/${PROJECT_NAME}/impl)
+#endif()
 
 ament_package(
   CONFIG_EXTRAS "cmake/register_py.cmake" "rosidl_generator_py-extras.cmake.in"
@@ -67,8 +66,4 @@ install(
 install(
   DIRECTORY cmake resource
   DESTINATION share/${PROJECT_NAME}
-)
-install(
-  DIRECTORY include/
-  DESTINATION include
 )

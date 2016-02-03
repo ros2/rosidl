@@ -29,7 +29,7 @@ def generate_py(generator_arguments_file, typesupport_impl):
     template_dir = args['template_dir']
     mapping_msgs = {
         os.path.join(template_dir, '_msg.py.template'): '_%s.py',
-        os.path.join(template_dir, '_msg_support.c.template'): '_%s_support.c',
+        os.path.join(template_dir, '_msg_support.c.template'): '_%s_support__' + typesupport_impl + '.c',
     }
 
     mapping_srvs = {

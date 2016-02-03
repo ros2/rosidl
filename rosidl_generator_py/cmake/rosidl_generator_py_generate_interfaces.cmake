@@ -20,6 +20,9 @@ find_package(rmw REQUIRED)
 set(Python_ADDITIONAL_VERSIONS 3.4)
 find_package(PythonLibs REQUIRED)
 
+#get_rmw_typesupport(_typesupport_impls ${rmw_implementation})
+set(_typesupport_impls "rosidl_typesupport_introspection_c")
+
 set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py/${PROJECT_NAME}")
 set(_generated_msg_py_files "")
@@ -35,9 +38,14 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
     list(APPEND _generated_msg_py_files
       "${_output_path}/${_parent_folder}/_${_module_name}.py"
     )
-    list(APPEND _generated_msg_c_files
-      "${_output_path}/${_parent_folder}/_${_module_name}_support.c"
-    )
+    foreach(_typesupport_impl ${_typesupport_impls})
+      list(APPEND _generated_msg_c__${_typesupport_impl}_files
+        "${_output_path}/${_parent_folder}/_${_module_name}_support__${_typesupport_impl}.c"
+      )
+      list(APPEND _generated_msg_c_files
+        "${_output_path}/${_parent_folder}/_${_module_name}_support__${_typesupport_impl}.c"
+      )
+    endforeach()
   elseif("${_parent_folder} " STREQUAL "srv ")
     list(APPEND _generated_srv_files
       "${_output_path}/${_parent_folder}/_${_module_name}.py"
@@ -99,45 +107,35 @@ rosidl_write_generator_arguments(
   TARGET_DEPENDENCIES ${target_dependencies}
 )
 
-
-
 set(_generated_extension_files "")
 set(_extension_dependencies "")
 set(_target_suffix "__py")
 
-
 macro(target_interface)
-  #get_rmw_typesupport(typesupport_impls ${rmw_implementation})
-  set(typesupport_impls "rosidl_typesupport_introspection_c")
-  foreach(typesupport_impl ${typesupport_impls})
-    find_package(${typesupport_impl} REQUIRED)
-
+  foreach(_typesupport_impl ${_typesupport_impls})
+    find_package(${_typesupport_impl} REQUIRED)
 
     add_custom_command(
-      OUTPUT ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_files}
+      OUTPUT ${_generated_msg_py_files} ${_generated_msg_c__${_typesupport_impl}_files} ${_generated_srv_files}
       COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_py_BIN}
       --generator-arguments-file "${generator_arguments_file}"
-      --typesupport-impl "${typesupport_impl}"
+      --typesupport-impl "${_typesupport_impl}"
       DEPENDS ${target_dependencies}
       COMMENT "Generating Python code for ROS interfaces"
       VERBATIM
     )
 
-    set(_pyext_suffix "__pyext__${typesupport_impl}")
+    set(_pyext_suffix "__pyext__${_typesupport_impl}")
 
-    if(TARGET ${_msg_name}${_pyext_suffix})
-      message(STATUS "Whoops, we got an existing message support library")
-    else()
     add_library(${_msg_name}${_pyext_suffix} SHARED
       ${_generated_msg_c_file})
 
     # TODO(esteve): obtain extension suffix (e.g. cpython-34m) via
     # sysconfig.get_config_var('EXT_SUFFIX') or sysconfig.get_config_var('SOABI')
     # See PEP-3149: https://www.python.org/dev/peps/pep-3149/
-
     set_target_properties(${_msg_name}${_pyext_suffix} PROPERTIES
       COMPILE_FLAGS "${_extension_compile_flags}" PREFIX ""
-      OUTPUT_NAME "${_msg_name}__${typesupport_impl}.cpython-34m")
+      OUTPUT_NAME "${_msg_name}__${_typesupport_impl}.cpython-34m")
 
     add_dependencies(
       ${_msg_name}${_pyext_suffix}
@@ -152,7 +150,7 @@ macro(target_interface)
     target_link_libraries(
       ${_msg_name}${_pyext_suffix}
       ${PYTHON_LIBRARIES}
-      ${PROJECT_NAME}__${typesupport_impl}
+      ${PROJECT_NAME}__${_typesupport_impl}
     )
 
     get_property(_extension_location TARGET "${_msg_name}${_pyext_suffix}" PROPERTY LOCATION)
@@ -178,16 +176,13 @@ macro(target_interface)
 
     list(APPEND _extension_dependencies ${_msg_name}${_pyext_suffix})
 
-
-    message(STATUS "Targeting dependency on ${typesupport_impl} for ${_msg_name}${_pyext_suffix}")
     ament_target_dependencies(${_msg_name}${_pyext_suffix}
-      ${typesupport_impl}
+      ${_typesupport_impl}
     )
     add_dependencies(${_msg_name}${_pyext_suffix}
-      ${rosidl_generate_interfaces_TARGET}__${typesupport_impl}
+      ${rosidl_generate_interfaces_TARGET}__${_typesupport_impl}
     )
 
-    endif()
   endforeach()
   ament_target_dependencies(${_msg_name}${_pyext_suffix}
     "rosidl_generator_c"
@@ -201,9 +196,7 @@ foreach(_generated_msg_c_file ${_generated_msg_c_files})
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
   get_filename_component(_msg_name "${_generated_msg_c_file}" NAME_WE)
 
-  #call_for_each_rmw_implementation(target_interface)
-  target_interface("")
-
+  target_interface()
 endforeach()
 
 if(TARGET ${rosidl_generate_interfaces_TARGET}${_target_suffix})

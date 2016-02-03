@@ -150,6 +150,7 @@ foreach(_generated_msg_c_file ${_generated_msg_c_files})
   target_include_directories(${_msg_name}${_pyext_suffix}
     PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c
+    ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py
     ${PYTHON_INCLUDE_DIRS}
   )
 
@@ -161,6 +162,7 @@ foreach(_generated_msg_c_file ${_generated_msg_c_files})
   endforeach()
   ament_target_dependencies(${_msg_name}${_pyext_suffix}
     "rosidl_generator_c"
+    "rosidl_generator_py"
     "${PROJECT_NAME}__rosidl_generator_c"
   )
 
@@ -222,3 +224,4 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
 
   endif()
 endif()
+ament_export_include_directories(include)

@@ -99,14 +99,7 @@ rosidl_write_generator_arguments(
   TARGET_DEPENDENCIES ${target_dependencies}
 )
 
-add_custom_command(
-  OUTPUT ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_files}
-  COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_py_BIN}
-  --generator-arguments-file "${generator_arguments_file}"
-  DEPENDS ${target_dependencies}
-  COMMENT "Generating Python code for ROS interfaces"
-  VERBATIM
-)
+
 
 set(_generated_extension_files "")
 set(_extension_dependencies "")
@@ -118,6 +111,18 @@ macro(target_interface)
   set(typesupport_impls "rosidl_typesupport_introspection_c")
   foreach(typesupport_impl ${typesupport_impls})
     find_package(${typesupport_impl} REQUIRED)
+
+
+    add_custom_command(
+      OUTPUT ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_files}
+      COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_py_BIN}
+      --generator-arguments-file "${generator_arguments_file}"
+      --typesupport-impl "${typesupport_impl}"
+      DEPENDS ${target_dependencies}
+      COMMENT "Generating Python code for ROS interfaces"
+      VERBATIM
+    )
+
     set(_pyext_suffix "__pyext__${typesupport_impl}")
 
     if(TARGET ${_msg_name}${_pyext_suffix})

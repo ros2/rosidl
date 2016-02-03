@@ -139,7 +139,6 @@ foreach(_generated_msg_c_file ${_generated_msg_c_files})
   target_link_libraries(
     ${_msg_name}${_pyext_suffix}
     ${PYTHON_LIBRARIES}
-    "${PROJECT_NAME}__rosidl_typesupport_introspection_c"
   )
 
   get_property(_extension_location TARGET "${_msg_name}${_pyext_suffix}" PROPERTY LOCATION)

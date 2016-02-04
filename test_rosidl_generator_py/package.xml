@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>rosidl_generator_py_tests</name>
+  <name>test_rosidl_generator_py</name>
   <version>0.0.0</version>
   <description>Tests for the the Python generator.</description>
   <maintainer email="esteve@osrfoundation.org">Esteve Fernandez</maintainer>

@@ -1,8 +1,18 @@
 # generated from rosidl_generator_py/resource/_msg.py.template
 # generated code does not contain a copyright notice
 
-from @(spec.base_type.pkg_name).@(subfolder)._@(module_name)_support import converter
-from @(spec.base_type.pkg_name).@(subfolder)._@(module_name)_support import type_support
+converter = None
+type_support = None
+
+@[for typesupport_impl in typesupport_impls.split(';')]@
+if converter is None or type_support is None:
+    from @(spec.base_type.pkg_name).@(subfolder)._@(module_name)_support__@(typesupport_impl) import converter
+    from @(spec.base_type.pkg_name).@(subfolder)._@(module_name)_support__@(typesupport_impl) import type_support
+@[end for]@
+
+if converter is None or type_support is None:
+    raise RuntimeError('Cannot find type support extension')
+
 
 class @(spec.base_type.type)__Metadata(type):
 

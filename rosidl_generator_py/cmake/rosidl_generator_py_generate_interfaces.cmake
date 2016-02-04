@@ -120,6 +120,7 @@ macro(target_interface)
       COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_py_BIN}
       --generator-arguments-file "${generator_arguments_file}"
       --typesupport-impl "${_typesupport_impl}"
+      --typesupport-impls "${_typesupport_impls}"
       DEPENDS ${target_dependencies}
       COMMENT "Generating Python code for ROS interfaces"
       VERBATIM
@@ -135,7 +136,8 @@ macro(target_interface)
     # See PEP-3149: https://www.python.org/dev/peps/pep-3149/
     set_target_properties(${_msg_name}${_pyext_suffix} PROPERTIES
       COMPILE_FLAGS "${_extension_compile_flags}" PREFIX ""
-      OUTPUT_NAME "${_msg_name}__${_typesupport_impl}.cpython-34m")
+      LIBRARY_OUTPUT_DIRECTORY "${_output_path}/${_parent_folder}"
+      OUTPUT_NAME "${_msg_name}.cpython-34m")
 
     add_dependencies(
       ${_msg_name}${_pyext_suffix}

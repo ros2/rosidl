@@ -23,7 +23,7 @@ from rosidl_parser import parse_message_file
 from rosidl_parser import parse_service_file
 
 
-def generate_py(generator_arguments_file, typesupport_impl):
+def generate_py(generator_arguments_file, typesupport_impl, typesupport_impls):
     args = read_generator_arguments(generator_arguments_file)
 
     template_dir = args['template_dir']
@@ -68,7 +68,11 @@ def generate_py(generator_arguments_file, typesupport_impl):
         module_name = convert_camel_case_to_lower_case_underscore(type_name)
         modules[subfolder].append((module_name, type_name))
         for template_file, generated_filename in mapping.items():
-            data = {'module_name': module_name, 'package_name': args['package_name'], 'spec': spec, 'subfolder': subfolder, 'typesupport_impl': typesupport_impl}
+            data = {
+                'module_name': module_name, 'package_name': args['package_name'],
+                'spec': spec, 'subfolder': subfolder, 'typesupport_impl': typesupport_impl,
+                'typesupport_impls': typesupport_impls
+            }
             data.update(functions)
             generated_file = os.path.join(
                 args['output_dir'], subfolder, generated_filename % module_name)

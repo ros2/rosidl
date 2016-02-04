@@ -29,6 +29,11 @@ array_typename = '%s__Array' % msg_typename
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
+#if __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -51,7 +56,7 @@ for field in spec.fields:
     else:
         field_names = includes.setdefault(
             '%s/msg/%s__struct.h' %
-            (field.type.pkg_name, get_header_filename_from_msg_name(field.type.type)),
+                (field.type.pkg_name, get_header_filename_from_msg_name(field.type.type)),
             [])
         field_names.append(field.name)
 }@
@@ -163,5 +168,9 @@ typedef struct @(array_typename)
   size_t size;
   size_t capacity;
 } @(array_typename);
+
+#if __cplusplus
+}
+#endif
 
 #endif  // @(header_guard_variable)

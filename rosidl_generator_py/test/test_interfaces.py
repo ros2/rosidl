@@ -14,11 +14,11 @@
 
 from nose.tools import assert_raises
 
-from test_rosidl_generator_py.msg import Constants
-from test_rosidl_generator_py.msg import Nested
-from test_rosidl_generator_py.msg import Primitives
-from test_rosidl_generator_py.msg import Strings
-from test_rosidl_generator_py.msg import Various
+from rosidl_generator_py.msg import Constants
+from rosidl_generator_py.msg import Nested
+from rosidl_generator_py.msg import Primitives
+from rosidl_generator_py.msg import Strings
+from rosidl_generator_py.msg import Various
 
 
 def test_strings():

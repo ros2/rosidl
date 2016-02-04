@@ -16,7 +16,7 @@ add_library(${PROJECT_NAME} SHARED
 )
 if(NOT WIN32)
   set_target_properties(${PROJECT_NAME} PROPERTIES
-    COMPILE_FLAGS "-std=c11 -Wall -Wextra")
+    COMPILE_FLAGS "-Wall -Wextra")
 endif()
 if(WIN32)
   target_compile_definitions(${PROJECT_NAME}

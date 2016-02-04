@@ -6,11 +6,11 @@ type_support = None
 
 @[for typesupport_impl in typesupport_impls.split(';')]@
 if converter is None or type_support is None:
-try:
-    from @(spec.base_type.pkg_name).@(subfolder)._@(module_name)_support__@(typesupport_impl) import converter
-    from @(spec.base_type.pkg_name).@(subfolder)._@(module_name)_support__@(typesupport_impl) import type_support
-except ImportError:
-    pass
+    try:
+        from @(spec.base_type.pkg_name).@(subfolder)._@(module_name)_support__@(typesupport_impl) import converter
+        from @(spec.base_type.pkg_name).@(subfolder)._@(module_name)_support__@(typesupport_impl) import type_support
+    except ImportError:
+        pass
 @[end for]@
 
 if converter is None or type_support is None:

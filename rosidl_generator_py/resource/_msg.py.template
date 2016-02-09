@@ -1,32 +1,24 @@
 # generated from rosidl_generator_py/resource/_msg.py.template
 # generated code does not contain a copyright notice
 
-class @(spec.base_type.type)__Constants(type):
+
+class Metaclass(type):
+    """Metaclass of message '@(spec.base_type.type)'."""
+
+    __constants = {
 @[for constant in spec.constants]@
-
-    @@property
-    def @(constant.name)(cls):
-        """Message constant '@(constant.name)'"""
-        return @constant_value_to_py(constant.type, constant.value)
+        '@(constant.name)': @constant_value_to_py(constant.type, constant.value),
 @[end for]@
-@[for field in spec.fields]@
-@[if field.default_value]@
-
-    @@property
-    def @(field.name.upper())__DEFAULT(cls):
-        """Default value for message field '@(field.name)'"""
-        return @value_to_py(field.type, field.default_value, array_as_tuple=True)
-@[end if]@
-@[end for]@
-
-    def __setattr__(cls, name, value):
-        raise AttributeError("Class variables are read-only")
+    }
 
     @@classmethod
     def __prepare__(cls, name, bases, **kwargs):
+        # list constant names here so that they appear in the help text of
+        # the message class under "Data and other attributes defined here:"
+        # as well as populate each message instance
         return {
 @[for constant in spec.constants]@
-            '@(constant.name)': @constant_value_to_py(constant.type, constant.value),
+            '@(constant.name)': cls.__constants['@(constant.name)'],
 @[end for]@
 @[for field in spec.fields]@
 @[if field.default_value]@
@@ -35,9 +27,35 @@ class @(spec.base_type.type)__Constants(type):
 @[end if]@
 @[end for]@
         }
+@[for constant in spec.constants]@
+
+    @@property
+    def @(constant.name)(self):
+        """Message constant '@(constant.name)'."""
+        return Constants.__constants['@(constant.name)']
+@[end for]@
+@[for field in spec.fields]@
+@[if field.default_value]@
+
+    @@property
+    def @(field.name.upper())__DEFAULT(cls):
+        """Default value for message field '@(field.name)'."""
+        return @value_to_py(field.type, field.default_value, array_as_tuple=True)
+@[end if]@
+@[end for]@
 
 
-class @(spec.base_type.type)(metaclass=@(spec.base_type.type)__Constants):
+class @(spec.base_type.type)(metaclass=Metaclass):
+    """
+    Message class '@(spec.base_type.type)'.
+@[if spec.constants]@
+
+    Constants:
+@[for constant in spec.constants]@
+      @(constant.name)
+@[end for]@
+@[end if]@
+    """
 
     __slots__ = [
 @[for field in spec.fields]@
@@ -47,7 +65,7 @@ class @(spec.base_type.type)(metaclass=@(spec.base_type.type)__Constants):
 
 @[if len(spec.fields) > 0]@
     def __init__(self, **kwargs):
-        assert(all(['_' + key in self.__slots__ for key in kwargs.keys()])), \
+        assert all(['_' + key in self.__slots__ for key in kwargs.keys()]), \
             "Invalid arguments passed to constructor: %r" % kwargs.keys()
 @[for field in spec.fields]@
 @[if field.default_value]@
@@ -62,7 +80,7 @@ class @(spec.base_type.type)(metaclass=@(spec.base_type.type)__Constants):
 
     @@property
     def @(field.name)(self):
-        """Message field '@(field.name)'"""
+        """Message field '@(field.name)'."""
         return self._@(field.name)
 
     @@@(field.name).setter
@@ -70,18 +88,19 @@ class @(spec.base_type.type)(metaclass=@(spec.base_type.type)__Constants):
 @[if not field.type.is_primitive_type()]@
         from @(field.type.pkg_name).msg import @(field.type.type)
 @[end if]@
-
 @[if field.type.is_array]@
         from collections import Sequence
         from collections import Set
         from collections import UserList
         from collections import UserString
+@[elif field.type.string_upper_bound]@
+        from collections import UserString
+@[elif not field.type.is_primitive_type()]@
 @[elif field.type.type == 'byte']@
         from collections import ByteString
-@[elif field.type.type in ['char', 'string']]@
+@[elif field.type.type in ['char']]@
         from collections import UserString
 @[end if]@
-
         assert isinstance(value, type(None)) or \
 @[if field.type.is_array]@
             ((isinstance(value, Sequence) or isinstance(value, Set) \

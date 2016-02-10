@@ -36,7 +36,7 @@ extern "C"
 
 ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
 const rosidl_message_type_support_t *
-rosidl_get_message_type_support__@(spec.base_type.pkg_name)__msg__@(spec.base_type.type)();
+rosidl_typesupport_introspection_c_get_message__@(spec.base_type.pkg_name)__msg__@(spec.msg_name)();
 
 #if __cplusplus
 }

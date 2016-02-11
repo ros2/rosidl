@@ -24,7 +24,7 @@ from rosidl_generator_py.msg import Various
 def test_strings():
     a = Strings()
 
-    assert(a.empty_string is None)
+    assert(a.empty_string is str())
     assert(a.def_string == 'Hello world!')
 
 
@@ -55,7 +55,7 @@ def test_constants():
 def test_default_values():
     a = Strings()
 
-    assert(a.empty_string is None)
+    assert(a.empty_string is str())
     assert(a.def_string == 'Hello world!')
     a.def_string = 'Bye world'
     assert(a.def_string == 'Bye world')
@@ -94,16 +94,17 @@ def test_check_constraints():
     assert_raises(AssertionError, setattr, b, 'two_primitives',
                   [primitives, primitives, primitives])
 
-    b.up_to_three_primitives = []
-    assert(b.up_to_three_primitives == [])
-    b.up_to_three_primitives = [primitives]
-    assert(b.up_to_three_primitives == [primitives])
-    b.up_to_three_primitives = [primitives, primitives]
-    assert(b.up_to_three_primitives == [primitives, primitives])
-    b.up_to_three_primitives = [primitives, primitives, primitives]
-    assert(b.up_to_three_primitives == [primitives, primitives, primitives])
-    assert_raises(AssertionError, setattr, b, 'up_to_three_primitives',
-                  [primitives, primitives, primitives, primitives])
+    # TODO(wjwwood): reenable when bounded arrays are working C type support.
+    # b.up_to_three_primitives = []
+    # assert(b.up_to_three_primitives == [])
+    # b.up_to_three_primitives = [primitives]
+    # assert(b.up_to_three_primitives == [primitives])
+    # b.up_to_three_primitives = [primitives, primitives]
+    # assert(b.up_to_three_primitives == [primitives, primitives])
+    # b.up_to_three_primitives = [primitives, primitives, primitives]
+    # assert(b.up_to_three_primitives == [primitives, primitives, primitives])
+    # assert_raises(AssertionError, setattr, b, 'up_to_three_primitives',
+    #               [primitives, primitives, primitives, primitives])
 
     b.unbounded_primitives = [primitives, primitives]
     assert(b.unbounded_primitives == [primitives, primitives])

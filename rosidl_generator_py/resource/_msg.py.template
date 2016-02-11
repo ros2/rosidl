@@ -1,9 +1,35 @@
 # generated from rosidl_generator_py/resource/_msg.py.template
 # generated code does not contain a copyright notice
 
+import logging
+import traceback
+
+_convert_from_py = None
+_convert_to_py = None
+_type_support = None
+__type_support_importable = False
+try:
+    import rclpy
+    from rosidl_generator_py import import_type_support
+    __type_support_importable = True
+except ImportError:
+    logger = logging.getLogger('rosidl_generator_py.@(spec.base_type.type)')
+    logger.debug('Failed to import needed modules for type support:\n' + traceback.format_exc())
+
+if __type_support_importable:
+    rclpy_implementation = rclpy._rclpy.rclpy_get_implementation_identifier()
+    module = import_type_support('@(package_name)', '@(subfolder)', '@(module_name)', rclpy_implementation)
+    _convert_from_py = module.convert_from_py
+    _convert_to_py = module.convert_to_py
+    _type_support = module.type_support
+
 
 class Metaclass(type):
     """Metaclass of message '@(spec.base_type.type)'."""
+
+    _CONVERT_FROM_PY = _convert_from_py
+    _CONVERT_TO_PY = _convert_to_py
+    _TYPE_SUPPORT = _type_support
 
     __constants = {
 @[for constant in spec.constants]@
@@ -72,7 +98,23 @@ class @(spec.base_type.type)(metaclass=Metaclass):
         self.@(field.name) = kwargs.get(
             '@(field.name)', @(spec.base_type.type).@(field.name.upper())__DEFAULT)
 @[else]@
-        self.@(field.name) = kwargs.get('@(field.name)')
+@[if not field.type.is_primitive_type()]@
+        from @(field.type.pkg_name).msg import @(field.type.type)
+@[end if]@
+@[if field.type.type == 'byte']@
+        self.@(field.name) = kwargs.get('@(field.name)', b'0')
+@[elif field.type.type == 'char']@
+        self.@(field.name) = kwargs.get('@(field.name)', '\0')
+@[elif field.type.array_size]
+        self.@(field.name) = kwargs.get(
+            '@(field.name)',
+            tuple([@(get_python_type(field.type))() for x in range(@(field.type.array_size))])
+        )
+@[elif field.type.is_array]
+        self.@(field.name) = kwargs.get('@(field.name)', list())
+@[else]@
+        self.@(field.name) = kwargs.get('@(field.name)', @(get_python_type(field.type))())
+@[end if]@
 @[end if]@
 @[end for]@
 @[end if]@

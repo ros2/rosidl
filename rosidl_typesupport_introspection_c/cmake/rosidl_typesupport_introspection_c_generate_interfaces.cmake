@@ -130,6 +130,5 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin
   )
+  ament_export_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix})
 endif()
-
-ament_export_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix})

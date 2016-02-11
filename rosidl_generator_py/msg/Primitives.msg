@@ -13,6 +13,6 @@ int64 int64_value
 uint64 uint64_value
 string string_value
 string string_value_with_default 'default'
-string<=5[3] fixed_length_string_value
-string<=5[<=10] upper_bound_string_value
+#string<=5[3] fixed_length_string_value
+#string<=5[<=10] upper_bound_string_value
 string unbound_string_value

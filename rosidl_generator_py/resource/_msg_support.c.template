@@ -1,0 +1,160 @@
+#include <Python.h>
+
+#include <@(spec.base_type.pkg_name)/@(subfolder)/@(module_name)__struct.h>
+#include <@(spec.base_type.pkg_name)/@(subfolder)/@(module_name)__functions.h>
+
+@{
+have_not_included_primitive_arrays = True
+have_not_included_string = True
+}@
+@[for field in spec.fields]@
+@[if field.type.is_array and have_not_included_primitive_arrays]@
+@{have_not_included_primitive_arrays = False}@
+#include <rosidl_generator_c/primitives_array.h>
+#include <rosidl_generator_c/primitives_array_functions.h>
+
+@[end if]@
+@[if field.type.type == 'string' and have_not_included_string]@
+@{have_not_included_string = False}@
+#include <rosidl_generator_c/string.h>
+#include <rosidl_generator_c/string_functions.h>
+
+@[end if]@
+@[end for]@
+
+@{
+msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_type.type)
+}@
+
+/* TODO(esteve): implement conversion function */
+void * @(spec.base_type.pkg_name)_@(module_name)__convert_from_py(PyObject *_pymsg)
+{
+  @(msg_typename) * ros_message = @(msg_typename)__create();
+  (void)ros_message;
+@{
+full_classname = "@(spec.base_type.pkg_name).@(subfolder)._@(module_name).@(spec.base_type.type)"
+}@
+  char full_classname_dest[@(len(full_classname) + 1)];
+
+  /* TODO(esteve): assume 1BYTE encoding for unicode strings. */
+  char * class_name = (char *)PyUnicode_1BYTE_DATA(
+    PyObject_GetAttrString(PyObject_GetAttrString(_pymsg, "__class__"), "__name__"));
+  char * module_name = (char *)PyUnicode_1BYTE_DATA(
+    PyObject_GetAttrString(PyObject_GetAttrString(_pymsg, "__class__"), "__module__"));
+
+  snprintf(full_classname_dest, @(len(full_classname) + 1), "%s.%s", class_name, module_name);
+
+  assert(strncmp(
+    "@(spec.base_type.pkg_name).@(subfolder)._@(module_name).@(spec.base_type.type)",
+    full_classname_dest, @(len(full_classname))));
+
+@[for field in spec.fields]@
+  PyObject * py@(field.name) = PyObject_GetAttrString(_pymsg, "@(field.name)");
+  (void)py@(field.name);
+@[if not field.type.is_primitive_type()]@
+// TODO(esteve): add support for nested types
+@[end if]@
+
+@[if field.type.is_array]@
+  assert(PySequence_Check(py@(field.name)));
+@[elif field.type.type in ['byte', 'char']]@
+  assert(PyBytes_Check(py@(field.name)));
+  ros_message->@(field.name) = PyBytes_AS_STRING(py@(field.name))[0];
+@[elif field.type.type in ['string']]@
+  assert(PyUnicode_Check(py@(field.name)));
+  rosidl_generator_c__String__assign(
+    &ros_message->@(field.name), (char *)PyUnicode_1BYTE_DATA(py@(field.name)));
+@[elif field.type.type =='bool']@
+  assert(PyBool_Check(py@(field.name)));
+  ros_message->@(field.name) = (py@(field.name) == Py_True);
+@[elif field.type.type in ['float32', 'float64']]@
+  assert(PyFloat_Check(py@(field.name)));
+  ros_message->@(field.name) = PyFloat_AS_DOUBLE(py@(field.name));
+@[elif field.type.type in [
+        'int8',
+        'int16',
+        'int32',
+    ]]@
+  assert(PyLong_Check(py@(field.name)));
+  ros_message->@(field.name) = PyLong_AsLong(py@(field.name));
+@[elif field.type.type in [
+        'uint8',
+        'uint16',
+        'uint32',
+    ]]@
+  assert(PyLong_Check(py@(field.name)));
+  ros_message->@(field.name) = PyLong_AsUnsignedLong(py@(field.name));
+@[elif field.type.type == 'int64']@
+  assert(PyLong_Check(py@(field.name)));
+  ros_message->@(field.name) = PyLong_AsLongLong(py@(field.name));
+@[elif field.type.type == 'uint64']@
+  assert(PyLong_Check(py@(field.name)));
+  ros_message->@(field.name) = PyLong_AsUnsignedLongLong(py@(field.name));
+@[else]@
+  assert(false);
+@[end if]@
+@[end for]@
+  assert(ros_message != NULL);
+  return ros_message;
+}
+
+/* TODO(esteve): implement conversion function */
+PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_ros_message)
+{
+  @(msg_typename) * ros_message = (@(msg_typename) *)raw_ros_message;
+  (void)ros_message;
+
+  PyObject *pymessage_module = PyImport_ImportModule("@(spec.base_type.pkg_name).@(subfolder)._@(module_name)");
+  PyObject *pymessage_class = PyObject_GetAttrString(pymessage_module, "@(spec.base_type.type)");
+
+  /* NOTE(esteve): Call constructor of @(spec.base_type.type)*/
+  PyObject *pymessage = NULL;
+  pymessage = PyObject_CallObject(pymessage_class, NULL);
+  assert(pymessage != NULL);
+
+@[for field in spec.fields]@
+  PyObject * py@(field.name) = NULL;
+@[if not field.type.is_primitive_type()]@
+// TODO(esteve): add support for nested types
+  (void)py@(field.name);
+@[end if]@
+
+@[if field.type.is_array]@
+  assert(PySequence_Check(py@(field.name)));
+@[elif field.type.type in ['char', 'byte']]@
+  {
+    char tmp[1] = {ros_message->@(field.name)};
+    py@(field.name) = PyUnicode_FromString(tmp);
+  }
+@[elif field.type.type in ['string']]@
+  py@(field.name) = PyUnicode_FromString(ros_message->@(field.name).data);
+@[elif field.type.type =='bool']@
+  py@(field.name) = ros_message->@(field.name) ? Py_True : Py_False;
+@[elif field.type.type in ['float32', 'float64']]@
+  py@(field.name) = PyFloat_FromDouble(ros_message->@(field.name));
+@[elif field.type.type in [
+        'int8',
+        'int16',
+        'int32',
+    ]]@
+  py@(field.name) = PyLong_FromLong(ros_message->@(field.name));
+@[elif field.type.type in [
+        'uint8',
+        'uint16',
+        'uint32',
+    ]]@
+  py@(field.name) = PyLong_FromUnsignedLong(ros_message->@(field.name));
+@[elif field.type.type == 'int64']@
+  py@(field.name) = PyLong_FromLongLong(ros_message->@(field.name));
+@[elif field.type.type == 'uint64']@
+  py@(field.name) = PyLong_FromUnsignedLongLong(ros_message->@(field.name));
+@[else]@
+  assert(false);
+@[end if]@
+  assert(py@(field.name) != NULL);
+  Py_INCREF(py@(field.name));
+  PyObject_SetAttrString(pymessage, "@(field.name)", py@(field.name));
+@[end for]@
+  assert(pymessage != NULL);
+  return pymessage;
+}

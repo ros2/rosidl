@@ -30,27 +30,21 @@ PyInit__@(module_name)_s__@(typesupport_impl)(void)
 {
   PyObject *m = NULL;
   m = PyModule_Create(&@(spec.base_type.pkg_name)_@(module_name)__module);
-  if (m != NULL)
-  {
+  if (m != NULL) {
     PyObject *pyconvert_from_py = NULL;
     pyconvert_from_py = PyCapsule_New((void *)&@(spec.base_type.pkg_name)_@(module_name)__convert_from_py, NULL, NULL);
-    if (pyconvert_from_py != NULL)
-    {
-      if (PyModule_AddObject(m, "convert_from_py", pyconvert_from_py))
-      {
+    if (pyconvert_from_py != NULL) {
+      if (PyModule_AddObject(m, "convert_from_py", pyconvert_from_py)) {
         Py_XDECREF(pyconvert_from_py);
         pyconvert_from_py = NULL;
         Py_XDECREF(m);
         m = NULL;
       }
 
-
       PyObject *pyconvert_to_py = NULL;
       pyconvert_to_py = PyCapsule_New((void *)&@(spec.base_type.pkg_name)_@(module_name)__convert_to_py, NULL, NULL);
-      if (pyconvert_to_py != NULL)
-      {
-        if (PyModule_AddObject(m, "convert_to_py", pyconvert_to_py))
-        {
+      if (pyconvert_to_py != NULL) {
+        if (PyModule_AddObject(m, "convert_to_py", pyconvert_to_py)) {
           Py_XDECREF(pyconvert_from_py);
           pyconvert_from_py = NULL;
           Py_XDECREF(pyconvert_to_py);
@@ -62,18 +56,15 @@ PyInit__@(module_name)_s__@(typesupport_impl)(void)
         pytype_support = PyCapsule_New(
           (void *)ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(spec.msg_name)),
           NULL, NULL);
-        if (pytype_support == NULL)
-        {
+        if (pytype_support == NULL) {
           Py_XDECREF(pyconvert_from_py);
           pyconvert_from_py = NULL;
           Py_XDECREF(pyconvert_to_py);
           pyconvert_to_py = NULL;
           Py_XDECREF(m);
           m = NULL;
-        } else
-        {
-          if (PyModule_AddObject(m, "type_support", pytype_support))
-          {
+        } else {
+          if (PyModule_AddObject(m, "type_support", pytype_support)) {
             Py_XDECREF(pytype_support);
             pytype_support = NULL;
             Py_XDECREF(pyconvert_from_py);
@@ -85,8 +76,7 @@ PyInit__@(module_name)_s__@(typesupport_impl)(void)
           }
         }
       }
-    } else
-    {
+    } else {
       Py_XDECREF(m);
       m = NULL;
     }

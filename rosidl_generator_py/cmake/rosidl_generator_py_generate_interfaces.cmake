@@ -340,7 +340,7 @@ foreach(_generated_msg_c_ts_file ${_generated_msg_c_ts_files})
 
     set(_pyext_suffix "__pyext")
 
-# Change the following code so that each file is compiled independently
+    # TODO(esteve): Change the following code so that each file is compiled independently
     add_library(${_msg_name}${_pyext_suffix} SHARED
       "${_generated_msg_c_ts_file}"
       "${_generated_msg_c_common_file}"

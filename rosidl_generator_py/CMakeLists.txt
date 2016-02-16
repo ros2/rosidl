@@ -59,6 +59,7 @@ if(AMENT_ENABLE_TESTING)
     APPEND_ENV PYTHONPATH="${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py:${CMAKE_CURRENT_SOURCE_DIR}"
     APPEND_LIBRARY_DIRS "${_append_library_dirs}"
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py"
+  )
 endif()
 
 ament_package(

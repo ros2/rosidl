@@ -24,11 +24,11 @@ class UnsupportedTypeSupport(Exception):
 
     """Raised when no supported type support can be found for a given rmw implementation."""
 
-    def __init__(self, message, rmw_implementation):
+    def __init__(self, rmw_implementation):
         """
-        :param message str: The message for this exception.
         :param rmw_implementation: The RMW implementation that could not be imported.
         """
+        message = "No supported type support for '{0}'".format(rmw_implementation)
         super(UnsupportedTypeSupport, self).__init__(message)
         self.rmw_implementation = rmw_implementation
 
@@ -49,10 +49,7 @@ def import_type_support(pkg_name, subfolder, rosidl_name, rmw_implementation):
     :returns: the type support Python module for this specific rosidl and rmw implementation pair
     """
     if rmw_implementation not in type_support_map.keys():
-        raise UnsupportedTypeSupport(
-            "No supported type support for '{0}'".format(rmw_implementation),
-            rmw_implementation
-        )
+        raise UnsupportedTypeSupport(rmw_implementation)
     type_support_name = type_support_map[rmw_implementation]
     import_package = '{pkg_name}.{subfolder}'.format(
         pkg_name=pkg_name,

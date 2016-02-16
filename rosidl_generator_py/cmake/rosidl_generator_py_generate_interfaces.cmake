@@ -308,7 +308,7 @@ set(_target_suffix "__py")
 if(WIN32)
   set(PYTHON_EXTENSION_EXTENSION ".pyd")
 else()
-# Also use .so for OSX, not dylib
+  # Also use .so for OSX, not dylib
   set(PYTHON_EXTENSION_EXTENSION ".so")
 endif()
 

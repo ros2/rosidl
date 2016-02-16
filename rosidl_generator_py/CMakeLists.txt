@@ -50,11 +50,15 @@ if(AMENT_ENABLE_TESTING)
     SKIP_INSTALL
   )
 
+  set(_append_library_dirs "")
+  if(WIN32)
+    set(_append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}")
+  endif()
+
   ament_add_nose_test(test_interfaces_py "test/test_interfaces.py"
     APPEND_ENV PYTHONPATH="${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py:${CMAKE_CURRENT_SOURCE_DIR}"
-    APPEND_LIBRARY_DIRS "${CMAKE_CURRENT_BINARY_DIR}/Release"
+    APPEND_LIBRARY_DIRS "${_append_library_dirs}"
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py"
-  )
 endif()
 
 ament_package(

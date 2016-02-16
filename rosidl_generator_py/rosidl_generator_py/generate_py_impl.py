@@ -43,11 +43,9 @@ def generate_py(generator_arguments_file, typesupport_impl, typesupport_impls):
     }
 
     for template_file in mapping_msgs.keys():
-        assert os.path.exists(template_file), \
-            'Messages template file "%s" not found' % template_file
+        assert os.path.exists(template_file), 'Could not find template: ' + template_file
     for template_file in mapping_srvs.keys():
-        assert os.path.exists(template_file), \
-            'Services template file "%s" not found' % template_file
+        assert os.path.exists(template_file), 'Could not find template: ' + template_file
 
     functions = {
         'constant_value_to_py': constant_value_to_py,

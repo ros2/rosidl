@@ -85,6 +85,10 @@ if(WIN32)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PRIVATE "ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_BUILDING_DLL")
 endif()
+if(NOT WIN32)
+  set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    PROPERTIES COMPILE_FLAGS "-std=c++11 -Wall -Wextra")
+endif()
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PUBLIC
   ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp

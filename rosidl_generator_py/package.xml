@@ -6,7 +6,6 @@
   <maintainer email="esteve@osrfoundation.org">Esteve Fernandez</maintainer>
   <license>Apache License 2.0</license>
 
-  <build_depend>python_cmake_module</build_depend>
   <build_depend>rmw</build_depend>
   <build_depend>rmw_implementation</build_depend>
   <build_depend>rosidl_generator_c</build_depend>

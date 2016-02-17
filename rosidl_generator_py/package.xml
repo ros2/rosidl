@@ -16,8 +16,6 @@
   <buildtool_depend>python_cmake_module</buildtool_depend>
 
   <buildtool_export_depend>ament_cmake</buildtool_export_depend>
-  <buildtool_export_depend>rosidl_cmake</buildtool_export_depend>
-  <buildtool_export_depend>rosidl_generator_c</buildtool_export_depend>
 
   <exec_depend>rmw_implementation</exec_depend>
   <exec_depend>rmw_implementation_cmake</exec_depend>
@@ -30,6 +28,7 @@
   <test_depend>python_cmake_module</test_depend>
   <test_depend>rmw_implementation_cmake</test_depend>
   <test_depend>rosidl_cmake</test_depend>
+  <test_depend>rosidl_generator_c</test_depend>
   <!-- Duplicated from rosidl_default_generator in order to avoid a circular dependency. -->
   <test_depend>rosidl_typesupport_connext_c</test_depend>
   <test_depend>rosidl_typesupport_introspection_c</test_depend>

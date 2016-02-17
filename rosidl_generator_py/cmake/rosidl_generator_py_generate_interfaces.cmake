@@ -142,6 +142,29 @@ rosidl_write_generator_arguments(
 file(MAKE_DIRECTORY "${_output_path}")
 file(WRITE "${_output_path}/__init__.py" "")
 
+if(NOT "${_generated_msg_py_files} " STREQUAL " ")
+  list(GET _generated_msg_py_files 0 _msg_file)
+  get_filename_component(_msg_package_dir1 "${_msg_file}" DIRECTORY)
+  get_filename_component(_msg_package_dir2 "${_msg_package_dir1}" NAME)
+endif()
+
+if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
+  ament_python_install_module("${_output_path}/__init__.py"
+    DESTINATION "${PROJECT_NAME}"
+  )
+
+  ament_python_install_module("${_output_path}/__init__.py"
+    DESTINATION "${PROJECT_NAME}/${_msg_package_dir2}"
+  )
+
+  # TODO(esteve): replace this with ament_python_install_module and allow a list
+  # of modules to be passed instead of iterating over _generated_msg_py_files
+  # See https://github.com/ros2/rosidl/issues/89
+  install(FILES ${_generated_msg_py_files}
+    DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/${_msg_package_dir2}"
+  )
+endif()
+
 set(_generated_extension_files "")
 set(_extension_dependencies "")
 set(_target_suffix "__py")
@@ -250,6 +273,11 @@ foreach(_generated_msg_c_ts_file ${_generated_msg_c_ts_files})
     "rosidl_generator_py"
     "${PROJECT_NAME}__rosidl_generator_c"
   )
+
+  if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
+    install(TARGETS ${_msg_name}${_pyext_suffix}
+      DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/${_msg_package_dir2}")
+  endif()
 endforeach()
 
 if(TARGET ${rosidl_generate_interfaces_TARGET}${_target_suffix})
@@ -265,13 +293,4 @@ else()
     ${_extension_dependencies}
     ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
   )
-endif()
-
-if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
-  if(NOT "${_generated_msg_py_files} " STREQUAL " ")
-    list(GET _generated_msg_py_files 0 _msg_file)
-    get_filename_component(_msg_package_dir "${_msg_file}" DIRECTORY)
-    get_filename_component(_msg_package_dir "${_msg_package_dir}" DIRECTORY)
-    ament_python_install_package("${PROJECT_NAME}" PACKAGE_DIR "${_msg_package_dir}")
-  endif()
 endif()

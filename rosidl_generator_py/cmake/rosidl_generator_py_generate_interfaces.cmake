@@ -20,168 +20,8 @@ find_package(rmw REQUIRED)
 set(Python_ADDITIONAL_VERSIONS 3.4)
 find_package(PythonInterp 3.4 REQUIRED)
 
-if(APPLE)
-  find_program(PYTHON_CONFIG_EXECUTABLE NAMES "python3-config")
-  if(NOT PYTHON_CONFIG_EXECUTABLE)
-    message(FATAL_ERROR "Cannot find python3-config executable")
-  endif()
-
-  if(NOT DEFINED PYTHON_INCLUDE_DIRS)
-    execute_process(
-      COMMAND
-      "${PYTHON_CONFIG_EXECUTABLE}"
-      "--includes"
-      OUTPUT_VARIABLE _output
-      RESULT_VARIABLE _result
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    if(NOT _result EQUAL 0)
-      message(FATAL_ERROR
-        "execute_process(${PYTHON_CONFIG_EXECUTABLE} --includes) returned "
-        "error code ${_result}")
-    endif()
-
-    string(REPLACE " " ";" _output_list ${_output})
-
-    foreach(_includedir ${_output_list})
-      string(SUBSTRING "${_includedir}" 2 -1 _includedir)
-      list(APPEND PYTHON_INCLUDE_DIRS "${_includedir}")
-    endforeach()
-  endif()
-  set(PYTHON_INCLUDE_DIRS
-      ${PYTHON_INCLUDE_DIRS}
-      CACHE INTERNAL
-      "The paths to the Python include directories.")
-  message(STATUS "Using PYTHON_INCLUDE_DIRS: ${PYTHON_INCLUDE_DIRS}")
-
-  if(NOT DEFINED PYTHON_LIBRARIES)
-    execute_process(
-      COMMAND
-      "${PYTHON_CONFIG_EXECUTABLE}"
-      "--ldflags"
-      OUTPUT_VARIABLE _output
-      RESULT_VARIABLE _result
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    if(NOT _result EQUAL 0)
-      message(FATAL_ERROR
-        "execute_process(${PYTHON_CONFIG_EXECUTABLE} --ldflags) returned "
-        "error code ${_result}")
-    endif()
-
-    string(REPLACE " " ";" _output_list "${_output}")
-    set(PYTHON_LIBRARIES
-      ""
-      CACHE INTERNAL
-      "The libraries that need to be linked against for Python extensions.")
-
-    set(_library_paths "")
-    foreach(_item ${_output_list})
-      string(REGEX MATCH "-L(.*)" _regex_match ${_item})
-      if(NOT "${_regex_match} " STREQUAL " ")
-        string(SUBSTRING "${_regex_match}" 2 -1 _library_path)
-        list(APPEND _library_paths "${_library_path}")
-      endif()
-    endforeach()
-
-    set(_python_version_no_dots
-      "${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-    set(_python_version
-      "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")
-
-    find_library(PYTHON_LIBRARY
-      NAMES
-      python${_python_version_no_dots}
-      python${_python_version}mu
-      python${_python_version}m
-      python${_python_version}u
-      python${_python_version}
-      PATHS
-      ${_library_paths}
-      NO_SYSTEM_ENVIRONMENT_PATH
-    )
-  endif()
-
-  set(PYTHON_LIBRARIES "${PYTHON_LIBRARY}")
-  message(STATUS "Using PYTHON_LIBRARIES: ${PYTHON_LIBRARIES}")
-else()
-  find_package(PythonLibs 3.4 REQUIRED)
-endif()
-
-if(NOT DEFINED PYTHON_SOABI)
-  set(_python_code
-    "from sysconfig import get_config_var"
-    "print(get_config_var('SOABI'))"
-  )
-  execute_process(
-    COMMAND
-    "${PYTHON_EXECUTABLE}"
-    "-c"
-    "${_python_code}"
-    OUTPUT_VARIABLE _output
-    RESULT_VARIABLE _result
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
-  if(NOT _result EQUAL 0)
-    message(FATAL_ERROR
-      "execute_process(${PYTHON_EXECUTABLE} -c '${_python_code}') returned "
-      "error code ${_result}")
-  endif()
-
-  set(PYTHON_SOABI
-    "${_output}"
-    CACHE INTERNAL
-    "The SOABI suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/.")
-endif()
-
-if(NOT DEFINED PYTHON_MULTIARCH)
-  set(_python_code
-    "from sysconfig import get_config_var"
-    "print(get_config_var('MULTIARCH'))"
-  )
-  execute_process(
-    COMMAND
-    "${PYTHON_EXECUTABLE}"
-    "-c"
-    "${_python_code}"
-    OUTPUT_VARIABLE _output
-    RESULT_VARIABLE _result
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
-  if(NOT _result EQUAL 0)
-    message(FATAL_ERROR
-      "execute_process(${PYTHON_EXECUTABLE} -c '${_python_code}') returned "
-      "error code ${_result}")
-  endif()
-
-  set(PYTHON_MULTIARCH
-    "${_output}"
-    CACHE INTERNAL
-    "The MULTIARCH suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/.")
-endif()
-
-if("${PYTHON_SOABI} " STREQUAL " " OR "${PYTHON_SOABI} " STREQUAL "None ")
-  set(PYTHON_EXTENSION_SUFFIX
-    ""
-    CACHE INTERNAL
-    "The full suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/."
-  )
-else()
-  if("${PYTHON_MULTIARCH} " STREQUAL " " OR "${PYTHON_SOABI} " STREQUAL "None ")
-    set(PYTHON_EXTENSION_SUFFIX
-      ".${PYTHON_SOABI}"
-      CACHE INTERNAL
-      "The full suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/."
-    )
-  else()
-    set(PYTHON_EXTENSION_SUFFIX
-      ".${PYTHON_SOABI}-${PYTHON_MULTIARCH}"
-      CACHE INTERNAL
-      "The full suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/."
-    )
-  endif()
-endif()
-
+find_package(python_cmake_module REQUIRED)
+find_package(PythonExtra MODULE)
 
 # TODO(esteve): force opensplice and connext C type supports only, uncomment
 # the following line when all typesupport implementations are ported to C
@@ -306,13 +146,6 @@ set(_generated_extension_files "")
 set(_extension_dependencies "")
 set(_target_suffix "__py")
 
-if(WIN32)
-  set(PYTHON_EXTENSION_EXTENSION ".pyd")
-else()
-  # Also use .so for OSX, not dylib
-  set(PYTHON_EXTENSION_EXTENSION ".so")
-endif()
-
 add_custom_command(
   # OUTPUT ${_generated_msg_py_files} ${_generated_msg_c__${_typesupport_impl}_files} ${_generated_srv_files}
   OUTPUT ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_files}
@@ -351,36 +184,18 @@ foreach(_generated_msg_c_ts_file ${_generated_msg_c_ts_files})
       COMPILE_FLAGS "${_extension_compile_flags}" PREFIX ""
       LIBRARY_OUTPUT_DIRECTORY "${_output_path}/${_parent_folder}"
       RUNTIME_OUTPUT_DIRECTORY "${_output_path}/${_parent_folder}"
-      OUTPUT_NAME "${_base_msg_name}__${_typesupport_impl}${PYTHON_EXTENSION_SUFFIX}"
-      SUFFIX "${PYTHON_EXTENSION_EXTENSION}")
+      OUTPUT_NAME "${_base_msg_name}__${_typesupport_impl}${PythonExtra_EXTENSION_SUFFIX}"
+      SUFFIX "${PythonExtra_EXTENSION_EXTENSION}")
 
-    set_target_properties(${_msg_name}${_pyext_suffix} PROPERTIES
-      COMPILE_FLAGS "${_extension_compile_flags}" PREFIX ""
-      LIBRARY_OUTPUT_DIRECTORY_DEBUG "${_output_path}/${_parent_folder}"
-      RUNTIME_OUTPUT_DIRECTORY_DEBUG "${_output_path}/${_parent_folder}"
-      OUTPUT_NAME "${_base_msg_name}__${_typesupport_impl}${PYTHON_EXTENSION_SUFFIX}"
-      SUFFIX "${PYTHON_EXTENSION_EXTENSION}")
-
-    set_target_properties(${_msg_name}${_pyext_suffix} PROPERTIES
-      COMPILE_FLAGS "${_extension_compile_flags}" PREFIX ""
-      LIBRARY_OUTPUT_DIRECTORY_RELEASE "${_output_path}/${_parent_folder}"
-      RUNTIME_OUTPUT_DIRECTORY_RELEASE "${_output_path}/${_parent_folder}"
-      OUTPUT_NAME "${_base_msg_name}__${_typesupport_impl}${PYTHON_EXTENSION_SUFFIX}"
-      SUFFIX "${PYTHON_EXTENSION_EXTENSION}")
-
-    set_target_properties(${_msg_name}${_pyext_suffix} PROPERTIES
-      COMPILE_FLAGS "${_extension_compile_flags}" PREFIX ""
-      LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${_output_path}/${_parent_folder}"
-      RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${_output_path}/${_parent_folder}"
-      OUTPUT_NAME "${_base_msg_name}__${_typesupport_impl}${PYTHON_EXTENSION_SUFFIX}"
-      SUFFIX "${PYTHON_EXTENSION_EXTENSION}")
-
-    set_target_properties(${_msg_name}${_pyext_suffix} PROPERTIES
-      COMPILE_FLAGS "${_extension_compile_flags}" PREFIX ""
-      LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL "${_output_path}/${_parent_folder}"
-      RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${_output_path}/${_parent_folder}"
-      OUTPUT_NAME "${_base_msg_name}__${_typesupport_impl}${PYTHON_EXTENSION_SUFFIX}"
-      SUFFIX "${PYTHON_EXTENSION_EXTENSION}")
+    if(WIN32)
+      string(TOUPPER "${CMAKE_BUILD_TYPE}" _build_type)
+      set_target_properties(${_msg_name}${_pyext_suffix} PROPERTIES
+        COMPILE_FLAGS "${_extension_compile_flags}" PREFIX ""
+        LIBRARY_OUTPUT_DIRECTORY_${_build_type} "${_output_path}/${_parent_folder}"
+        RUNTIME_OUTPUT_DIRECTORY_${_build_type} "${_output_path}/${_parent_folder}"
+        OUTPUT_NAME "${_base_msg_name}__${_typesupport_impl}${PythonExtra_EXTENSION_SUFFIX}"
+        SUFFIX "${PythonExtra_EXTENSION_EXTENSION}")
+    endif()
 
     add_dependencies(
       ${_msg_name}${_pyext_suffix}
@@ -394,7 +209,7 @@ foreach(_generated_msg_c_ts_file ${_generated_msg_c_ts_files})
 
     target_link_libraries(
       ${_msg_name}${_pyext_suffix}
-      ${PYTHON_LIBRARIES}
+      ${PythonExtra_LIBRARIES}
       ${PROJECT_NAME}__${_typesupport_impl}
     )
 
@@ -405,7 +220,7 @@ foreach(_generated_msg_c_ts_file ${_generated_msg_c_ts_files})
     target_include_directories(${_msg_name}${_pyext_suffix}
       PUBLIC
       ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c
-      ${PYTHON_INCLUDE_DIRS}
+      ${PythonExtra_INCLUDE_DIRS}
     )
 
     foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})

@@ -115,6 +115,5 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
       DESTINATION "include/${PROJECT_NAME}/srv"
     )
   endif()
+  ament_export_include_directories(include)
 endif()
-
-ament_export_include_directories(include)

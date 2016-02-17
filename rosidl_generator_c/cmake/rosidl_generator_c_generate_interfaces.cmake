@@ -167,6 +167,5 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin
   )
+  ament_export_include_directories(include)
 endif()
-
-ament_export_include_directories(include)

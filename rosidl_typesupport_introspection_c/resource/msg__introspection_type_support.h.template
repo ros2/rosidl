@@ -23,7 +23,7 @@ function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.base_type
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
-#include <rosidl_generator_c/message_type_support_struct.h>
+#include <rosidl_generator_c/message_type_support.h>
 
 #include "@(spec.base_type.pkg_name)/msg/rosidl_generator_c__visibility_control.h"
 
@@ -34,9 +34,9 @@ extern "C"
 {
 #endif
 
-ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
+ROSIDL_GENERATOR_C_EXPORT_@(spec.base_type.pkg_name)
 const rosidl_message_type_support_t *
-rosidl_typesupport_introspection_c_get_message__@(spec.base_type.pkg_name)__msg__@(spec.msg_name)();
+ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.base_type.pkg_name), msg, @(spec.msg_name))();
 
 #if __cplusplus
 }

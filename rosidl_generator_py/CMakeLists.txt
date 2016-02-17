@@ -3,13 +3,17 @@ cmake_minimum_required(VERSION 2.8.3)
 project(rosidl_generator_py)
 
 find_package(ament_cmake REQUIRED)
-find_package(ament_cmake_python REQUIRED)
 
 ament_export_dependencies(rosidl_cmake)
 
 ament_python_install_package(${PROJECT_NAME})
 
 if(AMENT_ENABLE_TESTING)
+  find_package(ament_cmake_nose REQUIRED)
+
+  find_package(rosidl_cmake REQUIRED)
+  find_package(rosidl_generator_c REQUIRED)
+
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
@@ -48,8 +52,14 @@ if(AMENT_ENABLE_TESTING)
     SKIP_INSTALL
   )
 
+  set(_append_library_dirs "")
+  if(WIN32)
+    set(_append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>")
+  endif()
+
   ament_add_nose_test(test_interfaces_py "test/test_interfaces.py"
-    APPEND_ENV PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py:${CMAKE_CURRENT_SOURCE_DIR}
+    APPEND_ENV PYTHONPATH="${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py:${CMAKE_CURRENT_SOURCE_DIR}"
+    APPEND_LIBRARY_DIRS "${_append_library_dirs}"
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py"
   )
 endif()

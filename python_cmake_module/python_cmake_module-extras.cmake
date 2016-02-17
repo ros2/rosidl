@@ -1,4 +1,4 @@
-# Copyright 2014-2015 Open Source Robotics Foundation, Inc.
+# Copyright 2016 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,10 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .generate_py_impl import generate_py
-from .import_type_support_impl import import_type_support
+# copied from python_cmake_module/python_cmake_module-extras.cmake
 
-__all__ = [
-    'generate_py',
-    'import_type_support',
-]
+list(INSERT CMAKE_MODULE_PATH 0 "${python_cmake_module_DIR}/Modules")

@@ -10,7 +10,7 @@ _type_support = None
 __type_support_importable = False
 try:
     import rclpy
-    from rosidl_generator_py import import_type_support
+    from rosidl_generator_py.import_type_support_impl import import_type_support
     __type_support_importable = True
 except ImportError:
     logger = logging.getLogger('rosidl_generator_py.@(spec.base_type.type)')

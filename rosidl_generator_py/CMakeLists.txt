@@ -40,32 +40,43 @@ if(AMENT_ENABLE_TESTING)
   )
 
   include(cmake/register_py.cmake)
+  include(cmake/rosidl_generator_py_get_typesupports.cmake)
+
   set(rosidl_generator_py_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+  # Need to call extras before get_typesupports, to register the extension
   rosidl_generator_py_extras(
     "${CMAKE_CURRENT_SOURCE_DIR}/bin/rosidl_generator_py"
     "${CMAKE_CURRENT_SOURCE_DIR}/rosidl_generator_py/__init__.py"
     "${CMAKE_CURRENT_SOURCE_DIR}/resource"
   )
 
-  rosidl_generate_interfaces(${PROJECT_NAME} ${message_files}
-    SKIP_INSTALL
-  )
+  # If no message files were generated, skip the test.
+  rosidl_generator_py_get_typesupports(_typesupport_impls)
+  if("${_typesupport_impls} " STREQUAL " ")
+    message(WARNING "No valid typesupport found for Python generator, skipping tests.")
+  else()
+    rosidl_generate_interfaces(${PROJECT_NAME} ${message_files}
+      SKIP_INSTALL
+    )
 
-  set(_append_library_dirs "")
-  if(WIN32)
-    set(_append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>")
+    set(_append_library_dirs "")
+    if(WIN32)
+      set(_append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>")
+    endif()
+
+    ament_add_nose_test(test_interfaces_py "test/test_interfaces.py"
+      APPEND_ENV PYTHONPATH="${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py:${CMAKE_CURRENT_SOURCE_DIR}"
+      APPEND_LIBRARY_DIRS "${_append_library_dirs}"
+      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py"
+    )
   endif()
-
-  ament_add_nose_test(test_interfaces_py "test/test_interfaces.py"
-    APPEND_ENV PYTHONPATH="${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py:${CMAKE_CURRENT_SOURCE_DIR}"
-    APPEND_LIBRARY_DIRS "${_append_library_dirs}"
-    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py"
-  )
 endif()
 
 ament_package(
-  CONFIG_EXTRAS "cmake/register_py.cmake" "rosidl_generator_py-extras.cmake.in"
+  CONFIG_EXTRAS "cmake/rosidl_generator_py_get_typesupports.cmake"
+    "cmake/register_py.cmake"
+    "rosidl_generator_py-extras.cmake.in"
 )
 
 install(

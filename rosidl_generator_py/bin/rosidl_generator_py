@@ -5,7 +5,7 @@ import os
 import sys
 
 try:
-    from rosidl_generator_py import generate_py
+    from rosidl_generator_py.generate_py_impl import generate_py
 except ImportError:
     # modifying sys.path and importing the Python package with the same
     # name as this script does not work on Windows

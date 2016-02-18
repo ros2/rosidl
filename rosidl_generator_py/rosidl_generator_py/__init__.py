@@ -12,10 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .generate_py_impl import generate_py
+import logging
+import traceback
+
 from .import_type_support_impl import import_type_support
 
-__all__ = [
-    'generate_py',
-    'import_type_support',
-]
+__all__ = ['import_type_support']
+
+try:
+    from .generate_py_impl import generate_py
+    __all__.append('generate_py')
+except ImportError:
+    logger = logging.getLogger('rosidl_generator_py')
+    logger.debug(
+        'Failed to import modules for generating Python structures:\n' + traceback.format_exc())

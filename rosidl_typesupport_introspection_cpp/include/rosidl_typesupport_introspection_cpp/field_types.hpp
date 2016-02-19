@@ -15,27 +15,29 @@
 #ifndef ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__FIELD_TYPES_HPP_
 #define ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__FIELD_TYPES_HPP_
 
+#include <rosidl_typesupport_introspection_c/field_types.h>
 #include <cstdint>
 
 namespace rosidl_typesupport_introspection_cpp
 {
 
-const uint8_t ROS_TYPE_BOOL = 1;
-const uint8_t ROS_TYPE_BYTE = 2;
-const uint8_t ROS_TYPE_CHAR = 3;
-const uint8_t ROS_TYPE_FLOAT32 = 4;
-const uint8_t ROS_TYPE_FLOAT64 = 5;
-const uint8_t ROS_TYPE_INT8 = 6;
-const uint8_t ROS_TYPE_UINT8 = 7;
-const uint8_t ROS_TYPE_INT16 = 8;
-const uint8_t ROS_TYPE_UINT16 = 9;
-const uint8_t ROS_TYPE_INT32 = 10;
-const uint8_t ROS_TYPE_UINT32 = 11;
-const uint8_t ROS_TYPE_INT64 = 12;
-const uint8_t ROS_TYPE_UINT64 = 13;
-const uint8_t ROS_TYPE_STRING = 14;
 
-const uint8_t ROS_TYPE_MESSAGE = 15;
+const uint8_t ROS_TYPE_BOOL = rosidl_typesupport_introspection_c__ROS_TYPE_BOOL;
+const uint8_t ROS_TYPE_BYTE = rosidl_typesupport_introspection_c__ROS_TYPE_BYTE;
+const uint8_t ROS_TYPE_CHAR = rosidl_typesupport_introspection_c__ROS_TYPE_CHAR;
+const uint8_t ROS_TYPE_FLOAT32 = rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT32;
+const uint8_t ROS_TYPE_FLOAT64 = rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT64;
+const uint8_t ROS_TYPE_INT8 = rosidl_typesupport_introspection_c__ROS_TYPE_INT8;
+const uint8_t ROS_TYPE_UINT8 = rosidl_typesupport_introspection_c__ROS_TYPE_UINT8;
+const uint8_t ROS_TYPE_INT16 = rosidl_typesupport_introspection_c__ROS_TYPE_INT16;
+const uint8_t ROS_TYPE_UINT16 = rosidl_typesupport_introspection_c__ROS_TYPE_UINT16;
+const uint8_t ROS_TYPE_INT32 = rosidl_typesupport_introspection_c__ROS_TYPE_INT32;
+const uint8_t ROS_TYPE_UINT32 = rosidl_typesupport_introspection_c__ROS_TYPE_UINT32;
+const uint8_t ROS_TYPE_INT64 = rosidl_typesupport_introspection_c__ROS_TYPE_INT64;
+const uint8_t ROS_TYPE_UINT64 = rosidl_typesupport_introspection_c__ROS_TYPE_UINT64;
+const uint8_t ROS_TYPE_STRING = rosidl_typesupport_introspection_c__ROS_TYPE_STRING;
+
+const uint8_t ROS_TYPE_MESSAGE = rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE;
 
 }  // namespace rosidl_typesupport_introspection_cpp
 

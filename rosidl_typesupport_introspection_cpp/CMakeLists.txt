@@ -8,10 +8,13 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
+find_package(rosidl_typesupport_introspection_c REQUIRED)
 
 ament_export_dependencies(rosidl_cmake)
 ament_export_dependencies(rosidl_generator_c)
 ament_export_dependencies(rosidl_generator_cpp)
+ament_export_dependencies(rosidl_typesupport_introspection_c)
+
 # The reason the impl folder is exported is that it contains the
 # implementation for the get_*_type_support_handle functions and defines the
 # rosidl_typesupport_introspection_cpp specific version of these functions.

@@ -150,11 +150,11 @@ endif()
 
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   ament_python_install_module("${_output_path}/__init__.py"
-    DESTINATION "${PROJECT_NAME}"
+    DESTINATION_SUFFIX "${PROJECT_NAME}"
   )
 
   ament_python_install_module("${_output_path}/__init__.py"
-    DESTINATION "${PROJECT_NAME}/${_msg_package_dir2}"
+    DESTINATION_SUFFIX "${PROJECT_NAME}/${_msg_package_dir2}"
   )
 
   # TODO(esteve): replace this with ament_python_install_module and allow a list

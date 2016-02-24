@@ -244,7 +244,7 @@ module_name = convert_camel_case_to_lower_case_underscore(type_name)
 
   pytype_support_@(module_name) =
     PyCapsule_New(
-      (void *)ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(spec.msg_name)),
+      (void *)ROSIDL_GET_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name)),
       NULL, NULL);
 
   if (PyModule_AddObject(m, "type_support_@(module_name)", pytype_support_@(module_name))) {

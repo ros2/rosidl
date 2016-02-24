@@ -43,7 +43,7 @@ def generate_py(generator_arguments_file, typesupport_impl, typesupport_impls):
     }
 
     mapping_c_msgs = {
-        os.path.join(template_dir, '_msg_support.c.template'): ['_%s_s.c'],
+#        os.path.join(template_dir, '_msg_support.c.template'): ['_%s_s.c'],
         os.path.join(template_dir, '_msg_support.entry_point.c.template'):
         type_support_impl_by_filename.keys(),
     }

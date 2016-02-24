@@ -63,12 +63,12 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
       "${_output_path}/${_parent_folder}/_${_module_name}.py"
     )
 
-    set(_generated_msg_c_common_file
-      "${_output_path}/_${PROJECT_NAME}_s.c"
-    )
-    list(APPEND _generated_msg_c_files
-      "${_output_path}/_${PROJECT_NAME}_s.c"
-    )
+#    set(_generated_msg_c_common_file
+#      "${_output_path}/_${PROJECT_NAME}_s.c"
+#    )
+#    list(APPEND _generated_msg_c_files
+#      "${_output_path}/_${PROJECT_NAME}_s.c"
+#    )
     foreach(_typesupport_impl ${_typesupport_impls})
       list(APPEND _generated_msg_c_ts_${_typesupport_impl}_files
         "${_output_path}/_${PROJECT_NAME}_s.ep.${_typesupport_impl}.c"
@@ -200,7 +200,7 @@ foreach(_typesupport_impl ${_typesupport_impls})
   # TODO(esteve): Change the following code so that each file is compiled independently
   add_library(${_target_name} SHARED
     ${_generated_msg_c_ts_${_typesupport_impl}_files}
-    ${_generated_msg_c_common_file}
+#    ${_generated_msg_c_common_file}
   )
 
   add_dependencies(

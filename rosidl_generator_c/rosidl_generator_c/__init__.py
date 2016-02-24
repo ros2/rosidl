@@ -19,20 +19,24 @@ from rosidl_cmake import expand_template
 from rosidl_cmake import get_newest_modification_time
 from rosidl_cmake import read_generator_arguments
 from rosidl_parser import parse_message_file
+from rosidl_parser import parse_service_file
 
 
 def generate_c(generator_arguments_file):
     args = read_generator_arguments(generator_arguments_file)
 
     template_dir = args['template_dir']
-    mapping = {
+    mapping_msgs = {
         os.path.join(template_dir, 'msg.h.template'): '%s.h',
         os.path.join(template_dir, 'msg__functions.c.template'): '%s__functions.c',
         os.path.join(template_dir, 'msg__functions.h.template'): '%s__functions.h',
         os.path.join(template_dir, 'msg__struct.h.template'): '%s__struct.h',
         os.path.join(template_dir, 'msg__type_support.h.template'): '%s__type_support.h',
     }
-    for template_file in mapping.keys():
+    mapping_srvs = {
+        os.path.join(template_dir, 'srv.h.template'): '%s.h',
+    }
+    for template_file in list(mapping_msgs.keys()) + list(mapping_srvs.keys()):
         assert os.path.exists(template_file), 'Could not find template: ' + template_file
 
     functions = {
@@ -45,7 +49,7 @@ def generate_c(generator_arguments_file):
         subfolder = os.path.basename(os.path.dirname(ros_interface_file))
         if extension == '.msg':
             spec = parse_message_file(args['package_name'], ros_interface_file)
-            for template_file, generated_filename in mapping.items():
+            for template_file, generated_filename in mapping_msgs.items():
                 generated_file = os.path.join(
                     args['output_dir'], subfolder, generated_filename %
                     convert_camel_case_to_lower_case_underscore(spec.base_type.type))
@@ -57,6 +61,17 @@ def generate_c(generator_arguments_file):
                     'subfolder': subfolder,
                 }
                 data.update(functions)
+                expand_template(
+                    template_file, data, generated_file,
+                    minimum_timestamp=latest_target_timestamp)
+        elif extension == '.srv':
+            spec = parse_service_file(args['package_name'], ros_interface_file)
+            for template_file, generated_filename in mapping_srvs.items():
+                data = {'spec': spec}
+                data.update(functions)
+                generated_file = os.path.join(
+                    args['output_dir'], subfolder, generated_filename %
+                    convert_camel_case_to_lower_case_underscore(spec.srv_name))
                 expand_template(
                     template_file, data, generated_file,
                     minimum_timestamp=latest_target_timestamp)

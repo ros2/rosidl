@@ -26,8 +26,8 @@
  * which defines a given message will provide the symbol to which this macro
  * expands.
  *
- * These macros also generate OpenSplice specific symbols so they only match
- * the OpenSplice shared library symbols.
+ * These macros also generate introspection-specific symbols so they only match
+ * the introspection C shared library symbols.
  */
 #define ROSIDL_GET_MSG_TYPE_SUPPORT(PkgName, MsgName) \
   ROSIDL_GET_TYPE_SUPPORT(PkgName, msg, MsgName)

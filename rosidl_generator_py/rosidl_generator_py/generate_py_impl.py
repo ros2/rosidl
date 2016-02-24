@@ -68,7 +68,7 @@ def generate_py(generator_arguments_file, typesupport_impl, typesupport_impls):
     for ros_interface_file in args['ros_interface_files']:
         extension = os.path.splitext(ros_interface_file)[1]
         subfolder = os.path.basename(os.path.dirname(ros_interface_file))
-        if extension == '.msg':
+        if extension == '.msg' and subfolder == 'msg':
             spec = parse_message_file(args['package_name'], ros_interface_file)
             mapping = mapping_msgs
             type_name = spec.base_type.type

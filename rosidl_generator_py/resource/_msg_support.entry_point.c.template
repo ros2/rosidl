@@ -238,6 +238,10 @@ module_name = convert_camel_case_to_lower_case_underscore(type_name)
   pyconvert_to_py_@(module_name) =
     PyCapsule_New((void *)&@(spec.base_type.pkg_name)_@(module_name)__convert_to_py, NULL, NULL);
 
+  if (pyconvert_to_py_@(module_name) == NULL) {
+    goto fail;
+  }
+
   if (PyModule_AddObject(m, "convert_to_py_@(module_name)", pyconvert_to_py_@(module_name))) {
     goto fail;
   }
@@ -246,6 +250,10 @@ module_name = convert_camel_case_to_lower_case_underscore(type_name)
     PyCapsule_New(
       (void *)ROSIDL_GET_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name)),
       NULL, NULL);
+
+  if (pytype_support_@(module_name) == NULL) {
+    goto fail;
+  }
 
   if (PyModule_AddObject(m, "type_support_@(module_name)", pytype_support_@(module_name))) {
     goto fail;
@@ -260,8 +268,10 @@ module_name = convert_camel_case_to_lower_case_underscore(type_name)
 }@
   Py_XDECREF(pytype_support_@(module_name));
   pytype_support_@(module_name) = NULL;
+
   Py_XDECREF(pyconvert_from_py_@(module_name));
   pyconvert_from_py_@(module_name) = NULL;
+
   Py_XDECREF(pyconvert_to_py_@(module_name));
   pyconvert_to_py_@(module_name) = NULL;
 @[end for]@

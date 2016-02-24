@@ -55,8 +55,16 @@ PyInit__@(spec.base_type.pkg_name)_s__@(typesupport_impl)(void)
 type_name = spec.base_type.type
 module_name = convert_camel_case_to_lower_case_underscore(type_name)
 }@
-
   PyObject *pyconvert_from_py_@(module_name) = NULL;
+  PyObject *pyconvert_to_py_@(module_name) = NULL;
+  PyObject *pytype_support_@(module_name) = NULL;
+@[end for]@
+
+@[for spec, subfolder in message_specs]@
+@{
+type_name = spec.base_type.type
+module_name = convert_camel_case_to_lower_case_underscore(type_name)
+}@
   pyconvert_from_py_@(module_name) =
     PyCapsule_New((void *)&@(spec.base_type.pkg_name)_@(module_name)__convert_from_py, NULL, NULL);
 
@@ -68,7 +76,6 @@ module_name = convert_camel_case_to_lower_case_underscore(type_name)
     goto fail;
   }
 
-  PyObject *pyconvert_to_py_@(module_name) = NULL;
   pyconvert_to_py_@(module_name) =
     PyCapsule_New((void *)&@(spec.base_type.pkg_name)_@(module_name)__convert_to_py, NULL, NULL);
 
@@ -76,7 +83,6 @@ module_name = convert_camel_case_to_lower_case_underscore(type_name)
     goto fail;
   }
 
-  PyObject *pytype_support_@(module_name) = NULL;
   pytype_support_@(module_name) =
     PyCapsule_New(
       (void *)ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(spec.msg_name)),

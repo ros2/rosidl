@@ -1,23 +1,36 @@
 #include <Python.h>
 
+@[for spec, subfolder in message_specs]@
+@{
+type_name = spec.base_type.type
+module_name = convert_camel_case_to_lower_case_underscore(type_name)
+}@
+
 #include <@(spec.base_type.pkg_name)/@(subfolder)/@(module_name)__type_support.h>
 #include <rosidl_generator_c/message_type_support.h>
+@[end for]@
 
-static PyMethodDef @(spec.base_type.pkg_name)_@(module_name)__methods[] = {
+static PyMethodDef @(spec.base_type.pkg_name)__methods[] = {
   {NULL, NULL, 0, NULL}  /* sentinel */
 };
 
-static struct PyModuleDef @(spec.base_type.pkg_name)_@(module_name)__module = {
+static struct PyModuleDef @(spec.base_type.pkg_name)__module = {
    PyModuleDef_HEAD_INIT,
-   "_@(module_name)_support",
-   "_@(module_name)_doc",
+   "_@(spec.base_type.pkg_name)_support",
+   "_@(spec.base_type.pkg_name)_doc",
    -1,  /* -1 means that the module keeps state in global variables */
-   @(spec.base_type.pkg_name)_@(module_name)__methods,
+   @(spec.base_type.pkg_name)__methods,
    NULL,
    NULL,
    NULL,
    NULL,
 };
+
+@[for spec, subfolder in message_specs]@
+@{
+type_name = spec.base_type.type
+module_name = convert_camel_case_to_lower_case_underscore(type_name)
+}@
 
 /* TODO(esteve): implement conversion function */
 void * @(spec.base_type.pkg_name)_@(module_name)__convert_from_py(PyObject *_pymsg);
@@ -25,61 +38,67 @@ void * @(spec.base_type.pkg_name)_@(module_name)__convert_from_py(PyObject *_pym
 /* TODO(esteve): implement conversion function */
 PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_ros_message);
 
+@[end for]@
+
 PyMODINIT_FUNC
-PyInit__@(module_name)_s__@(typesupport_impl)(void)
+PyInit__@(spec.base_type.pkg_name)_s__@(typesupport_impl)(void)
 {
   PyObject *m = NULL;
-  m = PyModule_Create(&@(spec.base_type.pkg_name)_@(module_name)__module);
-  if (m != NULL) {
-    PyObject *pyconvert_from_py = NULL;
-    pyconvert_from_py = PyCapsule_New((void *)&@(spec.base_type.pkg_name)_@(module_name)__convert_from_py, NULL, NULL);
-    if (pyconvert_from_py != NULL) {
-      if (PyModule_AddObject(m, "convert_from_py", pyconvert_from_py)) {
-        Py_XDECREF(pyconvert_from_py);
-        pyconvert_from_py = NULL;
-        Py_XDECREF(m);
-        m = NULL;
-      }
+  m = PyModule_Create(&@(spec.base_type.pkg_name)__module);
 
-      PyObject *pyconvert_to_py = NULL;
-      pyconvert_to_py = PyCapsule_New((void *)&@(spec.base_type.pkg_name)_@(module_name)__convert_to_py, NULL, NULL);
-      if (pyconvert_to_py != NULL) {
-        if (PyModule_AddObject(m, "convert_to_py", pyconvert_to_py)) {
-          Py_XDECREF(pyconvert_from_py);
-          pyconvert_from_py = NULL;
-          Py_XDECREF(pyconvert_to_py);
-          pyconvert_to_py = NULL;
-          Py_XDECREF(m);
-          m = NULL;
-        }
-        PyObject *pytype_support = NULL;
-        pytype_support = PyCapsule_New(
-          (void *)ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(spec.msg_name)),
-          NULL, NULL);
-        if (pytype_support == NULL) {
-          Py_XDECREF(pyconvert_from_py);
-          pyconvert_from_py = NULL;
-          Py_XDECREF(pyconvert_to_py);
-          pyconvert_to_py = NULL;
-          Py_XDECREF(m);
-          m = NULL;
-        } else {
-          if (PyModule_AddObject(m, "type_support", pytype_support)) {
-            Py_XDECREF(pytype_support);
-            pytype_support = NULL;
-            Py_XDECREF(pyconvert_from_py);
-            pyconvert_from_py = NULL;
-            Py_XDECREF(pyconvert_to_py);
-            pyconvert_to_py = NULL;
-            Py_XDECREF(m);
-            m = NULL;
-          }
-        }
-      }
-    } else {
-      Py_XDECREF(m);
-      m = NULL;
-    }
+  if (m == NULL) {
+    goto fail;
   }
+
+@[for spec, subfolder in message_specs]@
+@{
+type_name = spec.base_type.type
+module_name = convert_camel_case_to_lower_case_underscore(type_name)
+}@
+
+  PyObject *pyconvert_from_py_@(module_name) = NULL;
+  pyconvert_from_py_@(module_name) =
+    PyCapsule_New((void *)&@(spec.base_type.pkg_name)_@(module_name)__convert_from_py, NULL, NULL);
+
+  if (pyconvert_from_py_@(module_name) == NULL) {
+    goto fail;
+  }
+
+  if (PyModule_AddObject(m, "convert_from_py_@(module_name)", pyconvert_from_py_@(module_name))) {
+    goto fail;
+  }
+
+  PyObject *pyconvert_to_py_@(module_name) =
+    PyCapsule_New((void *)&@(spec.base_type.pkg_name)_@(module_name)__convert_to_py, NULL, NULL);
+
+  if (PyModule_AddObject(m, "convert_to_py_@(module_name)", pyconvert_to_py_@(module_name))) {
+    goto fail;
+  }
+
+  PyObject *pytype_support_@(module_name) =
+    PyCapsule_New(
+      (void *)ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(spec.msg_name)),
+      NULL, NULL);
+
+  if (PyModule_AddObject(m, "type_support_@(module_name)", pytype_support_@(module_name))) {
+    goto fail;
+  }
+@[end for]@
+  return m;
+fail:
+@[for spec, subfolder in message_specs]@
+@{
+type_name = spec.base_type.type
+module_name = convert_camel_case_to_lower_case_underscore(type_name)
+}@
+  Py_XDECREF(pytype_support_@(module_name));
+  pytype_support_@(module_name) = NULL;
+  Py_XDECREF(pyconvert_from_py_@(module_name));
+  pyconvert_from_py_@(module_name) = NULL;
+  Py_XDECREF(pyconvert_to_py_@(module_name));
+  pyconvert_to_py_@(module_name) = NULL;
+@[end for]@
+  Py_XDECREF(m);
+  m = NULL;
   return m;
 }

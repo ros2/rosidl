@@ -203,10 +203,12 @@ foreach(_typesupport_impl ${_typesupport_impls})
     ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
   )
 
+  set_properties("")
   if(WIN32)
-    set(_build_types " ;_DEBUG;_MINSIZEREL;_RELEASE;_RELWITHDEBINFO")
-  else()
-    set(_build_types " ")
+    set_properties("_DEBUG")
+    set_properties("_MINSIZEREL")
+    set_properties("_RELEASE")
+    set_properties("_RELWITHDEBINFO")
   endif()
 
   foreach(_build_type ${_build_types})

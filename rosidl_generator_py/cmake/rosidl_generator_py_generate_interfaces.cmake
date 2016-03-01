@@ -178,12 +178,12 @@ add_custom_command(
 )
 
 macro(set_properties _build_type)
-  set_target_properties(${_msg_name}${_pyext_suffix} PROPERTIES
+  set_target_properties(${_target_name} PROPERTIES
     COMPILE_FLAGS "${_extension_compile_flags}"
     PREFIX ""
     LIBRARY_OUTPUT_DIRECTORY${_build_type} "${_output_path}/${_parent_folder}"
     RUNTIME_OUTPUT_DIRECTORY${_build_type} "${_output_path}/${_parent_folder}"
-    OUTPUT_NAME "${_base_msg_name}__${_typesupport_impl}${PythonExtra_EXTENSION_SUFFIX}"
+    OUTPUT_NAME "_${PROJECT_NAME}_s__${_typesupport_impl}${PythonExtra_EXTENSION_SUFFIX}"
     SUFFIX "${PythonExtra_EXTENSION_EXTENSION}")
 endmacro()
 
@@ -203,27 +203,17 @@ foreach(_typesupport_impl ${_typesupport_impls})
     ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
   )
 
+  set(_extension_compile_flags "")
+  if(NOT WIN32)
+    set(_extension_compile_flags "-Wall -Wextra")
+  endif()
+
   set_properties("")
   if(WIN32)
     set_properties("_DEBUG")
     set_properties("_MINSIZEREL")
     set_properties("_RELEASE")
     set_properties("_RELWITHDEBINFO")
-  endif()
-
-  foreach(_build_type ${_build_types})
-    set_target_properties(${_target_name} PROPERTIES
-      COMPILE_FLAGS "${_extension_compile_flags}"
-      PREFIX ""
-      LIBRARY_OUTPUT_DIRECTORY${_build_type} "${_output_path}/${_parent_folder}"
-      RUNTIME_OUTPUT_DIRECTORY${_build_type} "${_output_path}/${_parent_folder}"
-      OUTPUT_NAME "_${PROJECT_NAME}_s__${_typesupport_impl}${PythonExtra_EXTENSION_SUFFIX}"
-      SUFFIX "${PythonExtra_EXTENSION_EXTENSION}")
-  endforeach()
-
-  set(_extension_compile_flags "")
-  if(NOT WIN32)
-    set(_extension_compile_flags "-Wall -Wextra")
   endif()
 
   target_link_libraries(

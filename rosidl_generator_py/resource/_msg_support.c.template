@@ -69,21 +69,29 @@ full_classname = "@(spec.base_type.pkg_name).@(subfolder)._@(module_name).@(spec
   ros_message->@(field.name) = (py@(field.name) == Py_True);
 @[elif field.type.type in ['float32', 'float64']]@
   assert(PyFloat_Check(py@(field.name)));
+@[if field.type.type == 'float32']@
+  ros_message->@(field.name) = (float)PyFloat_AS_DOUBLE(py@(field.name));
+@[else]@
   ros_message->@(field.name) = PyFloat_AS_DOUBLE(py@(field.name));
+@[end if]@
 @[elif field.type.type in [
         'int8',
         'int16',
         'int32',
     ]]@
   assert(PyLong_Check(py@(field.name)));
-  ros_message->@(field.name) = PyLong_AsLong(py@(field.name));
+  ros_message->@(field.name) = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsLong(py@(field.name));
 @[elif field.type.type in [
         'uint8',
         'uint16',
         'uint32',
     ]]@
   assert(PyLong_Check(py@(field.name)));
+@[if field.type.type == 'uint32']@
   ros_message->@(field.name) = PyLong_AsUnsignedLong(py@(field.name));
+@[else]@
+  ros_message->@(field.name) = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsUnsignedLong(py@(field.name));
+@[end if]
 @[elif field.type.type == 'int64']@
   assert(PyLong_Check(py@(field.name)));
   ros_message->@(field.name) = PyLong_AsLongLong(py@(field.name));

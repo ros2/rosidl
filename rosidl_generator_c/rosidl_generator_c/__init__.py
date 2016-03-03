@@ -90,6 +90,10 @@ def get_typename_of_base_type(type_):
     return 'rosidl_generator_c__' + suffix
 
 
+def primitive_msg_type_to_c(type_):
+    return MSG_TYPE_TO_C[type_]
+
+
 def msg_type_to_c(type_, name_):
     """
     Convert a message type into the C declaration.

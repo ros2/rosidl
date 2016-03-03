@@ -21,6 +21,7 @@ __all__ = ['import_type_support']
 
 try:
     from .generate_py_impl import generate_py
+    assert generate_py
     __all__.append('generate_py')
 except ImportError:
     logger = logging.getLogger('rosidl_generator_py')

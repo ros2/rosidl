@@ -19,6 +19,7 @@ from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 from rosidl_cmake import expand_template
 from rosidl_cmake import get_newest_modification_time
 from rosidl_cmake import read_generator_arguments
+from rosidl_generator_c import primitive_msg_type_to_c
 from rosidl_parser import parse_message_file
 from rosidl_parser import parse_service_file
 
@@ -50,6 +51,7 @@ def generate_py(generator_arguments_file, typesupport_impl, typesupport_impls):
     functions = {
         'constant_value_to_py': constant_value_to_py,
         'get_python_type': get_python_type,
+        'primitive_msg_type_to_c': primitive_msg_type_to_c,
         'value_to_py': value_to_py,
     }
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])

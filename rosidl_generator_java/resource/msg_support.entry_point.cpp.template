@@ -1,0 +1,133 @@
+#include <jni.h>
+#include <stdio.h>
+#include <cassert>
+#include <cstdint>
+
+#include <@(spec.base_type.pkg_name)/@(subfolder)/@(module_name).h>
+#include <rosidl_generator_c/message_type_support.h>
+
+#include <rosidl_generator_c/string.h>
+#include <rosidl_generator_c/string_functions.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*
+ * Class:     @(jni_package_name)_@(subfolder)_@(type_name)
+ * Method:    getFromJavaConverter
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(type_name)_getFromJavaConverter
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     @(jni_package_name)_@(subfolder)_@(type_name)
+ * Method:    getToJavaConverter
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(type_name)_getToJavaConverter
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     @(jni_package_name)_@(subfolder)_@(type_name)
+ * Method:    getTypeSupport
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(type_name)_getTypeSupport
+  (JNIEnv *, jclass);
+
+#ifdef __cplusplus
+}
+#endif
+
+@{
+msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_type.type)
+}@
+
+static_assert(sizeof(jlong) >= sizeof(intptr_t), "jlong must be able to store pointers");
+
+static JavaVM* g_vm = NULL;
+
+void * @(spec.base_type.pkg_name)_@(type_name)__convert_from_java(jobject _jmsg)
+{
+  @(msg_typename) * ros_message = @(msg_typename)__create();
+  JNIEnv *env;
+  // TODO(esteve): check return status
+  assert(g_vm != NULL);
+  g_vm->GetEnv((void**)&env, JNI_VERSION_1_6);
+  auto javaclass = env->GetObjectClass(_jmsg);
+@[for field in spec.fields]@
+@[if not field.type.is_array]@
+@[if field.type.type == 'string']@
+  auto jfid@(field.name) = env->GetFieldID(javaclass, "@(field.name)", "Ljava/lang/String;");
+  jstring jvalue@(field.name) = static_cast<jstring>(env->GetObjectField(_jmsg, jfid@(field.name)));
+  const char *str = env->GetStringUTFChars(jvalue@(field.name), 0);
+  rosidl_generator_c__String__assign(
+    &ros_message->@(field.name), str);
+  env->ReleaseStringUTFChars(jvalue@(field.name), str);
+@[elif field.type.type == 'bool']@
+  auto jfid@(field.name) = env->GetFieldID(javaclass, "@(field.name)", "Z");
+  ros_message->@(field.name) = env->GetBooleanField(_jmsg, jfid@(field.name));
+@[elif field.type.type in ['byte', 'int8', 'uint8']]@
+  auto jfid@(field.name) = env->GetFieldID(javaclass, "@(field.name)", "B");
+  ros_message->@(field.name) = env->GetByteField(_jmsg, jfid@(field.name));
+@[elif field.type.type == 'char']@
+  auto jfid@(field.name) = env->GetFieldID(javaclass, "@(field.name)", "C");
+  ros_message->@(field.name) = env->GetCharField(_jmsg, jfid@(field.name));
+@[elif field.type.type in ['int16', 'uint16']]@
+  auto jfid@(field.name) = env->GetFieldID(javaclass, "@(field.name)", "S");
+  ros_message->@(field.name) = env->GetShortField(_jmsg, jfid@(field.name));
+@[elif field.type.type in ['int32', 'uint32']]@
+  auto jfid@(field.name) = env->GetFieldID(javaclass, "@(field.name)", "I");
+  ros_message->@(field.name) = env->GetIntField(_jmsg, jfid@(field.name));
+@[elif field.type.type in ['int64', 'uint64']]@
+  auto jfid@(field.name) = env->GetFieldID(javaclass, "@(field.name)", "J");
+  ros_message->@(field.name) = env->GetLongField(_jmsg, jfid@(field.name));
+@[elif field.type.type == 'float32']@
+  auto jfid@(field.name) = env->GetFieldID(javaclass, "@(field.name)", "F");
+  ros_message->@(field.name) = env->GetFloatField(_jmsg, jfid@(field.name));
+@[elif field.type.type == 'float64']@
+  auto jfid@(field.name) = env->GetFieldID(javaclass, "@(field.name)", "D");
+  ros_message->@(field.name) = env->GetDoubleField(_jmsg, jfid@(field.name));
+@[else]@
+  // TODO(esteve): add support for nested types
+  assert(false);
+@[end if]@
+@[end if]@
+@[end for]@
+  assert(ros_message != NULL);
+  return ros_message;
+}
+
+jobject @(spec.base_type.pkg_name)_@(type_name)__convert_to_java(void * raw_ros_message)
+{
+  return nullptr;
+}
+
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void*) {
+  // Can only call this once
+  assert(g_vm == NULL);
+  g_vm = vm;
+  return JNI_VERSION_1_6;
+}
+
+JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(type_name)_getFromJavaConverter
+  (JNIEnv *, jclass)
+{
+  jlong ptr = reinterpret_cast<jlong>(&@(spec.base_type.pkg_name)_@(type_name)__convert_from_java);
+  return ptr;
+}
+
+JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(type_name)_getToJavaConverter
+  (JNIEnv *, jclass)
+{
+  jlong ptr = reinterpret_cast<jlong>(@(spec.base_type.pkg_name)_@(type_name)__convert_to_java);
+  return ptr;
+}
+
+JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(type_name)_getTypeSupport
+  (JNIEnv *, jclass)
+{
+  jlong ptr = reinterpret_cast<jlong>(ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(spec.msg_name)));
+  return ptr;
+}

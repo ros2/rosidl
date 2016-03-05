@@ -1,0 +1,28 @@
+package @(package_name).@(subfolder);
+@[for field in spec.fields]@
+@[if not field.type.is_primitive_type()]@
+@[if field.type.pkg_name != spec.base_type.pkg_name]@
+import @(field.type.pkg_name).msg.@(field.type.type);
+@[end if]@
+@[end if]@
+@[end for]@
+
+public class @(type_name) {
+   static {
+        try {
+            // TODO(esteve): query rcljava and load the appropriate library instead
+            System.loadLibrary("@(type_name)_s__rosidl_typesupport_opensplice_c");
+        } catch (UnsatisfiedLinkError e) {
+            System.err.println("Native code library failed to load.\n" + e);
+            System.exit(1);
+        }
+    }
+
+    public static native long getFromJavaConverter();
+    public static native long getToJavaConverter();
+    public static native long getTypeSupport();
+
+@[for field in spec.fields]@
+    public @(get_java_type(field.type)) @(field.name);
+@[end for]@
+}

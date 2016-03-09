@@ -85,6 +85,16 @@ add_custom_command(
   VERBATIM
 )
 
+# generate header to switch between export and import for a specific package
+set(_visibility_control_file
+  "${_output_path}/msg/rosidl_typesupport_introspection_c__visibility_control.h")
+configure_file(
+  "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/rosidl_typesupport_introspection_c__visibility_control.h.in"
+  "${_visibility_control_file}"
+  @ONLY
+)
+list(APPEND _generated_header_files "${_visibility_control_file}")
+
 set(_target_suffix "__rosidl_typesupport_introspection_c")
 
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED ${_generated_header_files} ${_generated_source_files})
@@ -96,7 +106,7 @@ if(WIN32)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PRIVATE "ROSIDL_BUILDING_DLL")
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    PRIVATE "ROSIDL_GENERATOR_C_BUILDING_DLL_${PROJECT_NAME}")
+    PRIVATE "ROSIDL_TYPESUPPORT_INTROSPECTION_C_BUILDING_DLL_${PROJECT_NAME}")
 endif()
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PUBLIC

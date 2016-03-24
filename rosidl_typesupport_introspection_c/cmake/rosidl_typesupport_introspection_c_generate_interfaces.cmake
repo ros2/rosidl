@@ -14,24 +14,31 @@
 
 set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_introspection_c/${PROJECT_NAME}")
-set(_generated_header_files "")
-set(_generated_source_files "")
+set(_generated_msg_header_files "")
+set(_generated_msg_source_files "")
+set(_generated_srv_header_files "")
+set(_generated_srv_source_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(_extension "${_idl_file}" EXT)
+  get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
+  get_filename_component(_parent_folder "${_parent_folder}" NAME)
+  get_filename_component(_msg_name "${_idl_file}" NAME_WE)
+  string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
+
   if("${_extension} " STREQUAL ".msg ")
-    get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
-    get_filename_component(_parent_folder "${_parent_folder}" NAME)
-    get_filename_component(_msg_name "${_idl_file}" NAME_WE)
-    string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
-    list(APPEND _generated_header_files
+    list(APPEND _generated_msg_header_files
       "${_output_path}/${_parent_folder}/${_header_name}__introspection_type_support.h"
     )
-    list(APPEND _generated_source_files
+    list(APPEND _generated_msg_source_files
       "${_output_path}/${_parent_folder}/${_header_name}__type_support.c"
     )
   elseif("${_extension} " STREQUAL ".srv ")
-    # no generated code for services
-    # only for the request / response messages
+    list(APPEND _generated_srv_header_files
+      "${_output_path}/${_parent_folder}/${_header_name}__introspection_type_support.h"
+    )
+    list(APPEND _generated_srv_source_files
+      "${_output_path}/${_parent_folder}/${_header_name}__type_support.c"
+    )
   else()
     message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
   endif()
@@ -56,6 +63,7 @@ set(target_dependencies
   ${rosidl_typesupport_introspection_c_GENERATOR_FILES}
   "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/msg__introspection_type_support.h.template"
   "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/msg__type_support.c.template"
+  "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/srv__introspection_type_support.h.template"
   "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/srv__type_support.c.template"
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files})
@@ -77,7 +85,8 @@ rosidl_write_generator_arguments(
 )
 
 add_custom_command(
-  OUTPUT ${_generated_header_files} ${_generated_source_files}
+  OUTPUT ${_generated_msg_header_files} ${_generated_msg_source_files}
+          ${_generated_srv_header_files} ${_generated_srv_source_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_typesupport_introspection_c_BIN}
   --generator-arguments-file "${generator_arguments_file}"
   DEPENDS ${target_dependencies}
@@ -93,11 +102,13 @@ configure_file(
   "${_visibility_control_file}"
   @ONLY
 )
-list(APPEND _generated_header_files "${_visibility_control_file}")
+list(APPEND _generated_msg_header_files "${_visibility_control_file}")
 
 set(_target_suffix "__rosidl_typesupport_introspection_c")
 
-add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED ${_generated_header_files} ${_generated_source_files})
+add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED
+  ${_generated_msg_header_files} ${_generated_msg_source_files}
+  ${_generated_srv_header_files} ${_generated_srv_source_files})
 if(NOT WIN32)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix} PROPERTIES
     COMPILE_FLAGS "-std=c11 -Wall -Wextra")
@@ -129,11 +140,18 @@ add_dependencies(
 )
 
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
-  # TODO service headers
-  install(
-    FILES ${_generated_header_files}
-    DESTINATION "include/${PROJECT_NAME}/msg"
-  )
+  if(NOT "${_generated_msg_header_files} " STREQUAL " ")
+    install(
+      FILES ${_generated_msg_header_files}
+      DESTINATION "include/${PROJECT_NAME}/msg"
+    )
+  endif()
+  if(NOT "${_generated_srv_header_files} " STREQUAL " ")
+    install(
+      FILES ${_generated_srv_header_files}
+      DESTINATION "include/${PROJECT_NAME}/srv"
+    )
+  endif()
   install(
     TARGETS ${rosidl_generate_interfaces_TARGET}${_target_suffix}
     ARCHIVE DESTINATION lib

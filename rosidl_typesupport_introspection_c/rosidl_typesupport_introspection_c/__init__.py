@@ -1,4 +1,4 @@
-# Copyright 2014-2015 Open Source Robotics Foundation, Inc.
+# Copyright 2014-2016 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,12 +29,14 @@ def generate_c(generator_arguments_file):
 
     template_dir = args['template_dir']
     mapping_msgs = {
-        os.path.join(template_dir, 'msg__type_support.c.template'):
-        '%s__type_support.c',
         os.path.join(template_dir, 'msg__introspection_type_support.h.template'):
         '%s__introspection_type_support.h',
+        os.path.join(template_dir, 'msg__type_support.c.template'):
+        '%s__type_support.c',
     }
     mapping_srvs = {
+        os.path.join(template_dir, 'srv__introspection_type_support.h.template'):
+        '%s__introspection_type_support.h',
         os.path.join(template_dir, 'srv__type_support.c.template'):
         '%s__type_support.c',
     }

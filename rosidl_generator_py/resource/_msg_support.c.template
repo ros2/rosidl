@@ -1,5 +1,12 @@
 #include <Python.h>
 
+@[for spec, subfolder in message_specs]@
+
+@{
+type_name = spec.base_type.type
+module_name = convert_camel_case_to_lower_case_underscore(type_name)
+}@
+
 #include <@(spec.base_type.pkg_name)/@(subfolder)/@(module_name)__struct.h>
 #include <@(spec.base_type.pkg_name)/@(subfolder)/@(module_name)__functions.h>
 
@@ -21,8 +28,13 @@ have_not_included_string = True
 
 @[end if]@
 @[end for]@
+@[end for]@
 
+
+@[for spec, subfolder in message_specs]@
 @{
+type_name = spec.base_type.type
+module_name = convert_camel_case_to_lower_case_underscore(type_name)
 msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_type.type)
 }@
 
@@ -30,7 +42,6 @@ msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_typ
 void * @(spec.base_type.pkg_name)_@(module_name)__convert_from_py(PyObject *_pymsg)
 {
   @(msg_typename) * ros_message = @(msg_typename)__create();
-  (void)ros_message;
 @{
 full_classname = "@(spec.base_type.pkg_name).@(subfolder)._@(module_name).@(spec.base_type.type)"
 }@
@@ -50,7 +61,6 @@ full_classname = "@(spec.base_type.pkg_name).@(subfolder)._@(module_name).@(spec
 
 @[for field in spec.fields]@
   PyObject * py@(field.name) = PyObject_GetAttrString(_pymsg, "@(field.name)");
-  (void)py@(field.name);
 @[if not field.type.is_primitive_type()]@
 // TODO(esteve): add support for nested types
 @[end if]@
@@ -110,7 +120,6 @@ full_classname = "@(spec.base_type.pkg_name).@(subfolder)._@(module_name).@(spec
 PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_ros_message)
 {
   @(msg_typename) * ros_message = (@(msg_typename) *)raw_ros_message;
-  (void)ros_message;
 
   PyObject *pymessage_module = PyImport_ImportModule("@(spec.base_type.pkg_name).@(subfolder)._@(module_name)");
   PyObject *pymessage_class = PyObject_GetAttrString(pymessage_module, "@(spec.base_type.type)");
@@ -124,7 +133,6 @@ PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_r
   PyObject * py@(field.name) = NULL;
 @[if not field.type.is_primitive_type()]@
 // TODO(esteve): add support for nested types
-  (void)py@(field.name);
 @[end if]@
 
 @[if field.type.is_array]@
@@ -166,3 +174,4 @@ PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_r
   assert(pymessage != NULL);
   return pymessage;
 }
+@[end for]@

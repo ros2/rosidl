@@ -30,7 +30,7 @@ class UnsupportedTypeSupport(Exception):
         self.rmw_implementation = rmw_implementation
 
 
-def import_type_support(pkg_name, subfolder, rosidl_name, rmw_implementation):
+def import_type_support(pkg_name, rmw_implementation):
     """Import the appropriate type support module for a given rosidl and rmw implementation.
 
     This function will determine the correct type support package to import
@@ -40,20 +40,17 @@ def import_type_support(pkg_name, subfolder, rosidl_name, rmw_implementation):
     used when importing.
 
     :param pkg_name str: name of the package which contains the rosidl
-    :param subfolder str: name of the rosidl containing folder, e.g. `msg`, `srv`, etc.
-    :param rosidl_name str: name of the rosidl
     :param rmw_implementation str: name of the rmw implementation
     :returns: the type support Python module for this specific rosidl and rmw implementation pair
     """
     if rmw_implementation not in type_support_map.keys():
         raise UnsupportedTypeSupport(rmw_implementation)
     type_support_name = type_support_map[rmw_implementation]
-    import_package = '{pkg_name}.{subfolder}'.format(
+    import_package = '{pkg_name}'.format(
         pkg_name=pkg_name,
-        subfolder=subfolder,
     )
-    module_name = '._{rosidl_name}_s__{type_support_name}'.format(
-        rosidl_name=rosidl_name,
+    module_name = '._{pkg_name}_s__{type_support_name}'.format(
+        pkg_name=pkg_name,
         type_support_name=type_support_name,
     )
     return importlib.import_module(module_name, package=import_package)

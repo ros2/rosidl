@@ -34,18 +34,22 @@ def generate_py(generator_arguments_file, typesupport_impl, typesupport_impls):
     }
     mapping_msgs = {
         os.path.join(template_dir, '_msg.py.template'): ['_%s.py'],
-        os.path.join(template_dir, '_msg_support.c.template'): ['_%s_s.c'],
-        os.path.join(template_dir, '_msg_support.entry_point.c.template'):
-        type_support_impl_by_filename.keys(),
     }
 
     mapping_srvs = {
         os.path.join(template_dir, '_srv.py.template'): ['_%s.py'],
     }
 
+    mapping_c_msgs = {
+        os.path.join(template_dir, '_msg_support.entry_point.c.template'):
+        type_support_impl_by_filename.keys(),
+    }
+
     for template_file in mapping_msgs.keys():
         assert os.path.exists(template_file), 'Could not find template: ' + template_file
     for template_file in mapping_srvs.keys():
+        assert os.path.exists(template_file), 'Could not find template: ' + template_file
+    for template_file in mapping_c_msgs.keys():
         assert os.path.exists(template_file), 'Could not find template: ' + template_file
 
     functions = {
@@ -53,17 +57,20 @@ def generate_py(generator_arguments_file, typesupport_impl, typesupport_impls):
         'get_python_type': get_python_type,
         'primitive_msg_type_to_c': primitive_msg_type_to_c,
         'value_to_py': value_to_py,
+        'convert_camel_case_to_lower_case_underscore': convert_camel_case_to_lower_case_underscore,
     }
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
 
     modules = defaultdict(list)
+    message_specs = []
     for ros_interface_file in args['ros_interface_files']:
         extension = os.path.splitext(ros_interface_file)[1]
         subfolder = os.path.basename(os.path.dirname(ros_interface_file))
-        if extension == '.msg':
+        if extension == '.msg' and subfolder == 'msg':
             spec = parse_message_file(args['package_name'], ros_interface_file)
             mapping = mapping_msgs
             type_name = spec.base_type.type
+            message_specs.append((spec, subfolder))
         elif extension == '.srv':
             spec = parse_service_file(args['package_name'], ros_interface_file)
             mapping = mapping_srvs
@@ -93,6 +100,20 @@ def generate_py(generator_arguments_file, typesupport_impl, typesupport_impls):
             for module_, type_ in modules[module]:
                 f.write('from %s.msg._%s import %s\n' % (args['package_name'], module_, type_))
 
+    for template_file, generated_filenames in mapping_c_msgs.items():
+        for generated_filename in generated_filenames:
+            data = {
+                'message_specs': message_specs,
+                'package_name': args['package_name'],
+                'typesupport_impl': type_support_impl_by_filename.get(generated_filename, ''),
+                'typesupport_impls': typesupport_impls
+            }
+            data.update(functions)
+            generated_file = os.path.join(
+                args['output_dir'], generated_filename % args['package_name'])
+            expand_template(
+                template_file, data, generated_file,
+                minimum_timestamp=latest_target_timestamp)
     return 0
 
 

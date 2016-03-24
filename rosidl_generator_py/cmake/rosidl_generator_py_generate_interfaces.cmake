@@ -40,6 +40,10 @@ set(_generated_msg_c_files "")
 set(_generated_msg_c_common_files "")
 set(_generated_msg_c_ts_files "")
 set(_generated_srv_files "")
+foreach(_typesupport_impl ${_typesupport_impls})
+  set(_generated_msg_c_ts_${_typesupport_impl}_files "")
+endforeach()
+
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
@@ -50,20 +54,14 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
     list(APPEND _generated_msg_py_files
       "${_output_path}/${_parent_folder}/_${_module_name}.py"
     )
-    list(APPEND _generated_msg_c_files
-      "${_output_path}/${_parent_folder}/_${_module_name}_s.c"
-    )
-    list(APPEND _generated_msg_c_common_files
-      "${_output_path}/${_parent_folder}/_${_module_name}_s.c"
-    )
+
     foreach(_typesupport_impl ${_typesupport_impls})
+      list(APPEND _generated_msg_c_ts_${_typesupport_impl}_files
+        "${_output_path}/_${PROJECT_NAME}_s.ep.${_typesupport_impl}.c"
+      )
       list(APPEND _generated_msg_c_files
-        "${_output_path}/${_parent_folder}/_${_module_name}_s.ep.${_typesupport_impl}.c"
+        "${_output_path}/_${PROJECT_NAME}_s.ep.${_typesupport_impl}.c"
       )
-      list(APPEND _generated_msg_c_ts_files
-        "${_output_path}/${_parent_folder}/_${_module_name}_s.ep.${_typesupport_impl}.c"
-      )
-      list(APPEND _type_support_by_generated_msg_c_files "${_typesupport_impl}")
     endforeach()
   elseif("${_parent_folder} " STREQUAL "srv ")
     list(APPEND _generated_srv_files
@@ -104,7 +102,6 @@ endforeach()
 set(target_dependencies
   "${rosidl_generator_py_BIN}"
   ${rosidl_generator_py_GENERATOR_FILES}
-  "${rosidl_generator_py_TEMPLATE_DIR}/_msg_support.c.template"
   "${rosidl_generator_py_TEMPLATE_DIR}/_msg_support.entry_point.c.template"
   "${rosidl_generator_py_TEMPLATE_DIR}/_msg.py.template"
   "${rosidl_generator_py_TEMPLATE_DIR}/_srv.py.template"
@@ -158,7 +155,6 @@ set(_extension_dependencies "")
 set(_target_suffix "__py")
 
 add_custom_command(
-  # OUTPUT ${_generated_msg_py_files} ${_generated_msg_c__${_typesupport_impl}_files} ${_generated_srv_files}
   OUTPUT ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_py_BIN}
   --generator-arguments-file "${generator_arguments_file}"
@@ -170,103 +166,92 @@ add_custom_command(
 )
 
 macro(set_properties _build_type)
-  set_target_properties(${_msg_name}${_pyext_suffix} PROPERTIES
+  set_target_properties(${_target_name} PROPERTIES
     COMPILE_FLAGS "${_extension_compile_flags}"
     PREFIX ""
     LIBRARY_OUTPUT_DIRECTORY${_build_type} "${_output_path}/${_parent_folder}"
     RUNTIME_OUTPUT_DIRECTORY${_build_type} "${_output_path}/${_parent_folder}"
-    OUTPUT_NAME "${_base_msg_name}__${_typesupport_impl}${PythonExtra_EXTENSION_SUFFIX}"
+    OUTPUT_NAME "_${PROJECT_NAME}_s__${_typesupport_impl}${PythonExtra_EXTENSION_SUFFIX}"
     SUFFIX "${PythonExtra_EXTENSION_EXTENSION}")
 endmacro()
 
-foreach(_generated_msg_c_ts_file ${_generated_msg_c_ts_files})
-  get_filename_component(_full_folder "${_generated_msg_c_ts_file}" DIRECTORY)
-  get_filename_component(_parent_folder "${_full_folder}" NAME)
-  get_filename_component(_base_msg_name "${_generated_msg_c_ts_file}" NAME_WE)
-  get_filename_component(_full_extension_msg_name "${_generated_msg_c_ts_file}" EXT)
+foreach(_typesupport_impl ${_typesupport_impls})
+  find_package(${_typesupport_impl} REQUIRED)
 
-  set(_msg_name "${_base_msg_name}${_full_extension_msg_name}")
+  set(_pyext_suffix "__pyext")
 
-  # foreach(_typesupport_impl ${_typesupport_impls})
-    list(FIND _generated_msg_c_ts_files ${_generated_msg_c_ts_file} _file_index)
-    list(GET _type_support_by_generated_msg_c_files ${_file_index} _typesupport_impl)
-    find_package(${_typesupport_impl} REQUIRED)
-    set(_generated_msg_c_common_file "${_full_folder}/${_base_msg_name}.c")
+  set(_target_name "${PROJECT_NAME}${_typesupport_impl}${_pyext_suffix}")
 
-    set(_pyext_suffix "__pyext")
+  add_library(${_target_name} SHARED
+    ${_generated_msg_c_ts_${_typesupport_impl}_files}
+  )
 
-    # TODO(esteve): Change the following code so that each file is compiled independently
-    add_library(${_msg_name}${_pyext_suffix} SHARED
-      "${_generated_msg_c_ts_file}"
-      "${_generated_msg_c_common_file}"
+  add_dependencies(
+    ${_target_name}
+    ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
+  )
+
+  set(_extension_compile_flags "")
+  if(NOT WIN32)
+    set(_extension_compile_flags "-Wall -Wextra")
+  endif()
+
+  set_properties("")
+  if(WIN32)
+    set_properties("_DEBUG")
+    set_properties("_MINSIZEREL")
+    set_properties("_RELEASE")
+    set_properties("_RELWITHDEBINFO")
+  endif()
+
+  target_link_libraries(
+    ${_target_name}
+    ${PythonExtra_LIBRARIES}
+    ${PROJECT_NAME}__${_typesupport_impl}
+  )
+
+  list(APPEND _generated_extension_files
+    "$<TARGET_FILE:${_target_name}>"
+  )
+
+  target_include_directories(${_target_name}
+    PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c
+    ${PythonExtra_INCLUDE_DIRS}
+  )
+
+  foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
+    ament_target_dependencies(
+      ${_target_name}
+      ${_pkg_name}
     )
+  endforeach()
+  ament_target_dependencies(${_target_name}
+    "rosidl_generator_c"
+    "${_typesupport_impl}"
+  )
 
-    set_properties("")
-    if(WIN32)
-      set_properties("_DEBUG")
-      set_properties("_MINSIZEREL")
-      set_properties("_RELEASE")
-      set_properties("_RELWITHDEBINFO")
-    endif()
+  list(APPEND _extension_dependencies ${_target_name})
 
-    add_dependencies(
-      ${_msg_name}${_pyext_suffix}
-      ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
-    )
+  ament_target_dependencies(${_target_name}
+    ${_typesupport_impl}
+  )
+  add_dependencies(${_target_name}
+    ${rosidl_generate_interfaces_TARGET}__${_typesupport_impl}
+  )
 
-    set(_extension_compile_flags "")
-    if(NOT WIN32)
-      set(_extension_compile_flags "-Wall -Wextra")
-    endif()
-
-    target_link_libraries(
-      ${_msg_name}${_pyext_suffix}
-      ${PythonExtra_LIBRARIES}
-      ${PROJECT_NAME}__${_typesupport_impl}
-    )
-
-    list(APPEND _generated_extension_files
-      "$<TARGET_FILE:${_msg_name}${_pyext_suffix}>"
-    )
-
-    target_include_directories(${_msg_name}${_pyext_suffix}
-      PUBLIC
-      ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c
-      ${PythonExtra_INCLUDE_DIRS}
-    )
-
-    foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
-      ament_target_dependencies(
-        ${_msg_name}${_pyext_suffix}
-        ${_pkg_name}
-      )
-    endforeach()
-    ament_target_dependencies(${_msg_name}${_pyext_suffix}
-      "rosidl_generator_c"
-      "${_typesupport_impl}"
-    )
-
-    list(APPEND _extension_dependencies ${_msg_name}${_pyext_suffix})
-
-    ament_target_dependencies(${_msg_name}${_pyext_suffix}
-      ${_typesupport_impl}
-    )
-    add_dependencies(${_msg_name}${_pyext_suffix}
-      ${rosidl_generate_interfaces_TARGET}__${_typesupport_impl}
-    )
-
-  # endforeach()
-  ament_target_dependencies(${_msg_name}${_pyext_suffix}
+  ament_target_dependencies(${_target_name}
     "rosidl_generator_c"
     "rosidl_generator_py"
     "${PROJECT_NAME}__rosidl_generator_c"
   )
 
   if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
-    install(TARGETS ${_msg_name}${_pyext_suffix}
-      DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/${_msg_package_dir2}")
+    install(TARGETS ${_target_name}
+      DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}")
   endif()
 endforeach()
+
 
 if(TARGET ${rosidl_generate_interfaces_TARGET}${_target_suffix})
   message(WARNING "Custom target ${rosidl_generate_interfaces_TARGET}${_target_suffix} already exists")

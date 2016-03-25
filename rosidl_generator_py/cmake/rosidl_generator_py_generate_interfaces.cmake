@@ -162,12 +162,23 @@ add_custom_command(
   OUTPUT ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_py_BIN}
   --generator-arguments-file "${generator_arguments_file}"
-  --typesupport-impl "${_typesupport_impl}"
   --typesupport-impls "${_typesupport_impls}"
   DEPENDS ${target_dependencies}
   COMMENT "Generating Python code for ROS interfaces"
   VERBATIM
 )
+
+if(TARGET ${rosidl_generate_interfaces_TARGET}${_target_suffix})
+  message(WARNING "Custom target ${rosidl_generate_interfaces_TARGET}${_target_suffix} already exists")
+else()
+  add_custom_target(
+    ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    DEPENDS
+    ${_generated_msg_py_files}
+    ${_generated_msg_c_files}
+    ${_generated_srv_files}
+  )
+endif()
 
 macro(set_properties _build_type)
   set_target_properties(${_msg_name}${_pyext_suffix} PROPERTIES
@@ -211,6 +222,7 @@ foreach(_generated_msg_c_ts_file ${_generated_msg_c_ts_files})
 
     add_dependencies(
       ${_msg_name}${_pyext_suffix}
+      ${rosidl_generate_interfaces_TARGET}${_target_suffix}
       ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
     )
 
@@ -267,18 +279,3 @@ foreach(_generated_msg_c_ts_file ${_generated_msg_c_ts_files})
       DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/${_msg_package_dir2}")
   endif()
 endforeach()
-
-if(TARGET ${rosidl_generate_interfaces_TARGET}${_target_suffix})
-  message(WARNING "Custom target ${rosidl_generate_interfaces_TARGET}${_target_suffix} already exists")
-else()
-  add_custom_target(
-    ${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    DEPENDS
-    ${_generated_msg_py_files}
-    ${_generated_msg_c_files}
-    ${_generated_srv_files}
-    ${_generated_extension_files}
-    ${_extension_dependencies}
-    ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
-  )
-endif()

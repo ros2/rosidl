@@ -24,9 +24,8 @@ from rosidl_parser import parse_message_file
 from rosidl_parser import parse_service_file
 
 
-def generate_py(generator_arguments_file, typesupport_impl, typesupport_impls):
+def generate_py(generator_arguments_file, typesupport_impls):
     args = read_generator_arguments(generator_arguments_file)
-    typesupport_impls = typesupport_impls.split(';')
 
     template_dir = args['template_dir']
     type_support_impl_by_filename = {

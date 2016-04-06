@@ -12,23 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+macro(accumulate_typesupports)
+  set(_typesupport_impl "")
+  if(NOT "${rmw_implementation}" STREQUAL "rmw_fastrtps_cpp")
+    get_rmw_typesupport_c(_typesupport_impl ${rmw_implementation})
+    list(APPEND _typesupport_impls ${_typesupport_impl})
+  endif()
+endmacro()
+
 macro(rosidl_generator_py_get_typesupports TYPESUPPORT_IMPLS)
-  set(${TYPESUPPORT_IMPLS} "")
-  foreach(_extension IN LISTS AMENT_EXTENSIONS_rosidl_generate_interfaces)
-    string(REPLACE ":" ";" _extension_list "${_extension}")
-    list(LENGTH _extension_list _length)
-    if(NOT _length EQUAL 2)
-      message(FATAL_ERROR "ament_execute_extensions(${extension_point}) "
-        "registered extension '${_extension}' can not be split into package "
-        "name and cmake filename")
-    endif()
-    list(GET _extension_list 0 _pkg_name)
-    list(GET _extension_list 1 _cmake_filename)
-    if("${_pkg_name} " STREQUAL "rosidl_typesupport_opensplice_c ")
-      list(APPEND ${TYPESUPPORT_IMPLS} "rosidl_typesupport_opensplice_c")
-    endif()
-    if("${_pkg_name} " STREQUAL "rosidl_typesupport_connext_c ")
-      list(APPEND ${TYPESUPPORT_IMPLS} "rosidl_typesupport_connext_c")
-    endif()
+  set(TYPESUPPORT_IMPLS "")
+  set(_typesupport_impls "")
+  call_for_each_rmw_implementation(accumulate_typesupports)
+  foreach(_typesupport_impl ${_typesupport_impls})
+    list_append_unique(TYPESUPPORT_IMPLS ${_typesupport_impl})
   endforeach()
+  message(STATUS ${TYPESUPPORT_IMPLS})
 endmacro()

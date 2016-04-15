@@ -15,8 +15,8 @@
 import importlib
 
 type_support_map = {
-    'connext_static': 'rosidl_typesupport_connext_c',
-    'opensplice_static': 'rosidl_typesupport_opensplice_c',
+    'rmw_connext_cpp': 'rosidl_typesupport_connext_c',
+    'rmw_opensplice_cpp': 'rosidl_typesupport_opensplice_c',
 }
 
 

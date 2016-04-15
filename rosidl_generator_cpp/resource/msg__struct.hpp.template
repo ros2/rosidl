@@ -24,7 +24,7 @@ header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 
 // Protect against ERROR being predefined on Windows, in case somebody defines a
 // constant by that name.
-#if defined(_WIN32 ) && defined(ERROR)
+#if defined(_WIN32) && defined(ERROR)
   #undef ERROR
 #endif
 

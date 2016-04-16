@@ -29,9 +29,12 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
       "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
       "${_output_path}/${_parent_folder}/${_header_name}__traits.hpp"
     )
-    set(_shim_output "${_output_path}/${_parent_folder}/shim/${_msg_name}.h")
+    set(_shim_dir "${_output_path}/${_parent_folder}/shim")
+    file(MAKE_DIRECTORY ${_shim_dir})
+    set(_shim_output "${_shim_dir}/${_msg_name}.h")
     add_custom_command(OUTPUT ${_shim_output}
-      COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_cpp_DIR}/../../../lib/rosidl_generator_cpp/gencpp ${PROJECT_NAME} ${_msg_name} ${_shim_output})
+      COMMAND ${PYTHON_EXECUTABLE}
+      ${rosidl_generator_cpp_DIR}/../../../lib/rosidl_generator_cpp/gencpp ${PROJECT_NAME} ${_msg_name} ${_header_name} ${_shim_output})
     list(APPEND _generated_ros1_shims "${_shim_output}")
   elseif("${_parent_folder} " STREQUAL "srv ")
     list(APPEND _generated_srv_files
@@ -119,12 +122,12 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
       FILES ${_generated_srv_files}
       DESTINATION "include/${PROJECT_NAME}/srv"
     )
+  endif()
   if(NOT "${_generated_ros1_shims} " STREQUAL " ")
     install(
       FILES ${_generated_ros1_shims}
       DESTINATION "include/${PROJECT_NAME}"
     )
-  endif()
   endif()
   ament_export_include_directories(include)
 endif()

@@ -66,7 +66,7 @@ ament_package(
 )
 
 install(
-  PROGRAMS bin/rosidl_generator_cpp
+  PROGRAMS bin/rosidl_generator_cpp bin/gencpp
   DESTINATION lib/rosidl_generator_cpp
 )
 install(

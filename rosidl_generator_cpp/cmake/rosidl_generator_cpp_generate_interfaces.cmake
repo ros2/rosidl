@@ -16,6 +16,7 @@ set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp/${PROJECT_NAME}")
 set(_generated_msg_files "")
 set(_generated_srv_files "")
+set(_generated_ros1_shims "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
@@ -28,6 +29,10 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
       "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
       "${_output_path}/${_parent_folder}/${_header_name}__traits.hpp"
     )
+    set(_shim_output "${_output_path}/${_parent_folder}/shim/${_msg_name}.h")
+    add_custom_command(OUTPUT ${_shim_output}
+      COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_cpp_DIR}/../../../lib/rosidl_generator_cpp/gencpp ${PROJECT_NAME} ${_msg_name} ${_shim_output})
+    list(APPEND _generated_ros1_shims "${_shim_output}")
   elseif("${_parent_folder} " STREQUAL "srv ")
     list(APPEND _generated_srv_files
       "${_output_path}/${_parent_folder}/${_header_name}.hpp"
@@ -93,7 +98,7 @@ else()
   add_custom_target(
     ${rosidl_generate_interfaces_TARGET}__cpp
     DEPENDS
-    ${_generated_msg_files} ${_generated_srv_files}
+    ${_generated_msg_files} ${_generated_srv_files} ${_generated_ros1_shims}
   )
 endif()
 
@@ -114,6 +119,12 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
       FILES ${_generated_srv_files}
       DESTINATION "include/${PROJECT_NAME}/srv"
     )
+  if(NOT "${_generated_ros1_shims} " STREQUAL " ")
+    install(
+      FILES ${_generated_ros1_shims}
+      DESTINATION "include/${PROJECT_NAME}"
+    )
+  endif()
   endif()
   ament_export_include_directories(include)
 endif()

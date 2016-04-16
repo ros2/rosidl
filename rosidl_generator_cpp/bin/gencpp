@@ -3,10 +3,9 @@
 import os
 import sys
 
-def gencpp(pkg, msg, outfile):
+def gencpp(pkg, msg, header, outfile):
     pkgupper = pkg.upper()
     msgupper = msg.upper()
-    msglower = msg.lower()
     output = '''#ifndef %s__%s_H
 #define %s__%s_H
 
@@ -17,15 +16,13 @@ namespace %s
   typedef msg::%s %s;
 }
 
-#endif'''%(pkgupper, msgupper, pkgupper, msgupper, pkg, msglower, pkg, msg, msg)
-    if not os.path.isdir(os.path.dirname(outfile)):
-        os.makedirs(os.path.dirname(outfile))
+#endif'''%(pkgupper, msgupper, pkgupper, msgupper, pkg, header, pkg, msg, msg)
     outf = open(outfile, 'w')
     outf.write(output)
     outf.close()
 
 if __name__ == '__main__':
-    if len(sys.argv) != 4:
-        print('Expected exactly three arguments')
+    if len(sys.argv) != 5:
+        print('Expected exactly four arguments')
         sys.exit(1)
-    gencpp(sys.argv[1], sys.argv[2], sys.argv[3])
+    gencpp(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])

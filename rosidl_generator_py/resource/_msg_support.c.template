@@ -116,9 +116,9 @@ PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_r
   PyObject *pymessage_class = PyObject_GetAttrString(pymessage_module, "@(spec.base_type.type)");
 
   /* NOTE(esteve): Call constructor of @(spec.base_type.type)*/
-  PyObject *pymessage = NULL;
-  pymessage = PyObject_CallObject(pymessage_class, NULL);
-  assert(pymessage != NULL);
+  PyObject *_pymessage = NULL;
+  _pymessage = PyObject_CallObject(pymessage_class, NULL);
+  assert(_pymessage != NULL);
 
 @[for field in spec.fields]@
   PyObject * py@(field.name) = NULL;
@@ -161,8 +161,8 @@ PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_r
 @[end if]@
   assert(py@(field.name) != NULL);
   Py_INCREF(py@(field.name));
-  PyObject_SetAttrString(pymessage, "@(field.name)", py@(field.name));
+  PyObject_SetAttrString(_pymessage, "@(field.name)", py@(field.name));
 @[end for]@
-  assert(pymessage != NULL);
-  return pymessage;
+  assert(_pymessage != NULL);
+  return _pymessage;
 }

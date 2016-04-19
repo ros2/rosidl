@@ -29,7 +29,7 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
       "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
       "${_output_path}/${_parent_folder}/${_header_name}__traits.hpp"
     )
-    set(_shim_dir "${_output_path}/${_parent_folder}/shim")
+    set(_shim_dir "${_output_path}/${_parent_folder}/shim/${PROJECT_NAME}")
     file(MAKE_DIRECTORY ${_shim_dir})
     set(_shim_output "${_shim_dir}/${_msg_name}.h")
     add_custom_command(OUTPUT ${_shim_output}

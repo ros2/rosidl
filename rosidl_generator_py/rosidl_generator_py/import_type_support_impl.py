@@ -21,7 +21,6 @@ type_support_map = {
 
 
 class UnsupportedTypeSupport(Exception):
-
     """Raised when no supported type support can be found for a given rmw implementation."""
 
     def __init__(self, rmw_implementation):

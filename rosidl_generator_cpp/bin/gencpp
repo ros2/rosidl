@@ -3,10 +3,11 @@
 import os
 import sys
 
-def gencpp(pkg, msg, header, outfile):
+def gencpp(pkg, msg, header, outfile, mode):
     pkgupper = pkg.upper()
     msgupper = msg.upper()
-    output = '''#ifndef %s__%s_H
+    if mode == "msg":
+        output = '''#ifndef %s__%s_H
 #define %s__%s_H
 
 #include <%s/msg/%s.hpp>
@@ -17,12 +18,39 @@ namespace %s
 }
 
 #endif'''%(pkgupper, msgupper, pkgupper, msgupper, pkg, header, pkg, msg, msg)
+    elif mode == "srv":
+        if (msg.find('_Request') > 0):
+            srv = msg.split('_Request')[0]
+            typedef = 'Request'
+        else:
+            srv = msg.split('_Response')[0]
+            typedef = 'Response'
+        output = '''#ifndef %s__%s_H
+#define %s__%s_H
+
+#include <%s/srv/%s.hpp>
+
+namespace %s
+{
+  namespace %s
+  {
+    typedef %s::srv::%s %s;
+  }
+}
+
+#endif'''%(pkgupper, msgupper, pkgupper, msgupper, pkg, header, pkg, srv, pkg, msg, typedef)
+    else:
+        print("AHHH unknown gencpp mode: [%s]" % mode)
+        sys.exit(1)
     outf = open(outfile, 'w')
     outf.write(output)
     outf.close()
 
 if __name__ == '__main__':
-    if len(sys.argv) != 5:
-        print('Expected exactly four arguments')
+    print("HELLO I AM THE CUSTOM GENCPP AND I AM AWESOME")
+    if len(sys.argv) != 6:
+        print('Expected exactly six arguments')
         sys.exit(1)
-    gencpp(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    print("gencpp working on %s" % sys.argv[2])
+    print("    mode = [%s]" % sys.argv[5])
+    gencpp(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])

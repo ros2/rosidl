@@ -16,12 +16,16 @@ set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp/${PROJECT_NAME}")
 set(_generated_msg_files "")
 set(_generated_srv_files "")
-set(_generated_ros1_shims "")
+set(_generated_ros1_msg_shims "")
+set(_generated_ros1_srv_shims "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
   get_filename_component(_msg_name "${_idl_file}" NAME_WE)
+  get_filename_component(_msg_ext "${_idl_file}" EXT)
   string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
+
+  message("GENERATING ${_idl_file}")
 
   if("${_parent_folder} " STREQUAL "msg ")
     list(APPEND _generated_msg_files
@@ -34,14 +38,31 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
     set(_shim_output "${_shim_dir}/${_msg_name}.h")
     add_custom_command(OUTPUT ${_shim_output}
       COMMAND ${PYTHON_EXECUTABLE}
-      ${rosidl_generator_cpp_DIR}/../../../lib/rosidl_generator_cpp/gencpp ${PROJECT_NAME} ${_msg_name} ${_header_name} ${_shim_output})
-    list(APPEND _generated_ros1_shims "${_shim_output}")
+      ${rosidl_generator_cpp_DIR}/../../../lib/rosidl_generator_cpp/gencpp ${PROJECT_NAME} ${_msg_name} ${_header_name} ${_shim_output} ${_parent_folder})
+    list(APPEND _generated_ros1_msg_shims "${_shim_output}")
   elseif("${_parent_folder} " STREQUAL "srv ")
     list(APPEND _generated_srv_files
       "${_output_path}/${_parent_folder}/${_header_name}.hpp"
       "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
       "${_output_path}/${_parent_folder}/${_header_name}__traits.hpp"
     )
+    set(_shim_dir "${_output_path}/${_parent_folder}/shim/${PROJECT_NAME}")
+    file(MAKE_DIRECTORY ${_shim_dir})
+    set(_shim_output "${_shim_dir}/${_msg_name}.h")
+    message("  _msg_ext=${_msg_ext}")
+    if("${_msg_ext} " STREQUAL ".srv ")
+      add_custom_command(OUTPUT ${_shim_output}
+        COMMAND ${PYTHON_EXECUTABLE}
+        ${rosidl_generator_cpp_DIR}/../../../lib/rosidl_generator_cpp/gencpp_srv ${PROJECT_NAME} ${_msg_name} ${_header_name} ${_shim_output})
+    elseif ("${_msg_ext} " STREQUAL ".msg ")
+      add_custom_command(OUTPUT ${_shim_output}
+        COMMAND ${PYTHON_EXECUTABLE}
+        ${rosidl_generator_cpp_DIR}/../../../lib/rosidl_generator_cpp/gencpp ${PROJECT_NAME} ${_msg_name} ${_header_name} ${_shim_output} ${_parent_folder})
+    else()
+      message(FATAL_ERROR "HELP I HAVE NO IDEA WHAT IS HAPPENING")
+    endif()
+    list(APPEND _generated_ros1_srv_shims "${_shim_output}")
+
   else()
     message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
   endif()
@@ -101,7 +122,7 @@ else()
   add_custom_target(
     ${rosidl_generate_interfaces_TARGET}__cpp
     DEPENDS
-    ${_generated_msg_files} ${_generated_srv_files} ${_generated_ros1_shims}
+    ${_generated_msg_files} ${_generated_srv_files} ${_generated_ros1_msg_shims} ${_generated_ros1_srv_shims}
   )
 endif()
 
@@ -123,9 +144,15 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
       DESTINATION "include/${PROJECT_NAME}/srv"
     )
   endif()
-  if(NOT "${_generated_ros1_shims} " STREQUAL " ")
+  if(NOT "${_generated_ros1_msg_shims} " STREQUAL " ")
     install(
-      FILES ${_generated_ros1_shims}
+      FILES ${_generated_ros1_msg_shims}
+      DESTINATION "include/${PROJECT_NAME}"
+    )
+  endif()
+  if(NOT "${_generated_ros1_srv_shims} " STREQUAL " ")
+    install(
+      FILES ${_generated_ros1_srv_shims}
       DESTINATION "include/${PROJECT_NAME}"
     )
   endif()

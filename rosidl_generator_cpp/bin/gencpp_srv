@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+
+def gencpp_srv(pkg, msg, header, outfile):
+    pkgupper = pkg.upper()
+    msgupper = msg.upper()
+    output = '''#ifndef %s__%s_H
+#define %s__%s_H
+
+// AWESOME SRV
+
+#include <%s/%s_Request.h>
+#include <%s/%s_Response.h>
+
+#endif'''%(pkgupper, msgupper, pkgupper, msgupper, pkg, msg, pkg, msg)
+    outf = open(outfile, 'w')
+    outf.write(output)
+    outf.close()
+
+if __name__ == '__main__':
+    print("HELLO I AM GENCPP_SRV AND I AM AWESOME")
+    if len(sys.argv) != 5:
+        print('Expected exactly four arguments')
+        sys.exit(1)
+    print("gencpp_srv working on %s" % sys.argv[2])
+    gencpp_srv(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+

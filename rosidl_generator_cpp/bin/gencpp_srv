@@ -6,18 +6,29 @@ import sys
 def gencpp_srv(pkg, msg, header, outfile):
     pkgupper = pkg.upper()
     msgupper = msg.upper()
-    output = '''#ifndef %s__%s_H
-#define %s__%s_H
+    output = "#ifndef %s__%s_H\n#define %s__%s_H\n\n" % (pkgupper, msgupper, pkgupper, msgupper)
+    output += "#include <%s/srv/%s.hpp>\n" % (pkg, header)
+    output += "#include <%s/srv/%s.hpp>\n" % (pkg, header)
+    output += "\nnamespace %s\n{\n\n" % pkg
+    output += '''
+class %s
+{
+public:
+  typedef %s::srv::%s_Request  Request;
+  typedef %s::srv::%s_Response Response;
 
-// AWESOME SRV
+  Request  request;
+  Response response;
+};
 
-#include <%s/%s_Request.h>
-#include <%s/%s_Response.h>
+}
 
-#endif'''%(pkgupper, msgupper, pkgupper, msgupper, pkg, msg, pkg, msg)
+#endif'''%(msg, pkg, msg, pkg, msg)
     outf = open(outfile, 'w')
     outf.write(output)
     outf.close()
+    #include <%s/%s_Request.h>
+    #include <%s/%s_Response.h>
 
 if __name__ == '__main__':
     print("HELLO I AM GENCPP_SRV AND I AM AWESOME")

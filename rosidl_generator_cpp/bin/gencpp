@@ -28,6 +28,7 @@ namespace %s
         output = '''#ifndef %s__%s_H
 #define %s__%s_H
 
+/*
 #include <%s/srv/%s.hpp>
 
 namespace %s
@@ -37,6 +38,7 @@ namespace %s
     typedef %s::srv::%s %s;
   }
 }
+*/
 
 #endif'''%(pkgupper, msgupper, pkgupper, msgupper, pkg, header, pkg, srv, pkg, msg, typedef)
     else:

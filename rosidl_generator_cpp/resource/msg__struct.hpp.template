@@ -38,6 +38,7 @@ cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
 cpp_class = '%s_' % spec.base_type.type
 cpp_full_name = '%s%s' % (cpp_namespace, cpp_class)
 cpp_full_name_with_alloc = '%s<ContainerAllocator>' % (cpp_full_name)
+
 }@
 #include <array>
 #include <memory>
@@ -68,6 +69,15 @@ namespace @(spec.base_type.pkg_name)
 
 namespace @(subfolder)
 {
+
+@[if subfolder == 'srv']@
+@{
+service_type_underscores = [i for i, c in enumerate(cpp_full_name) if c == '_']
+service_type = cpp_full_name[0:service_type_underscores[-2]]
+service_type_no_namespace = service_type[service_type.rfind(':')+1:]
+}@
+struct @(service_type_no_namespace);
+@[end if]@
 
 // message struct
 template<class ContainerAllocator>
@@ -201,6 +211,11 @@ for field in spec.fields:
   {
     return !this->operator==(other);
   }
+
+@[if subfolder == 'srv']@
+  using _service = @(service_type);
+@[end if]@
+
 };  // struct @(cpp_class)
 
 // alias to use template instance with default allocator
@@ -222,6 +237,7 @@ const @(MSG_TYPE_TO_CPP[c.type])
 @[end if]@
 @[end if]@
 @[end for]@
+
 
 }  // namespace @(subfolder)
 

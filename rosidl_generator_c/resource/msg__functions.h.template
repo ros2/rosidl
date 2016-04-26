@@ -86,6 +86,17 @@ ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
 void
 @(msg_typename)__destroy(@(msg_typename) * msg);
 
+@# If the message contains an unbounded array subfield, declare a resize function for that type
+@[for field in spec.fields]@
+@{
+    if not field.type.is_array:
+        continue
+    if field.type.is_fixed_size_array():
+        continue
+}@
+
+
+
 
 @#######################################################################
 @# array functions
@@ -102,7 +113,7 @@ void
  */
 ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
 bool
-@(array_typename)__init(@(array_typename) * array, size_t size);
+@(array_typename)__init(@(array_typename) * array, size_t size, size_t capacity);
 
 /// Finalize array of @(spec.base_type.pkg_name)/@(spec.base_type.type) messages.
 /**
@@ -113,6 +124,21 @@ bool
 ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
 void
 @(array_typename)__fini(@(array_typename) * array);
+
+// TODO Enable only for unbounded messages
+/// Resize array of @(spec.base_type.pkg_name)/@(spec.base_type.type) messages.
+/**
+ * Convenience method for deallocating and reallocating the array.
+ * The existing contents of the array will be erased.
+ * 
+ * \param[in] array The initialized array pointer.
+ * \param[in] capacity The new capacity of the array.
+ * \return The reallocated pointer. NULL if reallocating was not successful
+ * or if the array input was NULL.
+ */
+ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
+@(array_typename) * array
+@(array_typename)__resize(@(array_typename) * array, size_t capacity);
 
 /// Create array of @(spec.base_type.pkg_name)/@(spec.base_type.type) messages.
 /**

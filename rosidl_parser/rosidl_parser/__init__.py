@@ -157,6 +157,8 @@ class BaseType(object):
         else:
             # split non-primitive type information
             parts = type_string.split(PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR)
+            if (len(parts) == 1 and parts[0] == 'Header'):
+                parts = [ 'std_msgs', 'Header' ] # allow ros1 convention...
             if not (len(parts) == 2 or
                     (len(parts) == 1 and context_package_name is not None)):
                 raise InvalidResourceName(type_string)

@@ -62,12 +62,6 @@ void
 rosidl_generator_c__String__Array__destroy(
   rosidl_generator_c__String__Array * array);
 
-ROSIDL_GENERATOR_C_PUBLIC
-bool
-rosidl_generator_c__String__Array__resize(
-  rosidl_generator_c__String__Array * array, size_t size);
-
-
 #if __cplusplus
 }
 #endif

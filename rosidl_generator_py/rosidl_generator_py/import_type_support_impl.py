@@ -47,12 +47,11 @@ def import_type_support(pkg_name, subfolder, rosidl_name, rmw_implementation):
     if rmw_implementation not in type_support_map.keys():
         raise UnsupportedTypeSupport(rmw_implementation)
     type_support_name = type_support_map[rmw_implementation]
-    import_package = '{pkg_name}.{subfolder}'.format(
+    import_package = '{pkg_name}'.format(
         pkg_name=pkg_name,
-        subfolder=subfolder,
     )
-    module_name = '._{rosidl_name}_s__{type_support_name}'.format(
-        rosidl_name=rosidl_name,
+    module_name = '.{pkg_name}_s__{type_support_name}'.format(
+        pkg_name=pkg_name,
         type_support_name=type_support_name,
     )
     return importlib.import_module(module_name, package=import_package)

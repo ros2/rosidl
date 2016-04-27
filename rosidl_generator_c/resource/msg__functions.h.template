@@ -86,14 +86,63 @@ ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
 void
 @(msg_typename)__destroy(@(msg_typename) * msg);
 
-@# If the message contains an unbounded array subfield, declare a resize function for that type
-@[for field in spec.fields]@
+@# If the message contains an unbounded non-primitive array subfield, declare a resize function
 @{
+unbounded_array_fields = []
+for field in spec.fields:
     if not field.type.is_array:
         continue
     if field.type.is_fixed_size_array():
         continue
+#    if field.type.is_primitive_type():
+#        continue
+
+    unbounded_array_fields.append(field)
 }@
+
+@[for field in unbounded_array_fields]
+@{
+if field.type.is_primitive_type():
+    subfield_pkg_name = 'rosidl_generator_c'
+    if field.type.type == 'string':
+        subfield_type_name = 'String'
+    else:
+        subfield_type_name = field.type.type
+
+    subfield_array_typename = '%s__%s__Array' % (subfield_pkg_name, subfield_type_name)
+else:
+    subfield_pkg_name = field.type.pkg_name
+    subfield_type_name = field.type.type
+    subfield_array_typename = '%s__msg__%s__Array' % (subfield_pkg_name, subfield_type_name)
+
+subfield_array_decl_guard = '%s__%s__UNBOUNDED_ARRAY__RESIZE_DECL' % (subfield_pkg_name, subfield_type_name)
+}@
+#ifndef @(subfield_array_decl_guard)
+#define @(subfield_array_decl_guard)
+@[if field.type.is_primitive_type()]
+@[  if field.type.type is 'string']
+#include "rosidl_generator_c/string_functions.h"
+@[  else]
+#include "rosidl_generator_c/primitives_array_functions.h"
+@[  end if]
+@[else]
+@{
+subfield_header_file = '%s/msg/%s__functions.h' % (subfield_pkg_name, get_header_filename_from_msg_name(subfield_type_name))
+}@
+#include "@(subfield_header_file)"
+@[end if]
+
+@[if field.type.is_primitive_type()]@
+ROSIDL_GENERATOR_C_PUBLIC
+@[else]
+ROSIDL_GENERATOR_C_PUBLIC_@(subfield_pkg_name)
+@[end if]
+bool
+@(subfield_array_typename)__resize(@(subfield_array_typename) * array, size_t size);
+
+#endif  // @(subfield_array_decl_guard)
+
+@[end for]
 
 
 
@@ -113,7 +162,7 @@ void
  */
 ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
 bool
-@(array_typename)__init(@(array_typename) * array, size_t size, size_t capacity);
+@(array_typename)__init(@(array_typename) * array, size_t size);
 
 /// Finalize array of @(spec.base_type.pkg_name)/@(spec.base_type.type) messages.
 /**
@@ -136,9 +185,11 @@ void
  * \return The reallocated pointer. NULL if reallocating was not successful
  * or if the array input was NULL.
  */
+/*
 ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
 @(array_typename) * array
 @(array_typename)__resize(@(array_typename) * array, size_t capacity);
+*/
 
 /// Create array of @(spec.base_type.pkg_name)/@(spec.base_type.type) messages.
 /**

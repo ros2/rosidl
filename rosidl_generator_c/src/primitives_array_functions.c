@@ -56,6 +56,16 @@
       assert(0 == array->size); \
       assert(0 == array->capacity); \
     } \
+  } \
+  bool rosidl_generator_c__ ## STRUCT_NAME ## __Array__resize( \
+    rosidl_generator_c__ ## STRUCT_NAME ## __Array * array, size_t size) \
+  { \
+    if (!array) \
+    { \
+      return false; \
+    } \
+    rosidl_generator_c__ ## STRUCT_NAME ## __Array__fini(array); \
+    return rosidl_generator_c__ ## STRUCT_NAME ## __Array__init(array, size); \
   }
 
 // array functions for all primitive types

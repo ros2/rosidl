@@ -166,3 +166,15 @@ rosidl_generator_c__String__Array__destroy(
   }
   free(array);
 }
+
+bool
+rosidl_generator_c__String__Array__resize(
+  rosidl_generator_c__String__Array * array,
+  size_t size)
+{
+  //if (array) {
+  rosidl_generator_c__String__Array__fini(array);
+  //}
+  //free(array);
+  return rosidl_generator_c__String__Array__init(array, size);
+}

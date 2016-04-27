@@ -211,14 +211,14 @@ void
 @# array functions
 @#######################################################################
 bool
-@(array_typename)__init(@(array_typename) * array, size_t size, size_t capacity)
+@(array_typename)__init(@(array_typename) * array, size_t size)
 {
   if (!array) {
     return false;
   }
   @(msg_typename) * data = NULL;
   if (size) {
-    data = (@(msg_typename) *)malloc(sizeof(@(msg_typename)) * capacity);
+    data = (@(msg_typename) *)malloc(sizeof(@(msg_typename)) * size);
     if (!data) {
       return false;
     }
@@ -238,13 +238,10 @@ bool
       free(data);
       return false;
     }
-    for (i = size; i < capacity; ++i) {
-      data[i] = {0};  // ???
-    }
   }
   array->data = data;
   array->size = size;
-  array->capacity = capacity;
+  array->capacity = size;
   return true;
 }
 
@@ -255,7 +252,7 @@ void
     return;
   }
   if (array->data) {
-    // ensure that data and capacity values are consistent
+    // ensure that data acapacity values are consistent
     assert(array->capacity > 0);
     // finalize all array elements
     for (size_t i = 0; i < array->capacity; ++i) {
@@ -270,16 +267,6 @@ void
     assert(0 == array->size);
     assert(0 == array->capacity);
   }
-}
-
-bool
-@(array_typename)__resize(@(array_typename) * array, size_t size, size_t capacity)
-{
-  if (!array) {
-    return false;
-  }
-  @(array_typename)__fini(array);
-  return @(array_typename)__init(array, capacity);
 }
 
 @(array_typename) *
@@ -304,4 +291,15 @@ void
     @(array_typename)__fini(array);
   }
   free(array);
+}
+
+bool
+@(array_typename)__resize(@(array_typename) * array, size_t size)
+{
+  if (!array)
+  {
+    return false;
+  }
+  @(array_typename)__fini(array);
+  return @(array_typename)__init(array, size);
 }

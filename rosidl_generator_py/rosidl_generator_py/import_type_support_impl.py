@@ -12,12 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import ament_index_python
 import importlib
-
-type_support_map = {
-    'rmw_connext_cpp': 'rosidl_typesupport_connext_c',
-    'rmw_opensplice_cpp': 'rosidl_typesupport_opensplice_c',
-}
 
 
 class UnsupportedTypeSupport(Exception):
@@ -44,9 +40,10 @@ def import_type_support(pkg_name, subfolder, rosidl_name, rmw_implementation):
     :param rmw_implementation str: name of the rmw implementation
     :returns: the type support Python module for this specific rosidl and rmw implementation pair
     """
-    if rmw_implementation not in type_support_map.keys():
+    if not ament_index_python.has_resource('rmw_typesupport_c', rmw_implementation):
         raise UnsupportedTypeSupport(rmw_implementation)
-    type_support_name = type_support_map[rmw_implementation]
+
+    type_support_name = ament_index_python.get_resource('rmw_typesupport_c', rmw_implementation)
     import_package = '{pkg_name}'.format(
         pkg_name=pkg_name,
     )

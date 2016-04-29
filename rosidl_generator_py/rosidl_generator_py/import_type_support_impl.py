@@ -40,10 +40,10 @@ def import_type_support(pkg_name, subfolder, rosidl_name, rmw_implementation):
     :param rmw_implementation str: name of the rmw implementation
     :returns: the type support Python module for this specific rosidl and rmw implementation pair
     """
-    if not ament_index_python.has_resource("rmw_typesupport_c", rmw_implementation):
+    if not ament_index_python.has_resource('rmw_typesupport_c', rmw_implementation):
         raise UnsupportedTypeSupport(rmw_implementation)
 
-    type_support_name = ament_index_python.get_resource("rmw_typesupport_c", rmw_implementation)
+    type_support_name = ament_index_python.get_resource('rmw_typesupport_c', rmw_implementation)
     import_package = '{pkg_name}'.format(
         pkg_name=pkg_name,
     )

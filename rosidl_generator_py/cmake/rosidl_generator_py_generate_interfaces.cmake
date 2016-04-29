@@ -23,7 +23,6 @@ find_package(PythonInterp 3.4 REQUIRED)
 find_package(python_cmake_module REQUIRED)
 find_package(PythonExtra MODULE)
 
-
 # Get a list of typesupport implementations from valid rmw implementations.
 rosidl_generator_py_get_typesupports(_typesupport_impls)
 

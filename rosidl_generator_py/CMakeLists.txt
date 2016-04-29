@@ -8,7 +8,7 @@ ament_export_dependencies(rosidl_cmake)
 
 ament_python_install_package(${PROJECT_NAME})
 
-if(AMENT_ENABLE_TESTING)
+if(BUILD_TESTING)
   find_package(ament_cmake_nose REQUIRED)
 
   find_package(rosidl_cmake REQUIRED)

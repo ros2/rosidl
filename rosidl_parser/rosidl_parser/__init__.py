@@ -42,9 +42,7 @@ PRIMITIVE_TYPES = [
     'uint64',
     'string',
     # TODO reconsider wstring / u16string / u32string
-    # TODO duration and time
-    'duration',  # for compatibility only
-    'time',  # for compatibility only
+    # duration/time/header ros1 compatibility is handled in BaseType
 ]
 
 VALID_PACKAGE_NAME_PATTERN = re.compile('^[a-z]([a-z0-9_]?[a-z0-9]+)*$')
@@ -157,8 +155,13 @@ class BaseType(object):
         else:
             # split non-primitive type information
             parts = type_string.split(PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR)
-            if (len(parts) == 1 and parts[0] == 'Header'):
-                parts = [ 'std_msgs', 'Header' ] # allow ros1 convention...
+            if (len(parts) == 1):
+                if parts[0] == 'Header':
+                    parts = [ 'std_msgs', 'Header' ] # allow ros1 convention...
+                elif parts[0] == 'time':
+                    parts = [ 'builtin_interfaces', 'Time']
+                elif parts[0] == 'duration':
+                    parts = [ 'builtin_interfaces', 'Duration']
             if not (len(parts) == 2 or
                     (len(parts) == 1 and context_package_name is not None)):
                 raise InvalidResourceName(type_string)

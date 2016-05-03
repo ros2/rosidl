@@ -85,7 +85,6 @@ def generate_py(generator_arguments_file, typesupport_impls):
                     'module_name': module_name, 'package_name': args['package_name'],
                     'spec': spec, 'subfolder': subfolder,
                     'typesupport_impl': type_support_impl_by_filename.get(generated_filename, ''),
-                    'typesupport_impls': typesupport_impls
                 }
                 data.update(functions)
                 generated_file = os.path.join(
@@ -106,7 +105,6 @@ def generate_py(generator_arguments_file, typesupport_impls):
                 'package_name': args['package_name'],
                 'message_specs': message_specs,
                 'typesupport_impl': type_support_impl_by_filename.get(generated_filename, ''),
-                'typesupport_impls': typesupport_impls
             }
             data.update(functions)
             generated_file = os.path.join(

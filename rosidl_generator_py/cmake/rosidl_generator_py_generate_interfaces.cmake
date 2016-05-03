@@ -156,8 +156,6 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   )
 endif()
 
-set(_generated_extension_files "")
-set(_extension_dependencies "")
 set(_target_suffix "__py")
 
 add_custom_command(
@@ -179,9 +177,6 @@ else()
     ${_generated_msg_py_files}
     ${_generated_msg_c_files}
     ${_generated_srv_files}
-    ${_generated_extension_files}
-    ${_extension_dependencies}
-    ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
   )
 endif()
 
@@ -229,10 +224,6 @@ foreach(_typesupport_impl ${_typesupport_impls})
     ${PROJECT_NAME}__${_typesupport_impl}
   )
 
-  list(APPEND _generated_extension_files
-    "$<TARGET_FILE:${_target_name}>"
-  )
-
   target_include_directories(${_target_name}
     PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c
@@ -249,8 +240,6 @@ foreach(_typesupport_impl ${_typesupport_impls})
     "rosidl_generator_c"
     "${_typesupport_impl}"
   )
-
-  list(APPEND _extension_dependencies ${_target_name})
 
   ament_target_dependencies(${_target_name}
     ${_typesupport_impl}

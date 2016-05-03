@@ -63,9 +63,6 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
       list_append_unique(_generated_msg_c_ts_${_typesupport_impl}_files "${_output_path}/${_parent_folder}/_${PROJECT_NAME}_s.ep.${_typesupport_impl}.c")
     endforeach()
   elseif("${_parent_folder} " STREQUAL "srv ")
-    list(APPEND _generated_srv_files
-      "${_output_path}/${_parent_folder}/_${_module_name}.py"
-    )
   else()
     message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
   endif()

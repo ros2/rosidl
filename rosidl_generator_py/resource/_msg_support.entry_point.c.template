@@ -46,79 +46,64 @@ static struct PyModuleDef @(package_name)__module = {
   NULL,
   NULL,
 };
+@
+@[for spec, subfolder in message_specs]@
+@{
+type_name = convert_camel_case_to_lower_case_underscore(spec.base_type.type)
+function_names = ['convert_from_py', 'convert_to_py', 'type_support']
+}@
+
+int8_t
+_register_type__@(type_name)(PyObject * pymodule)
+{
+  int8_t err;
+@[for function_name in function_names]@
+
+  PyObject * pyobject_@(function_name) = NULL;
+  pyobject_@(function_name) = PyCapsule_New(
+@[if function_name != 'type_support']@
+    (void *)&@(spec.base_type.pkg_name)_@(type_name)__@(function_name),
+@[else]@
+    (void *)ROSIDL_GET_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name)),
+@[end if]@
+    NULL, NULL);
+  if (!pyobject_@(function_name)) {
+    // previously added objects will be removed when the module is destroyed
+    return -1;
+  }
+  err = PyModule_AddObject(
+    pymodule,
+    "@(function_name)_@(type_name)",
+    pyobject_@(function_name));
+  if (err) {
+    // the created capsule needs to be decremented
+    Py_XDECREF(pyobject_@(function_name));
+    // previously added objects will be removed when the module is destroyed
+    return err;
+  }
+@[end for]@
+  return 0;
+}
+@[end for]@
 
 PyMODINIT_FUNC
 PyInit_@(package_name)_s__@(typesupport_impl)(void)
 {
-  PyObject * m = NULL;
-  m = PyModule_Create(&@(package_name)__module);
-  if (!m) {
+  PyObject * pymodule = NULL;
+  pymodule = PyModule_Create(&@(package_name)__module);
+  if (!pymodule) {
     return NULL;
   }
-  int8_t err = 0;
+  int8_t err;
 @[for spec, subfolder in message_specs]@
 @{
-type_name = spec.base_type.type
-module_name = convert_camel_case_to_lower_case_underscore(type_name)
+type_name = convert_camel_case_to_lower_case_underscore(spec.base_type.type)
 }@
-  PyObject * pyconvert_from_py_@(module_name) = NULL;
-
-  pyconvert_from_py_@(module_name) = PyCapsule_New(
-    (void *)&@(spec.base_type.pkg_name)_@(module_name)__convert_from_py,
-    NULL, NULL);
-  if (NULL == pyconvert_from_py_@(module_name)) {
-    goto fail_@(lastobject);
-  }
-@{
-lastobject = 'pyconvert_from_py_' + module_name    
-}@
-  err = PyModule_AddObject(m, "convert_from_py_@(module_name)", pyconvert_from_py_@(module_name));
+  err = _register_type__@(type_name)(pymodule);
   if (err) {
-    goto fail_@(lastobject);
+    Py_XDECREF(pymodule);
+    return NULL;
   }
-
-  PyObject * pyconvert_to_py_@(module_name) = NULL;
-  pyconvert_to_py_@(module_name) = PyCapsule_New(
-    (void *)&@(spec.base_type.pkg_name)_@(module_name)__convert_to_py,
-    NULL, NULL);
-  if (NULL == pyconvert_to_py_@(module_name)) {
-    goto fail_@(lastobject);
-  }
-@{
-lastobject = 'pyconvert_to_py_' + module_name    
-}@
-  err = PyModule_AddObject(m, "convert_to_py_@(module_name)", pyconvert_to_py_@(module_name));
-  if (err) {
-    goto fail_@(lastobject);
-  }
-  PyObject * pytype_support_@(module_name) = NULL;
-  pytype_support_@(module_name) = PyCapsule_New(
-    (void *)ROSIDL_GET_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name)),
-    NULL, NULL);
-  if (NULL == pytype_support_@(module_name)) {
-    goto fail_@(lastobject);
-  }
-@{
-lastobject = 'pytype_support_' + module_name    
-}@
-  err = PyModule_AddObject(m, "type_support_@(module_name)", pytype_support_@(module_name));
-  if (err) {
-    goto fail_@(lastobject);
-  }
-
 @[end for]@
-  return m;
-
-@[for i in range(listlen)]@
-@[  if i != listlen - 1]@
-fail_@(pymodule_list[i]):
-  Py_XDECREF(@(pymodule_list[i]));
-  @(pymodule_list[i]) = NULL;
-@[  else]@
-fail_@(pymodule_list[i]):
-fail_:
-  Py_XDECREF(m);
-  return NULL;
-@[  end if]@
-@[end for]@
+  return pymodule;
 }

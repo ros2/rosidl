@@ -19,18 +19,6 @@ void * @(spec.base_type.pkg_name)_@(module_name)__convert_from_py(PyObject * _py
 PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_ros_message);
 @[end for]@
 
-@{
-pymodule_list = []
-for spec, subfolder in message_specs:
-    type_name = spec.base_type.type
-    module_name = convert_camel_case_to_lower_case_underscore(type_name)
-    pymodule_list.insert(0, 'pyconvert_from_py_' + module_name)
-    pymodule_list.insert(0, 'pyconvert_to_py_' + module_name)
-    pymodule_list.insert(0, 'pytype_support_' + module_name)
-listlen = len(pymodule_list)
-lastobject = ''
-}@
-
 static PyMethodDef @(package_name)__methods[] = {
   {NULL, NULL, 0, NULL}  /* sentinel */
 };

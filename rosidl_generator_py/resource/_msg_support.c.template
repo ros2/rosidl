@@ -86,7 +86,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   }
 @[      if field.type.array_size is None]@
   if (!@(nested_type)__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
-    assert(false && "unable to create array ros_message");
+    PyErr_SetString(PyExc_RuntimeError, "unable to create @(nested_type)__Array ros_message");
   }
   memcpy(ros_message->@(field.name).data, tmparray@(field.name), sizeof(@(nested_type)) * size@(field.name));
 @[      else]@
@@ -155,11 +155,11 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 @[    if field.type.array_size is None]@
 @[      if field.type.type == 'string']@
   if (!rosidl_generator_c__String__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
-    assert(false && "unable to create array ros_message");
+    PyErr_SetString(PyExc_RuntimeError, "unable to create String__Array ros_message");
   }
 @[      else]@
   if (!rosidl_generator_c__@(field.type.type)__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
-    assert(false && "unable to create array ros_message");
+    PyErr_SetString(PyExc_RuntimeError, "unable to create @(field.type.type)__Array ros_message");
   }
 @[      end if]@
   memcpy(ros_message->@(field.name).data, tmparray@(field.name), sizeof(@primitive_msg_type_to_c(field.type.type)) * size@(field.name));

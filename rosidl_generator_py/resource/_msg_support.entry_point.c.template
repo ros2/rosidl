@@ -32,14 +32,14 @@ lastobject = ''
 }@
 
 @[for i in range(listlen)]@
-@[if i != listlen - 1]@
+@[  if i != listlen - 1]@
 #define DECREF_@(pymodulelist[i].upper()) Py_XDECREF(@(pymodulelist[i])); \
   @(pymodulelist[i]) = NULL; \
   DECREF_@(pymodulelist[i + 1].upper())
-@[else]@
+@[  else]@
 #define DECREF_@(pymodulelist[i].upper())
 #define DECREF_
-@[end if]@
+@[  end if]@
 @[end for]@
 
 static PyMethodDef @(package_name)__methods[] = {

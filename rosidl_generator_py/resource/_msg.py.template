@@ -47,10 +47,10 @@ class Metaclass(type):
             '@(constant.name)': cls.__constants['@(constant.name)'],
 @[end for]@
 @[for field in spec.fields]@
-@[if field.default_value]@
+@[  if field.default_value]@
             '@(field.name.upper())__DEFAULT': @value_to_py(field.type, field.default_value,
                                                            array_as_tuple=True),
-@[end if]@
+@[  end if]@
 @[end for]@
         }
 @[for constant in spec.constants]@
@@ -61,13 +61,13 @@ class Metaclass(type):
         return Constants.__constants['@(constant.name)']
 @[end for]@
 @[for field in spec.fields]@
-@[if field.default_value]@
+@[  if field.default_value]@
 
     @@property
     def @(field.name.upper())__DEFAULT(cls):
         """Default value for message field '@(field.name)'."""
         return @value_to_py(field.type, field.default_value, array_as_tuple=True)
-@[end if]@
+@[  end if]@
 @[end for]@
 
 
@@ -77,9 +77,9 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 @[if spec.constants]@
 
     Constants:
-@[for constant in spec.constants]@
+@[  for constant in spec.constants]@
       @(constant.name)
-@[end for]@
+@[  end for]@
 @[end if]@
     """
 
@@ -93,30 +93,30 @@ class @(spec.base_type.type)(metaclass=Metaclass):
     def __init__(self, **kwargs):
         assert all(['_' + key in self.__slots__ for key in kwargs.keys()]), \
             "Invalid arguments passed to constructor: %r" % kwargs.keys()
-@[for field in spec.fields]@
-@[if field.default_value]@
+@[  for field in spec.fields]@
+@[    if field.default_value]@
         self.@(field.name) = kwargs.get(
             '@(field.name)', @(spec.base_type.type).@(field.name.upper())__DEFAULT)
-@[else]@
-@[if not field.type.is_primitive_type()]@
+@[    else]@
+@[      if not field.type.is_primitive_type()]@
         from @(field.type.pkg_name).msg import @(field.type.type)
-@[end if]@
-@[if field.type.type == 'byte']@
+@[      end if]@
+@[      if field.type.type == 'byte']@
         self.@(field.name) = kwargs.get('@(field.name)', b'0')
-@[elif field.type.type == 'char']@
+@[      elif field.type.type == 'char']@
         self.@(field.name) = kwargs.get('@(field.name)', '\0')
-@[elif field.type.array_size]
+@[      elif field.type.array_size]
         self.@(field.name) = kwargs.get(
             '@(field.name)',
             tuple([@(get_python_type(field.type))() for x in range(@(field.type.array_size))])
         )
-@[elif field.type.is_array]
+@[      elif field.type.is_array]
         self.@(field.name) = kwargs.get('@(field.name)', list())
-@[else]@
+@[      else]@
         self.@(field.name) = kwargs.get('@(field.name)', @(get_python_type(field.type))())
-@[end if]@
-@[end if]@
-@[end for]@
+@[      end if]@
+@[    end if]@
+@[  end for]@
 @[end if]@
 @[for field in spec.fields]@
 
@@ -127,49 +127,49 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 
     @@@(field.name).setter
     def @(field.name)(self, value):
-@[if not field.type.is_primitive_type()]@
+@[  if not field.type.is_primitive_type()]@
         from @(field.type.pkg_name).msg import @(field.type.type)
-@[end if]@
-@[if field.type.is_array]@
+@[  end if]@
+@[  if field.type.is_array]@
         from collections import Sequence
         from collections import Set
         from collections import UserList
         from collections import UserString
-@[elif field.type.string_upper_bound]@
+@[  elif field.type.string_upper_bound]@
         from collections import UserString
-@[elif not field.type.is_primitive_type()]@
-@[elif field.type.type == 'byte']@
+@[  elif not field.type.is_primitive_type()]@
+@[  elif field.type.type == 'byte']@
         from collections import ByteString
-@[elif field.type.type in ['char']]@
+@[  elif field.type.type in ['char']]@
         from collections import UserString
-@[end if]@
+@[  end if]@
         assert isinstance(value, type(None)) or \
-@[if field.type.is_array]@
+@[  if field.type.is_array]@
             ((isinstance(value, Sequence) or isinstance(value, Set) \
             or isinstance(value, UserList)) \
             and not isinstance(value, str) and not isinstance(value, UserString) \
-@[if field.type.array_size]@
-@[if field.type.is_upper_bound]@
+@[    if field.type.array_size]@
+@[      if field.type.is_upper_bound]@
             and len(value) <= @(field.type.array_size) \
-@[else]@
+@[      else]@
             and len(value) == @(field.type.array_size) \
-@[end if]@
+@[      end if]@
             and all([isinstance(v, @(get_python_type(field.type))) for v in value]))
-@[else]@
+@[    else]@
             )
-@[end if]@
-@[elif field.type.string_upper_bound]@
+@[    end if]@
+@[  elif field.type.string_upper_bound]@
             ((isinstance(value, str) or isinstance(value, UserString)) \
             and len(value) <= @(field.type.string_upper_bound))
-@[elif not field.type.is_primitive_type()]@
+@[  elif not field.type.is_primitive_type()]@
             isinstance(value, @(field.type.type))
-@[elif field.type.type == 'byte']@
+@[  elif field.type.type == 'byte']@
             ((isinstance(value, bytes) or isinstance(value, ByteString)) \
                 and len(value) == 1)
-@[elif field.type.type == 'char']@
+@[  elif field.type.type == 'char']@
             ((isinstance(value, str) or isinstance(value, UserString)) \
             and len(value) == 1)
-@[elif field.type.type in [
+@[  elif field.type.type in [
         'bool',
         'float32', 'float64',
         'int8', 'uint8',
@@ -179,8 +179,8 @@ class @(spec.base_type.type)(metaclass=Metaclass):
         'string',
     ]]@
             isinstance(value, @(get_python_type(field.type)))
-@[else]@
+@[  else]@
             False
-@[end if]@
+@[  end if]@
         self._@(field.name) = value
 @[end for]@

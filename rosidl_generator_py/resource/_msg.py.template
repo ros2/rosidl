@@ -103,9 +103,7 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 @[      end if]@
 @[      if field.type.type == 'byte']@
         self.@(field.name) = kwargs.get('@(field.name)', b'0')
-@[      elif field.type.type in [
-            'char',
-            'string']]@
+@[      elif field.type.type == 'char']@
         self.@(field.name) = kwargs.get('@(field.name)', '\0')
 @[      elif field.type.array_size]
         self.@(field.name) = kwargs.get(
@@ -156,10 +154,8 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 @[      else]@
             and len(value) == @(field.type.array_size) \
 @[      end if]@
-            and all([isinstance(v, @(get_python_type(field.type))) for v in value]))
-@[    else]@
-            )
 @[    end if]@
+            and all([isinstance(v, @(get_python_type(field.type))) for v in value]))
 @[  elif field.type.string_upper_bound]@
             ((isinstance(value, str) or isinstance(value, UserString)) \
             and len(value) <= @(field.type.string_upper_bound))
@@ -178,12 +174,9 @@ class @(spec.base_type.type)(metaclass=Metaclass):
         'int16', 'uint16',
         'int32', 'uint32',
         'int64', 'uint64',
+        'string',
     ]]@
             isinstance(value, @(get_python_type(field.type)))
-@[  elif field.type.type == 'string']@
-            isinstance(value, @(get_python_type(field.type)))
-        if not value.endswith('\0'):
-            value += '\0'
 @[  else]@
             False
 @[  end if]@

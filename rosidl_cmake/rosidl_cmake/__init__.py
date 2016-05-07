@@ -17,6 +17,7 @@ from io import StringIO
 import json
 import os
 import re
+import sys
 
 from rosidl_parser import BaseType
 from rosidl_parser import PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR
@@ -90,6 +91,7 @@ def expand_template(template_file, data, output_file, minimum_timestamp=None):
         except Exception:
             if os.path.exists(output_file):
                 os.remove(output_file)
+            print('Exception when processing template: %s' % template_file, file=sys.stderr)
             raise
     content = output.getvalue()
     interpreter.shutdown()

@@ -20,7 +20,7 @@ from rosidl_generator_c import value_to_c
 header_guard_parts = [
     spec.base_type.pkg_name, subfolder,
     get_header_filename_from_msg_name(spec.base_type.type) + '__functions_h']
-header_guard_variable = '__'.join([x for x in header_guard_parts]) + '_'
+header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 
 msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_type.type)
 array_typename = '%s__Array' % msg_typename

@@ -46,7 +46,7 @@ extern "C"
 // Forward declare the get type support functions for this type.
 ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
 const rosidl_message_type_support_t *
-ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(pkg), @(subfolder), @(type))();
+  ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(pkg), @(subfolder), @(type))();
 
 #if __cplusplus
 }

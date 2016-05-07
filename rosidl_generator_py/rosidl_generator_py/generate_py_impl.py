@@ -98,6 +98,8 @@ def generate_py(generator_arguments_file, typesupport_impls):
         with open(os.path.join(args['output_dir'], module, '__init__.py'), 'w') as f:
             for module_, type_ in modules[module]:
                 f.write('from %s.msg._%s import %s\n' % (args['package_name'], module_, type_))
+            for module_, type_ in modules[module]:
+                f.write('%s  # unused\n' % type_)
 
     for template_file, generated_filenames in mapping_extension_msgs.items():
         for generated_filename in generated_filenames:

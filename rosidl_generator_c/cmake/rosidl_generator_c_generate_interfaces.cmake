@@ -111,6 +111,7 @@ add_custom_command(
 # generate header to switch between export and import for a specific package
 set(_visibility_control_file
   "${_output_path}/msg/rosidl_generator_c__visibility_control.h")
+string(TOUPPER "${PROJECT_NAME}" PROJECT_NAME_UPPER)
 configure_file(
   "${rosidl_generator_c_TEMPLATE_DIR}/rosidl_generator_c__visibility_control.h.in"
   "${_visibility_control_file}"

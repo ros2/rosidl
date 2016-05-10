@@ -154,10 +154,8 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 @[      else]@
             and len(value) == @(field.type.array_size) \
 @[      end if]@
-            and all([isinstance(v, @(get_python_type(field.type))) for v in value]))
-@[    else]@
-            )
 @[    end if]@
+            and all([isinstance(v, @(get_python_type(field.type))) for v in value]))
 @[  elif field.type.string_upper_bound]@
             ((isinstance(value, str) or isinstance(value, UserString)) \
             and len(value) <= @(field.type.string_upper_bound))

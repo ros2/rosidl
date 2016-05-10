@@ -92,6 +92,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 @[      else]@
   memcpy(ros_message->@(field.name), tmparray@(field.name), sizeof(@(nested_type)) * size@(field.name));
 @[      end if]@
+  free(tmparray@(field.name));
 @[    else]@
   @(nested_type) * tmp@(field.name) = (@(nested_type) *) convert_from_py_@(field.name)(py@(field.name));
   ros_message->@(field.name) = *tmp@(field.name);
@@ -166,6 +167,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 @[    else]@
   memcpy(ros_message->@(field.name), tmparray@(field.name), sizeof(@primitive_msg_type_to_c(field.type.type)) * size@(field.name));
 @[    end if]@
+  free(tmparray@(field.name));
 @[  elif field.type.type in ['byte', 'char']]@
   assert(PyBytes_Check(py@(field.name)));
   ros_message->@(field.name) = PyBytes_AS_STRING(py@(field.name))[0];

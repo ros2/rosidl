@@ -131,7 +131,7 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 
     @@@(field.name).setter
     def @(field.name)(self, value):
-@[  if not field.type.is_primitive_type() and ((field.type.is_array and not field.type.array_size) or (not field.type.is_array and not field.type.string_upper_bound))]@
+@[  if not field.type.is_primitive_type()]@
         from @(field.type.pkg_name).msg import @(field.type.type)
 @[  end if]@
 @[  if field.type.is_array]@
@@ -156,13 +156,12 @@ class @(spec.base_type.type)(metaclass=Metaclass):
              not isinstance(value, UserString) and
 @[    if field.type.array_size]@
 @[      if field.type.is_upper_bound]@
-             len(value) <= @(field.type.array_size))
+             len(value) <= @(field.type.array_size) and
 @[      else]@
-             len(value) == @(field.type.array_size))
+             len(value) == @(field.type.array_size) and
 @[      end if]@
-@[    else]@
-             all([isinstance(v, @(get_python_type(field.type))) for v in value]))
 @[    end if]@
+             all([isinstance(v, @(get_python_type(field.type))) for v in value]))
 @[  elif field.type.string_upper_bound]@
             ((isinstance(value, str) or isinstance(value, UserString)) and
              len(value) <= @(field.type.string_upper_bound))

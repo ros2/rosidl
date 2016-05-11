@@ -111,6 +111,7 @@ add_custom_command(
 # generate header to switch between export and import for a specific package
 set(_visibility_control_file
   "${_output_path}/msg/rosidl_generator_c__visibility_control.h")
+string(TOUPPER "${PROJECT_NAME}" PROJECT_NAME_UPPER)
 configure_file(
   "${rosidl_generator_c_TEMPLATE_DIR}/rosidl_generator_c__visibility_control.h.in"
   "${_visibility_control_file}"
@@ -171,4 +172,31 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
     RUNTIME DESTINATION bin
   )
   ament_export_include_directories(include)
+endif()
+
+if(NOT "${_generated_msg_headers}${_generated_msg_sources}${_generated_srv_headers}${_generated_srv_sources} " STREQUAL " ")
+  find_package(ament_cmake_cppcheck)
+  if(ament_cmake_cppcheck_FOUND)
+    ament_cppcheck(
+      TESTNAME "cppcheck_rosidl_generated_c"
+      "${_output_path}")
+  endif()
+  find_package(ament_cmake_cpplint)
+  if(ament_cmake_cpplint_FOUND)
+    get_filename_component(_cpplint_root "${_output_path}" DIRECTORY)
+    ament_cpplint(
+      TESTNAME "cpplint_rosidl_generated_c"
+      # the generated code might contain longer lines for templated types
+      MAX_LINE_LENGTH 999
+      ROOT "${_cpplint_root}"
+      "${_output_path}")
+  endif()
+  find_package(ament_cmake_uncrustify)
+  if(ament_cmake_uncrustify_FOUND)
+    ament_uncrustify(
+      TESTNAME "uncrustify_rosidl_generated_c"
+      # the generated code might contain longer lines for templated types
+      MAX_LINE_LENGTH 999
+      "${_output_path}")
+  endif()
 endif()

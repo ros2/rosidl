@@ -84,6 +84,9 @@ struct @(spec.base_type.type)_
 @[for (alloc_type, alloc_name) in [['', ''], ['const ContainerAllocator & ', '_alloc']]]@
   @('explicit ' if alloc_type else '')@(spec.base_type.type)_(@(alloc_type + alloc_name))
 @# generate initializer lists
+@[if alloc_name == '_alloc']@
+// *INDENT-OFF* (prevent uncrustify from making unnecessary indents here)
+@[end if]@
 @{
 used_alloc_name = False
 leading_colon = ':'
@@ -107,6 +110,9 @@ for field in spec.fields:
 if leading_colon == ' ':
     print()
 }@
+@[if alloc_name == '_alloc']@
+// *INDENT-ON*
+@[end if]@
   {
 @# generate constructor body
 @[if alloc_name and not used_alloc_name]@

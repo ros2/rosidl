@@ -64,6 +64,14 @@ macro(rosidl_generate_interfaces target)
     list(APPEND _idl_files "${_idl_file}")
   endforeach()
 
+  #inject builtin_interfaces dependency for backwards compatibility
+  if(NOT ${PROJECT_NAME} MATCHES "builtin_interfaces")
+    if(NOT builtin_interfaces_FOUND)
+      find_package(builtin_interfaces REQUIRED)
+    endif()
+    list(APPEND _ARG_DEPENDENCIES "builtin_interfaces")
+  endif()
+
   # collect all interface files from dependencies
   set(_dep_files)
   foreach(_dep ${_ARG_DEPENDENCIES})

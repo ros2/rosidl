@@ -78,25 +78,20 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   @(nested_type) * item@(field.name);
 @[      if field.type.array_size is None]@
   size_t size@(field.name) = PySequence_Size(py@(field.name));
+  if (!@(nested_type)__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
+    PyErr_SetString(PyExc_RuntimeError, "unable to create @(nested_type)__Array ros_message");
+  }
+  @(nested_type) * dest@(field.name) = ros_message->@(field.name).data;
 @[      else]@
   size_t size@(field.name) = @(field.type.array_size);
+  @(nested_type) * dest@(field.name) = ros_message->@(field.name);
 @[      end if]@
-  @(nested_type) * tmparray@(field.name) = (@(nested_type) *)malloc(sizeof(@(nested_type)) * size@(field.name));
   size_t idx@(field.name);
   for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
     item@(field.name) = (@(nested_type) *) convert_from_py_@(field.name)(
       PySequence_Fast_GET_ITEM(seq@(field.name), idx@(field.name)));
-    tmparray@(field.name)[idx@(field.name)] = *item@(field.name);
+    memcpy(&dest@(field.name)[idx@(field.name)], item@(field.name), sizeof(@(nested_type)));
   }
-@[      if field.type.array_size is None]@
-  if (!@(nested_type)__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
-    PyErr_SetString(PyExc_RuntimeError, "unable to create @(nested_type)__Array ros_message");
-  }
-  memcpy(ros_message->@(field.name).data, tmparray@(field.name), sizeof(@(nested_type)) * size@(field.name));
-@[      else]@
-  memcpy(ros_message->@(field.name), tmparray@(field.name), sizeof(@(nested_type)) * size@(field.name));
-@[      end if]@
-  free(tmparray@(field.name));
 @[    else]@
   @(nested_type) * tmp@(field.name) = (@(nested_type) *) convert_from_py_@(field.name)(py@(field.name));
   ros_message->@(field.name) = *tmp@(field.name);
@@ -107,57 +102,6 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   PyObject * item@(field.name);
 @[    if field.type.array_size is None]@
   size_t size@(field.name) = PySequence_Size(py@(field.name));
-@[    else]@
-  size_t size@(field.name) = @(field.type.array_size);
-@[    end if]@
-  @primitive_msg_type_to_c(field.type.type) * tmparray@(field.name) = (@primitive_msg_type_to_c(field.type.type) *)malloc(sizeof(@primitive_msg_type_to_c(field.type.type)) * size@(field.name));
-  size_t idx@(field.name);
-  for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
-    item@(field.name) = PySequence_Fast_GET_ITEM(seq@(field.name), idx@(field.name));
-@[    if field.type.type in ['byte', 'char']]@
-    assert(PyBytes_Check(item@(field.name)));
-    tmparray@(field.name)[idx@(field.name)] = PyBytes_AS_STRING(item@(field.name))[0];
-@[    elif field.type.type in ['string']]@
-    assert(PyUnicode_Check(item@(field.name)));
-    rosidl_generator_c__String__assign(
-      &tmparray@(field.name)[idx@(field.name)], (char *)PyUnicode_1BYTE_DATA(item@(field.name)));
-@[    elif field.type.type =='bool']@
-    assert(PyBool_Check(item@(field.name)));
-    tmparray@(field.name)[idx@(field.name)] = (item@(field.name) == Py_True);
-@[    elif field.type.type in ['float32', 'float64']]@
-    assert(PyFloat_Check(item@(field.name)));
-@[      if field.type.type == 'float32']@
-    tmparray@(field.name)[idx@(field.name)] = (float)PyFloat_AS_DOUBLE(item@(field.name));
-@[      else]@
-    tmparray@(field.name)[idx@(field.name)] = PyFloat_AS_DOUBLE(item@(field.name));
-@[      end if]@
-@[    elif field.type.type in [
-        'int8',
-        'int16',
-        'int32',
-    ]]@
-    assert(PyLong_Check(item@(field.name)));
-    tmparray@(field.name)[idx@(field.name)] = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsLong(item@(field.name));
-@[    elif field.type.type in [
-        'uint8',
-        'uint16',
-        'uint32',
-    ]]@
-    assert(PyLong_Check(item@(field.name)));
-@[      if field.type.type == 'uint32']@
-    tmparray@(field.name)[idx@(field.name)] = PyLong_AsUnsignedLong(item@(field.name));
-@[      else]@
-    tmparray@(field.name)[idx@(field.name)] = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsUnsignedLong(item@(field.name));
-@[      end if]@
-@[    elif field.type.type == 'int64']@
-    assert(PyLong_Check(item@(field.name)));
-    tmparray@(field.name)[idx@(field.name)] = PyLong_AsLongLong(item@(field.name));
-@[    elif field.type.type == 'uint64']@
-    assert(PyLong_Check(item@(field.name)));
-    tmparray@(field.name)[idx@(field.name)] = PyLong_AsUnsignedLongLong(item@(field.name));
-@[    end if]@
-  }
-@[    if field.type.array_size is None]@
 @[      if field.type.type == 'string']@
   if (!rosidl_generator_c__String__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
     PyErr_SetString(PyExc_RuntimeError, "unable to create String__Array ros_message");
@@ -167,11 +111,63 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
     PyErr_SetString(PyExc_RuntimeError, "unable to create @(field.type.type)__Array ros_message");
   }
 @[      end if]@
-  memcpy(ros_message->@(field.name).data, tmparray@(field.name), sizeof(@primitive_msg_type_to_c(field.type.type)) * size@(field.name));
+  @primitive_msg_type_to_c(field.type.type) * dest@(field.name) = ros_message->@(field.name).data;
 @[    else]@
-  memcpy(ros_message->@(field.name), tmparray@(field.name), sizeof(@primitive_msg_type_to_c(field.type.type)) * size@(field.name));
+  size_t size@(field.name) = @(field.type.array_size);
+  @primitive_msg_type_to_c(field.type.type) * dest@(field.name) = ros_message->@(field.name);
 @[    end if]@
-  free(tmparray@(field.name));
+@[    if field.type.type != 'string']@
+  @primitive_msg_type_to_c(field.type.type) tmp@(field.name);
+@[    end if]@
+  size_t idx@(field.name);
+  for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
+    item@(field.name) = PySequence_Fast_GET_ITEM(seq@(field.name), idx@(field.name));
+@[    if field.type.type in ['byte', 'char']]@
+    assert(PyBytes_Check(item@(field.name)));
+    tmp@(field.name) = PyBytes_AS_STRING(item@(field.name))[0];
+@[    elif field.type.type == 'string']@
+    assert(PyUnicode_Check(item@(field.name)));
+    rosidl_generator_c__String__assign(
+      &dest@(field.name)[idx@(field.name)], (char *)PyUnicode_1BYTE_DATA(item@(field.name)));
+@[    elif field.type.type == 'bool']@
+    assert(PyBool_Check(item@(field.name)));
+    tmp@(field.name) = (item@(field.name) == Py_True);
+@[    elif field.type.type in ['float32', 'float64']]@
+    assert(PyFloat_Check(item@(field.name)));
+@[      if field.type.type == 'float32']@
+    tmp@(field.name) = (float)PyFloat_AS_DOUBLE(item@(field.name));
+@[      else]@
+    tmp@(field.name) = PyFloat_AS_DOUBLE(item@(field.name));
+@[      end if]@
+@[    elif field.type.type in [
+        'int8',
+        'int16',
+        'int32',
+    ]]@
+    assert(PyLong_Check(item@(field.name)));
+    tmp@(field.name) = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsLong(item@(field.name));
+@[    elif field.type.type in [
+        'uint8',
+        'uint16',
+        'uint32',
+    ]]@
+    assert(PyLong_Check(item@(field.name)));
+@[      if field.type.type == 'uint32']@
+    tmp@(field.name) = PyLong_AsUnsignedLong(item@(field.name));
+@[      else]@
+    tmp@(field.name) = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsUnsignedLong(item@(field.name));
+@[      end if]
+@[    elif field.type.type == 'int64']@
+    assert(PyLong_Check(item@(field.name)));
+    tmp@(field.name) = PyLong_AsLongLong(item@(field.name));
+@[    elif field.type.type == 'uint64']@
+    assert(PyLong_Check(item@(field.name)));
+    tmp@(field.name) = PyLong_AsUnsignedLongLong(item@(field.name));
+@[    end if]@
+@[    if field.type.type != 'string']@
+    memcpy(&dest@(field.name)[idx@(field.name)], &tmp@(field.name), sizeof(@primitive_msg_type_to_c(field.type.type)));
+@[    end if]@
+  }
 @[  elif field.type.type in ['byte', 'char']]@
   assert(PyBytes_Check(py@(field.name)));
   ros_message->@(field.name) = PyBytes_AS_STRING(py@(field.name))[0];

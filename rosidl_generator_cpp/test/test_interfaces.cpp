@@ -140,11 +140,11 @@ void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic 
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint64_value, 0, UINT64_MAX)
 }
 
-#define TEST_BOUNDED_ARRAY_PRIMITIVE(Message, FieldName, PrimitiveType, \
-    ArraySize, MinVal, MaxVal) \
+#define TEST_BOUNDED_ARRAY_PRIMITIVE( \
+    Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal) \
   std::array<PrimitiveType, ArraySize> pattern_ ## FieldName; \
-  test_vector_fill<decltype(pattern_ ## FieldName)>(&pattern_ ## FieldName, \
-    ArraySize, MinVal, MaxVal); \
+  test_vector_fill<decltype(pattern_ ## FieldName)>( \
+    &pattern_ ## FieldName, ArraySize, MinVal, MaxVal); \
   std::copy_n(pattern_ ## FieldName.begin(), ArraySize, Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
@@ -180,11 +180,11 @@ void test_message_primitives_bounded(rosidl_generator_cpp::msg::PrimitivesBounde
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, string_value, "", "Deep into that darkness peering")
 }
 
-#define TEST_UNBOUNDED_ARRAY_PRIMITIVE(Message, FieldName, PrimitiveType, \
-    ArraySize, MinVal, MaxVal) \
+#define TEST_UNBOUNDED_ARRAY_PRIMITIVE( \
+    Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal) \
   std::vector<PrimitiveType> pattern_ ## FieldName(ArraySize); \
-  test_vector_fill<decltype(pattern_ ## FieldName)>(&pattern_ ## FieldName, \
-    ArraySize, MinVal, MaxVal); \
+  test_vector_fill<decltype(pattern_ ## FieldName)>( \
+    &pattern_ ## FieldName, ArraySize, MinVal, MaxVal); \
   Message.FieldName.resize(ArraySize); \
   std::copy_n(pattern_ ## FieldName.begin(), ArraySize, Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \

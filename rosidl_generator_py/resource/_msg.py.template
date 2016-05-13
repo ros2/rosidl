@@ -124,6 +124,13 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 @[end if]@
 @[for field in spec.fields]@
 
+    def __repr__(self):
+        typename = self.__class__.__module__.split('.')
+        typename.pop()
+        typename.append(self.__class__.__name__)
+        args = [s[1:] + '=' + repr(getattr(self, s, None)) for s in self.__slots__]
+        return '%s(%s)' % ('.'.join(typename), ', '.join(args))
+
     @@property
     def @(field.name)(self):
         """Message field '@(field.name)'."""

@@ -1,4 +1,4 @@
-# generated from rosidl_generator_py/resource/_srv.py.template
+# generated from rosidl_generator_py/resource/_srv.py.em
 # generated code does not contain a copyright notice
 
 from @(package_name).msg._@(spec.srv_name)__request import @(spec.srv_name)_Request

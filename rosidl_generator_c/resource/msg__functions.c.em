@@ -1,4 +1,4 @@
-// generated from rosidl_generator_c/resource/msg__functions.c.template
+// generated from rosidl_generator_c/resource/msg__functions.c.em
 // generated code does not contain a copyright notice
 
 @#######################################################################

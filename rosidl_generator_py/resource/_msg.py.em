@@ -1,4 +1,4 @@
-# generated from rosidl_generator_py/resource/_msg.py.template
+# generated from rosidl_generator_py/resource/_msg.py.em
 # generated code does not contain a copyright notice
 
 import logging

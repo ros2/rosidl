@@ -1,4 +1,4 @@
-// generated from rosidl_generator_cpp/resource/srv__traits.hpp.template
+// generated from rosidl_generator_cpp/resource/srv__traits.hpp.em
 // generated code does not contain a copyright notice
 
 @#######################################################################

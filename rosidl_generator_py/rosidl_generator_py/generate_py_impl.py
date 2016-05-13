@@ -32,16 +32,16 @@ def generate_py(generator_arguments_file, typesupport_impls):
         '_%s_s.ep.{0}.c'.format(impl): impl for impl in typesupport_impls
     }
     mapping_msgs = {
-        os.path.join(template_dir, '_msg.py.template'): ['_%s.py'],
-        os.path.join(template_dir, '_msg_support.c.template'): ['_%s_s.c'],
+        os.path.join(template_dir, '_msg.py.em'): ['_%s.py'],
+        os.path.join(template_dir, '_msg_support.c.em'): ['_%s_s.c'],
     }
     mapping_extension_msgs = {
-        os.path.join(template_dir, '_msg_support.entry_point.c.template'):
+        os.path.join(template_dir, '_msg_support.entry_point.c.em'):
         type_support_impl_by_filename.keys(),
     }
 
     mapping_srvs = {
-        os.path.join(template_dir, '_srv.py.template'): ['_%s.py'],
+        os.path.join(template_dir, '_srv.py.em'): ['_%s.py'],
     }
 
     for template_file in mapping_msgs.keys():

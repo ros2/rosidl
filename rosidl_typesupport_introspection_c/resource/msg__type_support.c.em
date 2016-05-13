@@ -1,4 +1,4 @@
-// generated from rosidl_typesupport_introspection_c/resource/msg__type_support.c.template
+// generated from rosidl_typesupport_introspection_c/resource/msg__type_support.c.em
 
 @#######################################################################
 @# EmPy template for generating <msg>__type_support.c files

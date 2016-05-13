@@ -1,4 +1,4 @@
-// generated from rosidl_typesupport_introspection_c/resource/srv__introspection_type_support.h.template
+// generated from rosidl_typesupport_introspection_c/resource/srv__introspection_type_support.h.em
 
 @#######################################################################
 @# EmPy template for generating <srv>__introspection_type_support.h files

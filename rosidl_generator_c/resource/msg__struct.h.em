@@ -1,4 +1,4 @@
-// generated from rosidl_generator_c/resource/msg__struct.h.template
+// generated from rosidl_generator_c/resource/msg__struct.h.em
 // generated code does not contain a copyright notice
 
 @#######################################################################

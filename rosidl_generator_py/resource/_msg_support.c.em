@@ -1,4 +1,4 @@
-// generated from rosidl_generator_py/resource/_msg_support.c.template
+// generated from rosidl_generator_py/resource/_msg_support.c.em
 // generated code does not contain a copyright notice
 
 #include <Python.h>

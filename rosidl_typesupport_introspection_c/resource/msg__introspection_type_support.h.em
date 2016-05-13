@@ -1,4 +1,4 @@
-// generated from rosidl_typesupport_introspection_c/resource/msg__introspection_type_support.h.template
+// generated from rosidl_typesupport_introspection_c/resource/msg__introspection_type_support.h.em
 
 @#######################################################################
 @# EmPy template for generating <msg>__introspection_type_support.h files

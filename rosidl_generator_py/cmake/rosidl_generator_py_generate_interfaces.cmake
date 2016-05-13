@@ -104,10 +104,10 @@ endforeach()
 set(target_dependencies
   "${rosidl_generator_py_BIN}"
   ${rosidl_generator_py_GENERATOR_FILES}
-  "${rosidl_generator_py_TEMPLATE_DIR}/_msg_support.c.template"
-  "${rosidl_generator_py_TEMPLATE_DIR}/_msg_support.entry_point.c.template"
-  "${rosidl_generator_py_TEMPLATE_DIR}/_msg.py.template"
-  "${rosidl_generator_py_TEMPLATE_DIR}/_srv.py.template"
+  "${rosidl_generator_py_TEMPLATE_DIR}/_msg_support.c.em"
+  "${rosidl_generator_py_TEMPLATE_DIR}/_msg_support.entry_point.c.em"
+  "${rosidl_generator_py_TEMPLATE_DIR}/_msg.py.em"
+  "${rosidl_generator_py_TEMPLATE_DIR}/_srv.py.em"
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files})
 foreach(dep ${target_dependencies})

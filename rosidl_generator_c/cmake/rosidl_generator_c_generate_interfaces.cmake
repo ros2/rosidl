@@ -74,12 +74,12 @@ endforeach()
 set(target_dependencies
   "${rosidl_generator_c_BIN}"
   ${rosidl_generator_c_GENERATOR_FILES}
-  "${rosidl_generator_c_TEMPLATE_DIR}/msg.h.template"
-  "${rosidl_generator_c_TEMPLATE_DIR}/msg__functions.c.template"
-  "${rosidl_generator_c_TEMPLATE_DIR}/msg__functions.h.template"
-  "${rosidl_generator_c_TEMPLATE_DIR}/msg__struct.h.template"
-  "${rosidl_generator_c_TEMPLATE_DIR}/msg__type_support.h.template"
-  "${rosidl_generator_c_TEMPLATE_DIR}/srv.h.template"
+  "${rosidl_generator_c_TEMPLATE_DIR}/msg.h.em"
+  "${rosidl_generator_c_TEMPLATE_DIR}/msg__functions.c.em"
+  "${rosidl_generator_c_TEMPLATE_DIR}/msg__functions.h.em"
+  "${rosidl_generator_c_TEMPLATE_DIR}/msg__struct.h.em"
+  "${rosidl_generator_c_TEMPLATE_DIR}/msg__type_support.h.em"
+  "${rosidl_generator_c_TEMPLATE_DIR}/srv.h.em"
   ${rosidl_generate_interfaces_c_IDL_FILES}
   ${_dependency_files})
 foreach(dep ${target_dependencies})

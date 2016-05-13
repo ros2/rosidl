@@ -39,45 +39,45 @@ namespace rosidl_typesupport_introspection_cpp
 {
 
 @[if spec.fields]@
-@[for field in spec.fields]@
-@[if not field.type.is_primitive_type() and field.type.is_array]@
+@[  for field in spec.fields]@
+@[    if not field.type.is_primitive_type() and field.type.is_array]@
 size_t size_function__@(spec.base_type.type)__@(field.name)(const void * untyped_member)
 {
-@[if field.type.array_size and not field.type.is_upper_bound]@
+@[      if field.type.array_size and not field.type.is_upper_bound]@
   (void)untyped_member;
   return @(field.type.array_size);
-@[else]@
+@[      else]@
   const std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> * member =
     reinterpret_cast<const std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> *>(untyped_member);
   return member->size();
-@[end if]@
+@[      end if]@
 }
 
 const void * get_const_function__@(spec.base_type.type)__@(field.name)(const void * untyped_member, size_t index)
 {
-@[if field.type.array_size and not field.type.is_upper_bound]@
+@[      if field.type.array_size and not field.type.is_upper_bound]@
   const @(field.type.pkg_name)::msg::@(field.type.type) * member =
     reinterpret_cast<const @(field.type.pkg_name)::msg::@(field.type.type) *>(untyped_member);
-@[else]@
+@[      else]@
   const std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> & member =
     *reinterpret_cast<const std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> *>(untyped_member);
-@[end if]@
+@[      end if]@
   return &member[index];
 }
 
 void * get_function__@(spec.base_type.type)__@(field.name)(void * untyped_member, size_t index)
 {
-@[if field.type.array_size and not field.type.is_upper_bound]@
+@[      if field.type.array_size and not field.type.is_upper_bound]@
   @(field.type.pkg_name)::msg::@(field.type.type) * member =
     reinterpret_cast<@(field.type.pkg_name)::msg::@(field.type.type) *>(untyped_member);
-@[else]@
+@[      else]@
   std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> & member =
     *reinterpret_cast<std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> *>(untyped_member);
-@[end if]@
+@[      end if]@
   return &member[index];
 }
 
-@[if not field.type.array_size or field.type.is_upper_bound]@
+@[      if not field.type.array_size or field.type.is_upper_bound]@
 void resize_function__@(spec.base_type.type)__@(field.name)(void * untyped_member, size_t size)
 {
   std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> * member =
@@ -85,9 +85,9 @@ void resize_function__@(spec.base_type.type)__@(field.name)(void * untyped_membe
   member->resize(size);
 }
 
-@[end if]@
-@[end if]@
-@[end for]@
+@[      end if]@
+@[    end if]@
+@[  end for]@
 static const ::rosidl_typesupport_introspection_cpp::MessageMember @(spec.base_type.type)_message_member_array[@(len(spec.fields))] = {
 @{
 for index, field in enumerate(spec.fields):

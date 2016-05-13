@@ -84,32 +84,32 @@ for constant in spec.constants:
 }@
 @[if includes]@
 // include message dependencies
-@[for header_file, field_names in includes.items()]@
-@[for field_name in field_names]@
+@[  for header_file, field_names in includes.items()]@
+@[    for field_name in field_names]@
 // @(field_name)
-@[end for]@
+@[    end for]@
 #include "@(header_file)"
-@[end for]@
+@[  end for]@
 
 @[end if]@
 @[if constants]@
 // constants defined in the message
-@[for constant_type, constant_name, key, value in constants]@
+@[  for constant_type, constant_name, key, value in constants]@
 // @(constant_name)
-@[if constant_type == 'enum']@
+@[    if constant_type == 'enum']@
 enum
 {
   @(key) = @(value)
 };
-@[elif key.split()[0] == 'rosidl_generator_c__String']@
+@[    elif key.split()[0] == 'rosidl_generator_c__String']@
 @{
 name = key.split()[1]
 }@
 static const char * const @(name) = @(value);
-@[else]@
+@[    else]@
 static const @(key) = @(value);
-@[end if]@
-@[end for]@
+@[    end if]@
+@[  end for]@
 
 @[end if]@
 @
@@ -134,13 +134,13 @@ for field in spec.fields:
 }@
 @[if upper_bounds]@
 // constants for array fields with an upper bound
-@[for field_name, enum_name, enum_value in upper_bounds]@
+@[  for field_name, enum_name, enum_value in upper_bounds]@
 // @(field_name)
 enum
 {
   @(enum_name) = @(enum_value)
 };
-@[end for]@
+@[  end for]@
 
 @[end if]@
 @

@@ -52,12 +52,12 @@ for field in spec.fields:
 }@
 @[if includes]@
 // include message dependencies
-@[for header_file, field_names in includes.items()]@
-@[for field_name in field_names]@
+@[  for header_file, field_names in includes.items()]@
+@[    for field_name in field_names]@
 // @(field_name)
-@[end for]@
+@[    end for]@
 #include "@(header_file)"
-@[end for]@
+@[  end for]@
 
 @[end if]@
 @

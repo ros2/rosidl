@@ -122,7 +122,6 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 @[    end if]@
 @[  end for]@
 @[end if]@
-@[for field in spec.fields]@
 
     def __repr__(self):
         typename = self.__class__.__module__.split('.')
@@ -130,6 +129,7 @@ class @(spec.base_type.type)(metaclass=Metaclass):
         typename.append(self.__class__.__name__)
         args = [s[1:] + '=' + repr(getattr(self, s, None)) for s in self.__slots__]
         return '%s(%s)' % ('.'.join(typename), ', '.join(args))
+@[for field in spec.fields]@
 
     @@property
     def @(field.name)(self):

@@ -1,4 +1,4 @@
-# Copyright 2014-2015 Open Source Robotics Foundation, Inc.
+# Copyright 2014-2016 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -155,27 +155,16 @@ endif()
 
 set(_target_suffix "__py")
 
-add_custom_command(
-  OUTPUT ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_files}
-  COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_py_BIN}
-  --generator-arguments-file "${generator_arguments_file}"
-  --typesupport-impls "${_typesupport_impls}"
-  DEPENDS ${target_dependencies}
-  COMMENT "Generating Python code for ROS interfaces"
-  VERBATIM
-)
-
-if(TARGET ${rosidl_generate_interfaces_TARGET}${_target_suffix})
-  message(WARNING "Custom target ${rosidl_generate_interfaces_TARGET}${_target_suffix} already exists")
-else()
-  add_custom_target(
-    ${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    DEPENDS
-    ${_generated_msg_py_files}
-    ${_generated_msg_c_files}
-    ${_generated_srv_files}
-  )
-endif()
+# move custom command into a subdirectory to avoid multiple invocations on Windows
+set(_subdir "${CMAKE_CURRENT_BINARY_DIR}/${rosidl_generate_interfaces_TARGET}${_target_suffix}")
+file(MAKE_DIRECTORY "${_subdir}")
+file(READ "${rosidl_generator_py_DIR}/custom_command.cmake" _custom_command)
+file(WRITE "${_subdir}/CMakeLists.txt" "${_custom_command}")
+add_subdirectory("${_subdir}" ${rosidl_generate_interfaces_TARGET}${_target_suffix})
+set_property(
+  SOURCE
+  ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_files}
+  PROPERTY GENERATED 1)
 
 macro(set_properties _build_type)
   set_target_properties(${_target_name} PROPERTIES

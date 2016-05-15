@@ -27,15 +27,15 @@ def generate_cpp(generator_arguments_file):
 
     template_dir = args['template_dir']
     mapping_msgs = {
-        os.path.join(template_dir, 'msg.hpp.template'): '%s.hpp',
-        os.path.join(template_dir, 'msg__struct.hpp.template'): '%s__struct.hpp',
-        os.path.join(template_dir, 'msg__traits.hpp.template'): '%s__traits.hpp',
+        os.path.join(template_dir, 'msg.hpp.em'): '%s.hpp',
+        os.path.join(template_dir, 'msg__struct.hpp.em'): '%s__struct.hpp',
+        os.path.join(template_dir, 'msg__traits.hpp.em'): '%s__traits.hpp',
     }
 
     mapping_srvs = {
-        os.path.join(template_dir, 'srv.hpp.template'): '%s.hpp',
-        os.path.join(template_dir, 'srv__struct.hpp.template'): '%s__struct.hpp',
-        os.path.join(template_dir, 'srv__traits.hpp.template'): '%s__traits.hpp',
+        os.path.join(template_dir, 'srv.hpp.em'): '%s.hpp',
+        os.path.join(template_dir, 'srv__struct.hpp.em'): '%s__struct.hpp',
+        os.path.join(template_dir, 'srv__traits.hpp.em'): '%s__traits.hpp',
     }
     for template_file in mapping_msgs.keys():
         assert os.path.exists(template_file), 'Could not find template: ' + template_file

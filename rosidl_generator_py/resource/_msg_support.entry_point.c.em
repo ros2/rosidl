@@ -1,4 +1,4 @@
-// generated from rosidl_generator_py/resource/_msg_support.entry_point.c.template
+// generated from rosidl_generator_py/resource/_msg_support.entry_point.c.em
 // generated code does not contain a copyright notice
 
 #include <Python.h>
@@ -49,15 +49,15 @@ int8_t
 _register_type__@(type_name)(PyObject * pymodule)
 {
   int8_t err;
-@[for function_name in function_names]@
+@[  for function_name in function_names]@
 
   PyObject * pyobject_@(function_name) = NULL;
   pyobject_@(function_name) = PyCapsule_New(
-@[if function_name != 'type_support']@
+@[    if function_name != 'type_support']@
     (void *)&@(spec.base_type.pkg_name)_@(type_name)__@(function_name),
-@[else]@
+@[    else]@
     (void *)ROSIDL_GET_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name)),
-@[end if]@
+@[    end if]@
     NULL, NULL);
   if (!pyobject_@(function_name)) {
     // previously added objects will be removed when the module is destroyed
@@ -73,7 +73,7 @@ _register_type__@(type_name)(PyObject * pymodule)
     // previously added objects will be removed when the module is destroyed
     return err;
   }
-@[end for]@
+@[  end for]@
   return 0;
 }
 @[end for]@

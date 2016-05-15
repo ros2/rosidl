@@ -1,4 +1,4 @@
-// generated from rosidl_generator_c/resource/msg__type_support.h.template
+// generated from rosidl_generator_c/resource/msg__type_support.h.em
 // generated code does not contain a copyright notice
 
 @#######################################################################

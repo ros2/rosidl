@@ -29,11 +29,11 @@ def generate_cpp(generator_arguments_file):
 
     template_dir = args['template_dir']
     mapping_msgs = {
-        os.path.join(template_dir, 'msg__type_support.cpp.template'):
+        os.path.join(template_dir, 'msg__type_support.cpp.em'):
         '%s__type_support.cpp',
     }
     mapping_srvs = {
-        os.path.join(template_dir, 'srv__type_support.cpp.template'):
+        os.path.join(template_dir, 'srv__type_support.cpp.em'):
         '%s__type_support.cpp',
     }
 

@@ -1,4 +1,4 @@
-// generated from rosidl_typesupport_introspection_cpp/resource/srv__type_support.cpp.template
+// generated from rosidl_typesupport_introspection_cpp/resource/srv__type_support.cpp.em
 
 @#######################################################################
 @# EmPy template for generating <srv>__type_support.cpp files

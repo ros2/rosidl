@@ -1,4 +1,4 @@
-// generated from rosidl_generator_cpp/resource/msg__struct.hpp.template
+// generated from rosidl_generator_cpp/resource/msg__struct.hpp.em
 // generated code does not contain a copyright notice
 
 @#######################################################################
@@ -84,9 +84,9 @@ struct @(spec.base_type.type)_
 @[for (alloc_type, alloc_name) in [['', ''], ['const ContainerAllocator & ', '_alloc']]]@
   @('explicit ' if alloc_type else '')@(spec.base_type.type)_(@(alloc_type + alloc_name))
 @# generate initializer lists
-@[if alloc_name == '_alloc']@
+@[  if alloc_name == '_alloc']@
 // *INDENT-OFF* (prevent uncrustify from making unnecessary indents here)
-@[end if]@
+@[  end if]@
 @{
 used_alloc_name = False
 leading_colon = ':'
@@ -110,14 +110,14 @@ for field in spec.fields:
 if leading_colon == ' ':
     print()
 }@
-@[if alloc_name == '_alloc']@
+@[  if alloc_name == '_alloc']@
 // *INDENT-ON*
-@[end if]@
+@[  end if]@
   {
 @# generate constructor body
-@[if alloc_name and not used_alloc_name]@
+@[  if alloc_name and not used_alloc_name]@
     (void)@(alloc_name);
-@[end if]@
+@[  end if]@
 @{
 for field in spec.fields:
     # default values of dynamic arrays with allocators if available
@@ -149,13 +149,13 @@ for field in spec.fields:
 
   // constants
 @[for constant in spec.constants]@
-@[if (constant.type in ['byte', 'int8', 'int16', 'int32', 'int64', 'char'])]@
+@[  if (constant.type in ['byte', 'int8', 'int16', 'int32', 'int64', 'char'])]@
   enum { @(constant.name) = @(int(constant.value)) };
-@[elif (constant.type in ['uint8', 'uint16', 'uint32', 'uint64'])]@
+@[  elif (constant.type in ['uint8', 'uint16', 'uint32', 'uint64'])]@
   enum { @(constant.name) = @(int(constant.value))u };
-@[else]@
+@[  else]@
   static const @(MSG_TYPE_TO_CPP[constant.type]) @(constant.name);
-@[end if]@
+@[  end if]@
 @[end for]@
 
   // pointer types
@@ -220,18 +220,18 @@ using @(spec.base_type.type) =
 
 // constants requiring out of line definition
 @[for c in spec.constants]@
-@[if c.type not in ['byte', 'int8', 'int16', 'int32', 'int64', 'char', 'uint8', 'uint16', 'uint32', 'uint64']]@
+@[  if c.type not in ['byte', 'int8', 'int16', 'int32', 'int64', 'char', 'uint8', 'uint16', 'uint32', 'uint64']]@
 template<typename ContainerAllocator>
 const @(MSG_TYPE_TO_CPP[c.type])
 @(spec.base_type.type)_<ContainerAllocator>::@(c.name) =
-@[if c.type == 'string']@
+@[    if c.type == 'string']@
   "@(escape_string(c.value))";
-@[elif c.type == 'bool']@
+@[    elif c.type == 'bool']@
   @(int(c.value));
-@[else]@
+@[    else]@
   @(c.value);
-@[end if]@
-@[end if]@
+@[    end if]@
+@[  end if]@
 @[end for]@
 
 }  // namespace @(subfolder)

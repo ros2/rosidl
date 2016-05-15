@@ -1,4 +1,4 @@
-// generated from rosidl_typesupport_introspection_c/resource/msg__type_support.c.template
+// generated from rosidl_typesupport_introspection_c/resource/msg__type_support.c.em
 
 @#######################################################################
 @# EmPy template for generating <msg>__type_support.c files
@@ -54,12 +54,12 @@ for field in spec.fields:
 }@
 @[if includes]@
 // include message dependencies
-@[for header_file, field_names in includes.items()]@
-@[for field_name in field_names]@
+@[  for header_file, field_names in includes.items()]@
+@[    for field_name in field_names]@
 // @(field_name)
-@[end for]@
+@[    end for]@
 #include "@(header_file)"
-@[end for]@
+@[  end for]@
 
 @[end if]@
 #if __cplusplus
@@ -72,50 +72,50 @@ extern "C"
 @# include message dependencies
 @#######################################################################
 @[if spec.fields]@
-@[for field in spec.fields]@
-@[if not field.type.is_primitive_type() and field.type.is_array]@
+@[  for field in spec.fields]@
+@[    if not field.type.is_primitive_type() and field.type.is_array]@
 size_t @(function_prefix)__size_function__@(spec.base_type.type)__@(field.name)(
   const void * untyped_member)
 {
-@[if field.type.array_size and not field.type.is_upper_bound]@
+@[      if field.type.array_size and not field.type.is_upper_bound]@
   (void)untyped_member;
   return @(field.type.array_size);
-@[else]@
+@[      else]@
   const @(field.type.pkg_name)__msg__@(field.type.type)__Array * member =
     (const @(field.type.pkg_name)__msg__@(field.type.type)__Array *)(untyped_member);
   return member->size;
-@[end if]@
+@[      end if]@
 }
 
 const void * @(function_prefix)__get_const_function__@(spec.base_type.type)__@(field.name)(
   const void * untyped_member, size_t index)
 {
-@[if field.type.array_size and not field.type.is_upper_bound]@
+@[      if field.type.array_size and not field.type.is_upper_bound]@
   const @(field.type.pkg_name)__msg__@(field.type.type) ** member =
     (const @(field.type.pkg_name)__msg__@(field.type.type) **)(untyped_member);
   return &(*member)[index];
-@[else]@
+@[      else]@
   const @(field.type.pkg_name)__msg__@(field.type.type)__Array * member =
     (const @(field.type.pkg_name)__msg__@(field.type.type)__Array *)(untyped_member);
   return &member->data[index];
-@[end if]@
+@[      end if]@
 }
 
 void * @(function_prefix)__get_function__@(spec.base_type.type)__@(field.name)(
   void * untyped_member, size_t index)
 {
-@[if field.type.array_size and not field.type.is_upper_bound]@
+@[      if field.type.array_size and not field.type.is_upper_bound]@
   @(field.type.pkg_name)__msg__@(field.type.type) ** member =
     (@(field.type.pkg_name)__msg__@(field.type.type) **)(untyped_member);
   return &(*member)[index];
-@[else]@
+@[      else]@
   @(field.type.pkg_name)__msg__@(field.type.type)__Array * member =
     (@(field.type.pkg_name)__msg__@(field.type.type)__Array *)(untyped_member);
     return &member->data[index];
-@[end if]@
+@[      end if]@
 }
 
-@[if not field.type.array_size or field.type.is_upper_bound]@
+@[      if not field.type.array_size or field.type.is_upper_bound]@
 bool @(function_prefix)__resize_function__@(spec.base_type.type)__@(field.name)(
   void * untyped_member, size_t size)
 {
@@ -125,9 +125,9 @@ bool @(function_prefix)__resize_function__@(spec.base_type.type)__@(field.name)(
   return @(field.type.pkg_name)__msg__@(field.type.type)__Array__init(member, size);
 }
 
-@[end if]@
-@[end if]@
-@[end for]@
+@[      end if]@
+@[    end if]@
+@[  end for]@
 static const rosidl_typesupport_introspection_c__MessageMember @(function_prefix)__@(spec.base_type.type)_message_member_array[@(len(spec.fields))] = {
 @{
 for index, field in enumerate(spec.fields):

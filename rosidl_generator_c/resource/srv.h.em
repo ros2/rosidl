@@ -1,4 +1,4 @@
-// generated from rosidl_generator_c/resource/srv.h.template
+// generated from rosidl_generator_c/resource/srv.h.em
 // generated code does not contain a copyright notice
 
 @#######################################################################

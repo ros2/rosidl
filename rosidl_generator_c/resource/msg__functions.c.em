@@ -1,4 +1,4 @@
-// generated from rosidl_generator_c/resource/msg__functions.c.template
+// generated from rosidl_generator_c/resource/msg__functions.c.em
 // generated code does not contain a copyright notice
 
 @#######################################################################
@@ -52,12 +52,12 @@ for field in spec.fields:
 }@
 @[if includes]@
 // include message dependencies
-@[for header_file, field_names in includes.items()]@
-@[for field_name in field_names]@
+@[  for header_file, field_names in includes.items()]@
+@[    for field_name in field_names]@
 // @(field_name)
-@[end for]@
+@[    end for]@
 #include "@(header_file)"
-@[end for]@
+@[  end for]@
 
 @[end if]@
 @

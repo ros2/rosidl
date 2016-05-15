@@ -29,15 +29,15 @@ def generate_c(generator_arguments_file):
 
     template_dir = args['template_dir']
     mapping_msgs = {
-        os.path.join(template_dir, 'msg__introspection_type_support.h.template'):
+        os.path.join(template_dir, 'msg__introspection_type_support.h.em'):
         '%s__introspection_type_support.h',
-        os.path.join(template_dir, 'msg__type_support.c.template'):
+        os.path.join(template_dir, 'msg__type_support.c.em'):
         '%s__type_support.c',
     }
     mapping_srvs = {
-        os.path.join(template_dir, 'srv__introspection_type_support.h.template'):
+        os.path.join(template_dir, 'srv__introspection_type_support.h.em'):
         '%s__introspection_type_support.h',
-        os.path.join(template_dir, 'srv__type_support.c.template'):
+        os.path.join(template_dir, 'srv__type_support.c.em'):
         '%s__type_support.c',
     }
 

@@ -24,9 +24,10 @@ rosidl_generator_c__String__init(rosidl_generator_c__String * str)
   if (!str) {
     return;
   }
-  str->data = NULL;
+  str->data = malloc(1);
+  str->data[0] = '\0';
   str->size = 0;
-  str->capacity = 0;
+  str->capacity = 1;
 }
 
 void
@@ -43,7 +44,7 @@ rosidl_generator_c__String__fini(rosidl_generator_c__String * str)
     str->size = 0;
     str->capacity = 0;
   } else {
-    /* ensure that data, szie and and capacity values are consistent */
+    /* ensure that data, size and and capacity values are consistent */
     assert(0 == str->size);
     assert(0 == str->capacity);
   }

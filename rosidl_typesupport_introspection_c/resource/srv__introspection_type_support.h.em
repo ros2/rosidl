@@ -1,4 +1,5 @@
 // generated from rosidl_typesupport_introspection_c/resource/srv__introspection_type_support.h.em
+// generated code does not contain a copyright notice
 
 @#######################################################################
 @# EmPy template for generating <srv>__introspection_type_support.h files
@@ -12,7 +13,7 @@
 @{
 header_guard_parts = [
     spec.pkg_name, 'srv',
-    get_header_filename_from_msg_name(spec.srv_name) + '__introspection__type_support_h']
+    get_header_filename_from_msg_name(spec.srv_name) + '__introspection_type_support_h']
 header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 
 function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.pkg_name, 'srv')

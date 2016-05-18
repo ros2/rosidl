@@ -44,7 +44,7 @@ rosidl_generator_c__String__fini(rosidl_generator_c__String * str)
     str->size = 0;
     str->capacity = 0;
   } else {
-    /* ensure that data, size and and capacity values are consistent */
+    /* ensure that data, size, and capacity values are consistent */
     assert(0 == str->size);
     assert(0 == str->capacity);
   }

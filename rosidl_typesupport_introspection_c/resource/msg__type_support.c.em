@@ -1,4 +1,5 @@
 // generated from rosidl_typesupport_introspection_c/resource/msg__type_support.c.em
+// generated code does not contain a copyright notice
 
 @#######################################################################
 @# EmPy template for generating <msg>__type_support.c files
@@ -111,7 +112,7 @@ void * @(function_prefix)__get_function__@(spec.base_type.type)__@(field.name)(
 @[      else]@
   @(field.type.pkg_name)__msg__@(field.type.type)__Array * member =
     (@(field.type.pkg_name)__msg__@(field.type.type)__Array *)(untyped_member);
-    return &member->data[index];
+  return &member->data[index];
 @[      end if]@
 }
 
@@ -199,8 +200,7 @@ static rosidl_message_type_support_t @(function_prefix)__@(spec.base_type.type)_
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(spec.base_type.pkg_name)
 const rosidl_message_type_support_t *
-ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name))()
-{
+ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name))() {
   if (!@(function_prefix)__@(spec.base_type.type)_message_type_support_handle.typesupport_identifier) {
     @(function_prefix)__@(spec.base_type.type)_message_type_support_handle.typesupport_identifier =
       rosidl_typesupport_introspection_c__identifier;

@@ -1,4 +1,5 @@
 // generated from rosidl_typesupport_introspection_c/resource/srv__type_support.c.em
+// generated code does not contain a copyright notice
 
 @#######################################################################
 @# EmPy template for generating <srv>__type_support.c files
@@ -54,8 +55,7 @@ ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.pkg_name), srv, @(spec.srv_name)_Respons
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(spec.pkg_name)
 const rosidl_service_type_support_t *
-ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.pkg_name), srv, @(spec.srv_name))()
-{
+ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.pkg_name), srv, @(spec.srv_name))() {
   if (!@(function_prefix)__@(spec.srv_name)_service_type_support_handle.typesupport_identifier) {
     @(function_prefix)__@(spec.srv_name)_service_type_support_handle.typesupport_identifier =
       rosidl_typesupport_introspection_c__identifier;
@@ -66,12 +66,12 @@ ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.pkg_name), srv, @(spec.srv_name))()
   if (!service_members->request_members_) {
     service_members->request_members_ =
       (const rosidl_typesupport_introspection_c__MessageMembers *)
-        ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.pkg_name), srv, @(spec.srv_name)_Request)()->data;
+      ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.pkg_name), srv, @(spec.srv_name)_Request)()->data;
   }
   if (!service_members->response_members_) {
     service_members->response_members_ =
       (const rosidl_typesupport_introspection_c__MessageMembers *)
-        ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.pkg_name), srv, @(spec.srv_name)_Response)()->data;
+      ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.pkg_name), srv, @(spec.srv_name)_Response)()->data;
   }
 
   return &@(function_prefix)__@(spec.srv_name)_service_type_support_handle;

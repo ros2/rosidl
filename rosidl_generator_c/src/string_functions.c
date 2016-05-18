@@ -25,6 +25,9 @@ rosidl_generator_c__String__init(rosidl_generator_c__String * str)
     return;
   }
   str->data = malloc(1);
+  if (!str->data) {
+    return;
+  }
   str->data[0] = '\0';
   str->size = 0;
   str->capacity = 1;

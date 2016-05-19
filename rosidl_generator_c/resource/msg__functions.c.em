@@ -219,7 +219,7 @@ bool
   }
   @(msg_typename) * data = NULL;
   if (size) {
-    data = (@(msg_typename) *)malloc(sizeof(@(msg_typename)) * size);
+    data = (@(msg_typename) *)calloc(size, sizeof(@(msg_typename)));
     if (!data) {
       return false;
     }

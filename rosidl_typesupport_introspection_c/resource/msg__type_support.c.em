@@ -198,7 +198,6 @@ static rosidl_message_type_support_t @(function_prefix)__@(spec.base_type.type)_
   &@(function_prefix)__@(spec.base_type.type)_message_members
 };
 
-
 ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(spec.base_type.pkg_name)
 const rosidl_message_type_support_t *
 ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name))()

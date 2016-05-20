@@ -33,7 +33,7 @@ extern "C"
  * All strings must be null-terminated.
  */
 ROSIDL_GENERATOR_C_PUBLIC
-void
+bool
 rosidl_generator_c__String__init(rosidl_generator_c__String * str);
 
 ROSIDL_GENERATOR_C_PUBLIC

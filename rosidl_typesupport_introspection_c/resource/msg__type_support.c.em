@@ -149,6 +149,7 @@ for index, field in enumerate(spec.fields):
         # size_t string_upper_bound
         print('    0,  // upper bound of string')
         # const rosidl_message_type_support_t * members_
+
         print('    NULL ,  // members of sub message (initialized later)')
     # bool is_array_
     print('    %s,  // is array' % ('true' if field.type.is_array else 'false'))
@@ -197,6 +198,7 @@ static rosidl_message_type_support_t @(function_prefix)__@(spec.base_type.type)_
   0,
   &@(function_prefix)__@(spec.base_type.type)_message_members
 };
+
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(spec.base_type.pkg_name)
 const rosidl_message_type_support_t *

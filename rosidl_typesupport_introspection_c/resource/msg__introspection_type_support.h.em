@@ -30,6 +30,7 @@ function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.base_type
 @[if subfolder == 'msg']@
 static rosidl_message_type_support_t @(function_prefix)__@(spec.base_type.type)_message_type_support_handle;
 
+ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(spec.base_type.pkg_name)
 const rosidl_message_type_support_t *
 ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name))();
 @[end if]@

@@ -204,7 +204,7 @@ ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.base_type.pkg_name), @(subfolder), @(spe
 {
 @[for i, field in enumerate(spec.fields)]
 @[    if not field.type.is_primitive_type()]
-  @(function_prefix)__@(spec.base_type.type)_message_member_array[@(i)].members_ = ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(field.type.pkg_name), msg, @(field.type.type))();
+  @(function_prefix)__@(spec.base_type.type)_message_member_array[@(i)].members_ = ROSIDL_GET_TYPE_SUPPORT(@(field.type.pkg_name), msg, @(field.type.type));
 @[    end if]
 @[end for]
   if (!@(function_prefix)__@(spec.base_type.type)_message_type_support_handle.typesupport_identifier) {

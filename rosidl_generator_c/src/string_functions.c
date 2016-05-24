@@ -17,6 +17,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 bool
 rosidl_generator_c__String__init(rosidl_generator_c__String * str)
@@ -42,7 +43,11 @@ rosidl_generator_c__String__fini(rosidl_generator_c__String * str)
   }
   if (str->data) {
     /* ensure that data and capacity values are consistent */
-    assert(str->capacity > 0);
+    if (str->capacity <= 0) {
+      fprintf(stderr, "Unexpected condition: string capacity was zero for allocated data! "
+        "Exiting.\n");
+      exit(-1);
+    }
     if (str->data) {
       free(str->data);
       str->data = NULL;
@@ -51,8 +56,16 @@ rosidl_generator_c__String__fini(rosidl_generator_c__String * str)
     str->capacity = 0;
   } else {
     /* ensure that data, size, and capacity values are consistent */
-    assert(0 == str->size);
-    assert(0 == str->capacity);
+    if (0 != str->size) {
+      fprintf(stderr, "Unexpected condition: string size was non-zero for deallocated data! "
+        "Exiting.\n");
+      exit(-1);
+    }
+    if (0 != str->capacity) {
+      fprintf(stderr, "Unexpected behavior: srring capacity was non-zero for deallocated data! "
+        "Exiting.\n");
+      exit(-1);
+    }
   }
 }
 

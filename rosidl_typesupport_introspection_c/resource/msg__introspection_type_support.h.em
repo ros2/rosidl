@@ -28,7 +28,7 @@ function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.base_type
 #include "@(spec.base_type.pkg_name)/msg/rosidl_typesupport_introspection_c__visibility_control.h"
 
 @[if subfolder == 'msg']@
-ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(spec.base_type.pkg_name)
+ROSIDL_TYPESUPPORT_INTROSPECTION_C_PUBLIC_@(spec.base_type.pkg_name)
 const rosidl_message_type_support_t *
 ROSIDL_GET_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name));
 @[end if]@

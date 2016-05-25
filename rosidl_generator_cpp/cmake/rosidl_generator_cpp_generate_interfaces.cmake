@@ -119,13 +119,13 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
 endif()
 
 if(NOT "${_generated_msg_files}${_generated_srv_files} " STREQUAL " ")
-  find_package(ament_cmake_cppcheck)
+  find_package(ament_cmake_cppcheck QUIET)
   if(ament_cmake_cppcheck_FOUND)
     ament_cppcheck(
       TESTNAME "cppcheck_rosidl_generated_cpp"
       "${_output_path}")
   endif()
-  find_package(ament_cmake_cpplint)
+  find_package(ament_cmake_cpplint QUIET)
   if(ament_cmake_cpplint_FOUND)
     get_filename_component(_cpplint_root "${_output_path}" DIRECTORY)
     ament_cpplint(
@@ -135,7 +135,7 @@ if(NOT "${_generated_msg_files}${_generated_srv_files} " STREQUAL " ")
       ROOT "${_cpplint_root}"
       "${_output_path}")
   endif()
-  find_package(ament_cmake_uncrustify)
+  find_package(ament_cmake_uncrustify QUIET)
   if(ament_cmake_uncrustify_FOUND)
     ament_uncrustify(
       TESTNAME "uncrustify_rosidl_generated_cpp"

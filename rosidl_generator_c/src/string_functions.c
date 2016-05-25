@@ -17,16 +17,22 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
-void
+bool
 rosidl_generator_c__String__init(rosidl_generator_c__String * str)
 {
   if (!str) {
-    return;
+    return false;
   }
-  str->data = NULL;
+  str->data = malloc(1);
+  if (!str->data) {
+    return false;
+  }
+  str->data[0] = '\0';
   str->size = 0;
-  str->capacity = 0;
+  str->capacity = 1;
+  return true;
 }
 
 void
@@ -37,15 +43,29 @@ rosidl_generator_c__String__fini(rosidl_generator_c__String * str)
   }
   if (str->data) {
     /* ensure that data and capacity values are consistent */
-    assert(str->capacity > 0);
-    free(str->data);
-    str->data = NULL;
+    if (str->capacity <= 0) {
+      fprintf(stderr, "Unexpected condition: string capacity was zero for allocated data! "
+        "Exiting.\n");
+      exit(-1);
+    }
+    if (str->data) {
+      free(str->data);
+      str->data = NULL;
+    }
     str->size = 0;
     str->capacity = 0;
   } else {
-    /* ensure that data, szie and and capacity values are consistent */
-    assert(0 == str->size);
-    assert(0 == str->capacity);
+    /* ensure that data, size, and capacity values are consistent */
+    if (0 != str->size) {
+      fprintf(stderr, "Unexpected condition: string size was non-zero for deallocated data! "
+        "Exiting.\n");
+      exit(-1);
+    }
+    if (0 != str->capacity) {
+      fprintf(stderr, "Unexpected behavior: srring capacity was non-zero for deallocated data! "
+        "Exiting.\n");
+      exit(-1);
+    }
   }
 }
 
@@ -69,7 +89,7 @@ rosidl_generator_c__String__assignn(
     return false;
   }
   rosidl_generator_c__String__fini(str);
-  memcpy(data, value, n);
+  data = memcpy(data, value, n);
   data[n] = '\0';
   str->data = data;
   str->size = n;

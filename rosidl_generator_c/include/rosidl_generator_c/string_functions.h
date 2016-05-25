@@ -25,8 +25,15 @@ extern "C"
 {
 #endif
 
+/// Initialize a rosidl_generator_c__String structure.
+/* The contents of rosidl_generator_c__String are initialized to a single null character ('\0').
+ * The string initially has size 0 and capacity 1.
+ * Size represents the size of the contents of the string, while capacity represents the overall
+ * storage of the string (counting the null terminator).
+ * All strings must be null-terminated.
+ */
 ROSIDL_GENERATOR_C_PUBLIC
-void
+bool
 rosidl_generator_c__String__init(rosidl_generator_c__String * str);
 
 ROSIDL_GENERATOR_C_PUBLIC

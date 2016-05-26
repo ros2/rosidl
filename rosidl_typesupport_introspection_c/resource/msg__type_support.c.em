@@ -17,7 +17,8 @@
 function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.base_type.pkg_name, subfolder)
 }@
 
-#include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__introspection_type_support.h"
+#include <@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__introspection_type_support.h>
+#include "@(spec.base_type.pkg_name)/msg/rosidl_generator_c__visibility_control.h"
 
 // providing offsetof()
 #include <stddef.h>
@@ -198,6 +199,7 @@ static rosidl_message_type_support_t @(function_prefix)__@(spec.base_type.type)_
   &@(function_prefix)__@(spec.base_type.type)_message_members
 };
 
+ROSIDL_GENERATOR_C_EXPORT_@(spec.base_type.pkg_name)
 const rosidl_message_type_support_t *
 ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name))()
 {

@@ -105,17 +105,17 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 @[      if not field.type.is_primitive_type() and (not field.type.is_array or field.type.array_size)]@
         from @(field.type.pkg_name).msg import @(field.type.type)
 @[      end if]@
-@[      if field.type.type == 'byte']@
-        self.@(field.name) = kwargs.get('@(field.name)', b'0')
-@[      elif field.type.type == 'char']@
-        self.@(field.name) = kwargs.get('@(field.name)', '\0')
-@[      elif field.type.array_size]
+@[      if field.type.array_size]
         self.@(field.name) = kwargs.get(
             '@(field.name)',
             tuple([@(get_python_type(field.type))() for x in range(@(field.type.array_size))])
         )
 @[      elif field.type.is_array]
         self.@(field.name) = kwargs.get('@(field.name)', list())
+@[      elif field.type.type == 'byte']@
+        self.@(field.name) = kwargs.get('@(field.name)', b'0')
+@[      elif field.type.type == 'char']@
+        self.@(field.name) = kwargs.get('@(field.name)', '\0')
 @[      else]@
         self.@(field.name) = kwargs.get('@(field.name)', @(get_python_type(field.type))())
 @[      end if]@

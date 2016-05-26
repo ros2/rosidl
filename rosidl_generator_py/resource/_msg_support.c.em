@@ -122,7 +122,10 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   size_t idx@(field.name);
   for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
     item@(field.name) = PySequence_Fast_GET_ITEM(seq@(field.name), idx@(field.name));
-@[    if field.type.type in ['byte', 'char']]@
+@[    if field.type.type == 'char']@
+    assert(PyUnicode_Check(item@(field.name)));
+    tmp@(field.name) = PyUnicode_1BYTE_DATA(item@(field.name))[0];
+@[    elif field.type.type == 'byte']@
     assert(PyBytes_Check(item@(field.name)));
     tmp@(field.name) = PyBytes_AS_STRING(item@(field.name))[0];
 @[    elif field.type.type == 'string']@
@@ -168,10 +171,13 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
     memcpy(&dest@(field.name)[idx@(field.name)], &tmp@(field.name), sizeof(@primitive_msg_type_to_c(field.type.type)));
 @[    end if]@
   }
-@[  elif field.type.type in ['byte', 'char']]@
+@[  elif field.type.type == 'char']@
+  assert(PyUnicode_Check(py@(field.name)));
+  ros_message->@(field.name) = PyUnicode_1BYTE_DATA(py@(field.name))[0];
+@[  elif field.type.type == 'byte']@
   assert(PyBytes_Check(py@(field.name)));
-  ros_message->@(field.name) = PyBytes_AS_STRING(py@(field.name))[0];
-@[  elif field.type.type in ['string']]@
+  ros_message->@(field.name) = PyBytes_AsString(py@(field.name))[0];
+@[  elif field.type.type == 'string']@
   assert(PyUnicode_Check(py@(field.name)));
   rosidl_generator_c__String__assign(
     &ros_message->@(field.name), (char *)PyUnicode_1BYTE_DATA(py@(field.name)));
@@ -274,14 +280,15 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   py@(field.name) = PyList_New(size@(field.name));
   size_t idx@(field.name);
   for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
-@[    if field.type.type in ['char', 'byte']]@
-    {
-      char tmp[1] = {tmpmessagedata@(field.name)[idx@(field.name)]};
-      PyList_SetItem(py@(field.name), idx@(field.name), PyUnicode_FromString(tmp));
-    }
-@[    elif field.type.type in ['string']]@
+@[    if field.type.type == 'char']@
+    PyList_SetItem(py@(field.name), idx@(field.name),
+      PyUnicode_FromStringAndSize(&tmpmessagedata@(field.name)[idx@(field.name)], 1));
+@[    elif field.type.type == 'byte']@
+    PyList_SetItem(py@(field.name), idx@(field.name),
+      PyBytes_FromStringAndSize((const char *)&tmpmessagedata@(field.name)[idx@(field.name)], 1));
+@[    elif field.type.type == 'string']@
     PyList_SetItem(py@(field.name), idx@(field.name), PyUnicode_FromString(tmpmessagedata@(field.name)[idx@(field.name)].data));
-@[    elif field.type.type =='bool']@
+@[    elif field.type.type == 'bool']@
     PyList_SetItem(py@(field.name), idx@(field.name), tmpmessagedata@(field.name)[idx@(field.name)] ? Py_True : Py_False);
 @[    elif field.type.type in ['float32', 'float64']]@
     PyList_SetItem(py@(field.name), idx@(field.name), PyFloat_FromDouble(tmpmessagedata@(field.name)[idx@(field.name)]));
@@ -304,12 +311,11 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 @[    end if]@
   }
   assert(PySequence_Check(py@(field.name)));
-@[  elif field.type.type in ['char', 'byte']]@
-  {
-    char tmp[1] = {ros_message->@(field.name)};
-    py@(field.name) = PyUnicode_FromString(tmp);
-  }
-@[  elif field.type.type in ['string']]@
+@[  elif field.type.type == 'char']@
+  py@(field.name) = PyUnicode_FromStringAndSize(&ros_message->@(field.name), 1);
+@[  elif field.type.type == 'byte']@
+  py@(field.name) = PyBytes_FromStringAndSize((const char *)&ros_message->@(field.name), 1);
+@[  elif field.type.type == 'string']@
   py@(field.name) = PyUnicode_FromString(ros_message->@(field.name).data);
 @[  elif field.type.type == 'bool']@
   py@(field.name) = ros_message->@(field.name) ? Py_True : Py_False;

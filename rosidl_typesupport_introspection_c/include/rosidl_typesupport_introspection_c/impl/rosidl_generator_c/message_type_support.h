@@ -41,6 +41,4 @@
 #define ROSIDL_GET_TYPE_SUPPORT_FUNCTION(PkgName, MsgSubfolder, MsgName) \
   rosidl_typesupport_introspection_c_get_message__ ## PkgName ## __ ## MsgSubfolder ## __ ## MsgName
 
-#define USING_ROSIDL_TYPESUPPORT_INTROSPECTION_C 1
-
 #endif  // ROSIDL_TYPESUPPORT_INTROSPECTION_C__IMPL__ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_H_

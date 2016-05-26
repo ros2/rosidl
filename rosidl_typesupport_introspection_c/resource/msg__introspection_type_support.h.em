@@ -23,8 +23,6 @@ function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.base_type
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
-static_assert(USING_ROSIDL_TYPESUPPORT_INTROSPECTION_C, "expected rosidl introspection C type support");
-
 #include <rosidl_generator_c/message_type_support.h>
 
 #endif  // @(header_guard_variable)

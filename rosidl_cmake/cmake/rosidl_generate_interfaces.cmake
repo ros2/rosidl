@@ -33,11 +33,14 @@ include(CMakeParseArguments)
 # :type DEPENDENCIES: list of strings
 # :param SKIP_INSTALL: if set skip installing the interface files
 # :type SKIP_INSTALL: option
+# :param ADD_LINTER_TESTS: if set lint the interface files using
+#   the ``ament_lint`` package
+# :type ADD_LINTER_TESTS: option
 #
 # @public
 #
 macro(rosidl_generate_interfaces target)
-  cmake_parse_arguments(_ARG "SKIP_INSTALL" "" "DEPENDENCIES" ${ARGN})
+  cmake_parse_arguments(_ARG "ADD_LINTER_TESTS;SKIP_INSTALL" "" "DEPENDENCIES" ${ARGN})
   if(NOT _ARG_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "rosidl_generate_interfaces() called without any idl "
       "files")
@@ -145,6 +148,7 @@ macro(rosidl_generate_interfaces target)
   set(rosidl_generate_interfaces_IDL_FILES ${_idl_files})
   set(rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES ${_recursive_dependencies})
   set(rosidl_generate_interfaces_SKIP_INSTALL ${_ARG_SKIP_INSTALL})
+  set(rosidl_generate_interfaces_ADD_LINTER_TESTS ${_ARG_LINT_INTERFACES})
   ament_execute_extensions("rosidl_generate_interfaces")
 
   if(NOT _ARG_SKIP_INSTALL)

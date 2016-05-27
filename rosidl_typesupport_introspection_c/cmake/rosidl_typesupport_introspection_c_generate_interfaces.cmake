@@ -162,15 +162,14 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   ament_export_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix})
 endif()
 
-if(NOT "${_generated_msg_header_files}${_generated_srv_header_files} " STREQUAL " ")
-  find_package(ament_cmake_cppcheck)
-  if(ament_cmake_cppcheck_FOUND)
+if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
+  if(NOT "${_generated_msg_header_files}${_generated_srv_header_files} " STREQUAL " ")
+    find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(
       TESTNAME "cppcheck_rosidl_typesupport_introspection_c"
       "${_output_path}")
-  endif()
-  find_package(ament_cmake_cpplint)
-  if(ament_cmake_cpplint_FOUND)
+
+    find_package(ament_cmake_cpplint REQUIRED)
     get_filename_component(_cpplint_root "${_output_path}" DIRECTORY)
     ament_cpplint(
       TESTNAME "cpplint_rosidl_typesupport_introspection_c"
@@ -178,9 +177,8 @@ if(NOT "${_generated_msg_header_files}${_generated_srv_header_files} " STREQUAL 
       MAX_LINE_LENGTH 999
       ROOT "${_cpplint_root}"
       "${_output_path}")
-  endif()
-  find_package(ament_cmake_uncrustify)
-  if(ament_cmake_uncrustify_FOUND)
+
+    find_package(ament_cmake_uncrustify REQUIRED)
     ament_uncrustify(
       TESTNAME "uncrustify_rosidl_typesupport_introspection_c"
       # the generated code might contain longer lines for templated types

@@ -177,28 +177,24 @@ endif()
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
   if(NOT "${_generated_msg_headers}${_generated_msg_sources}${_generated_srv_headers}${_generated_srv_sources} " STREQUAL " ")
     find_package(ament_cmake_cppcheck REQUIRED)
-    if(ament_cmake_cppcheck_FOUND)
-      ament_cppcheck(
-        TESTNAME "cppcheck_rosidl_generated_c"
-        "${_output_path}")
-    endif()
+    ament_cppcheck(
+      TESTNAME "cppcheck_rosidl_generated_c"
+      "${_output_path}")
+
     find_package(ament_cmake_cpplint REQUIRED)
-    if(ament_cmake_cpplint_FOUND)
-      get_filename_component(_cpplint_root "${_output_path}" DIRECTORY)
-      ament_cpplint(
-        TESTNAME "cpplint_rosidl_generated_c"
-        # the generated code might contain longer lines for templated types
-        MAX_LINE_LENGTH 999
-        ROOT "${_cpplint_root}"
-        "${_output_path}")
-    endif()
+    get_filename_component(_cpplint_root "${_output_path}" DIRECTORY)
+    ament_cpplint(
+      TESTNAME "cpplint_rosidl_generated_c"
+      # the generated code might contain longer lines for templated types
+      MAX_LINE_LENGTH 999
+      ROOT "${_cpplint_root}"
+      "${_output_path}")
+
     find_package(ament_cmake_uncrustify REQUIRED)
-    if(ament_cmake_uncrustify_FOUND)
-      ament_uncrustify(
-        TESTNAME "uncrustify_rosidl_generated_c"
-        # the generated code might contain longer lines for templated types
-        MAX_LINE_LENGTH 999
-        "${_output_path}")
-    endif()
+    ament_uncrustify(
+      TESTNAME "uncrustify_rosidl_generated_c"
+      # the generated code might contain longer lines for templated types
+      MAX_LINE_LENGTH 999
+      "${_output_path}")
   endif()
 endif()

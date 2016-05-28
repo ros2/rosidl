@@ -245,15 +245,14 @@ foreach(_typesupport_impl ${_typesupport_impls})
   endif()
 endforeach()
 
-if(NOT "${_generated_msg_py_files}${_generated_msg_c_files}${_generated_msg_c_common_files} " STREQUAL " ")
-  find_package(ament_cmake_cppcheck)
-  if(ament_cmake_cppcheck_FOUND)
+if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
+  if(NOT "${_generated_msg_py_files}${_generated_msg_c_files}${_generated_msg_c_common_files} " STREQUAL " ")
+    find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(
       TESTNAME "cppcheck_rosidl_generated_py"
       "${_output_path}")
-  endif()
-  find_package(ament_cmake_cpplint)
-  if(ament_cmake_cpplint_FOUND)
+
+    find_package(ament_cmake_cpplint REQUIRED)
     get_filename_component(_cpplint_root "${_output_path}" DIRECTORY)
     ament_cpplint(
       TESTNAME "cpplint_rosidl_generated_py"
@@ -261,29 +260,25 @@ if(NOT "${_generated_msg_py_files}${_generated_msg_c_files}${_generated_msg_c_co
       MAX_LINE_LENGTH 999
       ROOT "${_cpplint_root}"
       "${_output_path}")
-  endif()
-  find_package(ament_cmake_pep8)
-  if(ament_cmake_pep8_FOUND)
+
+    find_package(ament_cmake_pep8 REQUIRED)
     ament_pep8(
       TESTNAME "pep8_rosidl_generated_py"
       # the generated code might contain longer lines for templated types
       MAX_LINE_LENGTH 999
       "${_output_path}")
-  endif()
-  find_package(ament_cmake_pep257)
-  if(ament_cmake_pep257_FOUND)
+
+    find_package(ament_cmake_pep257 REQUIRED)
     ament_pep257(
       TESTNAME "pep257_rosidl_generated_py"
       "${_output_path}")
-  endif()
-  find_package(ament_cmake_pyflakes)
-  if(ament_cmake_pyflakes_FOUND)
+
+    find_package(ament_cmake_pyflakes REQUIRED)
     ament_pyflakes(
       TESTNAME "pyflakes_rosidl_generated_py"
-    "${_output_path}")
-  endif()
-  find_package(ament_cmake_uncrustify)
-  if(ament_cmake_uncrustify_FOUND)
+      "${_output_path}")
+
+    find_package(ament_cmake_uncrustify REQUIRED)
     ament_uncrustify(
       TESTNAME "uncrustify_rosidl_generated_py"
       # the generated code might contain longer lines for templated types

@@ -97,6 +97,7 @@ add_custom_command(
 # generate header to switch between export and import for a specific package
 set(_visibility_control_file
   "${_output_path}/msg/rosidl_typesupport_introspection_c__visibility_control.h")
+string(TOUPPER "${PROJECT_NAME}" PROJECT_NAME_UPPER)
 configure_file(
   "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/rosidl_typesupport_introspection_c__visibility_control.h.in"
   "${_visibility_control_file}"
@@ -159,4 +160,29 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
     RUNTIME DESTINATION bin
   )
   ament_export_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix})
+endif()
+
+if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
+  if(NOT "${_generated_msg_header_files}${_generated_srv_header_files} " STREQUAL " ")
+    find_package(ament_cmake_cppcheck REQUIRED)
+    ament_cppcheck(
+      TESTNAME "cppcheck_rosidl_typesupport_introspection_c"
+      "${_output_path}")
+
+    find_package(ament_cmake_cpplint REQUIRED)
+    get_filename_component(_cpplint_root "${_output_path}" DIRECTORY)
+    ament_cpplint(
+      TESTNAME "cpplint_rosidl_typesupport_introspection_c"
+      # the generated code might contain longer lines for templated types
+      MAX_LINE_LENGTH 999
+      ROOT "${_cpplint_root}"
+      "${_output_path}")
+
+    find_package(ament_cmake_uncrustify REQUIRED)
+    ament_uncrustify(
+      TESTNAME "uncrustify_rosidl_typesupport_introspection_c"
+      # the generated code might contain longer lines for templated types
+      MAX_LINE_LENGTH 999
+      "${_output_path}")
+  endif()
 endif()

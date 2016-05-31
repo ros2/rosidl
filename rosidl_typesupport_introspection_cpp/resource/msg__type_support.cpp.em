@@ -1,4 +1,5 @@
 // generated from rosidl_typesupport_introspection_cpp/resource/msg__type_support.cpp.em
+// generated code does not contain a copyright notice
 
 @#######################################################################
 @# EmPy template for generating <msg>__type_support.cpp files
@@ -17,11 +18,12 @@
 
 // providing offsetof()
 #include <cstddef>
+#include <vector>
 
-#include <rosidl_generator_c/message_type_support_struct.h>
+#include "rosidl_generator_c/message_type_support_struct.h"
 // this is defined in the rosidl_typesupport_introspection_cpp package and
 // is in the include/rosidl_typesupport_introspection_cpp/impl folder
-#include <rosidl_generator_cpp/message_type_support.hpp>
+#include "rosidl_generator_cpp/message_type_support.hpp"
 
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.hpp"
 #include "rosidl_typesupport_introspection_cpp/field_types.hpp"

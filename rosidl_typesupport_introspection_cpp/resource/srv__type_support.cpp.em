@@ -1,4 +1,5 @@
 // generated from rosidl_typesupport_introspection_cpp/resource/srv__type_support.cpp.em
+// generated code does not contain a copyright notice
 
 @#######################################################################
 @# EmPy template for generating <srv>__type_support.cpp files
@@ -61,7 +62,7 @@ static const rosidl_service_type_support_t @(spec.srv_name)_service_type_support
 namespace rosidl_typesupport_introspection_cpp
 {
 
-template <>
+template<>
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_service_type_support_t *
 get_service_type_support_handle_introspection<@(spec.pkg_name)::srv::@(spec.srv_name)>()
@@ -82,19 +83,19 @@ get_service_type_support_handle_introspection<@(spec.pkg_name)::srv::@(spec.srv_
     // initialize the request_members_ with the static function from the external library
     service_members->request_members_ = static_cast<
       const ::rosidl_typesupport_introspection_cpp::MessageMembers *
-    >(
+      >(
       ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle_introspection<
         ::@(spec.pkg_name)::srv::@(spec.request.base_type.type)
       >()->data
-    );
+      );
     // initialize the response_members_ with the static function from the external library
     service_members->response_members_ = static_cast<
       const ::rosidl_typesupport_introspection_cpp::MessageMembers *
-    >(
+      >(
       ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle_introspection<
         ::@(spec.pkg_name)::srv::@(spec.response.base_type.type)
       >()->data
-    );
+      );
   }
   // finally return the properly initialized service_type_support handle
   return service_type_support;

@@ -135,9 +135,9 @@ void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic 
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int16_value, INT16_MIN, INT16_MAX)
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint16_value, 0, UINT16_MAX)
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int32_value, INT32_MIN, INT32_MAX)
-  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint32_value, 0, UINT32_MAX)
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint32_value, 0ul, UINT32_MAX)
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int64_value, INT64_MIN, INT64_MAX)
-  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint64_value, 0, UINT64_MAX)
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint64_value, 0ull, UINT64_MAX)
 }
 
 #define TEST_BOUNDED_ARRAY_PRIMITIVE( \

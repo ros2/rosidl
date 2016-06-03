@@ -84,7 +84,11 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   @(nested_type) * dest@(field.name) = ros_message->@(field.name).data;
 @[      else]@
   size_t size@(field.name) = @(field.type.array_size);
+@[        if field.type.is_upper_bound]@
+  @(nested_type) * dest@(field.name) = ros_message->@(field.name).data;
+@[        else]@
   @(nested_type) * dest@(field.name) = ros_message->@(field.name);
+@[        end if]@
 @[      end if]@
   size_t idx@(field.name);
   for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
@@ -114,7 +118,11 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   @primitive_msg_type_to_c(field.type.type) * dest@(field.name) = ros_message->@(field.name).data;
 @[    else]@
   size_t size@(field.name) = @(field.type.array_size);
+@[        if field.type.is_upper_bound]@
+  @primitive_msg_type_to_c(field.type.type) * dest@(field.name) = ros_message->@(field.name).data;
+@[        else]@
   @primitive_msg_type_to_c(field.type.type) * dest@(field.name) = ros_message->@(field.name);
+@[        end if]@
 @[    end if]@
 @[    if field.type.type != 'string']@
   @primitive_msg_type_to_c(field.type.type) tmp@(field.name);
@@ -257,7 +265,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   @(nested_type) item@(field.name);
   size_t idx@(field.name);
   for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
-@[      if field.type.array_size is None]@
+@[      if field.type.array_size is None or field.type.is_upper_bound]@
     item@(field.name) = ros_message->@(field.name).data[idx@(field.name)];
 @[      else]@
     item@(field.name) = ros_message->@(field.name)[idx@(field.name)];
@@ -275,7 +283,11 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   @primitive_msg_type_to_c(field.type.type) * tmpmessagedata@(field.name) = ros_message->@(field.name).data;
 @[    else]@
   size_t size@(field.name) = @(field.type.array_size);
+@[      if field.type.is_upper_bound]@
+  @primitive_msg_type_to_c(field.type.type) * tmpmessagedata@(field.name) = ros_message->@(field.name).data;
+@[      else]@
   @primitive_msg_type_to_c(field.type.type) * tmpmessagedata@(field.name) = ros_message->@(field.name);
+@[      end if]@
 @[    end if]@
   py@(field.name) = PyList_New(size@(field.name));
   size_t idx@(field.name);

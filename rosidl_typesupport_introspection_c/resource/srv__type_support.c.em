@@ -22,6 +22,7 @@ function_prefix = '%s__srv__rosidl_typesupport_introspection_c' % spec.pkg_name
 #define @(header_guard_variable)
 
 #include <rosidl_generator_c/service_type_support.h>
+#include "@(spec.pkg_name)/msg/rosidl_typesupport_introspection_c__visibility_control.h"
 
 #include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__introspection_type_support.h"
 #include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.request.base_type.type))__introspection_type_support.h"

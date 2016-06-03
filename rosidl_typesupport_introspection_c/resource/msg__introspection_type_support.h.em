@@ -25,10 +25,4 @@ function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.base_type
 
 #include <rosidl_generator_c/message_type_support.h>
 
-#include "@(spec.base_type.pkg_name)/msg/rosidl_typesupport_introspection_c__visibility_control.h"
-
-@[if subfolder == 'msg']@
-static rosidl_message_type_support_t @(function_prefix)__@(spec.base_type.type)_message_type_support_handle;
-@[end if]@
-
 #endif  // @(header_guard_variable)

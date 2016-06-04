@@ -68,15 +68,15 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   endif()
 endforeach()
 
+file(MAKE_DIRECTORY "${_output_path}")
+file(WRITE "${_output_path}/__init__.py" "")
+
 if(NOT "${_generated_msg_py_files} " STREQUAL " ")
   list(GET _generated_msg_py_files 0 _msg_file)
   get_filename_component(_parent_folder "${_msg_file}" DIRECTORY)
   list(APPEND _generated_msg_py_files
     "${_parent_folder}/__init__.py"
   )
-  # TODO(dirk-thomas) since this are being generated at configure time
-  # it should not be a dependency of the custom command
-  file(WRITE "${_parent_folder}/__init__.py" "")
 endif()
 
 if(NOT "${_generated_srv_files} " STREQUAL " ")
@@ -85,9 +85,6 @@ if(NOT "${_generated_srv_files} " STREQUAL " ")
   list(APPEND _generated_srv_files
     "${_parent_folder}/__init__.py"
   )
-  # TODO(dirk-thomas) since this are being generated at configure time
-  # it should not be a dependency of the custom command
-  file(WRITE "${_parent_folder}/__init__.py" "")
 endif()
 
 set(_dependency_files "")
@@ -127,8 +124,6 @@ rosidl_write_generator_arguments(
   TARGET_DEPENDENCIES ${target_dependencies}
 )
 
-file(MAKE_DIRECTORY "${_output_path}")
-file(WRITE "${_output_path}/__init__.py" "")
 
 if(NOT "${_generated_msg_py_files} " STREQUAL " ")
   list(GET _generated_msg_py_files 0 _msg_file)

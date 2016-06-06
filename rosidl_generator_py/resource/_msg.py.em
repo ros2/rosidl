@@ -49,8 +49,7 @@ class Metaclass(type):
 @[end for]@
 @[for field in spec.fields]@
 @[  if field.default_value]@
-            '@(field.name.upper())__DEFAULT': @value_to_py(field.type, field.default_value,
-                                                           array_as_tuple=True),
+            '@(field.name.upper())__DEFAULT': @value_to_py(field.type, field.default_value),
 @[  end if]@
 @[end for]@
         }
@@ -67,7 +66,7 @@ class Metaclass(type):
     @@property
     def @(field.name.upper())__DEFAULT(cls):
         """Default value for message field '@(field.name)'."""
-        return @value_to_py(field.type, field.default_value, array_as_tuple=True)
+        return @value_to_py(field.type, field.default_value)
 @[  end if]@
 @[end for]@
 

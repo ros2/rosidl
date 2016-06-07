@@ -91,7 +91,8 @@ def expand_template(template_file, data, output_file, minimum_timestamp=None):
         except Exception:
             if os.path.exists(output_file):
                 os.remove(output_file)
-            print('Exception when processing template: %s' % template_file, file=sys.stderr)
+            print("Exception when expanding '%s' into '%s'" %
+                  (template_file, output_file), file=sys.stderr)
             raise
     content = output.getvalue()
     interpreter.shutdown()

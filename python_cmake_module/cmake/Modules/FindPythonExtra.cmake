@@ -186,7 +186,7 @@ if(PYTHONINTERP_FOUND)
       "${_output}"
       CACHE INTERNAL
       "The MULTIARCH suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/.")
-endif()
+  endif()
 
   if("${PYTHON_SOABI} " STREQUAL " " OR "${PYTHON_SOABI} " STREQUAL "None ")
     set(PythonExtra_EXTENSION_SUFFIX
@@ -221,11 +221,14 @@ endif()
 endif()
 
 include(FindPackageHandleStandardArgs)
+set(_required_vars
+  PythonExtra_EXTENSION_EXTENSION
+  PythonExtra_INCLUDE_DIRS
+  PythonExtra_LIBRARIES)
+if(NOT WIN32)
+  list(APPEND _required_vars PythonExtra_EXTENSION_SUFFIX)
+endif()
 find_package_handle_standard_args(PythonExtra
   FOUND_VAR PythonExtra_FOUND
-  REQUIRED_VARS
-    PythonExtra_EXTENSION_EXTENSION
-    PythonExtra_EXTENSION_SUFFIX
-    PythonExtra_INCLUDE_DIRS
-    PythonExtra_LIBRARIES
+  REQUIRED_VARS ${_required_vars}
 )

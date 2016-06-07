@@ -63,7 +63,7 @@ def test_default_values():
     assert(a.DEF_STRING__DEFAULT == 'Hello world!')
     assert_raises(AttributeError, setattr, Strings, 'DEF_STRING__DEFAULT', 'bar')
 
-    assert(Various.TWO_UINT16_VALUE__DEFAULT == (5, 23))
+    assert(Various.TWO_UINT16_VALUE__DEFAULT == [5, 23])
 
 
 def test_check_constraints():

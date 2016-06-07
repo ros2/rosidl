@@ -186,7 +186,7 @@ if(PYTHONINTERP_FOUND)
       "${_output}"
       CACHE INTERNAL
       "The MULTIARCH suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/.")
-endif()
+  endif()
 
   if("${PYTHON_SOABI} " STREQUAL " " OR "${PYTHON_SOABI} " STREQUAL "None ")
     set(PythonExtra_EXTENSION_SUFFIX

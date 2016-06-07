@@ -221,11 +221,14 @@ endif()
 endif()
 
 include(FindPackageHandleStandardArgs)
+set(_required_vars
+  PythonExtra_EXTENSION_EXTENSION
+  PythonExtra_INCLUDE_DIRS
+  PythonExtra_LIBRARIES)
+if(NOT WIN32)
+  list(APPEND _required_vars PythonExtra_EXTENSION_SUFFIX)
+endif()
 find_package_handle_standard_args(PythonExtra
   FOUND_VAR PythonExtra_FOUND
-  REQUIRED_VARS
-    PythonExtra_EXTENSION_EXTENSION
-    PythonExtra_EXTENSION_SUFFIX
-    PythonExtra_INCLUDE_DIRS
-    PythonExtra_LIBRARIES
+  REQUIRED_VARS ${_required_vars}
 )

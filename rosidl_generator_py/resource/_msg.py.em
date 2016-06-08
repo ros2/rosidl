@@ -113,7 +113,7 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 @[        elif field.type.type == 'char']@
         self.@(field.name) = kwargs.get(
             '@(field.name)',
-            list([str('\x00') for x in range(@(field.type.array_size))])
+            list([chr(0) for x in range(@(field.type.array_size))])
         )
 @[        else]@
         self.@(field.name) = kwargs.get(
@@ -127,7 +127,7 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 @[      elif field.type.type == 'byte']@
         self.@(field.name) = kwargs.get('@(field.name)', bytes([0]))
 @[      elif field.type.type == 'char']@
-        self.@(field.name) = kwargs.get('@(field.name)', str('\x00'))
+        self.@(field.name) = kwargs.get('@(field.name)', chr(0))
 @[      else]@
         self.@(field.name) = kwargs.get('@(field.name)', @(get_python_type(field.type))())
 @[      end if]@

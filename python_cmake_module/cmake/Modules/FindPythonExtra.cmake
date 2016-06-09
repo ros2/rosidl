@@ -175,7 +175,11 @@ if(PYTHONINTERP_FOUND)
   endif()
 
   if(WIN32)
-    set(PythonExtra_EXTENSION_EXTENSION ".pyd")
+    if("${CMAKE_BUILD_TYPE} " STREQUAL "Debug ")
+      set(PythonExtra_EXTENSION_EXTENSION "_d.pyd")
+    else()
+      set(PythonExtra_EXTENSION_EXTENSION ".pyd")
+    endif()
   else()
     # Also use .so for OSX, not dylib
     set(PythonExtra_EXTENSION_EXTENSION ".so")

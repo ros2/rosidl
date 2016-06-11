@@ -49,8 +49,7 @@ class Metaclass(type):
 @[end for]@
 @[for field in spec.fields]@
 @[  if field.default_value]@
-            '@(field.name.upper())__DEFAULT': @value_to_py(field.type, field.default_value,
-                                                           array_as_tuple=True),
+            '@(field.name.upper())__DEFAULT': @value_to_py(field.type, field.default_value),
 @[  end if]@
 @[end for]@
         }
@@ -67,7 +66,7 @@ class Metaclass(type):
     @@property
     def @(field.name.upper())__DEFAULT(cls):
         """Default value for message field '@(field.name)'."""
-        return @value_to_py(field.type, field.default_value, array_as_tuple=True)
+        return @value_to_py(field.type, field.default_value)
 @[  end if]@
 @[end for]@
 
@@ -105,17 +104,30 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 @[      if not field.type.is_primitive_type() and (not field.type.is_array or field.type.array_size)]@
         from @(field.type.pkg_name).msg import @(field.type.type)
 @[      end if]@
-@[      if field.type.array_size]
+@[      if field.type.array_size]@
+@[        if field.type.type == 'byte']@
         self.@(field.name) = kwargs.get(
             '@(field.name)',
-            tuple([@(get_python_type(field.type))() for x in range(@(field.type.array_size))])
+            list([bytes([0]) for x in range(@(field.type.array_size))])
         )
-@[      elif field.type.is_array]
+@[        elif field.type.type == 'char']@
+        self.@(field.name) = kwargs.get(
+            '@(field.name)',
+            list([chr(0) for x in range(@(field.type.array_size))])
+        )
+@[        else]@
+        self.@(field.name) = kwargs.get(
+            '@(field.name)',
+            list([@(get_python_type(field.type))()
+                for x in range(@(field.type.array_size))])
+        )
+@[        end if]@
+@[      elif field.type.is_array]@
         self.@(field.name) = kwargs.get('@(field.name)', list())
 @[      elif field.type.type == 'byte']@
-        self.@(field.name) = kwargs.get('@(field.name)', b'0')
+        self.@(field.name) = kwargs.get('@(field.name)', bytes([0]))
 @[      elif field.type.type == 'char']@
-        self.@(field.name) = kwargs.get('@(field.name)', '\0')
+        self.@(field.name) = kwargs.get('@(field.name)', chr(0))
 @[      else]@
         self.@(field.name) = kwargs.get('@(field.name)', @(get_python_type(field.type))())
 @[      end if]@
@@ -148,7 +160,6 @@ class @(spec.base_type.type)(metaclass=Metaclass):
         from collections import UserString
 @[  elif field.type.string_upper_bound]@
         from collections import UserString
-@[  elif not field.type.is_primitive_type()]@
 @[  elif field.type.type == 'byte']@
         from collections import ByteString
 @[  elif field.type.type in ['char']]@

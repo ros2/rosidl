@@ -162,32 +162,6 @@ if(PYTHONINTERP_FOUND)
       "The SOABI suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/.")
   endif()
 
-  if(NOT DEFINED PYTHON_MULTIARCH)
-    set(_python_code
-      "from sysconfig import get_config_var"
-      "print(get_config_var('MULTIARCH'))"
-    )
-    execute_process(
-      COMMAND
-      "${PYTHON_EXECUTABLE}"
-      "-c"
-      "${_python_code}"
-      OUTPUT_VARIABLE _output
-      RESULT_VARIABLE _result
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    if(NOT _result EQUAL 0)
-      message(FATAL_ERROR
-        "execute_process(${PYTHON_EXECUTABLE} -c '${_python_code}') returned "
-        "error code ${_result}")
-    endif()
-
-    set(PYTHON_MULTIARCH
-      "${_output}"
-      CACHE INTERNAL
-      "The MULTIARCH suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/.")
-  endif()
-
   if("${PYTHON_SOABI} " STREQUAL " " OR "${PYTHON_SOABI} " STREQUAL "None ")
     set(PythonExtra_EXTENSION_SUFFIX
       ""
@@ -195,19 +169,11 @@ if(PYTHONINTERP_FOUND)
       "The full suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/."
     )
   else()
-    if("${PYTHON_MULTIARCH} " STREQUAL " " OR "${PYTHON_SOABI} " STREQUAL "None ")
-      set(PythonExtra_EXTENSION_SUFFIX
-        ".${PYTHON_SOABI}"
-        CACHE INTERNAL
-        "The full suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/."
-      )
-    else()
-      set(PythonExtra_EXTENSION_SUFFIX
-        ".${PYTHON_SOABI}-${PYTHON_MULTIARCH}"
-        CACHE INTERNAL
-        "The full suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/."
-      )
-    endif()
+    set(PythonExtra_EXTENSION_SUFFIX
+      ".${PYTHON_SOABI}"
+      CACHE INTERNAL
+      "The full suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/."
+    )
   endif()
 
   if(WIN32)

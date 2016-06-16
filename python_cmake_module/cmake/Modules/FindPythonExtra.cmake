@@ -100,7 +100,7 @@ if(PYTHONINTERP_FOUND)
       set(_library_paths "")
       foreach(_item ${_output_list})
         string(REGEX MATCH "-L(.*)" _regex_match ${_item})
-        if(NOT "${_regex_match} " STREQUAL " ")
+        if(NOT _regex_match STREQUAL "")
           string(SUBSTRING "${_regex_match}" 2 -1 _library_path)
           list(APPEND _library_paths "${_library_path}")
         endif()
@@ -160,7 +160,7 @@ if(PYTHONINTERP_FOUND)
       "The SOABI suffix for Python native extensions. See PEP-3149: https://www.python.org/dev/peps/pep-3149/.")
   endif()
 
-  if("${PYTHON_SOABI} " STREQUAL " " OR "${PYTHON_SOABI} " STREQUAL "None ")
+  if(PYTHON_SOABI STREQUAL "" OR PYTHON_SOABI STREQUAL "None")
     set(PythonExtra_EXTENSION_SUFFIX
       ""
       CACHE INTERNAL

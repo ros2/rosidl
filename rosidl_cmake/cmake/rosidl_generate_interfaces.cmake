@@ -86,7 +86,7 @@ macro(rosidl_generate_interfaces target)
   foreach(_idl_file ${_idl_files})
     get_filename_component(_extension "${_idl_file}" EXT)
     # generate request and response messages for services
-    if("${_extension}" STREQUAL ".srv")
+    if(_extension STREQUAL ".srv")
       get_filename_component(_name "${_idl_file}" NAME_WE)
       set(_request_file "${CMAKE_CURRENT_BINARY_DIR}/srv/${_name}_Request.msg")
       set(_response_file "${CMAKE_CURRENT_BINARY_DIR}/srv/${_name}_Response.msg")

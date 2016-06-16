@@ -53,7 +53,7 @@ if(BUILD_TESTING)
 
   # If no message files were generated, skip the test.
   rosidl_generator_py_get_typesupports(_typesupport_impls)
-  if("${_typesupport_impls} " STREQUAL " ")
+  if(_typesupport_impls STREQUAL "")
     message(WARNING "No valid typesupport found for Python generator, skipping tests.")
   else()
     rosidl_generate_interfaces(${PROJECT_NAME} ${message_files}

@@ -24,7 +24,7 @@ find_package(PythonExtra MODULE)
 # Get a list of typesupport implementations from valid rmw implementations.
 rosidl_generator_py_get_typesupports(_typesupport_impls)
 
-if("${_typesupport_impls} " STREQUAL " ")
+if(_typesupport_impls STREQUAL "")
   message(WARNING "No valid typesupport for Python generator. Python messages will not be generated.")
   return()
 endif()
@@ -46,7 +46,7 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(_msg_name1 "${_idl_file}" NAME_WE)
   string_camel_case_to_lower_case_underscore("${_msg_name1}" _module_name)
 
-  if("${_parent_folder} " STREQUAL "msg ")
+  if(_parent_folder STREQUAL "msg")
     list(APPEND _generated_msg_py_files
       "${_output_path}/${_parent_folder}/_${_module_name}.py"
     )
@@ -60,7 +60,7 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
       list_append_unique(_generated_msg_c_files "${_output_path}/${_parent_folder}/_${PROJECT_NAME}_s.ep.${_typesupport_impl}.c")
       list_append_unique(_generated_msg_c_ts_${_typesupport_impl}_files "${_output_path}/${_parent_folder}/_${PROJECT_NAME}_s.ep.${_typesupport_impl}.c")
     endforeach()
-  elseif("${_parent_folder} " STREQUAL "srv ")
+  elseif(_parent_folder STREQUAL "srv")
   else()
     message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
   endif()
@@ -69,7 +69,7 @@ endforeach()
 file(MAKE_DIRECTORY "${_output_path}")
 file(WRITE "${_output_path}/__init__.py" "")
 
-if(NOT "${_generated_msg_py_files} " STREQUAL " ")
+if(NOT _generated_msg_py_files STREQUAL "")
   list(GET _generated_msg_py_files 0 _msg_file)
   get_filename_component(_parent_folder "${_msg_file}" DIRECTORY)
   list(APPEND _generated_msg_py_files
@@ -77,7 +77,7 @@ if(NOT "${_generated_msg_py_files} " STREQUAL " ")
   )
 endif()
 
-if(NOT "${_generated_srv_files} " STREQUAL " ")
+if(NOT _generated_srv_files STREQUAL "")
   list(GET _generated_srv_files 0 _srv_file)
   get_filename_component(_parent_folder "${_srv_file}" DIRECTORY)
   list(APPEND _generated_srv_files
@@ -123,7 +123,7 @@ rosidl_write_generator_arguments(
 )
 
 
-if(NOT "${_generated_msg_py_files} " STREQUAL " ")
+if(NOT _generated_msg_py_files STREQUAL "")
   list(GET _generated_msg_py_files 0 _msg_file)
   get_filename_component(_msg_package_dir1 "${_msg_file}" DIRECTORY)
   get_filename_component(_msg_package_dir2 "${_msg_package_dir1}" NAME)
@@ -239,7 +239,11 @@ foreach(_typesupport_impl ${_typesupport_impls})
 endforeach()
 
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
-  if(NOT "${_generated_msg_py_files}${_generated_msg_c_files}${_generated_msg_c_common_files} " STREQUAL " ")
+  if(
+    NOT _generated_msg_py_files STREQUAL "" OR
+    NOT _generated_msg_c_files STREQUAL "" OR
+    NOT _generated_msg_c_common_files STREQUAL ""
+  )
     find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(
       TESTNAME "cppcheck_rosidl_generated_py"

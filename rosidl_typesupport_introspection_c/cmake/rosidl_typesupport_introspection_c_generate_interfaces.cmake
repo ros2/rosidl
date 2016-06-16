@@ -25,14 +25,14 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(_msg_name "${_idl_file}" NAME_WE)
   string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
 
-  if("${_extension} " STREQUAL ".msg ")
+  if(_extension STREQUAL ".msg")
     list(APPEND _generated_msg_header_files
       "${_output_path}/${_parent_folder}/${_header_name}__introspection_type_support.h"
     )
     list(APPEND _generated_msg_source_files
       "${_output_path}/${_parent_folder}/${_header_name}__type_support.c"
     )
-  elseif("${_extension} " STREQUAL ".srv ")
+  elseif(_extension STREQUAL ".srv")
     list(APPEND _generated_srv_header_files
       "${_output_path}/${_parent_folder}/${_header_name}__introspection_type_support.h"
     )
@@ -49,7 +49,7 @@ set(_dependencies "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   foreach(_idl_file ${${_pkg_name}_INTERFACE_FILES})
   get_filename_component(_extension "${_idl_file}" EXT)
-  if("${_extension}" STREQUAL ".msg")
+  if(_extension STREQUAL ".msg")
     set(_abs_idl_file "${${_pkg_name}_DIR}/../${_idl_file}")
     normalize_path(_abs_idl_file "${_abs_idl_file}")
     list(APPEND _dependency_files "${_abs_idl_file}")
@@ -141,13 +141,13 @@ add_dependencies(
 )
 
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
-  if(NOT "${_generated_msg_header_files} " STREQUAL " ")
+  if(NOT _generated_msg_header_files STREQUAL "")
     install(
       FILES ${_generated_msg_header_files}
       DESTINATION "include/${PROJECT_NAME}/msg"
     )
   endif()
-  if(NOT "${_generated_srv_header_files} " STREQUAL " ")
+  if(NOT _generated_srv_header_files STREQUAL "")
     install(
       FILES ${_generated_srv_header_files}
       DESTINATION "include/${PROJECT_NAME}/srv"
@@ -163,7 +163,7 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
 endif()
 
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
-  if(NOT "${_generated_msg_header_files}${_generated_srv_header_files} " STREQUAL " ")
+  if(NOT _generated_msg_header_files STREQUAL "" OR NOT _generated_srv_header_files STREQUAL "")
     find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(
       TESTNAME "cppcheck_rosidl_typesupport_introspection_c"

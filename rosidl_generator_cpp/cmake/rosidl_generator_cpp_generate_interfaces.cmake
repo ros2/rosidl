@@ -22,13 +22,13 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(_msg_name "${_idl_file}" NAME_WE)
   string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
 
-  if("${_parent_folder} " STREQUAL "msg ")
+  if(_parent_folder STREQUAL "msg")
     list(APPEND _generated_msg_files
       "${_output_path}/${_parent_folder}/${_header_name}.hpp"
       "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
       "${_output_path}/${_parent_folder}/${_header_name}__traits.hpp"
     )
-  elseif("${_parent_folder} " STREQUAL "srv ")
+  elseif(_parent_folder STREQUAL "srv")
     list(APPEND _generated_srv_files
       "${_output_path}/${_parent_folder}/${_header_name}.hpp"
       "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
@@ -103,13 +103,13 @@ add_dependencies(
 )
 
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
-  if(NOT "${_generated_msg_files} " STREQUAL " ")
+  if(NOT _generated_msg_files STREQUAL "")
     install(
       FILES ${_generated_msg_files}
       DESTINATION "include/${PROJECT_NAME}/msg"
     )
   endif()
-  if(NOT "${_generated_srv_files} " STREQUAL " ")
+  if(NOT _generated_srv_files STREQUAL "")
     install(
       FILES ${_generated_srv_files}
       DESTINATION "include/${PROJECT_NAME}/srv"
@@ -119,7 +119,7 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
 endif()
 
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
-  if(NOT "${_generated_msg_files}${_generated_srv_files} " STREQUAL " ")
+  if(NOT _generated_msg_files STREQUAL "" OR NOT _generated_srv_files STREQUAL "")
     find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(
       TESTNAME "cppcheck_rosidl_generated_cpp"

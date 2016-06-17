@@ -187,8 +187,11 @@ foreach(_typesupport_impl ${_typesupport_impls})
   )
 
   set(_extension_compile_flags "")
+  set(_PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE})
   if(NOT WIN32)
     set(_extension_compile_flags "-Wall -Wextra")
+  elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    set(PYTHON_EXECUTABLE ${PYTHON_DBG_EXECUTABLE})
   endif()
   set_properties("")
   if(WIN32)
@@ -231,7 +234,8 @@ foreach(_typesupport_impl ${_typesupport_impls})
     "rosidl_generator_py"
     "${PROJECT_NAME}__rosidl_generator_c"
   )
-
+  set(PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE})
+  
   if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
     install(TARGETS ${_target_name}
       DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}")

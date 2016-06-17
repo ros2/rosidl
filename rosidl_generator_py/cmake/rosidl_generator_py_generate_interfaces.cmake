@@ -235,7 +235,7 @@ foreach(_typesupport_impl ${_typesupport_impls})
     "${PROJECT_NAME}__rosidl_generator_c"
   )
   set(PYTHON_EXECUTABLE ${_PYTHON_EXECUTABLE})
-  
+
   if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
     install(TARGETS ${_target_name}
       DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}")

@@ -134,7 +134,7 @@ if(PYTHONINTERP_FOUND)
       get_filename_component(_python_executable_ext "${PYTHON_EXECUTABLE}" EXT)
       set(_python_executable_debug "${_python_executable_dir}/${_python_executable_name}_d${_python_executable_ext}")
       if(EXISTS "${_python_executable_debug}")
-        set(PYTHON_DBG_EXECUTABLE "${_python_executable_debug}")
+        set(PYTHON_EXECUTABLE_DEBUG "${_python_executable_debug}")
       else()
         message(FATAL_ERROR ${_python_executable_debug} " doesn't exist")
       endif()
@@ -208,7 +208,7 @@ set(_required_vars
 if(NOT WIN32)
   list(APPEND _required_vars PythonExtra_EXTENSION_SUFFIX)
 elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-  list(APPEND _required_vars PYTHON_DBG_EXECUTABLE)
+  list(APPEND _required_vars PYTHON_EXECUTABLE_DEBUG)
 endif()
 find_package_handle_standard_args(PythonExtra
   FOUND_VAR PythonExtra_FOUND

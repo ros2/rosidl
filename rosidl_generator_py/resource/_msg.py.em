@@ -16,13 +16,13 @@ except ImportError:
     logger = logging.getLogger('rosidl_generator_py.@(spec.base_type.type)')
     logger.debug('Failed to import needed modules for type support:\n' + traceback.format_exc())
 
-if __type_support_importable:
-    rclpy_implementation = rclpy._rclpy.rclpy_get_rmw_implementation_identifier()
-    module = import_type_support(
-        '@(package_name)', '@(subfolder)', '@(module_name)', rclpy_implementation)
-    _convert_from_py = module.convert_from_py_@(module_name)
-    _convert_to_py = module.convert_to_py_@(module_name)
-    _type_support = module.type_support_@(module_name)
+# if __type_support_importable:
+#     rclpy_implementation = rclpy._rclpy.rclpy_get_rmw_implementation_identifier()
+#     module = import_type_support(
+#         '@(package_name)', '@(subfolder)', '@(module_name)', rclpy_implementation)
+#     _convert_from_py = module.convert_from_py_@(module_name)
+#     _convert_to_py = module.convert_to_py_@(module_name)
+#     _type_support = module.type_support_@(module_name)
 
 
 class Metaclass(type):

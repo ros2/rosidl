@@ -125,20 +125,17 @@ macro(rosidl_generate_interfaces target)
     ament_index_register_resource("rosidl_interfaces" CONTENT "${_idl_files_lines}")
   endif()
 
-  # collect package names of recursive dependencies
+  # collect package names of recursive dependencies which contain interface files
   set(_recursive_dependencies)
   foreach(_dep ${_ARG_DEPENDENCIES})
-    list_append_unique(_recursive_dependencies "${_dep}")
-    foreach(_dep2 ${${_dep}_RECURSIVE_DEPENDENCIES})
-      list_append_unique(_recursive_dependencies "${_dep2}")
-    endforeach()
-  endforeach()
-
-  # check that all dependencies are actually valid message packages
-  foreach(_dep ${_recursive_dependencies})
-    if(NOT DEFINED ${_dep}_INTERFACE_FILES)
-      message(FATAL_ERROR "The message package '${_dep}' does not declare the interface files")
+    if(DEFINED ${_dep}_INTERFACE_FILES)
+      list_append_unique(_recursive_dependencies "${_dep}")
     endif()
+    foreach(_dep2 ${${_dep}_RECURSIVE_DEPENDENCIES})
+      if(DEFINED ${_dep2}_INTERFACE_FILES)
+        list_append_unique(_recursive_dependencies "${_dep2}")
+      endif()
+    endforeach()
   endforeach()
 
   # generators must be executed in topological order

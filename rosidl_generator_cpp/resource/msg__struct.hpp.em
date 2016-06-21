@@ -43,6 +43,7 @@ cpp_full_name_with_alloc = '%s<ContainerAllocator>' % (cpp_full_name)
 #include <memory>
 #include <string>
 #include <vector>
+#include <rosidl_generator_cpp/bounded_vector.hpp>
 
 // include message dependencies
 @{

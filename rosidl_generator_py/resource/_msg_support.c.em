@@ -78,7 +78,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   assert(PySequence_Check(py@(field.name)));
   PyObject * seq@(field.name) = PySequence_Fast(py@(field.name), "expected a sequence");
   @(nested_type) * item@(field.name);
-@[      if field.type.array_size is None]@
+@[      if field.type.array_size is None or field.type.is_upper_bound]@
   size_t size@(field.name) = PySequence_Size(py@(field.name));
   if (!@(nested_type)__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
     PyErr_SetString(PyExc_RuntimeError, "unable to create @(nested_type)__Array ros_message");
@@ -86,11 +86,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   @(nested_type) * dest@(field.name) = ros_message->@(field.name).data;
 @[      else]@
   size_t size@(field.name) = @(field.type.array_size);
-@[        if field.type.is_upper_bound]@
-  @(nested_type) * dest@(field.name) = ros_message->@(field.name).data;
-@[        else]@
   @(nested_type) * dest@(field.name) = ros_message->@(field.name);
-@[        end if]@
 @[      end if]@
   size_t idx@(field.name);
   for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
@@ -106,7 +102,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   assert(PySequence_Check(py@(field.name)));
   PyObject * seq@(field.name) = PySequence_Fast(py@(field.name), "expected a sequence");
   PyObject * item@(field.name);
-@[    if field.type.array_size is None]@
+@[    if field.type.array_size is None or field.type.is_upper_bound]@
   size_t size@(field.name) = PySequence_Size(py@(field.name));
 @[      if field.type.type == 'string']@
   if (!rosidl_generator_c__String__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
@@ -120,11 +116,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   @primitive_msg_type_to_c(field.type.type) * dest@(field.name) = ros_message->@(field.name).data;
 @[    else]@
   size_t size@(field.name) = @(field.type.array_size);
-@[        if field.type.is_upper_bound]@
-  @primitive_msg_type_to_c(field.type.type) * dest@(field.name) = ros_message->@(field.name).data;
-@[        else]@
   @primitive_msg_type_to_c(field.type.type) * dest@(field.name) = ros_message->@(field.name);
-@[        end if]@
 @[    end if]@
 @[    if field.type.type != 'string']@
   @primitive_msg_type_to_c(field.type.type) tmp@(field.name);
@@ -260,7 +252,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   typedef PyObject *(* convert_to_py_signature)(void *);
   convert_to_py_signature convert_to_py_@(field.name) = (convert_to_py_signature)PyCapsule_GetPointer(py@(field.name)_convert_to_py, NULL);
 @[    if field.type.is_array]@
-@[      if field.type.array_size is None]@
+@[      if field.type.array_size is None or field.type.is_upper_bound]@
   size_t size@(field.name) = ros_message->@(field.name).size;
 @[      else]@
   size_t size@(field.name) = @(field.type.array_size);
@@ -282,16 +274,12 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   py@(field.name) = convert_to_py_@(field.name)(&pytmp@(field.name));
 @[    end if]@
 @[  elif field.type.is_array]@
-@[    if field.type.array_size is None]@
+@[    if field.type.array_size is None or field.type.is_upper_bound]@
   size_t size@(field.name) = ros_message->@(field.name).size;
   @primitive_msg_type_to_c(field.type.type) * tmpmessagedata@(field.name) = ros_message->@(field.name).data;
 @[    else]@
   size_t size@(field.name) = @(field.type.array_size);
-@[      if field.type.is_upper_bound]@
-  @primitive_msg_type_to_c(field.type.type) * tmpmessagedata@(field.name) = ros_message->@(field.name).data;
-@[      else]@
   @primitive_msg_type_to_c(field.type.type) * tmpmessagedata@(field.name) = ros_message->@(field.name);
-@[      end if]@
 @[    end if]@
   py@(field.name) = PyList_New(size@(field.name));
   size_t idx@(field.name);

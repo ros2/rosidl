@@ -53,6 +53,10 @@ if(BUILD_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
   endif()
 
+  include_directories(include)
+
+  ament_add_gtest(test_bounded_vector test/test_bounded_vector.cpp)
+
   ament_add_gtest(test_interfaces_cpp test/test_interfaces.cpp)
   if(TARGET test_interfaces_cpp)
     add_dependencies(test_interfaces_cpp ${PROJECT_NAME})

@@ -4,6 +4,7 @@ project(rosidl_generator_py)
 
 find_package(ament_cmake REQUIRED)
 
+ament_export_dependencies(ament_cmake)
 ament_export_dependencies(rosidl_cmake)
 
 ament_python_install_package(${PROJECT_NAME})

@@ -4,39 +4,45 @@
 import logging
 import traceback
 
-_convert_from_py = None
-_convert_to_py = None
-_type_support = None
-__type_support_importable = False
-try:
-    import rclpy
-    from rosidl_generator_py import import_type_support
-    __type_support_importable = True
-except ImportError:
-    logger = logging.getLogger('rosidl_generator_py.@(spec.base_type.type)')
-    logger.debug('Failed to import needed modules for type support:\n' + traceback.format_exc())
-
-if __type_support_importable:
-    rclpy_implementation = rclpy._rclpy.rclpy_get_rmw_implementation_identifier()
-    module = import_type_support(
-        '@(package_name)', '@(subfolder)', '@(module_name)', rclpy_implementation)
-    _convert_from_py = module.convert_from_py_@(module_name)
-    _convert_to_py = module.convert_to_py_@(module_name)
-    _type_support = module.type_support_@(module_name)
-
 
 class Metaclass(type):
     """Metaclass of message '@(spec.base_type.type)'."""
 
-    _CONVERT_FROM_PY = _convert_from_py
-    _CONVERT_TO_PY = _convert_to_py
-    _TYPE_SUPPORT = _type_support
+    _CONVERT_FROM_PY = None
+    _CONVERT_TO_PY = None
+    _TYPE_SUPPORT = None
 
     __constants = {
 @[for constant in spec.constants]@
         '@(constant.name)': @constant_value_to_py(constant.type, constant.value),
 @[end for]@
     }
+
+    @@classmethod
+    def __import_type_support__(cls):
+        __type_support_importable = False
+        try:
+            import rclpy
+            from rosidl_generator_py import import_type_support
+            __type_support_importable = True
+        except ImportError:
+            logger = logging.getLogger('rosidl_generator_py.@(spec.base_type.type)')
+            logger.debug('Failed to import needed modules for type support:\n' + traceback.format_exc())
+
+        if __type_support_importable:
+            rclpy_implementation = rclpy._rclpy.rclpy_get_rmw_implementation_identifier()
+            module = import_type_support(
+                '@(package_name)', '@(subfolder)', '@(module_name)', rclpy_implementation)
+            cls._CONVERT_FROM_PY = module.convert_from_py_@(module_name)
+            cls._CONVERT_TO_PY = module.convert_to_py_@(module_name)
+            cls._TYPE_SUPPORT = module.type_support_@(module_name)
+@[for field in spec.fields]@
+@[  if not field.type.is_primitive_type()]@
+            from @(field.type.pkg_name).msg import @(field.type.type)
+            if @(field.type.type).__class__._TYPE_SUPPORT is None:
+                @(field.type.type).__class__.__import_type_support__()
+@[  end if]@
+@[end for]@
 
     @@classmethod
     def __prepare__(cls, name, bases, **kwargs):

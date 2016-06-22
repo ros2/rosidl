@@ -69,7 +69,9 @@ full_classname = "@(spec.base_type.pkg_name).@(subfolder)._@(module_name).@(spec
 nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 }@
   PyObject * py@(field.name)_msg_module = PyImport_ImportModule("@(field.type.pkg_name).msg._@convert_camel_case_to_lower_case_underscore(field.type.type)");
-  PyObject * py@(field.name)_convert_from_py = PyObject_GetAttrString(py@(field.name)_msg_module, "_convert_from_py");
+  PyObject * py@(field.name)_msg_class = PyObject_GetAttrString(py@(field.name)_msg_module, "@(field.type.type)");
+  PyObject * py@(field.name)_msg_metaclass = PyObject_GetAttrString(py@(field.name)_msg_class,"__class__");
+  PyObject * py@(field.name)_convert_from_py = PyObject_GetAttrString(py@(field.name)_msg_metaclass, "_CONVERT_FROM_PY");
   typedef PyObject *(* convert_from_py_signature)(void *);
   convert_from_py_signature convert_from_py_@(field.name) = (convert_from_py_signature)PyCapsule_GetPointer(py@(field.name)_convert_from_py, NULL);
 @[    if field.type.is_array]@
@@ -252,7 +254,9 @@ PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_r
 nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 }@
   PyObject * py@(field.name)_msg_module = PyImport_ImportModule("@(field.type.pkg_name).msg._@convert_camel_case_to_lower_case_underscore(field.type.type)");
-  PyObject * py@(field.name)_convert_to_py = PyObject_GetAttrString(py@(field.name)_msg_module, "_convert_to_py");
+  PyObject * py@(field.name)_msg_class = PyObject_GetAttrString(py@(field.name)_msg_module, "@(field.type.type)");
+  PyObject * py@(field.name)_msg_metaclass = PyObject_GetAttrString(py@(field.name)_msg_class,"__class__");
+  PyObject * py@(field.name)_convert_to_py = PyObject_GetAttrString(py@(field.name)_msg_metaclass, "_CONVERT_TO_PY");
   typedef PyObject *(* convert_to_py_signature)(void *);
   convert_to_py_signature convert_to_py_@(field.name) = (convert_to_py_signature)PyCapsule_GetPointer(py@(field.name)_convert_to_py, NULL);
 @[    if field.type.is_array]@

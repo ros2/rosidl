@@ -14,10 +14,8 @@
 
 macro(accumulate_typesupports)
   set(_typesupport_impl "")
-  if(NOT rmw_implementation STREQUAL "rmw_fastrtps_cpp")
-    get_rmw_typesupport(_typesupport_impl ${rmw_implementation} LANGUAGE "C")
-    list(APPEND _typesupport_impls ${_typesupport_impl})
-  endif()
+  get_rmw_typesupport(_typesupport_impl ${rmw_implementation} LANGUAGE "C")
+  list(APPEND _typesupport_impls ${_typesupport_impl})
 endmacro()
 
 macro(rosidl_generator_py_get_typesupports TYPESUPPORT_IMPLS)

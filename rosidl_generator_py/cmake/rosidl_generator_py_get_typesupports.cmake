@@ -15,7 +15,7 @@
 macro(accumulate_typesupports)
   set(_typesupport_impl "")
   get_rmw_typesupport(_typesupport_impl ${rmw_implementation} LANGUAGE "C")
-  list(APPEND _typesupport_impls ${_typesupport_impl})
+  list_append_unique(_typesupport_impls ${_typesupport_impl})
 endmacro()
 
 macro(rosidl_generator_py_get_typesupports TYPESUPPORT_IMPLS)

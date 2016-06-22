@@ -32,7 +32,7 @@ class Metaclass(type):
         if __type_support_importable:
             rclpy_implementation = rclpy._rclpy.rclpy_get_rmw_implementation_identifier()
             module = import_type_support(
-                '@(package_name)', '@(subfolder)', '@(module_name)', rclpy_implementation)
+                '@(package_name)', rclpy_implementation)
             cls._CONVERT_FROM_PY = module.convert_from_py_@(module_name)
             cls._CONVERT_TO_PY = module.convert_to_py_@(module_name)
             cls._TYPE_SUPPORT = module.type_support_@(module_name)

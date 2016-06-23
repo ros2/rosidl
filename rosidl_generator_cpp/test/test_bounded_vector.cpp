@@ -29,4 +29,6 @@ TEST(rosidl_generator_cpp, bounded_vector) {
   ASSERT_EQ(v.size(), 1u);
   v = {1, 2};
   ASSERT_EQ(v.size(), 2u);
+  auto l = {1, 2, 3};
+  ASSERT_THROW(v = l, std::length_error);
 }

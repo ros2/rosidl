@@ -107,7 +107,7 @@ public:
     }
   }
 
-  ///\returnedVector copy constructor.
+  /// %BoundedVector copy constructor.
   /**
    * The newly-created %BoundedVector uses a copy of the allocation
    * object used by @a __x.
@@ -121,12 +121,12 @@ public:
   : _Base(__x)
   {}
 
+  /// %BoundedVector move constructor.
   /**
-   * %BoundedVector move constructor.
-   * \param __x A %BoundedVector of identical element and allocator types.
-   *
    * The newly-created %BoundedVector contains the exact contents of @a __x.
    * The contents of @a __x are a valid, but unspecified %BoundedVector.
+   *
+   * \param __x A %BoundedVector of identical element and allocator types
    */
   BoundedVector(BoundedVector && __x) noexcept
   : _Base(std::move(__x))

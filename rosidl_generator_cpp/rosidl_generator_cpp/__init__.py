@@ -114,10 +114,14 @@ def msg_type_to_cpp(type_):
             (type_.pkg_name, type_.type)
 
     if type_.is_array:
-        if type_.array_size is None:
+        if not type_.array_size:
             return \
                 ('std::vector<%s, typename ContainerAllocator::template ' +
                  'rebind<%s>::other>') % (cpp_type, cpp_type)
+        elif type_.is_upper_bound:
+            return \
+                ('rosidl_generator_cpp::BoundedVector<%s, %u, typename ContainerAllocator::' +
+                 'template rebind<%s>::other>') % (cpp_type, type_.array_size, cpp_type)
         else:
             return 'std::array<%s, %u>' % (cpp_type, type_.array_size)
     else:

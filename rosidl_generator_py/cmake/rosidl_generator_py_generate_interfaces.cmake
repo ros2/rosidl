@@ -213,19 +213,16 @@ foreach(_typesupport_impl ${_typesupport_impls})
     ${PythonExtra_INCLUDE_DIRS}
   )
 
+  ament_target_dependencies(${_target_name}
+    "rosidl_generator_c"
+    "${_typesupport_impl}"
+  )
   foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
     ament_target_dependencies(${_target_name}
       ${_pkg_name}
     )
   endforeach()
-  ament_target_dependencies(${_target_name}
-    "rosidl_generator_c"
-    "${_typesupport_impl}"
-  )
 
-  ament_target_dependencies(${_target_name}
-    ${_typesupport_impl}
-  )
   add_dependencies(${_target_name}
     ${rosidl_generate_interfaces_TARGET}__${_typesupport_impl}
   )

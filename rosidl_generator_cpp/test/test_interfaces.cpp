@@ -142,10 +142,12 @@ void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic 
 
 #define TEST_BOUNDED_ARRAY_PRIMITIVE( \
     Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal) \
-  std::array<PrimitiveType, ArraySize> pattern_ ## FieldName; \
+  rosidl_generator_cpp::BoundedVector<PrimitiveType, ArraySize> pattern_ ## FieldName; \
+  Message.FieldName.resize(ArraySize); \
+  pattern_ ## FieldName.resize(ArraySize); \
   test_vector_fill<decltype(pattern_ ## FieldName)>( \
     &pattern_ ## FieldName, ArraySize, MinVal, MaxVal); \
-  std::copy_n(pattern_ ## FieldName.begin(), ArraySize, Message.FieldName.begin()); \
+  std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
 void test_message_primitives_bounded(rosidl_generator_cpp::msg::PrimitivesBounded message)
@@ -183,6 +185,7 @@ void test_message_primitives_bounded(rosidl_generator_cpp::msg::PrimitivesBounde
 #define TEST_UNBOUNDED_ARRAY_PRIMITIVE( \
     Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal) \
   std::vector<PrimitiveType> pattern_ ## FieldName(ArraySize); \
+  pattern_ ## FieldName.resize(ArraySize); \
   test_vector_fill<decltype(pattern_ ## FieldName)>( \
     &pattern_ ## FieldName, ArraySize, MinVal, MaxVal); \
   Message.FieldName.resize(ArraySize); \
@@ -266,6 +269,7 @@ TEST(Test_messages, static_array_unbounded) {
 // Bounded array of a submessage of static primitive
 TEST(Test_messages, bounded_array_static) {
   rosidl_generator_cpp::msg::BoundedArrayStatic message;
+  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
     test_message_primitives_static(message.primitive_values[i]);
   }
@@ -274,6 +278,7 @@ TEST(Test_messages, bounded_array_static) {
 // Bounded array of a submessage of bounded array of primitives
 TEST(Test_messages, bounded_array_bounded) {
   rosidl_generator_cpp::msg::BoundedArrayBounded message;
+  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
     test_message_primitives_bounded(message.primitive_values[i]);
   }
@@ -282,6 +287,7 @@ TEST(Test_messages, bounded_array_bounded) {
 // Bounded array of a submessage of unbounded array of primitives
 TEST(Test_messages, bounded_array_unbounded) {
   rosidl_generator_cpp::msg::BoundedArrayUnbounded message;
+  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
     test_message_primitives_unbounded(message.primitive_values[i]);
   }

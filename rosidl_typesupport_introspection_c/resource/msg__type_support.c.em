@@ -154,7 +154,7 @@ for index, field in enumerate(spec.fields):
     # bool is_array_
     print('    %s,  // is array' % ('true' if field.type.is_array else 'false'))
     # size_t array_size_
-    print('    %u,  // array size' % (field.type.array_size if field.type.array_size and not field.type.is_upper_bound else 0))
+    print('    %u,  // array size' % (field.type.array_size if field.type.array_size else 0))
     # bool is_upper_bound_
     print('    %s,  // is upper bound' % ('true' if field.type.is_upper_bound else 'false'))
     # unsigned long offset_

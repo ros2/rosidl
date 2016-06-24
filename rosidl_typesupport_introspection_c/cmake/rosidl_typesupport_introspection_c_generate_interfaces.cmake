@@ -127,13 +127,13 @@ target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
 )
 target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c)
+ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  "rosidl_typesupport_introspection_c")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   ament_target_dependencies(
     ${rosidl_generate_interfaces_TARGET}${_target_suffix}
     ${_pkg_name})
 endforeach()
-ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-  "rosidl_typesupport_introspection_c")
 
 add_dependencies(
   ${rosidl_generate_interfaces_TARGET}

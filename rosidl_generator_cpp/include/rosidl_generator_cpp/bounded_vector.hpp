@@ -24,15 +24,14 @@
 namespace rosidl_generator_cpp
 {
 
+/// A container based on std::vector but with an upper bound.
 /**
- *  @brief  A container based on std::vector but with an upper bound.
+ * Meets the same requirements as std::vector.
  *
- *  @tparam  _Tp  Type of element.
- *  @tparam  _UpperBound  The upper bound for the number of elements.
- *  @tparam  _Alloc  Allocator type, defaults to allocator<_Tp>.
- *
- *  Meets the same requirements as std::vector.
-*/
+ * \param _Tp Type of element
+ * \param _UpperBound The upper bound for the number of elements
+ * \param _Alloc Allocator type, defaults to std::allocator<_Tp>
+ */
 template<typename _Tp, std::size_t _UpperBound, typename _Alloc = std::allocator<_Tp>>
 class BoundedVector
   : protected std::vector<_Tp, _Alloc>
@@ -53,17 +52,15 @@ public:
   using typename _Base::difference_type;
   using typename _Base::allocator_type;
 
-  /**
-   *  @brief  Creates a %BoundedVector with no elements.
-   */
+  /// Create a %BoundedVector with no elements.
   BoundedVector()
   noexcept(std::is_nothrow_default_constructible<_Alloc>::value)
   : _Base()
   {}
 
+  /// Creates a %BoundedVector with no elements.
   /**
-   *  @brief  Creates a %BoundedVector with no elements.
-   *  @param  __a  An allocator object.
+   * \param __a An allocator object
    */
   explicit
   BoundedVector(
@@ -72,13 +69,13 @@ public:
   : _Base(__a)
   {}
 
+  /// Create a %BoundedVector with default constructed elements.
   /**
-   *  @brief  Creates a %BoundedVector with default constructed elements.
-   *  @param  __n  The number of elements to initially create.
-   *  @param  __a  An allocator.
+   * This constructor fills the %BoundedVector with @a __n default
+   * constructed elements.
    *
-   *  This constructor fills the %BoundedVector with @a __n default
-   *  constructed elements.
+   * \param __n The number of elements to initially create
+   * \param __a An allocator
    */
   explicit
   BoundedVector(
@@ -91,13 +88,13 @@ public:
     }
   }
 
+  /// Create a %BoundedVector with copies of an exemplar element.
   /**
-   *  @brief  Creates a %BoundedVector with copies of an exemplar element.
-   *  @param  __n  The number of elements to initially create.
-   *  @param  __value  An element to copy.
-   *  @param  __a  An allocator.
+   * This constructor fills the %BoundedVector with @a __n copies of @a __value.
    *
-   *  This constructor fills the %BoundedVector with @a __n copies of @a __value.
+   * \param __n The number of elements to initially create
+   * \param __value An element to copy
+   * \param __a An allocator
    */
   BoundedVector(
     typename _Base::size_type __n,
@@ -110,14 +107,14 @@ public:
     }
   }
 
+  ///\returnedVector copy constructor.
   /**
-   *  @brief  %BoundedVector copy constructor.
-   *  @param  __x  A %BoundedVector of identical element and allocator types.
+   * The newly-created %BoundedVector uses a copy of the allocation
+   * object used by @a __x.
+   * All the elements of @a __x are copied, but any extra memory in
+   * @a __x (for fast expansion) will not be copied.
    *
-   *  The newly-created %BoundedVector uses a copy of the allocation
-   *  object used by @a __x.  All the elements of @a __x are copied,
-   *  but any extra memory in
-   *  @a __x (for fast expansion) will not be copied.
+   * \param __x A %BoundedVector of identical element and allocator types
    */
   BoundedVector(
     const BoundedVector & __x)
@@ -125,11 +122,11 @@ public:
   {}
 
   /**
-   *  @brief  %BoundedVector move constructor.
-   *  @param  __x  A %BoundedVector of identical element and allocator types.
+   * %BoundedVector move constructor.
+   * \param __x A %BoundedVector of identical element and allocator types.
    *
-   *  The newly-created %BoundedVector contains the exact contents of @a __x.
-   *  The contents of @a __x are a valid, but unspecified %BoundedVector.
+   * The newly-created %BoundedVector contains the exact contents of @a __x.
+   * The contents of @a __x are a valid, but unspecified %BoundedVector.
    */
   BoundedVector(BoundedVector && __x) noexcept
   : _Base(std::move(__x))
@@ -140,16 +137,16 @@ public:
   : _Base(__x, __a)
   {}
 
+  /// Build a %BoundedVector from an initializer list.
   /**
-   *  @brief  Builds a %BoundedVector from an initializer list.
-   *  @param  __l  An initializer_list.
-   *  @param  __a  An allocator.
+   * Create a %BoundedVector consisting of copies of the elements in the
+   * initializer_list @a __l.
    *
-   *  Create a %BoundedVector consisting of copies of the elements in the
-   *  initializer_list @a __l.
+   * This will call the element type's copy constructor N times
+   * (where N is @a __l.size()) and do no memory reallocation.
    *
-   *  This will call the element type's copy constructor N times
-   *  (where N is @a __l.size()) and do no memory reallocation.
+   * \param __l An initializer_list
+   * \param __a An allocator
    */
   BoundedVector(
     std::initializer_list<typename _Base::value_type> __l,
@@ -161,21 +158,20 @@ public:
     }
   }
 
+  /// Build a %BoundedVector from a range.
   /**
-   *  @brief  Builds a %BoundedVector from a range.
-   *  @param  __first  An input iterator.
-   *  @param  __last  An input iterator.
-   *  @param  __a  An allocator.
+   * Create a %BoundedVector consisting of copies of the elements from
+   * [first,last).
    *
-   *  Create a %BoundedVector consisting of copies of the elements from
-   *  [first,last).
+   * If the iterators are forward, bidirectional, or random-access, then
+   * this will call the elements' copy constructor N times (where N is
+   * distance(first,last)) and do no memory reallocation.
+   * But if only input iterators are used, then this will do at most 2N
+   * calls to the copy constructor, and logN memory reallocations.
    *
-   *  If the iterators are forward, bidirectional, or
-   *  random-access, then this will call the elements' copy
-   *  constructor N times (where N is distance(first,last)) and do
-   *  no memory reallocation.  But if only input iterators are
-   *  used, then this will do at most 2N calls to the copy
-   *  constructor, and logN memory reallocations.
+   * \param __first An input iterator
+   * \param __last An input iterator
+   * \param __a An allocator
    */
   template<
     typename _InputIterator
@@ -191,22 +187,22 @@ public:
     }
   }
 
+  /// The dtor only erases the elements.
   /**
-   *  The dtor only erases the elements, and note that if the
-   *  elements themselves are pointers, the pointed-to memory is
-   *  not touched in any way.  Managing the pointer is the user's
-   *  responsibility.
+   * Note that if the elements themselves are pointers, the pointed-to
+   * memory is not touched in any way.
+   * Managing the pointer is the user's responsibility.
    */
   ~BoundedVector() noexcept
   {}
 
+  /// %BoundedVector assignment operator.
   /**
-   *  @brief  %BoundedVector assignment operator.
-   *  @param  __x  A %BoundedVector of identical element and allocator types.
+   * All the elements of @a __x are copied, but any extra memory in
+   * @a __x (for fast expansion) will not be copied.
+   * Unlike the copy constructor, the allocator object is not copied.
    *
-   *  All the elements of @a __x are copied, but any extra memory in
-   *  @a __x (for fast expansion) will not be copied.  Unlike the
-   *  copy constructor, the allocator object is not copied.
+   * \param __x A %BoundedVector of identical element and allocator types
    */
   BoundedVector &
   operator=(const BoundedVector & __x)
@@ -216,16 +212,17 @@ public:
     return *this;
   }
 
+  /// %BoundedVector list assignment operator.
   /**
-   *  @brief  %BoundedVector list assignment operator.
-   *  @param  __l  An initializer_list.
+   * This function fills a %BoundedVector with copies of the elements in
+   * the initializer list @a __l.
    *
-   *  This function fills a %BoundedVector with copies of the elements in the
-   *  initializer list @a __l.
+   * Note that the assignment completely changes the %BoundedVector and
+   * that the resulting %BoundedVector's size is the same as the number
+   * of elements assigned.
+   * Old data may be lost.
    *
-   *  Note that the assignment completely changes the %BoundedVector and
-   *  that the resulting %BoundedVector's size is the same as the number
-   *  of elements assigned.  Old data may be lost.
+   * \param __l An initializer_list
    */
   BoundedVector &
   operator=(std::initializer_list<typename _Base::value_type> __l)
@@ -237,15 +234,17 @@ public:
     return *this;
   }
 
+  /// Assign a given value to a %BoundedVector.
   /**
-   *  @brief  Assigns a given value to a %BoundedVector.
-   *  @param  __n  Number of elements to be assigned.
-   *  @param  __val  Value to be assigned.
+   * This function fills a %BoundedVector with @a __n copies of the
+   * given value.
+   * Note that the assignment completely changes the %BoundedVector and
+   * that the resulting %BoundedVector's size is the same as the number
+   * of elements assigned.
+   * Old data may be lost.
    *
-   *  This function fills a %BoundedVector with @a __n copies of the given
-   *  value.  Note that the assignment completely changes the
-   *  %BoundedVector and that the resulting %BoundedVector's size is the same as
-   *  the number of elements assigned.  Old data may be lost.
+   * \param __n Number of elements to be assigned
+   * \param __val Value to be assigned
    */
   void
   assign(
@@ -258,17 +257,18 @@ public:
     _Base::assign(__n, __val);
   }
 
+  /// Assign a range to a %BoundedVector.
   /**
-   *  @brief  Assigns a range to a %BoundedVector.
-   *  @param  __first  An input iterator.
-   *  @param  __last   An input iterator.
+   * This function fills a %BoundedVector with copies of the elements in
+   * the range [__first,__last).
    *
-   *  This function fills a %BoundedVector with copies of the elements in the
-   *  range [__first,__last).
+   * Note that the assignment completely changes the %BoundedVector and
+   * that the resulting %BoundedVector's size is the same as the number
+   * of elements assigned.
+   * Old data may be lost.
    *
-   *  Note that the assignment completely changes the %BoundedVector and
-   *  that the resulting %BoundedVector's size is the same as the number
-   *  of elements assigned.  Old data may be lost.
+   * \param __first An input iterator
+   * \param __last   An input iterator
    */
   template<
     typename _InputIterator
@@ -282,16 +282,17 @@ public:
     _Base::assign(__first, __last);
   }
 
+  /// Assign an initializer list to a %BoundedVector.
   /**
-   *  @brief  Assigns an initializer list to a %BoundedVector.
-   *  @param  __l  An initializer_list.
+   * This function fills a %BoundedVector with copies of the elements in
+   * the initializer list @a __l.
    *
-   *  This function fills a %BoundedVector with copies of the elements in the
-   *  initializer list @a __l.
+   * Note that the assignment completely changes the %BoundedVector and
+   * that the resulting %BoundedVector's size is the same as the number
+   * of elements assigned.
+   * Old data may be lost.
    *
-   *  Note that the assignment completely changes the %BoundedVector and
-   *  that the resulting %BoundedVector's size is the same as the number
-   *  of elements assigned.  Old data may be lost.
+   * \param __l An initializer_list
    */
   void
   assign(std::initializer_list<typename _Base::value_type> __l)
@@ -312,21 +313,22 @@ public:
   using _Base::crend;
   using _Base::size;
 
-  /**  Returns the size() of the largest possible %BoundedVector.  */
+  /** Returns the size() of the largest possible %BoundedVector.  */
   typename _Base::size_type
   max_size() const noexcept
   {
     return std::min(_UpperBound, _Base::max_size());
   }
 
+  /// Resize the %BoundedVector to the specified number of elements.
   /**
-   *  @brief  Resizes the %BoundedVector to the specified number of elements.
-   *  @param  __new_size  Number of elements the %BoundedVector should contain.
+   * This function will %resize the %BoundedVector to the specified
+   * number of elements.
+   * If the number is smaller than the %BoundedVector's current size the
+   * %BoundedVector is truncated, otherwise default constructed elements
+   * are appended.
    *
-   *  This function will %resize the %BoundedVector to the specified
-   *  number of elements.  If the number is smaller than the
-   *  %BoundedVector's current size the %BoundedVector is truncated, otherwise
-   *  default constructed elements are appended.
+   * \param __new_size Number of elements the %BoundedVector should contain
    */
   void
   resize(typename _Base::size_type __new_size)
@@ -337,16 +339,16 @@ public:
     _Base::resize(__new_size);
   }
 
+  /// Resize the %BoundedVector to the specified number of elements.
   /**
-   *  @brief  Resizes the %BoundedVector to the specified number of elements.
-   *  @param  __new_size  Number of elements the %BoundedVector should contain.
-   *  @param  __x  Data with which new elements should be populated.
+   * This function will %resize the %BoundedVector to the specified
+   * number of elements.
+   * If the number is smaller than the %BoundedVector's current size the
+   * %BoundedVector is truncated, otherwise the %BoundedVector is
+   * extended and new elements are populated with given data.
    *
-   *  This function will %resize the %BoundedVector to the specified
-   *  number of elements.  If the number is smaller than the
-   *  %BoundedVector's current size the %BoundedVector is truncated, otherwise
-   *  the %BoundedVector is extended and new elements are populated with
-   *  given data.
+   * \param __new_size Number of elements the %BoundedVector should contain
+   * \param __x Data with which new elements should be populated
    */
   void
   resize(
@@ -363,22 +365,21 @@ public:
   using _Base::capacity;
   using _Base::empty;
 
+  /// Attempt to preallocate enough memory for specified number of elements.
   /**
-   *  @brief  Attempt to preallocate enough memory for specified number of
-   *          elements.
-   *  @param  __n  Number of elements required.
-   *  @throw  std::length_error  If @a n exceeds @c max_size().
+   * This function attempts to reserve enough memory for the
+   * %BoundedVector to hold the specified number of elements.
+   * If the number requested is more than max_size(), length_error is
+   * thrown.
    *
-   *  This function attempts to reserve enough memory for the
-   *  %BoundedVector to hold the specified number of elements.  If the
-   *  number requested is more than max_size(), length_error is
-   *  thrown.
+   * The advantage of this function is that if optimal code is a
+   * necessity and the user can determine the number of elements that
+   * will be required, the user can reserve the memory in %advance, and
+   * thus prevent a possible reallocation of memory and copying of
+   * %BoundedVector data.
    *
-   *  The advantage of this function is that if optimal code is a
-   *  necessity and the user can determine the number of elements
-   *  that will be required, the user can reserve the memory in
-   *  %advance, and thus prevent a possible reallocation of memory
-   *  and copying of %BoundedVector data.
+   * \param __n Number of elements required
+   * @throw std::length_error If @a n exceeds @c max_size()
    */
   void
   reserve(typename _Base::size_type __n)
@@ -394,11 +395,9 @@ public:
   using _Base::front;
   using _Base::back;
 
-  // DR 464. Suggestion for new member functions in standard containers.
-  // data access
+  /// Return a pointer such that [data(), data() + size()) is a valid range.
   /**
-   *  Returns a pointer such that [data(), data() + size()) is a valid
-   *  range.  For a non-empty %BoundedVector, data() == &front().
+   * For a non-empty %BoundedVector, data() == &front().
    */
   template<
     typename T,
@@ -426,16 +425,16 @@ public:
     return _Base::data();
   }
 
-  // [23.2.4.3] modifiers
+  /// Add data to the end of the %BoundedVector.
   /**
-   *  @brief  Add data to the end of the %BoundedVector.
-   *  @param  __x  Data to be added.
+   * This is a typical stack operation.
+   * The function creates an element at the end of the %BoundedVector
+   * and assigns the given data to it.
+   * Due to the nature of a %BoundedVector this operation can be done in
+   * constant time if the %BoundedVector has preallocated space
+   * available.
    *
-   *  This is a typical stack operation.  The function creates an
-   *  element at the end of the %BoundedVector and assigns the given data
-   *  to it.  Due to the nature of a %BoundedVector this operation can be
-   *  done in constant time if the %BoundedVector has preallocated space
-   *  available.
+   * \param __x Data to be added
    */
   void
   push_back(const typename _Base::value_type & __x)
@@ -455,17 +454,17 @@ public:
     _Base::push_back(__x);
   }
 
+  /// Insert an object in %BoundedVector before specified iterator.
   /**
-   *  @brief  Inserts an object in %BoundedVector before specified iterator.
-   *  @param  __position  A const_iterator into the %BoundedVector.
-   *  @param  __args  Arguments.
-   *  @return  An iterator that points to the inserted data.
+   * This function will insert an object of type T constructed with
+   * T(std::forward<Args>(args)...) before the specified location.
+   * Note that this kind of operation could be expensive for a
+   * %BoundedVector and if it is frequently used the user should
+   * consider using std::list.
    *
-   *  This function will insert an object of type T constructed
-   *  with T(std::forward<Args>(args)...) before the specified location.
-   *  Note that this kind of operation could be expensive for a %BoundedVector
-   *  and if it is frequently used the user should consider using
-   *  std::list.
+   * \param __position A const_iterator into the %BoundedVector
+   * \param __args Arguments
+   * \return An iterator that points to the inserted data
    */
   template<typename ... _Args>
   typename _Base::iterator
@@ -479,16 +478,17 @@ public:
     _Base::emplace(__position, std::forward<_Args>(__args) ...);
   }
 
+  /// Insert given value into %BoundedVector before specified iterator.
   /**
-   *  @brief  Inserts given value into %BoundedVector before specified iterator.
-   *  @param  __position  A const_iterator into the %BoundedVector.
-   *  @param  __x  Data to be inserted.
-   *  @return  An iterator that points to the inserted data.
+   * This function will insert a copy of the given value before the
+   * specified location.
+   * Note that this kind of operation could be expensive for a
+   * %BoundedVector and if it is frequently used the user should
+   * consider using std::list.
    *
-   *  This function will insert a copy of the given value before
-   *  the specified location.  Note that this kind of operation
-   *  could be expensive for a %BoundedVector and if it is frequently
-   *  used the user should consider using std::list.
+   * \param __position A const_iterator into the %BoundedVector
+   * \param __x Data to be inserted
+   * \return An iterator that points to the inserted data
    */
   typename _Base::iterator
   insert(
@@ -501,16 +501,17 @@ public:
     return _Base::insert(__position, __x);
   }
 
+  /// Insert given rvalue into %BoundedVector before specified iterator.
   /**
-   *  @brief  Inserts given rvalue into %BoundedVector before specified iterator.
-   *  @param  __position  A const_iterator into the %BoundedVector.
-   *  @param  __x  Data to be inserted.
-   *  @return  An iterator that points to the inserted data.
+   * This function will insert a copy of the given rvalue before the
+   * specified location.
+   * Note that this kind of operation could be expensive for a
+   * %BoundedVector and if it is frequently used the user should
+   * consider using std::list.
    *
-   *  This function will insert a copy of the given rvalue before
-   *  the specified location.  Note that this kind of operation
-   *  could be expensive for a %BoundedVector and if it is frequently
-   *  used the user should consider using std::list.
+   * \param __position A const_iterator into the %BoundedVector
+   * \param __x Data to be inserted
+   * \return An iterator that points to the inserted data
    */
   typename _Base::iterator
   insert(
@@ -523,18 +524,18 @@ public:
     return _Base::insert(__position, __x);
   }
 
+  /// Insert an initializer_list into the %BoundedVector.
   /**
-   *  @brief  Inserts an initializer_list into the %BoundedVector.
-   *  @param  __position  An iterator into the %BoundedVector.
-   *  @param  __l  An initializer_list.
+   * This function will insert copies of the data in the
+   * initializer_list @a l into the %BoundedVector before the location
+   * specified by @a position.
    *
-   *  This function will insert copies of the data in the
-   *  initializer_list @a l into the %BoundedVector before the location
-   *  specified by @a position.
+   * Note that this kind of operation could be expensive for a
+   * %BoundedVector and if it is frequently used the user should
+   * consider using std::list.
    *
-   *  Note that this kind of operation could be expensive for a
-   *  %BoundedVector and if it is frequently used the user should
-   *  consider using std::list.
+   * \param __position An iterator into the %BoundedVector
+   * \param __l An initializer_list
    */
   typename _Base::iterator
   insert(
@@ -547,19 +548,19 @@ public:
     return _Base::insert(__position, __l);
   }
 
+  /// Insert a number of copies of given data into the %BoundedVector.
   /**
-   *  @brief  Inserts a number of copies of given data into the %BoundedVector.
-   *  @param  __position  A const_iterator into the %BoundedVector.
-   *  @param  __n  Number of elements to be inserted.
-   *  @param  __x  Data to be inserted.
-   *  @return  An iterator that points to the inserted data.
+   * This function will insert a specified number of copies of the given
+   * data before the location specified by @a position.
    *
-   *  This function will insert a specified number of copies of
-   *  the given data before the location specified by @a position.
+   * Note that this kind of operation could be expensive for a
+   * %BoundedVector and if it is frequently used the user should
+   * consider using std::list.
    *
-   *  Note that this kind of operation could be expensive for a
-   *  %BoundedVector and if it is frequently used the user should
-   *  consider using std::list.
+   * \param __position A const_iterator into the %BoundedVector
+   * \param __n Number of elements to be inserted
+   * \param __x Data to be inserted
+   * \return An iterator that points to the inserted data
    */
   typename _Base::iterator
   insert(
@@ -573,20 +574,20 @@ public:
     return _Base::insert(__position, __n, __x);
   }
 
+  /// Insert a range into the %BoundedVector.
   /**
-   *  @brief  Inserts a range into the %BoundedVector.
-   *  @param  __position  A const_iterator into the %BoundedVector.
-   *  @param  __first  An input iterator.
-   *  @param  __last   An input iterator.
-   *  @return  An iterator that points to the inserted data.
+   * This function will insert copies of the data in the range
+   * [__first,__last) into the %BoundedVector before the location
+   * specified by @a pos.
    *
-   *  This function will insert copies of the data in the range
-   *  [__first,__last) into the %BoundedVector before the location specified
-   *  by @a pos.
+   * Note that this kind of operation could be expensive for a
+   * %BoundedVector and if it is frequently used the user should
+   * consider using std::list.
    *
-   *  Note that this kind of operation could be expensive for a
-   *  %BoundedVector and if it is frequently used the user should
-   *  consider using std::list.
+   * \param __position A const_iterator into the %BoundedVector
+   * \param __first An input iterator
+   * \param __last   An input iterator
+   * \return An iterator that points to the inserted data
    */
   template<
     typename _InputIterator
@@ -608,15 +609,16 @@ public:
   using _Base::clear;
 };
 
+/// Vector equality comparison.
 /**
- *  @brief  Vector equality comparison.
- *  @param  __x  A %BoundedVector.
- *  @param  __y  A %BoundedVector of the same type as @a __x.
- *  @return  True if the size and elements of the vectors are equal.
+ * This is an equivalence relation.
+ * It is linear in the size of the vectors.
+ * Vectors are considered equivalent if their sizes are equal, and if
+ * corresponding elements compare equal.
  *
- *  This is an equivalence relation.  It is linear in the size of the
- *  vectors.  Vectors are considered equivalent if their sizes are equal,
- *  and if corresponding elements compare equal.
+ * \param __x A %BoundedVector
+ * \param __y A %BoundedVector of the same type as @a __x
+ * \return True if the size and elements of the vectors are equal
 */
 template<typename _Tp, std::size_t _UpperBound, typename _Alloc>
 inline bool
@@ -629,16 +631,17 @@ operator==(
     *reinterpret_cast<const std::vector<_Tp, _Alloc> *>(&__y));
 }
 
+/// Vector ordering relation.
 /**
- *  @brief  Vector ordering relation.
- *  @param  __x  A %BoundedVector.
- *  @param  __y  A %BoundedVector of the same type as @a __x.
- *  @return  True if @a __x is lexicographically less than @a __y.
+ * This is a total ordering relation.
+ * It is linear in the size of the vectors.
+ * The elements must be comparable with @c <.
  *
- *  This is a total ordering relation.  It is linear in the size of the
- *  vectors.  The elements must be comparable with @c <.
+ * See std::lexicographical_compare() for how the determination is made.
  *
- *  See std::lexicographical_compare() for how the determination is made.
+ * \param __x A %BoundedVector
+ * \param __y A %BoundedVector of the same type as @a __x
+ * @return True if @a __x is lexicographically less than @a __y
 */
 template<typename _Tp, std::size_t _UpperBound, typename _Alloc>
 inline bool

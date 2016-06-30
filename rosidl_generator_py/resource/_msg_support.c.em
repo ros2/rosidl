@@ -55,12 +55,11 @@ full_classname = "@(spec.base_type.pkg_name).@(subfolder)._@(module_name).@(spec
   char * module_name = (char *)PyUnicode_1BYTE_DATA(
     PyObject_GetAttrString(PyObject_GetAttrString(_pymsg, "__class__"), "__module__"));
 
-  snprintf(full_classname_dest, sizeof(full_classname_dest), "%s.%s", class_name, module_name);
+  snprintf(full_classname_dest, sizeof(full_classname_dest), "%s.%s", module_name, class_name);
 
-  // TODO(dirk-thomas) The check seems to be wrong, asserting that the strings are not equal?
   assert(strncmp(
       "@(spec.base_type.pkg_name).@(subfolder)._@(module_name).@(spec.base_type.type)",
-      full_classname_dest, @(len(full_classname))));
+      full_classname_dest, @(len(full_classname))) == 0);
 
 @[for field in spec.fields]@
   PyObject * py@(field.name) = PyObject_GetAttrString(_pymsg, "@(field.name)");

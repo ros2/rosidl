@@ -165,7 +165,9 @@ typedef struct @(msg_typename)
 typedef struct @(array_typename)
 {
   @(msg_typename) * data;
+  /// The number of valid items in data
   size_t size;
+  /// The number of allocated items in data
   size_t capacity;
 } @(array_typename);
 

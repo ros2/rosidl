@@ -23,8 +23,8 @@
   typedef struct rosidl_generator_c__ ## STRUCT_NAME ## __Array \
   { \
     TYPE_NAME * data; \
-    size_t size; \
-    size_t capacity; \
+    size_t size; /*!< The number of valid items in data */ \
+    size_t capacity; /*!< The number of allocated items in data */ \
   } rosidl_generator_c__ ## STRUCT_NAME ## __Array;
 
 // array types for all primitive types

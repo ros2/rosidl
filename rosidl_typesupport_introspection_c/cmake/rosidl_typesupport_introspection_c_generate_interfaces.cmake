@@ -26,12 +26,19 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
 
   if(_extension STREQUAL ".msg")
-    list(APPEND _generated_msg_header_files
-      "${_output_path}/${_parent_folder}/${_header_name}__introspection_type_support.h"
-    )
-    list(APPEND _generated_msg_source_files
-      "${_output_path}/${_parent_folder}/${_header_name}__type_support.c"
-    )
+    if(_parent_folder STREQUAL "msg")
+      list(APPEND _generated_msg_header_files
+        "${_output_path}/${_parent_folder}/${_header_name}__introspection_type_support.h")
+      list(APPEND _generated_msg_source_files
+        "${_output_path}/${_parent_folder}/${_header_name}__type_support.c")
+    elseif(_parent_folder STREQUAL "srv")
+      list(APPEND _generated_srv_header_files
+        "${_output_path}/${_parent_folder}/${_header_name}__introspection_type_support.h")
+      list(APPEND _generated_srv_source_files
+        "${_output_path}/${_parent_folder}/${_header_name}__type_support.c")
+    else()
+      message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
+    endif()
   elseif(_extension STREQUAL ".srv")
     list(APPEND _generated_srv_header_files
       "${_output_path}/${_parent_folder}/${_header_name}__introspection_type_support.h"
@@ -40,7 +47,7 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
       "${_output_path}/${_parent_folder}/${_header_name}__type_support.c"
     )
   else()
-    message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
+    message(FATAL_ERROR "Interface file with unknown extension: ${_idl_file}")
   endif()
 endforeach()
 

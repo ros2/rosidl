@@ -26,17 +26,17 @@ class UnsupportedTypeSupport(Exception):
 
 
 def import_type_support(pkg_name, rmw_implementation):
-    """Import the appropriate type support module for a given rosidl and rmw implementation.
+    """Import the appropriate type support module of a package for a given rmw implementation.
 
-    This function will determine the correct type support package to import
-    from based on the rmw implementation given.
-    For example, giving `opensplice_static` as the rmw implementation would
-    result in the `rosidl_typesupport_opensplice_c` type support package being
-    used when importing.
+    This function will determine the correct type support module to import based on the rmw
+    implementation given.
+    This module will provide the c type support of the given rmw implementation for the rosidl
+    files in the specified package, such that the ROS message structures in the package can be
+    converted to and from message structures used by the rmw implementation.
 
-    :param pkg_name str: name of the package which contains the rosidl
+    :param pkg_name str: name of the package
     :param rmw_implementation str: name of the rmw implementation
-    :returns: the type support Python module for this specific rosidl and rmw implementation pair
+    :returns: the type support Python module for the specified package and rmw implementation pair
     """
     if not ament_index_python.has_resource('rmw_typesupport_c', rmw_implementation):
         raise UnsupportedTypeSupport(rmw_implementation)

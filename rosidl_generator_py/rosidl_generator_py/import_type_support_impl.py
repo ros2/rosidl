@@ -26,7 +26,8 @@ class UnsupportedTypeSupport(Exception):
 
 
 def import_type_support(pkg_name, rmw_implementation):
-    """Import the appropriate type support module of a package for a given rmw implementation.
+    """
+    Import the appropriate type support module of a package for a given rmw implementation.
 
     This function will determine the correct type support module to import based on the rmw
     implementation given.

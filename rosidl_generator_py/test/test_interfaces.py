@@ -65,6 +65,10 @@ def test_default_values():
 
     assert(Various.TWO_UINT16_VALUE__DEFAULT == [5, 23])
 
+    assert(Various.UP_TO_THREE_INT32_VALUES_WITH_DEFAULT_VALUES__DEFAULT == [5, 23])
+
+    assert(Various.CHAR_VALUE__DEFAULT == '1')
+
 
 def test_check_constraints():
     a = Strings()
@@ -122,3 +126,13 @@ def test_check_constraints():
     assert_raises(AssertionError, setattr, c, 'char_value', b'a')
     assert_raises(AssertionError, setattr, c, 'char_value', 'abc')
     assert_raises(AssertionError, setattr, c, 'char_value', b'abc')
+
+    c.up_to_three_int32_values = []
+    assert(c.up_to_three_int32_values == [])
+    c.up_to_three_int32_values = [12345, -12345]
+    assert(c.up_to_three_int32_values == [12345, -12345])
+    c.up_to_three_int32_values = [12345, -12345, 6789]
+    assert(c.up_to_three_int32_values == [12345, -12345, 6789])
+    c.up_to_three_int32_values = [12345, -12345, 6789]
+    assert_raises(
+        AssertionError, setattr, c, 'up_to_three_int32_values', [12345, -12345, 6789, -6789])

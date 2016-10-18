@@ -142,3 +142,12 @@ def test_check_constraints():
     c.up_to_three_int32_values = [12345, -12345, 6789]
     assert_raises(
         AssertionError, setattr, c, 'up_to_three_int32_values', [12345, -12345, 6789, -6789])
+
+    c.up_to_three_string_values = []
+    assert([] == c.up_to_three_string_values)
+    c.up_to_three_string_values = ['foo', 'bar']
+    assert(['foo', 'bar'] == c.up_to_three_string_values)
+    c.up_to_three_string_values = ['foo', 'bar', 'baz']
+    assert(['foo', 'bar', 'baz'] == c.up_to_three_string_values)
+    assert_raises(
+        AssertionError, setattr, c, 'up_to_three_string_values', ['foo', 'bar', 'baz', 'hello'])

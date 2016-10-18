@@ -75,6 +75,8 @@ def test_default_values():
     assert(b.BYTE_VALUE__DEFAULT == b'\x01')
     assert(b.BYTE_VALUE__DEFAULT != b'1')
 
+    assert(b.TWO_STRING_VALUE__DEFAULT == ['foo', 'bar'])
+
 
 def test_check_constraints():
     a = Strings()

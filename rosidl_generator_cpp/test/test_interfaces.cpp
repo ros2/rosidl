@@ -31,6 +31,8 @@
 #include "rosidl_generator_cpp/msg/primitive_static_arrays.hpp"
 
 #include "rosidl_generator_cpp/msg/primitives_bounded.hpp"
+#include "rosidl_generator_cpp/msg/primitives_constants.hpp"
+#include "rosidl_generator_cpp/msg/primitives_default.hpp"
 #include "rosidl_generator_cpp/msg/primitives_static.hpp"
 #include "rosidl_generator_cpp/msg/primitives_unbounded.hpp"
 
@@ -49,6 +51,14 @@ TEST(Test_rosidl_generator_traits, has_fixed_size) {
   static_assert(
     rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::Empty>::value,
     "Empty::has_fixed_size is false");
+
+  static_assert(
+    rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::PrimitivesConstants>::value,
+    "PrimitivesConstants::has_fixed_size is false");
+
+  static_assert(
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::PrimitivesDefault>::value,
+    "PrimitivesDefault::has_fixed_size is true");
 
   static_assert(
     rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::PrimitivesStatic>::value,
@@ -318,4 +328,42 @@ TEST(Test_messages, unbounded_array_unbounded) {
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
     test_message_primitives_unbounded(message.primitive_values[i]);
   }
+}
+
+// Constant Primitives
+TEST(Test_messages, primitives_constants) {
+  rosidl_generator_cpp::msg::PrimitivesConstants message;
+  ASSERT_EQ(true, message.BOOL_CONST);
+  ASSERT_EQ(50, message.BYTE_CONST);
+  ASSERT_EQ(100, message.CHAR_CONST);
+  ASSERT_EQ(1.125, message.FLOAT32_CONST);
+  ASSERT_EQ(3.14159, message.FLOAT64_CONST);
+  ASSERT_EQ(-50, message.INT8_CONST);
+  ASSERT_EQ(200, message.UINT8_CONST);
+  ASSERT_EQ(-1000, message.INT16_CONST);
+  ASSERT_EQ(2000, message.UINT16_CONST);
+  ASSERT_EQ(-30000, message.INT32_CONST);
+  ASSERT_EQ(60000, message.UINT32_CONST);
+  ASSERT_EQ(-40000000, message.INT64_CONST);
+  ASSERT_EQ(50000000, message.UINT64_CONST);
+  ASSERT_STREQ("foo", message.STRING_CONST.c_str());
+}
+
+// Primitives with default values
+TEST(Test_messages, primitives_default) {
+  rosidl_generator_cpp::msg::PrimitivesDefault message;
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, bool_value, true, false);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, byte_value, 50, 255);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, char_value, 100, CHAR_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, float32_value, 1.125, FLT_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, float64_value, 3.14159, DBL_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int8_value, -50, INT8_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint8_value, 200, UINT8_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int16_value, -1000, INT16_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint16_value, 2000, UINT16_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int32_value, -30000, INT32_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint32_value, 60000, UINT32_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int64_value, -40000000, INT64_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint64_value, 50000000, UINT64_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, string_value, "bar", "Hello World!")
 }

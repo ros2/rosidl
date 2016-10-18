@@ -24,6 +24,8 @@ if(BUILD_TESTING)
     "msg/PrimitiveStaticArrays.msg"
 
     "msg/PrimitivesBounded.msg"
+    "msg/PrimitivesConstants.msg"
+    "msg/PrimitivesDefault.msg"
     "msg/PrimitivesStatic.msg"
     "msg/PrimitivesUnbounded.msg"
 

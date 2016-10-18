@@ -445,7 +445,7 @@ def parse_value_string(type_, value_string):
     if type_.is_primitive_type() and not type_.is_array:
         return parse_primitive_value_string(type_, value_string)
 
-    if type_.is_primitive_type() and type_.is_array:
+    if type_.is_primitive_type() and type_.is_array and type_.type != 'string':
         # check for array brackets
         if not value_string.startswith('[') or not value_string.endswith(']'):
             raise InvalidValue(

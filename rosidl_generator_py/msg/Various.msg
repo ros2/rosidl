@@ -11,7 +11,7 @@ uint64[] unbounded_uint64_values
 
 string[2] two_string_value ['foo', 'bar']
 string[<=3] up_to_three_string_values
-string[] unbounded_string_values
+#string[] unbounded_string_values
 
 Empty empty
 Empty[2] two_empty
@@ -19,5 +19,5 @@ Empty[] unbounded_empty
 
 Nested nested
 Nested[2] two_nested
-Nested[<=3] up_to_three_nested
+#Nested[<=3] up_to_three_nested
 Nested[] unbounded_nested

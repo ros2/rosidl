@@ -125,6 +125,12 @@ TEST(Test_rosidl_generator_traits, has_fixed_size) {
   Message.FieldName = FinalValue; \
   ASSERT_EQ(FinalValue, Message.FieldName);
 
+#define TEST_STRING_FIELD_ASSIGNMENT(Message, FieldName, InitialValue, FinalValue) \
+  Message.FieldName = InitialValue; \
+  ASSERT_STREQ(InitialValue, Message.FieldName.c_str()); \
+  Message.FieldName = FinalValue; \
+  ASSERT_STREQ(FinalValue, Message.FieldName.c_str());
+
 void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic message)
 {
 // workaround for https://github.com/google/googletest/issues/322
@@ -189,7 +195,7 @@ void test_message_primitives_bounded(rosidl_generator_cpp::msg::PrimitivesBounde
   TEST_BOUNDED_ARRAY_PRIMITIVE(message, uint64_value, uint64_t, PRIMITIVES_ARRAY_SIZE, \
     0, UINT64_MAX)
   // Arrays of strings not supported yet
-  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, string_value, "", "Deep into that darkness peering")
+  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "", "Deep into that darkness peering")
 }
 
 #define TEST_UNBOUNDED_ARRAY_PRIMITIVE( \
@@ -231,7 +237,7 @@ void test_message_primitives_unbounded(rosidl_generator_cpp::msg::PrimitivesUnbo
   TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, uint64_value, uint64_t, PRIMITIVES_ARRAY_SIZE, \
     0, UINT64_MAX)
   // Arrays of strings not supported yet
-  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, string_value, "", "Deep into that darkness peering")
+  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "", "Deep into that darkness peering")
 }
 
 // Primitives static
@@ -365,5 +371,5 @@ TEST(Test_messages, primitives_default) {
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint32_value, 60000, UINT32_MAX);
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int64_value, -40000000, INT64_MAX);
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint64_value, 50000000, UINT64_MAX);
-  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, string_value, "bar", "Hello World!")
+  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "bar", "Hello World!")
 }

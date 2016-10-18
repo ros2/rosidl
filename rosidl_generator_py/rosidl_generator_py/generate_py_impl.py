@@ -152,19 +152,10 @@ def primitive_value_to_py(type_, value):
         return str(value)
 
     if type_.type == 'char':
-        # if isinstance(value, str):
-        #     return value
-        if isinstance(value, int):
-            # assert False, "char is instance '%s'" % str(value)
-            return hex(value)
-        # assert False, "char is instance '%s'" % type(value)
+        return repr("%c" % value)
 
     if type_.type == 'byte':
-        assert False, "byte is instance '%s'" % type(value)
-        if isinstance(value, str):
-            return value
-        if isinstance(value, int):
-            return str(bytes([value]))
+        return repr(bytes([value]))
 
     if type_.type in ['float32', 'float64']:
         return '%s' % value
@@ -182,14 +173,18 @@ def constant_value_to_py(type_, value):
         return 'True' if value else 'False'
 
     if type_ in [
-        'byte',
-        'char',
         'int8', 'uint8',
         'int16', 'uint16',
         'int32', 'uint32',
         'int64', 'uint64',
     ]:
         return str(value)
+
+    if type_ == 'char':
+        return repr("%c" % value)
+
+    if type_ == 'byte':
+        return repr(bytes([value]))
 
     if type_ in ['float32', 'float64']:
         return '%s' % value

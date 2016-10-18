@@ -55,12 +55,7 @@ class Metaclass(type):
 @[end for]@
 @[for field in spec.fields]@
 @[  if field.default_value]@
-@[    if field.type.type == 'char']@
-            # adding a char default value here
-            '@(field.name.upper())__DEFAULT': @str((value_to_py(field.type, field.default_value))),
-@[    else]@
             '@(field.name.upper())__DEFAULT': @value_to_py(field.type, field.default_value),
-@[    end if]@
 @[  end if]@
 @[end for]@
         }
@@ -77,12 +72,7 @@ class Metaclass(type):
     @@property
     def @(field.name.upper())__DEFAULT(cls):
         """Default value for message field '@(field.name)'."""
-@[    if field.type.type == 'char']@
-        # adding a char default value here
-        return @str("'" + str(value_to_py(field.type, field.default_value)) + "'")
-@[    else]@
         return @value_to_py(field.type, field.default_value)
-@[    end if]@
 @[  end if]@
 @[end for]@
 

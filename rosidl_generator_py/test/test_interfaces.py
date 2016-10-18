@@ -48,6 +48,8 @@ def test_constants():
     assert(Constants.X == 123)
     assert(Constants.Y == -123)
     assert(Constants.FOO == 'foo')
+    assert(Constants.TOTO == '\x7F')
+    assert(Constants.TATA == b'0')
 
     assert_raises(AttributeError, setattr, Constants, 'FOO', 'bar')
 
@@ -63,11 +65,15 @@ def test_default_values():
     assert(a.DEF_STRING__DEFAULT == 'Hello world!')
     assert_raises(AttributeError, setattr, Strings, 'DEF_STRING__DEFAULT', 'bar')
 
-    assert(Various.TWO_UINT16_VALUE__DEFAULT == [5, 23])
+    b = Various()
+    assert(b.TWO_UINT16_VALUE__DEFAULT == [5, 23])
 
-    assert(Various.UP_TO_THREE_INT32_VALUES_WITH_DEFAULT_VALUES__DEFAULT == [5, 23])
+    assert(b.UP_TO_THREE_INT32_VALUES_WITH_DEFAULT_VALUES__DEFAULT == [5, 23])
 
-    assert(Various.CHAR_VALUE__DEFAULT == '1')
+    assert(b.CHAR_VALUE__DEFAULT == '\x01')
+    assert(b.CHAR_VALUE__DEFAULT != '1')
+    assert(b.BYTE_VALUE__DEFAULT == b'\x01')
+    assert(b.BYTE_VALUE__DEFAULT != b'1')
 
 
 def test_check_constraints():

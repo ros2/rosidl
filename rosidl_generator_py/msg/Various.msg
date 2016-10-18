@@ -1,9 +1,5 @@
-bool FOO=true
-float32 BAR=3.14159
-uint16 BAZ=42
-
 bool bool_value false
-byte byte_value
+byte byte_value 1
 char char_value 1
 float32 float32_value 1.23
 float64 float64_value
@@ -13,7 +9,7 @@ int32[<=3] up_to_three_int32_values
 int32[<=3] up_to_three_int32_values_with_default_values [5, 23]
 uint64[] unbounded_uint64_values
 
-#string[2] two_string_value [foo, bar]
+#string[2] two_string_value ['foo', 'bar']
 string[<=3] up_to_three_string_values
 string[] unbounded_string_values
 

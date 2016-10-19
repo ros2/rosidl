@@ -358,7 +358,16 @@ TEST(Test_messages, primitives_constants) {
 // Primitives with default values
 TEST(Test_messages, primitives_default) {
   rosidl_generator_cpp::msg::PrimitivesDefault message;
+
+// workaround for https://github.com/google/googletest/issues/322
+#ifdef __linux__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion-null"
+#endif
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, bool_value, true, false);
+#ifdef __linux__
+#pragma GCC diagnostic pop
+#endif
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, byte_value, 50, 255);
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, char_value, 100, CHAR_MAX);
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, float32_value, 1.125, FLT_MAX);

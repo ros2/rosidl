@@ -129,86 +129,88 @@ void test_primitives(void)
   rosidl_generator_c__msg__Uint64 uint64_msg;
 
   bool_msg.empty_bool = true;
-  EXPECT_EQ(bool_msg.empty_bool, true);
+  EXPECT_EQ(true, bool_msg.empty_bool);
 
   bool_msg.empty_bool = false;
-  EXPECT_EQ(bool_msg.empty_bool, false);
+  EXPECT_EQ(false, bool_msg.empty_bool);
 
   byte_msg.empty_byte = 0;
-  EXPECT_EQ(byte_msg.empty_byte, 0);
+  EXPECT_EQ(0, byte_msg.empty_byte);
 
   byte_msg.empty_byte = 255;
-  EXPECT_EQ(byte_msg.empty_byte, 255);
+  EXPECT_EQ(255, byte_msg.empty_byte);
 
-  EXPECT_EQ(rosidl_generator_c__msg__Constants__X, 123);
-  EXPECT_EQ(rosidl_generator_c__msg__Constants__Y, -123);
-  EXPECT_EQ(strncmp(rosidl_generator_c__msg__Constants__FOO, "foo", 3), 0);
+  EXPECT_EQ(123, rosidl_generator_c__msg__Constants__X);
+  EXPECT_EQ(-123, rosidl_generator_c__msg__Constants__Y);
+  EXPECT_EQ(0, strncmp(rosidl_generator_c__msg__Constants__FOO, "foo", 3));
+  EXPECT_EQ(127, rosidl_generator_c__msg__Constants__TOTO);
+  EXPECT_EQ(48, rosidl_generator_c__msg__Constants__TATA);
 
   char_msg.empty_char = CHAR_MIN;
-  EXPECT_EQ(char_msg.empty_char, CHAR_MIN);
+  EXPECT_EQ(CHAR_MIN, char_msg.empty_char);
 
   char_msg.empty_char = CHAR_MAX;
-  EXPECT_EQ(char_msg.empty_char, CHAR_MAX);
+  EXPECT_EQ(CHAR_MAX, char_msg.empty_char);
 
   float32_msg.empty_float32 = FLT_MIN;
-  EXPECT_EQ(float32_msg.empty_float32, FLT_MIN);
+  EXPECT_EQ(FLT_MIN, float32_msg.empty_float32);
 
   float32_msg.empty_float32 = FLT_MAX;
-  EXPECT_EQ(float32_msg.empty_float32, FLT_MAX);
+  EXPECT_EQ(FLT_MAX, float32_msg.empty_float32);
 
   float64_msg.empty_float64 = DBL_MIN;
-  EXPECT_EQ(float64_msg.empty_float64, DBL_MIN);
+  EXPECT_EQ(DBL_MIN, float64_msg.empty_float64);
 
   float64_msg.empty_float64 = DBL_MAX;
-  EXPECT_EQ(float64_msg.empty_float64, DBL_MAX);
+  EXPECT_EQ(DBL_MAX, float64_msg.empty_float64);
 
   int8_msg.empty_int8 = INT8_MIN;
-  EXPECT_EQ(int8_msg.empty_int8, INT8_MIN);
+  EXPECT_EQ(INT8_MIN, int8_msg.empty_int8);
 
   int8_msg.empty_int8 = INT8_MAX;
-  EXPECT_EQ(int8_msg.empty_int8, INT8_MAX);
+  EXPECT_EQ(INT8_MAX, int8_msg.empty_int8);
 
   int16_msg.empty_int16 = INT16_MIN;
-  EXPECT_EQ(int16_msg.empty_int16, INT16_MIN);
+  EXPECT_EQ(INT16_MIN, int16_msg.empty_int16);
 
   int16_msg.empty_int16 = INT16_MAX;
-  EXPECT_EQ(int16_msg.empty_int16, INT16_MAX);
+  EXPECT_EQ(INT16_MAX, int16_msg.empty_int16);
 
   int32_msg.empty_int32 = INT32_MIN;
-  EXPECT_EQ(int32_msg.empty_int32, INT32_MIN);
+  EXPECT_EQ(INT32_MIN, int32_msg.empty_int32);
 
   int32_msg.empty_int32 = INT32_MAX;
-  EXPECT_EQ(int32_msg.empty_int32, INT32_MAX);
+  EXPECT_EQ(INT32_MAX, int32_msg.empty_int32);
 
   int64_msg.empty_int64 = INT64_MIN;
-  EXPECT_EQ(int64_msg.empty_int64, INT64_MIN);
+  EXPECT_EQ(INT64_MIN, int64_msg.empty_int64);
 
   int64_msg.empty_int64 = INT64_MAX;
-  EXPECT_EQ(int64_msg.empty_int64, INT64_MAX);
+  EXPECT_EQ(INT64_MAX, int64_msg.empty_int64);
 
   uint8_msg.empty_uint8 = 0;
-  EXPECT_EQ(uint8_msg.empty_uint8, 0);
+  EXPECT_EQ(0, uint8_msg.empty_uint8);
 
   uint8_msg.empty_uint8 = UINT8_MAX;
-  EXPECT_EQ(uint8_msg.empty_uint8, UINT8_MAX);
+  EXPECT_EQ(UINT8_MAX, uint8_msg.empty_uint8);
 
   uint16_msg.empty_uint16 = 0;
-  EXPECT_EQ(uint16_msg.empty_uint16, 0);
+  EXPECT_EQ(0, uint16_msg.empty_uint16);
 
   uint16_msg.empty_uint16 = UINT16_MAX;
-  EXPECT_EQ(uint16_msg.empty_uint16, UINT16_MAX);
+  EXPECT_EQ(UINT16_MAX, uint16_msg.empty_uint16);
 
   uint32_msg.empty_uint32 = 0;
-  EXPECT_EQ(uint32_msg.empty_uint32, 0);
+  EXPECT_EQ(0, uint32_msg.empty_uint32);
 
   uint32_msg.empty_uint32 = UINT32_MAX;
-  EXPECT_EQ(uint32_msg.empty_uint32, UINT32_MAX);
+  EXPECT_EQ(UINT32_MAX, uint32_msg.empty_uint32);
 
   uint64_msg.empty_uint64 = 0;
-  EXPECT_EQ(uint64_msg.empty_uint64, 0);
+  EXPECT_EQ(0, uint64_msg.empty_uint64);
 
   uint64_msg.empty_uint64 = UINT64_MAX;
-  EXPECT_EQ(uint64_msg.empty_uint64, UINT64_MAX);
+  EXPECT_EQ(UINT64_MAX, uint64_msg.empty_uint64);
 }
 
 /**
@@ -226,8 +228,8 @@ void test_primitives_default_value(void)
   EXPECT_EQ(false, primitive_values->def_bool_2);
   EXPECT_EQ(66, primitive_values->def_byte);
   EXPECT_EQ(-66, primitive_values->def_char);
-  EXPECT_EQ(3.1416f, primitive_values->def_float32);
-  EXPECT_EQ(3.14159265, primitive_values->def_float64);
+  EXPECT_EQ(1.125f, primitive_values->def_float32);
+  EXPECT_EQ(1.125, primitive_values->def_float64);
   EXPECT_EQ(3, primitive_values->def_int8);
   EXPECT_EQ(6, primitive_values->def_int16);
   EXPECT_EQ(10, primitive_values->def_int32);

@@ -1,5 +1,5 @@
 bool FOO=true
-float32 BAR=3.14159
+float32 BAR=1.125
 uint16 BAZ=42
 
 bool bool_value false

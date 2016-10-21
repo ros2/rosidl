@@ -31,6 +31,8 @@
 #include "rosidl_generator_cpp/msg/primitive_static_arrays.hpp"
 
 #include "rosidl_generator_cpp/msg/primitives_bounded.hpp"
+#include "rosidl_generator_cpp/msg/primitives_constants.hpp"
+#include "rosidl_generator_cpp/msg/primitives_default.hpp"
 #include "rosidl_generator_cpp/msg/primitives_static.hpp"
 #include "rosidl_generator_cpp/msg/primitives_unbounded.hpp"
 
@@ -49,6 +51,14 @@ TEST(Test_rosidl_generator_traits, has_fixed_size) {
   static_assert(
     rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::Empty>::value,
     "Empty::has_fixed_size is false");
+
+  static_assert(
+    rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::PrimitivesConstants>::value,
+    "PrimitivesConstants::has_fixed_size is false");
+
+  static_assert(
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::PrimitivesDefault>::value,
+    "PrimitivesDefault::has_fixed_size is true");
 
   static_assert(
     rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::PrimitivesStatic>::value,
@@ -115,6 +125,12 @@ TEST(Test_rosidl_generator_traits, has_fixed_size) {
   Message.FieldName = FinalValue; \
   ASSERT_EQ(FinalValue, Message.FieldName);
 
+#define TEST_STRING_FIELD_ASSIGNMENT(Message, FieldName, InitialValue, FinalValue) \
+  Message.FieldName = InitialValue; \
+  ASSERT_STREQ(InitialValue, Message.FieldName.c_str()); \
+  Message.FieldName = FinalValue; \
+  ASSERT_STREQ(FinalValue, Message.FieldName.c_str());
+
 void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic message)
 {
 // workaround for https://github.com/google/googletest/issues/322
@@ -179,7 +195,7 @@ void test_message_primitives_bounded(rosidl_generator_cpp::msg::PrimitivesBounde
   TEST_BOUNDED_ARRAY_PRIMITIVE(message, uint64_value, uint64_t, PRIMITIVES_ARRAY_SIZE, \
     0, UINT64_MAX)
   // Arrays of strings not supported yet
-  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, string_value, "", "Deep into that darkness peering")
+  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "", "Deep into that darkness peering")
 }
 
 #define TEST_UNBOUNDED_ARRAY_PRIMITIVE( \
@@ -221,7 +237,7 @@ void test_message_primitives_unbounded(rosidl_generator_cpp::msg::PrimitivesUnbo
   TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, uint64_value, uint64_t, PRIMITIVES_ARRAY_SIZE, \
     0, UINT64_MAX)
   // Arrays of strings not supported yet
-  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, string_value, "", "Deep into that darkness peering")
+  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "", "Deep into that darkness peering")
 }
 
 // Primitives static
@@ -318,4 +334,51 @@ TEST(Test_messages, unbounded_array_unbounded) {
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
     test_message_primitives_unbounded(message.primitive_values[i]);
   }
+}
+
+// Constant Primitives
+TEST(Test_messages, primitives_constants) {
+  rosidl_generator_cpp::msg::PrimitivesConstants message;
+  ASSERT_EQ(true, message.BOOL_CONST);
+  ASSERT_EQ(50, message.BYTE_CONST);
+  ASSERT_EQ(100, message.CHAR_CONST);
+  ASSERT_EQ(1.125f, message.FLOAT32_CONST);
+  ASSERT_EQ(1.125, message.FLOAT64_CONST);
+  ASSERT_EQ(-50, message.INT8_CONST);
+  ASSERT_EQ(200, message.UINT8_CONST);
+  ASSERT_EQ(-1000, message.INT16_CONST);
+  ASSERT_EQ(2000, message.UINT16_CONST);
+  ASSERT_EQ(-30000, message.INT32_CONST);
+  ASSERT_EQ(60000, message.UINT32_CONST);
+  ASSERT_EQ(-40000000, message.INT64_CONST);
+  ASSERT_EQ(50000000, message.UINT64_CONST);
+  ASSERT_STREQ("foo", message.STRING_CONST.c_str());
+}
+
+// Primitives with default values
+TEST(Test_messages, primitives_default) {
+  rosidl_generator_cpp::msg::PrimitivesDefault message;
+
+// workaround for https://github.com/google/googletest/issues/322
+#ifdef __linux__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion-null"
+#endif
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, bool_value, true, false);
+#ifdef __linux__
+#pragma GCC diagnostic pop
+#endif
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, byte_value, 50, 255);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, char_value, 100, CHAR_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, float32_value, 1.125f, FLT_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, float64_value, 1.125, DBL_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int8_value, -50, INT8_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint8_value, 200, UINT8_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int16_value, -1000, INT16_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint16_value, 2000, UINT16_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int32_value, -30000, INT32_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint32_value, 60000ul, UINT32_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int64_value, -40000000, INT64_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint64_value, 50000000ull, UINT64_MAX);
+  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "bar", "Hello World!")
 }

@@ -24,8 +24,8 @@ from rosidl_generator_py.msg import Various
 def test_strings():
     a = Strings()
 
-    assert(a.empty_string is str())
-    assert(a.def_string == 'Hello world!')
+    assert a.empty_string is ''
+    assert 'Hello world!' == a.def_string
 
 
 def test_invalid_attribute():
@@ -39,15 +39,17 @@ def test_invalid_attribute():
 def test_constructor():
     a = Strings(empty_string='foo')
 
-    assert(a.empty_string == 'foo')
+    assert'foo' == a.empty_string
 
     assert_raises(AssertionError, Strings, unknown_field='test')
 
 
 def test_constants():
-    assert(Constants.X == 123)
-    assert(Constants.Y == -123)
-    assert(Constants.FOO == 'foo')
+    assert 123 == Constants.X
+    assert -123 == Constants.Y
+    assert 'foo' == Constants.FOO
+    assert '\x7F' == Constants.TOTO
+    assert b'0' == Constants.TATA
 
     assert_raises(AttributeError, setattr, Constants, 'FOO', 'bar')
 
@@ -55,70 +57,97 @@ def test_constants():
 def test_default_values():
     a = Strings()
 
-    assert(a.empty_string is str())
-    assert(a.def_string == 'Hello world!')
+    assert a.empty_string is ''
+    assert 'Hello world!' == a.def_string
     a.def_string = 'Bye world'
-    assert(a.def_string == 'Bye world')
-    assert(Strings.DEF_STRING__DEFAULT == 'Hello world!')
-    assert(a.DEF_STRING__DEFAULT == 'Hello world!')
+    assert 'Bye world' == a.def_string
+    assert 'Hello world!' == Strings.DEF_STRING__DEFAULT
+    assert 'Hello world!' == a.DEF_STRING__DEFAULT
     assert_raises(AttributeError, setattr, Strings, 'DEF_STRING__DEFAULT', 'bar')
 
-    assert(Various.TWO_UINT16_VALUE__DEFAULT == [5, 23])
+    b = Various()
+    assert [5, 23] == b.TWO_UINT16_VALUE__DEFAULT
+
+    assert [5, 23] == b.UP_TO_THREE_INT32_VALUES_WITH_DEFAULT_VALUES__DEFAULT
+
+    assert '\x01' == b.CHAR_VALUE__DEFAULT
+    assert '1' != b.CHAR_VALUE__DEFAULT
+    assert b'\x01' == b.BYTE_VALUE__DEFAULT
+    assert b'1' != b.BYTE_VALUE__DEFAULT
 
 
 def test_check_constraints():
     a = Strings()
     a.empty_string = 'test'
-    assert(a.empty_string == 'test')
+    assert 'test' == a.empty_string
     assert_raises(AssertionError, setattr, a, 'empty_string', 1234)
     a.ub_string = 'a' * 22
-    assert(a.ub_string == 'a' * 22)
+    assert 'a' * 22 == a.ub_string
     assert_raises(AssertionError, setattr, a, 'ub_string', 'a' * 23)
 
     b = Nested()
     primitives = Primitives()
     b.primitives = primitives
-    assert(b.primitives == primitives)
+    assert b.primitives == primitives
     assert_raises(AssertionError, setattr, b, 'primitives', 'foo')
 
     list_of_primitives = [primitives, primitives]
     tuple_of_primitives = (primitives, primitives)
     b.two_primitives = list_of_primitives
-    assert(b.two_primitives == list_of_primitives)
-    assert(type(b.two_primitives) == list)
+    assert b.two_primitives == list_of_primitives
+    assert type(b.two_primitives) == list
     b.two_primitives = tuple_of_primitives
-    assert(b.two_primitives == tuple_of_primitives)
-    assert(type(b.two_primitives) == tuple)
+    assert b.two_primitives == tuple_of_primitives
+    assert type(b.two_primitives) == tuple
     assert_raises(AssertionError, setattr, b, 'two_primitives', Primitives())
     assert_raises(AssertionError, setattr, b, 'two_primitives', [Primitives()])
     assert_raises(AssertionError, setattr, b, 'two_primitives',
                   [primitives, primitives, primitives])
 
     b.up_to_three_primitives = []
-    assert(b.up_to_three_primitives == [])
+    assert [] == b.up_to_three_primitives
     b.up_to_three_primitives = [primitives]
-    assert(b.up_to_three_primitives == [primitives])
+    assert [primitives] == b.up_to_three_primitives
     b.up_to_three_primitives = [primitives, primitives]
-    assert(b.up_to_three_primitives == [primitives, primitives])
+    assert [primitives, primitives] == b.up_to_three_primitives
     b.up_to_three_primitives = [primitives, primitives, primitives]
-    assert(b.up_to_three_primitives == [primitives, primitives, primitives])
+    assert [primitives, primitives, primitives] == b.up_to_three_primitives
     assert_raises(AssertionError, setattr, b, 'up_to_three_primitives',
                   [primitives, primitives, primitives, primitives])
 
     b.unbounded_primitives = [primitives, primitives]
-    assert(b.unbounded_primitives == [primitives, primitives])
+    assert [primitives, primitives] == b.unbounded_primitives
 
     c = Various()
     c.byte_value = b'a'
-    assert(c.byte_value == b'a')
-    assert(c.byte_value != 'a')
+    assert b'a' == c.byte_value
+    assert 'a' != c.byte_value
     assert_raises(AssertionError, setattr, c, 'byte_value', 'a')
     assert_raises(AssertionError, setattr, c, 'byte_value', b'abc')
     assert_raises(AssertionError, setattr, c, 'byte_value', 'abc')
 
     c.char_value = 'a'
-    assert(c.char_value == 'a')
-    assert(c.char_value != b'a')
+    assert 'a' == c.char_value
+    assert b'a' != c.char_value
     assert_raises(AssertionError, setattr, c, 'char_value', b'a')
     assert_raises(AssertionError, setattr, c, 'char_value', 'abc')
     assert_raises(AssertionError, setattr, c, 'char_value', b'abc')
+
+    c.up_to_three_int32_values = []
+    assert [] == c.up_to_three_int32_values
+    c.up_to_three_int32_values = [12345, -12345]
+    assert [12345, -12345] == c.up_to_three_int32_values
+    c.up_to_three_int32_values = [12345, -12345, 6789]
+    assert [12345, -12345, 6789] == c.up_to_three_int32_values
+    c.up_to_three_int32_values = [12345, -12345, 6789]
+    assert_raises(
+        AssertionError, setattr, c, 'up_to_three_int32_values', [12345, -12345, 6789, -6789])
+
+    c.up_to_three_string_values = []
+    assert [] == c.up_to_three_string_values
+    c.up_to_three_string_values = ['foo', 'bar']
+    assert ['foo', 'bar'] == c.up_to_three_string_values
+    c.up_to_three_string_values = ['foo', 'bar', 'baz']
+    assert ['foo', 'bar', 'baz'] == c.up_to_three_string_values
+    assert_raises(
+        AssertionError, setattr, c, 'up_to_three_string_values', ['foo', 'bar', 'baz', 'hello'])

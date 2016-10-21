@@ -1,7 +1,7 @@
 bool bool_value true
 byte byte_value
 char char_value
-float32 float32_value 3.14159
+float32 float32_value 1.125
 float64 float64_value
 int8 int8_value -5
 uint8 uint8_value 23

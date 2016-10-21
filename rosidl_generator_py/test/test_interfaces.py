@@ -24,7 +24,7 @@ from rosidl_generator_py.msg import Various
 def test_strings():
     a = Strings()
 
-    assert a.empty_string is str()
+    assert a.empty_string is ''
     assert 'Hello world!' == a.def_string
 
 
@@ -57,7 +57,7 @@ def test_constants():
 def test_default_values():
     a = Strings()
 
-    assert a.empty_string is str()
+    assert a.empty_string is ''
     assert 'Hello world!' == a.def_string
     a.def_string = 'Bye world'
     assert 'Bye world' == a.def_string

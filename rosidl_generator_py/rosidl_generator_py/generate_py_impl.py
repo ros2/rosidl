@@ -181,7 +181,7 @@ def constant_value_to_py(type_, value):
         return str(value)
 
     if type_ == 'char':
-        return repr("%c" % value)
+        return repr('%c' % value)
 
     if type_ == 'byte':
         return repr(bytes([value]))

@@ -228,8 +228,8 @@ void test_primitives_default_value(void)
   EXPECT_EQ(false, primitive_values->def_bool_2);
   EXPECT_EQ(66, primitive_values->def_byte);
   EXPECT_EQ(-66, primitive_values->def_char);
-  EXPECT_EQ(3.1416f, primitive_values->def_float32);
-  EXPECT_EQ(3.14159265, primitive_values->def_float64);
+  EXPECT_EQ(1.125f, primitive_values->def_float32);
+  EXPECT_EQ(1.125, primitive_values->def_float64);
   EXPECT_EQ(3, primitive_values->def_int8);
   EXPECT_EQ(6, primitive_values->def_int16);
   EXPECT_EQ(10, primitive_values->def_int32);

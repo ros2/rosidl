@@ -342,8 +342,8 @@ TEST(Test_messages, primitives_constants) {
   ASSERT_EQ(true, message.BOOL_CONST);
   ASSERT_EQ(50, message.BYTE_CONST);
   ASSERT_EQ(100, message.CHAR_CONST);
-  ASSERT_EQ(1.125, message.FLOAT32_CONST);
-  ASSERT_EQ(3.14159, message.FLOAT64_CONST);
+  ASSERT_EQ(1.125f, message.FLOAT32_CONST);
+  ASSERT_EQ(1.125, message.FLOAT64_CONST);
   ASSERT_EQ(-50, message.INT8_CONST);
   ASSERT_EQ(200, message.UINT8_CONST);
   ASSERT_EQ(-1000, message.INT16_CONST);
@@ -370,8 +370,8 @@ TEST(Test_messages, primitives_default) {
 #endif
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, byte_value, 50, 255);
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, char_value, 100, CHAR_MAX);
-  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, float32_value, 1.125, FLT_MAX);
-  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, float64_value, 3.14159, DBL_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, float32_value, 1.125f, FLT_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, float64_value, 1.125, DBL_MAX);
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int8_value, -50, INT8_MAX);
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint8_value, 200, UINT8_MAX);
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int16_value, -1000, INT16_MAX);

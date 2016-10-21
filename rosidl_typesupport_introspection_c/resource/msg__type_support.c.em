@@ -17,11 +17,11 @@
 function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.base_type.pkg_name, subfolder)
 }@
 
-#include <@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__introspection_type_support.h>
-#include "@(spec.base_type.pkg_name)/msg/rosidl_generator_c__visibility_control.h"
-
 // providing offsetof()
 #include <stddef.h>
+
+#include <@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__introspection_type_support.h>
+#include "@(spec.base_type.pkg_name)/msg/rosidl_generator_c__visibility_control.h"
 
 #include "rosidl_typesupport_introspection_c/field_types.h"
 #include "rosidl_typesupport_introspection_c/identifier.h"
@@ -150,7 +150,7 @@ for index, field in enumerate(spec.fields):
         # size_t string_upper_bound
         print('    0,  // upper bound of string')
         # const rosidl_message_type_support_t * members_
-        print('    NULL ,  // members of sub message (initialized later)')
+        print('    NULL,  // members of sub message (initialized later)')
     # bool is_array_
     print('    %s,  // is array' % ('true' if field.type.is_array else 'false'))
     # size_t array_size_
@@ -201,13 +201,12 @@ static rosidl_message_type_support_t @(function_prefix)__@(spec.base_type.type)_
 
 ROSIDL_GENERATOR_C_EXPORT_@(spec.base_type.pkg_name)
 const rosidl_message_type_support_t *
-ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name))()
-{
-@[for i, field in enumerate(spec.fields)]
-@[    if not field.type.is_primitive_type()]
+ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name))() {
+@[for i, field in enumerate(spec.fields)]@
+@[    if not field.type.is_primitive_type()]@
   @(function_prefix)__@(spec.base_type.type)_message_member_array[@(i)].members_ = ROSIDL_GET_TYPE_SUPPORT(@(field.type.pkg_name), msg, @(field.type.type));
-@[    end if]
-@[end for]
+@[    end if]@
+@[end for]@
   if (!@(function_prefix)__@(spec.base_type.type)_message_type_support_handle.typesupport_identifier) {
     @(function_prefix)__@(spec.base_type.type)_message_type_support_handle.typesupport_identifier =
       rosidl_typesupport_introspection_c__identifier;

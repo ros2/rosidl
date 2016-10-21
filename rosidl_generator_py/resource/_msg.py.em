@@ -124,8 +124,7 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 @[        else]@
         self.@(field.name) = kwargs.get(
             '@(field.name)',
-            list([@(get_python_type(field.type))()
-                for x in range(@(field.type.array_size))])
+            list([@(get_python_type(field.type))() for x in range(@(field.type.array_size))])
         )
 @[        end if]@
 @[      elif field.type.is_array]@

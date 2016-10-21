@@ -152,7 +152,7 @@ def primitive_value_to_py(type_, value):
         return str(value)
 
     if type_.type == 'char':
-        return repr("%c" % value)
+        return repr('%c' % value)
 
     if type_.type == 'byte':
         return repr(bytes([value]))

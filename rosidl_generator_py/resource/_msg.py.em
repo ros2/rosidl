@@ -36,12 +36,17 @@ class Metaclass(type):
             cls._CONVERT_FROM_PY = module.convert_from_py_@(module_name)
             cls._CONVERT_TO_PY = module.convert_to_py_@(module_name)
             cls._TYPE_SUPPORT = module.type_support_@(module_name)
-@[for field in spec.fields]@
-@[  if not field.type.is_primitive_type()]@
-            from @(field.type.pkg_name).msg import @(field.type.type)
-            if @(field.type.type).__class__._TYPE_SUPPORT is None:
-                @(field.type.type).__class__.__import_type_support__()
-@[  end if]@
+@{
+importable_typesupports = dict()
+for field in spec.fields:
+    if not field.type.is_primitive_type():
+        if not field.type.type in importable_typesupports:
+            importable_typesupports[str(field.type.type)] = field.type.pkg_name
+}@
+@[for type_support in importable_typesupports]@
+            from @(importable_typesupports[type_support]).msg import @(type_support)
+            if @(type_support).__class__._TYPE_SUPPORT is None:
+                @(type_support).__class__.__import_type_support__()
 @[end for]@
 
     @@classmethod

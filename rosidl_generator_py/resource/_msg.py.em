@@ -42,9 +42,10 @@ for field in spec.fields:
     if not field.type.is_primitive_type():
         if not field.type.type in importable_typesupports:
             importable_typesupports[str(field.type.type)] = field.type.pkg_name
+sorted_typesupports = [(k, importable_typesupports[k]) for k in sorted(importable_typesupports, key=importable_typesupports.get)]
 }@
-@[for type_support in importable_typesupports]@
-            from @(importable_typesupports[type_support]).msg import @(type_support)
+@[for type_support, msg_pkg in sorted_typesupports]@
+            from @(msg_pkg).msg import @(type_support)
             if @(type_support).__class__._TYPE_SUPPORT is None:
                 @(type_support).__class__.__import_type_support__()
 @[end for]@

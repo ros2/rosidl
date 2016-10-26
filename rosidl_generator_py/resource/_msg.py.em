@@ -27,7 +27,8 @@ class Metaclass(type):
             __type_support_importable = True
         except ImportError:
             logger = logging.getLogger('rosidl_generator_py.@(spec.base_type.type)')
-            logger.debug('Failed to import needed modules for type support:\n' + traceback.format_exc())
+            logger.debug(
+                'Failed to import needed modules for type support:\n' + traceback.format_exc())
 
         if __type_support_importable:
             rclpy_implementation = rclpy._rclpy.rclpy_get_rmw_implementation_identifier()
@@ -40,15 +41,17 @@ class Metaclass(type):
 importable_typesupports = dict()
 for field in spec.fields:
     if not field.type.is_primitive_type():
-        if not field.type.type in importable_typesupports:
-            importable_typesupports[str(field.type.type)] = field.type.pkg_name
-sorted_typesupports = [(k, importable_typesupports[k]) for k in sorted(importable_typesupports, key=importable_typesupports.get)]
+        key = '%s.msg.%s' % (field.type.pkg_name, field.type.type)
+        if key not in importable_typesupports:
+            importable_typesupports[key] = [field.type.pkg_name, field.type.type]
+for key in sorted(importable_typesupports.keys()):
+    print('            from %s.msg import %s' % (
+        importable_typesupports[key][0], importable_typesupports[key][1]))
+    print('            if %s.__class__.TYPE_SUPPORT is None:' \
+        % importable_typesupports[key][1])
+    print('                %s.__class__.__import_type_support__()' \
+        % importable_typesupports[key][1])
 }@
-@[for type_support, msg_pkg in sorted_typesupports]@
-            from @(msg_pkg).msg import @(type_support)
-            if @(type_support).__class__._TYPE_SUPPORT is None:
-                @(type_support).__class__.__import_type_support__()
-@[end for]@
 
     @@classmethod
     def __prepare__(cls, name, bases, **kwargs):

@@ -47,7 +47,7 @@ for field in spec.fields:
 for key in sorted(importable_typesupports.keys()):
     (pkg_name, field_name) = importable_typesupports[key]
     print('%sfrom %s.msg import %s' % (' ' * 4 * 3, pkg_name, field_name))
-    print('%sif %s.__class__.TYPE_SUPPORT is None:' % (' ' * 4 * 3, field_name))
+    print('%sif %s.__class__._TYPE_SUPPORT is None:' % (' ' * 4 * 3, field_name))
     print('%s%s.__class__.__import_type_support__()' % (' ' * 4 * 4, field_name))
 }@
 

@@ -38,19 +38,17 @@ class Metaclass(type):
             cls._CONVERT_TO_PY = module.convert_to_py_@(module_name)
             cls._TYPE_SUPPORT = module.type_support_@(module_name)
 @{
-importable_typesupports = dict()
+importable_typesupports = {}
 for field in spec.fields:
     if not field.type.is_primitive_type():
         key = '%s.msg.%s' % (field.type.pkg_name, field.type.type)
         if key not in importable_typesupports:
             importable_typesupports[key] = [field.type.pkg_name, field.type.type]
 for key in sorted(importable_typesupports.keys()):
-    print('            from %s.msg import %s' % (
-        importable_typesupports[key][0], importable_typesupports[key][1]))
-    print('            if %s.__class__.TYPE_SUPPORT is None:' \
-        % importable_typesupports[key][1])
-    print('                %s.__class__.__import_type_support__()' \
-        % importable_typesupports[key][1])
+    (pkg_name, field_name) = importable_typesupports[key]
+    print('%sfrom %s.msg import %s' % (' ' * 4 * 3, pkg_name, field_name))
+    print('%sif %s.__class__.TYPE_SUPPORT is None:' % (' ' * 4 * 3, field_name))
+    print('%s%s.__class__.__import_type_support__()' % (' ' * 4 * 4, field_name))
 }@
 
     @@classmethod

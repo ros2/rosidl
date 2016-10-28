@@ -27,7 +27,8 @@ class Metaclass(type):
             __type_support_importable = True
         except ImportError:
             logger = logging.getLogger('rosidl_generator_py.@(spec.base_type.type)')
-            logger.debug('Failed to import needed modules for type support:\n' + traceback.format_exc())
+            logger.debug(
+                'Failed to import needed modules for type support:\n' + traceback.format_exc())
 
         if __type_support_importable:
             rclpy_implementation = rclpy._rclpy.rclpy_get_rmw_implementation_identifier()
@@ -36,13 +37,19 @@ class Metaclass(type):
             cls._CONVERT_FROM_PY = module.convert_from_py_@(module_name)
             cls._CONVERT_TO_PY = module.convert_to_py_@(module_name)
             cls._TYPE_SUPPORT = module.type_support_@(module_name)
-@[for field in spec.fields]@
-@[  if not field.type.is_primitive_type()]@
-            from @(field.type.pkg_name).msg import @(field.type.type)
-            if @(field.type.type).__class__._TYPE_SUPPORT is None:
-                @(field.type.type).__class__.__import_type_support__()
-@[  end if]@
-@[end for]@
+@{
+importable_typesupports = {}
+for field in spec.fields:
+    if not field.type.is_primitive_type():
+        key = '%s.msg.%s' % (field.type.pkg_name, field.type.type)
+        if key not in importable_typesupports:
+            importable_typesupports[key] = [field.type.pkg_name, field.type.type]
+for key in sorted(importable_typesupports.keys()):
+    (pkg_name, field_name) = importable_typesupports[key]
+    print('%sfrom %s.msg import %s' % (' ' * 4 * 3, pkg_name, field_name))
+    print('%sif %s.__class__._TYPE_SUPPORT is None:' % (' ' * 4 * 3, field_name))
+    print('%s%s.__class__.__import_type_support__()' % (' ' * 4 * 4, field_name))
+}@
 
     @@classmethod
     def __prepare__(cls, name, bases, **kwargs):

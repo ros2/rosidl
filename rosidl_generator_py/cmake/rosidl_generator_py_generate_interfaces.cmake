@@ -34,7 +34,8 @@ set(_output_path
 set(_generated_msg_py_files "")
 set(_generated_msg_c_files "")
 set(_generated_msg_c_common_files "")
-set(_generated_srv_files "")
+set(_generated_srv_py_files "")
+set(_generated_srv_c_files "")
 
 foreach(_typesupport_impl ${_typesupport_impls})
   set(_generated_msg_c_ts_${_typesupport_impl}_files "")
@@ -61,10 +62,20 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
       list_append_unique(_generated_msg_c_ts_${_typesupport_impl}_files "${_output_path}/${_parent_folder}/_${PROJECT_NAME}_s.ep.${_typesupport_impl}.c")
     endforeach()
   elseif(_parent_folder STREQUAL "srv")
+    if("_${_module_name}_s.c" MATCHES "(.*)__response(.*)" OR "_${_module_name}_s.c" MATCHES "(.*)__request(.*)")
+      list(APPEND _generated_srv_c_files
+        "${_output_path}/${_parent_folder}/_${_module_name}_s.c"
+      )
+    endif()
+    list(APPEND _generated_srv_py_files
+      "${_output_path}/${_parent_folder}/_${_module_name}.py"
+    )
   else()
     message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
   endif()
 endforeach()
+
+message(WARNING "${_generated_srv_c_files}")
 
 file(MAKE_DIRECTORY "${_output_path}")
 file(WRITE "${_output_path}/__init__.py" "")
@@ -77,10 +88,10 @@ if(NOT _generated_msg_py_files STREQUAL "")
   )
 endif()
 
-if(NOT _generated_srv_files STREQUAL "")
-  list(GET _generated_srv_files 0 _srv_file)
+if(NOT _generated_srv_py_files STREQUAL "")
+  list(GET _generated_srv_py_files 0 _srv_file)
   get_filename_component(_parent_folder "${_srv_file}" DIRECTORY)
-  list(APPEND _generated_srv_files
+  list(APPEND _generated_srv_py_files
     "${_parent_folder}/__init__.py"
   )
 endif()
@@ -144,6 +155,10 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   install(FILES ${_generated_msg_py_files}
     DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/${_msg_package_dir2}"
   )
+
+  #install(FILES ${_generated_srv_py_files}
+  #  DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/${_msg_package_dir2}"
+  #)
 endif()
 
 set(_target_suffix "__py")
@@ -156,7 +171,7 @@ file(WRITE "${_subdir}/CMakeLists.txt" "${_custom_command}")
 add_subdirectory("${_subdir}" ${rosidl_generate_interfaces_TARGET}${_target_suffix})
 set_property(
   SOURCE
-  ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_files}
+  ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_py_files} ${_generated_srv_c_files}
   PROPERTY GENERATED 1)
 
 macro(set_properties _build_type)
@@ -178,6 +193,7 @@ foreach(_typesupport_impl ${_typesupport_impls})
   add_library(${_target_name} SHARED
     ${_generated_msg_c_ts_${_typesupport_impl}_files}
     ${_generated_msg_c_common_files}
+    ${_generated_srv_c_files}
   )
 
   add_dependencies(
@@ -243,7 +259,9 @@ if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
   if(
     NOT _generated_msg_py_files STREQUAL "" OR
     NOT _generated_msg_c_files STREQUAL "" OR
-    NOT _generated_msg_c_common_files STREQUAL ""
+    NOT _generated_msg_c_common_files STREQUAL "" OR
+    NOT _generated_srv_py_files STREQUAL "" OR
+    NOT _generated_srv_c_files STREQUAL ""
   )
     find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(

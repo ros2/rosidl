@@ -11,12 +11,12 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
+find_package(ament_cmake_ros REQUIRED)
 find_package(rosidl_typesupport_interface REQUIRED)
 
 include_directories(include)
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME}
   "src/message_type_support.c"
   "src/primitives_array_functions.c"
   "src/service_type_support.c"

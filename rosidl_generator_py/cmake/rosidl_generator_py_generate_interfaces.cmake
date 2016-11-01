@@ -75,8 +75,6 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   endif()
 endforeach()
 
-message(WARNING "${_generated_srv_c_files}")
-
 file(MAKE_DIRECTORY "${_output_path}")
 file(WRITE "${_output_path}/__init__.py" "")
 
@@ -140,6 +138,12 @@ if(NOT _generated_msg_py_files STREQUAL "")
   get_filename_component(_msg_package_dir2 "${_msg_package_dir1}" NAME)
 endif()
 
+if(NOT _generated_srv_py_files STREQUAL "")
+  list(GET _generated_srv_py_files 0 _srv_file)
+  get_filename_component(_srv_package_dir1 "${_srv_file}" DIRECTORY)
+  get_filename_component(_srv_package_dir2 "${_srv_package_dir1}" NAME)
+endif()
+
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   ament_python_install_module("${_output_path}/__init__.py"
     DESTINATION_SUFFIX "${PROJECT_NAME}"
@@ -152,13 +156,16 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   # TODO(esteve): replace this with ament_python_install_module and allow a list
   # of modules to be passed instead of iterating over _generated_msg_py_files
   # See https://github.com/ros2/rosidl/issues/89
-  install(FILES ${_generated_msg_py_files}
-    DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/${_msg_package_dir2}"
-  )
-
-  #install(FILES ${_generated_srv_py_files}
-  #  DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/${_msg_package_dir2}"
-  #)
+  if(NOT _msg_package_dir2 STREQUAL "")
+    install(FILES ${_generated_msg_py_files}
+      DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/${_msg_package_dir2}"
+    )
+  endif()
+  if(NOT _srv_package_dir2 STREQUAL "")
+    install(FILES ${_generated_srv_py_files}
+      DESTINATION "${PYTHON_INSTALL_DIR}/${PROJECT_NAME}/${_srv_package_dir2}"
+    )
+  endif()
 endif()
 
 set(_target_suffix "__py")

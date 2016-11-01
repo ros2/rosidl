@@ -177,7 +177,7 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 @[  elif field.type.type in ['char']]@
         from collections import UserString
 @[  end if]@
-        assert isinstance(value, type(None)) or \
+        assert \
 @[  if field.type.is_array]@
             ((isinstance(value, Sequence) or
               isinstance(value, Set) or

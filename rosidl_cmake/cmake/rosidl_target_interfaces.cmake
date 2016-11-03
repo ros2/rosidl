@@ -16,6 +16,9 @@
 # Add the include directories and libraries from an interface generation target
 # in the current project and a specific type support to another target.
 #
+# It also adds target dependencies to `target` to ensure the interface
+# generation happens before.
+#
 # :param target: the target name
 # :type target: string
 # :param interface_target: the target name of generated interfaces
@@ -42,6 +45,7 @@ function(rosidl_target_interfaces target interface_target typesupport_name)
       "double underscores must be a valid target name")
   endif()
 
+  add_dependencies(${target} ${interface_target})
   get_target_property(include_directories ${typesupport_target} INTERFACE_INCLUDE_DIRECTORIES)
   target_include_directories(${target} PUBLIC ${include_directories})
   target_link_libraries(${target} ${typesupport_target})

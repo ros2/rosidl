@@ -41,8 +41,9 @@ function(rosidl_target_interfaces target interface_target typesupport_name)
   endif()
   set(typesupport_target "${interface_target}__${typesupport_name}")
   if(NOT TARGET ${typesupport_target})
-    message(FATAL_ERROR "rosidl_target_interfaces() the second argument concattenated "
-      "with the third argument using double underscores must be a valid target name")
+    message(FATAL_ERROR
+      "rosidl_target_interfaces() the second argument concatenated with the "
+      "third argument using double underscores must be a valid target name")
   endif()
 
   add_dependencies(${target} ${interface_target})

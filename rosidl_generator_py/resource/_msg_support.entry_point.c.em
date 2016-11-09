@@ -4,7 +4,17 @@
 #include <Python.h>
 #include <stdint.h>
 
-#include <rosidl_generator_c/message_type_support.h>
+@{
+includes = {}
+for spec, subfolder in message_specs:
+  if subfolder not in includes.keys():
+    if subfolder == 'msg':
+      includes['msg'] = '#include <rosidl_generator_c/message_type_support.h>'
+    elif subfolder == 'srv':
+      includes['srv'] = '#include <rosidl_generator_c/service_type_support.h>'
+for value in sorted(includes.values()):
+  print(value)
+}@
 
 @[for spec, subfolder in message_specs]@
 @{
@@ -46,7 +56,7 @@ function_names = ['convert_from_py', 'convert_to_py', 'type_support']
 }@
 
 int8_t
-_register_type__@(type_name)(PyObject * pymodule)
+_register_msg_type__@(type_name)(PyObject * pymodule)
 {
   int8_t err;
 @[  for function_name in function_names]@
@@ -78,6 +88,38 @@ _register_type__@(type_name)(PyObject * pymodule)
 }
 @[end for]@
 
+@[for spec, subfolder in service_specs]@
+@{
+type_name = convert_camel_case_to_lower_case_underscore(spec.srv_name)
+function_name = 'type_support'
+}@
+
+int8_t
+_register_srv_type__@(type_name)(PyObject * pymodule)
+{
+  int8_t err;
+  PyObject * pyobject_@(function_name) = NULL;
+  pyobject_@(function_name) = PyCapsule_New(
+    (void *)ROSIDL_GET_SERVICE_TYPE_SUPPORT(@(spec.pkg_name), @(spec.srv_name)),
+    NULL, NULL);
+  if (!pyobject_@(function_name)) {
+    // previously added objects will be removed when the module is destroyed
+    return -1;
+  }
+  err = PyModule_AddObject(
+    pymodule,
+    "@(function_name)_@(type_name)",
+    pyobject_@(function_name));
+  if (err) {
+    // the created capsule needs to be decremented
+    Py_XDECREF(pyobject_@(function_name));
+    // previously added objects will be removed when the module is destroyed
+    return err;
+  }
+  return 0;
+}
+@[end for]@
+
 PyMODINIT_FUNC
 PyInit_@(package_name)_s__@(typesupport_impl)(void)
 {
@@ -91,7 +133,17 @@ PyInit_@(package_name)_s__@(typesupport_impl)(void)
 @{
 type_name = convert_camel_case_to_lower_case_underscore(spec.base_type.type)
 }@
-  err = _register_type__@(type_name)(pymodule);
+  err = _register_msg_type__@(type_name)(pymodule);
+  if (err) {
+    Py_XDECREF(pymodule);
+    return NULL;
+  }
+@[end for]@
+@[for spec, subfolder in service_specs]@
+@{
+type_name = convert_camel_case_to_lower_case_underscore(spec.srv_name)
+}@
+  err = _register_srv_type__@(type_name)(pymodule);
   if (err) {
     Py_XDECREF(pymodule);
     return NULL;

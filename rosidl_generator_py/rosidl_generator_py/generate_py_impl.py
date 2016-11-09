@@ -62,6 +62,7 @@ def generate_py(generator_arguments_file, typesupport_impls):
 
     modules = defaultdict(list)
     message_specs = []
+    service_specs = []
     for ros_interface_file in args['ros_interface_files']:
         extension = os.path.splitext(ros_interface_file)[1]
         subfolder = os.path.basename(os.path.dirname(ros_interface_file))
@@ -72,6 +73,7 @@ def generate_py(generator_arguments_file, typesupport_impls):
             type_name = spec.base_type.type
         elif extension == '.srv':
             spec = parse_service_file(args['package_name'], ros_interface_file)
+            service_specs.append((spec, subfolder))
             mapping = mapping_srvs
             type_name = spec.srv_name
         else:
@@ -82,7 +84,8 @@ def generate_py(generator_arguments_file, typesupport_impls):
         for template_file, generated_filenames in mapping.items():
             for generated_filename in generated_filenames:
                 data = {
-                    'module_name': module_name, 'package_name': args['package_name'],
+                    'module_name': module_name,
+                    'package_name': args['package_name'],
                     'spec': spec, 'subfolder': subfolder,
                     'typesupport_impl': type_support_impl_by_filename.get(generated_filename, ''),
                 }
@@ -109,6 +112,7 @@ def generate_py(generator_arguments_file, typesupport_impls):
                 'module_name': module_name,
                 'package_name': args['package_name'],
                 'message_specs': message_specs,
+                'service_specs': service_specs,
                 'typesupport_impl': type_support_impl_by_filename.get(generated_filename, ''),
             }
             data.update(functions)

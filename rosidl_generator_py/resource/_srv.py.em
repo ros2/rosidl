@@ -26,6 +26,13 @@ class Metaclass(type):
             module = import_type_support(
                 '@(package_name)', rclpy_implementation)
             cls._TYPE_SUPPORT = module.type_support_@(module_name)
+@{
+srv_name = '_' + convert_camel_case_to_lower_case_underscore(spec.srv_name)
+for field_name in [srv_name + '__request', srv_name + '__response']:
+    print('%sfrom %s.srv import %s' % (' ' * 4 * 3, package_name, field_name))
+    print('%sif %s.Metaclass._TYPE_SUPPORT is None:' % (' ' * 4 * 3, field_name))
+    print('%s%s.Metaclass.__import_type_support__()' % (' ' * 4 * 4, field_name))
+}@
 
 
 class @(spec.srv_name)(metaclass=Metaclass):

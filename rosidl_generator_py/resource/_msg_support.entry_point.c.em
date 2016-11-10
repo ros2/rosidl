@@ -5,24 +5,35 @@
 #include <stdint.h>
 
 @{
-includes = {}
+static_includes = {}
 for spec, subfolder in message_specs:
-  if subfolder not in includes.keys():
+  if subfolder not in static_includes.keys():
     if subfolder == 'msg':
-      includes['msg'] = '#include <rosidl_generator_c/message_type_support.h>'
+      static_includes[subfolder] = '#include <rosidl_generator_c/message_type_support.h>'
     elif subfolder == 'srv':
-      includes['srv'] = '#include <rosidl_generator_c/service_type_support.h>'
-for value in sorted(includes.values()):
+      static_includes[subfolder] = '#include <rosidl_generator_c/service_type_support.h>'
+for value in sorted(static_includes.values()):
   print(value)
 }@
 
-@[for spec, subfolder in message_specs]@
 @{
-type_name = spec.base_type.type
-module_name = convert_camel_case_to_lower_case_underscore(type_name)
+includes = {}
+for spec, subfolder in message_specs:
+  type_name = spec.base_type.type
+  module_name = convert_camel_case_to_lower_case_underscore(type_name)
+  key = '%s/%s/%s' % (spec.base_type.pkg_name, subfolder, module_name)
+  if key not in static_includes.keys():
+    includes[key] = '#include <%s__type_support.h>' % key
+
+for spec, subfolder in service_specs:
+  type_name = convert_camel_case_to_lower_case_underscore(spec.srv_name)
+  module_name = convert_camel_case_to_lower_case_underscore(type_name)
+  key = '%s/%s/%s' % (spec.pkg_name, subfolder, module_name)
+  if key not in static_includes.keys():
+    includes[key] = '#include <%s.h>' % key
+for v in sorted(includes.values()):
+  print(v)
 }@
-#include <@(spec.base_type.pkg_name)/@(subfolder)/@(module_name)__type_support.h>
-@[end for]@
 
 @[for spec, subfolder in message_specs]@
 @{
@@ -100,7 +111,7 @@ _register_srv_type__@(type_name)(PyObject * pymodule)
   int8_t err;
   PyObject * pyobject_@(function_name) = NULL;
   pyobject_@(function_name) = PyCapsule_New(
-    (void *)ROSIDL_GET_SERVICE_TYPE_SUPPORT(@(spec.pkg_name), @(spec.srv_name)),
+    (void *)ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.pkg_name), srv, @(spec.srv_name))(),
     NULL, NULL);
   if (!pyobject_@(function_name)) {
     // previously added objects will be removed when the module is destroyed

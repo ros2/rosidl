@@ -46,7 +46,7 @@ void * @(spec.base_type.pkg_name)_@(module_name)__convert_from_py(PyObject * _py
   @(msg_typename) * ros_message = @(msg_typename)__create();
   (void)ros_message;
 @{
-full_classname = "@(spec.base_type.pkg_name).@(subfolder)._@(module_name).@(spec.base_type.type)"
+full_classname = '%s.%s._%s.%s' % (spec.base_type.pkg_name, subfolder, module_name, spec.base_type.type)
 }@
   char full_classname_dest[@(len(full_classname) + 1)];
 
@@ -58,7 +58,7 @@ full_classname = "@(spec.base_type.pkg_name).@(subfolder)._@(module_name).@(spec
   snprintf(full_classname_dest, sizeof(full_classname_dest), "%s.%s", module_name, class_name);
 
   assert(strncmp(
-      "@(spec.base_type.pkg_name).@(subfolder)._@(module_name).@(spec.base_type.type)",
+      "@(full_classname)",
       full_classname_dest, @(len(full_classname))) == 0);
 
 @[for field in spec.fields]@

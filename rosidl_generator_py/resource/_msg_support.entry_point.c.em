@@ -86,7 +86,7 @@ _register_msg_type__@(type_name)(PyObject * pymodule)
   }
   err = PyModule_AddObject(
     pymodule,
-    "@(function_name)_@(type_name)",
+    "@(function_name)_msg_@(type_name)",
     pyobject_@(function_name));
   if (err) {
     // the created capsule needs to be decremented
@@ -98,7 +98,6 @@ _register_msg_type__@(type_name)(PyObject * pymodule)
   return 0;
 }
 @[end for]@
-
 @[for spec, subfolder in service_specs]@
 @{
 type_name = convert_camel_case_to_lower_case_underscore(spec.srv_name)
@@ -119,7 +118,7 @@ _register_srv_type__@(type_name)(PyObject * pymodule)
   }
   err = PyModule_AddObject(
     pymodule,
-    "@(function_name)_@(type_name)",
+    "@(function_name)_srv_@(type_name)",
     pyobject_@(function_name));
   if (err) {
     // the created capsule needs to be decremented
@@ -160,5 +159,6 @@ type_name = convert_camel_case_to_lower_case_underscore(spec.srv_name)
     return NULL;
   }
 @[end for]@
+
   return pymodule;
 }

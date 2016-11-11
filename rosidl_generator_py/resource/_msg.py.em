@@ -34,9 +34,9 @@ class Metaclass(type):
             rclpy_implementation = rclpy._rclpy.rclpy_get_rmw_implementation_identifier()
             module = import_type_support(
                 '@(package_name)', rclpy_implementation)
-            cls._CONVERT_FROM_PY = module.convert_from_py_@(module_name)
-            cls._CONVERT_TO_PY = module.convert_to_py_@(module_name)
-            cls._TYPE_SUPPORT = module.type_support_@(module_name)
+            cls._CONVERT_FROM_PY = module.convert_from_py_msg_@(module_name)
+            cls._CONVERT_TO_PY = module.convert_to_py_msg_@(module_name)
+            cls._TYPE_SUPPORT = module.type_support_msg_@(module_name)
 @{
 importable_typesupports = {}
 for field in spec.fields:

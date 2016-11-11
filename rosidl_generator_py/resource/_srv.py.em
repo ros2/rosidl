@@ -25,7 +25,7 @@ class Metaclass(type):
             rclpy_implementation = rclpy._rclpy.rclpy_get_rmw_implementation_identifier()
             module = import_type_support(
                 '@(package_name)', rclpy_implementation)
-            cls._TYPE_SUPPORT = module.type_support_@(module_name)
+            cls._TYPE_SUPPORT = module.type_support_srv_@(module_name)
 @{
 srv_name = '_' + convert_camel_case_to_lower_case_underscore(spec.srv_name)
 for field_name in [srv_name + '__request', srv_name + '__response']:

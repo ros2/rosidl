@@ -11,9 +11,10 @@ for spec, subfolder in message_specs:
     static_includes[subfolder] = '#include <rosidl_generator_c/message_type_support.h>'
   elif subfolder == 'srv':
     static_includes[subfolder] = '#include <rosidl_generator_c/service_type_support.h>'
-for value in sorted(static_includes.values()):
-  print(value)
 }@
+@[for value in sorted(static_includes.values())]@
+@(value)
+@[end for]@
 
 @{
 includes = {}
@@ -28,10 +29,10 @@ for spec, subfolder in service_specs:
   module_name = convert_camel_case_to_lower_case_underscore(type_name)
   key = '%s/%s/%s' % (spec.pkg_name, subfolder, module_name)
   includes[key] = '#include <%s.h>' % key
-for v in sorted(includes.values()):
-  print(v)
 }@
-
+@[for v in sorted(includes.values())]@
+@(v)
+@[end for]@
 @[for spec, subfolder in message_specs]@
 @{
 type_name = spec.base_type.type

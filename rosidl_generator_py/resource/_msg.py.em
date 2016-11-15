@@ -20,17 +20,9 @@ class Metaclass(type):
 
     @@classmethod
     def __import_type_support__(cls):
-        __type_support_importable = False
         try:
             import rclpy
             from rosidl_generator_py import import_type_support
-            __type_support_importable = True
-        except ImportError:
-            logger = logging.getLogger('rosidl_generator_py.@(spec.base_type.type)')
-            logger.debug(
-                'Failed to import needed modules for type support:\n' + traceback.format_exc())
-
-        if __type_support_importable:
             rclpy_implementation = rclpy._rclpy.rclpy_get_rmw_implementation_identifier()
             module = import_type_support(
                 '@(package_name)', rclpy_implementation)
@@ -50,6 +42,11 @@ for key in sorted(importable_typesupports.keys()):
     print('%sif %s.__class__._TYPE_SUPPORT is None:' % (' ' * 4 * 3, field_name))
     print('%s%s.__class__.__import_type_support__()' % (' ' * 4 * 4, field_name))
 }@
+
+        except ImportError:
+            logger = logging.getLogger('rosidl_generator_py.@(spec.base_type.type)')
+            logger.debug(
+                'Failed to import needed modules for type support:\n' + traceback.format_exc())
 
     @@classmethod
     def __prepare__(cls, name, bases, **kwargs):

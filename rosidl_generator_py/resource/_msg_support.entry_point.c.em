@@ -7,11 +7,10 @@
 @{
 static_includes = {}
 for spec, subfolder in message_specs:
-  if subfolder not in static_includes.keys():
-    if subfolder == 'msg':
-      static_includes[subfolder] = '#include <rosidl_generator_c/message_type_support.h>'
-    elif subfolder == 'srv':
-      static_includes[subfolder] = '#include <rosidl_generator_c/service_type_support.h>'
+  if subfolder == 'msg':
+    static_includes[subfolder] = '#include <rosidl_generator_c/message_type_support.h>'
+  elif subfolder == 'srv':
+    static_includes[subfolder] = '#include <rosidl_generator_c/service_type_support.h>'
 for value in sorted(static_includes.values()):
   print(value)
 }@
@@ -22,15 +21,13 @@ for spec, subfolder in message_specs:
   type_name = spec.base_type.type
   module_name = convert_camel_case_to_lower_case_underscore(type_name)
   key = '%s/%s/%s' % (spec.base_type.pkg_name, subfolder, module_name)
-  if key not in static_includes.keys():
-    includes[key] = '#include <%s__type_support.h>' % key
+  includes[key] = '#include <%s__type_support.h>' % key
 
 for spec, subfolder in service_specs:
   type_name = convert_camel_case_to_lower_case_underscore(spec.srv_name)
   module_name = convert_camel_case_to_lower_case_underscore(type_name)
   key = '%s/%s/%s' % (spec.pkg_name, subfolder, module_name)
-  if key not in static_includes.keys():
-    includes[key] = '#include <%s.h>' % key
+  includes[key] = '#include <%s.h>' % key
 for v in sorted(includes.values()):
   print(v)
 }@

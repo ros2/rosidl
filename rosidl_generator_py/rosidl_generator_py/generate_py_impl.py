@@ -99,11 +99,11 @@ def generate_py(generator_arguments_file, typesupport_impls):
     for module in modules:
         with open(os.path.join(args['output_dir'], module, '__init__.py'), 'w') as f:
             for module_, type_ in modules[module]:
-                if type_.find('Request') == -1 and type_.find('Response') == -1:
+                if type_.endswith('Request') is False and type_.endswith('Response') is False:
                     f.write('from %s.%s._%s import %s\n' %
                             (args['package_name'], module, module_, type_))
             for module_, type_ in modules[module]:
-                if type_.find('Request') == -1 and type_.find('Response') == -1:
+                if type_.endswith('Request') is False and type_.endswith('Response') is False:
                     f.write('%s  # unused\n' % type_)
 
     for template_file, generated_filenames in mapping_extension_msgs.items():

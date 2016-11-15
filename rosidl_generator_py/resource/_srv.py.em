@@ -7,6 +7,7 @@ import traceback
 
 class Metaclass(type):
     """Metaclass of message '@(spec.srv_name)'."""
+
     _TYPE_SUPPORT = None
 
     @@classmethod

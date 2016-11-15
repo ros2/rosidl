@@ -48,7 +48,6 @@ for key in sorted(importable_typesupports.keys()):
     print('%s%s.__class__.__import_type_support__()' % (' ' * 4 * 4, field_name))
 }@
 
-
     @@classmethod
     def __prepare__(cls, name, bases, **kwargs):
         # list constant names here so that they appear in the help text of

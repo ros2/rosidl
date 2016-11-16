@@ -96,20 +96,19 @@ def generate_py(generator_arguments_file, typesupport_impls):
                     template_file, data, generated_file,
                     minimum_timestamp=latest_target_timestamp)
 
-    for module in modules:
-        importlist = {}
-        for module_, type_ in modules[module]:
-            if module == 'srv' and (
-                    type_.endswith('Request') is True or type_.endswith('Response') is True):
+    for subfolder in modules.keys():
+        import_list = {}
+        for module_name, type_ in modules[subfolder]:
+            if subfolder == 'srv' and (type_.endswith('Request') or type_.endswith('Response')):
                 continue
-            importlist['%s  # noqa\n' % type_] = 'from %s.%s._%s import %s\n' % \
-                (args['package_name'], module, module_, type_)
+            import_list['%s  # noqa\n' % type_] = 'from %s.%s._%s import %s\n' % \
+                (args['package_name'], subfolder, module_name, type_)
 
-        with open(os.path.join(args['output_dir'], module, '__init__.py'), 'w') as f:
-            for importline in sorted(importlist.values()):
-                f.write(importline)
-            for noqaline in sorted(importlist.keys()):
-                        f.write(noqaline)
+        with open(os.path.join(args['output_dir'], subfolder, '__init__.py'), 'w') as f:
+            for import_line in sorted(import_list.values()):
+                f.write(import_line)
+            for noqa_line in sorted(import_list.keys()):
+                        f.write(noqa_line)
 
     for template_file, generated_filenames in mapping_extension_msgs.items():
         for generated_filename in generated_filenames:

@@ -110,7 +110,7 @@ for index, field in enumerate(spec.fields):
         # size_t string_upper_bound
         print('    0,  // upper bound of string')
         # const rosidl_message_type_support_t * members_
-        print('    ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle_introspection<%s::msg::%s>(),  // members of sub message' % (field.type.pkg_name, field.type.type))
+        print('    ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<%s::msg::%s>(),  // members of sub message' % (field.type.pkg_name, field.type.type))
     # bool is_array_
     print('    %s,  // is array' % ('true' if field.type.is_array else 'false'))
     # size_t array_size_
@@ -153,7 +153,7 @@ static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(spec.base_
 };
 
 static const rosidl_message_type_support_t @(spec.base_type.type)_message_type_support_handle = {
-  ::rosidl_typesupport_introspection_cpp::typesupport_introspection_identifier,
+  ::rosidl_typesupport_introspection_cpp::typesupport_identifier,
   &@(spec.base_type.type)_message_members
 };
 
@@ -170,7 +170,7 @@ namespace rosidl_typesupport_introspection_cpp
 template<>
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_message_type_support_t *
-get_message_type_support_handle_introspection<@(spec.base_type.pkg_name)::@(subfolder)::@(spec.base_type.type)>()
+get_message_type_support_handle<@(spec.base_type.pkg_name)::@(subfolder)::@(spec.base_type.type)>()
 {
   return &::@(spec.base_type.pkg_name)::@(subfolder)::rosidl_typesupport_introspection_cpp::@(spec.base_type.type)_message_type_support_handle;
 }

@@ -42,13 +42,13 @@ static ::rosidl_typesupport_introspection_cpp::ServiceMembers @(spec.srv_name)_s
   "@(spec.pkg_name)",  // package name
   "@(spec.srv_name)",  // service name
   // these two fields are initialized below on the first access
-  // see get_service_type_support_handle_introspection<@(spec.pkg_name)::@(spec.srv_name)>()
+  // see get_service_type_support_handle<@(spec.pkg_name)::@(spec.srv_name)>()
   nullptr,  // request message
   nullptr  // response message
 };
 
 static const rosidl_service_type_support_t @(spec.srv_name)_service_type_support_handle = {
-  ::rosidl_typesupport_introspection_cpp::typesupport_introspection_identifier,
+  ::rosidl_typesupport_introspection_cpp::typesupport_identifier,
   &@(spec.srv_name)_service_members
 };
 
@@ -65,7 +65,7 @@ namespace rosidl_typesupport_introspection_cpp
 template<>
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_service_type_support_t *
-get_service_type_support_handle_introspection<@(spec.pkg_name)::srv::@(spec.srv_name)>()
+get_service_type_support_handle<@(spec.pkg_name)::srv::@(spec.srv_name)>()
 {
   // get a handle to the value to be returned
   auto service_type_support =
@@ -84,7 +84,7 @@ get_service_type_support_handle_introspection<@(spec.pkg_name)::srv::@(spec.srv_
     service_members->request_members_ = static_cast<
       const ::rosidl_typesupport_introspection_cpp::MessageMembers *
       >(
-      ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle_introspection<
+      ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<
         ::@(spec.pkg_name)::srv::@(spec.request.base_type.type)
       >()->data
       );
@@ -92,7 +92,7 @@ get_service_type_support_handle_introspection<@(spec.pkg_name)::srv::@(spec.srv_
     service_members->response_members_ = static_cast<
       const ::rosidl_typesupport_introspection_cpp::MessageMembers *
       >(
-      ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle_introspection<
+      ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<
         ::@(spec.pkg_name)::srv::@(spec.response.base_type.type)
       >()->data
       );

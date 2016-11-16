@@ -97,14 +97,19 @@ def generate_py(generator_arguments_file, typesupport_impls):
                     minimum_timestamp=latest_target_timestamp)
 
     for module in modules:
+        importlist = {}
+        for module_, type_ in modules[module]:
+            if module == 'srv' and (
+                    type_.endswith('Request') is True or type_.endswith('Response') is True):
+                continue
+            importlist['%s  # noqa\n' % type_] = 'from %s.%s._%s import %s\n' % \
+                (args['package_name'], module, module_, type_)
+
         with open(os.path.join(args['output_dir'], module, '__init__.py'), 'w') as f:
-            for module_, type_ in modules[module]:
-                if type_.endswith('Request') is False and type_.endswith('Response') is False:
-                    f.write('from %s.%s._%s import %s\n' %
-                            (args['package_name'], module, module_, type_))
-            for module_, type_ in modules[module]:
-                if type_.endswith('Request') is False and type_.endswith('Response') is False:
-                    f.write('%s  # unused\n' % type_)
+            for importline in sorted(importlist.values()):
+                f.write(importline)
+            for noqaline in sorted(importlist.keys()):
+                        f.write(noqaline)
 
     for template_file, generated_filenames in mapping_extension_msgs.items():
         for generated_filename in generated_filenames:

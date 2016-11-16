@@ -62,17 +62,18 @@ def generate_py(generator_arguments_file, typesupport_impls):
 
     modules = defaultdict(list)
     message_specs = []
+    service_specs = []
     for ros_interface_file in args['ros_interface_files']:
         extension = os.path.splitext(ros_interface_file)[1]
         subfolder = os.path.basename(os.path.dirname(ros_interface_file))
-        # TODO(mikael) remove subfolder condition when implementing services
-        if extension == '.msg' and subfolder == 'msg':
+        if extension == '.msg':
             spec = parse_message_file(args['package_name'], ros_interface_file)
             message_specs.append((spec, subfolder))
             mapping = mapping_msgs
             type_name = spec.base_type.type
         elif extension == '.srv':
             spec = parse_service_file(args['package_name'], ros_interface_file)
+            service_specs.append((spec, subfolder))
             mapping = mapping_srvs
             type_name = spec.srv_name
         else:
@@ -83,7 +84,8 @@ def generate_py(generator_arguments_file, typesupport_impls):
         for template_file, generated_filenames in mapping.items():
             for generated_filename in generated_filenames:
                 data = {
-                    'module_name': module_name, 'package_name': args['package_name'],
+                    'module_name': module_name,
+                    'package_name': args['package_name'],
                     'spec': spec, 'subfolder': subfolder,
                     'typesupport_impl': type_support_impl_by_filename.get(generated_filename, ''),
                 }
@@ -94,12 +96,19 @@ def generate_py(generator_arguments_file, typesupport_impls):
                     template_file, data, generated_file,
                     minimum_timestamp=latest_target_timestamp)
 
-    for module in modules:
-        with open(os.path.join(args['output_dir'], module, '__init__.py'), 'w') as f:
-            for module_, type_ in modules[module]:
-                f.write('from %s.msg._%s import %s\n' % (args['package_name'], module_, type_))
-            for module_, type_ in modules[module]:
-                f.write('%s  # unused\n' % type_)
+    for subfolder in modules.keys():
+        import_list = {}
+        for module_name, type_ in modules[subfolder]:
+            if subfolder == 'srv' and (type_.endswith('Request') or type_.endswith('Response')):
+                continue
+            import_list['%s  # noqa\n' % type_] = 'from %s.%s._%s import %s\n' % \
+                (args['package_name'], subfolder, module_name, type_)
+
+        with open(os.path.join(args['output_dir'], subfolder, '__init__.py'), 'w') as f:
+            for import_line in sorted(import_list.values()):
+                f.write(import_line)
+            for noqa_line in sorted(import_list.keys()):
+                        f.write(noqa_line)
 
     for template_file, generated_filenames in mapping_extension_msgs.items():
         for generated_filename in generated_filenames:
@@ -107,6 +116,7 @@ def generate_py(generator_arguments_file, typesupport_impls):
                 'module_name': module_name,
                 'package_name': args['package_name'],
                 'message_specs': message_specs,
+                'service_specs': service_specs,
                 'typesupport_impl': type_support_impl_by_filename.get(generated_filename, ''),
             }
             data.update(functions)

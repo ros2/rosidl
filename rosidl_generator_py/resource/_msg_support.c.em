@@ -33,7 +33,7 @@ if not field.type.is_primitive_type() and field.type.is_array:
 @[if nested_array_dict != {}]@
 // Nested array functions includes
 @[  for key in nested_array_dict]@
-#include <@(nested_array_dict[key])/@(subfolder)/@convert_camel_case_to_lower_case_underscore(key)__functions.h>
+#include <@(nested_array_dict[key])/msg/@convert_camel_case_to_lower_case_underscore(key)__functions.h>
 @[  end for]@
 // end nested array functions include
 @[end if]@

@@ -33,6 +33,8 @@ target_include_directories(${PROJECT_NAME}
 )
 ament_export_libraries(${PROJECT_NAME})
 
+ament_index_register_resource("rosidl_typesupport_cpp")
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()

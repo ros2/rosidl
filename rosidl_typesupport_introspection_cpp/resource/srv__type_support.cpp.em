@@ -14,16 +14,16 @@
 #define __@(spec.pkg_name)__@(get_header_filename_from_msg_name(spec.srv_name))__type_support__h__
 
 #include <rosidl_generator_c/service_type_support.h>
-// this is defined in the rosidl_typesupport_introspection_cpp package and
-// is in the include/rosidl_typesupport_introspection_cpp/impl folder
-#include <rosidl_generator_cpp/message_type_support.hpp>
-#include <rosidl_generator_cpp/service_type_support.hpp>
+#include <rosidl_typesupport_cpp/message_type_support.hpp>
+#include <rosidl_typesupport_cpp/service_type_support.hpp>
 
 #include "rosidl_typesupport_introspection_cpp/visibility_control.h"
 
 #include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__struct.hpp"
 #include "rosidl_typesupport_introspection_cpp/identifier.hpp"
+#include "rosidl_typesupport_introspection_cpp/message_type_support_decl.hpp"
 #include "rosidl_typesupport_introspection_cpp/service_introspection.hpp"
+#include "rosidl_typesupport_introspection_cpp/service_type_support_decl.hpp"
 
 #include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.request.base_type.type))__struct.hpp"
 #include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.response.base_type.type))__struct.hpp"

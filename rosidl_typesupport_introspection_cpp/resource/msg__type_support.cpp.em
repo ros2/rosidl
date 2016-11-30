@@ -21,14 +21,13 @@
 #include <vector>
 
 #include "rosidl_generator_c/message_type_support_struct.h"
-// this is defined in the rosidl_typesupport_introspection_cpp package and
-// is in the include/rosidl_typesupport_introspection_cpp/impl folder
-#include "rosidl_generator_cpp/message_type_support.hpp"
+#include "rosidl_typesupport_cpp/message_type_support.hpp"
 
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.hpp"
 #include "rosidl_typesupport_introspection_cpp/field_types.hpp"
 #include "rosidl_typesupport_introspection_cpp/identifier.hpp"
 #include "rosidl_typesupport_introspection_cpp/message_introspection.hpp"
+#include "rosidl_typesupport_introspection_cpp/message_type_support_decl.hpp"
 #include "rosidl_typesupport_introspection_cpp/visibility_control.h"
 
 namespace @(spec.base_type.pkg_name)

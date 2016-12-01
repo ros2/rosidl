@@ -22,6 +22,7 @@
 
 #include "rosidl_generator_c/message_type_support_struct.h"
 #include "rosidl_typesupport_cpp/message_type_support.hpp"
+#include "rosidl_typesupport_interface/macros.h"
 
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.hpp"
 #include "rosidl_typesupport_introspection_cpp/field_types.hpp"
@@ -153,7 +154,8 @@ static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(spec.base_
 
 static const rosidl_message_type_support_t @(spec.base_type.type)_message_type_support_handle = {
   ::rosidl_typesupport_introspection_cpp::typesupport_identifier,
-  &@(spec.base_type.type)_message_members
+  &@(spec.base_type.type)_message_members,
+  get_message_typesupport_handle_function,
 };
 
 }  // namespace rosidl_typesupport_introspection_cpp
@@ -175,5 +177,20 @@ get_message_type_support_handle<@(spec.base_type.pkg_name)::@(subfolder)::@(spec
 }
 
 }  // namespace rosidl_typesupport_introspection_cpp
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
+const rosidl_message_type_support_t *
+ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_cpp, @(spec.base_type.pkg_name), @(subfolder), @(spec.base_type.type))() {
+  return &::@(spec.base_type.pkg_name)::@(subfolder)::rosidl_typesupport_introspection_cpp::@(spec.base_type.type)_message_type_support_handle;
+}
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__type_support__h__

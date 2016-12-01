@@ -16,6 +16,7 @@
 #include <rosidl_generator_c/service_type_support.h>
 #include <rosidl_typesupport_cpp/message_type_support.hpp>
 #include <rosidl_typesupport_cpp/service_type_support.hpp>
+#include "rosidl_typesupport_interface/macros.h"
 
 #include "rosidl_typesupport_introspection_cpp/visibility_control.h"
 
@@ -49,7 +50,8 @@ static ::rosidl_typesupport_introspection_cpp::ServiceMembers @(spec.srv_name)_s
 
 static const rosidl_service_type_support_t @(spec.srv_name)_service_type_support_handle = {
   ::rosidl_typesupport_introspection_cpp::typesupport_identifier,
-  &@(spec.srv_name)_service_members
+  &@(spec.srv_name)_service_members,
+  get_service_typesupport_handle_function,
 };
 
 }  // namespace rosidl_typesupport_introspection_cpp
@@ -102,5 +104,20 @@ get_service_type_support_handle<@(spec.pkg_name)::srv::@(spec.srv_name)>()
 }
 
 }  // namespace rosidl_typesupport_introspection_cpp
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
+const rosidl_service_type_support_t *
+ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_cpp, @(spec.pkg_name), @(spec.srv_name))() {
+  return ::rosidl_typesupport_introspection_cpp::get_service_type_support_handle<@(spec.pkg_name)::srv::@(spec.srv_name)>();
+}
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // __@(spec.pkg_name)__@(get_header_filename_from_msg_name(spec.srv_name))__type_support__h__

@@ -20,6 +20,7 @@
   <exec_depend>rosidl_generator_c</exec_depend>
   <exec_depend>rosidl_generator_cpp</exec_depend>
   <exec_depend>rosidl_parser</exec_depend>
+  <exec_depend>rosidl_typesupport_interface</exec_depend>
   <exec_depend>rosidl_typesupport_introspection_c</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>

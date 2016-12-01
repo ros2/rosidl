@@ -196,7 +196,8 @@ static const rosidl_typesupport_introspection_c__MessageMembers @(function_prefi
 // since C does not allow non-integral compile-time constants
 static rosidl_message_type_support_t @(function_prefix)__@(spec.base_type.type)_message_type_support_handle = {
   0,
-  &@(function_prefix)__@(spec.base_type.type)_message_members
+  &@(function_prefix)__@(spec.base_type.type)_message_members,
+  get_message_typesupport_handle_function,
 };
 
 ROSIDL_GENERATOR_C_EXPORT_@(spec.base_type.pkg_name)

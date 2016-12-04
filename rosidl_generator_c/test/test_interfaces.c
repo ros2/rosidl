@@ -258,6 +258,8 @@ void test_strings(void)
   EXPECT_EQ(0, strcmp(strings->empty_string.data, TEST_STRING));
   EXPECT_EQ(0, strcmp(strings->def_string.data, "Hello world!"));
   // since upper-bound checking is not implemented yet, we restrict the string copying
+  // TODO(mikaelarguedas) Test string length properly instead of cheating copy
+  // res = rosidl_generator_c__String__assign(&strings->ub_string, TEST_STRING);
   res = rosidl_generator_c__String__assignn(&strings->ub_string, TEST_STRING, 22);
   EXPECT_EQ(true, res);
   EXPECT_EQ(0, strcmp(strings->ub_string.data, "Deep into that darknes"));

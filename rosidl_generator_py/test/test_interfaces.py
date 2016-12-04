@@ -28,6 +28,54 @@ def test_strings():
     assert 'Hello world!' == a.def_string
 
 
+def test_arrays_of_bounded_strings():
+    a = Strings()
+    array_valid_string_length = ['a' * 2, 'b' * 3, 'c' * 4]
+    array_too_long_strings = ['a' * 2, 'b' * 3, 'c' * 6]
+    assert ['', '', ''] == a.ub_string_static_array_value
+    a.ub_string_static_array_value = array_valid_string_length
+    assert array_valid_string_length == a.ub_string_static_array_value
+
+    assert_raises(
+        AssertionError, setattr, a,
+        'ub_string_static_array_value', array_too_long_strings)
+
+    assert_raises(
+        AssertionError, setattr, a,
+        'ub_string_static_array_value', ['a' * 2, 'b' * 3])
+
+    assert [] == a.ub_string_ub_array_value
+    a.ub_string_ub_array_value = array_valid_string_length
+    assert array_valid_string_length == a.ub_string_ub_array_value
+
+    assert_raises(
+        AssertionError, setattr, a,
+        'ub_string_ub_array_value', array_too_long_strings)
+
+    array10strings = [] + [str(i) for i in range(10)]
+    a.ub_string_ub_array_value = array10strings
+    assert array10strings == a.ub_string_ub_array_value
+
+    assert_raises(
+        AssertionError, setattr, a,
+        'ub_string_ub_array_value', array10strings + ['gfg'])
+
+    assert [] == a.ub_string_dynamic_array_value
+    a.ub_string_dynamic_array_value = array_valid_string_length
+    assert array_valid_string_length == a.ub_string_dynamic_array_value
+
+    assert_raises(
+        AssertionError, setattr, a,
+        'ub_string_dynamic_array_value', array_too_long_strings)
+
+    array10strings = [] + [str(i) for i in range(10)]
+    a.ub_string_dynamic_array_value = array10strings
+    assert array10strings == a.ub_string_dynamic_array_value
+    array10strings += ['gfg']
+    a.ub_string_dynamic_array_value = array10strings
+    assert array10strings == a.ub_string_dynamic_array_value
+
+
 def test_invalid_attribute():
     a = Strings()
 

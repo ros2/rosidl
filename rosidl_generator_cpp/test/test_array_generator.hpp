@@ -148,7 +148,7 @@ void test_vector_fill(C * container, size_t size,
  * @param min Minimum value in the range to fill.
  * @param max Maximum value in the range to fill.
  * @param minlength Minimum length of the generated strings.
- * @param kMaxLength Maximum length of the generated strings.
+ * @param maxlength Maximum length of the generated strings.
  */
 template<
   typename C,
@@ -158,14 +158,14 @@ template<
 >
 void test_vector_fill(C * container, size_t size,
   int min, int max,
-  int minlength, const int kMaxLength)
+  int minlength, const int maxlength)
 {
   std::default_random_engine rand_generator;
   std::uniform_int_distribution<int> randnum(min, max);
-  std::uniform_int_distribution<int> randlen(minlength, kMaxLength);
+  std::uniform_int_distribution<int> randlen(minlength, maxlength);
 
   if (size > 0) {
-    char tmpstr[kMaxLength];
+    char * tmpstr = reinterpret_cast<char *>(malloc(maxlength));
     std::snprintf(tmpstr, minlength, "%*d", minlength, min);
     (*container)[0] = std::string(tmpstr);
     for (size_t i = 1; i < size - 1; i++) {
@@ -173,7 +173,7 @@ void test_vector_fill(C * container, size_t size,
       std::snprintf(tmpstr, length, "%*d", length, randnum(rand_generator));
       (*container)[i] = std::string(tmpstr);
     }
-    std::snprintf(tmpstr, kMaxLength, "%*d", kMaxLength, max);
+    std::snprintf(tmpstr, maxlength, "%*d", maxlength, max);
     (*container)[size - 1] = std::string(tmpstr);
   }
 }

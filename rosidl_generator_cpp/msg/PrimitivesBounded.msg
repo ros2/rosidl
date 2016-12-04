@@ -11,4 +11,4 @@ int32[<=10] int32_value
 uint32[<=10] uint32_value
 int64[<=10] int64_value
 uint64[<=10] uint64_value
-string<=10 string_value
+string<=10[<=10] string_values

@@ -33,6 +33,10 @@ if(BUILD_TESTING)
     "msg/StaticArrayStatic.msg"
     "msg/StaticArrayUnbounded.msg"
 
+    "msg/String.msg"
+    "msg/StringBounded.msg"
+    "msg/StringArrayStatic.msg"
+
     "msg/UnboundedArrayBounded.msg"
     "msg/UnboundedArrayStatic.msg"
     "msg/UnboundedArrayUnbounded.msg"

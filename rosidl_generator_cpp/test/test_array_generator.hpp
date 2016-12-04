@@ -49,8 +49,8 @@ void test_vector_fill(C * container, size_t size, bool val1 = true,
  * Mininum and maximum values for the type and random values in the middle.
  * @param C Container (vector, array, etc) to be filled
  * @param size How many elements to fill in. Must size<=container_size
- * @param min Minimum value in the rage to fill.
- * @param max Maximum value in the rage to fill.
+ * @param min Minimum value in the range to fill.
+ * @param max Maximum value in the range to fill.
  */
 template<
   typename C,
@@ -84,8 +84,8 @@ void test_vector_fill(C * container, size_t size,
  * Mininum and maximum values for the type and random values in the middle.
  * @param C Container (vector, array, etc) to be filled
  * @param size How many elements to fill in. Must size<=container_size
- * @param min Minimum value in the rage to fill.
- * @param max Maximum value in the rage to fill.
+ * @param min Minimum value in the range to fill.
+ * @param max Maximum value in the range to fill.
  */
 template<
   typename C,
@@ -115,8 +115,8 @@ void test_vector_fill(C * container, size_t size,
  * Mininum and maximum values for the type and random numbers in the middle.
  * @param C Container (vector, array, etc) to be filled
  * @param size How many elements to fill in. Must size<=container_size
- * @param min Minimum value in the rage to fill.
- * @param max Maximum value in the rage to fill.
+ * @param min Minimum value in the range to fill.
+ * @param max Maximum value in the range to fill.
  */
 template<
   typename C,

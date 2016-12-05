@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(rosidl_generator_c C)
+project(rosidl_generator_c)
 
 if(NOT WIN32)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall -Wextra")
@@ -76,15 +76,20 @@ if(BUILD_TESTING)
     SKIP_INSTALL
   )
 
-  add_executable(test_compilation_c test/test_compilation.c test/separate_compilation.c)
-  add_executable(test_interfaces_c test/test_interfaces.c)
-  add_dependencies(test_interfaces_c ${PROJECT_NAME})
-  add_test(test_compilation_c test_compilation_c)
-  add_test(test_interfaces_c test_interfaces_c)
+  if(NOT WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+  endif()
+
+  include_directories(include)
+  ament_add_gtest(test_compilation_cpp test/test_compilation.cpp)
+  ament_add_gtest(test_interfaces_cpp test/test_interfaces.cpp)
+  if(TARGET test_interfaces_cpp)
+    add_dependencies(test_interfaces_cpp ${PROJECT_NAME})
+  endif()
   # include the built files directly, instead of their install location
   include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
-  target_link_libraries(test_compilation_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
-  target_link_libraries(test_interfaces_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
+  target_link_libraries(test_interfaces_cpp ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
+  target_link_libraries(test_compilation_cpp ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
 endif()
 
 ament_package(

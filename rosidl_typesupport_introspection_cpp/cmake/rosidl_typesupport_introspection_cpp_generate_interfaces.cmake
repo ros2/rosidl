@@ -79,6 +79,10 @@ add_custom_command(
 set(_target_suffix "__rosidl_typesupport_introspection_cpp")
 
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED ${_generated_files})
+if(rosidl_generate_interfaces_LIBRARY_NAME)
+  set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    PROPERTIES OUTPUT_NAME "${rosidl_generate_interfaces_LIBRARY_NAME}${_target_suffix}")
+endif()
 if(WIN32)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PRIVATE "ROSIDL_BUILDING_DLL")

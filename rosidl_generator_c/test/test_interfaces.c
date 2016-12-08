@@ -91,38 +91,38 @@ int test_submessages(void);
 int main(void)
 {
   int rc = 0;
-  fprintf(stdout, "Testing rosidl_generator_c message types...\n");
-  fprintf(stdout, "Testing simple primitive message types...\n");
+  printf("Testing rosidl_generator_c message types...\n");
+  printf("Testing simple primitive message types...\n");
   if (test_primitives()) {
     fprintf(stderr, "test_primitives() FAILED\n");
     rc++;
   }
-  fprintf(stdout, "Testing simple primitives with default values...\n");
+  printf("Testing simple primitives with default values...\n");
   if (test_primitives_default_value()) {
     fprintf(stderr, "test_primitives_default_value() FAILED\n");
     rc++;
   }
-  fprintf(stdout, "Testing string types...\n");
+  printf("Testing string types...\n");
   if (test_strings()) {
     fprintf(stderr, "test_strings() FAILED\n");
     rc++;
   }
-  fprintf(stdout, "Testing primitives unbounded arrays types...\n");
+  printf("Testing primitives unbounded arrays types...\n");
   if (test_primitives_unbounded_arrays()) {
     fprintf(stderr, "test_primitives_unbounded_arrays() FAILED\n");
     rc++;
   }
-  fprintf(stdout, "Testing primitives bounded arrays types...\n");
+  printf("Testing primitives bounded arrays types...\n");
   if (test_primitives_bounded_arrays()) {
     fprintf(stderr, "test_primitives_bounded_arrays() FAILED\n");
     rc++;
   }
-  fprintf(stdout, "Testing primitives static arrays types...\n");
+  printf("Testing primitives static arrays types...\n");
   if (test_primitives_static_arrays()) {
     fprintf(stderr, "test_primitives_static_arrays() FAILED\n");
     rc++;
   }
-  fprintf(stdout, "Testing nested sub-messages...\n");
+  printf("Testing nested sub-messages...\n");
   if (test_submessages()) {
     fprintf(stderr, "test_submessages() FAILED\n");
     rc++;
@@ -130,7 +130,7 @@ int main(void)
   if (rc != 0) {
     fprintf(stderr, "Some tests failed!\n");
   } else {
-    fprintf(stdout, "All tests were good!\n");
+    printf("All tests were good!\n");
   }
   return rc != 0;
 }

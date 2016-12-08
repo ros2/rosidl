@@ -47,7 +47,7 @@ void test_vector_fill(C * container, size_t size, bool val1 = true,
 /**
  * Helper function to generate a test pattern for integer number types.
  * The template type parameter must be an integer number type.
- * Mininum and maximum values for the type and random values in the middle.
+ * Mininum and maximum values for the type and evenly distributed values in the middle.
  * @param C Container (vector, array, etc) to be filled
  * @param size How many elements to fill in. Must size<=container_size
  * @param min Minimum value in the range to fill.
@@ -57,47 +57,13 @@ template<
   typename C,
   typename std::enable_if<
     std::is_integral<typename C::value_type>::value &&
-    !std::is_same<typename C::value_type, bool>::value &&
-    !std::is_same<typename C::value_type, char>::value &&
-    !std::is_same<typename C::value_type, int8_t>::value &&
-    !std::is_same<typename C::value_type, uint8_t>::value
+    !std::is_same<typename C::value_type, bool>::value
   >::type * = nullptr
 >
 void test_vector_fill(C * container, size_t size,
   typename C::value_type min, typename C::value_type max)
 {
-  if (size > 0) {
-    typename C::value_type step = (max - min) / size;
-    (*container)[0] = min;
-    for (size_t i = 1; i < size - 1; i++) {
-      (*container)[i] = min + i * step;
-    }
-    (*container)[size - 1] = max;
-  }
-}
-
-/**
- * Helper function to generate a test pattern for char type and derivatives.
- * Note: this is necessary because uniform_int_distribution is not defined for
- * char type.
- * Mininum and maximum values for the type and random values in the middle.
- * @param C Container (vector, array, etc) to be filled
- * @param size How many elements to fill in. Must size<=container_size
- * @param min Minimum value in the range to fill.
- * @param max Maximum value in the range to fill.
- */
-template<
-  typename C,
-  typename std::enable_if<
-    std::is_same<typename C::value_type, char>::value ||
-    std::is_same<typename C::value_type, int8_t>::value ||
-    std::is_same<typename C::value_type, uint8_t>::value
-  >::type * = nullptr
->
-void test_vector_fill(C * container, size_t size,
-  typename C::value_type min, typename C::value_type max)
-{
-  if (size > 0) {
+  if (size > 0 && min != max) {
     typename C::value_type step = (max - min) / size;
     (*container)[0] = min;
     for (size_t i = 1; i < size - 1; i++) {
@@ -124,7 +90,7 @@ template<
 void test_vector_fill(C * container, size_t size,
   typename C::value_type min, typename C::value_type max)
 {
-  if (size > 0) {
+  if (size > 0 && min != max) {
     typename C::value_type step = (max - min) / size;
     (*container)[0] = min;
     for (size_t i = 1; i < size - 1; i++) {
@@ -154,7 +120,7 @@ void test_vector_fill(C * container, size_t size,
   int min, int max,
   int minlength, const int maxlength)
 {
-  if (size > 0) {
+  if (size > 0 && min != max && minlength != maxlength) {
     int step = (max - min) / size;
     int step_length = (maxlength - minlength) / size;
     char * tmpstr = reinterpret_cast<char *>(malloc(maxlength));

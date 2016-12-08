@@ -181,6 +181,9 @@ class @(spec.base_type.type)(metaclass=Metaclass):
               isinstance(value, UserList)) and
              not isinstance(value, str) and
              not isinstance(value, UserString) and
+@[    if field.type.type == 'string' and field.type.string_upper_bound]@
+             all([len(val) <= @field.type.string_upper_bound for val in value]) and
+@[    end if]@
 @[    if field.type.array_size]@
 @[      if field.type.is_upper_bound]@
              len(value) <= @(field.type.array_size) and

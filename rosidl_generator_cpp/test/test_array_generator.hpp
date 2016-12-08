@@ -17,6 +17,7 @@
 
 #include <climits>
 #include <random>
+#include <string>
 #include <type_traits>
 
 /**
@@ -49,8 +50,8 @@ void test_vector_fill(C * container, size_t size, bool val1 = true,
  * Mininum and maximum values for the type and random values in the middle.
  * @param C Container (vector, array, etc) to be filled
  * @param size How many elements to fill in. Must size<=container_size
- * @param min Minimum value in the rage to fill.
- * @param max Maximum value in the rage to fill.
+ * @param min Minimum value in the range to fill.
+ * @param max Maximum value in the range to fill.
  */
 template<
   typename C,
@@ -84,8 +85,8 @@ void test_vector_fill(C * container, size_t size,
  * Mininum and maximum values for the type and random values in the middle.
  * @param C Container (vector, array, etc) to be filled
  * @param size How many elements to fill in. Must size<=container_size
- * @param min Minimum value in the rage to fill.
- * @param max Maximum value in the rage to fill.
+ * @param min Minimum value in the range to fill.
+ * @param max Maximum value in the range to fill.
  */
 template<
   typename C,
@@ -115,8 +116,8 @@ void test_vector_fill(C * container, size_t size,
  * Mininum and maximum values for the type and random numbers in the middle.
  * @param C Container (vector, array, etc) to be filled
  * @param size How many elements to fill in. Must size<=container_size
- * @param min Minimum value in the rage to fill.
- * @param max Maximum value in the rage to fill.
+ * @param min Minimum value in the range to fill.
+ * @param max Maximum value in the range to fill.
  */
 template<
   typename C,
@@ -136,6 +137,44 @@ void test_vector_fill(C * container, size_t size,
       (*container)[i] = randnum(rand_generator);
     }
     (*container)[size - 1] = max;
+  }
+}
+
+/**
+ * Helper function to generate a test pattern for string types.
+ * Mininum and maximum values for the type and random numbers in the middle.
+ * @param C Container (vector, array, etc) to be filled
+ * @param size How many elements to fill in. Must size<=container_size
+ * @param min Minimum value in the range to fill.
+ * @param max Maximum value in the range to fill.
+ * @param minlength Minimum length of the generated strings.
+ * @param maxlength Maximum length of the generated strings.
+ */
+template<
+  typename C,
+  typename std::enable_if<
+    std::is_same<typename C::value_type, typename std::string>::value
+  >::type * = nullptr
+>
+void test_vector_fill(C * container, size_t size,
+  int min, int max,
+  int minlength, const int maxlength)
+{
+  std::default_random_engine rand_generator;
+  std::uniform_int_distribution<int> randnum(min, max);
+  std::uniform_int_distribution<int> randlen(minlength, maxlength);
+
+  if (size > 0) {
+    char * tmpstr = reinterpret_cast<char *>(malloc(maxlength));
+    std::snprintf(tmpstr, minlength, "%*d", minlength, min);
+    (*container)[0] = std::string(tmpstr);
+    for (size_t i = 1; i < size - 1; i++) {
+      int length = randlen(rand_generator);
+      std::snprintf(tmpstr, length, "%*d", length, randnum(rand_generator));
+      (*container)[i] = std::string(tmpstr);
+    }
+    std::snprintf(tmpstr, maxlength, "%*d", maxlength, max);
+    (*container)[size - 1] = std::string(tmpstr);
   }
 }
 

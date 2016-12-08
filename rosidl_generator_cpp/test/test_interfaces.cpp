@@ -40,11 +40,16 @@
 #include "rosidl_generator_cpp/msg/static_array_static.hpp"
 #include "rosidl_generator_cpp/msg/static_array_unbounded.hpp"
 
+#include "rosidl_generator_cpp/msg/string.hpp"
+#include "rosidl_generator_cpp/msg/string_bounded.hpp"
+#include "rosidl_generator_cpp/msg/string_array_static.hpp"
+
 #include "rosidl_generator_cpp/msg/unbounded_array_bounded.hpp"
 #include "rosidl_generator_cpp/msg/unbounded_array_static.hpp"
 #include "rosidl_generator_cpp/msg/unbounded_array_unbounded.hpp"
 
 #define PRIMITIVES_ARRAY_SIZE 10
+#define BOUNDED_STRING_LENGTH 10
 #define SUBMESSAGE_ARRAY_SIZE 3
 
 TEST(Test_rosidl_generator_traits, has_fixed_size) {
@@ -89,6 +94,19 @@ TEST(Test_rosidl_generator_traits, has_fixed_size) {
     !rosidl_generator_traits::has_fixed_size<
       rosidl_generator_cpp::msg::StaticArrayUnbounded>::value,
     "StaticArrayUnbounded::has_fixed_size is true");
+
+  static_assert(
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::String>::value,
+    "String::has_fixed_size is true");
+
+  static_assert(
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::StringBounded>::value,
+    "StringBounded::has_fixed_size is true");
+
+  static_assert(
+    !rosidl_generator_traits::has_fixed_size<
+      rosidl_generator_cpp::msg::StringArrayStatic>::value,
+    "StringArrayStatic::has_fixed_size is true");
 
   static_assert(
     !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::BoundedArrayStatic>::value,
@@ -166,6 +184,16 @@ void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic 
   std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
+#define TEST_BOUNDED_ARRAY_STRING( \
+    Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal, MinLength, MaxLength) \
+  rosidl_generator_cpp::BoundedVector<PrimitiveType, ArraySize> pattern_ ## FieldName; \
+  Message.FieldName.resize(ArraySize); \
+  pattern_ ## FieldName.resize(ArraySize); \
+  test_vector_fill<decltype(pattern_ ## FieldName)>( \
+    &pattern_ ## FieldName, ArraySize, MinVal, MaxVal, MinLength, MaxLength); \
+  std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
+  ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
+
 void test_message_primitives_bounded(rosidl_generator_cpp::msg::PrimitivesBounded message)
 {
   TEST_BOUNDED_ARRAY_PRIMITIVE(message, bool_value, bool, PRIMITIVES_ARRAY_SIZE, \
@@ -194,8 +222,8 @@ void test_message_primitives_bounded(rosidl_generator_cpp::msg::PrimitivesBounde
     INT64_MIN, INT64_MAX)
   TEST_BOUNDED_ARRAY_PRIMITIVE(message, uint64_value, uint64_t, PRIMITIVES_ARRAY_SIZE, \
     0, UINT64_MAX)
-  // Arrays of strings not supported yet
-  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "", "Deep into that darkness peering")
+  TEST_BOUNDED_ARRAY_STRING(message, string_values, std::string, PRIMITIVES_ARRAY_SIZE, \
+    0, UINT32_MAX, 0, BOUNDED_STRING_LENGTH)
 }
 
 #define TEST_UNBOUNDED_ARRAY_PRIMITIVE( \
@@ -206,6 +234,16 @@ void test_message_primitives_bounded(rosidl_generator_cpp::msg::PrimitivesBounde
     &pattern_ ## FieldName, ArraySize, MinVal, MaxVal); \
   Message.FieldName.resize(ArraySize); \
   std::copy_n(pattern_ ## FieldName.begin(), ArraySize, Message.FieldName.begin()); \
+  ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
+
+#define TEST_UNBOUNDED_ARRAY_STRING( \
+    Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal, MinLength, MaxLength) \
+  std::vector<PrimitiveType> pattern_ ## FieldName; \
+  Message.FieldName.resize(ArraySize); \
+  pattern_ ## FieldName.resize(ArraySize); \
+  test_vector_fill<decltype(pattern_ ## FieldName)>( \
+    &pattern_ ## FieldName, ArraySize, MinVal, MaxVal, MinLength, MaxLength); \
+  std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
 void test_message_primitives_unbounded(rosidl_generator_cpp::msg::PrimitivesUnbounded message)
@@ -236,14 +274,58 @@ void test_message_primitives_unbounded(rosidl_generator_cpp::msg::PrimitivesUnbo
     INT64_MIN, INT64_MAX)
   TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, uint64_value, uint64_t, PRIMITIVES_ARRAY_SIZE, \
     0, UINT64_MAX)
-  // Arrays of strings not supported yet
-  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "", "Deep into that darkness peering")
+  TEST_UNBOUNDED_ARRAY_STRING(message, string_value, std::string, PRIMITIVES_ARRAY_SIZE, \
+    0, UINT32_MAX, 0, UINT16_MAX)
+}
+
+#define TEST_STATIC_ARRAY_PRIMITIVE( \
+    Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal) \
+  std::array<PrimitiveType, ArraySize> pattern_ ## FieldName; \
+  test_vector_fill<decltype(pattern_ ## FieldName)>( \
+    &pattern_ ## FieldName, ArraySize, MinVal, MaxVal); \
+  std::copy_n(pattern_ ## FieldName.begin(), ArraySize, Message.FieldName.begin()); \
+  ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
+
+void test_message_primitives_static_arrays(rosidl_generator_cpp::msg::PrimitiveStaticArrays message)
+{
+  TEST_STATIC_ARRAY_PRIMITIVE(message, bool_value, bool, PRIMITIVES_ARRAY_SIZE, \
+    false, true)
+  TEST_STATIC_ARRAY_PRIMITIVE(message, char_value, char, PRIMITIVES_ARRAY_SIZE, \
+    CHAR_MIN, CHAR_MAX)
+  TEST_STATIC_ARRAY_PRIMITIVE(message, byte_value, uint8_t, PRIMITIVES_ARRAY_SIZE, \
+    0, UINT8_MAX)
+  TEST_STATIC_ARRAY_PRIMITIVE(message, float32_value, float, PRIMITIVES_ARRAY_SIZE, \
+    FLT_MIN, FLT_MAX)
+  TEST_STATIC_ARRAY_PRIMITIVE(message, float64_value, double, PRIMITIVES_ARRAY_SIZE, \
+    DBL_MIN, DBL_MAX)
+  TEST_STATIC_ARRAY_PRIMITIVE(message, int8_value, int8_t, PRIMITIVES_ARRAY_SIZE, \
+    INT8_MIN, INT8_MAX)
+  TEST_STATIC_ARRAY_PRIMITIVE(message, uint8_value, uint8_t, PRIMITIVES_ARRAY_SIZE, \
+    0, UINT8_MAX)
+  TEST_STATIC_ARRAY_PRIMITIVE(message, int16_value, int16_t, PRIMITIVES_ARRAY_SIZE, \
+    INT16_MIN, INT16_MAX)
+  TEST_STATIC_ARRAY_PRIMITIVE(message, uint16_value, uint16_t, PRIMITIVES_ARRAY_SIZE, \
+    0, UINT16_MAX)
+  TEST_STATIC_ARRAY_PRIMITIVE(message, int32_value, int32_t, PRIMITIVES_ARRAY_SIZE, \
+    INT32_MIN, INT32_MAX)
+  TEST_STATIC_ARRAY_PRIMITIVE(message, uint32_value, uint32_t, PRIMITIVES_ARRAY_SIZE, \
+    0, UINT32_MAX)
+  TEST_STATIC_ARRAY_PRIMITIVE(message, int64_value, int64_t, PRIMITIVES_ARRAY_SIZE, \
+    INT64_MIN, INT64_MAX)
+  TEST_STATIC_ARRAY_PRIMITIVE(message, uint64_value, uint64_t, PRIMITIVES_ARRAY_SIZE, \
+    0, UINT64_MAX)
 }
 
 // Primitives static
 TEST(Test_messages, primitives_static) {
   rosidl_generator_cpp::msg::PrimitivesStatic message;
   test_message_primitives_static(message);
+}
+
+// Primitives static arrays
+TEST(Test_messages, primitives_static_arrays) {
+  rosidl_generator_cpp::msg::PrimitiveStaticArrays message;
+  test_message_primitives_static_arrays(message);
 }
 
 // Primitives bounded arrays
@@ -381,4 +463,33 @@ TEST(Test_messages, primitives_default) {
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int64_value, -40000000, INT64_MAX);
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint64_value, 50000000ull, UINT64_MAX);
   TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "bar", "Hello World!")
+}
+
+// TODO(mikaelarguedas) reenable this test when bounded strings enforce length
+TEST(Test_messages, DISABLED_Test_bounded_strings) {
+  rosidl_generator_cpp::msg::StringBounded message;
+  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "", "Deep into")
+  std::string tooLongString = std::string("Too long string");
+  message.string_value = tooLongString;
+  tooLongString.resize(BOUNDED_STRING_LENGTH);
+  ASSERT_STREQ(tooLongString.c_str(), message.string_value.c_str());
+}
+
+TEST(Test_messages, Test_string) {
+  rosidl_generator_cpp::msg::String message;
+  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "", "Deep into")
+}
+
+#define TEST_STATIC_ARRAY_STRING( \
+    Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal, MinLength, MaxLength) \
+  std::array<PrimitiveType, ArraySize> pattern_ ## FieldName; \
+  test_vector_fill<decltype(pattern_ ## FieldName)>( \
+    &pattern_ ## FieldName, ArraySize, MinVal, MaxVal, MinLength, MaxLength); \
+  std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
+  ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
+
+TEST(Test_messages, Test_string_array_static) {
+  rosidl_generator_cpp::msg::StringArrayStatic message;
+  TEST_STATIC_ARRAY_STRING(message, string_value, std::string, PRIMITIVES_ARRAY_SIZE, \
+    0, UINT32_MAX, 0, UINT16_MAX)
 }

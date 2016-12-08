@@ -77,42 +77,68 @@
 
 #define ARRAY_SIZE 7
 
-#define EXPECT_EQ(arg1, arg2) if (arg1 != arg2) exit(1)
-#define EXPECT_NE(arg1, arg2) if (arg1 == arg2) exit(1)
+#define EXPECT_EQ(arg1, arg2) if (arg1 != arg2) return 1
+#define EXPECT_NE(arg1, arg2) if (arg1 == arg2) return 1
 
-void test_primitives(void);
-void test_primitives_default_value(void);
-void test_strings(void);
-void test_primitives_unbounded_arrays(void);
-void test_primitives_bounded_arrays(void);
-void test_primitives_static_arrays(void);
-void test_submessages(void);
+int test_primitives(void);
+int test_primitives_default_value(void);
+int test_strings(void);
+int test_primitives_unbounded_arrays(void);
+int test_primitives_bounded_arrays(void);
+int test_primitives_static_arrays(void);
+int test_submessages(void);
 
 int main(void)
 {
-  fprintf(stderr, "Testing rosidl_generator_c message types...\n");
-  fprintf(stderr, "Testing simple primitive message types...\n");
-  test_primitives();
-  fprintf(stderr, "Testing simple primitives with default values...\n");
-  test_primitives_default_value();
-  fprintf(stderr, "Testing string types...\n");
-  test_strings();
-  fprintf(stderr, "Testing primitives unbounded arrays types...\n");
-  test_primitives_unbounded_arrays();
-  fprintf(stderr, "Testing primitives bounded arrays types...\n");
-  test_primitives_bounded_arrays();
-  fprintf(stderr, "Testing primitives static arrays types...\n");
-  test_primitives_static_arrays();
-  fprintf(stderr, "Testing nested sub-messages...\n");
-  test_submessages();
-  fprintf(stderr, "All tests were good!\n");
-  return 0;
+  int rc = 0;
+  printf("Testing rosidl_generator_c message types...\n");
+  printf("Testing simple primitive message types...\n");
+  if (test_primitives()) {
+    fprintf(stderr, "test_primitives() FAILED\n");
+    rc++;
+  }
+  printf("Testing simple primitives with default values...\n");
+  if (test_primitives_default_value()) {
+    fprintf(stderr, "test_primitives_default_value() FAILED\n");
+    rc++;
+  }
+  printf("Testing string types...\n");
+  if (test_strings()) {
+    fprintf(stderr, "test_strings() FAILED\n");
+    rc++;
+  }
+  printf("Testing primitives unbounded arrays types...\n");
+  if (test_primitives_unbounded_arrays()) {
+    fprintf(stderr, "test_primitives_unbounded_arrays() FAILED\n");
+    rc++;
+  }
+  printf("Testing primitives bounded arrays types...\n");
+  if (test_primitives_bounded_arrays()) {
+    fprintf(stderr, "test_primitives_bounded_arrays() FAILED\n");
+    rc++;
+  }
+  printf("Testing primitives static arrays types...\n");
+  if (test_primitives_static_arrays()) {
+    fprintf(stderr, "test_primitives_static_arrays() FAILED\n");
+    rc++;
+  }
+  printf("Testing nested sub-messages...\n");
+  if (test_submessages()) {
+    fprintf(stderr, "test_submessages() FAILED\n");
+    rc++;
+  }
+  if (rc != 0) {
+    fprintf(stderr, "Some tests failed!\n");
+  } else {
+    printf("All tests were good!\n");
+  }
+  return rc != 0;
 }
 
 /**
  * Test message with simple primitive types.
  */
-void test_primitives(void)
+int test_primitives(void)
 {
   rosidl_generator_c__msg__Bool bool_msg;
   rosidl_generator_c__msg__Byte byte_msg;
@@ -211,12 +237,14 @@ void test_primitives(void)
 
   uint64_msg.empty_uint64 = UINT64_MAX;
   EXPECT_EQ(UINT64_MAX, uint64_msg.empty_uint64);
+
+  return 0;
 }
 
 /**
  * Test message with simple primitive types using a default value initializer.
  */
-void test_primitives_default_value(void)
+int test_primitives_default_value(void)
 {
   rosidl_generator_c__msg__PrimitiveValues * primitive_values = NULL;
 
@@ -240,12 +268,14 @@ void test_primitives_default_value(void)
   EXPECT_EQ(315, primitive_values->def_uint64);
 
   rosidl_generator_c__msg__PrimitiveValues__destroy(primitive_values);
+
+  return 0;
 }
 
 /**
  * Test message with different string types.
  */
-void test_strings(void)
+int test_strings(void)
 {
   bool res = false;
   rosidl_generator_c__msg__Strings * strings = NULL;
@@ -266,12 +296,14 @@ void test_strings(void)
   EXPECT_EQ(0, strcmp(strings->ub_def_string.data, "Upper bounded string."));
 
   rosidl_generator_c__msg__Strings__destroy(strings);
+
+  return 0;
 }
 
 /**
  * Test message with different unbounded array types
  */
-void test_primitives_unbounded_arrays(void)
+int test_primitives_unbounded_arrays(void)
 {
   bool res = false;
   int i;
@@ -458,12 +490,14 @@ void test_primitives_unbounded_arrays(void)
   }
 
   rosidl_generator_c__msg__PrimitivesUnboundedArrays__destroy(arrays);
+
+  return 0;
 }
 
 /**
  * Test message with different bounded array types
  */
-void test_primitives_bounded_arrays(void)
+int test_primitives_bounded_arrays(void)
 {
   bool res = false;
   int i;
@@ -651,12 +685,14 @@ void test_primitives_bounded_arrays(void)
   }
 
   rosidl_generator_c__msg__PrimitivesBoundedArrays__destroy(arrays);
+
+  return 0;
 }
 
 /**
  * Test message with different static array types
  */
-void test_primitives_static_arrays(void)
+int test_primitives_static_arrays(void)
 {
   int i;
   rosidl_generator_c__msg__PrimitivesStaticArrays * arrays = NULL;
@@ -817,12 +853,14 @@ void test_primitives_static_arrays(void)
   }
 
   rosidl_generator_c__msg__PrimitivesStaticArrays__destroy(arrays);
+
+  return 0;
 }
 
 /**
  * Test message with sub-messages types
  */
-void test_submessages(void)
+int test_submessages(void)
 {
   int i;
   bool res;
@@ -855,4 +893,6 @@ void test_submessages(void)
   EXPECT_EQ(3.141f, wire_msg->cablegram2.number_array[2]);
 
   rosidl_generator_c__msg__Wire__destroy(wire_msg);
+
+  return 0;
 }

@@ -79,8 +79,16 @@ if(BUILD_TESTING)
   add_executable(test_compilation_c test/test_compilation.c test/separate_compilation.c)
   add_executable(test_interfaces_c test/test_interfaces.c)
   add_dependencies(test_interfaces_c ${PROJECT_NAME})
-  add_test(test_compilation_c test_compilation_c)
-  add_test(test_interfaces_c test_interfaces_c)
+  ament_add_test(
+    test_compilation_c
+    COMMAND "${CMAKE_CURRENT_BINARY_DIR}/test_compilation_c"
+    GENERATE_RESULT_FOR_RETURN_CODE_ZERO
+  )
+  ament_add_test(
+    test_interfaces_c
+    COMMAND "${CMAKE_CURRENT_BINARY_DIR}/test_interfaces_c"
+    GENERATE_RESULT_FOR_RETURN_CODE_ZERO
+  )
   # include the built files directly, instead of their install location
   include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
   target_link_libraries(test_compilation_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})

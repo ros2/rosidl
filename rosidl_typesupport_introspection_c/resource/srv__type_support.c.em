@@ -44,7 +44,8 @@ static rosidl_typesupport_introspection_c__ServiceMembers @(function_prefix)__@(
 
 static rosidl_service_type_support_t @(function_prefix)__@(spec.srv_name)_service_type_support_handle = {
   0,
-  &@(function_prefix)__@(spec.srv_name)_service_members
+  &@(function_prefix)__@(spec.srv_name)_service_members,
+  get_service_typesupport_handle_function,
 };
 
 // Forward declaration of request/response type support functions

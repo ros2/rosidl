@@ -11,7 +11,9 @@ find_package(ament_cmake_python REQUIRED)
 
 include_directories(include)
 add_library(${PROJECT_NAME} SHARED
+  "src/message_type_support.c"
   "src/primitives_array_functions.c"
+  "src/service_type_support.c"
   "src/string_functions.c"
 )
 if(NOT WIN32)

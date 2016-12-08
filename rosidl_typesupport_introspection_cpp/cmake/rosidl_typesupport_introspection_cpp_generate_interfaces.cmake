@@ -79,6 +79,10 @@ add_custom_command(
 set(_target_suffix "__rosidl_typesupport_introspection_cpp")
 
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED ${_generated_files})
+if(rosidl_generate_interfaces_LIBRARY_NAME)
+  set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    PROPERTIES OUTPUT_NAME "${rosidl_generate_interfaces_LIBRARY_NAME}${_target_suffix}")
+endif()
 if(WIN32)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PRIVATE "ROSIDL_BUILDING_DLL")
@@ -94,6 +98,7 @@ target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp
 )
 ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  "rosidl_typesupport_interface"
   "rosidl_typesupport_introspection_cpp")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   ament_target_dependencies(

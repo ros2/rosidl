@@ -1,4 +1,4 @@
-// Copyright 2015 Open Source Robotics Foundation, Inc.
+// Copyright 2015-2016 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,11 +22,25 @@ extern "C"
 {
 #endif
 
+typedef struct rosidl_service_type_support_t rosidl_service_type_support_t;
+
+typedef const rosidl_service_type_support_t * (* rosidl_service_typesupport_handle_function)(
+  const rosidl_service_type_support_t *, const char *);
+
 typedef struct ROSIDL_PUBLIC_TYPE rosidl_service_type_support_t
 {
   const char * typesupport_identifier;
   const void * data;
+  rosidl_service_typesupport_handle_function func;
 } rosidl_service_type_support_t;
+
+ROSIDL_GENERATOR_C_PUBLIC
+const rosidl_service_type_support_t * get_service_typesupport_handle(
+  const rosidl_service_type_support_t * handle, const char * identifier);
+
+ROSIDL_GENERATOR_C_PUBLIC
+const rosidl_service_type_support_t * get_service_typesupport_handle_function(
+  const rosidl_service_type_support_t * handle, const char * identifier);
 
 /* This macro is used to create the symbol of the get_service_type_support
  * function for a specific service type. The library of the message package

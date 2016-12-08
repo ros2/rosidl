@@ -124,6 +124,10 @@ set(_target_suffix "__rosidl_generator_c")
 
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED
   ${_generated_msg_headers} ${_generated_msg_sources} ${_generated_srv_headers} ${_generated_srv_sources})
+if(rosidl_generate_interfaces_LIBRARY_NAME)
+  set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    PROPERTIES OUTPUT_NAME "${rosidl_generate_interfaces_LIBRARY_NAME}${_target_suffix}")
+endif()
 if(NOT WIN32)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix} PROPERTIES
     COMPILE_FLAGS "-std=c11 -Wall -Wextra")

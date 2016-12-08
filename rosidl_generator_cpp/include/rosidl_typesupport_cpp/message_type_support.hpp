@@ -1,4 +1,4 @@
-// Copyright 2015 Open Source Robotics Foundation, Inc.
+// Copyright 2016 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,12 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rosidl_typesupport_introspection_cpp/visibility_control.h"
+#ifndef ROSIDL_TYPESUPPORT_CPP__MESSAGE_TYPE_SUPPORT_HPP_
+#define ROSIDL_TYPESUPPORT_CPP__MESSAGE_TYPE_SUPPORT_HPP_
 
-namespace rosidl_typesupport_introspection_cpp
+#include <rosidl_generator_c/message_type_support_struct.h>
+#include <rosidl_generator_c/visibility_control.h>
+
+namespace rosidl_typesupport_cpp
 {
 
-ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_EXPORT
-const char * typesupport_identifier = "rosidl_typesupport_introspection_cpp";
+template<typename T>
+const rosidl_message_type_support_t * get_message_type_support_handle();
 
-}  // namespace rosidl_typesupport_introspection_cpp
+}  // namespace rosidl_typesupport_cpp
+
+#endif  // ROSIDL_TYPESUPPORT_CPP__MESSAGE_TYPE_SUPPORT_HPP_

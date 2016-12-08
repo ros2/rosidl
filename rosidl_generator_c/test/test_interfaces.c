@@ -91,46 +91,46 @@ int test_submessages(void);
 int main(void)
 {
   int rc = 0;
-  fprintf(stderr, "Testing rosidl_generator_c message types...\n");
-  fprintf(stderr, "Testing simple primitive message types...\n");
+  fprintf(stdout, "Testing rosidl_generator_c message types...\n");
+  fprintf(stdout, "Testing simple primitive message types...\n");
   if (test_primitives()) {
-    fprintf(stderr, "FAILED\n");
+    fprintf(stderr, "test_primitives() FAILED\n");
     rc++;
   }
-  fprintf(stderr, "Testing simple primitives with default values...\n");
+  fprintf(stdout, "Testing simple primitives with default values...\n");
   if (test_primitives_default_value()) {
-    fprintf(stderr, "FAILED\n");
+    fprintf(stderr, "test_primitives_default_value() FAILED\n");
     rc++;
   }
-  fprintf(stderr, "Testing string types...\n");
+  fprintf(stdout, "Testing string types...\n");
   if (test_strings()) {
-    fprintf(stderr, "FAILED\n");
+    fprintf(stderr, "test_strings() FAILED\n");
     rc++;
   }
-  fprintf(stderr, "Testing primitives unbounded arrays types...\n");
+  fprintf(stdout, "Testing primitives unbounded arrays types...\n");
   if (test_primitives_unbounded_arrays()) {
-    fprintf(stderr, "FAILED\n");
+    fprintf(stderr, "test_primitives_unbounded_arrays() FAILED\n");
     rc++;
   }
-  fprintf(stderr, "Testing primitives bounded arrays types...\n");
+  fprintf(stdout, "Testing primitives bounded arrays types...\n");
   if (test_primitives_bounded_arrays()) {
-    fprintf(stderr, "FAILED\n");
+    fprintf(stderr, "test_primitives_bounded_arrays() FAILED\n");
     rc++;
   }
-  fprintf(stderr, "Testing primitives static arrays types...\n");
+  fprintf(stdout, "Testing primitives static arrays types...\n");
   if (test_primitives_static_arrays()) {
-    fprintf(stderr, "FAILED\n");
+    fprintf(stderr, "test_primitives_static_arrays() FAILED\n");
     rc++;
   }
-  fprintf(stderr, "Testing nested sub-messages...\n");
+  fprintf(stdout, "Testing nested sub-messages...\n");
   if (test_submessages()) {
-    fprintf(stderr, "FAILED\n");
+    fprintf(stderr, "test_submessages() FAILED\n");
     rc++;
   }
   if (rc != 0) {
     fprintf(stderr, "Some tests failed!\n");
   } else {
-    fprintf(stderr, "All tests were good!\n");
+    fprintf(stdout, "All tests were good!\n");
   }
   return rc != 0;
 }

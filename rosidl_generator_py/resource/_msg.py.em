@@ -202,7 +202,7 @@ class @(spec.base_type.type)(metaclass=Metaclass):
              len(value) == 1)
 @[  elif field.type.type == 'char']@
             ((isinstance(value, str) or isinstance(value, UserString)) and
-             len(value) == 1)
+             len(value) == 1 and ord(value) >= -128 and ord(value) < 128)
 @[  elif field.type.type in [
         'bool',
         'float32', 'float64',
@@ -212,6 +212,19 @@ class @(spec.base_type.type)(metaclass=Metaclass):
         'int64', 'uint64',
         'string',
     ]]@
+@[    if field.type.type.startswith('int')]@
+@{
+nbytes = int(field.type.type[field.type.type.rfind('t') + 1:])
+bound = 2**(nbytes - 1)
+}@
+            (value >= -@(bound) and value < @(bound)) and \
+@[    elif field.type.type.startswith('uint')]@
+@{
+nbytes = int(field.type.type[field.type.type.rfind('t') + 1:])
+bound = 2**nbytes
+}@
+            (value >= 0 and value < @(bound)) and \
+@[    end if]@
             isinstance(value, @(get_python_type(field.type)))
 @[  else]@
             False

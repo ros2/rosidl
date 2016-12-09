@@ -199,3 +199,34 @@ def test_check_constraints():
     assert ['foo', 'bar', 'baz'] == c.up_to_three_string_values
     assert_raises(
         AssertionError, setattr, c, 'up_to_three_string_values', ['foo', 'bar', 'baz', 'hello'])
+
+
+def test_out_of_range():
+    a = Primitives()
+    assert_raises(
+        AssertionError, setattr, a, 'char_value', '\x80')
+    for i in [8, 16, 32, 64]:
+        assert_raises(
+            AssertionError, setattr, a, 'int%d_value' % i, 2**(i - 1))
+        assert_raises(
+            AssertionError, setattr, a, 'int%d_value' % i, -2**(i - 1) - 1)
+        assert_raises(
+            AssertionError, setattr, a, 'uint%d_value' % i, -1)
+        assert_raises(
+            AssertionError, setattr, a, 'int%d_value' % i, 2**i)
+
+    b = Various()
+    assert_raises(
+        AssertionError, setattr, b, 'two_uint16_value', [2**16])
+    assert_raises(
+        AssertionError, setattr, b, 'two_uint16_value', [-1])
+
+    assert_raises(
+        AssertionError, setattr, b, 'up_to_three_int32_values', [2**31])
+    assert_raises(
+        AssertionError, setattr, b, 'up_to_three_int32_values', [-2**31 - 1])
+
+    assert_raises(
+        AssertionError, setattr, b, 'unbounded_uint64_values', [2**64])
+    assert_raises(
+        AssertionError, setattr, b, 'unbounded_uint64_values', [-1])

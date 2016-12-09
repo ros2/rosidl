@@ -205,7 +205,7 @@ bound = 2**nbits
 }@
              all([val >= 0 and val < @(bound) for val in value]))
 @[      elif field.type.type == 'char']@
-             all([ord(val) >= -128 and val < 128 for val in value]))
+             all([ord(val) >= -128 and ord(val) < 128 for val in value]))
 @[      else]@
              True)
 @[      end if]@

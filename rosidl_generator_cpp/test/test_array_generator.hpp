@@ -47,7 +47,7 @@ void test_vector_fill(C * container, size_t size, bool val1 = true,
 /**
  * Helper function to generate a test pattern for integer number types.
  * The template type parameter must be an integer number type.
- * Mininum and maximum values for the type and evenly distributed values in the middle.
+ * Mininum and maximum values for the type and distributed values in the middle.
  * @param C Container (vector, array, etc) to be filled
  * @param size How many elements to fill in. Must size<=container_size
  * @param min Minimum value in the range to fill.
@@ -75,7 +75,7 @@ void test_vector_fill(C * container, size_t size,
 
 /**
  * Helper function to generate a test pattern for float number types.
- * Mininum and maximum values for the type and evenly distributed values in the middle.
+ * Mininum and maximum values for the type and distributed values in the middle.
  * @param C Container (vector, array, etc) to be filled
  * @param size How many elements to fill in. Must size<=container_size
  * @param min Minimum value in the range to fill.
@@ -102,7 +102,7 @@ void test_vector_fill(C * container, size_t size,
 
 /**
  * Helper function to generate a test pattern for string types.
- * Mininum and maximum values for the type and evenly distributed values in the middle.
+ * Mininum and maximum values for the type and distributed values in the middle.
  * @param C Container (vector, array, etc) to be filled
  * @param size How many elements to fill in. Must size<=container_size
  * @param min Minimum value in the range to fill.

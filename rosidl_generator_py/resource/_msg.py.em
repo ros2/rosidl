@@ -191,7 +191,24 @@ class @(spec.base_type.type)(metaclass=Metaclass):
              len(value) == @(field.type.array_size) and
 @[      end if]@
 @[    end if]@
-             all([isinstance(v, @(get_python_type(field.type))) for v in value]))
+             all([isinstance(v, @(get_python_type(field.type))) for v in value]) and
+@[      if field.type.type.startswith('int')]@
+@{
+nbits = int(field.type.type[3:])
+bound = 2**(nbits - 1)
+}@
+             all([val >= -@(bound) and val < @(bound) for val in value]))
+@[      elif field.type.type.startswith('uint')]@
+@{
+nbits = int(field.type.type[4:])
+bound = 2**nbits
+}@
+             all([val >= 0 and val < @(bound) for val in value]))
+@[      elif field.type.type == 'char']@
+             all([ord(val) >= -128 and val < 128 for val in value]))
+@[      else]@
+             True)
+@[      end if]@
 @[  elif field.type.string_upper_bound]@
             ((isinstance(value, str) or isinstance(value, UserString)) and
              len(value) <= @(field.type.string_upper_bound))
@@ -212,20 +229,20 @@ class @(spec.base_type.type)(metaclass=Metaclass):
         'int64', 'uint64',
         'string',
     ]]@
+            isinstance(value, @(get_python_type(field.type)))
 @[    if field.type.type.startswith('int')]@
 @{
-nbytes = int(field.type.type[field.type.type.rfind('t') + 1:])
-bound = 2**(nbytes - 1)
+nbits = int(field.type.type[3:])
+bound = 2**(nbits - 1)
 }@
-            (value >= -@(bound) and value < @(bound)) and \
+        assert value >= -@(bound) and value < @(bound)
 @[    elif field.type.type.startswith('uint')]@
 @{
-nbytes = int(field.type.type[field.type.type.rfind('t') + 1:])
-bound = 2**nbytes
+nbits = int(field.type.type[4:])
+bound = 2**nbits
 }@
-            (value >= 0 and value < @(bound)) and \
+        assert value >= 0 and value < @(bound)
 @[    end if]@
-            isinstance(value, @(get_python_type(field.type)))
 @[  else]@
             False
 @[  end if]@

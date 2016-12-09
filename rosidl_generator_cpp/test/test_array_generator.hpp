@@ -64,10 +64,10 @@ void test_vector_fill(C * container, size_t size,
   typename C::value_type min, typename C::value_type max)
 {
   if (size > 0 && min != max) {
-    typename C::value_type step = (max - min) / size;
+    size_t step = (max - min) / size;
     (*container)[0] = min;
     for (size_t i = 1; i < size - 1; i++) {
-      (*container)[i] = min + i * step;
+      (*container)[i] = min + static_cast<C::value_type>(i * step);
     }
     (*container)[size - 1] = max;
   }
@@ -91,10 +91,10 @@ void test_vector_fill(C * container, size_t size,
   typename C::value_type min, typename C::value_type max)
 {
   if (size > 0 && min != max) {
-    typename C::value_type step = (max - min) / size;
+    C::value_type step = (max - min) / static_cast<C::value_type>(size);
     (*container)[0] = min;
     for (size_t i = 1; i < size - 1; i++) {
-      (*container)[i] = min + i * step;
+      (*container)[i] = min + static_cast<C::value_type>(i * step);
     }
     (*container)[size - 1] = max;
   }
@@ -121,14 +121,14 @@ void test_vector_fill(C * container, size_t size,
   int minlength, const int maxlength)
 {
   if (size > 0 && min != max && minlength != maxlength) {
-    int step = (max - min) / size;
-    int step_length = (maxlength - minlength) / size;
+    size_t step = (max - min) / size;
+    size_t step_length = (maxlength - minlength) / size;
     char * tmpstr = reinterpret_cast<char *>(malloc(maxlength));
     std::snprintf(tmpstr, minlength, "%*d", minlength, min);
     (*container)[0] = std::string(tmpstr);
     for (size_t i = 1; i < size - 1; i++) {
-      int value = min + i * step;
-      int length = minlength + i * step_length;
+      int value = min + static_cast<int>(i * step);
+      int length = minlength + static_cast<int>(i * step_length);
       std::snprintf(tmpstr, length, "%*d", length, value);
       (*container)[i] = std::string(tmpstr);
     }

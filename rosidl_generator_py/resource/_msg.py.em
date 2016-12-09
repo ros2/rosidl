@@ -191,7 +191,24 @@ class @(spec.base_type.type)(metaclass=Metaclass):
              len(value) == @(field.type.array_size) and
 @[      end if]@
 @[    end if]@
-             all([isinstance(v, @(get_python_type(field.type))) for v in value]))
+             all([isinstance(v, @(get_python_type(field.type))) for v in value]) and
+@[      if field.type.type.startswith('int')]@
+@{
+nbits = int(field.type.type[3:])
+bound = 2**(nbits - 1)
+}@
+             all([val >= -@(bound) and val < @(bound) for val in value]))
+@[      elif field.type.type.startswith('uint')]@
+@{
+nbits = int(field.type.type[4:])
+bound = 2**nbits
+}@
+             all([val >= 0 and val < @(bound) for val in value]))
+@[      elif field.type.type == 'char']@
+             all([ord(val) >= -128 and ord(val) < 128 for val in value]))
+@[      else]@
+             True)
+@[      end if]@
 @[  elif field.type.string_upper_bound]@
             ((isinstance(value, str) or isinstance(value, UserString)) and
              len(value) <= @(field.type.string_upper_bound))
@@ -202,7 +219,7 @@ class @(spec.base_type.type)(metaclass=Metaclass):
              len(value) == 1)
 @[  elif field.type.type == 'char']@
             ((isinstance(value, str) or isinstance(value, UserString)) and
-             len(value) == 1)
+             len(value) == 1 and ord(value) >= -128 and ord(value) < 128)
 @[  elif field.type.type in [
         'bool',
         'float32', 'float64',
@@ -213,6 +230,19 @@ class @(spec.base_type.type)(metaclass=Metaclass):
         'string',
     ]]@
             isinstance(value, @(get_python_type(field.type)))
+@[    if field.type.type.startswith('int')]@
+@{
+nbits = int(field.type.type[3:])
+bound = 2**(nbits - 1)
+}@
+        assert value >= -@(bound) and value < @(bound)
+@[    elif field.type.type.startswith('uint')]@
+@{
+nbits = int(field.type.type[4:])
+bound = 2**nbits
+}@
+        assert value >= 0 and value < @(bound)
+@[    end if]@
 @[  else]@
             False
 @[  end if]@

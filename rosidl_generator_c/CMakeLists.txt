@@ -83,12 +83,12 @@ if(BUILD_TESTING)
   add_dependencies(test_interfaces_c ${PROJECT_NAME})
   ament_add_test(
     test_compilation_c
-    COMMAND "${CMAKE_CURRENT_BINARY_DIR}/test_compilation_c"
+    COMMAND "$<TARGET_FILE:test_compilation_c>"
     GENERATE_RESULT_FOR_RETURN_CODE_ZERO
   )
   ament_add_test(
     test_interfaces_c
-    COMMAND "${CMAKE_CURRENT_BINARY_DIR}/test_interfaces_c"
+    COMMAND "$<TARGET_FILE:test_interfaces_c>"
     GENERATE_RESULT_FOR_RETURN_CODE_ZERO
   )
   # include the built files directly, instead of their install location

@@ -5,14 +5,17 @@
 #include <stdint.h>
 
 @{
-static_includes = {}
+static_includes = set([
+    '#include <rosidl_generator_c/message_type_support_struct.h>',
+    '#include <rosidl_generator_c/visibility_control.h>',
+])
 for spec, subfolder in message_specs:
   if subfolder == 'msg':
-    static_includes[subfolder] = '#include <rosidl_generator_c/message_type_support.h>'
+    static_includes.add('#include <rosidl_generator_c/message_type_support_struct.h>')
   elif subfolder == 'srv':
-    static_includes[subfolder] = '#include <rosidl_generator_c/service_type_support.h>'
+    static_includes.add('#include <rosidl_generator_c/service_type_support.h>')
 }@
-@[for value in sorted(static_includes.values())]@
+@[for value in sorted(static_includes)]@
 @(value)
 @[end for]@
 
@@ -64,6 +67,10 @@ type_name = convert_camel_case_to_lower_case_underscore(spec.base_type.type)
 function_names = ['convert_from_py', 'convert_to_py', 'type_support']
 }@
 
+ROSIDL_GENERATOR_C_IMPORT
+const rosidl_message_type_support_t *
+ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name));
+
 int8_t
 _register_msg_type__@(type_name)(PyObject * pymodule)
 {
@@ -75,7 +82,7 @@ _register_msg_type__@(type_name)(PyObject * pymodule)
 @[    if function_name != 'type_support']@
     (void *)&@(spec.base_type.pkg_name)_@(type_name)__@(function_name),
 @[    else]@
-    (void *)ROSIDL_GET_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name)),
+    (void *)ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name)),
 @[    end if]@
     NULL, NULL);
   if (!pyobject_@(function_name)) {
@@ -102,13 +109,17 @@ type_name = convert_camel_case_to_lower_case_underscore(spec.srv_name)
 function_name = 'type_support'
 }@
 
+ROSIDL_GENERATOR_C_IMPORT
+const rosidl_service_type_support_t *
+ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_c, @(spec.pkg_name), @(spec.srv_name))();
+
 int8_t
 _register_srv_type__@(type_name)(PyObject * pymodule)
 {
   int8_t err;
   PyObject * pyobject_@(function_name) = NULL;
   pyobject_@(function_name) = PyCapsule_New(
-    (void *)ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.pkg_name), srv, @(spec.srv_name))(),
+    (void *)ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_c, @(spec.pkg_name), @(spec.srv_name))(),
     NULL, NULL);
   if (!pyobject_@(function_name)) {
     // previously added objects will be removed when the module is destroyed

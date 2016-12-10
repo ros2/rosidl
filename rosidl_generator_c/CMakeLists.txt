@@ -8,6 +8,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
+find_package(rosidl_typesupport_interface REQUIRED)
 
 include_directories(include)
 add_library(${PROJECT_NAME} SHARED
@@ -16,6 +17,8 @@ add_library(${PROJECT_NAME} SHARED
   "src/service_type_support.c"
   "src/string_functions.c"
 )
+ament_target_dependencies(${PROJECT_NAME}
+  "rosidl_typesupport_interface")
 if(NOT WIN32)
   set_target_properties(${PROJECT_NAME} PROPERTIES
     COMPILE_FLAGS "-Wall -Wextra")
@@ -26,6 +29,7 @@ if(WIN32)
 endif()
 
 ament_export_dependencies(rosidl_cmake)
+ament_export_dependencies(rosidl_typesupport_interface)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 

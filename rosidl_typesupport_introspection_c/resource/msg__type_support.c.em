@@ -21,7 +21,7 @@ function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.base_type
 #include <stddef.h>
 
 #include <@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__introspection_type_support.h>
-#include "@(spec.base_type.pkg_name)/msg/rosidl_generator_c__visibility_control.h"
+#include "@(spec.base_type.pkg_name)/msg/rosidl_typesupport_introspection_c__visibility_control.h"
 
 #include "rosidl_typesupport_introspection_c/field_types.h"
 #include "rosidl_typesupport_introspection_c/identifier.h"
@@ -200,12 +200,13 @@ static rosidl_message_type_support_t @(function_prefix)__@(spec.base_type.type)_
   get_message_typesupport_handle_function,
 };
 
-ROSIDL_GENERATOR_C_EXPORT_@(spec.base_type.pkg_name)
+ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(spec.base_type.pkg_name)
 const rosidl_message_type_support_t *
-ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name))() {
+ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name))() {
 @[for i, field in enumerate(spec.fields)]@
 @[    if not field.type.is_primitive_type()]@
-  @(function_prefix)__@(spec.base_type.type)_message_member_array[@(i)].members_ = ROSIDL_GET_TYPE_SUPPORT(@(field.type.pkg_name), msg, @(field.type.type));
+  @(function_prefix)__@(spec.base_type.type)_message_member_array[@(i)].members_ =
+    ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(field.type.pkg_name), msg, @(field.type.type))();
 @[    end if]@
 @[end for]@
   if (!@(function_prefix)__@(spec.base_type.type)_message_type_support_handle.typesupport_identifier) {

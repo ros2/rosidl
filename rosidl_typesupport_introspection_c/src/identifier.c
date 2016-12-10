@@ -14,4 +14,4 @@
 
 #include "rosidl_typesupport_introspection_c/identifier.h"
 
-const char * rosidl_typesupport_introspection_c__identifier = "introspection_c";
+const char * rosidl_typesupport_introspection_c__identifier = "rosidl_typesupport_introspection_c";

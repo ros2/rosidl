@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import ament_index_python
 import importlib
+
+import ament_index_python
 
 
 class UnsupportedTypeSupport(Exception):
@@ -42,12 +43,15 @@ def import_type_support(pkg_name, rmw_implementation):
     if not ament_index_python.has_resource('rmw_typesupport_c', rmw_implementation):
         raise UnsupportedTypeSupport(rmw_implementation)
 
-    type_support_name, _ = ament_index_python.get_resource('rmw_typesupport_c', rmw_implementation)
-    import_package = '{pkg_name}'.format(
-        pkg_name=pkg_name,
-    )
-    module_name = '.{pkg_name}_s__{type_support_name}'.format(
-        pkg_name=pkg_name,
-        type_support_name=type_support_name,
-    )
-    return importlib.import_module(module_name, package=import_package)
+    type_support_names, _ = ament_index_python.get_resource(
+        'rmw_typesupport_c', rmw_implementation)
+    for type_support_name in type_support_names.split(';'):
+        module_name = '.{pkg_name}_s__{type_support_name}'.format(
+            pkg_name=pkg_name,
+            type_support_name=type_support_name,
+        )
+        try:
+            return importlib.import_module(module_name, package=pkg_name)
+        except ImportError:
+            pass
+    raise UnsupportedTypeSupport(rmw_implementation)

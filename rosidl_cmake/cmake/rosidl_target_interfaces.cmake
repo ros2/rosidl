@@ -34,16 +34,17 @@ function(rosidl_target_interfaces target interface_target typesupport_name)
       "rosidl_target_interfaces() called with unused arguments: ${ARGN}")
   endif()
   if(NOT TARGET ${target})
-    message(FATAL_ERROR "rosidl_target_interfaces() the first argument must be a valid target name")
+    message(FATAL_ERROR "rosidl_target_interfaces() the first argument '${target}' must be a valid target name")
   endif()
   if(NOT TARGET ${interface_target})
-    message(FATAL_ERROR "rosidl_target_interfaces() the second argument must be a valid target name")
+    message(FATAL_ERROR "rosidl_target_interfaces() the second argument '${interface_target}' must be a valid target name")
   endif()
   set(typesupport_target "${interface_target}__${typesupport_name}")
   if(NOT TARGET ${typesupport_target})
     message(FATAL_ERROR
-      "rosidl_target_interfaces() the second argument concatenated with the "
-      "third argument using double underscores must be a valid target name")
+      "rosidl_target_interfaces() the second argument '${interface_target}' "
+      "concatenated with the third argument '${typesupport_name}' "
+      "using double underscores must be a valid target name")
   endif()
 
   add_dependencies(${target} ${interface_target})

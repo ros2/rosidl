@@ -29,10 +29,6 @@ cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
 }@
 #include <stdint.h>
 
-#include <array>
-#include <string>
-#include <vector>
-
 namespace rosidl_generator_traits
 {
 

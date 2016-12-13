@@ -1,7 +1,7 @@
 bool def_bool_1 true
 bool def_bool_2 false
-byte def_byte 66
-char def_char -66
+byte def_byte -66
+char def_char 66
 float32 def_float32 1.125
 float64 def_float64 1.125
 int8 def_int8 3

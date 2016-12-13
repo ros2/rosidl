@@ -113,28 +113,12 @@ class @(spec.base_type.type)(metaclass=Metaclass):
         from @(field.type.pkg_name).msg import @(field.type.type)
 @[      end if]@
 @[      if field.type.array_size and not field.type.is_upper_bound]@
-@[        if field.type.type == 'byte']@
-        self.@(field.name) = kwargs.get(
-            '@(field.name)',
-            list([bytes([0]) for x in range(@(field.type.array_size))])
-        )
-@[        elif field.type.type == 'char']@
-        self.@(field.name) = kwargs.get(
-            '@(field.name)',
-            list([chr(0) for x in range(@(field.type.array_size))])
-        )
-@[        else]@
         self.@(field.name) = kwargs.get(
             '@(field.name)',
             list([@(get_python_type(field.type))() for x in range(@(field.type.array_size))])
         )
-@[        end if]@
 @[      elif field.type.is_array]@
         self.@(field.name) = kwargs.get('@(field.name)', list())
-@[      elif field.type.type == 'byte']@
-        self.@(field.name) = kwargs.get('@(field.name)', bytes([0]))
-@[      elif field.type.type == 'char']@
-        self.@(field.name) = kwargs.get('@(field.name)', chr(0))
 @[      else]@
         self.@(field.name) = kwargs.get('@(field.name)', @(get_python_type(field.type))())
 @[      end if]@
@@ -167,10 +151,6 @@ class @(spec.base_type.type)(metaclass=Metaclass):
         from collections import UserString
 @[  elif field.type.string_upper_bound]@
         from collections import UserString
-@[  elif field.type.type == 'byte']@
-        from collections import ByteString
-@[  elif field.type.type in ['char']]@
-        from collections import UserString
 @[  end if]@
         assert \
 @[  if field.type.is_array]@
@@ -202,8 +182,6 @@ nbits = int(field.type.type[4:])
 bound = 2**nbits
 }@
              all([val >= 0 and val < @(bound) for val in value]))
-@[      elif field.type.type == 'char']@
-             all([ord(val) >= -128 and ord(val) < 128 for val in value]))
 @[      else]@
              True)
 @[      end if]@
@@ -212,12 +190,6 @@ bound = 2**nbits
              len(value) <= @(field.type.string_upper_bound))
 @[  elif not field.type.is_primitive_type()]@
             isinstance(value, @(field.type.type))
-@[  elif field.type.type == 'byte']@
-            ((isinstance(value, bytes) or isinstance(value, ByteString)) and
-             len(value) == 1)
-@[  elif field.type.type == 'char']@
-            ((isinstance(value, str) or isinstance(value, UserString)) and
-             len(value) == 1 and ord(value) >= -128 and ord(value) < 128)
 @[  elif field.type.type in [
         'bool',
         'float32', 'float64',

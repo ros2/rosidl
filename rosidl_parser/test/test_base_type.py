@@ -21,8 +21,6 @@ from rosidl_parser import InvalidResourceName
 def test_base_type_constructor():
     primitive_types = [
         'bool',
-        'byte',
-        'char',
         'float32',
         'float64',
         'int8',
@@ -34,10 +32,21 @@ def test_base_type_constructor():
         'int64',
         'uint64',
         'string']
+
+    deprecated_types = {
+        'byte': 'int8',
+        'char': 'uint8'
+    }
+
     for primitive_type in primitive_types:
         base_type = BaseType(primitive_type)
         assert base_type.pkg_name is None
         assert base_type.type == primitive_type
+        assert base_type.string_upper_bound is None
+    for deprecated_type in deprecated_types.keys():
+        base_type = BaseType(deprecated_type)
+        assert base_type.pkg_name is None
+        assert base_type.type == deprecated_types[deprecated_type]
         assert base_type.string_upper_bound is None
 
     base_type = BaseType('string<=23')

@@ -37,7 +37,7 @@ def test_constant_methods():
     assert Constant('bool', 'FOO', '1') == Constant('bool', 'FOO', '1')
     assert Constant('bool', 'FOO', '1') != Constant('bool', 'FOO', '0')
     assert Constant('bool', 'FOO', '1') != Constant('bool', 'BAR', '1')
-    assert Constant('bool', 'FOO', '1') != Constant('byte', 'FOO', '1')
+    assert Constant('bool', 'FOO', '1') != Constant('int8', 'FOO', '1')
 
     assert str(Constant('bool', 'FOO', '1')) == 'bool FOO=True'
 

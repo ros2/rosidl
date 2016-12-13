@@ -27,8 +27,6 @@ SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
 
 PRIMITIVE_TYPES = [
     'bool',
-    'byte',
-    'char',
     # TODO reconsider wchar
     'float32',
     'float64',
@@ -46,6 +44,11 @@ PRIMITIVE_TYPES = [
     'duration',  # for compatibility only
     'time',  # for compatibility only
 ]
+
+DEPRECATED_TYPES = {
+    'byte': 'int8',
+    'char': 'uint8'
+}
 
 VALID_PACKAGE_NAME_PATTERN = re.compile('^[a-z]([a-z0-9_]?[a-z0-9]+)*$')
 VALID_FIELD_NAME_PATTERN = re.compile('^[a-z]([a-z0-9_]?[a-z0-9]+)*$')
@@ -132,7 +135,16 @@ class BaseType(object):
 
     def __init__(self, type_string, context_package_name=None):
         # check for primitive types
-        if type_string in PRIMITIVE_TYPES:
+        if type_string in DEPRECATED_TYPES.keys():
+            print("'%s' is DEPRECATED, it will be remapped to '%s'\n" %
+                  (type_string, DEPRECATED_TYPES[type_string]))
+            print("please use the equivalent primitive type '%s'\n" % (
+                DEPRECATED_TYPES[type_string]))
+            self.pkg_name = None
+            self.type = DEPRECATED_TYPES[type_string]
+            self.string_upper_bound = None
+
+        elif type_string in PRIMITIVE_TYPES:
             self.pkg_name = None
             self.type = type_string
             self.string_upper_bound = None
@@ -277,16 +289,21 @@ class Constant(object):
     __slots__ = ['type', 'name', 'value']
 
     def __init__(self, primitive_type, name, value_string):
-        if primitive_type not in PRIMITIVE_TYPES:
+        if primitive_type not in PRIMITIVE_TYPES and primitive_type not in DEPRECATED_TYPES.keys():
             raise TypeError("the constant type '%s' must be a primitive type" %
                             primitive_type)
-        self.type = primitive_type
         if not is_valid_constant_name(name):
             raise NameError("the constant name '%s' is not valid" % name)
         self.name = name
         if value_string is None:
             raise ValueError("the constant value must not be 'None'")
-
+        if primitive_type in DEPRECATED_TYPES.keys():
+            print("'%s' is DEPRECATED, it will be remapped to '%s'\n" %
+                  (primitive_type, DEPRECATED_TYPES[primitive_type]))
+            print("please use the equivalent primitive type '%s'\n" % (
+                DEPRECATED_TYPES[primitive_type]))
+            primitive_type = DEPRECATED_TYPES[primitive_type]
+        self.type = primitive_type
         self.value = parse_primitive_value_string(
             Type(primitive_type), value_string)
 

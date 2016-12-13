@@ -58,7 +58,7 @@ def test_field_methods():
     assert (Field(Type('bool'), 'foo', '1') !=
             Field(Type('bool'), 'bar', '1'))
     assert (Field(Type('bool'), 'foo', '1') !=
-            Field(Type('byte'), 'foo', '1'))
+            Field(Type('int8'), 'foo', '1'))
 
     assert str(Field(Type('bool'), 'foo', '1')) == 'bool foo True'
 

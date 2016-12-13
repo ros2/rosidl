@@ -136,7 +136,7 @@ class BaseType(object):
     def __init__(self, type_string, context_package_name=None):
         # check for primitive types
         if type_string in DEPRECATED_TYPES.keys():
-            print("'%s' is DEPRECATED, it will be remapped to '%s'\n" %
+            print("WARNING: '%s' is DEPRECATED, it will be remapped to '%s'" %
                   (type_string, DEPRECATED_TYPES[type_string]))
             print("please use the equivalent primitive type '%s'\n" % (
                 DEPRECATED_TYPES[type_string]))
@@ -298,7 +298,7 @@ class Constant(object):
         if value_string is None:
             raise ValueError("the constant value must not be 'None'")
         if primitive_type in DEPRECATED_TYPES.keys():
-            print("'%s' is DEPRECATED, it will be remapped to '%s'\n" %
+            print("WARNING '%s' is DEPRECATED, it will be remapped to '%s'" %
                   (primitive_type, DEPRECATED_TYPES[primitive_type]))
             print("please use the equivalent primitive type '%s'\n" % (
                 DEPRECATED_TYPES[primitive_type]))

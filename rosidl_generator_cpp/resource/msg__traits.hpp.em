@@ -28,6 +28,7 @@ from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
 }@
 #include <stdint.h>
+#include <type_traits>
 
 namespace rosidl_generator_traits
 {

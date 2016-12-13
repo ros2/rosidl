@@ -96,8 +96,8 @@ def test_constants():
     assert 123 == Constants.X
     assert -123 == Constants.Y
     assert 'foo' == Constants.FOO
-    assert '\x7F' == Constants.TOTO
-    assert b'0' == Constants.TATA
+    assert ord('\x7F') == Constants.TOTO
+    assert ord('0') == Constants.TATA
 
     assert_raises(AttributeError, setattr, Constants, 'FOO', 'bar')
 
@@ -120,9 +120,9 @@ def test_default_values():
 
     assert [5, 23] == b.UP_TO_THREE_INT32_VALUES_WITH_DEFAULT_VALUES__DEFAULT
 
-    assert '\x01' == b.CHAR_VALUE__DEFAULT
+    assert 1 == b.CHAR_VALUE__DEFAULT
     assert '1' != b.CHAR_VALUE__DEFAULT
-    assert b'\x01' == b.BYTE_VALUE__DEFAULT
+    assert 1 == b.BYTE_VALUE__DEFAULT
     assert b'1' != b.BYTE_VALUE__DEFAULT
 
 
@@ -169,19 +169,6 @@ def test_check_constraints():
     assert [primitives, primitives] == b.unbounded_primitives
 
     c = Various()
-    c.byte_value = b'a'
-    assert b'a' == c.byte_value
-    assert 'a' != c.byte_value
-    assert_raises(AssertionError, setattr, c, 'byte_value', 'a')
-    assert_raises(AssertionError, setattr, c, 'byte_value', b'abc')
-    assert_raises(AssertionError, setattr, c, 'byte_value', 'abc')
-
-    c.char_value = 'a'
-    assert 'a' == c.char_value
-    assert b'a' != c.char_value
-    assert_raises(AssertionError, setattr, c, 'char_value', b'a')
-    assert_raises(AssertionError, setattr, c, 'char_value', 'abc')
-    assert_raises(AssertionError, setattr, c, 'char_value', b'abc')
 
     c.up_to_three_int32_values = []
     assert [] == c.up_to_three_int32_values

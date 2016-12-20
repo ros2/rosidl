@@ -63,7 +63,7 @@ if(BUILD_TESTING)
 
     set(_append_library_dirs "")
     if(WIN32)
-      set(_append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>")
+      set(_append_library_dirs "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>")
     endif()
 
     ament_add_nose_test(test_interfaces_py "test/test_interfaces.py"

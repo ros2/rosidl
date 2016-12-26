@@ -276,7 +276,7 @@ public:
   void
   assign(_InputIterator __first, _InputIterator __last)
   {
-    if (size() + std::distance(__first, __last) > _UpperBound) {
+    if (std::distance(__first, __last) > _UpperBound) {
       throw std::length_error("Exceeded upper bound");
     }
     _Base::assign(__first, __last);

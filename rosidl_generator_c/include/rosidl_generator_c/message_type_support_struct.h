@@ -16,6 +16,7 @@
 #define ROSIDL_GENERATOR_C__MESSAGE_TYPE_SUPPORT_STRUCT_H_
 
 #include "rosidl_generator_c/visibility_control.h"
+#include "rosidl_typesupport_interface/macros.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -27,7 +28,7 @@ typedef struct rosidl_message_type_support_t rosidl_message_type_support_t;
 typedef const rosidl_message_type_support_t * (* rosidl_message_typesupport_handle_function)(
   const rosidl_message_type_support_t *, const char *);
 
-typedef struct ROSIDL_PUBLIC_TYPE rosidl_message_type_support_t
+typedef struct rosidl_message_type_support_t
 {
   const char * typesupport_identifier;
   const void * data;
@@ -41,6 +42,10 @@ const rosidl_message_type_support_t * get_message_typesupport_handle(
 ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_message_type_support_t * get_message_typesupport_handle_function(
   const rosidl_message_type_support_t * handle, const char * identifier);
+
+#define ROSIDL_GET_MSG_TYPE_SUPPORT(PkgName, MsgSubfolder, MsgName) \
+  ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME( \
+    rosidl_typesupport_c, PkgName, MsgSubfolder, MsgName)()
 
 #ifdef __cplusplus
 }

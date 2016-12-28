@@ -23,12 +23,14 @@ pkg = spec.pkg_name
 #include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__request.h"
 #include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__response.h"
 
-// This header is provided by the rmw implementation specific type support
-// package, and defines macros which expand to get type support functions.
-#include "rosidl_generator_c/message_type_support.h"
+#include "rosidl_generator_c/message_type_support_struct.h"
 
 // This header provides a definition for the rosidl_service_type_support_t struct.
 #include "rosidl_generator_c/service_type_support.h"
+
+#include "rosidl_typesupport_interface/macros.h"
+
+#include "@(spec.pkg_name)/msg/rosidl_generator_c__visibility_control.h"
 
 #if defined(__cplusplus)
 extern "C"
@@ -38,7 +40,7 @@ extern "C"
 // Forward declare the get type support functions for this type.
 ROSIDL_GENERATOR_C_PUBLIC_@(spec.pkg_name)
 const rosidl_service_type_support_t *
-  ROSIDL_GET_TYPE_SUPPORT_FUNCTION(@(spec.pkg_name), srv, @(spec.srv_name))();
+  ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_c, @(spec.pkg_name), @(spec.srv_name))();
 
 #if defined(__cplusplus)
 }

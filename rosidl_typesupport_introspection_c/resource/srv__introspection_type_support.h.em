@@ -22,8 +22,13 @@ function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.pkg_name,
 #define @(header_guard_variable)
 
 #include <rosidl_generator_c/service_type_support.h>
+#include <rosidl_typesupport_interface/macros.h>
 
-#include "@(spec.pkg_name)/msg/rosidl_generator_c__visibility_control.h"
+#include "@(spec.pkg_name)/msg/rosidl_typesupport_introspection_c__visibility_control.h"
+
+ROSIDL_TYPESUPPORT_INTROSPECTION_C_PUBLIC_@(spec.pkg_name)
+const rosidl_service_type_support_t *
+  ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(spec.srv_name))();
 
 static rosidl_service_type_support_t @(function_prefix)__@(spec.srv_name)_service_type_support_handle;
 

@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-find_package(rosidl_generator_c REQUIRED)
 find_package(rmw_implementation_cmake REQUIRED)
 find_package(rmw REQUIRED)
+find_package(rosidl_generator_c REQUIRED)
+find_package(rosidl_typesupport_c REQUIRED)
+find_package(rosidl_typesupport_interface REQUIRED)
 
 find_package(PythonInterp 3.5 REQUIRED)
 
@@ -206,7 +208,7 @@ foreach(_typesupport_impl ${_typesupport_impls})
   add_dependencies(
     ${_target_name}
     ${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
+    ${rosidl_generate_interfaces_TARGET}__rosidl_typesupport_c
   )
 
   set(_extension_compile_flags "")
@@ -228,6 +230,8 @@ foreach(_typesupport_impl ${_typesupport_impls})
     ${PythonExtra_LIBRARIES}
     ${PROJECT_NAME}__${_typesupport_impl}
   )
+  rosidl_target_interfaces(${_target_name}
+    ${PROJECT_NAME} rosidl_typesupport_c)
 
   target_include_directories(${_target_name}
     PUBLIC
@@ -238,7 +242,8 @@ foreach(_typesupport_impl ${_typesupport_impls})
 
   ament_target_dependencies(${_target_name}
     "rosidl_generator_c"
-    "${_typesupport_impl}"
+    "rosidl_typesupport_c"
+    "rosidl_typesupport_interface"
   )
   foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
     ament_target_dependencies(${_target_name}

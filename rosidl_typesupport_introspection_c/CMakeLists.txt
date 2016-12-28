@@ -14,7 +14,8 @@ ament_export_dependencies(rosidl_generator_c)
 # The reason the impl folder is exported is that it contains the implementation
 # for the get_*_type_support_handle functions and defines the opensplice
 # specific version of these functions.
-ament_export_include_directories(include include/${PROJECT_NAME}/impl)
+
+ament_export_include_directories(include)
 
 ament_python_install_package(${PROJECT_NAME})
 
@@ -28,6 +29,8 @@ target_include_directories(${PROJECT_NAME}
   include
 )
 ament_export_libraries(${PROJECT_NAME})
+
+ament_index_register_resource("rosidl_typesupport_c")
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

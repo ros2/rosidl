@@ -20,7 +20,7 @@ function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.base_type
 // providing offsetof()
 #include <stddef.h>
 
-#include <@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__introspection_type_support.h>
+#include <@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__rosidl_typesupport_introspection_c.h>
 #include "@(spec.base_type.pkg_name)/msg/rosidl_typesupport_introspection_c__visibility_control.h"
 
 #include "rosidl_typesupport_introspection_c/field_types.h"
@@ -49,7 +49,7 @@ for field in spec.fields:
             [])
         field_names.append(field.name)
         field_names = includes.setdefault(
-            '%s/msg/%s__introspection_type_support.h' %
+            '%s/msg/%s__rosidl_typesupport_introspection_c.h' %
             (field.type.pkg_name, get_header_filename_from_msg_name(field.type.type)),
             [])
         field_names.append(field.name)

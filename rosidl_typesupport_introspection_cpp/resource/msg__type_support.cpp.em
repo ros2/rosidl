@@ -13,9 +13,6 @@
 @#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @
-#ifndef __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__type_support__h__
-#define __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__type_support__h__
-
 // providing offsetof()
 #include <cstddef>
 #include <vector>
@@ -192,5 +189,3 @@ ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspecti
 #ifdef __cplusplus
 }
 #endif
-
-#endif  // __@(spec.base_type.pkg_name)__@(subfolder)__@(get_header_filename_from_msg_name(spec.base_type.type))__type_support__h__

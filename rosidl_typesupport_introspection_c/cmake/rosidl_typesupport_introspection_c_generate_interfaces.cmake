@@ -28,12 +28,12 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   if(_extension STREQUAL ".msg")
     if(_parent_folder STREQUAL "msg")
       list(APPEND _generated_msg_header_files
-        "${_output_path}/${_parent_folder}/${_header_name}__introspection_type_support.h")
+        "${_output_path}/${_parent_folder}/${_header_name}__rosidl_typesupport_introspection_c.h")
       list(APPEND _generated_msg_source_files
         "${_output_path}/${_parent_folder}/${_header_name}__type_support.c")
     elseif(_parent_folder STREQUAL "srv")
       list(APPEND _generated_srv_header_files
-        "${_output_path}/${_parent_folder}/${_header_name}__introspection_type_support.h")
+        "${_output_path}/${_parent_folder}/${_header_name}__rosidl_typesupport_introspection_c.h")
       list(APPEND _generated_srv_source_files
         "${_output_path}/${_parent_folder}/${_header_name}__type_support.c")
     else()
@@ -41,7 +41,7 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
     endif()
   elseif(_extension STREQUAL ".srv")
     list(APPEND _generated_srv_header_files
-      "${_output_path}/${_parent_folder}/${_header_name}__introspection_type_support.h"
+      "${_output_path}/${_parent_folder}/${_header_name}__rosidl_typesupport_introspection_c.h"
     )
     list(APPEND _generated_srv_source_files
       "${_output_path}/${_parent_folder}/${_header_name}__type_support.c"
@@ -68,9 +68,9 @@ endforeach()
 set(target_dependencies
   "${rosidl_typesupport_introspection_c_BIN}"
   ${rosidl_typesupport_introspection_c_GENERATOR_FILES}
-  "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/msg__introspection_type_support.h.em"
+  "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/msg__rosidl_typesupport_introspection_c.h.em"
   "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/msg__type_support.c.em"
-  "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/srv__introspection_type_support.h.em"
+  "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/srv__rosidl_typesupport_introspection_c.h.em"
   "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/srv__type_support.c.em"
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files})

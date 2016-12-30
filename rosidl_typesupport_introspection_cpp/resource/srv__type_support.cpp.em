@@ -10,9 +10,6 @@
 @#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @
-#ifndef __@(spec.pkg_name)__@(get_header_filename_from_msg_name(spec.srv_name))__type_support__h__
-#define __@(spec.pkg_name)__@(get_header_filename_from_msg_name(spec.srv_name))__type_support__h__
-
 #include <rosidl_generator_c/service_type_support.h>
 #include <rosidl_typesupport_cpp/message_type_support.hpp>
 #include <rosidl_typesupport_cpp/service_type_support.hpp>
@@ -119,5 +116,3 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspecti
 #ifdef __cplusplus
 }
 #endif
-
-#endif  // __@(spec.pkg_name)__@(get_header_filename_from_msg_name(spec.srv_name))__type_support__h__

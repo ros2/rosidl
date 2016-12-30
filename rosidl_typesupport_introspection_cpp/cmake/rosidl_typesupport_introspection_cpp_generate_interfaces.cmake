@@ -14,14 +14,27 @@
 
 set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_introspection_cpp/${PROJECT_NAME}")
-set(_generated_files "")
+set(_generated_msg_header_files "")
+set(_generated_msg_source_files "")
+set(_generated_srv_header_files "")
+set(_generated_srv_source_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
-  if(_parent_folder STREQUAL "msg" OR _parent_folder STREQUAL "srv")
-    get_filename_component(_msg_name "${_idl_file}" NAME_WE)
-    string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
-    list(APPEND _generated_files
+  get_filename_component(_msg_name "${_idl_file}" NAME_WE)
+  string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
+  if(_parent_folder STREQUAL "msg")
+    list(APPEND _generated_msg_header_files
+      "${_output_path}/${_parent_folder}/${_header_name}__rosidl_typesupport_introspection_cpp.hpp"
+    )
+    list(APPEND _generated_msg_source_files
+      "${_output_path}/${_parent_folder}/${_header_name}__type_support.cpp"
+    )
+  elseif(_parent_folder STREQUAL "srv")
+    list(APPEND _generated_srv_header_files
+      "${_output_path}/${_parent_folder}/${_header_name}__rosidl_typesupport_introspection_cpp.hpp"
+    )
+    list(APPEND _generated_srv_source_files
       "${_output_path}/${_parent_folder}/${_header_name}__type_support.cpp"
     )
   else()
@@ -46,7 +59,9 @@ endforeach()
 set(target_dependencies
   "${rosidl_typesupport_introspection_cpp_BIN}"
   ${rosidl_typesupport_introspection_cpp_GENERATOR_FILES}
+  "${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/msg__rosidl_typesupport_introspection_cpp.hpp.em"
   "${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/msg__type_support.cpp.em"
+  "${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/srv__rosidl_typesupport_introspection_cpp.hpp.em"
   "${rosidl_typesupport_introspection_cpp_TEMPLATE_DIR}/srv__type_support.cpp.em"
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files})
@@ -68,7 +83,8 @@ rosidl_write_generator_arguments(
 )
 
 add_custom_command(
-  OUTPUT ${_generated_files}
+  OUTPUT ${_generated_msg_header_files} ${_generated_msg_source_files}
+    ${_generated_srv_header_files} ${_generated_srv_source_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_typesupport_introspection_cpp_BIN}
   --generator-arguments-file "${generator_arguments_file}"
   DEPENDS ${target_dependencies}
@@ -78,7 +94,9 @@ add_custom_command(
 
 set(_target_suffix "__rosidl_typesupport_introspection_cpp")
 
-add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED ${_generated_files})
+add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED
+  ${_generated_msg_header_files} ${_generated_msg_source_files}
+  ${_generated_srv_header_files} ${_generated_srv_source_files})
 if(rosidl_generate_interfaces_LIBRARY_NAME)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PROPERTIES OUTPUT_NAME "${rosidl_generate_interfaces_LIBRARY_NAME}${_target_suffix}")
@@ -114,6 +132,18 @@ add_dependencies(
 )
 
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
+  if(NOT _generated_msg_header_files STREQUAL "")
+    install(
+      FILES ${_generated_msg_header_files}
+      DESTINATION "include/${PROJECT_NAME}/msg"
+    )
+  endif()
+  if(NOT _generated_srv_header_files STREQUAL "")
+    install(
+      FILES ${_generated_srv_header_files}
+      DESTINATION "include/${PROJECT_NAME}/srv"
+    )
+  endif()
   install(
     TARGETS ${rosidl_generate_interfaces_TARGET}${_target_suffix}
     ARCHIVE DESTINATION lib
@@ -124,7 +154,7 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
 endif()
 
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
-  if(NOT _generated_files STREQUAL "")
+  if(NOT _generated_msg_header_files STREQUAL "" OR NOT _generated_srv_header_files STREQUAL "")
     find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(
       TESTNAME "cppcheck_rosidl_typesupport_introspection_cpp"

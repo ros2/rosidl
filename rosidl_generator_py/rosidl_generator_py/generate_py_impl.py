@@ -121,7 +121,8 @@ def generate_py(generator_arguments_file, typesupport_impls):
             }
             data.update(functions)
             generated_file = os.path.join(
-                args['output_dir'], 'msg', generated_filename % args['package_name'])
+                args['output_dir'], generated_filename % args['package_name'])
+            print('***generated file: %s' % generated_file)
             expand_template(
                 template_file, data, generated_file,
                 minimum_timestamp=latest_target_timestamp)

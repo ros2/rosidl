@@ -70,6 +70,7 @@ if(BUILD_TESTING)
     "msg/StaticArrayNested.msg"
     "msg/StaticArrayPrimitives.msg"
     "msg/Strings.msg"
+    "msg/StringArrays.msg"
     "msg/Telegram1.msg"
     "msg/Telegram2.msg"
     "msg/Uint16.msg"

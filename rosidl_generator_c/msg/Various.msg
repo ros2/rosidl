@@ -13,10 +13,6 @@ int32[<=3] up_to_three_int32_values
 int32[<=3] up_to_three_int32_values_with_default_values [5, 23]
 uint64[] unbounded_uint64_values
 
-#string[2] two_string_value ['foo', 'bar']
-#string[<=3] up_to_three_string_values
-#uint64[] unbounded_string_values
-
 Empty empty
 Empty[2] two_empty
 Empty[] unbounded_empty

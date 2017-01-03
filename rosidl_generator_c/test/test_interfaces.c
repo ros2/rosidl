@@ -62,7 +62,7 @@
 #define TEST_STRING2 \
   "The quick brown fox jumps over the lazy dog."
 #define TEST_STRING3 \
-  "Six of the women quietly gave back prizes to the judge."
+  "SIX OF THE WOMEN QUIETLY GAVE BACK PRIZES TO THE JUDGE."
 #define ARRAY_SIZE 7
 
 #define EXPECT_EQ(arg1, arg2) if ((arg1) != (arg2)) return 1

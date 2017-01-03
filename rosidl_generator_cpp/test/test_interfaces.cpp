@@ -43,6 +43,7 @@
 #include "rosidl_generator_cpp/msg/string.hpp"
 #include "rosidl_generator_cpp/msg/string_bounded.hpp"
 #include "rosidl_generator_cpp/msg/string_array_static.hpp"
+#include "rosidl_generator_cpp/msg/string_arrays.hpp"
 
 #include "rosidl_generator_cpp/msg/unbounded_array_bounded.hpp"
 #include "rosidl_generator_cpp/msg/unbounded_array_static.hpp"
@@ -551,6 +552,27 @@ TEST(Test_messages, primitives_default) {
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int64_value, -40000000, INT64_MAX);
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint64_value, 50000000ull, UINT64_MAX);
   TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "bar", "Hello World!")
+}
+
+// String arrays with default values
+TEST(Test_messages, string_arrays_default) {
+  rosidl_generator_cpp::msg::StringArrays message;
+
+  ASSERT_STREQ("Hello", message.def_string_static_array_value[0].c_str());
+  ASSERT_STREQ("World", message.def_string_static_array_value[1].c_str());
+  ASSERT_STREQ("!", message.def_string_static_array_value[2].c_str());
+
+  ASSERT_EQ(3ul, message.def_string_bounded_array_value.size());
+  ASSERT_STREQ("Hello", message.def_string_bounded_array_value[0].c_str());
+  ASSERT_STREQ("World", message.def_string_bounded_array_value[1].c_str());
+  ASSERT_STREQ("!", message.def_string_bounded_array_value[2].c_str());
+
+  ASSERT_EQ(5ul, message.def_string_dynamic_array_value.size());
+  ASSERT_STREQ("What", message.def_string_dynamic_array_value[0].c_str());
+  ASSERT_STREQ("a", message.def_string_dynamic_array_value[1].c_str());
+  ASSERT_STREQ("wonderful", message.def_string_dynamic_array_value[2].c_str());
+  ASSERT_STREQ("world", message.def_string_dynamic_array_value[3].c_str());
+  ASSERT_STREQ("!", message.def_string_dynamic_array_value[4].c_str());
 }
 
 // TODO(mikaelarguedas) reenable this test when bounded strings enforce length

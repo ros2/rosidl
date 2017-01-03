@@ -40,6 +40,7 @@ if(BUILD_TESTING)
     "msg/String.msg"
     "msg/StringBounded.msg"
     "msg/StringArrayStatic.msg"
+    "msg/StringArrays.msg"
 
     "msg/UnboundedArrayBounded.msg"
     "msg/UnboundedArrayStatic.msg"

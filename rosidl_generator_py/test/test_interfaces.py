@@ -115,6 +115,10 @@ def test_default_values():
     assert "Hello'world!" == a.DEF_STRING_DELIMITER2__DEFAULT
     assert_raises(AttributeError, setattr, Strings, 'DEF_STRING__DEFAULT', 'bar')
 
+    assert ['What', 'a', 'wonderful', 'world', '!'] == a.DEF_STRING_DYNAMIC_ARRAY_VALUE__DEFAULT
+    assert ['Hello', 'World', '!'] == a.DEF_STRING_STATIC_ARRAY_VALUE__DEFAULT
+    assert ['Hello', 'World', '!'] == a.DEF_STRING_BOUNDED_ARRAY_VALUE__DEFAULT
+
     b = Various()
     assert [5, 23] == b.TWO_UINT16_VALUE__DEFAULT
 

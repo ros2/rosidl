@@ -123,7 +123,7 @@ if(rosidl_generate_interfaces_LIBRARY_NAME)
 endif()
 if(NOT WIN32)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix} PROPERTIES
-    COMPILE_FLAGS "-std=c11 -Wall -Wextra")
+    COMPILE_FLAGS "-std=c11 -Wall -Wextra -Wpedantic")
 endif()
 if(WIN32)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}

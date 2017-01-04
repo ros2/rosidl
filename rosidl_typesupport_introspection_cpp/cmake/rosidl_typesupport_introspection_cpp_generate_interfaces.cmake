@@ -107,7 +107,7 @@ if(WIN32)
 endif()
 if(NOT WIN32)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    PROPERTIES COMPILE_FLAGS "-std=c++14 -Wall -Wextra")
+    PROPERTIES COMPILE_FLAGS "-std=c++14 -Wall -Wextra -Wpedantic")
 endif()
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PUBLIC

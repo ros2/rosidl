@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from nose.tools import assert_raises
 import os
 import shutil
 import tempfile
+
+from nose.tools import assert_raises
 
 from rosidl_parser import parse_message_file
 

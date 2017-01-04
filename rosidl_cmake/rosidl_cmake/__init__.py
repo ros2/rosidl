@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import em
 from io import StringIO
 import json
 import os
 import re
 import sys
+
+import em
 
 from rosidl_parser import BaseType
 from rosidl_parser import PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR

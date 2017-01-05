@@ -13,7 +13,7 @@
 # limitations under the License.
 
 add_custom_command(
-  OUTPUT ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_py_files} ${_generated_srv_c_files}
+  OUTPUT ${_generated_extension_files} ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_py_files} ${_generated_srv_c_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_py_BIN}
   --generator-arguments-file "${generator_arguments_file}"
   --typesupport-impls "${_typesupport_impls}"
@@ -28,6 +28,7 @@ else()
   add_custom_target(
     ${rosidl_generate_interfaces_TARGET}${_target_suffix}
     DEPENDS
+    ${_generated_extension_files}
     ${_generated_msg_py_files}
     ${_generated_msg_c_files}
     ${_generated_srv_py_files}

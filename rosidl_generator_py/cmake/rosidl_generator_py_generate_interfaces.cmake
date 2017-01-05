@@ -33,14 +33,14 @@ endif()
 
 set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py/${PROJECT_NAME}")
+set(_generated_extension_files "")
 set(_generated_msg_py_files "")
 set(_generated_msg_c_files "")
-set(_generated_msg_c_common_files "")
 set(_generated_srv_py_files "")
 set(_generated_srv_c_files "")
 
 foreach(_typesupport_impl ${_typesupport_impls})
-  set(_generated_msg_c_ts_${_typesupport_impl}_files "")
+  set(_generated_extension_${_typesupport_impl}_files "")
 endforeach()
 
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
@@ -56,13 +56,6 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
     list(APPEND _generated_msg_c_files
       "${_output_path}/${_parent_folder}/_${_module_name}_s.c"
     )
-    list(APPEND _generated_msg_c_common_files
-      "${_output_path}/${_parent_folder}/_${_module_name}_s.c"
-    )
-    foreach(_typesupport_impl ${_typesupport_impls})
-      list_append_unique(_generated_msg_c_files "${_output_path}/${_parent_folder}/_${PROJECT_NAME}_s.ep.${_typesupport_impl}.c")
-      list_append_unique(_generated_msg_c_ts_${_typesupport_impl}_files "${_output_path}/${_parent_folder}/_${PROJECT_NAME}_s.ep.${_typesupport_impl}.c")
-    endforeach()
   elseif(_parent_folder STREQUAL "srv")
     if("_${_module_name}_s.c" MATCHES "(.*)__response(.*)" OR "_${_module_name}_s.c" MATCHES "(.*)__request(.*)")
       list(APPEND _generated_srv_c_files
@@ -96,6 +89,12 @@ if(NOT _generated_srv_py_files STREQUAL "")
   )
 endif()
 
+if(NOT _generated_msg_c_files STREQUAL "" OR NOT _generated_srv_c_files STREQUAL "")
+    foreach(_typesupport_impl ${_typesupport_impls})
+      list(APPEND _generated_extension_${_typesupport_impl}_files "${_output_path}/_${PROJECT_NAME}_s.ep.${_typesupport_impl}.c")
+      list(APPEND _generated_extension_files "${_generated_extension_${_typesupport_impl}_files}")
+    endforeach()
+endif()
 set(_dependency_files "")
 set(_dependencies "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
@@ -180,7 +179,7 @@ file(WRITE "${_subdir}/CMakeLists.txt" "${_custom_command}")
 add_subdirectory("${_subdir}" ${rosidl_generate_interfaces_TARGET}${_target_suffix})
 set_property(
   SOURCE
-  ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_py_files} ${_generated_srv_c_files}
+  ${_generated_extension_files} ${_generated_msg_py_files} ${_generated_msg_c_files} ${_generated_srv_py_files} ${_generated_srv_c_files}
   PROPERTY GENERATED 1)
 
 macro(set_properties _build_type)
@@ -200,8 +199,8 @@ foreach(_typesupport_impl ${_typesupport_impls})
   set(_target_name "${PROJECT_NAME}__${_typesupport_impl}${_pyext_suffix}")
 
   add_library(${_target_name} SHARED
-    ${_generated_msg_c_ts_${_typesupport_impl}_files}
-    ${_generated_msg_c_common_files}
+    ${_generated_extension_${_typesupport_impl}_files}
+    ${_generated_msg_c_files}
     ${_generated_srv_c_files}
   )
 
@@ -270,8 +269,8 @@ endforeach()
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
   if(
     NOT _generated_msg_py_files STREQUAL "" OR
+    NOT _generated_extension_files STREQUAL "" OR
     NOT _generated_msg_c_files STREQUAL "" OR
-    NOT _generated_msg_c_common_files STREQUAL "" OR
     NOT _generated_srv_py_files STREQUAL "" OR
     NOT _generated_srv_c_files STREQUAL ""
   )

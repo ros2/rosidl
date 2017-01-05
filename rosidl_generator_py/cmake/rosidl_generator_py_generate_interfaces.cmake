@@ -269,7 +269,7 @@ endforeach()
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
   if(
     NOT _generated_msg_py_files STREQUAL "" OR
-    NOT _generated_msg_extension_files STREQUAL "" OR
+    NOT _generated_extension_files STREQUAL "" OR
     NOT _generated_msg_c_files STREQUAL "" OR
     NOT _generated_srv_py_files STREQUAL "" OR
     NOT _generated_srv_c_files STREQUAL ""

@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# include CMake functions
-include(CMakeParseArguments)
-
 #
 # Generate a JSON / YAML file containing the rosidl generator arguments.
 #

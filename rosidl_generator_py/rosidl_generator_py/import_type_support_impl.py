@@ -14,44 +14,31 @@
 
 import importlib
 
-import ament_index_python
-
 
 class UnsupportedTypeSupport(Exception):
-    """Raised when no supported type support can be found for a given rmw implementation."""
+    """Raised when typesupport couldn't be imported."""
 
-    def __init__(self, rmw_implementation):
-        message = "No supported type support for '{0}'".format(rmw_implementation)
+    def __init__(self, pkg_name):
+        message = "Could not import 'rosidl_typesupport_c' for package '{0}'".format(pkg_name)
         super(UnsupportedTypeSupport, self).__init__(message)
-        self.rmw_implementation = rmw_implementation
+        self.pkg_name = pkg_name
 
 
-def import_type_support(pkg_name, rmw_implementation):
+def import_type_support(pkg_name):
     """
-    Import the appropriate type support module of a package for a given rmw implementation.
+    Import the rosidl_typesupport_c module of a package.
 
-    This function will determine the correct type support module to import based on the rmw
-    implementation given.
-    This module will provide the c type support of the given rmw implementation for the rosidl
-    files in the specified package, such that the ROS message structures in the package can be
-    converted to and from message structures used by the rmw implementation.
+    The module will provide the C typesupport for the rosidl files in the
+    specified package, such that the ROS message structures in the package can
+    be converted to and from message structures used by the rmw implementation.
 
     :param pkg_name str: name of the package
-    :param rmw_implementation str: name of the rmw implementation
-    :returns: the type support Python module for the specified package and rmw implementation pair
+    :returns: the typesupport Python module for the specified package
     """
-    if not ament_index_python.has_resource('rmw_typesupport_c', rmw_implementation):
-        raise UnsupportedTypeSupport(rmw_implementation)
-
-    type_support_names, _ = ament_index_python.get_resource(
-        'rmw_typesupport_c', rmw_implementation)
-    for type_support_name in type_support_names.split(';'):
-        module_name = '.{pkg_name}_s__{type_support_name}'.format(
-            pkg_name=pkg_name,
-            type_support_name=type_support_name,
-        )
-        try:
-            return importlib.import_module(module_name, package=pkg_name)
-        except ImportError:
-            pass
-    raise UnsupportedTypeSupport(rmw_implementation)
+    module_name = '.{pkg_name}_s__rosidl_typesupport_c'.format(
+        pkg_name=pkg_name,
+    )
+    try:
+        return importlib.import_module(module_name, package=pkg_name)
+    except ImportError:
+        raise UnsupportedTypeSupport(pkg_name)

@@ -13,11 +13,8 @@ class Metaclass(type):
     @@classmethod
     def __import_type_support__(cls):
         try:
-            import rclpy
             from rosidl_generator_py import import_type_support
-            rclpy_implementation = rclpy._rclpy.rclpy_get_rmw_implementation_identifier()
-            module = import_type_support(
-                '@(package_name)', rclpy_implementation)
+            module = import_type_support('@(package_name)')
         except ImportError:
             logger = logging.getLogger('rosidl_generator_py.@(spec.srv_name)')
             logger.debug(

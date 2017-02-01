@@ -288,9 +288,9 @@ if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
       ROOT "${_cpplint_root}"
       "${_output_path}")
 
-    find_package(ament_cmake_pep8 REQUIRED)
-    ament_pep8(
-      TESTNAME "pep8_rosidl_generated_py"
+    find_package(ament_cmake_flake8 REQUIRED)
+    ament_flake8(
+      TESTNAME "flake8_rosidl_generated_py"
       # the generated code might contain longer lines for templated types
       MAX_LINE_LENGTH 999
       "${_output_path}")
@@ -298,11 +298,6 @@ if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
     find_package(ament_cmake_pep257 REQUIRED)
     ament_pep257(
       TESTNAME "pep257_rosidl_generated_py"
-      "${_output_path}")
-
-    find_package(ament_cmake_pyflakes REQUIRED)
-    ament_pyflakes(
-      TESTNAME "pyflakes_rosidl_generated_py"
       "${_output_path}")
 
     find_package(ament_cmake_uncrustify REQUIRED)

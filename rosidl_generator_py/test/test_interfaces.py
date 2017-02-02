@@ -111,6 +111,10 @@ def test_default_values():
     assert 'Bye world' == a.def_string
     assert 'Hello world!' == Strings.DEF_STRING__DEFAULT
     assert 'Hello world!' == a.DEF_STRING__DEFAULT
+    assert 'Hello\"world!' == a.DEF_STRING_DELIMITER__DEFAULT
+    assert "Hello'world!" == a.DEF_STRING_DELIMITER2__DEFAULT
+    assert "Hello'world!" == a.DEF_STRING_DELIMITER3__DEFAULT
+    assert 'Hello\"world!' == a.DEF_STRING_DELIMITER4__DEFAULT
     assert_raises(AttributeError, setattr, Strings, 'DEF_STRING__DEFAULT', 'bar')
 
     b = Various()

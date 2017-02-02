@@ -2,8 +2,6 @@ string empty_string
 string def_string "Hello world!"
 string def_string_delimiter 'Hello"world!'
 string def_string_delimiter2 "Hello'world!"
-string def_string_delimiter3 'Hello'world!'
-string def_string_delimiter4 "Hello"world!"
 string<=22 ub_string
 string<=22 ub_def_string "Upper bounded string."
 string<=5[3] ub_string_static_array_value

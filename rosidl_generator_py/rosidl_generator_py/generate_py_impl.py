@@ -207,7 +207,7 @@ def constant_value_to_py(type_, value):
 
 def escape_string(s):
     s = s.replace('\\', '\\\\')
-    s = s.replace("'", "\\'")
+    s = s.replace('"', '\\"')
     return s
 
 

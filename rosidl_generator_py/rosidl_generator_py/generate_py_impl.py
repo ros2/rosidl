@@ -171,7 +171,7 @@ def primitive_value_to_py(type_, value):
         return '%s' % value
 
     if type_.type == 'string':
-        return '"%s"' % escape_string(value)
+        return "'%s'" % escape_string(value)
 
     assert False, "unknown primitive type '%s'" % type_.type
 
@@ -207,7 +207,6 @@ def constant_value_to_py(type_, value):
 
 def escape_string(s):
     s = s.replace('\\', '\\\\')
-    s = s.replace('"', '\\"')
     s = s.replace("'", "\\'")
     return s
 

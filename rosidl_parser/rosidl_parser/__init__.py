@@ -566,6 +566,27 @@ def parse_primitive_value_string(type_, value_string):
         for quote in ['"', "'"]:
             if value_string.startswith(quote) and value_string.endswith(quote):
                 value_string = value_string[1:-1]
+                tmp_value_string = value_string
+                clear_escaping = False
+                index = 0
+                while index > -1:
+                    index = tmp_value_string.find(quote)
+                    if index < 0:
+                        # no inner quote, proceed
+                        break
+                    elif tmp_value_string[index - 1] != '\\' or index == 0:
+                        # inner quote not escaped, raise an InvalidValue Exception
+                        raise InvalidValue(
+                            primitive_type,
+                            type_,
+                            'string is not properly escaped, the character `' +
+                            tmp_value_string[index] + '` should be escaped')
+                    else:
+                        clear_escaping = True
+                    tmp_value_string = tmp_value_string[index + 1:]
+                if clear_escaping:
+                    # clears escaping, each language will handle it differently
+                    value_string = value_string.replace('\\' + quote, quote)
                 break
 
         # check that value is in valid range

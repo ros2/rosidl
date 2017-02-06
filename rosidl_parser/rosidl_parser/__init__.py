@@ -568,8 +568,7 @@ def parse_primitive_value_string(type_, value_string):
                 value_string = value_string[1:-1]
                 tmp_value_string = value_string
                 clear_escaping = False
-                index = 0
-                while index != -1:
+                while True:
                     index = tmp_value_string.find(quote)
                     if index < 0:
                         # no inner quote, proceed

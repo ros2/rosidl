@@ -569,7 +569,7 @@ def parse_primitive_value_string(type_, value_string):
                 tmp_value_string = value_string
                 clear_escaping = False
                 index = 0
-                while index > -1:
+                while index != -1:
                     index = tmp_value_string.find(quote)
                     if index < 0:
                         # no inner quote, proceed
@@ -578,7 +578,7 @@ def parse_primitive_value_string(type_, value_string):
                         # inner quote not escaped, raise an InvalidValue Exception
                         raise InvalidValue(
                             primitive_type,
-                            type_,
+                            value_string,
                             'string is not properly escaped, the character `' +
                             tmp_value_string[index] + '` should be escaped')
                     else:

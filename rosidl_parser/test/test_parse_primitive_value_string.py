@@ -131,6 +131,46 @@ def test_parse_primitive_value_string_string():
         parse_primitive_value_string(
             Type('string<=3'), 'foobar')
 
+    with assert_raises(InvalidValue):
+        parse_primitive_value_string(
+            Type('string'), r"""'foo''""")
+
+    with assert_raises(InvalidValue):
+        parse_primitive_value_string(
+            Type('string'), r'''"foo"bar\"baz"''')
+
+    value = parse_primitive_value_string(
+        Type('string'), '"foo')
+    assert value == '"foo'
+
+    value = parse_primitive_value_string(
+        Type('string'), '"foo')
+    assert value == '"foo'
+
+    value = parse_primitive_value_string(
+        Type('string'), '\'foo')
+    assert value == "'foo"
+
+    value = parse_primitive_value_string(
+        Type('string'), "\"foo")
+    assert value == '"foo'
+
+    value = parse_primitive_value_string(
+        Type('string'), '\'fo\'o')
+    assert value == "'fo'o"
+
+    value = parse_primitive_value_string(
+        Type('string'), "\"fo\"o")
+    assert value == '"fo"o'
+
+    value = parse_primitive_value_string(
+        Type('string'), r'''"'foo'"''')
+    assert value == "'foo'"
+
+    value = parse_primitive_value_string(
+        Type('string'), r"""'"foo"'""")
+    assert value == '"foo"'
+
 
 def test_parse_primitive_value_string_unknown():
     class CustomType(Type):

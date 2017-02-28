@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 project(rosidl_generator_c C)
 
 if(NOT WIN32)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall -Wextra")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall -Wextra -Wpedantic")
 endif()
 
 find_package(ament_cmake REQUIRED)
@@ -21,7 +21,7 @@ ament_target_dependencies(${PROJECT_NAME}
   "rosidl_typesupport_interface")
 if(NOT WIN32)
   set_target_properties(${PROJECT_NAME} PROPERTIES
-    COMPILE_FLAGS "-Wall -Wextra")
+    COMPILE_FLAGS "-Wall -Wextra -Wpedantic")
 endif()
 if(WIN32)
   target_compile_definitions(${PROJECT_NAME}

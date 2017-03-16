@@ -132,7 +132,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 @[    elif field.type.type == 'string']@
     assert(PyUnicode_Check(item@(field.name)));
     rosidl_generator_c__String__assign(
-      &dest@(field.name)[idx@(field.name)], (char *)PyUnicode_1BYTE_DATA(item@(field.name)));
+      &dest@(field.name)[idx@(field.name)], (char *)PyBytes_AS_STRING(PyUnicode_AsEncodedString(item@(field.name), "utf-8", "strict")));
 @[    elif field.type.type == 'bool']@
     assert(PyBool_Check(item@(field.name)));
     tmp@(field.name) = (item@(field.name) == Py_True);
@@ -181,7 +181,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 @[  elif field.type.type == 'string']@
   assert(PyUnicode_Check(py@(field.name)));
   rosidl_generator_c__String__assign(
-    &ros_message->@(field.name), (char *)PyUnicode_1BYTE_DATA(py@(field.name)));
+    &ros_message->@(field.name), (char *)PyBytes_AS_STRING(PyUnicode_AsEncodedString(py@(field.name), "utf-8", "strict")));
 @[  elif field.type.type == 'bool']@
   assert(PyBool_Check(py@(field.name)));
   ros_message->@(field.name) = (Py_True == py@(field.name));
@@ -290,7 +290,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
     PyList_SetItem(py@(field.name), idx@(field.name),
       PyBytes_FromStringAndSize((const char *)&tmpmessagedata@(field.name)[idx@(field.name)], 1));
 @[    elif field.type.type == 'string']@
-    PyList_SetItem(py@(field.name), idx@(field.name), PyUnicode_FromString(tmpmessagedata@(field.name)[idx@(field.name)].data));
+    PyList_SetItem(py@(field.name), idx@(field.name), PyUnicode_Decode(tmpmessagedata@(field.name)[idx@(field.name)].data, strlen(tmpmessagedata@(field.name)[idx@(field.name)].data), "utf-8", "strict"));
 @[    elif field.type.type == 'bool']@
     PyList_SetItem(py@(field.name), idx@(field.name), tmpmessagedata@(field.name)[idx@(field.name)] ? Py_True : Py_False);
 @[    elif field.type.type in ['float32', 'float64']]@
@@ -319,7 +319,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 @[  elif field.type.type == 'byte']@
   py@(field.name) = PyBytes_FromStringAndSize((const char *)&ros_message->@(field.name), 1);
 @[  elif field.type.type == 'string']@
-  py@(field.name) = PyUnicode_FromString(ros_message->@(field.name).data);
+  py@(field.name) = PyUnicode_Decode(ros_message->@(field.name).data, strlen(ros_message->@(field.name).data), "utf-8", "strict");
 @[  elif field.type.type == 'bool']@
   py@(field.name) = ros_message->@(field.name) ? Py_True : Py_False;
 @[  elif field.type.type in ['float32', 'float64']]@

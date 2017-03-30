@@ -108,7 +108,8 @@ class @(spec.base_type.type)(metaclass=Metaclass):
         self.@(field.name) = kwargs.get(
             '@(field.name)', @(spec.base_type.type).@(field.name.upper())__DEFAULT)
 @[    else]@
-@[      if not field.type.is_primitive_type() and (not field.type.is_array or field.type.array_size)]@
+@[      if not field.type.is_primitive_type() and (not field.type.is_array or
+          (field.type.array_size and not field.type.is_upper_bound))]@
         from @(field.type.pkg_name).msg import @(field.type.type)
 @[      end if]@
 @[      if field.type.array_size and not field.type.is_upper_bound]@

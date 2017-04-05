@@ -81,7 +81,7 @@ def generate_c(generator_arguments_file):
 MSG_TYPE_TO_C = {
     'bool': 'bool',
     'byte': 'uint8_t',
-    'char': 'char',
+    'char': 'signed char',
     'float32': 'float',
     'float64': 'double',
     'uint8': 'uint8_t',
@@ -166,7 +166,7 @@ def primitive_value_to_c(type_, value):
     if type_ == 'bool':
         return 'true' if value else 'false'
 
-    if type_ in ['byte', 'char', 'int8', 'int16', 'int32', 'int64']:
+    if type_ in ['byte', 'char', 'signed char', 'int8', 'int16', 'int32', 'int64']:
         return str(value)
 
     if type_ in ['uint8', 'uint16', 'uint32', 'uint64']:

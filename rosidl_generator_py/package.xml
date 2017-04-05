@@ -28,14 +28,10 @@
   <test_depend>python_cmake_module</test_depend>
   <test_depend>rmw_implementation</test_depend>
   <test_depend>rmw_implementation_cmake</test_depend>
+  <test_depend>rosidl_cmake</test_depend>
   <test_depend>rosidl_generator_c</test_depend>
   <test_depend>rosidl_parser</test_depend>
-  <test_depend>rosidl_cmake</test_depend>
-  <!-- Duplicated from rosidl_default_generator in order to avoid a circular dependency. -->
   <test_depend>rosidl_typesupport_c</test_depend>
-  <test_depend>rosidl_typesupport_connext_c</test_depend>
-  <test_depend>rosidl_typesupport_introspection_c</test_depend>
-  <test_depend>rosidl_typesupport_opensplice_c</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

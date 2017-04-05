@@ -166,7 +166,7 @@ def primitive_value_to_c(type_, value):
     if type_ == 'bool':
         return 'true' if value else 'false'
 
-    if type_ in ['byte', 'char', 'signed char', 'int8', 'int16', 'int32', 'int64']:
+    if type_ in ['byte', 'char', 'int8', 'int16', 'int32', 'int64']:
         return str(value)
 
     if type_ in ['uint8', 'uint16', 'uint32', 'uint64']:

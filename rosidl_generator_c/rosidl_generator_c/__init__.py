@@ -81,7 +81,7 @@ def generate_c(generator_arguments_file):
 MSG_TYPE_TO_C = {
     'bool': 'bool',
     'byte': 'uint8_t',
-    'char': 'char',
+    'char': 'signed char',
     'float32': 'float',
     'float64': 'double',
     'uint8': 'uint8_t',

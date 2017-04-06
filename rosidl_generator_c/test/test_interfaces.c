@@ -172,11 +172,11 @@ int test_primitives(void)
   EXPECT_EQ(127, rosidl_generator_c__msg__Constants__TOTO);
   EXPECT_EQ(48, rosidl_generator_c__msg__Constants__TATA);
 
-  char_msg.empty_char = CHAR_MIN;
-  EXPECT_EQ(CHAR_MIN, char_msg.empty_char);
+  char_msg.empty_char = SCHAR_MIN;
+  EXPECT_EQ(SCHAR_MIN, char_msg.empty_char);
 
-  char_msg.empty_char = CHAR_MAX;
-  EXPECT_EQ(CHAR_MAX, char_msg.empty_char);
+  char_msg.empty_char = SCHAR_MAX;
+  EXPECT_EQ(SCHAR_MAX, char_msg.empty_char);
 
   float32_msg.empty_float32 = FLT_MIN;
   EXPECT_EQ(FLT_MIN, float32_msg.empty_float32);

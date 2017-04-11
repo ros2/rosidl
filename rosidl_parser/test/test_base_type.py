@@ -34,8 +34,8 @@ def test_base_type_constructor():
         'string']
 
     deprecated_types = {
-        'byte': 'int8',
-        'char': 'uint8'
+        'byte': 'uint8',
+        'char': 'int8'
     }
 
     for primitive_type in primitive_types:

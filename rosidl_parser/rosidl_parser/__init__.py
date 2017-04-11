@@ -46,8 +46,8 @@ PRIMITIVE_TYPES = [
 ]
 
 DEPRECATED_TYPES = {
-    'byte': 'int8',
-    'char': 'uint8'
+    'byte': 'uint8',
+    'char': 'int8'
 }
 
 VALID_PACKAGE_NAME_PATTERN = re.compile('^[a-z]([a-z0-9_]?[a-z0-9]+)*$')

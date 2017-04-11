@@ -160,11 +160,11 @@ int test_primitives(void)
   bool_msg.empty_bool = false;
   EXPECT_EQ(false, bool_msg.empty_bool);
 
-  byte_msg.empty_byte = -128;
-  EXPECT_EQ(-128, byte_msg.empty_byte);
+  byte_msg.empty_byte = 0;
+  EXPECT_EQ(0, byte_msg.empty_byte);
 
-  byte_msg.empty_byte = 127;
-  EXPECT_EQ(127, byte_msg.empty_byte);
+  byte_msg.empty_byte = 255;
+  EXPECT_EQ(255, byte_msg.empty_byte);
 
   EXPECT_EQ(123, rosidl_generator_c__msg__Constants__X);
   EXPECT_EQ(-123, rosidl_generator_c__msg__Constants__Y);
@@ -254,8 +254,8 @@ int test_primitives_default_value(void)
 
   EXPECT_EQ(true, primitive_values->def_bool_1);
   EXPECT_EQ(false, primitive_values->def_bool_2);
-  EXPECT_EQ(-66, primitive_values->def_byte);
-  EXPECT_EQ(66, primitive_values->def_char);
+  EXPECT_EQ(66, primitive_values->def_byte);
+  EXPECT_EQ(-66, primitive_values->def_char);
   EXPECT_EQ(1.125f, primitive_values->def_float32);
   EXPECT_EQ(1.125, primitive_values->def_float64);
   EXPECT_EQ(3, primitive_values->def_int8);
@@ -332,8 +332,21 @@ int test_primitives_unbounded_arrays(void)
     }
   }
 
+  // byte_array
+  res = rosidl_generator_c__byte__Array__init(&arrays->byte_array, ARRAY_SIZE);
+  EXPECT_EQ(true, res);
+  uint8_t test_array_byte[7] = {0, 57, 110, 177, 201, 240, 255};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->byte_array.data[i] = test_array_byte[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    EXPECT_EQ(test_array_byte[i], arrays->byte_array.data[i]);
+  }
+
+
   // char array
-  res = rosidl_generator_c__uint8__Array__init(&arrays->char_array, ARRAY_SIZE);
+  res = rosidl_generator_c__char__Array__init(&arrays->char_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   char test_array_char[7] = {'a', '5', '#', 'Z', '@', '-', ' '};
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -513,8 +526,21 @@ int test_primitives_bounded_arrays(void)
     }
   }
 
+  // byte_array
+  res = rosidl_generator_c__byte__Array__init(&arrays->byte_array, ARRAY_SIZE);
+  EXPECT_EQ(true, res);
+  uint8_t test_array_byte[8] = {0, 57, 110, 177, 201, 240, 255, 111};
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    arrays->byte_array.data[i] = test_array_byte[i];
+  }
+  // test values
+  for (i = 0; i < ARRAY_SIZE; i++) {
+    EXPECT_EQ(test_array_byte[i], arrays->byte_array.data[i]);
+  }
+
+
   // char array
-  res = rosidl_generator_c__uint8__Array__init(&arrays->char_array, ARRAY_SIZE);
+  res = rosidl_generator_c__char__Array__init(&arrays->char_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   char test_array_char[7] = {'a', '5', '#', 'Z', '@', '-', ' '};
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -694,7 +720,7 @@ int test_primitives_static_arrays(void)
   }
 
   // byte_array
-  int8_t test_array_byte[ARRAY_SIZE] = {-127, -55, -30, 0, 58, 100, 127};
+  uint8_t test_array_byte[ARRAY_SIZE] = {0, 57, 110, 177, 201, 240, 255};
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->byte_array[i] = test_array_byte[i];
   }

@@ -10,6 +10,7 @@ class Metaclass(type):
 
     _CONVERT_FROM_PY = None
     _CONVERT_TO_PY = None
+    _DESTROY_ROS_MESSAGE = None
     _TYPE_SUPPORT = None
 
     __constants = {

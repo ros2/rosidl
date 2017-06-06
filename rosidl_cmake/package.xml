@@ -12,6 +12,8 @@
 
   <buildtool_export_depend>ament_cmake</buildtool_export_depend>
 
+  <depend>python3-empy</depend>
+
   <exec_depend>rosidl_parser</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>

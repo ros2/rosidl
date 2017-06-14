@@ -20,6 +20,7 @@ from rosidl_generator_c import value_to_c
 
 msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_type.type)
 array_typename = '%s__Array' % msg_typename
+cleanup_lines = []
 }@
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__functions.h"
 
@@ -82,6 +83,7 @@ for field in spec.fields:
         if field.type.is_primitive_type():
             if field.type.type == 'string':
                 lines.append('rosidl_generator_c__String__init(&msg->%s);' % field.name)
+                cleanup_lines.append('rosidl_generator_c__String__fini(&msg->%s);' % field.name)
                 if field.default_value is not None:
                     lines.append('{')
                     value = value_to_c(field.type, field.default_value)
@@ -98,11 +100,14 @@ for field in spec.fields:
             elif field.default_value is not None:
                 # set default value of primitive type
                 lines.append('msg->%s = %s;' % (field.name, value_to_c(field.type, field.default_value)))
-
         else:
             # initialize the sub message
             lines.append('%s__%s__%s__init(&msg->%s);' % (field.type.pkg_name, 'msg', field.type.type, field.name))
-
+            cleanup_string = ('%s__%s__%s__destroy(&msg->%s);' % (field.type.pkg_name, 'msg', field.type.type, field.name))
+            if field.type.is_primitive_type():
+                # Not using replace, because of things like "destroy3dTaco.msg"
+                cleanup_string = ('%s__%s__%s__fini(&msg->%s);' % (field.type.pkg_name, 'msg', field.type.type, field.name))
+            cleanup_lines.append(cleanup_string)
     elif field.type.is_fixed_size_array():
         if field.type.is_primitive_type() and field.type.type != 'string':
             if field.default_value is not None:
@@ -115,10 +120,14 @@ for field in spec.fields:
             lines.append('  %s__init(&msg->%s[i]);' % (get_typename_of_base_type(field.type), field.name))
             lines.append('}')
 
-    else:
+    else: # dynamic array
         if field.default_value is None:
             # initialize the dynamic array with a capacity of zero
             lines.append('%s__Array__init(&msg->%s, 0);' % (get_typename_of_base_type(field.type), field.name))
+            cleanup_line = '%s__Array__destroy(&msg->%s);' % (get_typename_of_base_type(field.type), field.name)
+            if field.type.is_primitive_type():
+                cleanup_line = '%s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name)
+            cleanup_lines.append(cleanup_line)
         else:
             # initialize the dynamic array with the number of default values
             lines.append('{')
@@ -166,7 +175,6 @@ for field in spec.fields:
         if not field.type.is_primitive_type() or field.type.type == 'string':
             # finalize sub messages and strings
             lines.append('%s__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name))
-
     elif field.type.is_fixed_size_array():
         if not field.type.is_primitive_type() or field.type.type == 'string':
             lines.append('for (size_t i = 0; i < %d; ++i) {' % field.type.array_size)
@@ -185,11 +193,11 @@ for line in lines:
 @(msg_typename) *
 @(msg_typename)__create()
 {
-  @(msg_typename) * msg = (@(msg_typename) *)malloc(sizeof(@(msg_typename)));
+  @(msg_typename) * msg = (@(msg_typename) *)malloc(sizeof(*msg));
   if (!msg) {
     return NULL;
   }
-  memset(msg, 0, sizeof(@(msg_typename)));
+  memset(msg, 0, sizeof(*msg));
   bool success = @(msg_typename)__init(msg);
   if (!success) {
     free(msg);
@@ -202,9 +210,11 @@ void
 @(msg_typename)__destroy(@(msg_typename) * msg)
 {
   if (msg) {
-    @(msg_typename)__fini(msg);
+@{
+for line in cleanup_lines:
+    print('    %s' % (line))
+}@
   }
-  free(msg);
 }
 
 
@@ -219,7 +229,7 @@ bool
   }
   @(msg_typename) * data = NULL;
   if (size) {
-    data = (@(msg_typename) *)calloc(size, sizeof(@(msg_typename)));
+    data = (@(msg_typename) *) calloc(size, sizeof(*data));
     if (!data) {
       return false;
     }
@@ -259,7 +269,6 @@ void
     for (size_t i = 0; i < array->capacity; ++i) {
       @(msg_typename)__fini(&array->data[i]);
     }
-    free(array->data);
     array->data = NULL;
     array->size = 0;
     array->capacity = 0;
@@ -291,5 +300,4 @@ void
   if (array) {
     @(array_typename)__fini(array);
   }
-  free(array);
 }

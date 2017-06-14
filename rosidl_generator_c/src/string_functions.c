@@ -24,11 +24,10 @@ rosidl_generator_c__String__init(rosidl_generator_c__String * str)
 {
   if (!str) {
     return false;
-  }
-  str->data = malloc(1);
-  if (!str->data) {
+  } else if (!(str->data = malloc(1))) {
     return false;
   }
+
   str->data[0] = '\0';
   str->size = 0;
   str->capacity = 1;
@@ -47,10 +46,6 @@ rosidl_generator_c__String__fini(rosidl_generator_c__String * str)
       fprintf(stderr, "Unexpected condition: string capacity was zero for allocated data! "
         "Exiting.\n");
       exit(-1);
-    }
-    if (str->data) {
-      free(str->data);
-      str->data = NULL;
     }
     str->size = 0;
     str->capacity = 0;
@@ -84,14 +79,16 @@ rosidl_generator_c__String__assignn(
   if (n == SIZE_MAX) {
     return false;
   }
-  char * data = (char *)malloc(n + 1);
-  if (!data) {
+
+  if (!(str->data = realloc(str->data, n + 1))) {
     return false;
   }
-  rosidl_generator_c__String__fini(str);
-  data = memcpy(data, value, n);
-  data[n] = '\0';
-  str->data = data;
+
+  if (!strncpy(str->data, value, n)) {
+    return false;
+  }
+
+  str->data[n] = '\0';
   str->size = n;
   str->capacity = n + 1;
   return true;
@@ -101,13 +98,6 @@ bool
 rosidl_generator_c__String__assign(
   rosidl_generator_c__String * str, const char * value)
 {
-  if (!str) {
-    return false;
-  }
-  // a NULL value is not valid
-  if (!value) {
-    return false;
-  }
   return rosidl_generator_c__String__assignn(
     str, value, strlen(value));
 }
@@ -121,7 +111,7 @@ rosidl_generator_c__String__Array__init(
   }
   rosidl_generator_c__String * data = NULL;
   if (size) {
-    data = (rosidl_generator_c__String *)malloc(sizeof(rosidl_generator_c__String) * size);
+    data = (rosidl_generator_c__String *) calloc(size, sizeof(*data));
     if (!data) {
       return false;
     }

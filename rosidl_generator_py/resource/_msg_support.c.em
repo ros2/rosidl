@@ -22,10 +22,9 @@ nested_array_dict = {}
 @{have_not_included_string = False}@
 #include <rosidl_generator_c/string.h>
 #include <rosidl_generator_c/string_functions.h>
-
 @[  end if]@
 @{
-if not field.type.is_primitive_type() and field.type.is_array:
+if not field.type.is_primitive_type():
     if field.type.type not in nested_array_dict:
         nested_array_dict[field.type.type] = field.type.pkg_name
 }@

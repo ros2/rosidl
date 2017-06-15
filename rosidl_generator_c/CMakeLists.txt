@@ -2,8 +2,13 @@ cmake_minimum_required(VERSION 3.5)
 
 project(rosidl_generator_c C)
 
-if(NOT WIN32)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall -Wextra -Wpedantic")
+# Default to C11
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 11)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 find_package(ament_cmake REQUIRED)
@@ -19,7 +24,7 @@ add_library(${PROJECT_NAME} SHARED
 )
 ament_target_dependencies(${PROJECT_NAME}
   "rosidl_typesupport_interface")
-if(NOT WIN32)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set_target_properties(${PROJECT_NAME} PROPERTIES
     COMPILE_FLAGS "-Wall -Wextra -Wpedantic")
 endif()

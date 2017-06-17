@@ -184,7 +184,7 @@ set_property(
 
 macro(set_properties _build_type)
   set_target_properties(${_target_name} PROPERTIES
-    COMPILE_FLAGS "${_extension_compile_flags}"
+    COMPILE_OPTIONS "${_extension_compile_flags}"
     PREFIX ""
     LIBRARY_OUTPUT_DIRECTORY${_build_type} ${_output_path}
     RUNTIME_OUTPUT_DIRECTORY${_build_type} ${_output_path}
@@ -212,9 +212,10 @@ foreach(_typesupport_impl ${_typesupport_impls})
 
   set(_extension_compile_flags "")
   set(_PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE})
-  if(NOT WIN32)
-    set(_extension_compile_flags "-Wall -Wextra")
-  elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+  if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set(_extension_compile_flags -Wall -Wextra)
+  endif()
+  if(WIN32 AND "${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
     set(PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE_DEBUG})
   endif()
   set_properties("")

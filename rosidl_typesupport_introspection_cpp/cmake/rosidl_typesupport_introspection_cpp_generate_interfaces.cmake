@@ -105,9 +105,11 @@ if(WIN32)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PRIVATE "ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_BUILDING_DLL")
 endif()
-if(NOT WIN32)
-  set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    PROPERTIES COMPILE_FLAGS "-std=c++14 -Wall -Wextra -Wpedantic")
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix} PROPERTIES
+    CXX_STANDARD 14
+    COMPILE_OPTIONS -Wall -Wextra -Wpedantic
+  )
 endif()
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PUBLIC

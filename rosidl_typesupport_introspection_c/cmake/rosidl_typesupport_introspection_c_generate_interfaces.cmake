@@ -121,9 +121,10 @@ if(rosidl_generate_interfaces_LIBRARY_NAME)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PROPERTIES OUTPUT_NAME "${rosidl_generate_interfaces_LIBRARY_NAME}${_target_suffix}")
 endif()
-if(NOT WIN32)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix} PROPERTIES
-    COMPILE_FLAGS "-std=c11 -Wall -Wextra -Wpedantic")
+    C_STANDARD 11
+    COMPILE_OPTIONS -Wall -Wextra -Wpedantic)
 endif()
 if(WIN32)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}

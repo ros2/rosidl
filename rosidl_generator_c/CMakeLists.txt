@@ -26,7 +26,7 @@ ament_target_dependencies(${PROJECT_NAME}
   "rosidl_typesupport_interface")
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set_target_properties(${PROJECT_NAME} PROPERTIES
-    COMPILE_FLAGS "-Wall -Wextra -Wpedantic")
+    COMPILE_OPTIONS -Wall -Wextra -Wpedantic)
 endif()
 if(WIN32)
   target_compile_definitions(${PROJECT_NAME}

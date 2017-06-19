@@ -81,11 +81,12 @@ _register_msg_type__@(type_name)(PyObject * pymodule)
   PyObject * pyobject_@(function_name) = NULL;
   pyobject_@(function_name) = PyCapsule_New(
 @[    if function_name != 'type_support']@
-    (void *)&@(spec.base_type.pkg_name)_@(type_name)__@(function_name),
+    (void *) &@(spec.base_type.pkg_name)_@(type_name)__@(function_name),
 @[    else]@
     (void *)ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name)),
 @[    end if]@
-    NULL, NULL);
+    NULL,
+    NULL);
   if (!pyobject_@(function_name)) {
     // previously added objects will be removed when the module is destroyed
     return -1;

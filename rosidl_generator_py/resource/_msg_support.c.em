@@ -273,19 +273,20 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   size_t size@(field.name) = @(field.type.array_size);
 @[      end if]@
   py@(field.name) = PyList_New(size@(field.name));
-  @(nested_type) item@(field.name);
+  const @(nested_type) * item@(field.name);
   size_t idx@(field.name);
   for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
 @[      if field.type.array_size is None or field.type.is_upper_bound]@
-    item@(field.name) = ros_message->@(field.name).data[idx@(field.name)];
+    item@(field.name) = &(ros_message->@(field.name).data[idx@(field.name)]);
 @[      else]@
-    item@(field.name) = ros_message->@(field.name)[idx@(field.name)];
+    item@(field.name) = &(ros_message->@(field.name)[idx@(field.name)]);
 @[      end if]@
     PyObject * pyitem@(field.name) = convert_to_py_@(field.name)(&item@(field.name));
     if (!pyitem@(field.name)) {
       return NULL;
     }
     PyList_SetItem(py@(field.name), idx@(field.name), pyitem@(field.name));
+unch of warnings, but I don't see any of these as avoidable. Which is kind of a bummer.
   }
   assert(PySequence_Check(py@(field.name)));
 @[    else]@

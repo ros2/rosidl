@@ -24,10 +24,11 @@ rosidl_generator_c__String__init(rosidl_generator_c__String * str)
 {
   if (!str) {
     return false;
-  } else if (!(str->data = malloc(1))) {
+  }
+  str->data = malloc(1);
+  if (!str->data) {
     return false;
   }
-
   str->data[0] = '\0';
   str->size = 0;
   str->capacity = 1;
@@ -47,6 +48,8 @@ rosidl_generator_c__String__fini(rosidl_generator_c__String * str)
         "Exiting.\n");
       exit(-1);
     }
+    free(str->data);
+    str->data = NULL;
     str->size = 0;
     str->capacity = 0;
   } else {
@@ -79,15 +82,14 @@ rosidl_generator_c__String__assignn(
   if (n == SIZE_MAX) {
     return false;
   }
-
-  if (!(str->data = realloc(str->data, n + 1))) {
+  str->data = realloc(str->data, n + 1);
+  if (!str->data) {
     return false;
   }
-
-  if (!strncpy(str->data, value, n)) {
+  str->data = strncpy(str->data, value, n);
+  if (!str->data) {
     return false;
   }
-
   str->data[n] = '\0';
   str->size = n;
   str->capacity = n + 1;
@@ -111,7 +113,7 @@ rosidl_generator_c__String__Array__init(
   }
   rosidl_generator_c__String * data = NULL;
   if (size) {
-    data = (rosidl_generator_c__String *) calloc(size, sizeof(*data));
+    data = (rosidl_generator_c__String *)calloc(size, sizeof(*data));
     if (!data) {
       return false;
     }

@@ -82,7 +82,9 @@ for field in spec.fields:
         # non-array field
         if field.type.is_primitive_type():
             if field.type.type == 'string':
-                lines.append('rosidl_generator_c__String__init(&msg->%s);' % field.name)
+                lines.append('if (!rosidl_generator_c__String__init(&msg->%s)) %s' % (field.name, '{'))
+                lines.append('  return false;')
+                lines.append('}')
                 cleanup_lines.append('rosidl_generator_c__String__fini(&msg->%s);' % field.name)
                 if field.default_value is not None:
                     lines.append('{')
@@ -102,7 +104,9 @@ for field in spec.fields:
                 lines.append('msg->%s = %s;' % (field.name, value_to_c(field.type, field.default_value)))
         else:
             # initialize the sub message
-            lines.append('%s__%s__%s__init(&msg->%s);' % (field.type.pkg_name, 'msg', field.type.type, field.name))
+            lines.append('if (!%s__%s__%s__init(&msg->%s)) {' % (field.type.pkg_name, 'msg', field.type.type, field.name))
+            lines.append('  return false;')
+            lines.append('}')
             cleanup_string = ('%s__%s__%s__destroy(&msg->%s);' % (field.type.pkg_name, 'msg', field.type.type, field.name))
             if field.type.is_primitive_type():
                 # Not using replace, because of things like "destroy3dTaco.msg"
@@ -117,13 +121,17 @@ for field in spec.fields:
         if not field.type.is_primitive_type() or field.type.type == 'string':
             # initialize each array element
             lines.append('for (size_t i = 0; i < %d; ++i) {' % field.type.array_size)
-            lines.append('  %s__init(&msg->%s[i]);' % (get_typename_of_base_type(field.type), field.name))
+            lines.append('  if(!%s__init(&msg->%s[i])) %s' % (get_typename_of_base_type(field.type), field.name, '{'))
+            lines.append('    return false;')
+            lines.append('  }')
             lines.append('}')
 
     else: # dynamic array
         if field.default_value is None:
             # initialize the dynamic array with a capacity of zero
-            lines.append('%s__Array__init(&msg->%s, 0);' % (get_typename_of_base_type(field.type), field.name))
+            lines.append('if (!%s__Array__init(&msg->%s, 0)) {' % (get_typename_of_base_type(field.type), field.name))
+            lines.append('  return false;')
+            lines.append('}')
             cleanup_line = '%s__Array__destroy(&msg->%s);' % (get_typename_of_base_type(field.type), field.name)
             if field.type.is_primitive_type():
                 cleanup_line = '%s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name)
@@ -215,6 +223,7 @@ for line in cleanup_lines:
     print('    %s' % (line))
 }@
   }
+  free(msg);
 }
 
 
@@ -229,7 +238,7 @@ bool
   }
   @(msg_typename) * data = NULL;
   if (size) {
-    data = (@(msg_typename) *) calloc(size, sizeof(*data));
+    data = (@(msg_typename) *)calloc(size, sizeof(*data));
     if (!data) {
       return false;
     }
@@ -269,6 +278,7 @@ void
     for (size_t i = 0; i < array->capacity; ++i) {
       @(msg_typename)__fini(&array->data[i]);
     }
+    free(array->data);
     array->data = NULL;
     array->size = 0;
     array->capacity = 0;
@@ -300,4 +310,5 @@ void
   if (array) {
     @(array_typename)__fini(array);
   }
+  free(array);
 }

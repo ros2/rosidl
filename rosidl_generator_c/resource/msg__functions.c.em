@@ -130,9 +130,7 @@ for field in spec.fields:
         if field.default_value is None:
             # initialize the dynamic array with a capacity of zero
             lines.append('if (!%s__Array__init(&msg->%s, 0)) {' % (get_typename_of_base_type(field.type), field.name))
-            cleanup_line = '  %s__Array__destroy(&msg->%s);' % (get_typename_of_base_type(field.type), field.name)
-            if field.type.is_primitive_type():
-               cleanup_line = '  %s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name)
+            cleanup_line = '  %s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name)
             lines.append(cleanup_line)
             lines.append('  return false;')
             lines.append('}')
@@ -194,9 +192,9 @@ for field in spec.fields:
             lines.append('  %s__fini(&msg->%s[i]);' % (get_typename_of_base_type(field.type), field.name))
             lines.append('}')
 
-    else:
-        # finalize the dynamic array
-        lines.append('%s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name))
+    # else:
+    #     # finalize the dynamic array
+    #     lines.append('%s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name))
 for line in lines:
     print('  ' + line)
 }@
@@ -223,10 +221,12 @@ void
 {
   if (msg) {
 @{
-for line in cleanup_lines:
+for line in reversed(cleanup_lines):
     print('    %s' % (line))
+    print('    //tacotaco')
 }@
   }
+  @(msg_typename)__fini(msg);
   free(msg);
 }
 

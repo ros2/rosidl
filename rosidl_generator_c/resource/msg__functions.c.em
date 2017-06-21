@@ -130,7 +130,7 @@ for field in spec.fields:
         if field.default_value is None:
             # initialize the dynamic array with a capacity of zero
             lines.append('if (!%s__Array__init(&msg->%s, 0)) {' % (get_typename_of_base_type(field.type), field.name))
-            lines.append('  %s__destroy(msg);' % array_typename)
+            lines.append('  %s__Array__destroy(&msg->%s);' % (get_typename_of_base_type(field.type), field.name))
             lines.append('  return false;')
             lines.append('}')
             cleanup_line = '%s__Array__destroy(&msg->%s);' % (get_typename_of_base_type(field.type), field.name)

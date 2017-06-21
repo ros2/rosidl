@@ -20,7 +20,6 @@ from rosidl_generator_c import value_to_c
 
 msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_type.type)
 array_typename = '%s__Array' % msg_typename
-cleanup_lines = []
 }@
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__functions.h"
 
@@ -76,6 +75,7 @@ label_prefix = 'abort_init_'
 last_label_index = 0
 lines = []
 abort_lines = []
+cleanup_lines = []
 for field in spec.fields:
     lines.append('// ' + field.name)
     if not field.type.is_array:
@@ -83,6 +83,7 @@ for field in spec.fields:
         if field.type.is_primitive_type():
             if field.type.type == 'string':
                 lines.append('if (!rosidl_generator_c__String__init(&msg->%s)) %s' % (field.name, '{'))
+                lines.append('    %s__destroy(msg);' % msg_typename)
                 lines.append('  return false;')
                 lines.append('}')
                 cleanup_lines.append('rosidl_generator_c__String__fini(&msg->%s);' % field.name)
@@ -105,12 +106,10 @@ for field in spec.fields:
         else:
             # initialize the sub message
             lines.append('if (!%s__%s__%s__init(&msg->%s)) {' % (field.type.pkg_name, 'msg', field.type.type, field.name))
+            lines.append('    %s__destroy(msg);' % msg_typename)
             lines.append('  return false;')
             lines.append('}')
-            cleanup_string = ('%s__%s__%s__destroy(&msg->%s);' % (field.type.pkg_name, 'msg', field.type.type, field.name))
-            if field.type.is_primitive_type():
-                # Not using replace, because of things like "destroy3dTaco.msg"
-                cleanup_string = ('%s__%s__%s__fini(&msg->%s);' % (field.type.pkg_name, 'msg', field.type.type, field.name))
+            cleanup_string = ('%s__%s__%s__fini(&msg->%s);' % (field.type.pkg_name, 'msg', field.type.type, field.name))
             cleanup_lines.append(cleanup_string)
     elif field.type.is_fixed_size_array():
         if field.type.is_primitive_type() and field.type.type != 'string':
@@ -121,15 +120,17 @@ for field in spec.fields:
         if not field.type.is_primitive_type() or field.type.type == 'string':
             # initialize each array element
             lines.append('for (size_t i = 0; i < %d; ++i) {' % field.type.array_size)
-            lines.append('  if(!%s__init(&msg->%s[i])) %s' % (get_typename_of_base_type(field.type), field.name, '{'))
+            lines.append('  if(!%s__init(&msg->%s[i])) {' % (get_typename_of_base_type(field.type), field.name))
+            lines.append('    %s__destroy(msg);' % msg_typename)
             lines.append('    return false;')
             lines.append('  }')
             lines.append('}')
 
-    else: # dynamic array
+    else:  # dynamic array
         if field.default_value is None:
             # initialize the dynamic array with a capacity of zero
             lines.append('if (!%s__Array__init(&msg->%s, 0)) {' % (get_typename_of_base_type(field.type), field.name))
+            lines.append('  %s__destroy(msg);' % array_typename)
             lines.append('  return false;')
             lines.append('}')
             cleanup_line = '%s__Array__destroy(&msg->%s);' % (get_typename_of_base_type(field.type), field.name)

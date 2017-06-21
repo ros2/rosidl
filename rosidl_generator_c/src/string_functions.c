@@ -82,15 +82,22 @@ rosidl_generator_c__String__assignn(
   if (n == SIZE_MAX) {
     return false;
   }
-  str->data = realloc(str->data, n + 1);
-  if (!str->data) {
+  char * data = realloc(str->data, n + 1);
+  if (!data) {
+    free(str->data);
+    str->size = 0;
+    str->capacity = 0;
     return false;
   }
-  str->data = strncpy(str->data, value, n);
-  if (!str->data) {
+  data = strncpy(data, value, n);
+  if (!data) {
+    free(data);
+    free(str->data);
+    str->size = 0;
+    str->capacity = 0;
     return false;
   }
-  str->data[n] = '\0';
+  str->data = data;
   str->size = n;
   str->capacity = n + 1;
   return true;

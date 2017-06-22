@@ -27,7 +27,7 @@
 
 #include "rosidl_generator_c/msg/bool__struct.h"
 #include "rosidl_generator_c/msg/bounded_array_nested__struct.h"
-#include "rosidl_generator_c/msg/bounded_array_primitives__struct.h"
+// #include "rosidl_generator_c/msg/bounded_array_primitives__struct.h"
 #include "rosidl_generator_c/msg/byte__struct.h"
 #include "rosidl_generator_c/msg/char__struct.h"
 #include "rosidl_generator_c/msg/constants__struct.h"
@@ -48,7 +48,7 @@
 #include "rosidl_generator_c/msg/primitives_unbounded_arrays__struct.h"
 #include "rosidl_generator_c/msg/primitive_values__struct.h"
 #include "rosidl_generator_c/msg/static_array_nested__struct.h"
-#include "rosidl_generator_c/msg/static_array_primitives__struct.h"
+// #include "rosidl_generator_c/msg/static_array_primitives__struct.h"
 #include "rosidl_generator_c/msg/strings__struct.h"
 #include "rosidl_generator_c/msg/telegram1__struct.h"
 #include "rosidl_generator_c/msg/telegram2__struct.h"
@@ -61,7 +61,7 @@
 
 #include "rosidl_generator_c/msg/bool__functions.h"
 #include "rosidl_generator_c/msg/bounded_array_nested__functions.h"
-#include "rosidl_generator_c/msg/bounded_array_primitives__functions.h"
+// #include "rosidl_generator_c/msg/bounded_array_primitives__functions.h"
 #include "rosidl_generator_c/msg/byte__functions.h"
 #include "rosidl_generator_c/msg/char__functions.h"
 #include "rosidl_generator_c/msg/constants__functions.h"
@@ -82,7 +82,7 @@
 #include "rosidl_generator_c/msg/primitives_unbounded_arrays__functions.h"
 #include "rosidl_generator_c/msg/primitive_values__functions.h"
 #include "rosidl_generator_c/msg/static_array_nested__functions.h"
-#include "rosidl_generator_c/msg/static_array_primitives__functions.h"
+// #include "rosidl_generator_c/msg/static_array_primitives__functions.h"
 #include "rosidl_generator_c/msg/strings__functions.h"
 #include "rosidl_generator_c/msg/telegram1__functions.h"
 #include "rosidl_generator_c/msg/telegram2__functions.h"
@@ -109,10 +109,9 @@ int test_primitives_bounded_arrays(void);
 int test_primitives_static_arrays(void);
 int test_submessages(void);
 int test_bounded_array_nested(void);
-int test_bounded_array_primitives(void);
 int test_dynamic_array_nested(void);
-int test_dynamic_array_primitives(void);
 int test_dynamic_array_primitives_nested(void);
+int test_static_array_nested(void);
 
 int main(void)
 {
@@ -153,45 +152,27 @@ int main(void)
     fprintf(stderr, "test_submessages() FAILED\n");
     rc++;
   }
-//est more complex messages
-	StaticArrayNested.msg
-	StaticArrayPrimitives.msg
+  printf("Testing static_array_primitives messages...\n");
+  printf("Testing static_array_nested messages...\n");
+  if (test_static_array_nested()) {
+    fprintf(stderr, "test_static_array_nested() FAILED\n");
+    rc++;
+  }
   printf("Testing bounded_array_nested messages...\n");
   if (test_bounded_array_nested()) {
     fprintf(stderr, "test_bounded_array_nested() FAILED\n");
     rc++;
   }
-  printf("Testing bounded_array_primitives messages...\n");
-  if (test_bounded_array_primitives()) {
-    fprintf(stderr, "test_bounded_array_primitives() FAILED\n");
-    rc++;
-  }
-  printf("Testing test_dynamic_array_nested messages...\n");
+  printf("Testing dynamic_array_nested messages...\n");
   if (test_dynamic_array_nested()) {
     fprintf(stderr, "test_dynamic_array_nested() FAILED\n");
     rc++;
   }
-  printf("Testing test_dynamic_array_primitives messages...\n");
-  if (test_dynamic_array_primitives()) {
-    fprintf(stderr, "test_dynamic_array_primitives() FAILED\n");
-    rc++;
-  }
-  printf("Testing test_dynamic_array_primitives_nested messages...\n");
+  printf("Testing dynamic_array_primitives_nested messages...\n");
   if (test_dynamic_array_primitives_nested()) {
     fprintf(stderr, "test_dynamic_array_primitives_nested() FAILED\n");
     rc++;
   }
-  printf("Testing TACO messages...\n");
-  if (test_submessages()) {
-    fprintf(stderr, "test_submessages() FAILED\n");
-    rc++;
-  }
-  printf("Testing TACO messages...\n");
-  if (test_submessages()) {
-    fprintf(stderr, "test_submessages() FAILED\n");
-    rc++;
-  }
-// TODO(mikaelarguedas) add StaticArrayX tests here if needed
   if (rc != 0) {
     fprintf(stderr, "Some tests failed!\n");
   } else {
@@ -967,83 +948,67 @@ int test_submessages(void)
  */
 int test_bounded_array_nested(void)
 {
-  int i;
   bool res;
-  // rosidl_generator_c__msg__Wire * wire_msg = rosidl_generator_c__msg__Wire__create();
+  size_t size = 4;
   rosidl_generator_c__msg__BoundedArrayNested * msg =
     rosidl_generator_c__msg__BoundedArrayNested__create();
 
-  // for (i = 0; i < 3; i++) {
-  //   res = rosidl_generator_c__String__assign(&wire_msg->cablegram1[i].text, TEST_STRING);
-  //   EXPECT_EQ(true, res);
-  //   wire_msg->cablegram1[i].number = 3.1415f;
-  // }
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[0], "Test 1");
-  // EXPECT_EQ(true, res);
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[1], "Test 2");
-  // EXPECT_EQ(true, res);
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[2], "Test 3");
-  // EXPECT_EQ(true, res);
-  // wire_msg->cablegram2.number_array[0] = 3.1f;
-  // wire_msg->cablegram2.number_array[1] = 3.14f;
-  // wire_msg->cablegram2.number_array[2] = 3.141f;
+  rosidl_generator_c__msg__Primitives__Array__init(&msg->primitive_values, size);
+  msg->primitive_values.data[0].bool_value = false;
+  msg->primitive_values.data[1].bool_value = true;
+  msg->primitive_values.data[0].byte_value = 0;
+  msg->primitive_values.data[1].byte_value = UINT8_MAX;
+  msg->primitive_values.data[0].char_value = SCHAR_MIN;
+  msg->primitive_values.data[1].char_value = SCHAR_MAX;
+  msg->primitive_values.data[0].int8_value = INT8_MIN;
+  msg->primitive_values.data[1].int8_value = INT8_MAX;
+  msg->primitive_values.data[0].uint8_value = 0;
+  msg->primitive_values.data[1].uint8_value = UINT8_MAX;
+  msg->primitive_values.data[0].int16_value = INT16_MIN;
+  msg->primitive_values.data[1].int16_value = INT16_MAX;
+  msg->primitive_values.data[0].uint16_value = 0;
+  msg->primitive_values.data[1].uint16_value = UINT16_MAX;
+  msg->primitive_values.data[0].int32_value = INT32_MIN;
+  msg->primitive_values.data[1].int32_value = INT32_MAX;
+  msg->primitive_values.data[0].uint32_value = 0;
+  msg->primitive_values.data[1].uint32_value = UINT32_MAX;
+  msg->primitive_values.data[0].int64_value = INT64_MIN;
+  msg->primitive_values.data[1].int64_value = INT64_MAX;
+  msg->primitive_values.data[0].uint64_value = 0;
+  msg->primitive_values.data[1].uint64_value = UINT64_MAX;
+  res = rosidl_generator_c__String__assign(&msg->primitive_values.data[0].string_value, TEST_STRING);
+  EXPECT_EQ(true, res);
+  res = rosidl_generator_c__String__assign(&msg->primitive_values.data[1].string_value, TEST_STRING);
+  EXPECT_EQ(true, res);
 
-  // for (i = 0; i < 3; i++) {
-  //   EXPECT_EQ(0, strcmp(wire_msg->cablegram1[i].text.data, TEST_STRING));
-  //   EXPECT_EQ(3.1415f, wire_msg->cablegram1[i].number);
-  // }
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[0].data, "Test 1"));
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[1].data, "Test 2"));
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[2].data, "Test 3"));
-  // EXPECT_EQ(3.1f, wire_msg->cablegram2.number_array[0]);
-  // EXPECT_EQ(3.14f, wire_msg->cablegram2.number_array[1]);
-  // EXPECT_EQ(3.141f, wire_msg->cablegram2.number_array[2]);
+  // now lets verify if it's actually the expected values
+  EXPECT_EQ(false, msg->primitive_values.data[0].bool_value);
+  EXPECT_EQ(true, msg->primitive_values.data[1].bool_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].byte_value);
+  EXPECT_EQ(UINT8_MAX, msg->primitive_values.data[1].byte_value);
+  EXPECT_EQ(SCHAR_MIN, msg->primitive_values.data[0].char_value);
+  EXPECT_EQ(SCHAR_MAX, msg->primitive_values.data[1].char_value);
+  EXPECT_EQ(INT8_MIN, msg->primitive_values.data[0].int8_value);
+  EXPECT_EQ(INT8_MAX, msg->primitive_values.data[1].int8_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint8_value);
+  EXPECT_EQ(UINT8_MAX, msg->primitive_values.data[1].uint8_value);
+  EXPECT_EQ(INT16_MIN, msg->primitive_values.data[0].int16_value);
+  EXPECT_EQ(INT16_MAX, msg->primitive_values.data[1].int16_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint16_value);
+  EXPECT_EQ(UINT16_MAX, msg->primitive_values.data[1].uint16_value);
+  EXPECT_EQ(INT32_MIN, msg->primitive_values.data[0].int32_value);
+  EXPECT_EQ(INT32_MAX, msg->primitive_values.data[1].int32_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint32_value);
+  EXPECT_EQ(UINT32_MAX, msg->primitive_values.data[1].uint32_value);
+  EXPECT_EQ(INT64_MIN, msg->primitive_values.data[0].int64_value);
+  EXPECT_EQ(INT64_MAX, msg->primitive_values.data[1].int64_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint64_value);
+  EXPECT_EQ(UINT64_MAX, msg->primitive_values.data[1].uint64_value);
 
-  // rosidl_generator_c__msg__Wire__destroy(wire_msg);
+  EXPECT_EQ(0, strcmp(msg->primitive_values.data[0].string_value.data, TEST_STRING));
+  EXPECT_EQ(0, strcmp(msg->primitive_values.data[1].string_value.data, TEST_STRING));
+
   rosidl_generator_c__msg__BoundedArrayNested__destroy(msg);
-
-  return 0;
-}
-
-/**
- * Test message with sub-messages types
- */
-int test_bounded_array_primitives(void)
-{
-  int i;
-  bool res;
-  // rosidl_generator_c__msg__Wire * wire_msg = rosidl_generator_c__msg__Wire__create();
-
-  rosidl_generator_c__msg__BoundedArrayPrimitives * msg =
-    rosidl_generator_c__msg__BoundedArrayPrimitives__create();
-  // for (i = 0; i < 3; i++) {
-  //   res = rosidl_generator_c__String__assign(&wire_msg->cablegram1[i].text, TEST_STRING);
-  //   EXPECT_EQ(true, res);
-  //   wire_msg->cablegram1[i].number = 3.1415f;
-  // }
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[0], "Test 1");
-  // EXPECT_EQ(true, res);
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[1], "Test 2");
-  // EXPECT_EQ(true, res);
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[2], "Test 3");
-  // EXPECT_EQ(true, res);
-  // wire_msg->cablegram2.number_array[0] = 3.1f;
-  // wire_msg->cablegram2.number_array[1] = 3.14f;
-  // wire_msg->cablegram2.number_array[2] = 3.141f;
-
-  // for (i = 0; i < 3; i++) {
-  //   EXPECT_EQ(0, strcmp(wire_msg->cablegram1[i].text.data, TEST_STRING));
-  //   EXPECT_EQ(3.1415f, wire_msg->cablegram1[i].number);
-  // }
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[0].data, "Test 1"));
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[1].data, "Test 2"));
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[2].data, "Test 3"));
-  // EXPECT_EQ(3.1f, wire_msg->cablegram2.number_array[0]);
-  // EXPECT_EQ(3.14f, wire_msg->cablegram2.number_array[1]);
-  // EXPECT_EQ(3.141f, wire_msg->cablegram2.number_array[2]);
-
-  // rosidl_generator_c__msg__Wire__destroy(wire_msg);
-  rosidl_generator_c__msg__BoundedArrayPrimitives__destroy(msg);
 
   return 0;
 }
@@ -1055,41 +1020,66 @@ int test_dynamic_array_nested(void)
 {
   int i;
   bool res;
-  // rosidl_generator_c__msg__Wire * wire_msg = rosidl_generator_c__msg__Wire__create();
-  rosidl_generator_c__msg__Primitives__Array * blabla = rosidl_generator_c__msg__Primitives__Array__create(3);
-  rosidl_generator_c__msg__Primitives__Array__destroy(blabla);
-
+  size_t size = 4;
 
   rosidl_generator_c__msg__DynamicArrayNested * msg =
     rosidl_generator_c__msg__DynamicArrayNested__create();
 
-  // for (i = 0; i < 3; i++) {
-  //   res = rosidl_generator_c__String__assign(&wire_msg->cablegram1[i].text, TEST_STRING);
-  //   EXPECT_EQ(true, res);
-  //   wire_msg->cablegram1[i].number = 3.1415f;
-  // }
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[0], "Test 1");
-  // EXPECT_EQ(true, res);
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[1], "Test 2");
-  // EXPECT_EQ(true, res);
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[2], "Test 3");
-  // EXPECT_EQ(true, res);
-  // wire_msg->cablegram2.number_array[0] = 3.1f;
-  // wire_msg->cablegram2.number_array[1] = 3.14f;
-  // wire_msg->cablegram2.number_array[2] = 3.141f;
+  rosidl_generator_c__msg__Primitives__Array__init(&msg->primitive_values, size);
+  msg->primitive_values.data[0].bool_value = false;
+  msg->primitive_values.data[1].bool_value = true;
+  msg->primitive_values.data[0].byte_value = 0;
+  msg->primitive_values.data[1].byte_value = UINT8_MAX;
+  msg->primitive_values.data[0].char_value = SCHAR_MIN;
+  msg->primitive_values.data[1].char_value = SCHAR_MAX;
+  msg->primitive_values.data[0].int8_value = INT8_MIN;
+  msg->primitive_values.data[1].int8_value = INT8_MAX;
+  msg->primitive_values.data[0].uint8_value = 0;
+  msg->primitive_values.data[1].uint8_value = UINT8_MAX;
+  msg->primitive_values.data[0].int16_value = INT16_MIN;
+  msg->primitive_values.data[1].int16_value = INT16_MAX;
+  msg->primitive_values.data[0].uint16_value = 0;
+  msg->primitive_values.data[1].uint16_value = UINT16_MAX;
+  msg->primitive_values.data[0].int32_value = INT32_MIN;
+  msg->primitive_values.data[1].int32_value = INT32_MAX;
+  msg->primitive_values.data[0].uint32_value = 0;
+  msg->primitive_values.data[1].uint32_value = UINT32_MAX;
+  msg->primitive_values.data[0].int64_value = INT64_MIN;
+  msg->primitive_values.data[1].int64_value = INT64_MAX;
+  msg->primitive_values.data[0].uint64_value = 0;
+  msg->primitive_values.data[1].uint64_value = UINT64_MAX;
+  res = rosidl_generator_c__String__assign(&msg->primitive_values.data[0].string_value, TEST_STRING);
+  EXPECT_EQ(true, res);
+  res = rosidl_generator_c__String__assign(&msg->primitive_values.data[1].string_value, TEST_STRING);
+  EXPECT_EQ(true, res);
 
-  // for (i = 0; i < 3; i++) {
-  //   EXPECT_EQ(0, strcmp(wire_msg->cablegram1[i].text.data, TEST_STRING));
-  //   EXPECT_EQ(3.1415f, wire_msg->cablegram1[i].number);
-  // }
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[0].data, "Test 1"));
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[1].data, "Test 2"));
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[2].data, "Test 3"));
-  // EXPECT_EQ(3.1f, wire_msg->cablegram2.number_array[0]);
-  // EXPECT_EQ(3.14f, wire_msg->cablegram2.number_array[1]);
-  // EXPECT_EQ(3.141f, wire_msg->cablegram2.number_array[2]);
+  // now lets verify if it's actually the expected values
+  EXPECT_EQ(false, msg->primitive_values.data[0].bool_value);
+  EXPECT_EQ(true, msg->primitive_values.data[1].bool_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].byte_value);
+  EXPECT_EQ(UINT8_MAX, msg->primitive_values.data[1].byte_value);
+  EXPECT_EQ(SCHAR_MIN, msg->primitive_values.data[0].char_value);
+  EXPECT_EQ(SCHAR_MAX, msg->primitive_values.data[1].char_value);
+  EXPECT_EQ(INT8_MIN, msg->primitive_values.data[0].int8_value);
+  EXPECT_EQ(INT8_MAX, msg->primitive_values.data[1].int8_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint8_value);
+  EXPECT_EQ(UINT8_MAX, msg->primitive_values.data[1].uint8_value);
+  EXPECT_EQ(INT16_MIN, msg->primitive_values.data[0].int16_value);
+  EXPECT_EQ(INT16_MAX, msg->primitive_values.data[1].int16_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint16_value);
+  EXPECT_EQ(UINT16_MAX, msg->primitive_values.data[1].uint16_value);
+  EXPECT_EQ(INT32_MIN, msg->primitive_values.data[0].int32_value);
+  EXPECT_EQ(INT32_MAX, msg->primitive_values.data[1].int32_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint32_value);
+  EXPECT_EQ(UINT32_MAX, msg->primitive_values.data[1].uint32_value);
+  EXPECT_EQ(INT64_MIN, msg->primitive_values.data[0].int64_value);
+  EXPECT_EQ(INT64_MAX, msg->primitive_values.data[1].int64_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint64_value);
+  EXPECT_EQ(UINT64_MAX, msg->primitive_values.data[1].uint64_value);
 
-  // rosidl_generator_c__msg__Wire__destroy(wire_msg);
+  EXPECT_EQ(0, strcmp(msg->primitive_values.data[0].string_value.data, TEST_STRING));
+  EXPECT_EQ(0, strcmp(msg->primitive_values.data[1].string_value.data, TEST_STRING));
+
   rosidl_generator_c__msg__DynamicArrayNested__destroy(msg);
 
   return 0;
@@ -1098,19 +1088,21 @@ int test_dynamic_array_nested(void)
 /**
  * Test message with sub-messages types
  */
-int test_dynamic_array_primitives(void)
+int test_static_array_nested(void)
 {
   int i;
   bool res;
   // rosidl_generator_c__msg__Wire * wire_msg = rosidl_generator_c__msg__Wire__create();
-  rosidl_generator_c__msg__DynamicArrayPrimitives * msg =
-    rosidl_generator_c__msg__DynamicArrayPrimitives__create();
 
-  // for (i = 0; i < 3; i++) {
+  rosidl_generator_c__msg__StaticArrayNested * msg =
+    rosidl_generator_c__msg__StaticArrayNested__create();
+
+  for (i = 0; i < 4; i++) {
+    res = true;
   //   res = rosidl_generator_c__String__assign(&wire_msg->cablegram1[i].text, TEST_STRING);
-  //   EXPECT_EQ(true, res);
+    EXPECT_EQ(true, res);
   //   wire_msg->cablegram1[i].number = 3.1415f;
-  // }
+  }
   // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[0], "Test 1");
   // EXPECT_EQ(true, res);
   // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[1], "Test 2");
@@ -1121,10 +1113,12 @@ int test_dynamic_array_primitives(void)
   // wire_msg->cablegram2.number_array[1] = 3.14f;
   // wire_msg->cablegram2.number_array[2] = 3.141f;
 
-  // for (i = 0; i < 3; i++) {
+  for (i = 0; i < 4; i++) {
+    res = true;
+    EXPECT_EQ(true, res);
   //   EXPECT_EQ(0, strcmp(wire_msg->cablegram1[i].text.data, TEST_STRING));
   //   EXPECT_EQ(3.1415f, wire_msg->cablegram1[i].number);
-  // }
+  }
   // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[0].data, "Test 1"));
   // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[1].data, "Test 2"));
   // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[2].data, "Test 3"));
@@ -1133,7 +1127,7 @@ int test_dynamic_array_primitives(void)
   // EXPECT_EQ(3.141f, wire_msg->cablegram2.number_array[2]);
 
   // rosidl_generator_c__msg__Wire__destroy(wire_msg);
-  rosidl_generator_c__msg__DynamicArrayPrimitives__destroy(msg);
+  rosidl_generator_c__msg__StaticArrayNested__destroy(msg);
 
   return 0;
 }
@@ -1145,24 +1139,43 @@ int test_dynamic_array_primitives_nested(void)
 {
   int i;
   bool res;
+  size_t size = 4;
   rosidl_generator_c__msg__DynamicArrayPrimitivesNested * msg =
     rosidl_generator_c__msg__DynamicArrayPrimitivesNested__create();
   // rosidl_generator_c__msg__Wire * wire_msg = rosidl_generator_c__msg__Wire__create();
+  rosidl_generator_c__msg__DynamicArrayPrimitives__Array__init(&msg->msgs, size);
 
-  // for (i = 0; i < 3; i++) {
-  //   res = rosidl_generator_c__String__assign(&wire_msg->cablegram1[i].text, TEST_STRING);
-  //   EXPECT_EQ(true, res);
-  //   wire_msg->cablegram1[i].number = 3.1415f;
-  // }
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[0], "Test 1");
-  // EXPECT_EQ(true, res);
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[1], "Test 2");
-  // EXPECT_EQ(true, res);
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[2], "Test 3");
-  // EXPECT_EQ(true, res);
-  // wire_msg->cablegram2.number_array[0] = 3.1f;
-  // wire_msg->cablegram2.number_array[1] = 3.14f;
-  // wire_msg->cablegram2.number_array[2] = 3.141f;
+  for (i = 0; i < size; i++) {
+    // TODO(mikaelarguedas) Find why failure without the following line!
+    res = rosidl_generator_c__bool__Array__init(&msg->msgs.data[0].bool_values, ARRAY_SIZE);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[0].bool_values.data[0] = NULL;
+    // msg->msgs.data[1].bool_values.data[1] = true;
+    // msg->msgs.data[0].byte_value = 0;
+    // msg->msgs.data[1].byte_value = UINT8_MAX;
+    // msg->msgs.data[0].char_value = SCHAR_MIN;
+    // msg->msgs.data[1].char_value = SCHAR_MAX;
+    // msg->msgs.data[0].int8_value = INT8_MIN;
+    // msg->msgs.data[1].int8_value = INT8_MAX;
+    // msg->msgs.data[0].uint8_value = 0;
+    // msg->msgs.data[1].uint8_value = UINT8_MAX;
+    // msg->msgs.data[0].int16_value = INT16_MIN;
+    // msg->msgs.data[1].int16_value = INT16_MAX;
+    // msg->msgs.data[0].uint16_value = 0;
+    // msg->msgs.data[1].uint16_value = UINT16_MAX;
+    // msg->msgs.data[0].int32_value = INT32_MIN;
+    // msg->msgs.data[1].int32_value = INT32_MAX;
+    // msg->msgs.data[0].uint32_value = 0;
+    // msg->msgs.data[1].uint32_value = UINT32_MAX;
+    // msg->msgs.data[0].int64_value = INT64_MIN;
+    // msg->msgs.data[1].int64_value = INT64_MAX;
+    // msg->msgs.data[0].uint64_value = 0;
+    // msg->msgs.data[1].uint64_value = UINT64_MAX;
+    // res = rosidl_generator_c__String__assign(&msg->msgs.data[0].string_value, TEST_STRING);
+    // EXPECT_EQ(true, res);
+    // res = rosidl_generator_c__String__assign(&msg->msgs.data[1].string_value, TEST_STRING);
+    // EXPECT_EQ(true, res);
+  }
 
   // for (i = 0; i < 3; i++) {
   //   EXPECT_EQ(0, strcmp(wire_msg->cablegram1[i].text.data, TEST_STRING));

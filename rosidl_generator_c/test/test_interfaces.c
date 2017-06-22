@@ -959,6 +959,10 @@ int test_bounded_array_nested(void)
   msg->primitive_values.data[1].byte_value = UINT8_MAX;
   msg->primitive_values.data[0].char_value = SCHAR_MIN;
   msg->primitive_values.data[1].char_value = SCHAR_MAX;
+  msg->primitive_values.data[0].float32_value = FLT_MIN;
+  msg->primitive_values.data[1].float32_value = FLT_MAX;
+  msg->primitive_values.data[0].float64_value = DBL_MIN;
+  msg->primitive_values.data[1].float64_value = DBL_MAX;
   msg->primitive_values.data[0].int8_value = INT8_MIN;
   msg->primitive_values.data[1].int8_value = INT8_MAX;
   msg->primitive_values.data[0].uint8_value = 0;
@@ -975,9 +979,11 @@ int test_bounded_array_nested(void)
   msg->primitive_values.data[1].int64_value = INT64_MAX;
   msg->primitive_values.data[0].uint64_value = 0;
   msg->primitive_values.data[1].uint64_value = UINT64_MAX;
-  res = rosidl_generator_c__String__assign(&msg->primitive_values.data[0].string_value, TEST_STRING);
+  res = rosidl_generator_c__String__assign(
+    &msg->primitive_values.data[0].string_value, TEST_STRING);
   EXPECT_EQ(true, res);
-  res = rosidl_generator_c__String__assign(&msg->primitive_values.data[1].string_value, TEST_STRING);
+  res = rosidl_generator_c__String__assign(
+    &msg->primitive_values.data[1].string_value, TEST_STRING);
   EXPECT_EQ(true, res);
 
   // now lets verify if it's actually the expected values
@@ -987,6 +993,10 @@ int test_bounded_array_nested(void)
   EXPECT_EQ(UINT8_MAX, msg->primitive_values.data[1].byte_value);
   EXPECT_EQ(SCHAR_MIN, msg->primitive_values.data[0].char_value);
   EXPECT_EQ(SCHAR_MAX, msg->primitive_values.data[1].char_value);
+  EXPECT_EQ(FLT_MIN, msg->primitive_values.data[0].float32_value);
+  EXPECT_EQ(FLT_MAX, msg->primitive_values.data[1].float32_value);
+  EXPECT_EQ(DBL_MIN, msg->primitive_values.data[0].float64_value);
+  EXPECT_EQ(DBL_MAX, msg->primitive_values.data[1].float64_value);
   EXPECT_EQ(INT8_MIN, msg->primitive_values.data[0].int8_value);
   EXPECT_EQ(INT8_MAX, msg->primitive_values.data[1].int8_value);
   EXPECT_EQ(0, msg->primitive_values.data[0].uint8_value);
@@ -1031,6 +1041,10 @@ int test_dynamic_array_nested(void)
   msg->primitive_values.data[1].byte_value = UINT8_MAX;
   msg->primitive_values.data[0].char_value = SCHAR_MIN;
   msg->primitive_values.data[1].char_value = SCHAR_MAX;
+  msg->primitive_values.data[0].float32_value = FLT_MIN;
+  msg->primitive_values.data[1].float32_value = FLT_MAX;
+  msg->primitive_values.data[0].float64_value = DBL_MIN;
+  msg->primitive_values.data[1].float64_value = DBL_MAX;
   msg->primitive_values.data[0].int8_value = INT8_MIN;
   msg->primitive_values.data[1].int8_value = INT8_MAX;
   msg->primitive_values.data[0].uint8_value = 0;
@@ -1047,9 +1061,11 @@ int test_dynamic_array_nested(void)
   msg->primitive_values.data[1].int64_value = INT64_MAX;
   msg->primitive_values.data[0].uint64_value = 0;
   msg->primitive_values.data[1].uint64_value = UINT64_MAX;
-  res = rosidl_generator_c__String__assign(&msg->primitive_values.data[0].string_value, TEST_STRING);
+  res = rosidl_generator_c__String__assign(
+    &msg->primitive_values.data[0].string_value, TEST_STRING);
   EXPECT_EQ(true, res);
-  res = rosidl_generator_c__String__assign(&msg->primitive_values.data[1].string_value, TEST_STRING);
+  res = rosidl_generator_c__String__assign(
+    &msg->primitive_values.data[1].string_value, TEST_STRING);
   EXPECT_EQ(true, res);
 
   // now lets verify if it's actually the expected values
@@ -1059,6 +1075,10 @@ int test_dynamic_array_nested(void)
   EXPECT_EQ(UINT8_MAX, msg->primitive_values.data[1].byte_value);
   EXPECT_EQ(SCHAR_MIN, msg->primitive_values.data[0].char_value);
   EXPECT_EQ(SCHAR_MAX, msg->primitive_values.data[1].char_value);
+  EXPECT_EQ(FLT_MIN, msg->primitive_values.data[0].float32_value);
+  EXPECT_EQ(FLT_MAX, msg->primitive_values.data[1].float32_value);
+  EXPECT_EQ(DBL_MIN, msg->primitive_values.data[0].float64_value);
+  EXPECT_EQ(DBL_MAX, msg->primitive_values.data[1].float64_value);
   EXPECT_EQ(INT8_MIN, msg->primitive_values.data[0].int8_value);
   EXPECT_EQ(INT8_MAX, msg->primitive_values.data[1].int8_value);
   EXPECT_EQ(0, msg->primitive_values.data[0].uint8_value);
@@ -1161,6 +1181,14 @@ int test_dynamic_array_primitives_nested(void)
     EXPECT_EQ(true, res);
     msg->msgs.data[i].char_values.data[0] = SCHAR_MIN;
     msg->msgs.data[i].char_values.data[1] = SCHAR_MAX;
+    res = rosidl_generator_c__float32__Array__init(&msg->msgs.data[i].float32_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].float32_values.data[0] = FLT_MIN;
+    msg->msgs.data[i].float32_values.data[1] = FLT_MAX;
+    res = rosidl_generator_c__float64__Array__init(&msg->msgs.data[i].float64_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].float64_values.data[0] = DBL_MIN;
+    msg->msgs.data[i].float64_values.data[1] = DBL_MAX;
     res = rosidl_generator_c__int8__Array__init(&msg->msgs.data[i].int8_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].int8_values.data[0] = INT8_MIN;
@@ -1202,13 +1230,16 @@ int test_dynamic_array_primitives_nested(void)
   }
 
   for (i = 0; i < size; i++) {
-  //test the rest of the values here
     EXPECT_EQ(false, msg->msgs.data[i].bool_values.data[0]);
     EXPECT_EQ(true, msg->msgs.data[i].bool_values.data[1]);
     EXPECT_EQ(0, msg->msgs.data[i].byte_values.data[0]);
     EXPECT_EQ(UINT8_MAX, msg->msgs.data[i].byte_values.data[1]);
     EXPECT_EQ(SCHAR_MIN, msg->msgs.data[i].char_values.data[0]);
     EXPECT_EQ(SCHAR_MAX, msg->msgs.data[i].char_values.data[1]);
+    EXPECT_EQ(FLT_MIN, msg->msgs.data[i].float32_values.data[0]);
+    EXPECT_EQ(FLT_MAX, msg->msgs.data[i].float32_values.data[1]);
+    EXPECT_EQ(DBL_MIN, msg->msgs.data[i].float64_values.data[0]);
+    EXPECT_EQ(DBL_MAX, msg->msgs.data[i].float64_values.data[1]);
     EXPECT_EQ(INT8_MIN, msg->msgs.data[i].int8_values.data[0]);
     EXPECT_EQ(INT8_MAX, msg->msgs.data[i].int8_values.data[1]);
     EXPECT_EQ(0, msg->msgs.data[i].uint8_values.data[0]);
@@ -1229,7 +1260,6 @@ int test_dynamic_array_primitives_nested(void)
     EXPECT_EQ(0, strcmp(msg->msgs.data[i].string_values.data[1].data, TEST_STRING));
   }
 
-  // rosidl_generator_c__msg__Wire__destroy(wire_msg);
   rosidl_generator_c__msg__DynamicArrayPrimitivesNested__destroy(msg);
 
   return 0;

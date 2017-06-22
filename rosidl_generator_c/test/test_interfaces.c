@@ -1027,7 +1027,6 @@ int test_bounded_array_nested(void)
  */
 int test_dynamic_array_nested(void)
 {
-  int i;
   bool res;
   size_t size = 4;
 

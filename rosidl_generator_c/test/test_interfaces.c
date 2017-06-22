@@ -152,7 +152,6 @@ int main(void)
     fprintf(stderr, "test_submessages() FAILED\n");
     rc++;
   }
-  printf("Testing static_array_primitives messages...\n");
   printf("Testing static_array_nested messages...\n");
   if (test_static_array_nested()) {
     fprintf(stderr, "test_static_array_nested() FAILED\n");
@@ -1092,41 +1091,46 @@ int test_static_array_nested(void)
 {
   int i;
   bool res;
-  // rosidl_generator_c__msg__Wire * wire_msg = rosidl_generator_c__msg__Wire__create();
+  size_t size = 4;
 
   rosidl_generator_c__msg__StaticArrayNested * msg =
     rosidl_generator_c__msg__StaticArrayNested__create();
 
-  for (i = 0; i < 4; i++) {
-    res = true;
-  //   res = rosidl_generator_c__String__assign(&wire_msg->cablegram1[i].text, TEST_STRING);
+  for (i = 0; i < size; i++) {
+    msg->primitive_values[i].bool_value = (i % 2 == 0) ? false : true;
+    msg->primitive_values[i].byte_value = (i % 2 == 0) ? 0 : UINT8_MAX;
+    msg->primitive_values[i].char_value = (i % 2 == 0) ? SCHAR_MIN : SCHAR_MAX;
+    msg->primitive_values[i].float32_value = (i % 2 == 0) ? FLT_MIN : FLT_MAX;
+    msg->primitive_values[i].float64_value = (i % 2 == 0) ? DBL_MIN : DBL_MAX;
+    msg->primitive_values[i].int8_value = (i % 2 == 0) ? INT8_MIN : INT8_MAX;
+    msg->primitive_values[i].uint8_value = (i % 2 == 0) ? 0 : UINT8_MAX;
+    msg->primitive_values[i].int16_value = (i % 2 == 0) ? INT16_MIN : INT16_MAX;
+    msg->primitive_values[i].uint16_value = (i % 2 == 0) ? 0 : UINT16_MAX;
+    msg->primitive_values[i].int32_value = (i % 2 == 0) ? INT32_MIN : INT32_MAX;
+    msg->primitive_values[i].uint32_value = (i % 2 == 0) ? 0 : UINT32_MAX;
+    msg->primitive_values[i].int64_value = (i % 2 == 0) ? INT64_MIN : INT64_MAX;
+    msg->primitive_values[i].uint64_value = (i % 2 == 0) ? 0 : UINT64_MAX;
+    res = rosidl_generator_c__String__assign(&msg->primitive_values[i].string_value, "Test 1");
     EXPECT_EQ(true, res);
-  //   wire_msg->cablegram1[i].number = 3.1415f;
   }
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[0], "Test 1");
-  // EXPECT_EQ(true, res);
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[1], "Test 2");
-  // EXPECT_EQ(true, res);
-  // res = rosidl_generator_c__String__assign(&wire_msg->cablegram2.text_array[2], "Test 3");
-  // EXPECT_EQ(true, res);
-  // wire_msg->cablegram2.number_array[0] = 3.1f;
-  // wire_msg->cablegram2.number_array[1] = 3.14f;
-  // wire_msg->cablegram2.number_array[2] = 3.141f;
 
   for (i = 0; i < 4; i++) {
-    res = true;
-    EXPECT_EQ(true, res);
-  //   EXPECT_EQ(0, strcmp(wire_msg->cablegram1[i].text.data, TEST_STRING));
-  //   EXPECT_EQ(3.1415f, wire_msg->cablegram1[i].number);
+    EXPECT_EQ(((i % 2 == 0) ? false : true), msg->primitive_values[i].bool_value);
+    EXPECT_EQ(((i % 2 == 0) ? 0 : UINT8_MAX), msg->primitive_values[i].byte_value);
+    EXPECT_EQ(((i % 2 == 0) ? SCHAR_MIN : SCHAR_MAX), msg->primitive_values[i].char_value);
+    EXPECT_EQ(((i % 2 == 0) ? FLT_MIN : FLT_MAX), msg->primitive_values[i].float32_value);
+    EXPECT_EQ(((i % 2 == 0) ? DBL_MIN : DBL_MAX), msg->primitive_values[i].float64_value);
+    EXPECT_EQ(((i % 2 == 0) ? INT8_MIN : INT8_MAX), msg->primitive_values[i].int8_value);
+    EXPECT_EQ(((i % 2 == 0) ? 0 : UINT8_MAX), msg->primitive_values[i].uint8_value);
+    EXPECT_EQ(((i % 2 == 0) ? INT16_MIN : INT16_MAX), msg->primitive_values[i].int16_value);
+    EXPECT_EQ(((i % 2 == 0) ? 0 : UINT16_MAX), msg->primitive_values[i].uint16_value);
+    EXPECT_EQ(((i % 2 == 0) ? INT32_MIN : INT32_MAX), msg->primitive_values[i].int32_value);
+    EXPECT_EQ(((i % 2 == 0) ? 0 : UINT32_MAX), msg->primitive_values[i].uint32_value);
+    EXPECT_EQ(((i % 2 == 0) ? INT64_MIN : INT64_MAX), msg->primitive_values[i].int64_value);
+    EXPECT_EQ(((i % 2 == 0) ? 0 : UINT64_MAX), msg->primitive_values[i].uint64_value);
+    EXPECT_EQ(0, strcmp(msg->primitive_values[i].string_value.data, "Test 1"));
   }
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[0].data, "Test 1"));
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[1].data, "Test 2"));
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[2].data, "Test 3"));
-  // EXPECT_EQ(3.1f, wire_msg->cablegram2.number_array[0]);
-  // EXPECT_EQ(3.14f, wire_msg->cablegram2.number_array[1]);
-  // EXPECT_EQ(3.141f, wire_msg->cablegram2.number_array[2]);
 
-  // rosidl_generator_c__msg__Wire__destroy(wire_msg);
   rosidl_generator_c__msg__StaticArrayNested__destroy(msg);
 
   return 0;
@@ -1142,51 +1146,88 @@ int test_dynamic_array_primitives_nested(void)
   size_t size = 4;
   rosidl_generator_c__msg__DynamicArrayPrimitivesNested * msg =
     rosidl_generator_c__msg__DynamicArrayPrimitivesNested__create();
-  // rosidl_generator_c__msg__Wire * wire_msg = rosidl_generator_c__msg__Wire__create();
   rosidl_generator_c__msg__DynamicArrayPrimitives__Array__init(&msg->msgs, size);
 
   for (i = 0; i < size; i++) {
-    // TODO(mikaelarguedas) Find why failure without the following line!
-    res = rosidl_generator_c__bool__Array__init(&msg->msgs.data[0].bool_values, ARRAY_SIZE);
+    res = rosidl_generator_c__bool__Array__init(&msg->msgs.data[i].bool_values, size);
     EXPECT_EQ(true, res);
-    msg->msgs.data[0].bool_values.data[0] = NULL;
-    // msg->msgs.data[1].bool_values.data[1] = true;
-    // msg->msgs.data[0].byte_value = 0;
-    // msg->msgs.data[1].byte_value = UINT8_MAX;
-    // msg->msgs.data[0].char_value = SCHAR_MIN;
-    // msg->msgs.data[1].char_value = SCHAR_MAX;
-    // msg->msgs.data[0].int8_value = INT8_MIN;
-    // msg->msgs.data[1].int8_value = INT8_MAX;
-    // msg->msgs.data[0].uint8_value = 0;
-    // msg->msgs.data[1].uint8_value = UINT8_MAX;
-    // msg->msgs.data[0].int16_value = INT16_MIN;
-    // msg->msgs.data[1].int16_value = INT16_MAX;
-    // msg->msgs.data[0].uint16_value = 0;
-    // msg->msgs.data[1].uint16_value = UINT16_MAX;
-    // msg->msgs.data[0].int32_value = INT32_MIN;
-    // msg->msgs.data[1].int32_value = INT32_MAX;
-    // msg->msgs.data[0].uint32_value = 0;
-    // msg->msgs.data[1].uint32_value = UINT32_MAX;
-    // msg->msgs.data[0].int64_value = INT64_MIN;
-    // msg->msgs.data[1].int64_value = INT64_MAX;
-    // msg->msgs.data[0].uint64_value = 0;
-    // msg->msgs.data[1].uint64_value = UINT64_MAX;
-    // res = rosidl_generator_c__String__assign(&msg->msgs.data[0].string_value, TEST_STRING);
-    // EXPECT_EQ(true, res);
-    // res = rosidl_generator_c__String__assign(&msg->msgs.data[1].string_value, TEST_STRING);
-    // EXPECT_EQ(true, res);
+    msg->msgs.data[i].bool_values.data[0] = false;
+    msg->msgs.data[i].bool_values.data[1] = true;
+    res = rosidl_generator_c__byte__Array__init(&msg->msgs.data[i].byte_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].byte_values.data[0] = 0;
+    msg->msgs.data[i].byte_values.data[1] = UINT8_MAX;
+    res = rosidl_generator_c__char__Array__init(&msg->msgs.data[i].char_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].char_values.data[0] = SCHAR_MIN;
+    msg->msgs.data[i].char_values.data[1] = SCHAR_MAX;
+    res = rosidl_generator_c__int8__Array__init(&msg->msgs.data[i].int8_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].int8_values.data[0] = INT8_MIN;
+    msg->msgs.data[i].int8_values.data[1] = INT8_MAX;
+    res = rosidl_generator_c__uint8__Array__init(&msg->msgs.data[i].uint8_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].uint8_values.data[0] = 0;
+    msg->msgs.data[i].uint8_values.data[1] = UINT8_MAX;
+    res = rosidl_generator_c__int16__Array__init(&msg->msgs.data[i].int16_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].int16_values.data[0] = INT16_MIN;
+    msg->msgs.data[i].int16_values.data[1] = INT16_MAX;
+    res = rosidl_generator_c__uint16__Array__init(&msg->msgs.data[i].uint16_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].uint16_values.data[0] = 0;
+    msg->msgs.data[i].uint16_values.data[1] = UINT16_MAX;
+    res = rosidl_generator_c__int32__Array__init(&msg->msgs.data[i].int32_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].int32_values.data[0] = INT32_MIN;
+    msg->msgs.data[i].int32_values.data[1] = INT32_MAX;
+    res = rosidl_generator_c__uint32__Array__init(&msg->msgs.data[i].uint32_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].uint32_values.data[0] = 0;
+    msg->msgs.data[i].uint32_values.data[1] = UINT32_MAX;
+    res = rosidl_generator_c__int64__Array__init(&msg->msgs.data[i].int64_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].int64_values.data[0] = INT64_MIN;
+    msg->msgs.data[i].int64_values.data[1] = INT64_MAX;
+    res = rosidl_generator_c__uint64__Array__init(&msg->msgs.data[i].uint64_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].uint64_values.data[0] = 0;
+    msg->msgs.data[i].uint64_values.data[1] = UINT64_MAX;
+    res = rosidl_generator_c__String__Array__init(&msg->msgs.data[i].string_values, size);
+    EXPECT_EQ(true, res);
+    res = rosidl_generator_c__String__assign(&msg->msgs.data[i].string_values.data[0], TEST_STRING);
+    EXPECT_EQ(true, res);
+    res = rosidl_generator_c__String__assign(&msg->msgs.data[i].string_values.data[1], TEST_STRING);
+    EXPECT_EQ(true, res);
   }
 
-  // for (i = 0; i < 3; i++) {
-  //   EXPECT_EQ(0, strcmp(wire_msg->cablegram1[i].text.data, TEST_STRING));
-  //   EXPECT_EQ(3.1415f, wire_msg->cablegram1[i].number);
-  // }
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[0].data, "Test 1"));
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[1].data, "Test 2"));
-  // EXPECT_EQ(0, strcmp(wire_msg->cablegram2.text_array[2].data, "Test 3"));
-  // EXPECT_EQ(3.1f, wire_msg->cablegram2.number_array[0]);
-  // EXPECT_EQ(3.14f, wire_msg->cablegram2.number_array[1]);
-  // EXPECT_EQ(3.141f, wire_msg->cablegram2.number_array[2]);
+  for (i = 0; i < size; i++) {
+  //test the rest of the values here
+    EXPECT_EQ(false, msg->msgs.data[i].bool_values.data[0]);
+    EXPECT_EQ(true, msg->msgs.data[i].bool_values.data[1]);
+    EXPECT_EQ(0, msg->msgs.data[i].byte_values.data[0]);
+    EXPECT_EQ(UINT8_MAX, msg->msgs.data[i].byte_values.data[1]);
+    EXPECT_EQ(SCHAR_MIN, msg->msgs.data[i].char_values.data[0]);
+    EXPECT_EQ(SCHAR_MAX, msg->msgs.data[i].char_values.data[1]);
+    EXPECT_EQ(INT8_MIN, msg->msgs.data[i].int8_values.data[0]);
+    EXPECT_EQ(INT8_MAX, msg->msgs.data[i].int8_values.data[1]);
+    EXPECT_EQ(0, msg->msgs.data[i].uint8_values.data[0]);
+    EXPECT_EQ(UINT8_MAX, msg->msgs.data[i].uint8_values.data[1]);
+    EXPECT_EQ(INT16_MIN, msg->msgs.data[i].int16_values.data[0]);
+    EXPECT_EQ(INT16_MAX, msg->msgs.data[i].int16_values.data[1]);
+    EXPECT_EQ(0, msg->msgs.data[i].uint16_values.data[0]);
+    EXPECT_EQ(UINT16_MAX, msg->msgs.data[i].uint16_values.data[1]);
+    EXPECT_EQ(INT32_MIN, msg->msgs.data[i].int32_values.data[0]);
+    EXPECT_EQ(INT32_MAX, msg->msgs.data[i].int32_values.data[1]);
+    EXPECT_EQ(0, msg->msgs.data[i].uint32_values.data[0]);
+    EXPECT_EQ(UINT32_MAX, msg->msgs.data[i].uint32_values.data[1]);
+    EXPECT_EQ(INT64_MIN, msg->msgs.data[i].int64_values.data[0]);
+    EXPECT_EQ(INT64_MAX, msg->msgs.data[i].int64_values.data[1]);
+    EXPECT_EQ(0, msg->msgs.data[i].uint64_values.data[0]);
+    EXPECT_EQ(UINT64_MAX, msg->msgs.data[i].uint64_values.data[1]);
+    EXPECT_EQ(0, strcmp(msg->msgs.data[i].string_values.data[0].data, TEST_STRING));
+    EXPECT_EQ(0, strcmp(msg->msgs.data[i].string_values.data[1].data, TEST_STRING));
+  }
 
   // rosidl_generator_c__msg__Wire__destroy(wire_msg);
   rosidl_generator_c__msg__DynamicArrayPrimitivesNested__destroy(msg);

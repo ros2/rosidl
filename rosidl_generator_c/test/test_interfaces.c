@@ -911,6 +911,7 @@ int test_submessages(void)
 int test_bounded_array_nested(void)
 {
   bool res;
+  // We don't populate every array element to test the destruction of uninitialized arrays
   size_t size = 4;
   rosidl_generator_c__msg__BoundedArrayNested * msg =
     rosidl_generator_c__msg__BoundedArrayNested__create();
@@ -991,6 +992,7 @@ int test_bounded_array_nested(void)
 int test_dynamic_array_nested(void)
 {
   bool res;
+  // We don't populate every array element to test the destruction of uninitialized arrays
   size_t size = 4;
 
   rosidl_generator_c__msg__DynamicArrayNested * msg =
@@ -1073,6 +1075,7 @@ int test_static_array_nested(void)
 {
   int i;
   bool res;
+  // We don't populate every array element to test the destruction of uninitialized arrays
   size_t size = 4;
 
   rosidl_generator_c__msg__StaticArrayNested * msg =
@@ -1125,6 +1128,7 @@ int test_dynamic_array_primitives_nested(void)
 {
   int i;
   bool res;
+  // We don't populate every array element to test the destruction of uninitialized arrays
   size_t size = 4;
   rosidl_generator_c__msg__DynamicArrayPrimitivesNested * msg =
     rosidl_generator_c__msg__DynamicArrayPrimitivesNested__create();

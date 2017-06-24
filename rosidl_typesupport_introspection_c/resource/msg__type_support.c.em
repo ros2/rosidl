@@ -185,6 +185,7 @@ static const rosidl_typesupport_introspection_c__MessageMembers @(function_prefi
   "@(spec.base_type.pkg_name)",  // package name
   "@(spec.base_type.type)",  // message name
   @(len(spec.fields)),  // number of fields
+  sizeof(@(spec.base_type.pkg_name)__@(subfolder)__@(spec.base_type.type)),
 @[if spec.fields]@
   @(function_prefix)__@(spec.base_type.type)_message_member_array  // message members
 @[else]@

@@ -142,6 +142,7 @@ static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(spec.base_
   "@(spec.base_type.pkg_name)",  // package name
   "@(spec.base_type.type)",  // message name
   @(len(spec.fields)),  // number of fields
+  sizeof(@(spec.base_type.pkg_name)::@(subfolder)::@(spec.base_type.type)),
 @[if spec.fields]@
   @(spec.base_type.type)_message_member_array  // message members
 @[else]@

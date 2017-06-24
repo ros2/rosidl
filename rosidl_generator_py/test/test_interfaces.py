@@ -134,6 +134,8 @@ def test_check_constraints():
     a.ub_string = 'a' * 22
     assert 'a' * 22 == a.ub_string
     assert_raises(AssertionError, setattr, a, 'ub_string', 'a' * 23)
+    assert len('こ' * 22) == 22
+    assert_raises(AssertionError, setattr, a, 'ub_string', 'こ' * 22)
 
     b = Nested()
     primitives = Primitives()

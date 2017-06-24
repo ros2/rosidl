@@ -211,7 +211,7 @@ bound = 2**nbits
 @[      end if]@
 @[  elif field.type.string_upper_bound]@
             ((isinstance(value, str) or isinstance(value, UserString)) and
-             len(value) <= @(field.type.string_upper_bound))
+             len(value.encode('utf-8')) <= @(field.type.string_upper_bound))
 @[  elif not field.type.is_primitive_type()]@
             isinstance(value, @(field.type.type))
 @[  elif field.type.type == 'byte']@

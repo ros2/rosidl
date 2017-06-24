@@ -47,6 +47,7 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMembers
   const char * package_name_;
   const char * message_name_;
   uint32_t member_count_;
+  size_t size_of_;
   const MessageMember * members_;
 } MessageMembers;
 

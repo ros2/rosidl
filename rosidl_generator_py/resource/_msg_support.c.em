@@ -225,14 +225,6 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   return ros_message;
 }
 
-void @(spec.base_type.pkg_name)_@(module_name)__destroy_ros_message(void * raw_ros_message)
-{
-  @(msg_typename) * ros_message = (@(msg_typename) *)raw_ros_message;
-  (void)ros_message;
-
-  @(msg_typename)__destroy(ros_message);
-}
-
 PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_ros_message)
 {
   @(msg_typename) * ros_message = (@(msg_typename) *)raw_ros_message;

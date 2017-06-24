@@ -24,53 +24,37 @@
 #include "rosidl_generator_c/primitives_array_functions.h"
 #include "rosidl_generator_c/string_functions.h"
 
-#include "rosidl_generator_c/msg/various__struct.h"
-#include "rosidl_generator_c/msg/bool__struct.h"
-#include "rosidl_generator_c/msg/byte__struct.h"
-#include "rosidl_generator_c/msg/char__struct.h"
-#include "rosidl_generator_c/msg/float32__struct.h"
-#include "rosidl_generator_c/msg/float64__struct.h"
-#include "rosidl_generator_c/msg/int8__struct.h"
-#include "rosidl_generator_c/msg/int16__struct.h"
-#include "rosidl_generator_c/msg/int32__struct.h"
-#include "rosidl_generator_c/msg/int64__struct.h"
-#include "rosidl_generator_c/msg/uint8__struct.h"
-#include "rosidl_generator_c/msg/uint16__struct.h"
-#include "rosidl_generator_c/msg/uint32__struct.h"
-#include "rosidl_generator_c/msg/uint64__struct.h"
-#include "rosidl_generator_c/msg/primitive_values__struct.h"
-#include "rosidl_generator_c/msg/strings__struct.h"
-#include "rosidl_generator_c/msg/primitives_unbounded_arrays__struct.h"
-#include "rosidl_generator_c/msg/primitives_bounded_arrays__struct.h"
-#include "rosidl_generator_c/msg/primitives_static_arrays__struct.h"
-#include "rosidl_generator_c/msg/telegram1__struct.h"
-#include "rosidl_generator_c/msg/telegram2__struct.h"
-#include "rosidl_generator_c/msg/wire__struct.h"
-#include "rosidl_generator_c/msg/constants__struct.h"
-
-#include "rosidl_generator_c/msg/various__functions.h"
-#include "rosidl_generator_c/msg/bool__functions.h"
-#include "rosidl_generator_c/msg/byte__functions.h"
-#include "rosidl_generator_c/msg/char__functions.h"
-#include "rosidl_generator_c/msg/float32__functions.h"
-#include "rosidl_generator_c/msg/float64__functions.h"
-#include "rosidl_generator_c/msg/int8__functions.h"
-#include "rosidl_generator_c/msg/int16__functions.h"
-#include "rosidl_generator_c/msg/int32__functions.h"
-#include "rosidl_generator_c/msg/int64__functions.h"
-#include "rosidl_generator_c/msg/uint8__functions.h"
-#include "rosidl_generator_c/msg/uint16__functions.h"
-#include "rosidl_generator_c/msg/uint32__functions.h"
-#include "rosidl_generator_c/msg/uint64__functions.h"
-#include "rosidl_generator_c/msg/primitive_values__functions.h"
-#include "rosidl_generator_c/msg/strings__functions.h"
-#include "rosidl_generator_c/msg/primitives_unbounded_arrays__functions.h"
-#include "rosidl_generator_c/msg/primitives_bounded_arrays__functions.h"
-#include "rosidl_generator_c/msg/primitives_static_arrays__functions.h"
-#include "rosidl_generator_c/msg/telegram1__functions.h"
-#include "rosidl_generator_c/msg/telegram2__functions.h"
-#include "rosidl_generator_c/msg/wire__functions.h"
-#include "rosidl_generator_c/msg/constants__functions.h"
+#include "rosidl_generator_c/msg/bool.h"
+#include "rosidl_generator_c/msg/bounded_array_nested.h"
+#include "rosidl_generator_c/msg/byte.h"
+#include "rosidl_generator_c/msg/char.h"
+#include "rosidl_generator_c/msg/constants.h"
+#include "rosidl_generator_c/msg/dynamic_array_nested.h"
+#include "rosidl_generator_c/msg/dynamic_array_primitives_nested.h"
+#include "rosidl_generator_c/msg/dynamic_array_primitives.h"
+#include "rosidl_generator_c/msg/empty.h"
+#include "rosidl_generator_c/msg/float32.h"
+#include "rosidl_generator_c/msg/float64.h"
+#include "rosidl_generator_c/msg/int16.h"
+#include "rosidl_generator_c/msg/int32.h"
+#include "rosidl_generator_c/msg/int64.h"
+#include "rosidl_generator_c/msg/int8.h"
+#include "rosidl_generator_c/msg/nested.h"
+#include "rosidl_generator_c/msg/primitives_bounded_arrays.h"
+#include "rosidl_generator_c/msg/primitives_static_arrays.h"
+#include "rosidl_generator_c/msg/primitives.h"
+#include "rosidl_generator_c/msg/primitives_unbounded_arrays.h"
+#include "rosidl_generator_c/msg/primitive_values.h"
+#include "rosidl_generator_c/msg/static_array_nested.h"
+#include "rosidl_generator_c/msg/strings.h"
+#include "rosidl_generator_c/msg/telegram1.h"
+#include "rosidl_generator_c/msg/telegram2.h"
+#include "rosidl_generator_c/msg/uint16.h"
+#include "rosidl_generator_c/msg/uint32.h"
+#include "rosidl_generator_c/msg/uint64.h"
+#include "rosidl_generator_c/msg/uint8.h"
+#include "rosidl_generator_c/msg/various.h"
+#include "rosidl_generator_c/msg/wire.h"
 
 #define TEST_STRING \
   "Deep into that darkness peering, long I stood there wondering, fearing"
@@ -87,6 +71,10 @@ int test_primitives_unbounded_arrays(void);
 int test_primitives_bounded_arrays(void);
 int test_primitives_static_arrays(void);
 int test_submessages(void);
+int test_bounded_array_nested(void);
+int test_dynamic_array_nested(void);
+int test_dynamic_array_primitives_nested(void);
+int test_static_array_nested(void);
 
 int main(void)
 {
@@ -125,6 +113,26 @@ int main(void)
   printf("Testing nested sub-messages...\n");
   if (test_submessages()) {
     fprintf(stderr, "test_submessages() FAILED\n");
+    rc++;
+  }
+  printf("Testing static_array_nested messages...\n");
+  if (test_static_array_nested()) {
+    fprintf(stderr, "test_static_array_nested() FAILED\n");
+    rc++;
+  }
+  printf("Testing bounded_array_nested messages...\n");
+  if (test_bounded_array_nested()) {
+    fprintf(stderr, "test_bounded_array_nested() FAILED\n");
+    rc++;
+  }
+  printf("Testing dynamic_array_nested messages...\n");
+  if (test_dynamic_array_nested()) {
+    fprintf(stderr, "test_dynamic_array_nested() FAILED\n");
+    rc++;
+  }
+  printf("Testing dynamic_array_primitives_nested messages...\n");
+  if (test_dynamic_array_primitives_nested()) {
+    fprintf(stderr, "test_dynamic_array_primitives_nested() FAILED\n");
     rc++;
   }
   if (rc != 0) {
@@ -893,6 +901,332 @@ int test_submessages(void)
   EXPECT_EQ(3.141f, wire_msg->cablegram2.number_array[2]);
 
   rosidl_generator_c__msg__Wire__destroy(wire_msg);
+
+  return 0;
+}
+
+/**
+ * Test message with bounded array nested types
+ */
+int test_bounded_array_nested(void)
+{
+  bool res;
+  // We don't populate every array element to test the destruction of uninitialized arrays
+  size_t size = 4;
+  rosidl_generator_c__msg__BoundedArrayNested * msg =
+    rosidl_generator_c__msg__BoundedArrayNested__create();
+
+  rosidl_generator_c__msg__Primitives__Array__init(&msg->primitive_values, size);
+  msg->primitive_values.data[0].bool_value = false;
+  msg->primitive_values.data[1].bool_value = true;
+  msg->primitive_values.data[0].byte_value = 0;
+  msg->primitive_values.data[1].byte_value = UINT8_MAX;
+  msg->primitive_values.data[0].char_value = SCHAR_MIN;
+  msg->primitive_values.data[1].char_value = SCHAR_MAX;
+  msg->primitive_values.data[0].float32_value = FLT_MIN;
+  msg->primitive_values.data[1].float32_value = FLT_MAX;
+  msg->primitive_values.data[0].float64_value = DBL_MIN;
+  msg->primitive_values.data[1].float64_value = DBL_MAX;
+  msg->primitive_values.data[0].int8_value = INT8_MIN;
+  msg->primitive_values.data[1].int8_value = INT8_MAX;
+  msg->primitive_values.data[0].uint8_value = 0;
+  msg->primitive_values.data[1].uint8_value = UINT8_MAX;
+  msg->primitive_values.data[0].int16_value = INT16_MIN;
+  msg->primitive_values.data[1].int16_value = INT16_MAX;
+  msg->primitive_values.data[0].uint16_value = 0;
+  msg->primitive_values.data[1].uint16_value = UINT16_MAX;
+  msg->primitive_values.data[0].int32_value = INT32_MIN;
+  msg->primitive_values.data[1].int32_value = INT32_MAX;
+  msg->primitive_values.data[0].uint32_value = 0;
+  msg->primitive_values.data[1].uint32_value = UINT32_MAX;
+  msg->primitive_values.data[0].int64_value = INT64_MIN;
+  msg->primitive_values.data[1].int64_value = INT64_MAX;
+  msg->primitive_values.data[0].uint64_value = 0;
+  msg->primitive_values.data[1].uint64_value = UINT64_MAX;
+  res = rosidl_generator_c__String__assign(
+    &msg->primitive_values.data[0].string_value, TEST_STRING);
+  EXPECT_EQ(true, res);
+  res = rosidl_generator_c__String__assign(
+    &msg->primitive_values.data[1].string_value, TEST_STRING);
+  EXPECT_EQ(true, res);
+
+  // now lets verify if it's actually the expected values
+  EXPECT_EQ(false, msg->primitive_values.data[0].bool_value);
+  EXPECT_EQ(true, msg->primitive_values.data[1].bool_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].byte_value);
+  EXPECT_EQ(UINT8_MAX, msg->primitive_values.data[1].byte_value);
+  EXPECT_EQ(SCHAR_MIN, msg->primitive_values.data[0].char_value);
+  EXPECT_EQ(SCHAR_MAX, msg->primitive_values.data[1].char_value);
+  EXPECT_EQ(FLT_MIN, msg->primitive_values.data[0].float32_value);
+  EXPECT_EQ(FLT_MAX, msg->primitive_values.data[1].float32_value);
+  EXPECT_EQ(DBL_MIN, msg->primitive_values.data[0].float64_value);
+  EXPECT_EQ(DBL_MAX, msg->primitive_values.data[1].float64_value);
+  EXPECT_EQ(INT8_MIN, msg->primitive_values.data[0].int8_value);
+  EXPECT_EQ(INT8_MAX, msg->primitive_values.data[1].int8_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint8_value);
+  EXPECT_EQ(UINT8_MAX, msg->primitive_values.data[1].uint8_value);
+  EXPECT_EQ(INT16_MIN, msg->primitive_values.data[0].int16_value);
+  EXPECT_EQ(INT16_MAX, msg->primitive_values.data[1].int16_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint16_value);
+  EXPECT_EQ(UINT16_MAX, msg->primitive_values.data[1].uint16_value);
+  EXPECT_EQ(INT32_MIN, msg->primitive_values.data[0].int32_value);
+  EXPECT_EQ(INT32_MAX, msg->primitive_values.data[1].int32_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint32_value);
+  EXPECT_EQ(UINT32_MAX, msg->primitive_values.data[1].uint32_value);
+  EXPECT_EQ(INT64_MIN, msg->primitive_values.data[0].int64_value);
+  EXPECT_EQ(INT64_MAX, msg->primitive_values.data[1].int64_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint64_value);
+  EXPECT_EQ(UINT64_MAX, msg->primitive_values.data[1].uint64_value);
+
+  EXPECT_EQ(0, strcmp(msg->primitive_values.data[0].string_value.data, TEST_STRING));
+  EXPECT_EQ(0, strcmp(msg->primitive_values.data[1].string_value.data, TEST_STRING));
+
+  rosidl_generator_c__msg__BoundedArrayNested__destroy(msg);
+
+  return 0;
+}
+
+/**
+ * Test message with sub-messages types
+ */
+int test_dynamic_array_nested(void)
+{
+  bool res;
+  // We don't populate every array element to test the destruction of uninitialized arrays
+  size_t size = 4;
+
+  rosidl_generator_c__msg__DynamicArrayNested * msg =
+    rosidl_generator_c__msg__DynamicArrayNested__create();
+
+  rosidl_generator_c__msg__Primitives__Array__init(&msg->primitive_values, size);
+  msg->primitive_values.data[0].bool_value = false;
+  msg->primitive_values.data[1].bool_value = true;
+  msg->primitive_values.data[0].byte_value = 0;
+  msg->primitive_values.data[1].byte_value = UINT8_MAX;
+  msg->primitive_values.data[0].char_value = SCHAR_MIN;
+  msg->primitive_values.data[1].char_value = SCHAR_MAX;
+  msg->primitive_values.data[0].float32_value = FLT_MIN;
+  msg->primitive_values.data[1].float32_value = FLT_MAX;
+  msg->primitive_values.data[0].float64_value = DBL_MIN;
+  msg->primitive_values.data[1].float64_value = DBL_MAX;
+  msg->primitive_values.data[0].int8_value = INT8_MIN;
+  msg->primitive_values.data[1].int8_value = INT8_MAX;
+  msg->primitive_values.data[0].uint8_value = 0;
+  msg->primitive_values.data[1].uint8_value = UINT8_MAX;
+  msg->primitive_values.data[0].int16_value = INT16_MIN;
+  msg->primitive_values.data[1].int16_value = INT16_MAX;
+  msg->primitive_values.data[0].uint16_value = 0;
+  msg->primitive_values.data[1].uint16_value = UINT16_MAX;
+  msg->primitive_values.data[0].int32_value = INT32_MIN;
+  msg->primitive_values.data[1].int32_value = INT32_MAX;
+  msg->primitive_values.data[0].uint32_value = 0;
+  msg->primitive_values.data[1].uint32_value = UINT32_MAX;
+  msg->primitive_values.data[0].int64_value = INT64_MIN;
+  msg->primitive_values.data[1].int64_value = INT64_MAX;
+  msg->primitive_values.data[0].uint64_value = 0;
+  msg->primitive_values.data[1].uint64_value = UINT64_MAX;
+  res = rosidl_generator_c__String__assign(
+    &msg->primitive_values.data[0].string_value, TEST_STRING);
+  EXPECT_EQ(true, res);
+  res = rosidl_generator_c__String__assign(
+    &msg->primitive_values.data[1].string_value, TEST_STRING);
+  EXPECT_EQ(true, res);
+
+  // now lets verify if it's actually the expected values
+  EXPECT_EQ(false, msg->primitive_values.data[0].bool_value);
+  EXPECT_EQ(true, msg->primitive_values.data[1].bool_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].byte_value);
+  EXPECT_EQ(UINT8_MAX, msg->primitive_values.data[1].byte_value);
+  EXPECT_EQ(SCHAR_MIN, msg->primitive_values.data[0].char_value);
+  EXPECT_EQ(SCHAR_MAX, msg->primitive_values.data[1].char_value);
+  EXPECT_EQ(FLT_MIN, msg->primitive_values.data[0].float32_value);
+  EXPECT_EQ(FLT_MAX, msg->primitive_values.data[1].float32_value);
+  EXPECT_EQ(DBL_MIN, msg->primitive_values.data[0].float64_value);
+  EXPECT_EQ(DBL_MAX, msg->primitive_values.data[1].float64_value);
+  EXPECT_EQ(INT8_MIN, msg->primitive_values.data[0].int8_value);
+  EXPECT_EQ(INT8_MAX, msg->primitive_values.data[1].int8_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint8_value);
+  EXPECT_EQ(UINT8_MAX, msg->primitive_values.data[1].uint8_value);
+  EXPECT_EQ(INT16_MIN, msg->primitive_values.data[0].int16_value);
+  EXPECT_EQ(INT16_MAX, msg->primitive_values.data[1].int16_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint16_value);
+  EXPECT_EQ(UINT16_MAX, msg->primitive_values.data[1].uint16_value);
+  EXPECT_EQ(INT32_MIN, msg->primitive_values.data[0].int32_value);
+  EXPECT_EQ(INT32_MAX, msg->primitive_values.data[1].int32_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint32_value);
+  EXPECT_EQ(UINT32_MAX, msg->primitive_values.data[1].uint32_value);
+  EXPECT_EQ(INT64_MIN, msg->primitive_values.data[0].int64_value);
+  EXPECT_EQ(INT64_MAX, msg->primitive_values.data[1].int64_value);
+  EXPECT_EQ(0, msg->primitive_values.data[0].uint64_value);
+  EXPECT_EQ(UINT64_MAX, msg->primitive_values.data[1].uint64_value);
+
+  EXPECT_EQ(0, strcmp(msg->primitive_values.data[0].string_value.data, TEST_STRING));
+  EXPECT_EQ(0, strcmp(msg->primitive_values.data[1].string_value.data, TEST_STRING));
+
+  rosidl_generator_c__msg__DynamicArrayNested__destroy(msg);
+
+  return 0;
+}
+
+/**
+ * Test message with sub-messages types
+ */
+int test_static_array_nested(void)
+{
+  int i;
+  bool res;
+  // We don't populate every array element to test the destruction of uninitialized arrays
+  size_t size = 4;
+
+  rosidl_generator_c__msg__StaticArrayNested * msg =
+    rosidl_generator_c__msg__StaticArrayNested__create();
+
+  for (i = 0; i < size; i++) {
+    msg->primitive_values[i].bool_value = (i % 2 == 0) ? false : true;
+    msg->primitive_values[i].byte_value = (i % 2 == 0) ? 0 : UINT8_MAX;
+    msg->primitive_values[i].char_value = (i % 2 == 0) ? SCHAR_MIN : SCHAR_MAX;
+    msg->primitive_values[i].float32_value = (i % 2 == 0) ? FLT_MIN : FLT_MAX;
+    msg->primitive_values[i].float64_value = (i % 2 == 0) ? DBL_MIN : DBL_MAX;
+    msg->primitive_values[i].int8_value = (i % 2 == 0) ? INT8_MIN : INT8_MAX;
+    msg->primitive_values[i].uint8_value = (i % 2 == 0) ? 0 : UINT8_MAX;
+    msg->primitive_values[i].int16_value = (i % 2 == 0) ? INT16_MIN : INT16_MAX;
+    msg->primitive_values[i].uint16_value = (i % 2 == 0) ? 0 : UINT16_MAX;
+    msg->primitive_values[i].int32_value = (i % 2 == 0) ? INT32_MIN : INT32_MAX;
+    msg->primitive_values[i].uint32_value = (i % 2 == 0) ? 0 : UINT32_MAX;
+    msg->primitive_values[i].int64_value = (i % 2 == 0) ? INT64_MIN : INT64_MAX;
+    msg->primitive_values[i].uint64_value = (i % 2 == 0) ? 0 : UINT64_MAX;
+    res = rosidl_generator_c__String__assign(&msg->primitive_values[i].string_value, "Test 1");
+    EXPECT_EQ(true, res);
+  }
+
+  for (i = 0; i < 4; i++) {
+    EXPECT_EQ(((i % 2 == 0) ? false : true), msg->primitive_values[i].bool_value);
+    EXPECT_EQ(((i % 2 == 0) ? 0 : UINT8_MAX), msg->primitive_values[i].byte_value);
+    EXPECT_EQ(((i % 2 == 0) ? SCHAR_MIN : SCHAR_MAX), msg->primitive_values[i].char_value);
+    EXPECT_EQ(((i % 2 == 0) ? FLT_MIN : FLT_MAX), msg->primitive_values[i].float32_value);
+    EXPECT_EQ(((i % 2 == 0) ? DBL_MIN : DBL_MAX), msg->primitive_values[i].float64_value);
+    EXPECT_EQ(((i % 2 == 0) ? INT8_MIN : INT8_MAX), msg->primitive_values[i].int8_value);
+    EXPECT_EQ(((i % 2 == 0) ? 0 : UINT8_MAX), msg->primitive_values[i].uint8_value);
+    EXPECT_EQ(((i % 2 == 0) ? INT16_MIN : INT16_MAX), msg->primitive_values[i].int16_value);
+    EXPECT_EQ(((i % 2 == 0) ? 0 : UINT16_MAX), msg->primitive_values[i].uint16_value);
+    EXPECT_EQ(((i % 2 == 0) ? INT32_MIN : INT32_MAX), msg->primitive_values[i].int32_value);
+    EXPECT_EQ(((i % 2 == 0) ? 0 : UINT32_MAX), msg->primitive_values[i].uint32_value);
+    EXPECT_EQ(((i % 2 == 0) ? INT64_MIN : INT64_MAX), msg->primitive_values[i].int64_value);
+    EXPECT_EQ(((i % 2 == 0) ? 0 : UINT64_MAX), msg->primitive_values[i].uint64_value);
+    EXPECT_EQ(0, strcmp(msg->primitive_values[i].string_value.data, "Test 1"));
+  }
+
+  rosidl_generator_c__msg__StaticArrayNested__destroy(msg);
+
+  return 0;
+}
+
+/**
+ * Test message with sub-messages types
+ */
+int test_dynamic_array_primitives_nested(void)
+{
+  int i;
+  bool res;
+  // We don't populate every array element to test the destruction of uninitialized arrays
+  size_t size = 4;
+  rosidl_generator_c__msg__DynamicArrayPrimitivesNested * msg =
+    rosidl_generator_c__msg__DynamicArrayPrimitivesNested__create();
+  rosidl_generator_c__msg__DynamicArrayPrimitives__Array__init(&msg->msgs, size);
+
+  for (i = 0; i < size; i++) {
+    res = rosidl_generator_c__bool__Array__init(&msg->msgs.data[i].bool_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].bool_values.data[0] = false;
+    msg->msgs.data[i].bool_values.data[1] = true;
+    res = rosidl_generator_c__byte__Array__init(&msg->msgs.data[i].byte_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].byte_values.data[0] = 0;
+    msg->msgs.data[i].byte_values.data[1] = UINT8_MAX;
+    res = rosidl_generator_c__char__Array__init(&msg->msgs.data[i].char_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].char_values.data[0] = SCHAR_MIN;
+    msg->msgs.data[i].char_values.data[1] = SCHAR_MAX;
+    res = rosidl_generator_c__float32__Array__init(&msg->msgs.data[i].float32_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].float32_values.data[0] = FLT_MIN;
+    msg->msgs.data[i].float32_values.data[1] = FLT_MAX;
+    res = rosidl_generator_c__float64__Array__init(&msg->msgs.data[i].float64_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].float64_values.data[0] = DBL_MIN;
+    msg->msgs.data[i].float64_values.data[1] = DBL_MAX;
+    res = rosidl_generator_c__int8__Array__init(&msg->msgs.data[i].int8_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].int8_values.data[0] = INT8_MIN;
+    msg->msgs.data[i].int8_values.data[1] = INT8_MAX;
+    res = rosidl_generator_c__uint8__Array__init(&msg->msgs.data[i].uint8_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].uint8_values.data[0] = 0;
+    msg->msgs.data[i].uint8_values.data[1] = UINT8_MAX;
+    res = rosidl_generator_c__int16__Array__init(&msg->msgs.data[i].int16_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].int16_values.data[0] = INT16_MIN;
+    msg->msgs.data[i].int16_values.data[1] = INT16_MAX;
+    res = rosidl_generator_c__uint16__Array__init(&msg->msgs.data[i].uint16_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].uint16_values.data[0] = 0;
+    msg->msgs.data[i].uint16_values.data[1] = UINT16_MAX;
+    res = rosidl_generator_c__int32__Array__init(&msg->msgs.data[i].int32_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].int32_values.data[0] = INT32_MIN;
+    msg->msgs.data[i].int32_values.data[1] = INT32_MAX;
+    res = rosidl_generator_c__uint32__Array__init(&msg->msgs.data[i].uint32_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].uint32_values.data[0] = 0;
+    msg->msgs.data[i].uint32_values.data[1] = UINT32_MAX;
+    res = rosidl_generator_c__int64__Array__init(&msg->msgs.data[i].int64_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].int64_values.data[0] = INT64_MIN;
+    msg->msgs.data[i].int64_values.data[1] = INT64_MAX;
+    res = rosidl_generator_c__uint64__Array__init(&msg->msgs.data[i].uint64_values, size);
+    EXPECT_EQ(true, res);
+    msg->msgs.data[i].uint64_values.data[0] = 0;
+    msg->msgs.data[i].uint64_values.data[1] = UINT64_MAX;
+    res = rosidl_generator_c__String__Array__init(&msg->msgs.data[i].string_values, size);
+    EXPECT_EQ(true, res);
+    res = rosidl_generator_c__String__assign(&msg->msgs.data[i].string_values.data[0], TEST_STRING);
+    EXPECT_EQ(true, res);
+    res = rosidl_generator_c__String__assign(&msg->msgs.data[i].string_values.data[1], TEST_STRING);
+    EXPECT_EQ(true, res);
+  }
+
+  for (i = 0; i < size; i++) {
+    EXPECT_EQ(false, msg->msgs.data[i].bool_values.data[0]);
+    EXPECT_EQ(true, msg->msgs.data[i].bool_values.data[1]);
+    EXPECT_EQ(0, msg->msgs.data[i].byte_values.data[0]);
+    EXPECT_EQ(UINT8_MAX, msg->msgs.data[i].byte_values.data[1]);
+    EXPECT_EQ(SCHAR_MIN, msg->msgs.data[i].char_values.data[0]);
+    EXPECT_EQ(SCHAR_MAX, msg->msgs.data[i].char_values.data[1]);
+    EXPECT_EQ(FLT_MIN, msg->msgs.data[i].float32_values.data[0]);
+    EXPECT_EQ(FLT_MAX, msg->msgs.data[i].float32_values.data[1]);
+    EXPECT_EQ(DBL_MIN, msg->msgs.data[i].float64_values.data[0]);
+    EXPECT_EQ(DBL_MAX, msg->msgs.data[i].float64_values.data[1]);
+    EXPECT_EQ(INT8_MIN, msg->msgs.data[i].int8_values.data[0]);
+    EXPECT_EQ(INT8_MAX, msg->msgs.data[i].int8_values.data[1]);
+    EXPECT_EQ(0, msg->msgs.data[i].uint8_values.data[0]);
+    EXPECT_EQ(UINT8_MAX, msg->msgs.data[i].uint8_values.data[1]);
+    EXPECT_EQ(INT16_MIN, msg->msgs.data[i].int16_values.data[0]);
+    EXPECT_EQ(INT16_MAX, msg->msgs.data[i].int16_values.data[1]);
+    EXPECT_EQ(0, msg->msgs.data[i].uint16_values.data[0]);
+    EXPECT_EQ(UINT16_MAX, msg->msgs.data[i].uint16_values.data[1]);
+    EXPECT_EQ(INT32_MIN, msg->msgs.data[i].int32_values.data[0]);
+    EXPECT_EQ(INT32_MAX, msg->msgs.data[i].int32_values.data[1]);
+    EXPECT_EQ(0, msg->msgs.data[i].uint32_values.data[0]);
+    EXPECT_EQ(UINT32_MAX, msg->msgs.data[i].uint32_values.data[1]);
+    EXPECT_EQ(INT64_MIN, msg->msgs.data[i].int64_values.data[0]);
+    EXPECT_EQ(INT64_MAX, msg->msgs.data[i].int64_values.data[1]);
+    EXPECT_EQ(0, msg->msgs.data[i].uint64_values.data[0]);
+    EXPECT_EQ(UINT64_MAX, msg->msgs.data[i].uint64_values.data[1]);
+    EXPECT_EQ(0, strcmp(msg->msgs.data[i].string_values.data[0].data, TEST_STRING));
+    EXPECT_EQ(0, strcmp(msg->msgs.data[i].string_values.data[1].data, TEST_STRING));
+  }
+
+  rosidl_generator_c__msg__DynamicArrayPrimitivesNested__destroy(msg);
 
   return 0;
 }

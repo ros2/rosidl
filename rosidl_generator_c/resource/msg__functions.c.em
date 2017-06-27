@@ -82,7 +82,7 @@ for field in spec.fields:
         if field.type.is_primitive_type():
             if field.type.type == 'string':
                 lines.append('if (!rosidl_generator_c__String__init(&msg->%s)) %s' % (field.name, '{'))
-                lines.append('    %s__destroy(msg);' % msg_typename)
+                lines.append('  %s__destroy(msg);' % msg_typename)
                 lines.append('  return false;')
                 lines.append('}')
                 if field.default_value is not None:
@@ -126,6 +126,7 @@ for field in spec.fields:
         if field.default_value is None:
             # initialize the dynamic array with a capacity of zero
             lines.append('if (!%s__Array__init(&msg->%s, 0)) {' % (get_typename_of_base_type(field.type), field.name))
+            lines.append('  %s__destroy(msg);' % msg_typename)
             lines.append('  return false;')
             lines.append('}')
         else:

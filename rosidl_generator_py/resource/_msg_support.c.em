@@ -286,7 +286,6 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
       return NULL;
     }
     PyList_SetItem(py@(field.name), idx@(field.name), pyitem@(field.name));
-unch of warnings, but I don't see any of these as avoidable. Which is kind of a bummer.
   }
   assert(PySequence_Check(py@(field.name)));
 @[    else]@

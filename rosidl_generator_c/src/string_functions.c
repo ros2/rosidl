@@ -85,18 +85,13 @@ rosidl_generator_c__String__assignn(
   char * data = realloc(str->data, n + 1);
   if (!data) {
     free(str->data);
+    str->data = NULL;
     str->size = 0;
     str->capacity = 0;
     return false;
   }
-  data = strncpy(data, value, n);
-  if (!data) {
-    free(data);
-    free(str->data);
-    str->size = 0;
-    str->capacity = 0;
-    return false;
-  }
+  strncpy(data, value, n);
+  data[n] = '\0';
   str->data = data;
   str->size = n;
   str->capacity = n + 1;
@@ -120,13 +115,20 @@ rosidl_generator_c__String__Array__init(
   }
   rosidl_generator_c__String * data = NULL;
   if (size) {
-    data = (rosidl_generator_c__String *)calloc(size, sizeof(*data));
+    data = (rosidl_generator_c__String *)calloc(size, sizeof(rosidl_generator_c__String));
     if (!data) {
       return false;
     }
     // initialize all array elements
     for (size_t i = 0; i < size; ++i) {
-      rosidl_generator_c__String__init(&data[i]);
+      if (!rosidl_generator_c__String__init(&data[i])) {
+        /* free currently allocated and return false */
+        for (; i-- > 0; ) {
+          rosidl_generator_c__String__fini(&data[i]);
+        }
+        free(data);
+        return false;
+      }
     }
   }
   array->data = data;

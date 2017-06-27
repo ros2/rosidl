@@ -75,7 +75,6 @@ label_prefix = 'abort_init_'
 last_label_index = 0
 lines = []
 abort_lines = []
-cleanup_lines = []
 for field in spec.fields:
     lines.append('// ' + field.name)
     if not field.type.is_array:
@@ -86,7 +85,6 @@ for field in spec.fields:
                 lines.append('    %s__destroy(msg);' % msg_typename)
                 lines.append('  return false;')
                 lines.append('}')
-                cleanup_lines.append('rosidl_generator_c__String__fini(&msg->%s);' % field.name)
                 if field.default_value is not None:
                     lines.append('{')
                     value = value_to_c(field.type, field.default_value)
@@ -109,8 +107,6 @@ for field in spec.fields:
             lines.append('    %s__destroy(msg);' % msg_typename)
             lines.append('  return false;')
             lines.append('}')
-            cleanup_string = ('%s__%s__%s__fini(&msg->%s);' % (field.type.pkg_name, 'msg', field.type.type, field.name))
-            cleanup_lines.append(cleanup_string)
     elif field.type.is_fixed_size_array():
         if field.type.is_primitive_type() and field.type.type != 'string':
             if field.default_value is not None:
@@ -130,14 +126,8 @@ for field in spec.fields:
         if field.default_value is None:
             # initialize the dynamic array with a capacity of zero
             lines.append('if (!%s__Array__init(&msg->%s, 0)) {' % (get_typename_of_base_type(field.type), field.name))
-            cleanup_line = '  %s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name)
-            lines.append(cleanup_line)
             lines.append('  return false;')
             lines.append('}')
-            cleanup_line = '%s__Array__destroy(&msg->%s);' % (get_typename_of_base_type(field.type), field.name)
-            if field.type.is_primitive_type():
-                cleanup_line = '%s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name)
-            cleanup_lines.append(cleanup_line)
         else:
             # initialize the dynamic array with the number of default values
             lines.append('{')
@@ -192,9 +182,9 @@ for field in spec.fields:
             lines.append('  %s__fini(&msg->%s[i]);' % (get_typename_of_base_type(field.type), field.name))
             lines.append('}')
 
-    # else:
-    #     # finalize the dynamic array
-    #     lines.append('%s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name))
+    else:
+        # finalize the dynamic array
+        lines.append('%s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name))
 for line in lines:
     print('  ' + line)
 }@
@@ -203,11 +193,11 @@ for line in lines:
 @(msg_typename) *
 @(msg_typename)__create()
 {
-  @(msg_typename) * msg = (@(msg_typename) *)malloc(sizeof(*msg));
+  @(msg_typename) * msg = (@(msg_typename) *)malloc(sizeof(@(msg_typename)));
   if (!msg) {
     return NULL;
   }
-  memset(msg, 0, sizeof(*msg));
+  memset(msg, 0, sizeof(@(msg_typename)));
   bool success = @(msg_typename)__init(msg);
   if (!success) {
     free(msg);
@@ -220,13 +210,8 @@ void
 @(msg_typename)__destroy(@(msg_typename) * msg)
 {
   if (msg) {
-@{
-for line in reversed(cleanup_lines):
-    print('    %s' % (line))
-    print('    //tacotaco')
-}@
+    @(msg_typename)__fini(msg);
   }
-  @(msg_typename)__fini(msg);
   free(msg);
 }
 
@@ -242,7 +227,7 @@ bool
   }
   @(msg_typename) * data = NULL;
   if (size) {
-    data = (@(msg_typename) *)calloc(size, sizeof(*data));
+    data = (@(msg_typename) *)calloc(size, sizeof(@(msg_typename)));
     if (!data) {
       return false;
     }

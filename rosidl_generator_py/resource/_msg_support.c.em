@@ -81,6 +81,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   size_t size@(field.name) = PySequence_Size(py@(field.name));
   if (!@(nested_type)__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
     PyErr_SetString(PyExc_RuntimeError, "unable to create @(nested_type)__Array ros_message");
+    return NULL;
   }
   @(nested_type) * dest@(field.name) = ros_message->@(field.name).data;
 @[      else]@
@@ -91,10 +92,16 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
     item@(field.name) = (@(nested_type) *) convert_from_py_@(field.name)(
       PySequence_Fast_GET_ITEM(seq@(field.name), idx@(field.name)));
+    if (!item@(field.name)) {
+      return NULL;
+    }
     memcpy(&dest@(field.name)[idx@(field.name)], item@(field.name), sizeof(@(nested_type)));
   }
 @[    else]@
   @(nested_type) * tmp@(field.name) = (@(nested_type) *) convert_from_py_@(field.name)(py@(field.name));
+  if (!tmp@(field.name)) {
+    return NULL;
+  }
   ros_message->@(field.name) = *tmp@(field.name);
 @[    end if]@
 @[  elif field.type.is_array]@
@@ -106,10 +113,12 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 @[      if field.type.type == 'string']@
   if (!rosidl_generator_c__String__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
     PyErr_SetString(PyExc_RuntimeError, "unable to create String__Array ros_message");
+    return NULL;
   }
 @[      else]@
   if (!rosidl_generator_c__@(field.type.type)__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
     PyErr_SetString(PyExc_RuntimeError, "unable to create @(field.type.type)__Array ros_message");
+    return NULL;
   }
 @[      end if]@
   @primitive_msg_type_to_c(field.type.type) * dest@(field.name) = ros_message->@(field.name).data;
@@ -273,12 +282,19 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 @[      else]@
     item@(field.name) = ros_message->@(field.name)[idx@(field.name)];
 @[      end if]@
-    PyList_SetItem(py@(field.name), idx@(field.name), convert_to_py_@(field.name)(&item@(field.name)));
+    PyObject * pyitem@(field.name) = convert_to_py_@(field.name)(&item@(field.name));
+    if (!pyitem@(field.name)) {
+      return NULL;
+    }
+    PyList_SetItem(py@(field.name), idx@(field.name), pyitem@(field.name));
   }
   assert(PySequence_Check(py@(field.name)));
 @[    else]@
   @(nested_type) pytmp@(field.name) = ros_message->@(field.name);
   py@(field.name) = convert_to_py_@(field.name)(&pytmp@(field.name));
+  if (!py@(field.name)) {
+    return NULL;
+  }
 @[    end if]@
 @[  elif field.type.is_array]@
 @[    if field.type.array_size is None or field.type.is_upper_bound]@

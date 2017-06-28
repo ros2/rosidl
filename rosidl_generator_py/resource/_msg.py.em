@@ -104,7 +104,7 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 
     def __init__(self, **kwargs):
         assert all(['_' + key in self.__slots__ for key in kwargs.keys()]), \
-            "Invalid arguments passed to constructor: %r" % kwargs.keys()
+            'Invalid arguments passed to constructor: %r' % kwargs.keys()
 @[  for field in spec.fields]@
 @[    if field.default_value]@
         self.@(field.name) = kwargs.get(
@@ -181,45 +181,60 @@ class @(spec.base_type.type)(metaclass=Metaclass):
               isinstance(value, UserList)) and
              not isinstance(value, str) and
              not isinstance(value, UserString) and
+@{assert_msg_suffixes = ['a set or sequence']}@
 @[    if field.type.type == 'string' and field.type.string_upper_bound]@
              all([len(val) <= @field.type.string_upper_bound for val in value]) and
+@{assert_msg_suffixes.append('and each string value not longer than %d' % field.type.string_upper_bound)}@
 @[    end if]@
 @[    if field.type.array_size]@
 @[      if field.type.is_upper_bound]@
              len(value) <= @(field.type.array_size) and
+@{assert_msg_suffixes.insert(1, 'with length <= %d' % field.type.array_size)}@
 @[      else]@
              len(value) == @(field.type.array_size) and
+@{assert_msg_suffixes.insert(1, 'with length %d' % field.type.array_size)}@
 @[      end if]@
 @[    end if]@
              all([isinstance(v, @(get_python_type(field.type))) for v in value]) and
-@[      if field.type.type.startswith('int')]@
+@{assert_msg_suffixes.append("and each value of type '%s'" % get_python_type(field.type))}@
+@[    if field.type.type.startswith('int')]@
 @{
 nbits = int(field.type.type[3:])
 bound = 2**(nbits - 1)
 }@
-             all([val >= -@(bound) and val < @(bound) for val in value]))
-@[      elif field.type.type.startswith('uint')]@
+             all([val >= -@(bound) and val < @(bound) for val in value])), \
+@{assert_msg_suffixes.append('and each integer in [%d, %d)' % (-bound, bound))}@
+@[    elif field.type.type.startswith('uint')]@
 @{
 nbits = int(field.type.type[4:])
 bound = 2**nbits
 }@
-             all([val >= 0 and val < @(bound) for val in value]))
-@[      elif field.type.type == 'char']@
-             all([ord(val) >= -128 and ord(val) < 128 for val in value]))
-@[      else]@
-             True)
-@[      end if]@
+             all([val >= 0 and val < @(bound) for val in value])), \
+@{assert_msg_suffixes.append('and each unsigned integer in [0, %d)' % bound)}@
+@[    elif field.type.type == 'char']@
+             all([ord(val) >= -128 and ord(val) < 128 for val in value])), \
+@{assert_msg_suffixes.append('and each characters ord() in [-128, 128)')}@
+@[    else]@
+             True), \
+@[    end if]@
+            "The '@(field.name)' field must be @(' '.join(assert_msg_suffixes))"
 @[  elif field.type.string_upper_bound]@
             ((isinstance(value, str) or isinstance(value, UserString)) and
-             len(value) <= @(field.type.string_upper_bound))
+             len(value) <= @(field.type.string_upper_bound)), \
+            "The '@(field.name)' field must be string value " \
+            "not longer than @(field.type.string_upper_bound)"
 @[  elif not field.type.is_primitive_type()]@
-            isinstance(value, @(field.type.type))
+            isinstance(value, @(field.type.type)), \
+            "The '@(field.name)' field must be a sub message of type '@(field.type.type)'"
 @[  elif field.type.type == 'byte']@
             ((isinstance(value, bytes) or isinstance(value, ByteString)) and
-             len(value) == 1)
+             len(value) == 1), \
+            "The '@(field.name)' field must of type 'bytes' or 'ByteString' with a length 1"
 @[  elif field.type.type == 'char']@
             ((isinstance(value, str) or isinstance(value, UserString)) and
-             len(value) == 1 and ord(value) >= -128 and ord(value) < 128)
+             len(value) == 1 and ord(value) >= -128 and ord(value) < 128), \
+            "The '@(field.name)' field must of type 'str' or 'UserString' " \
+            "with a length 1 and the character ord() in [-128, 127)"
 @[  elif field.type.type in [
         'bool',
         'float32', 'float64',
@@ -229,19 +244,22 @@ bound = 2**nbits
         'int64', 'uint64',
         'string',
     ]]@
-            isinstance(value, @(get_python_type(field.type)))
+            isinstance(value, @(get_python_type(field.type))), \
+            "The '@(field.name)' field must of type '@(get_python_type(field.type))'"
 @[    if field.type.type.startswith('int')]@
 @{
 nbits = int(field.type.type[3:])
 bound = 2**(nbits - 1)
 }@
-        assert value >= -@(bound) and value < @(bound)
+        assert value >= -@(bound) and value < @(bound), \
+            "The '@(field.name)' field must be an integer in [@(-bound), @(bound))"
 @[    elif field.type.type.startswith('uint')]@
 @{
 nbits = int(field.type.type[4:])
 bound = 2**nbits
 }@
-        assert value >= 0 and value < @(bound)
+        assert value >= 0 and value < @(bound), \
+            "The '@(field.name)' field must be an unsigned integer in [0, @(bound))"
 @[    end if]@
 @[  else]@
             False

@@ -60,7 +60,7 @@ rosidl_generator_c__String__fini(rosidl_generator_c__String * str)
       exit(-1);
     }
     if (0 != str->capacity) {
-      fprintf(stderr, "Unexpected behavior: srring capacity was non-zero for deallocated data! "
+      fprintf(stderr, "Unexpected behavior: string capacity was non-zero for deallocated data! "
         "Exiting.\n");
       exit(-1);
     }

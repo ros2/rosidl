@@ -81,7 +81,7 @@ for field in spec.fields:
         # non-array field
         if field.type.is_primitive_type():
             if field.type.type == 'string':
-                lines.append('if (!rosidl_generator_c__String__init(&msg->%s)) %s' % (field.name, '{'))
+                lines.append('if (!rosidl_generator_c__String__init(&msg->%s)) {' % field.name)
                 lines.append('  %s__destroy(msg);' % msg_typename)
                 lines.append('  return false;')
                 lines.append('}')
@@ -176,6 +176,7 @@ for field in spec.fields:
         if not field.type.is_primitive_type() or field.type.type == 'string':
             # finalize sub messages and strings
             lines.append('%s__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name))
+
     elif field.type.is_fixed_size_array():
         if not field.type.is_primitive_type() or field.type.type == 'string':
             lines.append('for (size_t i = 0; i < %d; ++i) {' % field.type.array_size)

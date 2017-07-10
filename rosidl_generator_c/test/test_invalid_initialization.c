@@ -46,7 +46,7 @@ int main(void)
     fprintf(stderr, "test_partial_fini_cleanup FAILED\n");
     rc++;
   }
-  return rc != 0;
+  return rc;
 }
 
 /**

@@ -22,6 +22,7 @@ nested_array_dict = {}
 @{have_not_included_string = False}@
 #include <rosidl_generator_c/string.h>
 #include <rosidl_generator_c/string_functions.h>
+
 @[  end if]@
 @{
 if not field.type.is_primitive_type() and field.type.is_array:

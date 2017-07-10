@@ -84,10 +84,6 @@ rosidl_generator_c__String__assignn(
   }
   char * data = realloc(str->data, n + 1);
   if (!data) {
-    free(str->data);
-    str->data = NULL;
-    str->size = 0;
-    str->capacity = 0;
     return false;
   }
   strncpy(data, value, n);

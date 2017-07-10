@@ -104,7 +104,7 @@ for field in spec.fields:
         else:
             # initialize the sub message
             lines.append('if (!%s__%s__%s__init(&msg->%s)) {' % (field.type.pkg_name, 'msg', field.type.type, field.name))
-            lines.append('    %s__destroy(msg);' % msg_typename)
+            lines.append('  %s__destroy(msg);' % msg_typename)
             lines.append('  return false;')
             lines.append('}')
     elif field.type.is_fixed_size_array():

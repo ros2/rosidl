@@ -61,8 +61,8 @@
 
 #define ARRAY_SIZE 7
 
-#define EXPECT_EQ(arg1, arg2) if (arg1 != arg2) return 1
-#define EXPECT_NE(arg1, arg2) if (arg1 == arg2) return 1
+#define EXPECT_EQ(arg1, arg2) if ((arg1) != (arg2)) return 1
+#define EXPECT_NE(arg1, arg2) if ((arg1) == (arg2)) return 1
 
 int test_primitives(void);
 int test_primitives_default_value(void);

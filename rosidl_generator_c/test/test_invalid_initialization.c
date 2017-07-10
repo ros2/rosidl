@@ -24,8 +24,8 @@
 #include "rosidl_generator_c/string_functions.h"
 #include "rosidl_generator_c/msg/primitives.h"
 
-#define EXPECT_EQ(arg1, arg2) if (arg1 != arg2) return 1
-#define EXPECT_NE(arg1, arg2) if (arg1 == arg2) return 1
+#define EXPECT_EQ(arg1, arg2) if ((arg1) != (arg2)) return 1
+#define EXPECT_NE(arg1, arg2) if ((arg1) == (arg2)) return 1
 
 int main(void);
 int test_init_null(void);

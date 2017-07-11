@@ -86,7 +86,7 @@ rosidl_generator_c__String__assignn(
   if (!data) {
     return false;
   }
-  strncpy(data, value, n);
+  memcpy(data, value, n);
   data[n] = '\0';
   str->data = data;
   str->size = n;

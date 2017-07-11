@@ -101,6 +101,7 @@ for field in spec.fields:
             elif field.default_value is not None:
                 # set default value of primitive type
                 lines.append('msg->%s = %s;' % (field.name, value_to_c(field.type, field.default_value)))
+
         else:
             # initialize the sub message
             lines.append('if (!%s__%s__%s__init(&msg->%s)) {' % (field.type.pkg_name, 'msg', field.type.type, field.name))

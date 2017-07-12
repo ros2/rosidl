@@ -96,7 +96,9 @@ if(BUILD_TESTING)
 
   add_executable(test_compilation_c test/test_compilation.c test/separate_compilation.c)
   add_executable(test_interfaces_c test/test_interfaces.c)
+  add_executable(test_invalid_initialization_c test/test_invalid_initialization.c)
   add_dependencies(test_interfaces_c ${PROJECT_NAME})
+  add_dependencies(test_invalid_initialization_c ${PROJECT_NAME})
   ament_add_test(
     test_compilation_c
     COMMAND "$<TARGET_FILE:test_compilation_c>"
@@ -107,10 +109,17 @@ if(BUILD_TESTING)
     COMMAND "$<TARGET_FILE:test_interfaces_c>"
     GENERATE_RESULT_FOR_RETURN_CODE_ZERO
   )
+  ament_add_test(
+    test_invalid_initialization_c
+    COMMAND "$<TARGET_FILE:test_invalid_initialization_c>"
+    GENERATE_RESULT_FOR_RETURN_CODE_ZERO
+  )
+
   # include the built files directly, instead of their install location
   include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
   target_link_libraries(test_compilation_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
   target_link_libraries(test_interfaces_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
+  target_link_libraries(test_invalid_initialization_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
 endif()
 
 ament_package(

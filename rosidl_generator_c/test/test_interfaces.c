@@ -61,8 +61,8 @@
 
 #define ARRAY_SIZE 7
 
-#define EXPECT_EQ(arg1, arg2) if (arg1 != arg2) return 1
-#define EXPECT_NE(arg1, arg2) if (arg1 == arg2) return 1
+#define EXPECT_EQ(arg1, arg2) if ((arg1) != (arg2)) return 1
+#define EXPECT_NE(arg1, arg2) if ((arg1) == (arg2)) return 1
 
 int test_primitives(void);
 int test_primitives_default_value(void);
@@ -1073,7 +1073,7 @@ int test_dynamic_array_nested(void)
  */
 int test_static_array_nested(void)
 {
-  int i;
+  size_t i;
   bool res;
   // We don't populate every array element to test the destruction of uninitialized arrays
   size_t size = 4;
@@ -1126,7 +1126,7 @@ int test_static_array_nested(void)
  */
 int test_dynamic_array_primitives_nested(void)
 {
-  int i;
+  size_t i;
   bool res;
   // We don't populate every array element to test the destruction of uninitialized arrays
   size_t size = 4;

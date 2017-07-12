@@ -81,7 +81,10 @@ for field in spec.fields:
         # non-array field
         if field.type.is_primitive_type():
             if field.type.type == 'string':
-                lines.append('rosidl_generator_c__String__init(&msg->%s);' % field.name)
+                lines.append('if (!rosidl_generator_c__String__init(&msg->%s)) {' % field.name)
+                lines.append('  %s__destroy(msg);' % msg_typename)
+                lines.append('  return false;')
+                lines.append('}')
                 if field.default_value is not None:
                     lines.append('{')
                     value = value_to_c(field.type, field.default_value)
@@ -101,8 +104,10 @@ for field in spec.fields:
 
         else:
             # initialize the sub message
-            lines.append('%s__%s__%s__init(&msg->%s);' % (field.type.pkg_name, 'msg', field.type.type, field.name))
-
+            lines.append('if (!%s__%s__%s__init(&msg->%s)) {' % (field.type.pkg_name, 'msg', field.type.type, field.name))
+            lines.append('  %s__destroy(msg);' % msg_typename)
+            lines.append('  return false;')
+            lines.append('}')
     elif field.type.is_fixed_size_array():
         if field.type.is_primitive_type() and field.type.type != 'string':
             if field.default_value is not None:
@@ -112,13 +117,19 @@ for field in spec.fields:
         if not field.type.is_primitive_type() or field.type.type == 'string':
             # initialize each array element
             lines.append('for (size_t i = 0; i < %d; ++i) {' % field.type.array_size)
-            lines.append('  %s__init(&msg->%s[i]);' % (get_typename_of_base_type(field.type), field.name))
+            lines.append('  if(!%s__init(&msg->%s[i])) {' % (get_typename_of_base_type(field.type), field.name))
+            lines.append('    %s__destroy(msg);' % msg_typename)
+            lines.append('    return false;')
+            lines.append('  }')
             lines.append('}')
 
-    else:
+    else:  # dynamic array
         if field.default_value is None:
             # initialize the dynamic array with a capacity of zero
-            lines.append('%s__Array__init(&msg->%s, 0);' % (get_typename_of_base_type(field.type), field.name))
+            lines.append('if (!%s__Array__init(&msg->%s, 0)) {' % (get_typename_of_base_type(field.type), field.name))
+            lines.append('  %s__destroy(msg);' % msg_typename)
+            lines.append('  return false;')
+            lines.append('}')
         else:
             # initialize the dynamic array with the number of default values
             lines.append('{')

@@ -282,7 +282,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 @[      else]@
     item@(field.name) = &(ros_message->@(field.name)[idx@(field.name)]);
 @[      end if]@
-    PyObject * pyitem@(field.name) = convert_to_py_@(field.name)(&item@(field.name));
+    PyObject * pyitem@(field.name) = convert_to_py_@(field.name)(item@(field.name));
     if (!pyitem@(field.name)) {
       return NULL;
     }

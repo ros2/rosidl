@@ -78,7 +78,7 @@ for constant in spec.constants:
         constants.append((
             'static',
             constant.name,
-            '%s %s' % (MSG_TYPE_TO_C[constant.type], msg_typename + '__' + constant.name),
+            '%s %s' % (constant.type, msg_typename + '__' + constant.name),
             primitive_value_to_c(constant.type, constant.value),
         ))
 }@
@@ -101,13 +101,15 @@ enum
 {
   @(key) = @(value)
 };
-@[    elif key.split()[0] == 'rosidl_generator_c__String']@
-@{
-name = key.split()[1]
-}@
-static const char * const @(name) = @(value);
 @[    else]@
-static const @(key) = @(value);
+@{
+(const_idl_type, const_c_name) = key.split()
+if const_idl_type == 'string':
+    const_c_type = 'char * const '
+else:
+    const_c_type = MSG_TYPE_TO_C[const_idl_type]
+}@
+static const @(const_c_type) @(const_c_name) = @(value);
 @[    end if]@
 @[  end for]@
 

@@ -23,8 +23,6 @@ header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 #define @(header_guard_variable)
 
 @{
-from rosidl_generator_cpp import MSG_TYPE_TO_CPP
-
 cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
 }@
 #include <stdint.h>
@@ -48,14 +46,15 @@ fixed_template_strings = []
 fixed = True
 
 for field in spec.fields:
-   if field.type.type == 'string':
-       fixed = False
-       break
-   elif field.type.is_array and (field.type.is_upper_bound or field.type.array_size is None):
-       fixed = False
-       break
-   elif not field.type.is_primitive_type():
-       fixed_template_strings.append("has_fixed_size<{}::msg::{}>::value".format(field.type.pkg_name, field.type.type))
+    if field.type.type == 'string':
+        fixed = False
+        break
+    elif field.type.is_dynamic_array():
+        fixed = False
+        break
+    elif not field.type.is_primitive_type():
+        fixed_template_strings.append(
+            "has_fixed_size<{}::msg::{}>::value".format(field.type.pkg_name, field.type.type))
 
 if fixed:
     fixed_template_string = ' && '.join(fixed_template_strings) if fixed_template_strings else 'true'

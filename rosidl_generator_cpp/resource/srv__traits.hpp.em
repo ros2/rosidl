@@ -32,6 +32,9 @@ namespace rosidl_generator_traits
 template<typename T>
 struct has_fixed_size : std::false_type {};
 
+template<typename T>
+struct has_bounded_size : std::false_type {};
+
 #endif  // __ROSIDL_GENERATOR_CPP_TRAITS
 
 template<>
@@ -40,6 +43,16 @@ struct has_fixed_size<@(cpp_namespace)@(spec.srv_name)>
     bool,
     has_fixed_size<@(cpp_namespace)@(spec.srv_name)_Request>::value &&
     has_fixed_size<@(cpp_namespace)@(spec.srv_name)_Response>::value
+  >
+{
+};
+
+template<>
+struct has_bounded_size<@(cpp_namespace)@(spec.srv_name)>
+  : std::integral_constant<
+    bool,
+    has_bounded_size<@(cpp_namespace)@(spec.srv_name)_Request>::value &&
+    has_bounded_size<@(cpp_namespace)@(spec.srv_name)_Response>::value
   >
 {
 };

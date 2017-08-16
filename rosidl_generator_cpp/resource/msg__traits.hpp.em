@@ -37,6 +37,9 @@ namespace rosidl_generator_traits
 template<typename T>
 struct has_fixed_size : std::false_type {};
 
+template<typename T>
+struct has_bounded_size : std::false_type {};
+
 #endif  // __ROSIDL_GENERATOR_CPP_TRAITS
 
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.hpp"
@@ -65,6 +68,30 @@ else:
 template<>
 struct has_fixed_size<@(cpp_namespace)@(spec.base_type.type)>
   : std::integral_constant<bool, @(fixed_template_string)>{};
+
+@{
+bounded_template_strings = []
+bounded = True
+
+for field in spec.fields:
+    if field.type.type == 'string' and field.type.string_upper_bound in None:
+        bounded = False
+        break
+    elif field.type.is_dynamic_array() and not field.type.is_upper_bound:
+        bounded = False
+        break
+    if bounded and not field.type.is_primitive_type():
+        bounded_template_strings.append(
+            "has_bounded_size<{}::msg::{}>::value".format(field.type.pkg_name, field.type.type))
+
+if bounded:
+    bounded_template_string = ' && '.join(bounded_template_strings) if bounded_template_strings else 'true'
+else:
+    bounded_template_string = 'false'
+}@
+template<>
+struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)>
+  : std::integral_constant<bool, @(bounded_template_string)>{};
 
 }  // namespace rosidl_generator_traits
 

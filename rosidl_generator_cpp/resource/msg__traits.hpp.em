@@ -23,8 +23,6 @@ header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 #define @(header_guard_variable)
 
 @{
-from rosidl_generator_cpp import MSG_TYPE_TO_CPP
-
 cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
 }@
 #include <stdint.h>
@@ -39,23 +37,29 @@ namespace rosidl_generator_traits
 template<typename T>
 struct has_fixed_size : std::false_type {};
 
+template<typename T>
+struct has_bounded_size : std::false_type {};
+
 #endif  // __ROSIDL_GENERATOR_CPP_TRAITS
 
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.hpp"
 
 @{
 fixed_template_strings = []
-fixed = True
+fixed = False
 
 for field in spec.fields:
-   if field.type.type == 'string':
-       fixed = False
-       break
-   elif field.type.is_array and (field.type.is_upper_bound or field.type.array_size is None):
-       fixed = False
-       break
-   elif not field.type.is_primitive_type():
-       fixed_template_strings.append("has_fixed_size<{}::msg::{}>::value".format(field.type.pkg_name, field.type.type))
+    if field.type.type == 'string':
+        break
+    if field.type.is_dynamic_array():
+        break
+    if not field.type.is_primitive_type():
+        tmp_fixed_string = "has_fixed_size<{}::msg::{}>::value".format(
+            field.type.pkg_name, field.type.type)
+        if tmp_fixed_string not in fixed_template_strings:
+            fixed_template_strings.append(tmp_fixed_string)
+else:
+    fixed = True
 
 if fixed:
     fixed_template_string = ' && '.join(fixed_template_strings) if fixed_template_strings else 'true'
@@ -66,6 +70,32 @@ else:
 template<>
 struct has_fixed_size<@(cpp_namespace)@(spec.base_type.type)>
   : std::integral_constant<bool, @(fixed_template_string)>{};
+
+@{
+bounded_template_strings = []
+bounded = False
+
+for field in spec.fields:
+    if field.type.type == 'string' and field.type.string_upper_bound is None:
+        break
+    if field.type.is_dynamic_array() and not field.type.is_upper_bound:
+        break
+    if not field.type.is_primitive_type():
+        tmp_bounded_string = "has_bounded_size<{}::msg::{}>::value".format(
+            field.type.pkg_name, field.type.type)
+        if tmp_bounded_string not in bounded_template_strings:
+            bounded_template_strings.append(tmp_bounded_string)
+else:
+    bounded = True
+
+if bounded:
+    bounded_template_string = ' && '.join(bounded_template_strings) if bounded_template_strings else 'true'
+else:
+    bounded_template_string = 'false'
+}@
+template<>
+struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)>
+  : std::integral_constant<bool, @(bounded_template_string)>{};
 
 }  // namespace rosidl_generator_traits
 

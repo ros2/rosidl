@@ -137,6 +137,94 @@ TEST(Test_rosidl_generator_traits, has_fixed_size) {
     "UnboundedArrayUnbounded::has_fixed_size is true");
 }
 
+TEST(Test_rosidl_generator_traits, has_bounded_size) {
+  static_assert(
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::Empty>::value,
+    "Empty::has_bounded_size is false");
+
+  static_assert(
+    rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::PrimitivesConstants>::value,
+    "PrimitivesConstants::has_bounded_size is false");
+
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::PrimitivesDefault>::value,
+    "PrimitivesDefault::has_bounded_size is true");
+
+  static_assert(
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::PrimitivesStatic>::value,
+    "PrimitivesStatic::has_bounded_size is false");
+
+  static_assert(
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::PrimitivesBounded>::value,
+    "PrimitivesBounded::has_bounded_size is false");
+
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::PrimitivesUnbounded>::value,
+    "PrimitivesUnbounded::has_bounded_size is true");
+
+  static_assert(
+    rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::PrimitiveStaticArrays>::value,
+    "PrimitivesStaticArray::has_bounded_size is false");
+
+  static_assert(
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::StaticArrayStatic>::value,
+    "StaticArrayStatic::has_bounded_size is false");
+
+  static_assert(
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::StaticArrayBounded>::value,
+    "StaticArrayBounded::has_bounded_size is false");
+
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::StaticArrayUnbounded>::value,
+    "StaticArrayUnbounded::has_bounded_size is true");
+
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::String>::value,
+    "String::has_bounded_size is true");
+
+  static_assert(
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::StringBounded>::value,
+    "StringBounded::has_bounded_size is false");
+
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::StringArrayStatic>::value,
+    "StringArrayStatic::has_bounded_size is true");
+
+  static_assert(
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::BoundedArrayStatic>::value,
+    "BoundedArrayStatic::has_bounded_size is false");
+
+  static_assert(
+    rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::BoundedArrayBounded>::value,
+    "BoundedArrayBounded::has_bounded_size is false");
+
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::BoundedArrayUnbounded>::value,
+    "BoundedArrayUnbounded::has_bounded_size is true");
+
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::UnboundedArrayStatic>::value,
+    "UnboundedArrayStatic::has_bounded_size is true");
+
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::UnboundedArrayBounded>::value,
+    "UnboundedArrayBounded::has_bounded_size is true");
+
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::UnboundedArrayUnbounded>::value,
+    "UnboundedArrayUnbounded::has_bounded_size is true");
+}
+
 #define TEST_PRIMITIVE_FIELD_ASSIGNMENT(Message, FieldName, InitialValue, FinalValue) \
   Message.FieldName = InitialValue; \
   ASSERT_EQ(InitialValue, Message.FieldName); \

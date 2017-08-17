@@ -52,10 +52,10 @@ for field in spec.fields:
     if field.type.type == 'string':
         fixed = False
         break
-    elif field.type.is_dynamic_array():
+    if field.type.is_dynamic_array():
         fixed = False
         break
-    elif not field.type.is_primitive_type():
+    if not field.type.is_primitive_type():
         tmp_fixed_string = "has_fixed_size<{}::msg::{}>::value".format(
             field.type.pkg_name, field.type.type)
         if tmp_fixed_string not in fixed_template_strings:
@@ -79,10 +79,10 @@ for field in spec.fields:
     if field.type.type == 'string' and field.type.string_upper_bound is None:
         bounded = False
         break
-    elif field.type.is_dynamic_array() and not field.type.is_upper_bound:
+    if field.type.is_dynamic_array() and not field.type.is_upper_bound:
         bounded = False
         break
-    if bounded and not field.type.is_primitive_type():
+    if not field.type.is_primitive_type():
         tmp_bounded_string = "has_bounded_size<{}::msg::{}>::value".format(
             field.type.pkg_name, field.type.type)
         if tmp_bounded_string not in bounded_template_strings:

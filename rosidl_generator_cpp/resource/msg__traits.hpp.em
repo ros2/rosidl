@@ -46,20 +46,20 @@ struct has_bounded_size : std::false_type {};
 
 @{
 fixed_template_strings = []
-fixed = True
+fixed = False
 
 for field in spec.fields:
     if field.type.type == 'string':
-        fixed = False
         break
     if field.type.is_dynamic_array():
-        fixed = False
         break
     if not field.type.is_primitive_type():
         tmp_fixed_string = "has_fixed_size<{}::msg::{}>::value".format(
             field.type.pkg_name, field.type.type)
         if tmp_fixed_string not in fixed_template_strings:
             fixed_template_strings.append(tmp_fixed_string)
+else:
+    fixed = True
 
 if fixed:
     fixed_template_string = ' && '.join(fixed_template_strings) if fixed_template_strings else 'true'
@@ -73,20 +73,20 @@ struct has_fixed_size<@(cpp_namespace)@(spec.base_type.type)>
 
 @{
 bounded_template_strings = []
-bounded = True
+bounded = False
 
 for field in spec.fields:
     if field.type.type == 'string' and field.type.string_upper_bound is None:
-        bounded = False
         break
     if field.type.is_dynamic_array() and not field.type.is_upper_bound:
-        bounded = False
         break
     if not field.type.is_primitive_type():
         tmp_bounded_string = "has_bounded_size<{}::msg::{}>::value".format(
             field.type.pkg_name, field.type.type)
         if tmp_bounded_string not in bounded_template_strings:
             bounded_template_strings.append(tmp_bounded_string)
+else:
+    bounded = True
 
 if bounded:
     bounded_template_string = ' && '.join(bounded_template_strings) if bounded_template_strings else 'true'

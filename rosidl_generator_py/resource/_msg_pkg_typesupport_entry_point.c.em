@@ -6,10 +6,13 @@
 @# _<msg_pkg>_s.ep.<typesupport_impl>_c.c files
 @#
 @# Context:
-@#  - module_name
-@#  - spec (rosidl_parser.ServiceSpecification)
-@#    Parsed specification of the .srv file
-@#  - get_header_filename_from_msg_name (function)
+@#  - package_name
+@#  - message_specs (list of rosidl_parser.MessageSpecification)
+@#    Parsed specification of the .msg files
+@#  - service_specs (list of rosidl_parser.ServiceSpecification)
+@#    Parsed specification of the .srv files
+@#  - typesupport_impl (string identifying the typesupport used)
+@#  - convert_camel_case_to_lower_case_underscore (function)
 @#######################################################################
 @
 #include <Python.h>

@@ -2,13 +2,13 @@
 # generated code does not contain a copyright notice
 
 @#######################################################################
-@# EmPy template for generating _<msg>.py files
+@# EmPy template for generating _<srv>.py files
 @#
 @# Context:
 @#  - module_name
 @#  - package_name
 @#  - spec (rosidl_parser.ServiceSpecification)
-@#    Parsed specification of the .msg file
+@#    Parsed specification of the .srv file
 @#  - convert_camel_case_to_lower_case_underscore (function)
 @#######################################################################
 @

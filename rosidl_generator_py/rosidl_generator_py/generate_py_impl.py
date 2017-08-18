@@ -35,8 +35,8 @@ def generate_py(generator_arguments_file, typesupport_impls):
         os.path.join(template_dir, '_msg.py.em'): ['_%s.py'],
         os.path.join(template_dir, '_msg_support.c.em'): ['_%s_s.c'],
     }
-    mapping_extension_msgs = {
-        os.path.join(template_dir, '_msg_support.entry_point.c.em'):
+    mapping_msg_pkg_extension = {
+        os.path.join(template_dir, '_msg_pkg_typesupport_entry_point.c.em'):
         type_support_impl_by_filename.keys(),
     }
 
@@ -46,7 +46,7 @@ def generate_py(generator_arguments_file, typesupport_impls):
 
     for template_file in mapping_msgs.keys():
         assert os.path.exists(template_file), 'Could not find template: ' + template_file
-    for template_file in mapping_extension_msgs.keys():
+    for template_file in mapping_msg_pkg_extension.keys():
         assert os.path.exists(template_file), 'Could not find template: ' + template_file
     for template_file in mapping_srvs.keys():
         assert os.path.exists(template_file), 'Could not find template: ' + template_file
@@ -87,7 +87,6 @@ def generate_py(generator_arguments_file, typesupport_impls):
                     'module_name': module_name,
                     'package_name': args['package_name'],
                     'spec': spec, 'subfolder': subfolder,
-                    'typesupport_impl': type_support_impl_by_filename.get(generated_filename, ''),
                 }
                 data.update(functions)
                 generated_file = os.path.join(
@@ -110,10 +109,9 @@ def generate_py(generator_arguments_file, typesupport_impls):
             for noqa_line in sorted(import_list.keys()):
                         f.write(noqa_line)
 
-    for template_file, generated_filenames in mapping_extension_msgs.items():
+    for template_file, generated_filenames in mapping_msg_pkg_extension.items():
         for generated_filename in generated_filenames:
             data = {
-                'module_name': module_name,
                 'package_name': args['package_name'],
                 'message_specs': message_specs,
                 'service_specs': service_specs,

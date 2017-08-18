@@ -2,8 +2,7 @@
 // generated code does not contain a copyright notice
 
 @#######################################################################
-@# EmPy template for generating
-@# _<msg>_s.c files
+@# EmPy template for generating _<msg>_s.c files
 @#
 @# Context:
 @#  - module_name

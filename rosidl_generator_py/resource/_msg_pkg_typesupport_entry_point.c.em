@@ -2,8 +2,7 @@
 // generated code does not contain a copyright notice
 
 @#######################################################################
-@# EmPy template for generating
-@# _<msg_pkg>_s.ep.<typesupport_impl>_c.c files
+@# EmPy template for generating _<msg_pkg>_s.ep.<typesupport_impl>_c.c files
 @#
 @# Context:
 @#  - package_name

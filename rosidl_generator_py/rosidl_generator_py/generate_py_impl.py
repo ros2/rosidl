@@ -36,7 +36,7 @@ def generate_py(generator_arguments_file, typesupport_impls):
         os.path.join(template_dir, '_msg_support.c.em'): ['_%s_s.c'],
     }
     mapping_extension_msgs = {
-        os.path.join(template_dir, '_msg_support.entry_point.c.em'):
+        os.path.join(template_dir, '_msg_pkg_typesupport_entry_point.c.em'):
         type_support_impl_by_filename.keys(),
     }
 

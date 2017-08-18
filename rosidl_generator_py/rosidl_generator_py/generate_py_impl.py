@@ -113,7 +113,6 @@ def generate_py(generator_arguments_file, typesupport_impls):
     for template_file, generated_filenames in mapping_extension_msgs.items():
         for generated_filename in generated_filenames:
             data = {
-                'module_name': module_name,
                 'package_name': args['package_name'],
                 'message_specs': message_specs,
                 'service_specs': service_specs,

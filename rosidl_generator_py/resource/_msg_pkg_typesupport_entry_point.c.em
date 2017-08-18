@@ -47,7 +47,6 @@ for spec, subfolder in service_specs:
   key = '%s/%s/%s' % (spec.pkg_name, subfolder, module_name)
   includes[key] = '#include <%s.h>' % key
 }@
-
 @[for v in sorted(includes.values())]@
 @(v)
 @[end for]@
@@ -56,7 +55,6 @@ for spec, subfolder in service_specs:
 type_name = spec.base_type.type
 module_name = convert_camel_case_to_lower_case_underscore(type_name)
 }@
-// TEST TEST3 @(module_name)
 void * @(spec.base_type.pkg_name)_@(module_name)__convert_from_py(PyObject * _pymsg);
 void @(spec.base_type.pkg_name)_@(module_name)__destroy_ros_message(void * raw_ros_message);
 PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_ros_message);

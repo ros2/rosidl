@@ -12,6 +12,9 @@ ament_python_install_package(${PROJECT_NAME})
 if(BUILD_TESTING)
   find_package(ament_cmake_nose REQUIRED)
 
+  find_package(rosidl_runtime_cpp REQUIRED)
+  include_directories(${rosidl_runtime_cpp_INCLUDE_DIRS})
+
   find_package(rosidl_cmake REQUIRED)
   find_package(rosidl_generator_c REQUIRED)
 

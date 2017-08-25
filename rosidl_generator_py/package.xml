@@ -31,6 +31,7 @@
   <test_depend>rosidl_cmake</test_depend>
   <test_depend>rosidl_generator_c</test_depend>
   <test_depend>rosidl_parser</test_depend>
+  <test_depend>rosidl_runtime_cpp</test_depend>
   <test_depend>rosidl_typesupport_c</test_depend>
 
   <export>

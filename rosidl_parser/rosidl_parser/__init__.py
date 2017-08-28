@@ -126,7 +126,7 @@ def is_valid_constant_name(name):
     return m is not None and m.group(0) == name
 
 
-class BaseType(object):
+class BaseType:
 
     __slots__ = ['pkg_name', 'type', 'string_upper_bound']
 
@@ -272,7 +272,7 @@ class Type(BaseType):
         return s
 
 
-class Constant(object):
+class Constant:
 
     __slots__ = ['type', 'name', 'value']
 
@@ -304,7 +304,7 @@ class Constant(object):
         return '%s %s=%s' % (self.type, self.name, value)
 
 
-class Field(object):
+class Field:
 
     def __init__(self, type_, name, default_value_string=None):
         if not isinstance(type_, Type):
@@ -339,7 +339,7 @@ class Field(object):
         return s
 
 
-class MessageSpecification(object):
+class MessageSpecification:
 
     def __init__(self, pkg_name, msg_name, fields, constants):
         self.base_type = BaseType(
@@ -608,7 +608,7 @@ def validate_field_types(spec, known_msg_types):
                 (spec_type, spec.base_type, field))
 
 
-class ServiceSpecification(object):
+class ServiceSpecification:
 
     def __init__(self, pkg_name, srv_name, request_message, response_message):
         self.pkg_name = pkg_name

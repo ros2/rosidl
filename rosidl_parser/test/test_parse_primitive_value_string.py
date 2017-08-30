@@ -137,7 +137,7 @@ def test_parse_primitive_value_string_string():
 
     with assert_raises(InvalidValue):
         parse_primitive_value_string(
-            Type('string'), r'''"foo"bar\"baz"''')
+            Type('string'), r'''"foo"bar\"baz"''')  # noqa: Q001
 
     value = parse_primitive_value_string(
         Type('string'), '"foo')
@@ -152,7 +152,7 @@ def test_parse_primitive_value_string_string():
     assert value == "'foo"
 
     value = parse_primitive_value_string(
-        Type('string'), "\"foo")
+        Type('string'), '"foo')
     assert value == '"foo'
 
     value = parse_primitive_value_string(
@@ -160,11 +160,11 @@ def test_parse_primitive_value_string_string():
     assert value == "'fo'o"
 
     value = parse_primitive_value_string(
-        Type('string'), "\"fo\"o")
+        Type('string'), '"fo"o')
     assert value == '"fo"o'
 
     value = parse_primitive_value_string(
-        Type('string'), r'''"'foo'"''')
+        Type('string'), r'''"'foo'"''')  # noqa: Q001
     assert value == "'foo'"
 
     value = parse_primitive_value_string(
@@ -174,6 +174,7 @@ def test_parse_primitive_value_string_string():
 
 def test_parse_primitive_value_string_unknown():
     class CustomType(Type):
+
         def is_primitive_type(self):
             return True
     type_ = CustomType('pkg/Foo')

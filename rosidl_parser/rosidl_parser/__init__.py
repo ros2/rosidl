@@ -144,7 +144,7 @@ class BaseType:
                                              len(STRING_UPPER_BOUND_TOKEN):]
 
             ex = TypeError(("the upper bound of the string type '%s' must " +
-                            "be a valid integer value > 0") % type_string)
+                            'be a valid integer value > 0') % type_string)
             try:
                 self.string_upper_bound = int(upper_bound_string)
             except ValueError:
@@ -227,7 +227,7 @@ class Type(BaseType):
                 ex = TypeError((
                     "the size of array type '%s' must be a valid integer " +
                     "value > 0 optionally prefixed with '%s' if it is only " +
-                    "an upper bound") %
+                    'an upper bound') %
                     (ARRAY_UPPER_BOUND_TOKEN, type_string))
                 try:
                     self.array_size = int(array_size_string)
@@ -353,8 +353,8 @@ class MessageSpecification:
             self.fields.append(field)
         # ensure that there are no duplicate field names
         field_names = [f.name for f in self.fields]
-        duplicate_field_names = set([n for n in field_names
-                                     if field_names.count(n) > 1])
+        duplicate_field_names = {n for n in field_names
+                                 if field_names.count(n) > 1}
         if duplicate_field_names:
             raise ValueError(
                 'the fields iterable contains duplicate names: %s' %
@@ -368,8 +368,8 @@ class MessageSpecification:
             self.constants.append(constant)
         # ensure that there are no duplicate constant names
         constant_names = [c.name for c in self.constants]
-        duplicate_constant_names = set([n for n in constant_names
-                                        if constant_names.count(n) > 1])
+        duplicate_constant_names = {n for n in constant_names
+                                    if constant_names.count(n) > 1}
         if duplicate_constant_names:
             raise ValueError(
                 'the constants iterable contains duplicate names: %s' %
@@ -413,7 +413,7 @@ def parse_message_string(pkg_name, msg_name, message_string):
         type_string, _, rest = line.partition(' ')
         rest = rest.lstrip()
         if not rest:
-            print("Error with:", pkg_name, msg_name)
+            print('Error with:', pkg_name, msg_name)
             raise InvalidFieldDefinition(line)
         index = rest.find(CONSTANT_SEPARATOR)
         if index == -1:

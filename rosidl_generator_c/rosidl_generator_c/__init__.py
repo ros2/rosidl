@@ -92,7 +92,7 @@ MSG_TYPE_TO_C = {
     'int32': 'int32_t',
     'uint64': 'uint64_t',
     'int64': 'int64_t',
-    'string': "rosidl_generator_c__String",
+    'string': 'rosidl_generator_c__String',
 }
 
 

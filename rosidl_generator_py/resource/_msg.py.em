@@ -216,17 +216,17 @@ nbits = int(field.type.type[3:])
 bound = 2**(nbits - 1)
 }@
              all(val >= -@(bound) and val < @(bound) for val in value)), \
-@{assert_msg_suffixes.append('and each integer in [%d, %d)' % (-bound, bound))}@
+@{assert_msg_suffixes.append('and each integer in [%d, %d]' % (-bound, bound - 1))}@
 @[    elif field.type.type.startswith('uint')]@
 @{
 nbits = int(field.type.type[4:])
 bound = 2**nbits
 }@
              all(val >= 0 and val < @(bound) for val in value)), \
-@{assert_msg_suffixes.append('and each unsigned integer in [0, %d)' % bound)}@
+@{assert_msg_suffixes.append('and each unsigned integer in [0, %d]' % (bound - 1))}@
 @[    elif field.type.type == 'char']@
              all(ord(val) >= -128 and ord(val) < 128 for val in value)), \
-@{assert_msg_suffixes.append('and each characters ord() in [-128, 128)')}@
+@{assert_msg_suffixes.append('and each characters ord() in [-128, 127]')}@
 @[    else]@
              True), \
 @[    end if]@
@@ -247,7 +247,7 @@ bound = 2**nbits
             ((isinstance(value, str) or isinstance(value, UserString)) and
              len(value) == 1 and ord(value) >= -128 and ord(value) < 128), \
             "The '@(field.name)' field must of type 'str' or 'UserString' " \
-            'with a length 1 and the character ord() in [-128, 127)'
+            'with a length 1 and the character ord() in [-128, 127]'
 @[  elif field.type.type in [
         'bool',
         'float32', 'float64',
@@ -265,14 +265,14 @@ nbits = int(field.type.type[3:])
 bound = 2**(nbits - 1)
 }@
         assert value >= -@(bound) and value < @(bound), \
-            "The '@(field.name)' field must be an integer in [@(-bound), @(bound))"
+            "The '@(field.name)' field must be an integer in [@(-bound), @(bound - 1)]"
 @[    elif field.type.type.startswith('uint')]@
 @{
 nbits = int(field.type.type[4:])
 bound = 2**nbits
 }@
         assert value >= 0 and value < @(bound), \
-            "The '@(field.name)' field must be an unsigned integer in [0, @(bound))"
+            "The '@(field.name)' field must be an unsigned integer in [0, @(bound - 1)]"
 @[    end if]@
 @[  else]@
             False

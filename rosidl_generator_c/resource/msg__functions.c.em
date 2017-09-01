@@ -117,7 +117,7 @@ for field in spec.fields:
         if not field.type.is_primitive_type() or field.type.type == 'string':
             # initialize each array element
             lines.append('for (size_t i = 0; i < %d; ++i) {' % field.type.array_size)
-            lines.append('  if(!%s__init(&msg->%s[i])) {' % (get_typename_of_base_type(field.type), field.name))
+            lines.append('  if (!%s__init(&msg->%s[i])) {' % (get_typename_of_base_type(field.type), field.name))
             lines.append('    %s__destroy(msg);' % msg_typename)
             lines.append('    return false;')
             lines.append('  }')

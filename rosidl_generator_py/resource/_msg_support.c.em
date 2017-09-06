@@ -61,10 +61,18 @@ full_classname = '%s.%s._%s.%s' % (spec.base_type.pkg_name, subfolder, module_na
 }@
   char full_classname_dest[@(len(full_classname) + 1)];
 
-  char * class_name = (char *)PyUnicode_1BYTE_DATA(
-    PyObject_GetAttrString(PyObject_GetAttrString(_pymsg, "__class__"), "__name__"));
-  char * module_name = (char *)PyUnicode_1BYTE_DATA(
-    PyObject_GetAttrString(PyObject_GetAttrString(_pymsg, "__class__"), "__module__"));
+  char * class_name = NULL;
+  char * module_name = NULL;
+  {
+    PyObject * attr1 = PyObject_GetAttrString(_pymsg, "__class__");
+    PyObject * attr2 = PyObject_GetAttrString(attr1, "__name__");
+    class_name = (char *)PyUnicode_1BYTE_DATA(attr2);
+    Py_DECREF(attr2);
+    attr2 = PyObject_GetAttrString(attr1, "__module__");
+    module_name = (char *)PyUnicode_1BYTE_DATA(attr2);
+    Py_DECREF(attr2);
+    Py_DECREF(attr1);
+  }
 
   snprintf(full_classname_dest, sizeof(full_classname_dest), "%s.%s", module_name, class_name);
 
@@ -78,12 +86,19 @@ full_classname = '%s.%s._%s.%s' % (spec.base_type.pkg_name, subfolder, module_na
 @{
 nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 }@
-  PyObject * py@(field.name)_msg_module = PyImport_ImportModule("@(field.type.pkg_name).msg._@convert_camel_case_to_lower_case_underscore(field.type.type)");
-  PyObject * py@(field.name)_msg_class = PyObject_GetAttrString(py@(field.name)_msg_module, "@(field.type.type)");
-  PyObject * py@(field.name)_msg_metaclass = PyObject_GetAttrString(py@(field.name)_msg_class, "__class__");
-  PyObject * py@(field.name)_convert_from_py = PyObject_GetAttrString(py@(field.name)_msg_metaclass, "_CONVERT_FROM_PY");
   typedef PyObject *(* convert_from_py_signature)(void *);
-  convert_from_py_signature convert_from_py_@(field.name) = (convert_from_py_signature)PyCapsule_GetPointer(py@(field.name)_convert_from_py, NULL);
+  convert_from_py_signature convert_from_py_@(field.name) = NULL;
+  {
+    PyObject * py@(field.name)_msg_module = PyImport_ImportModule("@(field.type.pkg_name).msg._@convert_camel_case_to_lower_case_underscore(field.type.type)");
+    PyObject * py@(field.name)_msg_class = PyObject_GetAttrString(py@(field.name)_msg_module, "@(field.type.type)");
+    Py_DECREF(py@(field.name)_msg_module);
+    PyObject * py@(field.name)_msg_metaclass = PyObject_GetAttrString(py@(field.name)_msg_class, "__class__");
+    Py_DECREF(py@(field.name)_msg_class);
+    PyObject * py@(field.name)_convert_from_py = PyObject_GetAttrString(py@(field.name)_msg_metaclass, "_CONVERT_FROM_PY");
+    Py_DECREF(py@(field.name)_msg_metaclass);
+    convert_from_py_@(field.name) = (convert_from_py_signature)PyCapsule_GetPointer(py@(field.name)_convert_from_py, NULL);
+    Py_DECREF(py@(field.name)_convert_from_py);
+  }
 @[    if field.type.is_array]@
   assert(PySequence_Check(py@(field.name)));
   PyObject * seq@(field.name) = PySequence_Fast(py@(field.name), "expected a sequence");
@@ -108,6 +123,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
     }
     memcpy(&dest@(field.name)[idx@(field.name)], item@(field.name), sizeof(@(nested_type)));
   }
+  Py_DECREF(seq@(field.name));
 @[    else]@
   @(nested_type) * tmp@(field.name) = (@(nested_type) *) convert_from_py_@(field.name)(py@(field.name));
   if (!tmp@(field.name)) {
@@ -192,6 +208,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
     memcpy(&dest@(field.name)[idx@(field.name)], &tmp@(field.name), sizeof(@primitive_msg_type_to_c(field.type.type)));
 @[    end if]@
   }
+  Py_DECREF(seq@(field.name));
 @[  elif field.type.type == 'char']@
   assert(PyUnicode_Check(py@(field.name)));
   ros_message->@(field.name) = PyUnicode_1BYTE_DATA(py@(field.name))[0];
@@ -239,6 +256,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 @[  else]@
   assert(false);
 @[  end if]@
+  Py_DECREF(py@(field.name));
 @[end for]@
 
   assert(ros_message != NULL);
@@ -248,8 +266,6 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 void @(spec.base_type.pkg_name)_@(module_name)__destroy_ros_message(void * raw_ros_message)
 {
   @(msg_typename) * ros_message = (@(msg_typename) *)raw_ros_message;
-  (void)ros_message;
-
   @(msg_typename)__destroy(ros_message);
 }
 
@@ -258,12 +274,15 @@ PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_r
   @(msg_typename) * ros_message = (@(msg_typename) *)raw_ros_message;
   (void)ros_message;
 
-  PyObject * pymessage_module = PyImport_ImportModule("@(spec.base_type.pkg_name).@(subfolder)._@(module_name)");
-  PyObject * pymessage_class = PyObject_GetAttrString(pymessage_module, "@(spec.base_type.type)");
-
   /* NOTE(esteve): Call constructor of @(spec.base_type.type) */
   PyObject * _pymessage = NULL;
-  _pymessage = PyObject_CallObject(pymessage_class, NULL);
+  {
+    PyObject * pymessage_module = PyImport_ImportModule("@(spec.base_type.pkg_name).@(subfolder)._@(module_name)");
+    PyObject * pymessage_class = PyObject_GetAttrString(pymessage_module, "@(spec.base_type.type)");
+    Py_DECREF(pymessage_module);
+    _pymessage = PyObject_CallObject(pymessage_class, NULL);
+    Py_DECREF(pymessage_class);
+  }
   assert(_pymessage != NULL);
 
 @[for field in spec.fields]@
@@ -327,7 +346,8 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 @[    elif field.type.type == 'string']@
     PyList_SetItem(py@(field.name), idx@(field.name), PyUnicode_FromString(tmpmessagedata@(field.name)[idx@(field.name)].data));
 @[    elif field.type.type == 'bool']@
-    PyList_SetItem(py@(field.name), idx@(field.name), tmpmessagedata@(field.name)[idx@(field.name)] ? Py_True : Py_False);
+@# using PyBool_FromLong because PyList_SetItem will steal ownership of the passed item
+    PyList_SetItem(py@(field.name), idx@(field.name), PyBool_FromLong(tmpmessagedata@(field.name)[idx@(field.name)] ? 1 : 0));
 @[    elif field.type.type in ['float32', 'float64']]@
     PyList_SetItem(py@(field.name), idx@(field.name), PyFloat_FromDouble(tmpmessagedata@(field.name)[idx@(field.name)]));
 @[    elif field.type.type in [
@@ -356,7 +376,8 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 @[  elif field.type.type == 'string']@
   py@(field.name) = PyUnicode_FromString(ros_message->@(field.name).data);
 @[  elif field.type.type == 'bool']@
-  py@(field.name) = ros_message->@(field.name) ? Py_True : Py_False;
+@# using PyBool_FromLong allows treating the variable uniformly by calling Py_DECREF on it later
+  py@(field.name) = PyBool_FromLong(ros_message->@(field.name) ? 1 : 0);
 @[  elif field.type.type in ['float32', 'float64']]@
   py@(field.name) = PyFloat_FromDouble(ros_message->@(field.name));
 @[  elif field.type.type in [
@@ -379,9 +400,10 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   assert(false);
 @[  end if]@
   assert(py@(field.name) != NULL);
-  Py_INCREF(py@(field.name));
   PyObject_SetAttrString(_pymessage, "@(field.name)", py@(field.name));
+  Py_DECREF(py@(field.name));
 @[end for]@
   assert(_pymessage != NULL);
+  // ownership of _pymessage is transferred to the caller
   return _pymessage;
 }

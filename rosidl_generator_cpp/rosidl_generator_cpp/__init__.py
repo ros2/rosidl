@@ -176,7 +176,107 @@ def primitive_value_to_cpp(type_, value):
     assert False, "unknown primitive type '%s'" % type_.type
 
 
+def default_cpp_value_from_type(type_):
+    if type_ == 'string':
+        return ''
+    elif type_ in ['float32', 'float64']:
+        return '0.0'
+    elif type_ == 'bool':
+        return 'false'
+    return '0'
+
+
 def escape_string(s):
     s = s.replace('\\', '\\\\')
     s = s.replace('"', '\\"')
     return s
+
+
+def create_init_alloc_and_member_lists(spec):
+    # A Member object represents the information we need to know to initialize
+    # a single member of the class.
+    class Member:
+
+        def __init__(self, name):
+            self.name = name
+            self.default_value = None
+            self.zero_value = None
+            self.zero_need_array_override = False
+            self.type = None
+            self.num_prealloc = 0
+
+        def same_default_and_zero_value(self, other):
+            return self.default_value == other.default_value and \
+                self.zero_value == other.zero_value
+
+    # A CommonMemberSet is a set of adjacent members that share the same set of
+    # initialization semantics.  Here, initialization semantics mean that all
+    # members of the set have a default value (or do not have a default value),
+    # and all members of the set have a zero value (or do not have a zero
+    # value).
+    class CommonMemberSet:
+
+        def __init__(self):
+            self.members = []
+
+        def add_member(self, member):
+            if not self.members or self.members[-1].same_default_and_zero_value(member):
+                self.members.append(member)
+                return True
+            return False
+
+    # The loop below is used to generate three different lists:
+    #   init_list - The list of member variables that we will initialize using member
+    #               initialization in the default constructor
+    #   alloc_list - The list of member variables that we will initialize using member
+    #                initializion in the allocator constructor
+    #   member_list - The list of members that we will generate initialization code
+    #                 for in the body of the constructors
+    init_list = []
+    alloc_list = []
+    member_list = []
+    for field in spec.fields:
+        member = Member(field.name)
+        member.type = field.type.type
+        if field.type.is_array:
+            if field.type.is_fixed_size_array():
+                if field.type.is_primitive_type():
+                    alloc_list.append(field.name + '(_alloc)')
+                    default = default_cpp_value_from_type(field.type.type)
+                    single = primitive_value_to_cpp(field.type, default)
+                    member.zero_value = [single] * field.type.array_size
+                    if field.default_value is not None:
+                        member.default_value = []
+                        for val in field.default_value:
+                            member.default_value.append(primitive_value_to_cpp(field.type, val))
+                else:
+                    alloc_list.append(field.name + '(_alloc)')
+                    member.zero_value = []
+                    member.zero_need_array_override = True
+            else:
+                if field.default_value is not None:
+                    member.default_value = value_to_cpp(field.type, field.default_value)
+                    length = len(field.default_value)
+                    field_type = field.type.type
+                    defaults = [default_cpp_value_from_type(field_type) for x in range(0, length)]
+                    member.zero_value = value_to_cpp(field.type, defaults)
+                    member.num_prealloc = len(field.default_value)
+        else:
+            if field.type.is_primitive_type():
+                if field.type.type == 'string':
+                    alloc_list.append(field.name + '(_alloc)')
+                default = default_cpp_value_from_type(field.type.type)
+                member.zero_value = primitive_value_to_cpp(field.type, default)
+                if field.default_value is not None:
+                    member.default_value = primitive_value_to_cpp(field.type, field.default_value)
+            else:
+                init_list.append(field.name + '(_init)')
+                alloc_list.append(field.name + '(_alloc, _init)')
+
+        if member.default_value is not None or member.zero_value is not None:
+            if not member_list or not member_list[-1].add_member(member):
+                commonset = CommonMemberSet()
+                commonset.add_member(member)
+                member_list.append(commonset)
+
+    return init_list, alloc_list, member_list

@@ -117,7 +117,8 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 
     def __init__(self, **kwargs):
         assert all('_' + key in self.__slots__ for key in kwargs.keys()), \
-            'Invalid arguments passed to constructor: %r' % kwargs.keys()
+            'Invalid arguments passed to constructor: %s' % \
+            ', '.join(sorted(k for k in kwargs.keys() if '_' + k not in self.__slots__))
 @[  for field in spec.fields]@
 @[    if field.default_value]@
         self.@(field.name) = kwargs.get(

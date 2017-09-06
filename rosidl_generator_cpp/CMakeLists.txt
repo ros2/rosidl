@@ -14,6 +14,9 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
+  find_package(rosidl_runtime_cpp REQUIRED)
+  include_directories(${rosidl_runtime_cpp_INCLUDE_DIRS})
+
   set(message_files
     "msg/BoundedArrayBounded.msg"
     "msg/BoundedArrayStatic.msg"

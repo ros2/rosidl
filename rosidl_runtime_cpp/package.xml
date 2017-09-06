@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
+  <name>rosidl_runtime_cpp</name>
+  <version>0.0.2</version>
+  <description>Contains shared C++ dependencies for ROS msg and srv generated classes.</description>
+  <maintainer email="clalancette@openrobotics.org">Chris Lalancette</maintainer>
+  <license>Apache License 2.0</license>
+  <author email="clalancette@openrobotics.org">Chris Lalancette</author>
+
+  <buildtool_depend>ament_cmake_ros</buildtool_depend>
+
+  <build_depend>ament_cmake</build_depend>
+  <exec_depend>ament_cmake</exec_depend>
+  <exec_depend>rosidl_runtime_c</exec_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

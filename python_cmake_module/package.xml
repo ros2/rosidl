@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>python_cmake_module</name>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
   <description>Provide CMake module with extra functionality for Python.</description>
 
   <maintainer email="esteve@osrfoundation.org">Esteve Fernandez</maintainer>

@@ -368,9 +368,9 @@ int test_primitives_unbounded_arrays(void)
   // float32 array
   res = rosidl_generator_c__float32__Array__init(&arrays->float32_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
-  float test_array_float32[7] =
-  {-3.000001f, 22143.541325f, 6331.00432f, -214.66241f, 0.000001f, 1415555.12345f,
-   -1.11154f};
+  float test_array_float32[7] = {
+    -3.000001f, 22143.541325f, 6331.00432f, -214.66241f, 0.000001f, 1415555.12345f, -1.11154f
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->float32_array.data[i] = test_array_float32[i];
   }
@@ -382,10 +382,10 @@ int test_primitives_unbounded_arrays(void)
   // float64 array
   res = rosidl_generator_c__float64__Array__init(&arrays->float64_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
-  double test_array_float64[7] =
-  {-120310.00843902140001, 22143.54483920141325, 6331.0048392104432,
-   -214.62850432596241, 0.0000000000001, 1415555.128294031432345,
-   -1.111184329208454};
+  double test_array_float64[7] = {
+    -120310.00843902140001, 22143.54483920141325, 6331.0048392104432, -214.62850432596241,
+    0.0000000000001, 1415555.128294031432345, -1.111184329208454
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->float64_array.data[i] = test_array_float64[i];
   }
@@ -435,9 +435,10 @@ int test_primitives_unbounded_arrays(void)
   // int64 array
   res = rosidl_generator_c__int64__Array__init(&arrays->int64_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
-  int64_t test_array_int64[7] =
-  {-9223372036854775807LL, -5000000000000000000LL, -1111111111111111111LL, 0,
-   1111111111111111111LL, 5000000000000000000LL, 9223372036854775807LL};
+  int64_t test_array_int64[7] = {
+    -9223372036854775807LL, -5000000000000000000LL, -1111111111111111111LL, 0,
+    1111111111111111111LL, 5000000000000000000LL, 9223372036854775807LL
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int64_array.data[i] = test_array_int64[i];
   }
@@ -473,8 +474,9 @@ int test_primitives_unbounded_arrays(void)
   // uint32 array
   res = rosidl_generator_c__uint32__Array__init(&arrays->uint32_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
-  uint32_t test_array_uint32[7] =
-  {0UL, 100UL, 2000UL, 30000UL, 444444UL, 567890123UL, 4294967295UL};
+  uint32_t test_array_uint32[7] = {
+    0UL, 100UL, 2000UL, 30000UL, 444444UL, 567890123UL, 4294967295UL
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint32_array.data[i] = test_array_uint32[i];
   }
@@ -486,9 +488,10 @@ int test_primitives_unbounded_arrays(void)
   // uint64 array
   res = rosidl_generator_c__uint64__Array__init(&arrays->uint64_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
-  uint64_t test_array_uint64[7] =
-  {0ULL, 10000ULL, 30000000ULL, 444444444ULL, 567890123456789ULL, 429496729578901234ULL,
-   18446744073709551615ULL};
+  uint64_t test_array_uint64[7] = {
+    0ULL, 10000ULL, 30000000ULL, 444444444ULL, 567890123456789ULL,
+    429496729578901234ULL, 18446744073709551615ULL
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint64_array.data[i] = test_array_uint64[i];
   }
@@ -563,9 +566,9 @@ int test_primitives_bounded_arrays(void)
   // float32 array
   res = rosidl_generator_c__float32__Array__init(&arrays->float32_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
-  float test_array_float32[7] =
-  {-3.000001f, 22143.541325f, 6331.00432f, -214.66241f, 0.000001f, 1415555.12345f,
-   -1.11154f};
+  float test_array_float32[7] = {
+    -3.000001f, 22143.541325f, 6331.00432f, -214.66241f, 0.000001f, 1415555.12345f, -1.11154f
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->float32_array.data[i] = test_array_float32[i];
   }
@@ -577,10 +580,10 @@ int test_primitives_bounded_arrays(void)
   // float64 array
   res = rosidl_generator_c__float64__Array__init(&arrays->float64_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
-  double test_array_float64[7] =
-  {-120310.00843902140001, 22143.54483920141325, 6331.0048392104432,
-   -214.62850432596241, 0.0000000000001, 1415555.128294031432345,
-   -1.111184329208454};
+  double test_array_float64[7] = {
+    -120310.00843902140001, 22143.54483920141325, 6331.0048392104432, -214.62850432596241,
+    0.0000000000001, 1415555.128294031432345, -1.111184329208454
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->float64_array.data[i] = test_array_float64[i];
   }
@@ -630,9 +633,10 @@ int test_primitives_bounded_arrays(void)
   // int64 array
   res = rosidl_generator_c__int64__Array__init(&arrays->int64_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
-  int64_t test_array_int64[7] =
-  {-9223372036854775807LL, -5000000000000000000LL, -1111111111111111111, 0,
-   1111111111111111111LL, 5000000000000000000LL, 9223372036854775807LL};
+  int64_t test_array_int64[7] = {
+    -9223372036854775807LL, -5000000000000000000LL, -1111111111111111111, 0,
+    1111111111111111111LL, 5000000000000000000LL, 9223372036854775807LL
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int64_array.data[i] = test_array_int64[i];
   }
@@ -681,9 +685,10 @@ int test_primitives_bounded_arrays(void)
   // uint64 array
   res = rosidl_generator_c__uint64__Array__init(&arrays->uint64_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
-  uint64_t test_array_uint64[7] =
-  {0ULL, 10000ULL, 30000000ULL, 444444444ULL, 567890123456789ULL, 429496729578901234ULL,
-   18446744073709551615ULL};
+  uint64_t test_array_uint64[7] = {
+    0ULL, 10000ULL, 30000000ULL, 444444444ULL, 567890123456789ULL,
+    429496729578901234ULL, 18446744073709551615ULL
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint64_array.data[i] = test_array_uint64[i];
   }
@@ -749,9 +754,9 @@ int test_primitives_static_arrays(void)
   }
 
   // float32 array
-  float test_array_float32[ARRAY_SIZE] =
-  {-3.000001f, 22143.541325f, 6331.00432f, -214.66241f, 0.000001f, 1415555.12345f,
-   -1.11154f};
+  float test_array_float32[ARRAY_SIZE] = {
+    -3.000001f, 22143.541325f, 6331.00432f, -214.66241f, 0.000001f, 1415555.12345f, -1.11154f
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->float32_array[i] = test_array_float32[i];
   }
@@ -761,10 +766,10 @@ int test_primitives_static_arrays(void)
   }
 
   // float64 array
-  double test_array_float64[ARRAY_SIZE] =
-  {-120310.00843902140001, 22143.54483920141325, 6331.0048392104432,
-   -214.62850432596241, 0.0000000000001, 1415555.128294031432345,
-   -1.111184329208454};
+  double test_array_float64[ARRAY_SIZE] = {
+    -120310.00843902140001, 22143.54483920141325, 6331.0048392104432, -214.62850432596241,
+    0.0000000000001, 1415555.128294031432345, -1.111184329208454
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->float64_array[i] = test_array_float64[i];
   }
@@ -784,8 +789,9 @@ int test_primitives_static_arrays(void)
   }
 
   // int16 array
-  int16_t test_array_int16[ARRAY_SIZE] =
-  {-32767, -22222, -11111, 0, 11111, 22222, 32767};
+  int16_t test_array_int16[ARRAY_SIZE] = {
+    -32767, -22222, -11111, 0, 11111, 22222, 32767
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int16_array[i] = test_array_int16[i];
   }
@@ -806,9 +812,10 @@ int test_primitives_static_arrays(void)
   }
 
   // int64 array
-  int64_t test_array_int64[ARRAY_SIZE] =
-  {-9223372036854775807LL, -5000000000000000000LL, -1111111111111111111LL, 0,
-   1111111111111111111ULL, 5000000000000000000ULL, 9223372036854775807ULL};
+  int64_t test_array_int64[ARRAY_SIZE] = {
+    -9223372036854775807LL, -5000000000000000000LL, -1111111111111111111LL, 0,
+    1111111111111111111ULL, 5000000000000000000ULL, 9223372036854775807ULL
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->int64_array[i] = test_array_int64[i];
   }
@@ -838,8 +845,9 @@ int test_primitives_static_arrays(void)
   }
 
   // uint32 array
-  uint32_t test_array_uint32[ARRAY_SIZE] =
-  {0UL, 100UL, 2000UL, 30000UL, 444444UL, 567890123UL, 4294967295UL};
+  uint32_t test_array_uint32[ARRAY_SIZE] = {
+    0UL, 100UL, 2000UL, 30000UL, 444444UL, 567890123UL, 4294967295UL
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint32_array[i] = test_array_uint32[i];
   }
@@ -849,9 +857,10 @@ int test_primitives_static_arrays(void)
   }
 
   // uint64 array
-  uint64_t test_array_uint64[ARRAY_SIZE] =
-  {0ULL, 10000ULL, 30000000ULL, 444444444ULL, 567890123456789ULL, 429496729578901234ULL,
-   18446744073709551615ULL};
+  uint64_t test_array_uint64[ARRAY_SIZE] = {
+    0ULL, 10000ULL, 30000000ULL, 444444444ULL, 567890123456789ULL,
+    429496729578901234ULL, 18446744073709551615ULL
+  };
   for (i = 0; i < ARRAY_SIZE; i++) {
     arrays->uint64_array[i] = test_array_uint64[i];
   }

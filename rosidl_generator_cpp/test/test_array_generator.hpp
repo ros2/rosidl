@@ -32,8 +32,8 @@ template<
     std::is_same<typename C::value_type, bool>::value
   >::type * = nullptr
 >
-void test_vector_fill(C * container, size_t size, bool val1 = true,
-  bool val2 = false)
+void test_vector_fill(
+  C * container, size_t size, bool val1 = true, bool val2 = false)
 {
   for (size_t i = 0; i < size; i++) {
     if ((i % 2) == 0) {
@@ -60,7 +60,8 @@ template<
     !std::is_same<typename C::value_type, bool>::value
   >::type * = nullptr
 >
-void test_vector_fill(C * container, size_t size,
+void test_vector_fill(
+  C * container, size_t size,
   typename C::value_type min, typename C::value_type max)
 {
   if (size > 0 && min != max) {
@@ -87,7 +88,8 @@ template<
     std::is_floating_point<typename C::value_type>::value
   >::type * = nullptr
 >
-void test_vector_fill(C * container, size_t size,
+void test_vector_fill(
+  C * container, size_t size,
   typename C::value_type min, typename C::value_type max)
 {
   if (size > 0 && min != max) {
@@ -116,7 +118,8 @@ template<
     std::is_same<typename C::value_type, typename std::string>::value
   >::type * = nullptr
 >
-void test_vector_fill(C * container, size_t size,
+void test_vector_fill(
+  C * container, size_t size,
   int min, int max,
   int minlength, const int maxlength)
 {

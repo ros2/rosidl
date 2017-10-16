@@ -281,9 +281,11 @@ PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_r
     PyObject * pymessage_class = PyObject_GetAttrString(pymessage_module, "@(spec.base_type.type)");
     Py_DECREF(pymessage_module);
     _pymessage = PyObject_CallObject(pymessage_class, NULL);
+    if (!_pymessage) {
+      return NULL;
+    }
     Py_DECREF(pymessage_class);
   }
-  assert(_pymessage != NULL);
 
 @[for field in spec.fields]@
   PyObject * py@(field.name) = NULL;
@@ -403,7 +405,6 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   PyObject_SetAttrString(_pymessage, "@(field.name)", py@(field.name));
   Py_DECREF(py@(field.name));
 @[end for]@
-  assert(_pymessage != NULL);
   // ownership of _pymessage is transferred to the caller
   return _pymessage;
 }

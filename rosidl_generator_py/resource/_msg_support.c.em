@@ -402,8 +402,13 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
   assert(false);
 @[  end if]@
   assert(py@(field.name) != NULL);
-  PyObject_SetAttrString(_pymessage, "@(field.name)", py@(field.name));
-  Py_DECREF(py@(field.name));
+  {
+    int rc = PyObject_SetAttrString(_pymessage, "@(field.name)", py@(field.name));
+    Py_DECREF(py@(field.name));
+    if (rc) {
+      return NULL;
+    }
+  }
 @[end for]@
   // ownership of _pymessage is transferred to the caller
   return _pymessage;

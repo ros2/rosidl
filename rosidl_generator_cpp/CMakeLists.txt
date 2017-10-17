@@ -58,6 +58,7 @@ if(BUILD_TESTING)
 
   rosidl_generate_interfaces(${PROJECT_NAME} ${message_files}
     SKIP_INSTALL
+    ADD_LINTER_TESTS
   )
 
   # Default to C++14

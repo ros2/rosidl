@@ -137,7 +137,8 @@ def generate_zero_string(membset, fill_args):
 @[for membset in member_list]@
 @[ if membset.members[0].default_value is not None]@
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
-        rosidl_generator_cpp::MessageInitialization::DEFAULTS_ONLY == _init) {
+      rosidl_generator_cpp::MessageInitialization::DEFAULTS_ONLY == _init)
+    {
 @[for line in generate_default_string(membset)]@
       @(line)
 @[end for]@
@@ -172,7 +173,8 @@ def generate_zero_string(membset, fill_args):
 @[for membset in member_list]@
 @[ if membset.members[0].default_value is not None]@
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
-      rosidl_generator_cpp::MessageInitialization::DEFAULTS_ONLY == _init) {
+      rosidl_generator_cpp::MessageInitialization::DEFAULTS_ONLY == _init)
+    {
 @[for line in generate_default_string(membset)]@
       @(line)
 @[end for]@

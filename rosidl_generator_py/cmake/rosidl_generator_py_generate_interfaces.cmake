@@ -284,6 +284,8 @@ if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
     get_filename_component(_cpplint_root "${_output_path}" DIRECTORY)
     ament_cpplint(
       TESTNAME "cpplint_rosidl_generated_py"
+      # the generated code might contain functions with more lines
+      FILTERS "-readability/fn_size"
       # the generated code might contain longer lines for templated types
       MAX_LINE_LENGTH 999
       ROOT "${_cpplint_root}"

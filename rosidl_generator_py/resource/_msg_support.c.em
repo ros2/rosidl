@@ -54,212 +54,269 @@ msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_typ
 
 void * @(spec.base_type.pkg_name)_@(module_name)__convert_from_py(PyObject * _pymsg)
 {
-  @(msg_typename) * ros_message = @(msg_typename)__create();
-  (void)ros_message;
 @{
 full_classname = '%s.%s._%s.%s' % (spec.base_type.pkg_name, subfolder, module_name, spec.base_type.type)
 }@
-  char full_classname_dest[@(len(full_classname) + 1)];
-
-  char * class_name = NULL;
-  char * module_name = NULL;
+  // check that the passed message is of the expected Python class
   {
-    PyObject * attr1 = PyObject_GetAttrString(_pymsg, "__class__");
-    PyObject * attr2 = PyObject_GetAttrString(attr1, "__name__");
-    class_name = (char *)PyUnicode_1BYTE_DATA(attr2);
-    Py_DECREF(attr2);
-    attr2 = PyObject_GetAttrString(attr1, "__module__");
-    module_name = (char *)PyUnicode_1BYTE_DATA(attr2);
-    Py_DECREF(attr2);
-    Py_DECREF(attr1);
+    char full_classname_dest[@(len(full_classname) + 1)];
+    {
+      char * class_name = NULL;
+      char * module_name = NULL;
+      {
+        PyObject * class_attr = PyObject_GetAttrString(_pymsg, "__class__");
+        if (class_attr) {
+          PyObject * name_attr = PyObject_GetAttrString(class_attr, "__name__");
+          if (name_attr) {
+            class_name = (char *)PyUnicode_1BYTE_DATA(name_attr);
+            Py_DECREF(name_attr);
+          }
+          PyObject * module_attr = PyObject_GetAttrString(class_attr, "__module__");
+          if (module_attr) {
+            module_name = (char *)PyUnicode_1BYTE_DATA(module_attr);
+            Py_DECREF(module_attr);
+          }
+          Py_DECREF(class_attr);
+        }
+      }
+      if (!class_name || !module_name) {
+        return NULL;
+      }
+      snprintf(full_classname_dest, sizeof(full_classname_dest), "%s.%s", module_name, class_name);
+    }
+    assert(strncmp(
+        "@(full_classname)",
+        full_classname_dest, @(len(full_classname))) == 0);
   }
-
-  snprintf(full_classname_dest, sizeof(full_classname_dest), "%s.%s", module_name, class_name);
-
-  assert(strncmp(
-      "@(full_classname)",
-      full_classname_dest, @(len(full_classname))) == 0);
-
+  @(msg_typename) * ros_message = @(msg_typename)__create();
+@[if not spec.fields]@
+  (void)ros_message;
+@[end if]@
 @[for field in spec.fields]@
-  PyObject * py@(field.name) = PyObject_GetAttrString(_pymsg, "@(field.name)");
+  {  // @(field.name)
+    PyObject * field = PyObject_GetAttrString(_pymsg, "@(field.name)");
+    if (!field) {
+      return NULL;
+    }
 @[  if not field.type.is_primitive_type()]@
 @{
 nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 }@
-  typedef PyObject *(* convert_from_py_signature)(void *);
-  convert_from_py_signature convert_from_py_@(field.name) = NULL;
-  {
-    PyObject * py@(field.name)_msg_module = PyImport_ImportModule("@(field.type.pkg_name).msg._@convert_camel_case_to_lower_case_underscore(field.type.type)");
-    PyObject * py@(field.name)_msg_class = PyObject_GetAttrString(py@(field.name)_msg_module, "@(field.type.type)");
-    Py_DECREF(py@(field.name)_msg_module);
-    PyObject * py@(field.name)_msg_metaclass = PyObject_GetAttrString(py@(field.name)_msg_class, "__class__");
-    Py_DECREF(py@(field.name)_msg_class);
-    PyObject * py@(field.name)_convert_from_py = PyObject_GetAttrString(py@(field.name)_msg_metaclass, "_CONVERT_FROM_PY");
-    Py_DECREF(py@(field.name)_msg_metaclass);
-    convert_from_py_@(field.name) = (convert_from_py_signature)PyCapsule_GetPointer(py@(field.name)_convert_from_py, NULL);
-    Py_DECREF(py@(field.name)_convert_from_py);
-  }
+    typedef PyObject *(* convert_from_py_signature)(void *);
+    convert_from_py_signature convert_from_py = NULL;
+    // get conversion function
+    {
+      PyObject * msg_module = PyImport_ImportModule("@(field.type.pkg_name).msg._@convert_camel_case_to_lower_case_underscore(field.type.type)");
+      if (!msg_module) {
+        Py_DECREF(field);
+        return NULL;
+      }
+      PyObject * msg_class = PyObject_GetAttrString(msg_module, "@(field.type.type)");
+      Py_DECREF(msg_module);
+      if (!msg_class) {
+        Py_DECREF(field);
+        return NULL;
+      }
+      PyObject * msg_metaclass = PyObject_GetAttrString(msg_class, "__class__");
+      Py_DECREF(msg_class);
+      if (!msg_metaclass) {
+        Py_DECREF(field);
+        return NULL;
+      }
+      PyObject * convert_from_py_ = PyObject_GetAttrString(msg_metaclass, "_CONVERT_FROM_PY");
+      Py_DECREF(msg_metaclass);
+      if (!convert_from_py_) {
+        Py_DECREF(field);
+        return NULL;
+      }
+      convert_from_py = (convert_from_py_signature)PyCapsule_GetPointer(convert_from_py_, NULL);
+      Py_DECREF(convert_from_py_);
+      if (!convert_from_py) {
+        Py_DECREF(field);
+        return NULL;
+      }
+    }
 @[    if field.type.is_array]@
-  assert(PySequence_Check(py@(field.name)));
-  PyObject * seq@(field.name) = PySequence_Fast(py@(field.name), "expected a sequence");
-  @(nested_type) * item@(field.name);
-@[      if field.type.array_size is None or field.type.is_upper_bound]@
-  size_t size@(field.name) = PySequence_Size(py@(field.name));
-  if (!@(nested_type)__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
-    PyErr_SetString(PyExc_RuntimeError, "unable to create @(nested_type)__Array ros_message");
-    return NULL;
-  }
-  @(nested_type) * dest@(field.name) = ros_message->@(field.name).data;
-@[      else]@
-  size_t size@(field.name) = @(field.type.array_size);
-  @(nested_type) * dest@(field.name) = ros_message->@(field.name);
-@[      end if]@
-  size_t idx@(field.name);
-  for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
-    item@(field.name) = (@(nested_type) *) convert_from_py_@(field.name)(
-      PySequence_Fast_GET_ITEM(seq@(field.name), idx@(field.name)));
-    if (!item@(field.name)) {
+    PyObject * seq_field = PySequence_Fast(field, "expected a sequence in '@(field.name)'");
+    if (!seq_field) {
+      Py_DECREF(field);
       return NULL;
     }
-    memcpy(&dest@(field.name)[idx@(field.name)], item@(field.name), sizeof(@(nested_type)));
-  }
-  Py_DECREF(seq@(field.name));
+@[      if field.type.array_size is None or field.type.is_upper_bound]@
+    Py_ssize_t size = PySequence_Size(field);
+    if (-1 == size) {
+      Py_DECREF(seq_field);
+      Py_DECREF(field);
+      return NULL;
+    }
+    if (!@(nested_type)__Array__init(&(ros_message->@(field.name)), size)) {
+      PyErr_SetString(PyExc_RuntimeError, "unable to create @(nested_type)__Array ros_message");
+      Py_DECREF(seq_field);
+      Py_DECREF(field);
+      return NULL;
+    }
+    @(nested_type) * dest = ros_message->@(field.name).data;
+@[      else]@
+    Py_ssize_t size = @(field.type.array_size);
+    @(nested_type) * dest = ros_message->@(field.name);
+@[      end if]@
+    for (Py_ssize_t i = 0; i < size; ++i) {
+      @(nested_type) * item = (@(nested_type) *) convert_from_py(
+        PySequence_Fast_GET_ITEM(seq_field, i));
+      if (!item) {
+        Py_DECREF(seq_field);
+        Py_DECREF(field);
+        return NULL;
+      }
+      memcpy(&dest[i], item, sizeof(@(nested_type)));
+    }
+    Py_DECREF(seq_field);
 @[    else]@
-  @(nested_type) * tmp@(field.name) = (@(nested_type) *) convert_from_py_@(field.name)(py@(field.name));
-  if (!tmp@(field.name)) {
-    return NULL;
-  }
-  ros_message->@(field.name) = *tmp@(field.name);
+    @(nested_type) * tmp = (@(nested_type) *) convert_from_py(field);
+    if (!tmp) {
+      return NULL;
+    }
+    ros_message->@(field.name) = *tmp;
 @[    end if]@
 @[  elif field.type.is_array]@
-  assert(PySequence_Check(py@(field.name)));
-  PyObject * seq@(field.name) = PySequence_Fast(py@(field.name), "expected a sequence");
-  PyObject * item@(field.name);
+    PyObject * seq_field = PySequence_Fast(field, "expected a sequence in '@(field.name)'");
+    if (!seq_field) {
+      Py_DECREF(field);
+      return NULL;
+    }
 @[    if field.type.array_size is None or field.type.is_upper_bound]@
-  size_t size@(field.name) = PySequence_Size(py@(field.name));
+    Py_ssize_t size = PySequence_Size(field);
+    if (-1 == size) {
+      Py_DECREF(seq_field);
+      Py_DECREF(field);
+      return NULL;
+    }
 @[      if field.type.type == 'string']@
-  if (!rosidl_generator_c__String__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
-    PyErr_SetString(PyExc_RuntimeError, "unable to create String__Array ros_message");
-    return NULL;
-  }
+    if (!rosidl_generator_c__String__Array__init(&(ros_message->@(field.name)), size)) {
+      PyErr_SetString(PyExc_RuntimeError, "unable to create String__Array ros_message");
+      Py_DECREF(seq_field);
+      Py_DECREF(field);
+      return NULL;
+    }
 @[      else]@
-  if (!rosidl_generator_c__@(field.type.type)__Array__init(&(ros_message->@(field.name)), size@(field.name))) {
-    PyErr_SetString(PyExc_RuntimeError, "unable to create @(field.type.type)__Array ros_message");
-    return NULL;
-  }
+    if (!rosidl_generator_c__@(field.type.type)__Array__init(&(ros_message->@(field.name)), size)) {
+      PyErr_SetString(PyExc_RuntimeError, "unable to create @(field.type.type)__Array ros_message");
+      Py_DECREF(seq_field);
+      Py_DECREF(field);
+      return NULL;
+    }
 @[      end if]@
-  @primitive_msg_type_to_c(field.type.type) * dest@(field.name) = ros_message->@(field.name).data;
+    @primitive_msg_type_to_c(field.type.type) * dest = ros_message->@(field.name).data;
 @[    else]@
-  size_t size@(field.name) = @(field.type.array_size);
-  @primitive_msg_type_to_c(field.type.type) * dest@(field.name) = ros_message->@(field.name);
+    Py_ssize_t size = @(field.type.array_size);
+    @primitive_msg_type_to_c(field.type.type) * dest = ros_message->@(field.name);
 @[    end if]@
-@[    if field.type.type != 'string']@
-  @primitive_msg_type_to_c(field.type.type) tmp@(field.name);
-@[    end if]@
-  size_t idx@(field.name);
-  for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
-    item@(field.name) = PySequence_Fast_GET_ITEM(seq@(field.name), idx@(field.name));
+    for (Py_ssize_t i = 0; i < size; ++i) {
+      PyObject * item = PySequence_Fast_GET_ITEM(seq_field, i);
+      if (!item) {
+        Py_DECREF(seq_field);
+        Py_DECREF(field);
+        return NULL;
+      }
 @[    if field.type.type == 'char']@
-    assert(PyUnicode_Check(item@(field.name)));
-    tmp@(field.name) = PyUnicode_1BYTE_DATA(item@(field.name))[0];
+      assert(PyUnicode_Check(item));
+      @primitive_msg_type_to_c(field.type.type) tmp = PyUnicode_1BYTE_DATA(item)[0];
 @[    elif field.type.type == 'byte']@
-    assert(PyBytes_Check(item@(field.name)));
-    tmp@(field.name) = PyBytes_AS_STRING(item@(field.name))[0];
+      assert(PyBytes_Check(item));
+      @primitive_msg_type_to_c(field.type.type) tmp = PyBytes_AS_STRING(item)[0];
 @[    elif field.type.type == 'string']@
-    assert(PyUnicode_Check(item@(field.name)));
-    rosidl_generator_c__String__assign(
-      &dest@(field.name)[idx@(field.name)], (char *)PyUnicode_1BYTE_DATA(item@(field.name)));
+      assert(PyUnicode_Check(item));
+      rosidl_generator_c__String__assign(&dest[i], (char *)PyUnicode_1BYTE_DATA(item));
 @[    elif field.type.type == 'bool']@
-    assert(PyBool_Check(item@(field.name)));
-    tmp@(field.name) = (item@(field.name) == Py_True);
+      assert(PyBool_Check(item));
+      @primitive_msg_type_to_c(field.type.type) tmp = (item == Py_True);
 @[    elif field.type.type in ['float32', 'float64']]@
-    assert(PyFloat_Check(item@(field.name)));
+      assert(PyFloat_Check(item));
 @[      if field.type.type == 'float32']@
-    tmp@(field.name) = (float)PyFloat_AS_DOUBLE(item@(field.name));
+      @primitive_msg_type_to_c(field.type.type) tmp = (float)PyFloat_AS_DOUBLE(item);
 @[      else]@
-    tmp@(field.name) = PyFloat_AS_DOUBLE(item@(field.name));
+      @primitive_msg_type_to_c(field.type.type) tmp = PyFloat_AS_DOUBLE(item);
 @[      end if]@
 @[    elif field.type.type in [
         'int8',
         'int16',
         'int32',
     ]]@
-    assert(PyLong_Check(item@(field.name)));
-    tmp@(field.name) = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsLong(item@(field.name));
+      assert(PyLong_Check(item));
+      @primitive_msg_type_to_c(field.type.type) tmp = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsLong(item);
 @[    elif field.type.type in [
         'uint8',
         'uint16',
         'uint32',
     ]]@
-    assert(PyLong_Check(item@(field.name)));
+      assert(PyLong_Check(item));
 @[      if field.type.type == 'uint32']@
-    tmp@(field.name) = PyLong_AsUnsignedLong(item@(field.name));
+      @primitive_msg_type_to_c(field.type.type) tmp = PyLong_AsUnsignedLong(item);
 @[      else]@
-    tmp@(field.name) = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsUnsignedLong(item@(field.name));
+      @primitive_msg_type_to_c(field.type.type) tmp = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsUnsignedLong(item);
 @[      end if]
 @[    elif field.type.type == 'int64']@
-    assert(PyLong_Check(item@(field.name)));
-    tmp@(field.name) = PyLong_AsLongLong(item@(field.name));
+      assert(PyLong_Check(item));
+      @primitive_msg_type_to_c(field.type.type) tmp = PyLong_AsLongLong(item);
 @[    elif field.type.type == 'uint64']@
-    assert(PyLong_Check(item@(field.name)));
-    tmp@(field.name) = PyLong_AsUnsignedLongLong(item@(field.name));
+      assert(PyLong_Check(item));
+      @primitive_msg_type_to_c(field.type.type) tmp = PyLong_AsUnsignedLongLong(item);
 @[    end if]@
 @[    if field.type.type != 'string']@
-    memcpy(&dest@(field.name)[idx@(field.name)], &tmp@(field.name), sizeof(@primitive_msg_type_to_c(field.type.type)));
+      memcpy(&dest[i], &tmp, sizeof(@primitive_msg_type_to_c(field.type.type)));
 @[    end if]@
-  }
-  Py_DECREF(seq@(field.name));
+    }
+    Py_DECREF(seq_field);
 @[  elif field.type.type == 'char']@
-  assert(PyUnicode_Check(py@(field.name)));
-  ros_message->@(field.name) = PyUnicode_1BYTE_DATA(py@(field.name))[0];
+    assert(PyUnicode_Check(field));
+    ros_message->@(field.name) = PyUnicode_1BYTE_DATA(field)[0];
 @[  elif field.type.type == 'byte']@
-  assert(PyBytes_Check(py@(field.name)));
-  ros_message->@(field.name) = PyBytes_AS_STRING(py@(field.name))[0];
+    assert(PyBytes_Check(field));
+    ros_message->@(field.name) = PyBytes_AS_STRING(field)[0];
 @[  elif field.type.type == 'string']@
-  assert(PyUnicode_Check(py@(field.name)));
-  rosidl_generator_c__String__assign(
-    &ros_message->@(field.name), (char *)PyUnicode_1BYTE_DATA(py@(field.name)));
+    assert(PyUnicode_Check(field));
+    rosidl_generator_c__String__assign(&ros_message->@(field.name), (char *)PyUnicode_1BYTE_DATA(field));
 @[  elif field.type.type == 'bool']@
-  assert(PyBool_Check(py@(field.name)));
-  ros_message->@(field.name) = (Py_True == py@(field.name));
+    assert(PyBool_Check(field));
+    ros_message->@(field.name) = (Py_True == field);
 @[  elif field.type.type in ['float32', 'float64']]@
-  assert(PyFloat_Check(py@(field.name)));
+    assert(PyFloat_Check(field));
 @[    if field.type.type == 'float32']@
-  ros_message->@(field.name) = (float)PyFloat_AS_DOUBLE(py@(field.name));
+    ros_message->@(field.name) = (float)PyFloat_AS_DOUBLE(field);
 @[    else]@
-  ros_message->@(field.name) = PyFloat_AS_DOUBLE(py@(field.name));
+    ros_message->@(field.name) = PyFloat_AS_DOUBLE(field);
 @[    end if]@
 @[  elif field.type.type in [
         'int8',
         'int16',
         'int32',
     ]]@
-  assert(PyLong_Check(py@(field.name)));
-  ros_message->@(field.name) = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsLong(py@(field.name));
+    assert(PyLong_Check(field));
+    ros_message->@(field.name) = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsLong(field);
 @[  elif field.type.type in [
         'uint8',
         'uint16',
         'uint32',
     ]]@
-  assert(PyLong_Check(py@(field.name)));
+    assert(PyLong_Check(field));
 @[    if field.type.type == 'uint32']@
-  ros_message->@(field.name) = PyLong_AsUnsignedLong(py@(field.name));
+    ros_message->@(field.name) = PyLong_AsUnsignedLong(field);
 @[    else]@
-  ros_message->@(field.name) = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsUnsignedLong(py@(field.name));
+    ros_message->@(field.name) = (@(primitive_msg_type_to_c(field.type.type)))PyLong_AsUnsignedLong(field);
 @[    end if]@
 @[  elif field.type.type == 'int64']@
-  assert(PyLong_Check(py@(field.name)));
-  ros_message->@(field.name) = PyLong_AsLongLong(py@(field.name));
+    assert(PyLong_Check(field));
+    ros_message->@(field.name) = PyLong_AsLongLong(field);
 @[  elif field.type.type == 'uint64']@
-  assert(PyLong_Check(py@(field.name)));
-  ros_message->@(field.name) = PyLong_AsUnsignedLongLong(py@(field.name));
+    assert(PyLong_Check(field));
+    ros_message->@(field.name) = PyLong_AsUnsignedLongLong(field);
 @[  else]@
-  assert(false);
+    assert(false);
 @[  end if]@
-  Py_DECREF(py@(field.name));
+    Py_DECREF(field);
+  }
 @[end for]@
 
-  assert(ros_message != NULL);
   return ros_message;
 }
 
@@ -271,145 +328,190 @@ void @(spec.base_type.pkg_name)_@(module_name)__destroy_ros_message(void * raw_r
 
 PyObject * @(spec.base_type.pkg_name)_@(module_name)__convert_to_py(void * raw_ros_message)
 {
-  @(msg_typename) * ros_message = (@(msg_typename) *)raw_ros_message;
-  (void)ros_message;
-
   /* NOTE(esteve): Call constructor of @(spec.base_type.type) */
   PyObject * _pymessage = NULL;
   {
     PyObject * pymessage_module = PyImport_ImportModule("@(spec.base_type.pkg_name).@(subfolder)._@(module_name)");
+    assert(pymessage_module);
     PyObject * pymessage_class = PyObject_GetAttrString(pymessage_module, "@(spec.base_type.type)");
+    assert(pymessage_class);
     Py_DECREF(pymessage_module);
     _pymessage = PyObject_CallObject(pymessage_class, NULL);
+    Py_DECREF(pymessage_class);
     if (!_pymessage) {
       return NULL;
     }
-    Py_DECREF(pymessage_class);
   }
-
+  @(msg_typename) * ros_message = (@(msg_typename) *)raw_ros_message;
+@[if not spec.fields]@
+  (void)ros_message;
+@[end if]@
 @[for field in spec.fields]@
-  PyObject * py@(field.name) = NULL;
+  {  // @(field.name)
+    PyObject * field = NULL;
 @[  if not field.type.is_primitive_type()]@
 @{
 nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
 }@
-  PyObject * py@(field.name)_msg_module = PyImport_ImportModule("@(field.type.pkg_name).msg._@convert_camel_case_to_lower_case_underscore(field.type.type)");
-  PyObject * py@(field.name)_msg_class = PyObject_GetAttrString(py@(field.name)_msg_module, "@(field.type.type)");
-  PyObject * py@(field.name)_msg_metaclass = PyObject_GetAttrString(py@(field.name)_msg_class, "__class__");
-  PyObject * py@(field.name)_convert_to_py = PyObject_GetAttrString(py@(field.name)_msg_metaclass, "_CONVERT_TO_PY");
-  typedef PyObject *(* convert_to_py_signature)(void *);
-  convert_to_py_signature convert_to_py_@(field.name) = (convert_to_py_signature)PyCapsule_GetPointer(py@(field.name)_convert_to_py, NULL);
+    typedef PyObject *(* convert_to_py_signature)(void *);
+    convert_to_py_signature convert_to_py = NULL;
+    // get conversion function
+    {
+      PyObject * msg_module = PyImport_ImportModule("@(field.type.pkg_name).msg._@convert_camel_case_to_lower_case_underscore(field.type.type)");
+      if (!msg_module) {
+        return NULL;
+      }
+      PyObject * msg_class = PyObject_GetAttrString(msg_module, "@(field.type.type)");
+      Py_DECREF(msg_module);
+      if (!msg_class) {
+        return NULL;
+      }
+      PyObject * msg_metaclass = PyObject_GetAttrString(msg_class, "__class__");
+      Py_DECREF(msg_class);
+      if (!msg_metaclass) {
+        return NULL;
+      }
+      PyObject * convert_to_py_ = PyObject_GetAttrString(msg_metaclass, "_CONVERT_TO_PY");
+      Py_DECREF(msg_metaclass);
+      if (!convert_to_py_) {
+        return NULL;
+      }
+      convert_to_py = (convert_to_py_signature)PyCapsule_GetPointer(convert_to_py_, NULL);
+      Py_DECREF(convert_to_py_);
+      if (!convert_to_py) {
+        return NULL;
+      }
+    }
 @[    if field.type.is_array]@
 @[      if field.type.array_size is None or field.type.is_upper_bound]@
-  size_t size@(field.name) = ros_message->@(field.name).size;
+    size_t size = ros_message->@(field.name).size;
 @[      else]@
-  size_t size@(field.name) = @(field.type.array_size);
+    size_t size = @(field.type.array_size);
 @[      end if]@
-  py@(field.name) = PyList_New(size@(field.name));
-  @(nested_type) * item@(field.name);
-  size_t idx@(field.name);
-  for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
-@[      if field.type.array_size is None or field.type.is_upper_bound]@
-    item@(field.name) = &(ros_message->@(field.name).data[idx@(field.name)]);
-@[      else]@
-    item@(field.name) = &(ros_message->@(field.name)[idx@(field.name)]);
-@[      end if]@
-    PyObject * pyitem@(field.name) = convert_to_py_@(field.name)(item@(field.name));
-    if (!pyitem@(field.name)) {
+    field = PyList_New(size);
+    if (!field) {
       return NULL;
     }
-    PyList_SetItem(py@(field.name), idx@(field.name), pyitem@(field.name));
-  }
-  assert(PySequence_Check(py@(field.name)));
+    @(nested_type) * item;
+    for (size_t i = 0; i < size; ++i) {
+@[      if field.type.array_size is None or field.type.is_upper_bound]@
+      item = &(ros_message->@(field.name).data[i]);
+@[      else]@
+      item = &(ros_message->@(field.name)[i]);
+@[      end if]@
+      PyObject * pyitem = convert_to_py(item);
+      if (!pyitem) {
+        Py_DECREF(field);
+        return NULL;
+      }
+      int rc = PyList_SetItem(field, i, pyitem);
+      assert(rc == 0);
+    }
+    assert(PySequence_Check(field));
 @[    else]@
-  @(nested_type) pytmp@(field.name) = ros_message->@(field.name);
-  py@(field.name) = convert_to_py_@(field.name)(&pytmp@(field.name));
-  if (!py@(field.name)) {
-    return NULL;
-  }
+    field = convert_to_py(&ros_message->@(field.name));
+    if (!field) {
+      return NULL;
+    }
 @[    end if]@
 @[  elif field.type.is_array]@
 @[    if field.type.array_size is None or field.type.is_upper_bound]@
-  size_t size@(field.name) = ros_message->@(field.name).size;
-  @primitive_msg_type_to_c(field.type.type) * tmpmessagedata@(field.name) = ros_message->@(field.name).data;
+    size_t size = ros_message->@(field.name).size;
+    @primitive_msg_type_to_c(field.type.type) * src = ros_message->@(field.name).data;
 @[    else]@
-  size_t size@(field.name) = @(field.type.array_size);
-  @primitive_msg_type_to_c(field.type.type) * tmpmessagedata@(field.name) = ros_message->@(field.name);
+    size_t size = @(field.type.array_size);
+    @primitive_msg_type_to_c(field.type.type) * src = ros_message->@(field.name);
 @[    end if]@
-  py@(field.name) = PyList_New(size@(field.name));
-  size_t idx@(field.name);
-  for (idx@(field.name) = 0; idx@(field.name) < size@(field.name); idx@(field.name)++) {
+    field = PyList_New(size);
+    if (!field) {
+      return NULL;
+    }
+    for (size_t i = 0; i < size; ++i) {
 @[    if field.type.type == 'char']@
-    PyList_SetItem(py@(field.name), idx@(field.name),
-      Py_BuildValue("C", tmpmessagedata@(field.name)[idx@(field.name)]));
+      int rc = PyList_SetItem(field, i, Py_BuildValue("C", src[i]));
+      assert(rc == 0);
 @[    elif field.type.type == 'byte']@
-    PyList_SetItem(py@(field.name), idx@(field.name),
-      PyBytes_FromStringAndSize((const char *)&tmpmessagedata@(field.name)[idx@(field.name)], 1));
+      int rc = PyList_SetItem(field, i, PyBytes_FromStringAndSize((const char *)&src[i], 1));
+      assert(rc == 0);
 @[    elif field.type.type == 'string']@
-    PyList_SetItem(py@(field.name), idx@(field.name), PyUnicode_FromString(tmpmessagedata@(field.name)[idx@(field.name)].data));
+      int rc = PyList_SetItem(field, i, PyUnicode_FromString(src[i].data));
+      assert(rc == 0);
 @[    elif field.type.type == 'bool']@
 @# using PyBool_FromLong because PyList_SetItem will steal ownership of the passed item
-    PyList_SetItem(py@(field.name), idx@(field.name), PyBool_FromLong(tmpmessagedata@(field.name)[idx@(field.name)] ? 1 : 0));
+      int rc = PyList_SetItem(field, i, PyBool_FromLong(src[i] ? 1 : 0));
+      assert(rc == 0);
 @[    elif field.type.type in ['float32', 'float64']]@
-    PyList_SetItem(py@(field.name), idx@(field.name), PyFloat_FromDouble(tmpmessagedata@(field.name)[idx@(field.name)]));
+      int rc = PyList_SetItem(field, i, PyFloat_FromDouble(src[i]));
+      assert(rc == 0);
 @[    elif field.type.type in [
         'int8',
         'int16',
         'int32',
     ]]@
-    PyList_SetItem(py@(field.name), idx@(field.name), PyLong_FromLong(tmpmessagedata@(field.name)[idx@(field.name)]));
+      int rc = PyList_SetItem(field, i, PyLong_FromLong(src[i]));
+      assert(rc == 0);
 @[    elif field.type.type in [
         'uint8',
         'uint16',
         'uint32',
     ]]@
-    PyList_SetItem(py@(field.name), idx@(field.name), PyLong_FromUnsignedLong(tmpmessagedata@(field.name)[idx@(field.name)]));
+      int rc = PyList_SetItem(field, i, PyLong_FromUnsignedLong(src[i]));
+      assert(rc == 0);
 @[    elif field.type.type == 'int64']@
-    PyList_SetItem(py@(field.name), idx@(field.name), PyLong_FromLongLong(tmpmessagedata@(field.name)[idx@(field.name)]));
+      int rc = PyList_SetItem(field, i, PyLong_FromLongLong(src[i]));
+      assert(rc == 0);
 @[    elif field.type.type == 'uint64']@
-    PyList_SetItem(py@(field.name), idx@(field.name), PyLong_FromUnsignedLongLong(tmpmessagedata@(field.name)[idx@(field.name)]));
+      int rc = PyList_SetItem(field, i, PyLong_FromUnsignedLongLong(src[i]));
+      assert(rc == 0);
 @[    end if]@
-  }
-  assert(PySequence_Check(py@(field.name)));
+    }
+    assert(PySequence_Check(field));
 @[  elif field.type.type == 'char']@
-  py@(field.name) = Py_BuildValue("C", ros_message->@(field.name));
+    field = Py_BuildValue("C", ros_message->@(field.name));
+    if (!field) {
+      return NULL;
+    }
 @[  elif field.type.type == 'byte']@
-  py@(field.name) = PyBytes_FromStringAndSize((const char *)&ros_message->@(field.name), 1);
+    field = PyBytes_FromStringAndSize((const char *)&ros_message->@(field.name), 1);
+    if (!field) {
+      return NULL;
+    }
 @[  elif field.type.type == 'string']@
-  py@(field.name) = PyUnicode_FromString(ros_message->@(field.name).data);
+    field = PyUnicode_FromString(ros_message->@(field.name).data);
 @[  elif field.type.type == 'bool']@
 @# using PyBool_FromLong allows treating the variable uniformly by calling Py_DECREF on it later
-  py@(field.name) = PyBool_FromLong(ros_message->@(field.name) ? 1 : 0);
+    field = PyBool_FromLong(ros_message->@(field.name) ? 1 : 0);
 @[  elif field.type.type in ['float32', 'float64']]@
-  py@(field.name) = PyFloat_FromDouble(ros_message->@(field.name));
+    field = PyFloat_FromDouble(ros_message->@(field.name));
 @[  elif field.type.type in [
         'int8',
         'int16',
         'int32',
     ]]@
-  py@(field.name) = PyLong_FromLong(ros_message->@(field.name));
+    field = PyLong_FromLong(ros_message->@(field.name));
 @[  elif field.type.type in [
         'uint8',
         'uint16',
         'uint32',
     ]]@
-  py@(field.name) = PyLong_FromUnsignedLong(ros_message->@(field.name));
+    field = PyLong_FromUnsignedLong(ros_message->@(field.name));
 @[  elif field.type.type == 'int64']@
-  py@(field.name) = PyLong_FromLongLong(ros_message->@(field.name));
+    field = PyLong_FromLongLong(ros_message->@(field.name));
 @[  elif field.type.type == 'uint64']@
-  py@(field.name) = PyLong_FromUnsignedLongLong(ros_message->@(field.name));
+    field = PyLong_FromUnsignedLongLong(ros_message->@(field.name));
 @[  else]@
-  assert(false);
+    assert(false);
 @[  end if]@
-  assert(py@(field.name) != NULL);
-  {
-    int rc = PyObject_SetAttrString(_pymessage, "@(field.name)", py@(field.name));
-    Py_DECREF(py@(field.name));
-    if (rc) {
-      return NULL;
+    {
+      int rc = PyObject_SetAttrString(_pymessage, "@(field.name)", field);
+      Py_DECREF(field);
+      if (rc) {
+        return NULL;
+      }
     }
   }
 @[end for]@
+
   // ownership of _pymessage is transferred to the caller
   return _pymessage;
 }

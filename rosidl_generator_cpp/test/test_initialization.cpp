@@ -51,13 +51,13 @@ TEST(Test_initialization, no_arg_constructor) {
   ASSERT_EQ(0ULL, def.uint64_value);
   ASSERT_EQ("bar", def.string_value);
   ASSERT_TRUE(std::all_of(def.float32_arr.begin(), def.float32_arr.end(), [](float i) {
-      return i == 0.0f;
+      return 0.0f == i;
     }));
   ASSERT_EQ(8.5, def.float64_arr[0]);
   ASSERT_EQ(1.2, def.float64_arr[1]);
   ASSERT_EQ(3.4, def.float64_arr[2]);
   ASSERT_TRUE(std::all_of(def.string_arr.begin(), def.string_arr.end(), [](std::string i) {
-      return i == "";
+      return "" == i;
     }));
   ASSERT_EQ(2UL, def.unbounded.size());
   ASSERT_EQ(1.0f, def.unbounded[0]);
@@ -88,13 +88,13 @@ TEST(Test_initialization, all_constructor) {
   ASSERT_EQ(0ULL, def.uint64_value);
   ASSERT_EQ("bar", def.string_value);
   ASSERT_TRUE(std::all_of(def.float32_arr.begin(), def.float32_arr.end(), [](float i) {
-      return i == 0.0f;
+      return 0.0f == i;
     }));
   ASSERT_EQ(8.5, def.float64_arr[0]);
   ASSERT_EQ(1.2, def.float64_arr[1]);
   ASSERT_EQ(3.4, def.float64_arr[2]);
   ASSERT_TRUE(std::all_of(def.string_arr.begin(), def.string_arr.end(), [](std::string i) {
-      return i == "";
+      return "" == i;
     }));
   ASSERT_EQ(2UL, def.unbounded.size());
   ASSERT_EQ(1.0f, def.unbounded[0]);
@@ -125,21 +125,21 @@ TEST(Test_initialization, zero_constructor) {
   ASSERT_EQ(0ULL, def.uint64_value);
   ASSERT_EQ("", def.string_value);
   ASSERT_TRUE(std::all_of(def.float32_arr.begin(), def.float32_arr.end(), [](float i) {
-      return i == 0.0f;
+      return 0.0f == i;
     }));
   ASSERT_TRUE(std::all_of(def.float64_arr.begin(), def.float64_arr.end(), [](double i) {
-      return i == 0.0;
+      return 0.0 == i;
     }));
   ASSERT_TRUE(std::all_of(def.string_arr.begin(), def.string_arr.end(), [](std::string i) {
-      return i == "";
+      return "" == i;
     }));
   ASSERT_EQ(2UL, def.unbounded.size());
-  ASSERT_EQ(def.unbounded[0], 0.0f);
-  ASSERT_EQ(def.unbounded[1], 0.0f);
+  ASSERT_EQ(0.0f, def.unbounded[0]);
+  ASSERT_EQ(0.0f, def.unbounded[1]);
   ASSERT_EQ(0UL, def.bounded_no_def.size());
   ASSERT_EQ(2UL, def.bounded_def.size());
-  ASSERT_EQ(def.bounded_def[0], 0.0f);
-  ASSERT_EQ(def.bounded_def[1], 0.0f);
+  ASSERT_EQ(0.0f, def.bounded_def[0]);
+  ASSERT_EQ(0.0f, def.bounded_def[1]);
   ASSERT_EQ(0UL, def.vec3.x);
   ASSERT_EQ(0UL, def.vec3.y);
   ASSERT_EQ(0UL, def.vec3.z);
@@ -171,20 +171,20 @@ TEST(Test_initialization, defaults_only_constructor) {
   ASSERT_EQ("bar", def->string_value);
   ASSERT_TRUE(std::all_of(def->float32_arr.begin(), def->float32_arr.end(), [](float i) {
       uint32_t float32_bit_pattern = *reinterpret_cast<uint32_t *>(&i);
-      return float32_bit_pattern == 0xfefefefe;
+      return 0xfefefefe == float32_bit_pattern;
     }));
   ASSERT_EQ(8.5, def->float64_arr[0]);
   ASSERT_EQ(1.2, def->float64_arr[1]);
   ASSERT_EQ(3.4, def->float64_arr[2]);
   ASSERT_TRUE(std::all_of(def->string_arr.begin(), def->string_arr.end(), [](std::string i) {
-      return i == "";
+      return "" == i;
     }));
-  ASSERT_EQ(def->unbounded[0], 1.0f);
-  ASSERT_EQ(def->unbounded[1], 2.0f);
+  ASSERT_EQ(1.0f, def->unbounded[0]);
+  ASSERT_EQ(2.0f, def->unbounded[1]);
   ASSERT_EQ(0UL, def->bounded_no_def.size());
   ASSERT_EQ(2UL, def->bounded_def.size());
-  ASSERT_EQ(def->bounded_def[0], 3.0f);
-  ASSERT_EQ(def->bounded_def[1], 4.0f);
+  ASSERT_EQ(3.0f, def->bounded_def[0]);
+  ASSERT_EQ(4.0f, def->bounded_def[1]);
   ASSERT_EQ(0xfefefefe, def->vec3.x);
   ASSERT_EQ(45UL, def->vec3.y);
   ASSERT_EQ(0xfefefefe, def->vec3.z);
@@ -216,14 +216,14 @@ TEST(Test_initialization, skip_constructor) {
   ASSERT_EQ("", def->string_value);
   ASSERT_TRUE(std::all_of(def->float32_arr.begin(), def->float32_arr.end(), [](float i) {
       uint32_t float32_bit_pattern = *reinterpret_cast<uint32_t *>(&i);
-      return float32_bit_pattern == 0xfefefefe;
+      return 0xfefefefe == float32_bit_pattern;
     }));
   ASSERT_TRUE(std::all_of(def->float64_arr.begin(), def->float64_arr.end(), [](double i) {
       uint64_t float64_bit_pattern = *reinterpret_cast<uint64_t *>(&i);
-      return float64_bit_pattern == 0xfefefefefefefefe;
+      return 0xfefefefefefefefe == float64_bit_pattern;
     }));
   ASSERT_TRUE(std::all_of(def->string_arr.begin(), def->string_arr.end(), [](std::string i) {
-      return i == "";
+      return "" == i;
     }));
   // std::vector memory doesn't come from the memory we allocated above, but
   // instead comes from the allocator.  Thus, we don't expect it to be our

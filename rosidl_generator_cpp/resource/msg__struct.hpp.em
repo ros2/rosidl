@@ -101,12 +101,11 @@ def generate_default_string(membset):
             if member.num_prealloc > 0:
                 strlist.append('this->%s.resize(%d);' % (member.name, member.num_prealloc))
             if isinstance(member.default_value, list):
-                if member.default_value:
-                    if all(v == member.default_value[0] for v in member.default_value):
-                        strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (member.name, member.name, member.default_value[0]))
-                    else:
-                        for index, val in enumerate(member.default_value):
-                            strlist.append('this->%s[%d] = %s;' % (member.name, index, val))
+                if all(v == member.default_value[0] for v in member.default_value):
+                    strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (member.name, member.name, member.default_value[0]))
+                else:
+                    for index, val in enumerate(member.default_value):
+                        strlist.append('this->%s[%d] = %s;' % (member.name, index, val))
             else:
                 strlist.append('this->%s = %s;' % (member.name, member.default_value))
 

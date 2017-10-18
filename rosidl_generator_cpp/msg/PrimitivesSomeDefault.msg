@@ -12,7 +12,7 @@ string[3] string_arr
 float32[] unbounded [1, 2]
 float32[<=3] bounded_no_def
 float32[<=3] bounded_def [3, 4]
-MyVector3 vec3
-MyVector3[2] vec3_fixed
-MyVector3[] vec3_unbounded
-MyVector3[<=2] vec3_bounded
+FieldsWithSameTypeSomeDefaults vec3
+FieldsWithSameTypeSomeDefaults[2] vec3_fixed
+FieldsWithSameTypeSomeDefaults[] vec3_unbounded
+FieldsWithSameTypeSomeDefaults[<=2] vec3_bounded

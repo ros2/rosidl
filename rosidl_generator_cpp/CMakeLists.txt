@@ -23,7 +23,7 @@ if(BUILD_TESTING)
 
     "msg/Empty.msg"
 
-    "msg/MyVector3.msg"
+    "msg/FieldsWithSameTypeSomeDefaults.msg"
 
     "msg/PrimitiveStaticArrays.msg"
 

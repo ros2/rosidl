@@ -96,9 +96,9 @@ MSG_TYPE_TO_CPP = {
 }
 
 
-def msg_type_to_cpp(type_):
+def msg_type_only_to_cpp(type_):
     """
-    Convert a message type into the C++ declaration.
+    Convert a message type into the C++ declaration, ignoring array types.
 
     Example input: uint32, std_msgs/String
     Example output: uint32_t, std_msgs::String_<ContainerAllocator>
@@ -106,12 +106,27 @@ def msg_type_to_cpp(type_):
     @param type_: The message type
     @type type_: rosidl_parser.Type
     """
-    cpp_type = None
     if type_.is_primitive_type():
         cpp_type = MSG_TYPE_TO_CPP[type_.type]
     else:
         cpp_type = '%s::msg::%s_<ContainerAllocator>' % \
             (type_.pkg_name, type_.type)
+
+    return cpp_type
+
+
+def msg_type_to_cpp(type_):
+    """
+    Convert a message type into the C++ declaration, along with the array type.
+
+    Example input: uint32, std_msgs/String, std_msgs/String[3]
+    Example output: uint32_t, std_msgs::String_<ContainerAllocator>,
+                    std::array<std_msgs::String_<ContainerAllocator>, 3>
+
+    @param type_: The message type
+    @type type_: rosidl_parser.Type
+    """
+    cpp_type = msg_type_only_to_cpp(type_)
 
     if type_.is_array:
         if not type_.array_size:
@@ -237,7 +252,7 @@ def create_init_alloc_and_member_lists(spec):
     member_list = []
     for field in spec.fields:
         member = Member(field.name)
-        member.type = field.type.type
+        member.type = field.type
         if field.type.is_array:
             if field.type.is_fixed_size_array():
                 if field.type.is_primitive_type():

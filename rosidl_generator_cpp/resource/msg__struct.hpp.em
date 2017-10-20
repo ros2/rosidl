@@ -32,6 +32,7 @@ header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 from rosidl_generator_cpp import create_init_alloc_and_member_lists
 from rosidl_generator_cpp import default_cpp_value_from_type
 from rosidl_generator_cpp import escape_string
+from rosidl_generator_cpp import msg_type_only_to_cpp
 from rosidl_generator_cpp import msg_type_to_cpp
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 from rosidl_generator_cpp import primitive_value_to_cpp
@@ -118,7 +119,7 @@ def generate_zero_string(membset, fill_args):
             if member.num_prealloc > 0:
                 strlist.append('this->%s.resize(%d);' % (member.name, member.num_prealloc))
             if member.zero_need_array_override:
-                strlist.append('this->%s.fill(%s {%s});' % (member.name, member.type, fill_args))
+                strlist.append('this->%s.fill(%s{%s});' % (member.name, msg_type_only_to_cpp(member.type), fill_args))
             else:
                 strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (member.name, member.name, member.zero_value[0]))
         else:

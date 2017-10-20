@@ -43,7 +43,7 @@ make_scope_exit(Callable callable)
 #define SCOPE_EXIT(code) \
   auto STRING_JOIN(scope_exit_, __LINE__) = make_scope_exit([&]() {code;})
 
-TEST(Test_initialization, no_arg_constructor) {
+TEST(Test_msg_initialization, no_arg_constructor) {
   rosidl_generator_cpp::msg::PrimitivesSomeDefault def;
 
   ASSERT_EQ(1.125f, def.float32_value);
@@ -79,7 +79,7 @@ TEST(Test_initialization, no_arg_constructor) {
   ASSERT_EQ(0UL, def.vec3_bounded.size());
 }
 
-TEST(Test_initialization, all_constructor) {
+TEST(Test_msg_initialization, all_constructor) {
   rosidl_generator_cpp::msg::PrimitivesSomeDefault def(
     rosidl_generator_cpp::MessageInitialization::ALL);
 
@@ -116,7 +116,7 @@ TEST(Test_initialization, all_constructor) {
   ASSERT_EQ(0UL, def.vec3_bounded.size());
 }
 
-TEST(Test_initialization, zero_constructor) {
+TEST(Test_msg_initialization, zero_constructor) {
   rosidl_generator_cpp::msg::PrimitivesSomeDefault def(
     rosidl_generator_cpp::MessageInitialization::ZERO);
 
@@ -153,7 +153,7 @@ TEST(Test_initialization, zero_constructor) {
   ASSERT_EQ(0UL, def.vec3_bounded.size());
 }
 
-TEST(Test_initialization, defaults_only_constructor) {
+TEST(Test_msg_initialization, defaults_only_constructor) {
   char * memory = new char[sizeof(rosidl_generator_cpp::msg::PrimitivesSomeDefault)];
   ASSERT_NE(memory, nullptr);
   std::memset(memory, 0xfe, sizeof(rosidl_generator_cpp::msg::PrimitivesSomeDefault));
@@ -196,7 +196,7 @@ TEST(Test_initialization, defaults_only_constructor) {
 
 // This is a test to ensure that when the user passes SKIP to the constructor,
 // it does no initialization.
-TEST(Test_initialization, skip_constructor) {
+TEST(Test_msg_initialization, skip_constructor) {
   char * memory = new char[sizeof(rosidl_generator_cpp::msg::PrimitivesSomeDefault)];
   ASSERT_NE(memory, nullptr);
   std::memset(memory, 0xfe, sizeof(rosidl_generator_cpp::msg::PrimitivesSomeDefault));

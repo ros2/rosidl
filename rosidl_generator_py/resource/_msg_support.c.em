@@ -405,6 +405,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
         return NULL;
       }
       int rc = PyList_SetItem(field, i, pyitem);
+      (void)rc;
       assert(rc == 0);
     }
     assert(PySequence_Check(field));
@@ -429,19 +430,24 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
     for (size_t i = 0; i < size; ++i) {
 @[    if field.type.type == 'char']@
       int rc = PyList_SetItem(field, i, Py_BuildValue("C", src[i]));
+      (void)rc;
       assert(rc == 0);
 @[    elif field.type.type == 'byte']@
       int rc = PyList_SetItem(field, i, PyBytes_FromStringAndSize((const char *)&src[i], 1));
+      (void)rc;
       assert(rc == 0);
 @[    elif field.type.type == 'string']@
       int rc = PyList_SetItem(field, i, PyUnicode_FromString(src[i].data));
+      (void)rc;
       assert(rc == 0);
 @[    elif field.type.type == 'bool']@
 @# using PyBool_FromLong because PyList_SetItem will steal ownership of the passed item
       int rc = PyList_SetItem(field, i, PyBool_FromLong(src[i] ? 1 : 0));
+      (void)rc;
       assert(rc == 0);
 @[    elif field.type.type in ['float32', 'float64']]@
       int rc = PyList_SetItem(field, i, PyFloat_FromDouble(src[i]));
+      (void)rc;
       assert(rc == 0);
 @[    elif field.type.type in [
         'int8',
@@ -449,6 +455,7 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
         'int32',
     ]]@
       int rc = PyList_SetItem(field, i, PyLong_FromLong(src[i]));
+      (void)rc;
       assert(rc == 0);
 @[    elif field.type.type in [
         'uint8',
@@ -456,12 +463,15 @@ nested_type = '%s__%s__%s' % (field.type.pkg_name, 'msg', field.type.type)
         'uint32',
     ]]@
       int rc = PyList_SetItem(field, i, PyLong_FromUnsignedLong(src[i]));
+      (void)rc;
       assert(rc == 0);
 @[    elif field.type.type == 'int64']@
       int rc = PyList_SetItem(field, i, PyLong_FromLongLong(src[i]));
+      (void)rc;
       assert(rc == 0);
 @[    elif field.type.type == 'uint64']@
       int rc = PyList_SetItem(field, i, PyLong_FromUnsignedLongLong(src[i]));
+      (void)rc;
       assert(rc == 0);
 @[    end if]@
     }

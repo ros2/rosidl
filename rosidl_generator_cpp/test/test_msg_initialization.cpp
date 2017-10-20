@@ -69,6 +69,7 @@ TEST(Test_msg_initialization, no_arg_constructor) {
   ASSERT_EQ(0UL, def.vec3.x);
   ASSERT_EQ(45UL, def.vec3.y);
   ASSERT_EQ(0UL, def.vec3.z);
+  ASSERT_EQ(2UL, def.vec3_fixed.size());
   ASSERT_EQ(0UL, def.vec3_fixed[0].x);
   ASSERT_EQ(0UL, def.vec3_fixed[1].x);
   ASSERT_EQ(45UL, def.vec3_fixed[0].y);
@@ -106,6 +107,7 @@ TEST(Test_msg_initialization, all_constructor) {
   ASSERT_EQ(0UL, def.vec3.x);
   ASSERT_EQ(45UL, def.vec3.y);
   ASSERT_EQ(0UL, def.vec3.z);
+  ASSERT_EQ(2UL, def.vec3_fixed.size());
   ASSERT_EQ(0UL, def.vec3_fixed[0].x);
   ASSERT_EQ(0UL, def.vec3_fixed[1].x);
   ASSERT_EQ(45UL, def.vec3_fixed[0].y);
@@ -143,6 +145,7 @@ TEST(Test_msg_initialization, zero_constructor) {
   ASSERT_EQ(0UL, def.vec3.x);
   ASSERT_EQ(0UL, def.vec3.y);
   ASSERT_EQ(0UL, def.vec3.z);
+  ASSERT_EQ(2UL, def.vec3_fixed.size());
   ASSERT_EQ(0UL, def.vec3_fixed[0].x);
   ASSERT_EQ(0UL, def.vec3_fixed[1].x);
   ASSERT_EQ(0UL, def.vec3_fixed[0].y);
@@ -188,6 +191,7 @@ TEST(Test_msg_initialization, defaults_only_constructor) {
   ASSERT_EQ(0xfefefefe, def->vec3.x);
   ASSERT_EQ(45UL, def->vec3.y);
   ASSERT_EQ(0xfefefefe, def->vec3.z);
+  ASSERT_EQ(2UL, def->vec3_fixed.size());
   ASSERT_EQ(45UL, def->vec3_fixed[0].y);
   ASSERT_EQ(45UL, def->vec3_fixed[1].y);
   ASSERT_EQ(0UL, def->vec3_unbounded.size());
@@ -236,6 +240,7 @@ TEST(Test_msg_initialization, skip_constructor) {
   ASSERT_EQ(0xfefefefe, def->vec3.x);
   ASSERT_EQ(0xfefefefe, def->vec3.y);
   ASSERT_EQ(0xfefefefe, def->vec3.z);
+  ASSERT_EQ(2UL, def->vec3_fixed.size());
   ASSERT_EQ(0UL, def->vec3_unbounded.size());
   ASSERT_EQ(0UL, def->vec3_bounded.size());
 }

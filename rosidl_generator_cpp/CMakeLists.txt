@@ -30,7 +30,6 @@ if(BUILD_TESTING)
     "msg/PrimitivesBounded.msg"
     "msg/PrimitivesConstants.msg"
     "msg/PrimitivesDefault.msg"
-    "msg/PrimitivesSomeDefault.msg"
     "msg/PrimitivesStatic.msg"
     "msg/PrimitivesUnbounded.msg"
 
@@ -45,6 +44,8 @@ if(BUILD_TESTING)
     "msg/UnboundedArrayBounded.msg"
     "msg/UnboundedArrayStatic.msg"
     "msg/UnboundedArrayUnbounded.msg"
+
+    "msg/Various.msg"
   )
 
   set(srv_files

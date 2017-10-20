@@ -18,7 +18,7 @@
 
 #include <string>
 
-#include "rosidl_generator_cpp/msg/primitives_some_default.hpp"
+#include "rosidl_generator_cpp/msg/various.hpp"
 
 template<typename Callable>
 struct ScopeExit
@@ -44,7 +44,7 @@ make_scope_exit(Callable callable)
   auto STRING_JOIN(scope_exit_, __LINE__) = make_scope_exit([&]() {code;})
 
 TEST(Test_msg_initialization, no_arg_constructor) {
-  rosidl_generator_cpp::msg::PrimitivesSomeDefault def;
+  rosidl_generator_cpp::msg::Various def;
 
   ASSERT_EQ(1.125f, def.float32_value);
   ASSERT_EQ(2.4, def.float64_value);
@@ -81,7 +81,7 @@ TEST(Test_msg_initialization, no_arg_constructor) {
 }
 
 TEST(Test_msg_initialization, all_constructor) {
-  rosidl_generator_cpp::msg::PrimitivesSomeDefault def(
+  rosidl_generator_cpp::msg::Various def(
     rosidl_generator_cpp::MessageInitialization::ALL);
 
   ASSERT_EQ(1.125f, def.float32_value);
@@ -119,7 +119,7 @@ TEST(Test_msg_initialization, all_constructor) {
 }
 
 TEST(Test_msg_initialization, zero_constructor) {
-  rosidl_generator_cpp::msg::PrimitivesSomeDefault def(
+  rosidl_generator_cpp::msg::Various def(
     rosidl_generator_cpp::MessageInitialization::ZERO);
 
   ASSERT_EQ(0.0f, def.float32_value);
@@ -157,16 +157,16 @@ TEST(Test_msg_initialization, zero_constructor) {
 }
 
 TEST(Test_msg_initialization, defaults_only_constructor) {
-  char * memory = new char[sizeof(rosidl_generator_cpp::msg::PrimitivesSomeDefault)];
+  char * memory = new char[sizeof(rosidl_generator_cpp::msg::Various)];
   ASSERT_NE(memory, nullptr);
-  std::memset(memory, 0xfe, sizeof(rosidl_generator_cpp::msg::PrimitivesSomeDefault));
+  std::memset(memory, 0xfe, sizeof(rosidl_generator_cpp::msg::Various));
 
-  rosidl_generator_cpp::msg::PrimitivesSomeDefault * def =
-    new(memory) rosidl_generator_cpp::msg::PrimitivesSomeDefault(
+  rosidl_generator_cpp::msg::Various * def =
+    new(memory) rosidl_generator_cpp::msg::Various(
     rosidl_generator_cpp::MessageInitialization::DEFAULTS_ONLY);
 
   // ensures that the memory gets freed even if an ASSERT is raised
-  SCOPE_EXIT(def->~PrimitivesSomeDefault_(); delete[] memory;);
+  SCOPE_EXIT(def->~Various_(); delete[] memory;);
 
   ASSERT_EQ(1.125f, def->float32_value);
   ASSERT_EQ(2.4, def->float64_value);
@@ -201,16 +201,16 @@ TEST(Test_msg_initialization, defaults_only_constructor) {
 // This is a test to ensure that when the user passes SKIP to the constructor,
 // it does no initialization.
 TEST(Test_msg_initialization, skip_constructor) {
-  char * memory = new char[sizeof(rosidl_generator_cpp::msg::PrimitivesSomeDefault)];
+  char * memory = new char[sizeof(rosidl_generator_cpp::msg::Various)];
   ASSERT_NE(memory, nullptr);
-  std::memset(memory, 0xfe, sizeof(rosidl_generator_cpp::msg::PrimitivesSomeDefault));
+  std::memset(memory, 0xfe, sizeof(rosidl_generator_cpp::msg::Various));
 
-  rosidl_generator_cpp::msg::PrimitivesSomeDefault * def =
-    new(memory) rosidl_generator_cpp::msg::PrimitivesSomeDefault(
+  rosidl_generator_cpp::msg::Various * def =
+    new(memory) rosidl_generator_cpp::msg::Various(
     rosidl_generator_cpp::MessageInitialization::SKIP);
 
   // ensures that the memory gets freed even if an ASSERT is raised
-  SCOPE_EXIT(def->~PrimitivesSomeDefault_(); delete[] memory;);
+  SCOPE_EXIT(def->~Various_(); delete[] memory;);
 
   uint32_t float32_bit_pattern = *reinterpret_cast<uint32_t *>(&def->float32_value);
   ASSERT_EQ(0xfefefefe, float32_bit_pattern);

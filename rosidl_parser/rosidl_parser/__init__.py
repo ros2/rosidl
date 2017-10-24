@@ -628,7 +628,7 @@ def parse_service_file(pkg_name, interface_filename):
 def parse_service_string(pkg_name, srv_name, message_string):
     lines = message_string.splitlines()
     separator_indices = [
-        index for index, l in enumerate(lines) if l == SERVICE_REQUEST_RESPONSE_SEPARATOR]
+        index for index, line in enumerate(lines) if line == SERVICE_REQUEST_RESPONSE_SEPARATOR]
     if not separator_indices:
         raise InvalidServiceSpecification(
             "Could not find separator '%s' between request and response" %

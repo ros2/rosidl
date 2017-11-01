@@ -6,12 +6,14 @@ find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 
 ament_export_dependencies(rosidl_cmake)
+ament_export_dependencies(rosidl_generator_c)
 ament_export_include_directories(include)
 
 ament_python_install_package(${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
+  find_package(rosidl_generator_c REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
   set(message_files
@@ -20,6 +22,8 @@ if(BUILD_TESTING)
     "msg/BoundedArrayUnbounded.msg"
 
     "msg/Empty.msg"
+
+    "msg/FieldsWithSameTypeSomeDefaults.msg"
 
     "msg/PrimitiveStaticArrays.msg"
 
@@ -40,6 +44,12 @@ if(BUILD_TESTING)
     "msg/UnboundedArrayBounded.msg"
     "msg/UnboundedArrayStatic.msg"
     "msg/UnboundedArrayUnbounded.msg"
+
+    "msg/Various.msg"
+  )
+
+  set(srv_files
+    "srv/ComplexTypeZeroFill.srv"
   )
 
   include(cmake/register_cpp.cmake)
@@ -51,8 +61,11 @@ if(BUILD_TESTING)
     "${CMAKE_CURRENT_SOURCE_DIR}/resource"
   )
 
-  rosidl_generate_interfaces(${PROJECT_NAME} ${message_files}
+  rosidl_generate_interfaces(${PROJECT_NAME}
+    ${message_files}
+    ${srv_files}
     SKIP_INSTALL
+    ADD_LINTER_TESTS
   )
 
   # Default to C++14
@@ -64,10 +77,18 @@ if(BUILD_TESTING)
     add_compile_options(-Wall -Wextra -Wpedantic)
   endif()
 
-  include_directories(include)
+  include_directories(include
+    ${rosidl_generator_c_INCLUDE_DIRS})
 
   ament_add_gtest(test_bounded_vector test/test_bounded_vector.cpp)
-
+  ament_add_gtest(test_msg_initialization test/test_msg_initialization.cpp)
+  if(TARGET test_msg_initialization)
+    add_dependencies(test_msg_initialization ${PROJECT_NAME})
+  endif()
+  ament_add_gtest(test_srv_initialization test/test_srv_initialization.cpp)
+  if(TARGET test_srv_initialization)
+    add_dependencies(test_srv_initialization ${PROJECT_NAME})
+  endif()
   ament_add_gtest(test_interfaces_cpp test/test_interfaces.cpp)
   if(TARGET test_interfaces_cpp)
     add_dependencies(test_interfaces_cpp ${PROJECT_NAME})

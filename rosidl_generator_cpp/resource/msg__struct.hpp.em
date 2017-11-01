@@ -29,9 +29,13 @@ header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 #endif
 
 @{
+from rosidl_generator_cpp import create_init_alloc_and_member_lists
+from rosidl_generator_cpp import default_cpp_value_from_type
 from rosidl_generator_cpp import escape_string
+from rosidl_generator_cpp import msg_type_only_to_cpp
 from rosidl_generator_cpp import msg_type_to_cpp
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
+from rosidl_generator_cpp import primitive_value_to_cpp
 from rosidl_generator_cpp import value_to_cpp
 
 cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
@@ -40,6 +44,8 @@ cpp_full_name = '%s%s' % (cpp_namespace, cpp_class)
 cpp_full_name_with_alloc = '%s<ContainerAllocator>' % (cpp_full_name)
 }@
 #include <rosidl_generator_cpp/bounded_vector.hpp>
+#include <rosidl_generator_cpp/message_initialization.hpp>
+#include <algorithm>
 #include <array>
 #include <memory>
 #include <string>
@@ -81,55 +87,113 @@ struct @(spec.base_type.type)_
 {
   using Type = @(spec.base_type.type)_<ContainerAllocator>;
 
-@# constructors (with and without allocator)
-@[for (alloc_type, alloc_name) in [['', ''], ['const ContainerAllocator & ', '_alloc']]]@
-  @('explicit ' if alloc_type else '')@(spec.base_type.type)_(@(alloc_type + alloc_name))
-@# generate initializer lists
-@[  if alloc_name == '_alloc']@
-// *INDENT-OFF* (prevent uncrustify from making unnecessary indents here)
-@[  end if]@
 @{
-used_alloc_name = False
-leading_colon = ':'
-for field in spec.fields:
-    # dynamic arrays require allocator if available
-    if alloc_name and field.type.is_array and \
-            (field.type.array_size is None or field.type.is_upper_bound):
-        if leading_colon == ' ':
-            print(',')
-        print('  %s %s(%s)' % (leading_colon, field.name, alloc_name), end='')
-        used_alloc_name = True
-        leading_colon = ' '
+# The creation of the constructors for messages is a bit complicated.  The goal
+# is to have a constructor where the user can control how the fields of the
+# message get initialized via the _init parameter to the constructor.  See
+# http://design.ros2.org/articles/generated_interfaces_cpp.html#constructors
+# for a detailed explanation of the different _init parameters.
+init_list, alloc_list, member_list = create_init_alloc_and_member_lists(spec)
 
-    # if default value is available set it in initializer list
-    elif field.type.is_primitive_type() and field.default_value is not None:
-        cpp_value = value_to_cpp(field.type, field.default_value)
-        if leading_colon == ' ':
-            print(',')
-        print('  %s %s(%s)' % (leading_colon, field.name, cpp_value), end='')
-        leading_colon = ' '
-if leading_colon == ' ':
-    print()
+def generate_default_string(membset):
+    strlist = []
+    for member in membset.members:
+        if member.default_value is not None:
+            if member.num_prealloc > 0:
+                strlist.append('this->%s.resize(%d);' % (member.name, member.num_prealloc))
+            if isinstance(member.default_value, list):
+                if all(v == member.default_value[0] for v in member.default_value):
+                    strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (member.name, member.name, member.default_value[0]))
+                else:
+                    for index, val in enumerate(member.default_value):
+                        strlist.append('this->%s[%d] = %s;' % (member.name, index, val))
+            else:
+                strlist.append('this->%s = %s;' % (member.name, member.default_value))
+
+    return strlist
+
+def generate_zero_string(membset, fill_args):
+    strlist = []
+    for member in membset.members:
+        if isinstance(member.zero_value, list):
+            if member.num_prealloc > 0:
+                strlist.append('this->%s.resize(%d);' % (member.name, member.num_prealloc))
+            if member.zero_need_array_override:
+                strlist.append('this->%s.fill(%s{%s});' % (member.name, msg_type_only_to_cpp(member.type), fill_args))
+            else:
+                strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (member.name, member.name, member.zero_value[0]))
+        else:
+            strlist.append('this->%s = %s;' % (member.name, member.zero_value))
+    return strlist
 }@
-@[  if alloc_name == '_alloc']@
-// *INDENT-ON*
-@[  end if]@
+  explicit @(spec.base_type.type)_(rosidl_generator_cpp::MessageInitialization _init = rosidl_generator_cpp::MessageInitialization::ALL)
+@[if init_list]@
+  : @(',\n    '.join(init_list))
+@[end if]@
   {
-@# generate constructor body
-@[  if alloc_name and not used_alloc_name]@
-    (void)@(alloc_name);
-@[  end if]@
-@{
-for field in spec.fields:
-    # default values of dynamic arrays with allocators if available
-    if alloc_name and field.type.is_array and \
-            (field.type.array_size is None or field.type.is_upper_bound) and \
-            field.type.is_primitive_type() and field.default_value is not None:
-        cpp_value = value_to_cpp(field.type, field.default_value)
-        print('    %s = %s;' % (field.name, cpp_value))
-}@
-  }
+@[if not member_list]@
+    (void)_init;
+@[end if]@
+@[for membset in member_list]@
+@[ if membset.members[0].default_value is not None]@
+    if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
+      rosidl_generator_cpp::MessageInitialization::DEFAULTS_ONLY == _init)
+    {
+@[for line in generate_default_string(membset)]@
+      @(line)
 @[end for]@
+    } else if (rosidl_generator_cpp::MessageInitialization::ZERO == _init) {
+@[for line in generate_zero_string(membset, '_init')]@
+      @(line)
+@[end for]@
+    }
+@[ else]@
+    if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
+      rosidl_generator_cpp::MessageInitialization::ZERO == _init)
+    {
+@[for line in generate_zero_string(membset, '_init')]@
+      @(line)
+@[end for]@
+    }
+@[ end if]@
+@[end for]@
+  }
+
+  explicit @(spec.base_type.type)_(const ContainerAllocator & _alloc, rosidl_generator_cpp::MessageInitialization _init = rosidl_generator_cpp::MessageInitialization::ALL)
+@[if alloc_list]@
+  : @(',\n    '.join(alloc_list))
+@[end if]@
+  {
+@[if not member_list]@
+    (void)_init;
+@[end if]@
+@[if not alloc_list]@
+    (void)_alloc;
+@[end if]@
+@[for membset in member_list]@
+@[ if membset.members[0].default_value is not None]@
+    if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
+      rosidl_generator_cpp::MessageInitialization::DEFAULTS_ONLY == _init)
+    {
+@[for line in generate_default_string(membset)]@
+      @(line)
+@[end for]@
+    } else if (rosidl_generator_cpp::MessageInitialization::ZERO == _init) {
+@[for line in generate_zero_string(membset, '_alloc, _init')]@
+      @(line)
+@[end for]@
+    }
+@[ else]@
+    if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
+      rosidl_generator_cpp::MessageInitialization::ZERO == _init)
+    {
+@[for line in generate_zero_string(membset, '_alloc, _init')]@
+      @(line)
+@[end for]@
+    }
+@[ end if]@
+@[end for]@
+  }
 
   // field types and members
 @[for field in spec.fields]@

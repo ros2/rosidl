@@ -105,7 +105,7 @@ enum
 @{
 (const_idl_type, const_c_name) = key.split()
 if const_idl_type == 'string':
-    const_c_type = 'char * const '
+    const_c_type = 'char * const'
 else:
     const_c_type = MSG_TYPE_TO_C[const_idl_type]
 }@

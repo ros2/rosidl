@@ -228,8 +228,6 @@ TEST(Test_msg_initialization, skip_constructor) {
   ASSERT_EQ(0xfefefefe, float32_bit_pattern);
   uint64_t float64_bit_pattern = *reinterpret_cast<uint64_t *>(&def->float64_value);
   ASSERT_EQ(0xfefefefefefefefeULL, float64_bit_pattern);
-  ASSERT_EQ(0xfefefefefefefefeULL, def->uint64_value);
-  ASSERT_EQ("", def->string_value);
   ASSERT_TRUE(std::all_of(def->float32_arr.begin(), def->float32_arr.end(), [](float i) {
       uint32_t float32_bit_pattern = *reinterpret_cast<uint32_t *>(&i);
       return 0xfefefefe == float32_bit_pattern;
@@ -241,6 +239,8 @@ TEST(Test_msg_initialization, skip_constructor) {
 #ifndef _WIN32
 #pragma GCC diagnostic pop
 #endif
+  ASSERT_EQ(0xfefefefefefefefeULL, def->uint64_value);
+  ASSERT_EQ("", def->string_value);
   ASSERT_TRUE(std::all_of(def->string_arr.begin(), def->string_arr.end(), [](std::string i) {
       return "" == i;
     }));

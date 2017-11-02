@@ -74,7 +74,9 @@ if(BUILD_TESTING)
   endif()
 
   if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    add_compile_options(-Wall -Wextra -Wpedantic)
+    # Disable strict-aliasing checks because test/test_msg_initialization.cpp
+    # has a test that very specifically needs to do aliasing.
+    add_compile_options(-Wall -Wextra -Wpedantic -Wno-strict-aliasing)
   endif()
 
   include_directories(include

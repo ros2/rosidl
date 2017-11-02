@@ -172,10 +172,18 @@ TEST(Test_msg_initialization, defaults_only_constructor) {
   ASSERT_EQ(2.4, def->float64_value);
   ASSERT_EQ(0xfefefefefefefefeULL, def->uint64_value);
   ASSERT_EQ("bar", def->string_value);
+#ifndef _WIN32
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
+#endif
   ASSERT_TRUE(std::all_of(def->float32_arr.begin(), def->float32_arr.end(), [](float i) {
       uint32_t float32_bit_pattern = *reinterpret_cast<uint32_t *>(&i);
       return 0xfefefefe == float32_bit_pattern;
     }));
+#ifndef _WIN32
+#pragma GCC diagnostic pop
+#endif
+
   ASSERT_EQ(8.5, def->float64_arr[0]);
   ASSERT_EQ(1.2, def->float64_arr[1]);
   ASSERT_EQ(3.4, def->float64_arr[2]);
@@ -212,6 +220,10 @@ TEST(Test_msg_initialization, skip_constructor) {
   // ensures that the memory gets freed even if an ASSERT is raised
   SCOPE_EXIT(def->~Various_(); delete[] memory;);
 
+#ifndef _WIN32
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
+#endif
   uint32_t float32_bit_pattern = *reinterpret_cast<uint32_t *>(&def->float32_value);
   ASSERT_EQ(0xfefefefe, float32_bit_pattern);
   uint64_t float64_bit_pattern = *reinterpret_cast<uint64_t *>(&def->float64_value);
@@ -226,6 +238,9 @@ TEST(Test_msg_initialization, skip_constructor) {
       uint64_t float64_bit_pattern = *reinterpret_cast<uint64_t *>(&i);
       return 0xfefefefefefefefe == float64_bit_pattern;
     }));
+#ifndef _WIN32
+#pragma GCC diagnostic pop
+#endif
   ASSERT_TRUE(std::all_of(def->string_arr.begin(), def->string_arr.end(), [](std::string i) {
       return "" == i;
     }));

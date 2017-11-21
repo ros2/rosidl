@@ -10,7 +10,7 @@
 @#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @
-#include <rosidl_generator_c/service_type_support.h>
+#include <rosidl_generator_c/service_type_support_struct.h>
 #include <rosidl_typesupport_cpp/message_type_support.hpp>
 #include <rosidl_typesupport_cpp/service_type_support.hpp>
 #include "rosidl_typesupport_interface/macros.h"

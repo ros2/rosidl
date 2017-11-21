@@ -26,7 +26,7 @@ for spec, subfolder in message_specs:
   if subfolder == 'msg':
     static_includes.add('#include <rosidl_generator_c/message_type_support_struct.h>')
   elif subfolder == 'srv':
-    static_includes.add('#include <rosidl_generator_c/service_type_support.h>')
+    static_includes.add('#include <rosidl_generator_c/service_type_support_struct.h>')
 }@
 @[for value in sorted(static_includes)]@
 @(value)

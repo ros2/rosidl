@@ -23,7 +23,7 @@ function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.pkg_name,
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
-#include <rosidl_generator_c/service_type_support.h>
+#include <rosidl_generator_c/service_type_support_struct.h>
 #include <rosidl_typesupport_interface/macros.h>
 
 #include "@(spec.pkg_name)/msg/rosidl_typesupport_introspection_c__visibility_control.h"

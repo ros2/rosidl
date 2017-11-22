@@ -21,7 +21,7 @@ header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
-#include <rosidl_generator_c/service_type_support.h>
+#include <rosidl_generator_c/service_type_support_struct.h>
 #include "rosidl_typesupport_interface/macros.h"
 #include "rosidl_typesupport_introspection_cpp/visibility_control.h"
 

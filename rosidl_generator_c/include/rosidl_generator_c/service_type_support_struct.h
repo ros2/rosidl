@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_C__SERVICE_TYPE_SUPPORT_H_
-#define ROSIDL_GENERATOR_C__SERVICE_TYPE_SUPPORT_H_
+#ifndef ROSIDL_GENERATOR_C__SERVICE_TYPE_SUPPORT_STRUCT_H_
+#define ROSIDL_GENERATOR_C__SERVICE_TYPE_SUPPORT_STRUCT_H_
 
 #include "rosidl_generator_c/visibility_control.h"
+
+#include "rosidl_typesupport_interface/macros.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -49,4 +51,4 @@ const rosidl_service_type_support_t * get_service_typesupport_handle_function(
 }
 #endif
 
-#endif  // ROSIDL_GENERATOR_C__SERVICE_TYPE_SUPPORT_H_
+#endif  // ROSIDL_GENERATOR_C__SERVICE_TYPE_SUPPORT_STRUCT_H_

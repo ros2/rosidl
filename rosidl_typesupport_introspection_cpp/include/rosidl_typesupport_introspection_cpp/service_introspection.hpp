@@ -18,7 +18,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "rosidl_generator_c/service_type_support.h"
+#include "rosidl_generator_c/service_type_support_struct.h"
 #include "rosidl_generator_c/visibility_control.h"
 
 #include "rosidl_typesupport_introspection_cpp/message_introspection.hpp"

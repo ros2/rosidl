@@ -16,7 +16,7 @@
 #define ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__SERVICE_TYPE_SUPPORT_DECL_HPP_
 
 // Provides the definition of the rosidl_service_type_support_t struct.
-#include "rosidl_generator_c/service_type_support.h"
+#include "rosidl_generator_c/service_type_support_struct.h"
 // Provides visibility macros like ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC.
 #include "rosidl_typesupport_introspection_cpp/visibility_control.h"
 

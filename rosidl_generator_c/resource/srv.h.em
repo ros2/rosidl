@@ -26,7 +26,7 @@ pkg = spec.pkg_name
 #include "rosidl_generator_c/message_type_support_struct.h"
 
 // This header provides a definition for the rosidl_service_type_support_t struct.
-#include "rosidl_generator_c/service_type_support.h"
+#include "rosidl_generator_c/service_type_support_struct.h"
 
 #include "rosidl_typesupport_interface/macros.h"
 

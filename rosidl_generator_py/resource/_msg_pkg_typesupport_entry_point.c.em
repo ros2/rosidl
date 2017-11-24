@@ -49,6 +49,7 @@ for spec, subfolder in service_specs:
 @[for v in sorted(includes.values())]@
 @(v)
 @[end for]@
+
 @[for spec, subfolder in message_specs]@
 @{
 type_name = spec.base_type.type

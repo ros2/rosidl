@@ -197,7 +197,7 @@ def default_cpp_value_from_type(type_):
     elif type_ in ['float32', 'float64']:
         return '0.0'
     elif type_ == 'bool':
-        return 'false'
+        return False
     return '0'
 
 

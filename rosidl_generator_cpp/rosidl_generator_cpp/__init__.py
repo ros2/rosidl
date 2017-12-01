@@ -144,6 +144,20 @@ def msg_type_to_cpp(type_):
 
 
 def value_to_cpp(type_, value):
+    """
+    Convert a python value into a string representing that value in C++.
+
+    This is equivalent to primitive_value_to_cpp but can process arrays values as well
+
+    Warning this still processes only primitive types
+    @param type_: a ROS IDL type
+    @type type_: builtin.str
+    @param value: the value to convert
+    @type value: python builtin (bool, int, float, str or list)
+    @returns: a string containing the C++ representation of the value
+    """
+    # TODO(mikaelarguedas) this should raise proper exceptions rather than asserting
+    # without error message
     assert type_.is_primitive_type()
     assert value is not None
 
@@ -163,6 +177,19 @@ def value_to_cpp(type_, value):
 
 
 def primitive_value_to_cpp(type_, value):
+    """
+    Convert a python value into a string representing that value in C++.
+
+    Warning: The value has to be a primitive and not a list
+      (aka this function doesn't work for arrays)
+    @param type_: a ROS IDL type
+    @type type_: builtin.str
+    @param value: the value to convert
+    @type value: python builtin (bool, int, float or str)
+    @returns: a string containing the C++ representation of the value
+    """
+    # TODO(mikaelarguedas) this should raise proper exceptions rather than asserting
+    # without error message
     assert type_.is_primitive_type()
     assert value is not None
 
@@ -174,16 +201,24 @@ def primitive_value_to_cpp(type_, value):
         'char',
         'int8', 'uint8',
         'int16', 'uint16',
-        'int32', 'uint32',
-        'int64', 'uint64',
+        'float64'
     ]:
         return str(value)
 
-    if type_.type in ['float32']:
-        return '%sf' % value
-
-    if type_.type in ['float64']:
+    if type_.type == 'int32':
         return '%sl' % value
+
+    if type_.type == 'uint32':
+        return '%sul' % value
+
+    if type_.type == 'int64':
+        return '%sll' % value
+
+    if type_.type == 'uint64':
+        return '%sull' % value
+
+    if type_.type == 'float32':
+        return '%sf' % value
 
     if type_.type == 'string':
         return '"%s"' % escape_string(value)
@@ -191,14 +226,14 @@ def primitive_value_to_cpp(type_, value):
     assert False, "unknown primitive type '%s'" % type_.type
 
 
-def default_cpp_value_from_type(type_):
+def default_value_from_type(type_):
     if type_ == 'string':
         return ''
     elif type_ in ['float32', 'float64']:
-        return '0.0'
+        return 0.0
     elif type_ == 'bool':
-        return 'false'
-    return '0'
+        return False
+    return 0
 
 
 def escape_string(s):
@@ -257,7 +292,7 @@ def create_init_alloc_and_member_lists(spec):
             if field.type.is_fixed_size_array():
                 if field.type.is_primitive_type():
                     alloc_list.append(field.name + '(_alloc)')
-                    default = default_cpp_value_from_type(field.type.type)
+                    default = default_value_from_type(field.type.type)
                     single = primitive_value_to_cpp(field.type, default)
                     member.zero_value = [single] * field.type.array_size
                     if field.default_value is not None:
@@ -273,14 +308,14 @@ def create_init_alloc_and_member_lists(spec):
                     member.default_value = value_to_cpp(field.type, field.default_value)
                     length = len(field.default_value)
                     field_type = field.type.type
-                    defaults = [default_cpp_value_from_type(field_type) for x in range(0, length)]
+                    defaults = [default_value_from_type(field_type) for x in range(0, length)]
                     member.zero_value = value_to_cpp(field.type, defaults)
                     member.num_prealloc = len(field.default_value)
         else:
             if field.type.is_primitive_type():
                 if field.type.type == 'string':
                     alloc_list.append(field.name + '(_alloc)')
-                default = default_cpp_value_from_type(field.type.type)
+                default = default_value_from_type(field.type.type)
                 member.zero_value = primitive_value_to_cpp(field.type, default)
                 if field.default_value is not None:
                     member.default_value = primitive_value_to_cpp(field.type, field.default_value)

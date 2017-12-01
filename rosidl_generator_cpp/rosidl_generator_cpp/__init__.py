@@ -144,6 +144,22 @@ def msg_type_to_cpp(type_):
 
 
 def value_to_cpp(type_, value):
+    """
+    Convert a python value into a string representing that value in C++.
+
+    This is equivalent to primitive_value_to_cpp but can process arrays values as well
+
+    Warning this still processes only primitive types
+    @param type_: a ROS IDL type
+    @type type_: builtin.str
+    @param value: the value to convert
+    @type value: python builtin (bool, int, float, str or list)
+    @returns: a string containing the C++ representation of the value
+    """
+    # :raises: ValueError on if the provided type_ is unknown
+    # """
+    # TODO(mikaelarguedas) this should raise proper exceptions rather than asserting
+    # without error message
     assert type_.is_primitive_type()
     assert value is not None
 
@@ -163,6 +179,20 @@ def value_to_cpp(type_, value):
 
 
 def primitive_value_to_cpp(type_, value):
+    """
+    Convert a python value into a string representing that value in C++.
+
+    Warning: The value has to be a primitive and not a list
+      (aka this function doesn't work for arrays)
+    @param type_: a ROS IDL type
+    @type type_: builtin.str
+    @param value: the value to convert
+    @type value: python builtin (bool, int, float or str)
+    @returns: a string containing the C++ representation of the value
+    """
+    # :raises: ValueError on if the provided type_ is unknown
+    # TODO(mikaelarguedas) this should raise proper exceptions rather than asserting
+    # without error message
     assert type_.is_primitive_type()
     assert value is not None
 
@@ -196,6 +226,7 @@ def primitive_value_to_cpp(type_, value):
     if type_.type == 'string':
         return '"%s"' % escape_string(value)
 
+    # raise ValueError("unknown primitive type '%s'" % type_.type)
     assert False, "unknown primitive type '%s'" % type_.type
 
 

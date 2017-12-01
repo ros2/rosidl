@@ -191,14 +191,14 @@ def primitive_value_to_cpp(type_, value):
     assert False, "unknown primitive type '%s'" % type_.type
 
 
-def default_cpp_value_from_type(type_):
+def default_value_from_type(type_):
     if type_ == 'string':
         return ''
     elif type_ in ['float32', 'float64']:
-        return '0.0'
+        return 0.0
     elif type_ == 'bool':
         return False
-    return '0'
+    return 0
 
 
 def escape_string(s):
@@ -257,7 +257,7 @@ def create_init_alloc_and_member_lists(spec):
             if field.type.is_fixed_size_array():
                 if field.type.is_primitive_type():
                     alloc_list.append(field.name + '(_alloc)')
-                    default = default_cpp_value_from_type(field.type.type)
+                    default = default_value_from_type(field.type.type)
                     single = primitive_value_to_cpp(field.type, default)
                     member.zero_value = [single] * field.type.array_size
                     if field.default_value is not None:
@@ -273,14 +273,14 @@ def create_init_alloc_and_member_lists(spec):
                     member.default_value = value_to_cpp(field.type, field.default_value)
                     length = len(field.default_value)
                     field_type = field.type.type
-                    defaults = [default_cpp_value_from_type(field_type) for x in range(0, length)]
+                    defaults = [default_value_from_type(field_type) for x in range(0, length)]
                     member.zero_value = value_to_cpp(field.type, defaults)
                     member.num_prealloc = len(field.default_value)
         else:
             if field.type.is_primitive_type():
                 if field.type.type == 'string':
                     alloc_list.append(field.name + '(_alloc)')
-                default = default_cpp_value_from_type(field.type.type)
+                default = default_value_from_type(field.type.type)
                 member.zero_value = primitive_value_to_cpp(field.type, default)
                 if field.default_value is not None:
                     member.default_value = primitive_value_to_cpp(field.type, field.default_value)

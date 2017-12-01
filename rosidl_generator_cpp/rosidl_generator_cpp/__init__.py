@@ -156,8 +156,6 @@ def value_to_cpp(type_, value):
     @type value: python builtin (bool, int, float, str or list)
     @returns: a string containing the C++ representation of the value
     """
-    # :raises: ValueError on if the provided type_ is unknown
-    # """
     # TODO(mikaelarguedas) this should raise proper exceptions rather than asserting
     # without error message
     assert type_.is_primitive_type()
@@ -190,7 +188,6 @@ def primitive_value_to_cpp(type_, value):
     @type value: python builtin (bool, int, float or str)
     @returns: a string containing the C++ representation of the value
     """
-    # :raises: ValueError on if the provided type_ is unknown
     # TODO(mikaelarguedas) this should raise proper exceptions rather than asserting
     # without error message
     assert type_.is_primitive_type()
@@ -226,7 +223,6 @@ def primitive_value_to_cpp(type_, value):
     if type_.type == 'string':
         return '"%s"' % escape_string(value)
 
-    # raise ValueError("unknown primitive type '%s'" % type_.type)
     assert False, "unknown primitive type '%s'" % type_.type
 
 

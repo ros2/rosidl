@@ -30,13 +30,10 @@ header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 
 @{
 from rosidl_generator_cpp import create_init_alloc_and_member_lists
-from rosidl_generator_cpp import default_cpp_value_from_type
 from rosidl_generator_cpp import escape_string
 from rosidl_generator_cpp import msg_type_only_to_cpp
 from rosidl_generator_cpp import msg_type_to_cpp
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
-from rosidl_generator_cpp import primitive_value_to_cpp
-from rosidl_generator_cpp import value_to_cpp
 
 cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
 cpp_class = '%s_' % spec.base_type.type

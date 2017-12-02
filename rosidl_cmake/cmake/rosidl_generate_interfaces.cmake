@@ -121,7 +121,8 @@ macro(rosidl_generate_interfaces target)
     if(NOT _interface_packages_group_name IN_LIST ${_AMENT_PACKAGE_NAME}_MEMBER_OF_GROUPS)
       message(FATAL_ERROR
         "Packages installing interfaces must include \
-        '<member_of_group>${_interface_packages_group_name}</member_of_group>' in their package.xml"
+        '<member_of_group>${_interface_packages_group_name}</member_of_group>' \
+        in their package.xml"
       )
     endif()
     # register interfaces with the ament index

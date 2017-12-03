@@ -33,6 +33,9 @@
 # :type LIBRARY_NAME: string
 # :param SKIP_INSTALL: if set skip installing the interface files
 # :type SKIP_INSTALL: option
+# :param SKIP_GROUP_MEMBERSHIP_CHECK: if set, skip enforcing the appartenance
+#   to the rosidl_interface_packages group
+# :type SKIP_GROUP_MEMBERSHIP_CHECK: option
 # :param ADD_LINTER_TESTS: if set lint the interface files using
 #   the ``ament_lint`` package
 # :type ADD_LINTER_TESTS: option
@@ -40,7 +43,10 @@
 # @public
 #
 macro(rosidl_generate_interfaces target)
-  cmake_parse_arguments(_ARG "ADD_LINTER_TESTS;SKIP_INSTALL" "LIBRARY_NAME" "DEPENDENCIES" ${ARGN})
+  cmake_parse_arguments(_ARG
+    "ADD_LINTER_TESTS;SKIP_INSTALL;SKIP_GROUP_MEMBERSHIP_CHECK"
+    "LIBRARY_NAME" "DEPENDENCIES"
+    ${ARGN})
   if(NOT _ARG_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "rosidl_generate_interfaces() called without any idl "
       "files")
@@ -114,16 +120,18 @@ macro(rosidl_generate_interfaces target)
   )
 
   if(NOT _ARG_SKIP_INSTALL)
-    set(_interface_packages_group_name "rosidl_interface_packages")
-    if(NOT _AMENT_PACKAGE_NAME)
-      ament_package_xml()
-    endif()
-    if(NOT _interface_packages_group_name IN_LIST ${_AMENT_PACKAGE_NAME}_MEMBER_OF_GROUPS)
-      message(FATAL_ERROR
-        "Packages installing interfaces must include \
-        '<member_of_group>${_interface_packages_group_name}</member_of_group>' \
-        in their package.xml"
-      )
+    if(NOT _ARG_SKIP_GROUP_MEMBERSHIP_CHECK)
+      set(_group_name "rosidl_interface_packages")
+      if(NOT _AMENT_PACKAGE_NAME)
+        ament_package_xml()
+      endif()
+      if(NOT _group_name IN_LIST ${_AMENT_PACKAGE_NAME}_MEMBER_OF_GROUPS)
+        message(FATAL_ERROR
+          "Packages installing interfaces must include \
+          '<member_of_group>${_group_name}</member_of_group>' \
+          in their package.xml"
+        )
+      endif()
     endif()
     # register interfaces with the ament index
     set(_idl_files_lines)

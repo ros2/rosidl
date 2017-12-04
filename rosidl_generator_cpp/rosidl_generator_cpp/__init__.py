@@ -286,8 +286,8 @@ def create_init_alloc_and_member_lists(spec):
         member.type = field.type
         if field.type.is_array:
             if field.type.is_fixed_size_array():
+                alloc_list.append(field.name + '(_alloc)')
                 if field.type.is_primitive_type():
-                    alloc_list.append(field.name + '(_alloc)')
                     default = default_value_from_type(field.type.type)
                     single = primitive_value_to_cpp(field.type, default)
                     member.zero_value = [single] * field.type.array_size
@@ -296,7 +296,6 @@ def create_init_alloc_and_member_lists(spec):
                         for val in field.default_value:
                             member.default_value.append(primitive_value_to_cpp(field.type, val))
                 else:
-                    alloc_list.append(field.name + '(_alloc)')
                     member.zero_value = []
                     member.zero_need_array_override = True
             else:

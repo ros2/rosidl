@@ -136,21 +136,23 @@ def generate_zero_string(membset, fill_args):
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
       rosidl_generator_cpp::MessageInitialization::DEFAULTS_ONLY == _init)
     {
-@[for line in generate_default_string(membset)]@
+@[  for line in generate_default_string(membset)]@
       @(line)
-@[end for]@
+@[  end for]@
+@[  if membset.members[0].zero_value is not None]@
     } else if (rosidl_generator_cpp::MessageInitialization::ZERO == _init) {
-@[for line in generate_zero_string(membset, '_init')]@
+@[   for line in generate_zero_string(membset, '_init')]@
       @(line)
-@[end for]@
+@[   end for]@
+@[  end if]@
     }
-@[ else]@
+@[ elif membset.members[0].zero_value is not None]@
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
       rosidl_generator_cpp::MessageInitialization::ZERO == _init)
     {
-@[for line in generate_zero_string(membset, '_init')]@
+@[  for line in generate_zero_string(membset, '_init')]@
       @(line)
-@[end for]@
+@[  end for]@
     }
 @[ end if]@
 @[end for]@
@@ -172,21 +174,23 @@ def generate_zero_string(membset, fill_args):
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
       rosidl_generator_cpp::MessageInitialization::DEFAULTS_ONLY == _init)
     {
-@[for line in generate_default_string(membset)]@
+@[  for line in generate_default_string(membset)]@
       @(line)
-@[end for]@
+@[  end for]@
+@[  if membset.members[0].zero_value is not None]@
     } else if (rosidl_generator_cpp::MessageInitialization::ZERO == _init) {
-@[for line in generate_zero_string(membset, '_alloc, _init')]@
+@[   for line in generate_zero_string(membset, '_alloc, _init')]@
       @(line)
-@[end for]@
+@[   end for]@
+@[  end if]@
     }
-@[ else]@
+@[ elif membset.members[0].zero_value is not None]@
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
       rosidl_generator_cpp::MessageInitialization::ZERO == _init)
     {
-@[for line in generate_zero_string(membset, '_alloc, _init')]@
+@[  for line in generate_zero_string(membset, '_alloc, _init')]@
       @(line)
-@[end for]@
+@[  end for]@
     }
 @[ end if]@
 @[end for]@

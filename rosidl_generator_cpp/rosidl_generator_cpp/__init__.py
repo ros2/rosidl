@@ -156,10 +156,8 @@ def value_to_cpp(type_, value):
     @type value: python builtin (bool, int, float, str or list)
     @returns: a string containing the C++ representation of the value
     """
-    # TODO(mikaelarguedas) this should raise proper exceptions rather than asserting
-    # without error message
-    assert type_.is_primitive_type()
-    assert value is not None
+    assert type_.is_primitive_type(), "Could not convert non-primitive type '%s' to CPP" % (type_)
+    assert value is not None, "Value for type '%s' must not be None" % (type_)
 
     if not type_.is_array:
         return primitive_value_to_cpp(type_, value)
@@ -188,10 +186,8 @@ def primitive_value_to_cpp(type_, value):
     @type value: python builtin (bool, int, float or str)
     @returns: a string containing the C++ representation of the value
     """
-    # TODO(mikaelarguedas) this should raise proper exceptions rather than asserting
-    # without error message
-    assert type_.is_primitive_type()
-    assert value is not None
+    assert type_.is_primitive_type(), "Could not convert non-primitive type '%s' to CPP" % (type_)
+    assert value is not None, "Value for type '%s' must not be None" % (type_)
 
     if type_.type == 'bool':
         return 'true' if value else 'false'
@@ -290,8 +286,8 @@ def create_init_alloc_and_member_lists(spec):
         member.type = field.type
         if field.type.is_array:
             if field.type.is_fixed_size_array():
+                alloc_list.append(field.name + '(_alloc)')
                 if field.type.is_primitive_type():
-                    alloc_list.append(field.name + '(_alloc)')
                     default = default_value_from_type(field.type.type)
                     single = primitive_value_to_cpp(field.type, default)
                     member.zero_value = [single] * field.type.array_size
@@ -300,16 +296,11 @@ def create_init_alloc_and_member_lists(spec):
                         for val in field.default_value:
                             member.default_value.append(primitive_value_to_cpp(field.type, val))
                 else:
-                    alloc_list.append(field.name + '(_alloc)')
                     member.zero_value = []
                     member.zero_need_array_override = True
             else:
                 if field.default_value is not None:
                     member.default_value = value_to_cpp(field.type, field.default_value)
-                    length = len(field.default_value)
-                    field_type = field.type.type
-                    defaults = [default_value_from_type(field_type) for x in range(0, length)]
-                    member.zero_value = value_to_cpp(field.type, defaults)
                     member.num_prealloc = len(field.default_value)
         else:
             if field.type.is_primitive_type():

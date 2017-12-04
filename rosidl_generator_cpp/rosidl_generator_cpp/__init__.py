@@ -156,8 +156,8 @@ def value_to_cpp(type_, value):
     @type value: python builtin (bool, int, float, str or list)
     @returns: a string containing the C++ representation of the value
     """
-    assert type_.is_primitive_type(), 'Could not convert non-primitive type "%s" to CPP' % (type_)
-    assert value is not None, 'Value for type "%s" must not be None' % (type_)
+    assert type_.is_primitive_type(), "Could not convert non-primitive type '%s' to CPP" % (type_)
+    assert value is not None, "Value for type '%s' must not be None" % (type_)
 
     if not type_.is_array:
         return primitive_value_to_cpp(type_, value)
@@ -186,8 +186,8 @@ def primitive_value_to_cpp(type_, value):
     @type value: python builtin (bool, int, float or str)
     @returns: a string containing the C++ representation of the value
     """
-    assert type_.is_primitive_type(), 'Could not convert non-primitive type "%s" to CPP' % (type_)
-    assert value is not None, 'Value for type "%s" must not be None' % (type_)
+    assert type_.is_primitive_type(), "Could not convert non-primitive type '%s' to CPP" % (type_)
+    assert value is not None, "Value for type '%s' must not be None" % (type_)
 
     if type_.type == 'bool':
         return 'true' if value else 'false'

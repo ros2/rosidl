@@ -306,10 +306,6 @@ def create_init_alloc_and_member_lists(spec):
             else:
                 if field.default_value is not None:
                     member.default_value = value_to_cpp(field.type, field.default_value)
-                    length = len(field.default_value)
-                    field_type = field.type.type
-                    defaults = [default_value_from_type(field_type) for x in range(0, length)]
-                    member.zero_value = value_to_cpp(field.type, defaults)
                     member.num_prealloc = len(field.default_value)
         else:
             if field.type.is_primitive_type():

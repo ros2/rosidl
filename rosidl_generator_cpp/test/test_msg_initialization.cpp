@@ -204,13 +204,9 @@ TEST(Test_msg_initialization, zero_constructor) {
   ASSERT_TRUE(std::all_of(def.string_arr.begin(), def.string_arr.end(), [](std::string i) {
       return "" == i;
     }));
-  ASSERT_EQ(2UL, def.unbounded.size());
-  ASSERT_EQ(0.0f, def.unbounded[0]);
-  ASSERT_EQ(0.0f, def.unbounded[1]);
+  ASSERT_EQ(0UL, def.unbounded.size());
   ASSERT_EQ(0UL, def.bounded_no_def.size());
-  ASSERT_EQ(2UL, def.bounded_def.size());
-  ASSERT_EQ(0.0f, def.bounded_def[0]);
-  ASSERT_EQ(0.0f, def.bounded_def[1]);
+  ASSERT_EQ(0UL, def.bounded_def.size());
   ASSERT_EQ(0UL, def.vec3.x);
   ASSERT_EQ(0UL, def.vec3.y);
   ASSERT_EQ(0UL, def.vec3.z);

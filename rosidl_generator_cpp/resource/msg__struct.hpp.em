@@ -119,7 +119,7 @@ def generate_zero_string(membset, fill_args):
                 strlist.append('this->%s.fill(%s{%s});' % (member.name, msg_type_only_to_cpp(member.type), fill_args))
             else:
                 strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (member.name, member.name, member.zero_value[0]))
-        else:
+        elif member.zero_value is not None:
             strlist.append('this->%s = %s;' % (member.name, member.zero_value))
     return strlist
 }@

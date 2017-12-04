@@ -119,7 +119,7 @@ def generate_zero_string(membset, fill_args):
                 strlist.append('this->%s.fill(%s{%s});' % (member.name, msg_type_only_to_cpp(member.type), fill_args))
             else:
                 strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (member.name, member.name, member.zero_value[0]))
-        elif member.zero_value is not None:
+        else:
             strlist.append('this->%s = %s;' % (member.name, member.zero_value))
     return strlist
 }@
@@ -139,12 +139,14 @@ def generate_zero_string(membset, fill_args):
 @[  for line in generate_default_string(membset)]@
       @(line)
 @[  end for]@
+@[  if membset.members[0].zero_value is not None]@
     } else if (rosidl_generator_cpp::MessageInitialization::ZERO == _init) {
-@[  for line in generate_zero_string(membset, '_init')]@
+@[   for line in generate_zero_string(membset, '_init')]@
       @(line)
-@[  end for]@
+@[   end for]@
+@[  end if]@
     }
-@[ else]@
+@[ elif membset.members[0].zero_value is not None]@
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
       rosidl_generator_cpp::MessageInitialization::ZERO == _init)
     {
@@ -175,12 +177,14 @@ def generate_zero_string(membset, fill_args):
 @[  for line in generate_default_string(membset)]@
       @(line)
 @[  end for]@
+@[  if membset.members[0].zero_value is not None]@
     } else if (rosidl_generator_cpp::MessageInitialization::ZERO == _init) {
-@[  for line in generate_zero_string(membset, '_alloc, _init')]@
+@[   for line in generate_zero_string(membset, '_alloc, _init')]@
       @(line)
-@[  end for]@
+@[   end for]@
+@[  end if]@
     }
-@[ else]@
+@[ elif membset.members[0].zero_value is not None]@
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
       rosidl_generator_cpp::MessageInitialization::ZERO == _init)
     {

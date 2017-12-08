@@ -4,8 +4,9 @@
   <name>rosidl_generator_py</name>
   <version>0.0.3</version>
   <description>Generate the ROS interfaces in Python.</description>
-  <maintainer email="esteve@osrfoundation.org">Esteve Fernandez</maintainer>
+  <maintainer email="mikael@osrfoundation.org">Mikael Arguedas</maintainer>
   <license>Apache License 2.0</license>
+  <author>Esteve Fernandez</maintainer>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

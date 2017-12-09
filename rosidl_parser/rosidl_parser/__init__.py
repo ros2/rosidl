@@ -453,6 +453,7 @@ def parse_value_string(type_, value_string):
                 "array value must start with '[' and end with ']'")
         elements_string = value_string[1:-1]
 
+        # TODO(mikaelarguedas) Need to do more here for string array parsing
         # split on separator and check size constraints
         value_strings = elements_string.split(',') if elements_string else []
         if type_.array_size:

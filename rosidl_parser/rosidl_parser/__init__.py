@@ -499,9 +499,11 @@ def parse_string_array_value_string(element_string, expected_size):
         if element_string[0] == ',':
             # strip the leading comma if present
             element_string = element_string[1:]
-        while element_string[0] == ' ':
+        while len(element_string) > 0 and element_string[0] == ' ':
             # strip any leading whitespace
             element_string = element_string[1:]
+        if len(element_string) == 0:
+            return value_strings
         quoted_value = False
         for quote in ['"', "'"]:
             if element_string.startswith(quote):
@@ -522,7 +524,7 @@ def parse_string_array_value_string(element_string, expected_size):
                 element_string = ''
             else:
                 value_strings.append(element_string[:next_comma_idx])
-                element_string = element_string[next_comma_idx + 1:]
+                element_string = element_string[next_comma_idx:]
     return value_strings
 
 

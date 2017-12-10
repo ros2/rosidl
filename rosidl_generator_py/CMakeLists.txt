@@ -34,6 +34,7 @@ if(BUILD_TESTING)
     #"msg/Int8.msg"
     "msg/Nested.msg"
     "msg/Primitives.msg"
+    "msg/StringArrays.msg"
     "msg/Strings.msg"
     #"msg/Uint16.msg"
     #"msg/Uint32.msg"

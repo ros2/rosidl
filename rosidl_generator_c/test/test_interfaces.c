@@ -310,6 +310,10 @@ int test_strings(void)
   EXPECT_EQ(true, res);
   EXPECT_EQ(0, strcmp(strings->empty_string.data, TEST_STRING));
   EXPECT_EQ(0, strcmp(strings->def_string.data, "Hello world!"));
+  EXPECT_EQ(0, strcmp(strings->def_string2.data, "Hello'world!"));
+  EXPECT_EQ(0, strcmp(strings->def_string3.data, "Hello\"world!"));
+  EXPECT_EQ(0, strcmp(strings->def_string4.data, "Hello\'world!"));
+  EXPECT_EQ(0, strcmp(strings->def_string5.data, "Hello\"world!"));
   // since upper-bound checking is not implemented yet, we restrict the string copying
   // TODO(mikaelarguedas) Test string length properly instead of cheating copy
   // res = rosidl_generator_c__String__assign(&strings->ub_string, TEST_STRING);
@@ -415,10 +419,24 @@ int test_string_arrays_default_value(void)
   EXPECT_EQ(0, strcmp(string_arrays->def_string_dynamic_array_value.data[2].data, "wonderful"));
   EXPECT_EQ(0, strcmp(string_arrays->def_string_dynamic_array_value.data[3].data, "world"));
   EXPECT_EQ(0, strcmp(string_arrays->def_string_dynamic_array_value.data[4].data, "!"));
+  EXPECT_EQ(5, string_arrays->def_string_dynamic_array_value.size);
 
   EXPECT_EQ(0, strcmp(string_arrays->def_string_bounded_array_value.data[0].data, "Hello"));
   EXPECT_EQ(0, strcmp(string_arrays->def_string_bounded_array_value.data[1].data, "World"));
   EXPECT_EQ(0, strcmp(string_arrays->def_string_bounded_array_value.data[2].data, "!"));
+  EXPECT_EQ(3, string_arrays->def_string_bounded_array_value.size);
+
+  EXPECT_EQ(0, strcmp(string_arrays->def_various_quotes.data[0].data, "H\"el'lo"));
+  EXPECT_EQ(0, strcmp(string_arrays->def_various_quotes.data[1].data, "Wo\'r\"ld"));
+  EXPECT_EQ(2, string_arrays->def_various_quotes.size);
+
+  EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[0].data, "Hel,lo"));
+  EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[1].data, ",World"));
+  EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[2].data, "abcd"));
+  EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[3].data, ""));
+  EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[4].data, ""));
+  EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[5].data, "!,"));
+  EXPECT_EQ(6, string_arrays->def_various_commas.size);
 
   rosidl_generator_c__msg__StringArrays__destroy(string_arrays);
 

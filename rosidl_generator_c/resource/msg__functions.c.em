@@ -108,6 +108,7 @@ for field in spec.fields:
             lines.append('  %s__destroy(msg);' % msg_typename)
             lines.append('  return false;')
             lines.append('}')
+        # no default value for nested messages yet
     elif field.type.is_fixed_size_array():
         if field.type.is_primitive_type() and field.type.type != 'string':
             if field.default_value is not None:
@@ -127,7 +128,9 @@ for field in spec.fields:
                 for i, default_value in enumerate(field.default_value):
                     if field.type.type == 'string':
                         lines.append('{')
-                        lines.append('  bool success = rosidl_generator_c__String__assign(&msg->%s[%d], "%s");' % (field.name, i, field.default_value[i]))
+                        lines.append(
+                          '  bool success = rosidl_generator_c__String__assign(&msg->%s[%d], %s);' % \
+                          (field.name, i, primitive_value_to_c(field.type.type, field.default_value[i])))
                         lines.append('  if (!success) {')
                         lines.append('    goto %s%s;' % (label_prefix, last_label_index))
                         abort_lines[0:0] = [
@@ -162,7 +165,9 @@ for field in spec.fields:
             for i, default_value in enumerate(field.default_value):
                 if field.type.type == 'string':
                     lines.append('{')
-                    lines.append('  bool success = rosidl_generator_c__String__assign(&msg->%s.data[%d], "%s");' % (field.name, i, field.default_value[i]))
+                    lines.append(
+                      '  bool success = rosidl_generator_c__String__assign(&msg->%s.data[%d], %s);' % \
+                      (field.name, i, primitive_value_to_c(field.type.type, field.default_value[i])))
                     lines.append('  if (!success) {')
                     lines.append('    goto %s%s;' % (label_prefix, last_label_index))
                     abort_lines[0:0] = [

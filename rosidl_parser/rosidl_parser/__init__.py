@@ -496,12 +496,12 @@ def parse_string_array_value_string(element_string, expected_size):
     # returns a list of string elements
     value_strings = []
     while len(element_string) > 0:
+        print(element_string)
+        element_string = element_string.lstrip(' ')
         if element_string[0] == ',':
-            # strip the leading comma if present
-            element_string = element_string[1:]
-        while len(element_string) > 0 and element_string[0] == ' ':
-            # strip any leading whitespace
-            element_string = element_string[1:]
+            raise ValueError("unxepected ',', at [%s]\n%s" % (
+                element_string,
+                value_strings))
         if len(element_string) == 0:
             return value_strings
         quoted_value = False
@@ -525,6 +525,8 @@ def parse_string_array_value_string(element_string, expected_size):
             else:
                 value_strings.append(element_string[:next_comma_idx])
                 element_string = element_string[next_comma_idx:]
+        if len(element_string) > 0 and element_string[0] == ',':
+            element_string = element_string[1:]
     return value_strings
 
 

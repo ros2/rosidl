@@ -498,9 +498,7 @@ def parse_string_array_value_string(element_string, expected_size):
     while len(element_string) > 0:
         element_string = element_string.lstrip(' ')
         if element_string[0] == ',':
-            raise ValueError("unxepected ',', at [%s]\n%s" % (
-                element_string,
-                value_strings))
+            raise ValueError("unxepected ',' at beginning of [%s]" % element_string)
         if len(element_string) == 0:
             return value_strings
         quoted_value = False

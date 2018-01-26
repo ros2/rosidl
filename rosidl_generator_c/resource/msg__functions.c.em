@@ -129,13 +129,13 @@ for field in spec.fields:
                     if field.type.type == 'string':
                         lines.append('{')
                         lines.append(
-                          '  bool success = rosidl_generator_c__String__assign(&msg->%s[%d], %s);' % \
-                          (field.name, i, primitive_value_to_c(field.type.type, field.default_value[i])))
+                            '  bool success = rosidl_generator_c__String__assign(&msg->%s[%d], %s);' % \
+                            (field.name, i, primitive_value_to_c(field.type.type, field.default_value[i])))
                         lines.append('  if (!success) {')
                         lines.append('    goto %s%s;' % (label_prefix, last_label_index))
                         abort_lines[0:0] = [
-                          '  rosidl_generator_c__String__fini(&msg->%s[%d]);' % (field.name, i),
-                          '%s%d:' % (label_prefix, last_label_index),
+                            '  rosidl_generator_c__String__fini(&msg->%s[%d]);' % (field.name, i),
+                            '%s%d:' % (label_prefix, last_label_index),
                         ]
                         last_label_index += 1
                         lines.append('  }')
@@ -155,8 +155,8 @@ for field in spec.fields:
             lines.append('  if (!success) {')
             lines.append('    goto %s%d;' % (label_prefix, last_label_index))
             abort_lines[0:0] = [
-              '  %s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name),
-              '%s%d:' % (label_prefix, last_label_index),
+                '  %s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name),
+                '%s%d:' % (label_prefix, last_label_index),
             ]
             last_label_index += 1
             lines.append('  }')
@@ -166,13 +166,13 @@ for field in spec.fields:
                 if field.type.type == 'string':
                     lines.append('{')
                     lines.append(
-                      '  bool success = rosidl_generator_c__String__assign(&msg->%s.data[%d], %s);' % \
-                      (field.name, i, primitive_value_to_c(field.type.type, field.default_value[i])))
+                        '  bool success = rosidl_generator_c__String__assign(&msg->%s.data[%d], %s);' % \
+                        (field.name, i, primitive_value_to_c(field.type.type, field.default_value[i])))
                     lines.append('  if (!success) {')
                     lines.append('    goto %s%s;' % (label_prefix, last_label_index))
                     abort_lines[0:0] = [
-                      '  rosidl_generator_c__String__fini(&msg->%s.data[%d]);' % (field.name, i),
-                      '%s%d:' % (label_prefix, last_label_index),
+                        '  rosidl_generator_c__String__fini(&msg->%s.data[%d]);' % (field.name, i),
+                        '%s%d:' % (label_prefix, last_label_index),
                     ]
                     last_label_index += 1
                     lines.append('  }')

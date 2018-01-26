@@ -525,6 +525,7 @@ def parse_string_array_value_string(element_string, expected_size):
             else:
                 value_strings.append(element_string[:next_comma_idx])
                 element_string = element_string[next_comma_idx:]
+        element_string = element_string.lstrip(' ')
         if len(element_string) > 0 and element_string[0] == ',':
             element_string = element_string[1:]
     return value_strings

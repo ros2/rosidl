@@ -14,4 +14,4 @@ string[<=10] def_string_bounded_array_value ['Hello', 'World', "!"]
 # issue seem to be with double quoted strings:
 #  single quotes or escaped double quotes
 # string[] def_various_quotes ["He'llo", 'W"o\'rld']
-string[] def_various_commas [,"Hel,lo", ',World', abcd,,   , "!,",]
+string[] def_various_commas ["Hel,lo", ',World', abcd, "!,",]

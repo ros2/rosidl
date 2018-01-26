@@ -433,10 +433,8 @@ int test_string_arrays_default_value(void)
   EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[0].data, "Hel,lo"));
   EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[1].data, ",World"));
   EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[2].data, "abcd"));
-  EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[3].data, ""));
-  EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[4].data, ""));
-  EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[5].data, "!,"));
-  EXPECT_EQ(6, string_arrays->def_various_commas.size);
+  EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[3].data, "!,"));
+  EXPECT_EQ(4, string_arrays->def_various_commas.size);
 
   rosidl_generator_c__msg__StringArrays__destroy(string_arrays);
 

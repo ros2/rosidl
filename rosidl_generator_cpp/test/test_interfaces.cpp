@@ -575,13 +575,11 @@ TEST(Test_messages, string_arrays_default) {
   ASSERT_STREQ("world", message.def_string_dynamic_array_value[3].c_str());
   ASSERT_STREQ("!", message.def_string_dynamic_array_value[4].c_str());
 
-  ASSERT_EQ(6ul, message.def_various_commas.size());
+  ASSERT_EQ(4ul, message.def_various_commas.size());
   ASSERT_STREQ("Hel,lo", message.def_various_commas[0].c_str());
   ASSERT_STREQ(",World", message.def_various_commas[1].c_str());
   ASSERT_STREQ("abcd", message.def_various_commas[2].c_str());
-  ASSERT_STREQ("", message.def_various_commas[3].c_str());
-  ASSERT_STREQ("", message.def_various_commas[4].c_str());
-  ASSERT_STREQ("!,", message.def_various_commas[5].c_str());
+  ASSERT_STREQ("!,", message.def_various_commas[3].c_str());
 }
 
 // TODO(mikaelarguedas) reenable this test when bounded strings enforce length

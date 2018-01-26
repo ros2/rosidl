@@ -125,7 +125,7 @@ def test_default_values():
     assert ['Hello', 'World', '!'] == b.DEF_STRING_BOUNDED_ARRAY_VALUE__DEFAULT
 
     assert ['H"el\'lo', 'Wo\'r"ld'] == b.DEF_VARIOUS_QUOTES__DEFAULT
-    assert ['Hel,lo', ',World', 'abcd', '', '', '!,'] == b.DEF_VARIOUS_COMMAS__DEFAULT
+    assert ['Hel,lo', ',World', 'abcd', '!,'] == b.DEF_VARIOUS_COMMAS__DEFAULT
 
     c = Various()
     assert [5, 23] == c.TWO_UINT16_VALUE__DEFAULT

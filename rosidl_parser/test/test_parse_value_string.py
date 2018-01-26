@@ -47,6 +47,12 @@ def test_parse_value_string():
     with assert_raises(InvalidValue):
         parse_value_string(Type('string[<=2]'), '''["foo", 'ba"r', "ba,z"]''')
 
+    with assert_raises(ValueError):
+        parse_value_string(Type('string[<=3]'), '''[,"foo", 'ba"r', "ba,z"]''')
+
+    with assert_raises(ValueError):
+        parse_value_string(Type('string[<=3]'), '''["foo", ,'ba"r', "ba,z"]''')
+
     parse_value_string(Type('string[<=2]'), '''["fo'o\\\", bar", baz]''')
     assert value
 

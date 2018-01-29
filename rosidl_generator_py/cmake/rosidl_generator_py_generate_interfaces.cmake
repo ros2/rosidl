@@ -230,8 +230,6 @@ foreach(_typesupport_impl ${_typesupport_impls})
     ${PythonExtra_LIBRARIES}
     ${PROJECT_NAME}__${_typesupport_impl}
   )
-  rosidl_target_interfaces(${_target_name}
-    ${PROJECT_NAME} rosidl_typesupport_c)
 
   target_include_directories(${_target_name}
     PUBLIC
@@ -239,6 +237,9 @@ foreach(_typesupport_impl ${_typesupport_impls})
     ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_py
     ${PythonExtra_INCLUDE_DIRS}
   )
+
+  rosidl_target_interfaces(${_target_name}
+    ${PROJECT_NAME} rosidl_typesupport_c)
 
   ament_target_dependencies(${_target_name}
     "rosidl_generator_c"

@@ -199,7 +199,7 @@ def generate_zero_string(membset, fill_args):
   // field types and members
 @[for field in spec.fields]@
   using _@(field.name)_type =
-      @(msg_type_to_cpp(field.type));
+    @(msg_type_to_cpp(field.type));
   _@(field.name)_type @(field.name);
 @[end for]@
 
@@ -226,31 +226,31 @@ def generate_zero_string(membset, fill_args):
 
   // pointer types
   using RawPtr =
-      @(cpp_full_name)<ContainerAllocator> *;
+    @(cpp_full_name)<ContainerAllocator> *;
   using ConstRawPtr =
-      const @(cpp_full_name)<ContainerAllocator> *;
+    const @(cpp_full_name)<ContainerAllocator> *;
   using SharedPtr =
-      std::shared_ptr<@(cpp_full_name)<ContainerAllocator>>;
+    std::shared_ptr<@(cpp_full_name)<ContainerAllocator>>;
   using ConstSharedPtr =
-      std::shared_ptr<@(cpp_full_name)<ContainerAllocator> const>;
+    std::shared_ptr<@(cpp_full_name)<ContainerAllocator> const>;
 
   template<typename Deleter = std::default_delete<
-      @(cpp_full_name)<ContainerAllocator>>>
+    @(cpp_full_name)<ContainerAllocator>>>
   using UniquePtrWithDeleter =
-      std::unique_ptr<@(cpp_full_name)<ContainerAllocator>, Deleter>;
+    std::unique_ptr<@(cpp_full_name)<ContainerAllocator>, Deleter>;
 
   using UniquePtr = UniquePtrWithDeleter<>;
 
   template<typename Deleter = std::default_delete<
-      @(cpp_full_name)<ContainerAllocator>>>
+    @(cpp_full_name)<ContainerAllocator>>>
   using ConstUniquePtrWithDeleter =
-      std::unique_ptr<@(cpp_full_name)<ContainerAllocator> const, Deleter>;
+    std::unique_ptr<@(cpp_full_name)<ContainerAllocator> const, Deleter>;
   using ConstUniquePtr = ConstUniquePtrWithDeleter<>;
 
   using WeakPtr =
-      std::weak_ptr<@(cpp_full_name)<ContainerAllocator>>;
+    std::weak_ptr<@(cpp_full_name)<ContainerAllocator>>;
   using ConstWeakPtr =
-      std::weak_ptr<@(cpp_full_name)<ContainerAllocator> const>;
+    std::weak_ptr<@(cpp_full_name)<ContainerAllocator> const>;
 
   // pointer types similar to ROS 1, use SharedPtr / ConstSharedPtr instead
   // NOTE: Can't use 'using' here because GNU C++ can't parse attributes properly
@@ -282,7 +282,7 @@ def generate_zero_string(membset, fill_args):
 
 // alias to use template instance with default allocator
 using @(spec.base_type.type) =
-    @(cpp_full_name)<std::allocator<void>>;
+  @(cpp_full_name)<std::allocator<void>>;
 
 // constants requiring out of line definition
 @[for c in spec.constants]@

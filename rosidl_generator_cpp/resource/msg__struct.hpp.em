@@ -235,14 +235,14 @@ def generate_zero_string(membset, fill_args):
     std::shared_ptr<@(cpp_full_name)<ContainerAllocator> const>;
 
   template<typename Deleter = std::default_delete<
-    @(cpp_full_name)<ContainerAllocator>>>
+      @(cpp_full_name)<ContainerAllocator>>>
   using UniquePtrWithDeleter =
     std::unique_ptr<@(cpp_full_name)<ContainerAllocator>, Deleter>;
 
   using UniquePtr = UniquePtrWithDeleter<>;
 
   template<typename Deleter = std::default_delete<
-    @(cpp_full_name)<ContainerAllocator>>>
+      @(cpp_full_name)<ContainerAllocator>>>
   using ConstUniquePtrWithDeleter =
     std::unique_ptr<@(cpp_full_name)<ContainerAllocator> const, Deleter>;
   using ConstUniquePtr = ConstUniquePtrWithDeleter<>;

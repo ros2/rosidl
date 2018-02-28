@@ -2,6 +2,9 @@
 # rosidl_typesupport_introspection_c/
 #   rosidl_typesupport_introspection_c-extras.cmake.in
 
+# use the same type of library
+set(rosidl_typesupport_introspection_c_LIBRARY_TYPE "@rosidl_typesupport_introspection_c_LIBRARY_TYPE@")
+
 find_package(ament_cmake_core QUIET REQUIRED)
 # TODO
 # instead of being an extension for "rosidl_generate_interfaces"

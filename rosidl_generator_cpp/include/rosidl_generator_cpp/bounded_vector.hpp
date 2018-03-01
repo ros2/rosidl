@@ -54,7 +54,7 @@ public:
 
   /// Create a %BoundedVector with no elements.
   BoundedVector()
-  noexcept(std::is_nothrow_default_constructible<_Alloc>::value)
+  noexcept (std::is_nothrow_default_constructible<_Alloc>::value)
   : _Base()
   {}
 

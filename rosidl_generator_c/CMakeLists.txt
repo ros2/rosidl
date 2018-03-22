@@ -11,12 +11,12 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
+find_package(ament_cmake_ros REQUIRED)
 find_package(rosidl_typesupport_interface REQUIRED)
 
 include_directories(include)
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME}
   "src/message_type_support.c"
   "src/primitives_array_functions.c"
   "src/service_type_support.c"
@@ -120,6 +120,12 @@ if(BUILD_TESTING)
   target_link_libraries(test_compilation_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
   target_link_libraries(test_interfaces_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
   target_link_libraries(test_invalid_initialization_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
+endif()
+
+if(BUILD_SHARED_LIBS)
+  set(${PROJECT_NAME}_LIBRARY_TYPE "SHARED")
+else()
+  set(${PROJECT_NAME}_LIBRARY_TYPE "STATIC")
 endif()
 
 ament_package(

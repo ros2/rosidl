@@ -114,7 +114,7 @@ list(APPEND _generated_msg_header_files "${_visibility_control_file}")
 
 set(_target_suffix "__rosidl_typesupport_introspection_c")
 
-add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED
+add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} ${rosidl_typesupport_introspection_c_LIBRARY_TYPE}
   ${_generated_msg_header_files} ${_generated_msg_source_files}
   ${_generated_srv_header_files} ${_generated_srv_source_files})
 if(rosidl_generate_interfaces_LIBRARY_NAME)

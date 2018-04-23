@@ -15,7 +15,7 @@
 #ifndef ROSIDL_GENERATOR_C__VISIBILITY_CONTROL_H_
 #define ROSIDL_GENERATOR_C__VISIBILITY_CONTROL_H_
 
-#if __cplusplus
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -51,7 +51,7 @@ extern "C"
   #define ROSIDL_GENERATOR_C_PUBLIC_TYPE
 #endif
 
-#if __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

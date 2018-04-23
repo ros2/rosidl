@@ -20,7 +20,7 @@
 #include "rosidl_generator_c/string.h"
 #include "rosidl_generator_c/visibility_control.h"
 
-#if __cplusplus
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -69,7 +69,7 @@ void
 rosidl_generator_c__String__Array__destroy(
   rosidl_generator_c__String__Array * array);
 
-#if __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

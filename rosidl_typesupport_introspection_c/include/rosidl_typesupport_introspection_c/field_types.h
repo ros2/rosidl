@@ -17,7 +17,7 @@
 
 #include <stdint.h>
 
-#if __cplusplus
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -42,7 +42,7 @@ enum
   rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE = 15
 };
 
-#if __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

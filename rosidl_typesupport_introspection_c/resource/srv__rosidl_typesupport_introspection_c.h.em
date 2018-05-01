@@ -28,7 +28,7 @@ function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.pkg_name,
 
 #include "@(spec.pkg_name)/msg/rosidl_typesupport_introspection_c__visibility_control.h"
 
-#if __cplusplus
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -37,7 +37,7 @@ ROSIDL_TYPESUPPORT_INTROSPECTION_C_PUBLIC_@(spec.pkg_name)
 const rosidl_service_type_support_t *
   ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(spec.srv_name))();
 
-#if __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

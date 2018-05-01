@@ -17,7 +17,7 @@
 
 #include "rosidl_typesupport_introspection_c/visibility_control.h"
 
-#if __cplusplus
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -25,7 +25,7 @@ extern "C"
 ROSIDL_TYPESUPPORT_INTROSPECTION_C_PUBLIC
 extern const char * rosidl_typesupport_introspection_c__identifier;
 
-#if __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

@@ -30,7 +30,7 @@ msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_typ
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
-#if __cplusplus
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -45,7 +45,7 @@ ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
 const rosidl_message_type_support_t *
   ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_c, @(pkg), @(subfolder), @(type))();
 
-#if __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

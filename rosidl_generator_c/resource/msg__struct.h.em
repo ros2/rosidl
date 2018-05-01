@@ -29,7 +29,7 @@ array_typename = '%s__Array' % msg_typename
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
-#if __cplusplus
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -173,7 +173,7 @@ typedef struct @(array_typename)
   size_t capacity;
 } @(array_typename);
 
-#if __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

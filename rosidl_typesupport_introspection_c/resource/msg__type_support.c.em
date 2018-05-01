@@ -64,7 +64,7 @@ for field in spec.fields:
 @[  end for]@
 
 @[end if]@
-#if __cplusplus
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -217,6 +217,6 @@ ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspecti
   return &@(function_prefix)__@(spec.base_type.type)_message_type_support_handle;
 }
 
-#if __cplusplus
+#ifdef __cplusplus
 }
 #endif

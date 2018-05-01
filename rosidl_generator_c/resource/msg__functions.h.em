@@ -28,7 +28,7 @@ array_typename = '%s__Array' % msg_typename
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
-#if __cplusplus
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -135,7 +135,7 @@ ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
 void
 @(array_typename)__destroy(@(array_typename) * array);
 
-#if __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

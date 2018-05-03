@@ -215,13 +215,7 @@ def generate_zero_string(membset, fill_args):
 
   // constants
 @[for constant in spec.constants]@
-@[  if (constant.type in ['byte', 'int8', 'int16', 'int32', 'int64', 'char'])]@
-  enum { @(constant.name) = @(int(constant.value)) };
-@[  elif (constant.type in ['uint8', 'uint16', 'uint32', 'uint64'])]@
-  enum { @(constant.name) = @(int(constant.value))u };
-@[  else]@
   static const @(MSG_TYPE_TO_CPP[constant.type]) @(constant.name);
-@[  end if]@
 @[end for]@
 
   // pointer types
@@ -286,17 +280,17 @@ using @(spec.base_type.type) =
 
 // constants requiring out of line definition
 @[for c in spec.constants]@
-@[  if c.type not in ['byte', 'int8', 'int16', 'int32', 'int64', 'char', 'uint8', 'uint16', 'uint32', 'uint64']]@
 template<typename ContainerAllocator>
 const @(MSG_TYPE_TO_CPP[c.type])
 @(spec.base_type.type)_<ContainerAllocator>::@(c.name) =
-@[    if c.type == 'string']@
+@[  if c.type == 'string']@
   "@(escape_string(c.value))";
-@[    elif c.type == 'bool']@
+@[  elif (c.type in ['bool', 'byte', 'int8', 'int16', 'int32', 'int64', 'char'])]@
   @(int(c.value));
-@[    else]@
+@[  elif (c.type in ['uint8', 'uint16', 'uint32', 'uint64'])]@
+  @(int(c.value))u;
+@[  else]@
   @(c.value);
-@[    end if]@
 @[  end if]@
 @[end for]@
 

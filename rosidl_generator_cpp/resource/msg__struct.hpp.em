@@ -213,7 +213,7 @@ def generate_zero_string(membset, fill_args):
   }
 @[end for]@
 
-  // constants
+  // constant declarations
 @[for constant in spec.constants]@
   static const @(MSG_TYPE_TO_CPP[constant.type]) @(constant.name);
 @[end for]@
@@ -278,16 +278,16 @@ def generate_zero_string(membset, fill_args):
 using @(spec.base_type.type) =
   @(cpp_full_name)<std::allocator<void>>;
 
-// constants requiring out of line definition
+// constant definitions
 @[for c in spec.constants]@
 template<typename ContainerAllocator>
 const @(MSG_TYPE_TO_CPP[c.type])
 @(spec.base_type.type)_<ContainerAllocator>::@(c.name) =
 @[  if c.type == 'string']@
   "@(escape_string(c.value))";
-@[  elif (c.type in ['bool', 'byte', 'int8', 'int16', 'int32', 'int64', 'char'])]@
+@[  elif c.type in ('bool', 'byte', 'int8', 'int16', 'int32', 'int64', 'char')]@
   @(int(c.value));
-@[  elif (c.type in ['uint8', 'uint16', 'uint32', 'uint64'])]@
+@[  elif c.type in ('uint8', 'uint16', 'uint32', 'uint64')]@
   @(int(c.value))u;
 @[  else]@
   @(c.value);

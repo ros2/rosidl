@@ -173,22 +173,23 @@ class @(spec.base_type.type)(metaclass=Metaclass):
 
     @@@(field.name).setter
     def @(field.name)(self, value):
+        if __debug__:
 @[  if not field.type.is_primitive_type()]@
-        from @(field.type.pkg_name).msg import @(field.type.type)
+          from @(field.type.pkg_name).msg import @(field.type.type)
 @[  end if]@
 @[  if field.type.is_array]@
-        from collections import Sequence
-        from collections import Set
-        from collections import UserList
-        from collections import UserString
+          from collections import Sequence
+          from collections import Set
+          from collections import UserList
+          from collections import UserString
 @[  elif field.type.string_upper_bound]@
-        from collections import UserString
+          from collections import UserString
 @[  elif field.type.type == 'byte']@
-        from collections import ByteString
+          from collections import ByteString
 @[  elif field.type.type in ['char']]@
-        from collections import UserString
+          from collections import UserString
 @[  end if]@
-        assert \
+          assert \
 @[  if field.type.is_array]@
             ((isinstance(value, Sequence) or
               isinstance(value, Set) or

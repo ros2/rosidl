@@ -60,6 +60,7 @@ if(BUILD_TESTING)
     message(WARNING "No valid typesupport found for Python generator, skipping tests.")
   else()
     rosidl_generate_interfaces(${PROJECT_NAME} ${message_files}
+      ADD_LINTER_TESTS
       SKIP_INSTALL
     )
 

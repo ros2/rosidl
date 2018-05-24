@@ -87,7 +87,7 @@ for key in sorted(importable_typesupports.keys()):
 
     @@property
     def @(field.name.upper())__DEFAULT(cls):
-        """Default value for message field '@(field.name)'."""
+        """Return default value for message field '@(field.name)'."""
         return @value_to_py(field.type, field.default_value)
 @[  end if]@
 @[end for]@

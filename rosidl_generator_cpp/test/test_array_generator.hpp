@@ -126,7 +126,7 @@ void test_vector_fill(
   if (size > 0 && min < max && minlength < maxlength) {
     size_t step = (max - min) / size;
     size_t step_length = (maxlength - minlength) / size;
-    char * tmpstr = reinterpret_cast<char *>(malloc(maxlength + 1));
+    char * tmpstr = static_cast<char *>(malloc(maxlength + 1));
     std::snprintf(tmpstr, minlength + 1, "%*d", minlength, min);
     (*container)[0] = std::string(tmpstr);
     for (size_t i = 1; i < size - 1; i++) {

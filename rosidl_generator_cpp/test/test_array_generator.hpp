@@ -123,7 +123,7 @@ void test_vector_fill(
   int min, int max,
   int minlength, const int maxlength)
 {
-  if (size > 0 && min != max && minlength != maxlength) {
+  if (size > 0 && min < max && minlength < maxlength) {
     size_t step = (max - min) / size;
     size_t step_length = (maxlength - minlength) / size;
     char * tmpstr = reinterpret_cast<char *>(malloc(maxlength + 1));

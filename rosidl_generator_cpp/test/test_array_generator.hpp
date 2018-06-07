@@ -64,7 +64,7 @@ void test_vector_fill(
   C * container, size_t size,
   typename C::value_type min, typename C::value_type max)
 {
-  if (size > 0 && min != max) {
+  if (size > 0 && min < max) {
     size_t step = (max - min) / size;
     (*container)[0] = min;
     for (size_t i = 1; i < size - 1; i++) {
@@ -92,7 +92,7 @@ void test_vector_fill(
   C * container, size_t size,
   typename C::value_type min, typename C::value_type max)
 {
-  if (size > 0 && min != max) {
+  if (size > 0 && min < max) {
     typename C::value_type step = (max - min) / static_cast<typename C::value_type>(size);
     (*container)[0] = min;
     for (size_t i = 1; i < size - 1; i++) {

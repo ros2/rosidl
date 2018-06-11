@@ -164,6 +164,15 @@ class @(spec.base_type.type)(metaclass=Metaclass):
         typename.append(self.__class__.__name__)
         args = [s[1:] + '=' + repr(getattr(self, s, None)) for s in self.__slots__]
         return '%s(%s)' % ('.'.join(typename), ', '.join(args))
+
+    def __eq__(self, other):
+        if not isinstance(other, self.__class__):
+            return False
+@[for field in spec.fields]@
+        if self.@(field.name) != other.@(field.name):
+            return False
+@[end for]@
+        return True
 @[for field in spec.fields]@
 
     @@property

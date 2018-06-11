@@ -173,13 +173,6 @@ class @(spec.base_type.type)(metaclass=Metaclass):
             return False
 @[end for]@
         return True
-
-    def __hash__(self):
-        return hash((
-@[for field in spec.fields]@
-            self.@(field.name),
-@[end for]@
-        ))
 @[for field in spec.fields]@
 
     @@property

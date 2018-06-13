@@ -312,7 +312,7 @@ int test_strings(void)
   EXPECT_EQ(0, strcmp(strings->def_string.data, "Hello world!"));
   EXPECT_EQ(0, strcmp(strings->def_string2.data, "Hello'world!"));
   EXPECT_EQ(0, strcmp(strings->def_string3.data, "Hello\"world!"));
-  EXPECT_EQ(0, strcmp(strings->def_string4.data, "Hello\'world!"));
+  EXPECT_EQ(0, strcmp(strings->def_string4.data, "Hello'world!"));
   EXPECT_EQ(0, strcmp(strings->def_string5.data, "Hello\"world!"));
   // since upper-bound checking is not implemented yet, we restrict the string copying
   // TODO(mikaelarguedas) Test string length properly instead of cheating copy
@@ -427,7 +427,7 @@ int test_string_arrays_default_value(void)
   EXPECT_EQ(3, string_arrays->def_string_bounded_array_value.size);
 
   EXPECT_EQ(0, strcmp(string_arrays->def_various_quotes.data[0].data, "H\"el'lo"));
-  EXPECT_EQ(0, strcmp(string_arrays->def_various_quotes.data[1].data, "Wo\'r\"ld"));
+  EXPECT_EQ(0, strcmp(string_arrays->def_various_quotes.data[1].data, "Wo'r\"ld"));
   EXPECT_EQ(2, string_arrays->def_various_quotes.size);
 
   EXPECT_EQ(0, strcmp(string_arrays->def_various_commas.data[0].data, "Hel,lo"));

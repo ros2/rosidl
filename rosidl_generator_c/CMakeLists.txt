@@ -152,3 +152,7 @@ install(
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
+
+ament_index_register_resource(
+  "rosidl_interface_generator" CONTENT "${PROJECT_NAME}"
+)

@@ -17,6 +17,7 @@ from nose.tools import assert_raises
 from rosidl_generator_py.msg import Constants
 from rosidl_generator_py.msg import Nested
 from rosidl_generator_py.msg import Primitives
+from rosidl_generator_py.msg import StringArrays
 from rosidl_generator_py.msg import Strings
 from rosidl_generator_py.msg import Various
 
@@ -29,7 +30,7 @@ def test_strings():
 
 
 def test_arrays_of_bounded_strings():
-    a = Strings()
+    a = StringArrays()
     array_valid_string_length = ['a' * 2, 'b' * 3, 'c' * 4]
     array_too_long_strings = ['a' * 2, 'b' * 3, 'c' * 6]
     assert ['', '', ''] == a.ub_string_static_array_value
@@ -111,19 +112,30 @@ def test_default_values():
     assert 'Bye world' == a.def_string
     assert 'Hello world!' == Strings.DEF_STRING__DEFAULT
     assert 'Hello world!' == a.DEF_STRING__DEFAULT
-    assert 'Hello"world!' == a.DEF_STRING_DELIMITER__DEFAULT
-    assert "Hello'world!" == a.DEF_STRING_DELIMITER2__DEFAULT
+
+    assert 'Hello\'world!' == a.DEF_STRING2__DEFAULT
+    assert 'Hello"world!' == a.DEF_STRING3__DEFAULT
+    assert 'Hello\'world!' == a.DEF_STRING4__DEFAULT
+    assert 'Hello"world!' == a.DEF_STRING5__DEFAULT
     assert_raises(AttributeError, setattr, Strings, 'DEF_STRING__DEFAULT', 'bar')
 
-    b = Various()
-    assert [5, 23] == b.TWO_UINT16_VALUE__DEFAULT
+    b = StringArrays()
+    assert ['What', 'a', 'wonderful', 'world', '!'] == b.DEF_STRING_DYNAMIC_ARRAY_VALUE__DEFAULT
+    assert ['Hello', 'World', '!'] == b.DEF_STRING_STATIC_ARRAY_VALUE__DEFAULT
+    assert ['Hello', 'World', '!'] == b.DEF_STRING_BOUNDED_ARRAY_VALUE__DEFAULT
 
-    assert [5, 23] == b.UP_TO_THREE_INT32_VALUES_WITH_DEFAULT_VALUES__DEFAULT
+    assert ['H"el\'lo', 'Wo\'r"ld'] == b.DEF_VARIOUS_QUOTES__DEFAULT
+    assert ['Hel,lo', ',World', 'abcd', '!,'] == b.DEF_VARIOUS_COMMAS__DEFAULT
 
-    assert '\x01' == b.CHAR_VALUE__DEFAULT
-    assert '1' != b.CHAR_VALUE__DEFAULT
-    assert b'\x01' == b.BYTE_VALUE__DEFAULT
-    assert b'1' != b.BYTE_VALUE__DEFAULT
+    c = Various()
+    assert [5, 23] == c.TWO_UINT16_VALUE__DEFAULT
+
+    assert [5, 23] == c.UP_TO_THREE_INT32_VALUES_WITH_DEFAULT_VALUES__DEFAULT
+
+    assert '\x01' == c.CHAR_VALUE__DEFAULT
+    assert '1' != c.CHAR_VALUE__DEFAULT
+    assert b'\x01' == c.BYTE_VALUE__DEFAULT
+    assert b'1' != c.BYTE_VALUE__DEFAULT
 
 
 def test_check_constraints():

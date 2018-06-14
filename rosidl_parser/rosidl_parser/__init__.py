@@ -445,8 +445,7 @@ def parse_value_string(type_, value_string):
     if type_.is_primitive_type() and not type_.is_array:
         return parse_primitive_value_string(type_, value_string)
 
-    # TODO(mikaelarguedas) change this condition once string escape function is implemented
-    if type_.is_primitive_type() and type_.is_array and type_.type != 'string':
+    if type_.is_primitive_type() and type_.is_array:
         # check for array brackets
         if not value_string.startswith('[') or not value_string.endswith(']'):
             raise InvalidValue(
@@ -454,8 +453,12 @@ def parse_value_string(type_, value_string):
                 "array value must start with '[' and end with ']'")
         elements_string = value_string[1:-1]
 
-        # split on separator and check size constraints
-        value_strings = elements_string.split(',') if elements_string else []
+        if type_.type == 'string':
+            # String arrays need special processing as the comma can be part of a quoted string
+            # and not a separator of array elements
+            value_strings = parse_string_array_value_string(elements_string, type_.array_size)
+        else:
+            value_strings = elements_string.split(',') if elements_string else []
         if type_.array_size:
             # check for exact size
             if not type_.is_upper_bound and \
@@ -486,6 +489,61 @@ def parse_value_string(type_, value_string):
 
     raise NotImplementedError(
         "parsing string values into type '%s' is not supported" % type_)
+
+
+def parse_string_array_value_string(element_string, expected_size):
+    # Walks the string, if start with quote (' or ") find next unescapted quote,
+    # returns a list of string elements
+    value_strings = []
+    while len(element_string) > 0:
+        element_string = element_string.lstrip(' ')
+        if element_string[0] == ',':
+            raise ValueError("unxepected ',' at beginning of [%s]" % element_string)
+        if len(element_string) == 0:
+            return value_strings
+        quoted_value = False
+        for quote in ['"', "'"]:
+            if element_string.startswith(quote):
+                quoted_value = True
+                end_quote_idx = find_matching_end_quote(element_string, quote)
+                if end_quote_idx == -1:
+                    raise ValueError('string [%s] incorrectly quoted\n%s' % (
+                        element_string, value_strings))
+                else:
+                    value_string = element_string[1:end_quote_idx + 1]
+                    value_string = value_string.replace('\\' + quote, quote)
+                    value_strings.append(value_string)
+                    element_string = element_string[end_quote_idx + 2:]
+        if not quoted_value:
+            next_comma_idx = element_string.find(',')
+            if next_comma_idx == -1:
+                value_strings.append(element_string)
+                element_string = ''
+            else:
+                value_strings.append(element_string[:next_comma_idx])
+                element_string = element_string[next_comma_idx:]
+        element_string = element_string.lstrip(' ')
+        if len(element_string) > 0 and element_string[0] == ',':
+            element_string = element_string[1:]
+    return value_strings
+
+
+def find_matching_end_quote(string, quote):
+    # Given a string, walk it and find the next unescapted quote
+    # returns the index of the ending quote if successful, -1 otherwise
+    ending_quote_idx = -1
+    final_quote_idx = 0
+    while len(string) > 0:
+        ending_quote_idx = string[1:].find(quote)
+        if ending_quote_idx == -1:
+            return -1
+        if string[ending_quote_idx:ending_quote_idx + 2] != '\\%s' % quote:
+            # found a matching end quote that is not escaped
+            return final_quote_idx + ending_quote_idx
+        else:
+            string = string[ending_quote_idx + 2:]
+            final_quote_idx = ending_quote_idx + 2
+    return -1
 
 
 def parse_primitive_value_string(type_, value_string):

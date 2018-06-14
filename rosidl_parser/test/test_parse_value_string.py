@@ -38,10 +38,25 @@ def test_parse_value_string():
     value = parse_value_string(Type('bool[]'), '[1]')
     assert value
 
+    value = parse_value_string(Type('string[]'), "['foo', 'bar']")
+    assert value == ['foo', 'bar']
+
+    with assert_raises(InvalidValue):
+        parse_value_string(Type('string[<=2]'), '[foo, bar, baz]')
+
+    with assert_raises(InvalidValue):
+        parse_value_string(Type('string[<=2]'), """["foo", 'ba"r', "ba,z"]""")
+
+    with assert_raises(ValueError):
+        parse_value_string(Type('string[<=3]'), """[,"foo", 'ba"r', "ba,z"]""")
+
+    with assert_raises(ValueError):
+        parse_value_string(Type('string[<=3]'), """["foo", ,'ba"r', "ba,z"]""")
+
+    parse_value_string(Type('string[<=2]'), """["fo'o\\\", bar", baz]""")
+    assert value
+
 
 def test_parse_value_string_not_implemented():
-    with assert_raises(NotImplementedError):
-        parse_value_string(Type('string[]'), '[foo, bar]')
-
     with assert_raises(NotImplementedError):
         parse_value_string(Type('pkg/Foo[]'), '')

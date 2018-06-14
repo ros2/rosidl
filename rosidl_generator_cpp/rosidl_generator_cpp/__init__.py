@@ -163,11 +163,16 @@ def value_to_cpp(type_, value):
         return primitive_value_to_cpp(type_, value)
 
     cpp_values = []
+    is_string_array = type_.__str__().startswith('string')
     for single_value in value:
         cpp_value = primitive_value_to_cpp(type_, single_value)
-        cpp_values.append(cpp_value)
+        if is_string_array:
+            tmp_cpp_value = '{%s}' % cpp_value
+        else:
+            tmp_cpp_value = cpp_value
+        cpp_values.append(tmp_cpp_value)
     cpp_value = '{%s}' % ', '.join(cpp_values)
-    if len(cpp_values) > 1:
+    if len(cpp_values) > 1 and not is_string_array:
         # Only wrap in a second set of {} if the array length is > 1.
         # This avoids "warning: braces around scalar initializer"
         cpp_value = '{%s}' % cpp_value

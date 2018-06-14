@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
-<package format="2">
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>rosidl_generator_cpp</name>
   <version>0.4.0</version>
   <description>Generate the ROS interfaces in C++.</description>
@@ -22,6 +22,9 @@
   <test_depend>ament_lint_common</test_depend>
   <test_depend>rosidl_cmake</test_depend>
   <test_depend>rosidl_generator_c</test_depend>
+
+  <member_of_group>rosidl_generator_packages</member_of_group>
+  <member_of_group>rosidl_runtime_packages</member_of_group>
 
   <export>
     <build_type>ament_cmake</build_type>

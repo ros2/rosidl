@@ -9,7 +9,6 @@ ament_export_dependencies(rmw)
 ament_export_dependencies(rosidl_cmake)
 
 ament_index_register_resource("rosidl_generator_packages")
-ament_index_register_resource("rosidl_runtime_packages")
 
 ament_python_install_package(${PROJECT_NAME})
 

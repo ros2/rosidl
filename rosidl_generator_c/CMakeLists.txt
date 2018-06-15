@@ -38,6 +38,8 @@ ament_export_dependencies(rosidl_typesupport_interface)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 
+ament_index_register_resource("rosidl_generator_packages")
+
 ament_python_install_package(${PROJECT_NAME})
 
 if(BUILD_TESTING)

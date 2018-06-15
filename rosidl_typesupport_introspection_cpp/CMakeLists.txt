@@ -37,6 +37,7 @@ target_include_directories(${PROJECT_NAME}
 ament_export_libraries(${PROJECT_NAME})
 
 ament_index_register_resource("rosidl_typesupport_cpp")
+ament_index_register_resource("rosidl_runtime_packages")
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

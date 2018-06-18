@@ -516,13 +516,13 @@ TEST(Test_messages, primitives_constants) {
   ASSERT_EQ(1.125f, message.FLOAT32_CONST);
   ASSERT_EQ(1.125, message.FLOAT64_CONST);
   ASSERT_EQ(-50, message.INT8_CONST);
-  ASSERT_EQ(200, message.UINT8_CONST);
+  ASSERT_EQ(200u, message.UINT8_CONST);
   ASSERT_EQ(-1000, message.INT16_CONST);
-  ASSERT_EQ(2000, message.UINT16_CONST);
+  ASSERT_EQ(2000u, message.UINT16_CONST);
   ASSERT_EQ(-30000, message.INT32_CONST);
-  ASSERT_EQ(60000, message.UINT32_CONST);
+  ASSERT_EQ(60000ul, message.UINT32_CONST);
   ASSERT_EQ(-40000000, message.INT64_CONST);
-  ASSERT_EQ(50000000, message.UINT64_CONST);
+  ASSERT_EQ(50000000ull, message.UINT64_CONST);
   ASSERT_STREQ("foo", message.STRING_CONST.c_str());
 }
 

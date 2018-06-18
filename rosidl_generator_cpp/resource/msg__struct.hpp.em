@@ -213,15 +213,20 @@ def generate_zero_string(membset, fill_args):
   }
 @[end for]@
 
-  // constants
+  // constant declarations
 @[for constant in spec.constants]@
-@[  if (constant.type in ['byte', 'int8', 'int16', 'int32', 'int64', 'char'])]@
-  enum { @(constant.name) = @(int(constant.value)) };
-@[  elif (constant.type in ['uint8', 'uint16', 'uint32', 'uint64'])]@
-  enum { @(constant.name) = @(int(constant.value))u };
-@[  else]@
+@[if constant.type == 'string']
   static const @(MSG_TYPE_TO_CPP[constant.type]) @(constant.name);
+@[else]@
+  static constexpr @(MSG_TYPE_TO_CPP[constant.type]) @(constant.name) =
+@[if constant.type in ('bool', 'byte', 'int8', 'int16', 'int32', 'int64', 'char')]@
+    @(int(constant.value));
+@[elif constant.type in ('uint8', 'uint16', 'uint32', 'uint64')]@
+    @(int(constant.value))u;
+@[else]@
+    @(constant.value);
 @[  end if]@
+@[end if]@
 @[end for]@
 
   // pointer types
@@ -284,20 +289,16 @@ def generate_zero_string(membset, fill_args):
 using @(spec.base_type.type) =
   @(cpp_full_name)<std::allocator<void>>;
 
-// constants requiring out of line definition
+// constant definitions
 @[for c in spec.constants]@
-@[  if c.type not in ['byte', 'int8', 'int16', 'int32', 'int64', 'char', 'uint8', 'uint16', 'uint32', 'uint64']]@
+@[if c.type == 'string']@
 template<typename ContainerAllocator>
 const @(MSG_TYPE_TO_CPP[c.type])
-@(spec.base_type.type)_<ContainerAllocator>::@(c.name) =
-@[    if c.type == 'string']@
-  "@(escape_string(c.value))";
-@[    elif c.type == 'bool']@
-  @(int(c.value));
-@[    else]@
-  @(c.value);
-@[    end if]@
-@[  end if]@
+@(spec.base_type.type)_<ContainerAllocator>::@(c.name) = "@(escape_string(c.value))";
+@[ else ]@
+template<typename ContainerAllocator>
+constexpr @(MSG_TYPE_TO_CPP[c.type]) @(spec.base_type.type)_<ContainerAllocator>::@(c.name);
+@[end if]@
 @[end for]@
 
 }  // namespace @(subfolder)

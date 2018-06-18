@@ -1,4 +1,4 @@
-# Copyright 2014 Open Source Robotics Foundation, Inc.
+# Copyright 2014-2018 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,3 +31,16 @@ include("${rosidl_cmake_DIR}/rosidl_generate_interfaces.cmake")
 include("${rosidl_cmake_DIR}/rosidl_target_interfaces.cmake")
 include("${rosidl_cmake_DIR}/rosidl_write_generator_arguments.cmake")
 include("${rosidl_cmake_DIR}/string_camel_case_to_lower_case_underscore.cmake")
+
+# register ament_package() hook for typesupport libraries once
+macro(_rosidl_cmake_export_typesupport_libraries_register_package_hook)
+  if(NOT DEFINED _ROSIDL_CMAKE_EXPORT_TYPESUPPORT_LIBRARIES_PACKAGE_HOOK_REGISTERED)
+    set(_ROSIDL_CMAKE_EXPORT_TYPESUPPORT_LIBRARIES_PACKAGE_HOOK_REGISTERED TRUE)
+
+    find_package(ament_cmake_core QUIET REQUIRED)
+    ament_register_extension("ament_package" "rosidl_cmake"
+      "rosidl_cmake_export_typesupport_libraries_package_hook.cmake")
+  endif()
+endmacro()
+
+include("${rosidl_cmake_DIR}/rosidl_export_typesupport_libraries.cmake")

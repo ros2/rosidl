@@ -295,7 +295,7 @@ using @(spec.base_type.type) =
 template<typename ContainerAllocator>
 const @(MSG_TYPE_TO_CPP[c.type])
 @(spec.base_type.type)_<ContainerAllocator>::@(c.name) = "@(escape_string(c.value))";
-@[ else ]
+@[ else ]@
 template<typename ContainerAllocator>
 constexpr @(MSG_TYPE_TO_CPP[c.type]) @(spec.base_type.type)_<ContainerAllocator>::@(c.name);
 @[end if]@

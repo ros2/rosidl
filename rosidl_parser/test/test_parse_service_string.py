@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from nose.tools import assert_raises
+import pytest
 
 from rosidl_parser import InvalidFieldDefinition
 from rosidl_parser import InvalidServiceSpecification
@@ -20,7 +20,7 @@ from rosidl_parser import parse_service_string
 
 
 def test_parse_service_string():
-    with assert_raises(InvalidServiceSpecification):
+    with pytest.raises(InvalidServiceSpecification):
         parse_service_string('pkg', 'Foo', '')
 
     srv_spec = parse_service_string('pkg', 'Foo', '---')
@@ -41,7 +41,7 @@ def test_parse_service_string():
     assert len(srv_spec.response.fields) == 0
     assert len(srv_spec.response.constants) == 0
 
-    with assert_raises(InvalidFieldDefinition):
+    with pytest.raises(InvalidFieldDefinition):
         parse_service_string('pkg', 'Foo', 'bool  # comment\n---')
 
     srv_spec = parse_service_string('pkg', 'Foo', 'bool foo\n---\nint8 bar')

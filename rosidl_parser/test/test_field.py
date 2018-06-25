@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from nose.tools import assert_raises
+import pytest
 
 from rosidl_parser import Field
 from rosidl_parser import InvalidValue
@@ -29,10 +29,10 @@ def test_field_constructor():
     field = Field(type_, 'foo', '1')
     assert field.default_value
 
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         Field('type', 'foo')
 
-    with assert_raises(NameError):
+    with pytest.raises(NameError):
         Field(type_, 'foo bar')
 
     type_ = Type('bool[2]')
@@ -44,7 +44,7 @@ def test_field_constructor():
     assert field.default_value == [False, True, False]
 
     type_ = Type('bool[3]')
-    with assert_raises(InvalidValue):
+    with pytest.raises(InvalidValue):
         Field(type_, 'foo', '[false, true]')
 
 

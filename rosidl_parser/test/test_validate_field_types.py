@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from nose.tools import assert_raises
+import pytest
 
 from rosidl_parser import BaseType
 from rosidl_parser import Field
@@ -31,7 +31,7 @@ def test_validate_field_types():
     validate_field_types(msg_spec, known_msg_type)
 
     msg_spec.fields.append(Field(Type('pkg/Bar'), 'bar'))
-    with assert_raises(UnknownMessageType):
+    with pytest.raises(UnknownMessageType):
         validate_field_types(msg_spec, known_msg_type)
 
     known_msg_type.append(BaseType('pkg/Bar'))

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from nose.tools import assert_raises
+import pytest
 
 from rosidl_parser import Constant
 
@@ -21,13 +21,13 @@ def test_constant_constructor():
     value = Constant('bool', 'FOO', '1')
     assert value
 
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         Constant('pkg/Foo', 'FOO', '')
 
-    with assert_raises(NameError):
+    with pytest.raises(NameError):
         Constant('bool', 'FOO BAR', '')
 
-    with assert_raises(ValueError):
+    with pytest.raises(ValueError):
         Constant('bool', 'FOO', None)
 
 

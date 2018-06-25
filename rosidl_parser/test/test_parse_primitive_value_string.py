@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from nose.tools import assert_raises
+import pytest
 
 from rosidl_parser import InvalidValue
 from rosidl_parser import parse_primitive_value_string
@@ -20,9 +20,9 @@ from rosidl_parser import Type
 
 
 def test_parse_primitive_value_string_invalid():
-    with assert_raises(ValueError):
+    with pytest.raises(ValueError):
         parse_primitive_value_string(Type('pkg/Foo'), '')
-    with assert_raises(ValueError):
+    with pytest.raises(ValueError):
         parse_primitive_value_string(Type('bool[]'), '')
 
 
@@ -41,9 +41,9 @@ def test_parse_primitive_value_string_bool():
         value = parse_primitive_value_string(Type('bool'), string_value)
         assert value == expected_value
 
-    with assert_raises(InvalidValue):
+    with pytest.raises(InvalidValue):
         parse_primitive_value_string(Type('bool'), '5')
-    with assert_raises(InvalidValue):
+    with pytest.raises(InvalidValue):
         parse_primitive_value_string(Type('bool'), 'true ')
 
 
@@ -74,13 +74,13 @@ def test_parse_primitive_value_string_integer():
             Type(integer_type), str(upper_bound))
         assert value == upper_bound
 
-        with assert_raises(InvalidValue):
+        with pytest.raises(InvalidValue):
             parse_primitive_value_string(
                 Type(integer_type), 'value')
-        with assert_raises(InvalidValue):
+        with pytest.raises(InvalidValue):
             parse_primitive_value_string(
                 Type(integer_type), str(lower_bound - 1))
-        with assert_raises(InvalidValue):
+        with pytest.raises(InvalidValue):
             parse_primitive_value_string(
                 Type(integer_type), str(upper_bound + 1))
 
@@ -97,7 +97,7 @@ def test_parse_primitive_value_string_float():
             Type(float_type), '3.14')
         assert value == 3.14
 
-        with assert_raises(InvalidValue):
+        with pytest.raises(InvalidValue):
             parse_primitive_value_string(
                 Type(float_type), 'value')
 
@@ -127,15 +127,15 @@ def test_parse_primitive_value_string_string():
         Type('string<=3'), 'foo')
     assert value == 'foo'
 
-    with assert_raises(InvalidValue):
+    with pytest.raises(InvalidValue):
         parse_primitive_value_string(
             Type('string<=3'), 'foobar')
 
-    with assert_raises(InvalidValue):
+    with pytest.raises(InvalidValue):
         parse_primitive_value_string(
             Type('string'), r"""'foo''""")
 
-    with assert_raises(InvalidValue):
+    with pytest.raises(InvalidValue):
         parse_primitive_value_string(
             Type('string'), r'''"foo"bar\"baz"''')  # noqa: Q001
 
@@ -179,5 +179,5 @@ def test_parse_primitive_value_string_unknown():
             return True
     type_ = CustomType('pkg/Foo')
 
-    with assert_raises(AssertionError):
+    with pytest.raises(AssertionError):
         parse_primitive_value_string(type_, '')

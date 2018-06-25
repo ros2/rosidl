@@ -16,7 +16,7 @@ import os
 import shutil
 import tempfile
 
-from nose.tools import assert_raises
+import pytest
 
 from rosidl_parser import parse_message_file
 
@@ -37,8 +37,8 @@ def test_parse_message_file():
 
         with open(filename, 'a') as handle:
             handle.write('\nbool foo')
-        with assert_raises(ValueError) as ctx:
+        with pytest.raises(ValueError) as e:
             parse_message_file('pkg', filename)
-        assert 'foo' in str(ctx.exception)
+        assert 'foo' in str(e)
     finally:
         shutil.rmtree(path)

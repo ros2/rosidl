@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from nose.tools import assert_raises
+import pytest
 
 from rosidl_parser import InvalidValue
 from rosidl_parser import parse_value_string
@@ -24,15 +24,15 @@ def test_parse_value_string_primitive():
 
 
 def test_parse_value_string():
-    with assert_raises(InvalidValue):
+    with pytest.raises(InvalidValue):
         parse_value_string(Type('bool[]'), '1')
 
-    with assert_raises(InvalidValue):
+    with pytest.raises(InvalidValue):
         parse_value_string(Type('bool[2]'), '[1]')
-    with assert_raises(InvalidValue):
+    with pytest.raises(InvalidValue):
         parse_value_string(Type('bool[<=1]'), '[1, 0]')
 
-    with assert_raises(InvalidValue):
+    with pytest.raises(InvalidValue):
         parse_value_string(Type('bool[]'), '[2]')
 
     value = parse_value_string(Type('bool[]'), '[1]')
@@ -41,16 +41,16 @@ def test_parse_value_string():
     value = parse_value_string(Type('string[]'), "['foo', 'bar']")
     assert value == ['foo', 'bar']
 
-    with assert_raises(InvalidValue):
+    with pytest.raises(InvalidValue):
         parse_value_string(Type('string[<=2]'), '[foo, bar, baz]')
 
-    with assert_raises(InvalidValue):
+    with pytest.raises(InvalidValue):
         parse_value_string(Type('string[<=2]'), """["foo", 'ba"r', "ba,z"]""")
 
-    with assert_raises(ValueError):
+    with pytest.raises(ValueError):
         parse_value_string(Type('string[<=3]'), """[,"foo", 'ba"r', "ba,z"]""")
 
-    with assert_raises(ValueError):
+    with pytest.raises(ValueError):
         parse_value_string(Type('string[<=3]'), """["foo", ,'ba"r', "ba,z"]""")
 
     parse_value_string(Type('string[<=2]'), """["fo'o\\\", bar", baz]""")
@@ -58,5 +58,5 @@ def test_parse_value_string():
 
 
 def test_parse_value_string_not_implemented():
-    with assert_raises(NotImplementedError):
+    with pytest.raises(NotImplementedError):
         parse_value_string(Type('pkg/Foo[]'), '')

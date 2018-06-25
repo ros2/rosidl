@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from nose.tools import assert_raises
+import pytest
 
 from rosidl_parser import InvalidFieldDefinition
 from rosidl_parser import InvalidResourceName
@@ -30,7 +30,7 @@ def test_parse_message_string():
     assert len(msg_spec.fields) == 0
     assert len(msg_spec.constants) == 0
 
-    with assert_raises(InvalidFieldDefinition):
+    with pytest.raises(InvalidFieldDefinition):
         parse_message_string('pkg', 'Foo', 'bool  # comment')
 
     msg_spec = parse_message_string('pkg', 'Foo', 'bool foo')
@@ -47,15 +47,15 @@ def test_parse_message_string():
     assert msg_spec.fields[0].default_value
     assert len(msg_spec.constants) == 0
 
-    with assert_raises(InvalidResourceName):
+    with pytest.raises(InvalidResourceName):
         parse_message_string('pkg', 'Foo', 'Ty_pe foo')
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         parse_message_string('pkg', 'Foo', 'bool] foo')
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         parse_message_string('pkg', 'Foo', 'bool[max]] foo')
-    with assert_raises(ValueError) as ctx:
+    with pytest.raises(ValueError) as e:
         parse_message_string('pkg', 'Foo', 'bool foo\nbool foo')
-    assert 'foo' in str(ctx.exception)
+    assert 'foo' in str(e)
 
     msg_spec = parse_message_string('pkg', 'Foo', 'bool FOO=1')
     assert len(msg_spec.fields) == 0
@@ -64,10 +64,10 @@ def test_parse_message_string():
     assert msg_spec.constants[0].name == 'FOO'
     assert msg_spec.constants[0].value
 
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         parse_message_string('pkg', 'Foo', 'pkg/Bar foo=1')
-    with assert_raises(NameError):
+    with pytest.raises(NameError):
         parse_message_string('pkg', 'Foo', 'bool foo=1')
-    with assert_raises(ValueError) as ctx:
+    with pytest.raises(ValueError) as e:
         parse_message_string('pkg', 'Foo', 'bool FOO=1\nbool FOO=1')
-    assert 'FOO' in str(ctx.exception)
+    assert 'FOO' in str(e)

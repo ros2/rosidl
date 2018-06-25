@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from nose.tools import assert_raises
+import pytest
 
 from rosidl_parser import Constant
 from rosidl_parser import Field
@@ -27,13 +27,13 @@ def test_message_specification_constructor():
     assert len(msg_spec.fields) == 0
     assert len(msg_spec.constants) == 0
 
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         MessageSpecification('pkg', 'Foo', None, [])
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         MessageSpecification('pkg', 'Foo', [], None)
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         MessageSpecification('pkg', 'Foo', ['field'], [])
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         MessageSpecification('pkg', 'Foo', [], ['constant'])
 
     field = Field(Type('bool'), 'foo', '1')
@@ -44,9 +44,9 @@ def test_message_specification_constructor():
     assert len(msg_spec.constants) == 1
     assert msg_spec.constants[0] == constant
 
-    with assert_raises(ValueError):
+    with pytest.raises(ValueError):
         MessageSpecification('pkg', 'Foo', [field, field], [])
-    with assert_raises(ValueError):
+    with pytest.raises(ValueError):
         MessageSpecification('pkg', 'Foo', [], [constant, constant])
 
 

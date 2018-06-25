@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from nose.tools import assert_raises
+import pytest
 
 from rosidl_parser import Type
 
@@ -34,7 +34,7 @@ def test_type_constructor():
     assert type_.array_size is None
     assert not type_.is_upper_bound
 
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         Type('bool]')
 
     type_ = Type('bool[5]')
@@ -53,13 +53,13 @@ def test_type_constructor():
     assert type_.array_size == 5
     assert type_.is_upper_bound
 
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         Type('bool[size]')
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         Type('bool[0]')
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         Type('bool[<=size]')
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         Type('bool[<=0]')
 
 

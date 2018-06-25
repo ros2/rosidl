@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from nose.tools import assert_raises
+import pytest
 
 from rosidl_parser import BaseType
 from rosidl_parser import InvalidResourceName
@@ -45,9 +45,9 @@ def test_base_type_constructor():
     assert base_type.type == 'string'
     assert base_type.string_upper_bound == 23
 
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         BaseType('string<=upperbound')
-    with assert_raises(TypeError):
+    with pytest.raises(TypeError):
         BaseType('string<=0')
 
     base_type = BaseType('pkg/Msg')
@@ -60,13 +60,13 @@ def test_base_type_constructor():
     assert base_type.type == 'Msg'
     assert base_type.string_upper_bound is None
 
-    with assert_raises(InvalidResourceName):
+    with pytest.raises(InvalidResourceName):
         BaseType('Foo')
 
-    with assert_raises(InvalidResourceName):
+    with pytest.raises(InvalidResourceName):
         BaseType('pkg name/Foo')
 
-    with assert_raises(InvalidResourceName):
+    with pytest.raises(InvalidResourceName):
         BaseType('pkg/Foo Bar')
 
 

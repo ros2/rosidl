@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from nose.tools import assert_raises
+import pytest
 
 from rosidl_parser import InvalidResourceName
 from rosidl_parser import is_valid_constant_name
@@ -28,7 +28,7 @@ def test_is_valid_package_name():
     for invalid_package_name in [
             '_foo', 'foo_', 'foo__bar', 'foo-bar']:
         assert not is_valid_package_name(invalid_package_name)
-    with assert_raises(InvalidResourceName):
+    with pytest.raises(InvalidResourceName):
         is_valid_package_name(None)
 
 
@@ -39,7 +39,7 @@ def test_is_valid_field_name():
     for invalid_field_name in [
             '_foo', 'foo_', 'foo__bar', 'foo-bar']:
         assert not is_valid_field_name(invalid_field_name)
-    with assert_raises(InvalidResourceName):
+    with pytest.raises(InvalidResourceName):
         is_valid_field_name(None)
 
 
@@ -50,7 +50,7 @@ def test_is_valid_message_name():
     for invalid_message_name in [
             '0foo', '_Foo', 'Foo_', 'Foo_Bar']:
         assert not is_valid_message_name(invalid_message_name)
-    with assert_raises(InvalidResourceName):
+    with pytest.raises(InvalidResourceName):
         is_valid_message_name(None)
 
 
@@ -61,5 +61,5 @@ def test_is_valid_constant_name():
     for invalid_constant_name in [
             '_FOO', 'FOO_', 'FOO__BAR', 'Foo']:
         assert not is_valid_constant_name(invalid_constant_name)
-    with assert_raises(InvalidResourceName):
+    with pytest.raises(InvalidResourceName):
         is_valid_constant_name(None)

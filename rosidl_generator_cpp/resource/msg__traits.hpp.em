@@ -69,7 +69,7 @@ else:
 
 template<>
 struct has_fixed_size<@(cpp_namespace)@(spec.base_type.type)>
-  : std::integral_constant<bool, @(fixed_template_string)>{};
+  : std::integral_constant<bool, @(fixed_template_string)> {};
 
 @{
 bounded_template_strings = []
@@ -95,7 +95,7 @@ else:
 }@
 template<>
 struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)>
-  : std::integral_constant<bool, @(bounded_template_string)>{};
+  : std::integral_constant<bool, @(bounded_template_string)> {};
 
 }  // namespace rosidl_generator_traits
 

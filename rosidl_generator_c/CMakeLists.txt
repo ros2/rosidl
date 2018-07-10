@@ -42,6 +42,12 @@ ament_index_register_resource("rosidl_generator_packages")
 
 ament_python_install_package(${PROJECT_NAME})
 
+if(BUILD_SHARED_LIBS)
+  set(${PROJECT_NAME}_LIBRARY_TYPE "SHARED")
+else()
+  set(${PROJECT_NAME}_LIBRARY_TYPE "STATIC")
+endif()
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
@@ -124,12 +130,6 @@ if(BUILD_TESTING)
   target_link_libraries(test_compilation_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
   target_link_libraries(test_interfaces_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
   target_link_libraries(test_invalid_initialization_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
-endif()
-
-if(BUILD_SHARED_LIBS)
-  set(${PROJECT_NAME}_LIBRARY_TYPE "SHARED")
-else()
-  set(${PROJECT_NAME}_LIBRARY_TYPE "STATIC")
 endif()
 
 ament_package(

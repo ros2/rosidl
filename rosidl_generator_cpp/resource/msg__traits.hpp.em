@@ -28,11 +28,14 @@ cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
 #include <stdint.h>
 #include <type_traits>
 
-namespace rosidl_generator_traits
+namespace rosidl_generator_cpp
 {
 
 #ifndef __ROSIDL_GENERATOR_CPP_TRAITS
 #define __ROSIDL_GENERATOR_CPP_TRAITS
+
+template<typename T>
+inline const char* data_type();
 
 template<typename T>
 struct has_fixed_size : std::false_type {};
@@ -97,6 +100,12 @@ template<>
 struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)>
   : std::integral_constant<bool, @(bounded_template_string)>{};
 
-}  // namespace rosidl_generator_traits
+template<>
+inline const char* data_type<@(cpp_namespace)@(spec.base_type.type)>()
+{
+  return "@(cpp_namespace)@(spec.base_type.type)";
+}  
+
+}  // namespace rosidl_generator_cpp
 
 #endif  // @(header_guard_variable)

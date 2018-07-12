@@ -18,6 +18,6 @@
 
 
 TEST(Test_rosidl_generator_traits, check_data_type) {
-  ASSERT_EQ (data_type<rosidl_generator_cpp::msg::string>(), "rosidl_generator_cpp::msg::string");
-  ASSERT_EQ (data_type<rosidl_generator_cpp::msg::empty>(), "rosidl_generator_cpp::msg::empty");
+  ASSERT_EQ (data_type<rosidl_generator_cpp::msg::String>(), "rosidl_generator_cpp::msg::String");
+  ASSERT_EQ (data_type<rosidl_generator_cpp::msg::Empty>(), "rosidl_generator_cpp::msg::Empty");
 }

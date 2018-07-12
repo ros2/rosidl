@@ -28,7 +28,7 @@ cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
 #include <stdint.h>
 #include <type_traits>
 
-namespace rosidl_generator_cpp
+namespace rosidl_generator_traits
 {
 
 #ifndef __ROSIDL_GENERATOR_CPP_TRAITS
@@ -106,6 +106,6 @@ inline const char* data_type<@(cpp_namespace)@(spec.base_type.type)>()
   return "@(cpp_namespace)@(spec.base_type.type)";
 }  
 
-}  // namespace rosidl_generator_cpp
+}  // namespace rosidl_generator_traits
 
 #endif  // @(header_guard_variable)

@@ -100,7 +100,7 @@ if(BUILD_TESTING)
   ament_add_gtest(test_msg_datatype test/test_msg_datatype.cpp)
   if(TARGET test_msg_datatype)
     add_dependencies(test_msg_datatype ${PROJECT_NAME})
-  endif()   
+  endif()
   # include the built files directly, instead of their install location
   include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
 endif()

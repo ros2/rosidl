@@ -35,6 +35,9 @@ namespace rosidl_generator_traits
 #define __ROSIDL_GENERATOR_CPP_TRAITS
 
 template<typename T>
+inline const char * data_type();
+
+template<typename T>
 struct has_fixed_size : std::false_type {};
 
 template<typename T>
@@ -96,6 +99,12 @@ else:
 template<>
 struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)>
   : std::integral_constant<bool, @(bounded_template_string)> {};
+
+template<>
+inline const char * data_type<@(cpp_namespace)@(spec.base_type.type)>()
+{
+  return "@(cpp_namespace)@(spec.base_type.type)";
+}
 
 }  // namespace rosidl_generator_traits
 

@@ -137,6 +137,7 @@ void test_vector_fill(
     }
     std::snprintf(tmpstr, maxlength + 1, "%*d", maxlength, max);
     (*container)[size - 1] = std::string(tmpstr);
+    free(tmpstr);
   }
 }
 

@@ -48,7 +48,7 @@ def test_is_valid_message_name():
             'Foo', 'FooBar']:
         assert is_valid_message_name(valid_message_name)
     for invalid_message_name in [
-            '0foo', '_Foo', 'Foo_', 'Foo_Bar']:
+            '0foo', '_Foo', 'Foo_', 'Foo_Bar', 'Sample_Foo']:
         assert not is_valid_message_name(invalid_message_name)
     with pytest.raises(InvalidResourceName):
         is_valid_message_name(None)

@@ -76,9 +76,16 @@ def get_newest_modification_time(target_dependencies):
     return newest_timestamp
 
 
+expand_template_durations = []
+
+
 def expand_template(template_file, data, output_file, minimum_timestamp=None):
+    global expand_template_durations
+    print('XXX', template_file)
+    import time
+    start = time.time()
     output = StringIO()
-    interpreter = em.Interpreter(
+    interpreter = CachingInterpreter(
         output=output,
         options={
             em.BUFFERED_OPT: True,
@@ -97,6 +104,15 @@ def expand_template(template_file, data, output_file, minimum_timestamp=None):
             raise
     content = output.getvalue()
     interpreter.shutdown()
+    end = time.time()
+    duration = end - start
+    print('expand_template() took %f s' % duration)
+    expand_template_durations.append(duration)
+    print(
+        '  avg %f / %d = %s' % (
+            sum(expand_template_durations),
+            len(expand_template_durations),
+            sum(expand_template_durations) / len(expand_template_durations)))
 
     # only overwrite file if necessary
     # which is either when the timestamp is too old or when the content is different
@@ -115,3 +131,69 @@ def expand_template(template_file, data, output_file, minimum_timestamp=None):
 
     with open(output_file, 'w') as h:
         h.write(content)
+
+
+cached_tokens = {}
+
+
+class CachingInterpreter(em.Interpreter):
+
+    def parse(self, scanner, locals=None):  # noqa: A002
+        global cached_tokens
+        data = scanner.buffer
+        assert isinstance(data, str)
+        # try to use cached tokens
+        tokens = cached_tokens.get(data)
+        if tokens is None or True:
+            # collect tokens and cache them
+            tokens = []
+            while True:
+                token = scanner.one()
+                if token is None:
+                    break
+                tokens.append(token)
+            if data in cached_tokens:
+                _compare(cached_tokens[data], tokens)
+            cached_tokens[data] = tokens
+        else:
+            print('hit')
+
+        # import copy
+        # tokens = copy.deepcopy(tokens)
+
+        # reimplement the parse method using the (cached) tokens
+        self.invoke('atParse', scanner=scanner, locals=locals)
+        for token in tokens:
+            self.invoke('atToken', token=token)
+            token.run(self, locals)
+
+
+def _compare(left, right):
+    if isinstance(left, str) and isinstance(right, str):
+        assert left == right
+        return
+    if isinstance(left, list) and isinstance(right, list):
+        # print('   ', 'list - list')
+        assert len(left) == len(right)
+        # print('   ', 'len(list)', len(left))
+        for i in range(len(left)):
+            # print('   ', 'list[i] =', i)
+            _compare(left[i], right[i])
+        return
+    # if type(left) != type(right):
+    #     print('   ', type(left), type(right))
+    assert type(left) == type(right)
+    # print(type(left))
+    if isinstance(left, object) and isinstance(right, object):
+        if left.__dict__ != right.__dict__:
+            # print('   ', 'dict keys...')
+            _compare(list(left.__dict__.keys()), list(right.__dict__.keys()))
+            for k in left.__dict__.keys():
+                _compare(left.__dict__[k], right.__dict__[k])
+            return
+        assert left.__dict__ == right.__dict__
+        return
+    assert False
+    # left.__dict__
+    # right.__dict__
+    # assert left == right, '%s: %s != %s' % (type(left), left, right)

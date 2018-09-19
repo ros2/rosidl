@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 import re
 
-PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR = '/'
+NAMESPACE_SEPARATOR = '::'
 COMMENT_DELIMITER = '#'
 CONSTANT_SEPARATOR = '='
 ARRAY_UPPER_BOUND_TOKEN = '<='
@@ -26,12 +25,19 @@ SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
 SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
 
 PRIMITIVE_TYPES = [
-    'bool',
-    'byte',
+    'short',
+    'unsigned short',
+    'long',
+    'unsigned long',
+    'long long',
+    'unsigned long long',
+    'float',
+    'double',
+    'long double',
     'char',
-    # TODO reconsider wchar
-    'float32',
-    'float64',
+    'wchar',
+    'boolean',
+    'octet',
     'int8',
     'uint8',
     'int16',
@@ -41,10 +47,7 @@ PRIMITIVE_TYPES = [
     'int64',
     'uint64',
     'string',
-    # TODO reconsider wstring / u16string / u32string
-    # TODO duration and time
-    'duration',  # for compatibility only
-    'time',  # for compatibility only
+    'wstring',
 ]
 
 VALID_PACKAGE_NAME_PATTERN = re.compile('^[a-z]([a-z0-9_]?[a-z0-9]+)*$')
@@ -128,9 +131,11 @@ def is_valid_constant_name(name):
 
 class BaseType:
 
-    __slots__ = ['pkg_name', 'type', 'string_upper_bound']
+    __slots__ = ['pkg_name', 'namespace', 'type', 'string_upper_bound']
 
-    def __init__(self, type_string, context_package_name=None):
+    def __init__(
+        self, type_string, context_package_name=None, context_namespace=None
+    ):
         # check for primitive types
         if type_string in PRIMITIVE_TYPES:
             self.pkg_name = None
@@ -154,18 +159,25 @@ class BaseType:
 
         else:
             # split non-primitive type information
-            parts = type_string.split(PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR)
-            if not (len(parts) == 2 or
-                    (len(parts) == 1 and context_package_name is not None)):
+            parts = type_string.split(NAMESPACE_SEPARATOR)
+            if (
+                not (len(parts) == 3 or (
+                    len(parts) == 1 and
+                    context_package_name is not None and
+                    context_namespace is not None
+                ))
+            ):
                 raise InvalidResourceName(type_string)
 
-            if len(parts) == 2:
+            if len(parts) == 3:
                 # either the type string contains the package name
                 self.pkg_name = parts[0]
-                self.type = parts[1]
+                self.namespace = parts[1]
+                self.type = parts[2]
             else:
                 # or the package name is provided by context
                 self.pkg_name = context_package_name
+                self.namespace = context_namespace
                 self.type = type_string
             if not is_valid_package_name(self.pkg_name):
                 raise InvalidResourceName(self.pkg_name)
@@ -341,9 +353,9 @@ class Field:
 
 class MessageSpecification:
 
-    def __init__(self, pkg_name, msg_name, fields, constants):
+    def __init__(self, pkg_name, namespace, msg_name, fields, constants):
         self.base_type = BaseType(
-            pkg_name + PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR + msg_name)
+            pkg_name + NAMESPACE_SEPARATOR + namespace + NAMESPACE_SEPARATOR + msg_name)
         self.msg_name = msg_name
 
         self.fields = []
@@ -383,62 +395,6 @@ class MessageSpecification:
             self.fields == other.fields and \
             len(self.constants) == len(other.constants) and \
             self.constants == other.constants
-
-
-def parse_message_file(pkg_name, interface_filename):
-    basename = os.path.basename(interface_filename)
-    msg_name = os.path.splitext(basename)[0]
-    with open(interface_filename, 'r') as h:
-        return parse_message_string(
-            pkg_name, msg_name, h.read())
-
-
-def parse_message_string(pkg_name, msg_name, message_string):
-    fields = []
-    constants = []
-
-    lines = message_string.splitlines()
-    for line in lines:
-        # ignore whitespaces and comments
-        line = line.strip()
-        if not line:
-            continue
-        index = line.find(COMMENT_DELIMITER)
-        if index == 0:
-            continue
-        if index != -1:
-            line = line[:index]
-            line = line.rstrip()
-
-        type_string, _, rest = line.partition(' ')
-        rest = rest.lstrip()
-        if not rest:
-            print('Error with:', pkg_name, msg_name)
-            raise InvalidFieldDefinition(line)
-        index = rest.find(CONSTANT_SEPARATOR)
-        if index == -1:
-            # line contains a field
-            field_name, _, default_value_string = rest.partition(' ')
-            default_value_string = default_value_string.lstrip()
-            if not default_value_string:
-                default_value_string = None
-            try:
-                fields.append(Field(
-                    Type(type_string, context_package_name=pkg_name),
-                    field_name, default_value_string))
-            except Exception as err:
-                print("Error processing '{line}' of '{pkg}/{msg}': '{err}'".format(
-                    line=line, pkg=pkg_name, msg=msg_name, err=err,
-                ))
-                raise
-        else:
-            # line contains a constant
-            name, _, value = rest.partition(CONSTANT_SEPARATOR)
-            name = name.rstrip()
-            value = value.lstrip()
-            constants.append(Constant(type_string, name, value))
-
-    return MessageSpecification(pkg_name, msg_name, fields, constants)
 
 
 def parse_value_string(type_, value_string):
@@ -673,35 +629,3 @@ class ServiceSpecification:
         self.srv_name = srv_name
         self.request = request_message
         self.response = response_message
-
-
-def parse_service_file(pkg_name, interface_filename):
-    basename = os.path.basename(interface_filename)
-    srv_name = os.path.splitext(basename)[0]
-    with open(interface_filename, 'r') as h:
-        return parse_service_string(
-            pkg_name, srv_name, h.read())
-
-
-def parse_service_string(pkg_name, srv_name, message_string):
-    lines = message_string.splitlines()
-    separator_indices = [
-        index for index, line in enumerate(lines) if line == SERVICE_REQUEST_RESPONSE_SEPARATOR]
-    if not separator_indices:
-        raise InvalidServiceSpecification(
-            "Could not find separator '%s' between request and response" %
-            SERVICE_REQUEST_RESPONSE_SEPARATOR)
-    if len(separator_indices) != 1:
-        raise InvalidServiceSpecification(
-            "Could not find unique separator '%s' between request and response" %
-            SERVICE_REQUEST_RESPONSE_SEPARATOR)
-
-    request_message_string = '\n'.join(lines[:separator_indices[0]])
-    request_message = parse_message_string(
-        pkg_name, srv_name + SERVICE_REQUEST_MESSAGE_SUFFIX, request_message_string)
-
-    response_message_string = '\n'.join(lines[separator_indices[0] + 1:])
-    response_message = parse_message_string(
-        pkg_name, srv_name + SERVICE_RESPONSE_MESSAGE_SUFFIX, response_message_string)
-
-    return ServiceSpecification(pkg_name, srv_name, request_message, response_message)

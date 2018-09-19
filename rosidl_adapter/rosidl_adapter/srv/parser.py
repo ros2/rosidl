@@ -16,8 +16,8 @@ import os
 
 from rosidl_adapter.msg.parser import BaseType
 from rosidl_adapter.msg.parser import InvalidSpecification
-from rosidl_adapter.msg.parser import UnknownMessageType
 from rosidl_adapter.msg.parser import parse_message_string
+from rosidl_adapter.msg.parser import UnknownMessageType
 
 SERVICE_REQUEST_RESPONSE_SEPARATOR = '---'
 SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'

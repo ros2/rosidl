@@ -21,10 +21,6 @@ CONSTANT_SEPARATOR = '='
 ARRAY_UPPER_BOUND_TOKEN = '<='
 STRING_UPPER_BOUND_TOKEN = '<='
 
-SERVICE_REQUEST_RESPONSE_SEPARATOR = '---'
-SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
-SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
-
 PRIMITIVE_TYPES = [
     'bool',
     'byte',
@@ -58,10 +54,6 @@ VALID_CONSTANT_NAME_PATTERN = re.compile('^[A-Z]([A-Z0-9_]?[A-Z0-9]+)*$')
 
 
 class InvalidSpecification(Exception):
-    pass
-
-
-class InvalidServiceSpecification(InvalidSpecification):
     pass
 
 
@@ -108,6 +100,7 @@ def is_valid_message_name(name):
         prefix = 'Sample_'
         if name.startswith(prefix):
             name = name[len(prefix):]
+        # TODO this should not be here anymore
         for service_suffix in ['_Request', '_Response']:
             if name.endswith(service_suffix):
                 name = name[:-len(service_suffix)]
@@ -647,61 +640,12 @@ def parse_primitive_value_string(type_, value_string):
     assert False, "unknown primitive type '%s'" % primitive_type
 
 
-def validate_field_types(spec, known_msg_types):
-    if isinstance(spec, MessageSpecification):
-        spec_type = 'Message'
-        fields = spec.fields
-    elif isinstance(spec, ServiceSpecification):
-        spec_type = 'Service'
-        fields = spec.request.fields + spec.response.fields
-    else:
-        assert False, 'Unknown specification type: %s' % type(spec)
-    for field in fields:
+def validate_msg_field_types(spec, known_msg_types):
+    for field in spec.fields:
         if field.type.is_primitive_type():
             continue
         base_type = BaseType(BaseType.__str__(field.type))
         if base_type not in known_msg_types:
             raise UnknownMessageType(
-                "%s interface '%s' contains an unknown field type: %s" %
-                (spec_type, spec.base_type, field))
-
-
-class ServiceSpecification:
-
-    def __init__(self, pkg_name, srv_name, request_message, response_message):
-        self.pkg_name = pkg_name
-        self.srv_name = srv_name
-        self.request = request_message
-        self.response = response_message
-
-
-def parse_service_file(pkg_name, interface_filename):
-    basename = os.path.basename(interface_filename)
-    srv_name = os.path.splitext(basename)[0]
-    with open(interface_filename, 'r') as h:
-        return parse_service_string(
-            pkg_name, srv_name, h.read())
-
-
-def parse_service_string(pkg_name, srv_name, message_string):
-    lines = message_string.splitlines()
-    separator_indices = [
-        index for index, line in enumerate(lines) if line == SERVICE_REQUEST_RESPONSE_SEPARATOR]
-    if not separator_indices:
-        raise InvalidServiceSpecification(
-            "Could not find separator '%s' between request and response" %
-            SERVICE_REQUEST_RESPONSE_SEPARATOR)
-    if len(separator_indices) != 1:
-        raise InvalidServiceSpecification(
-            "Could not find unique separator '%s' between request and response" %
-            SERVICE_REQUEST_RESPONSE_SEPARATOR)
-
-    request_message_string = '\n'.join(lines[:separator_indices[0]])
-    request_message = parse_message_string(
-        pkg_name, srv_name + SERVICE_REQUEST_MESSAGE_SUFFIX, request_message_string)
-
-    response_message_string = '\n'.join(lines[separator_indices[0] + 1:])
-    response_message = parse_message_string(
-        pkg_name, srv_name + SERVICE_RESPONSE_MESSAGE_SUFFIX, response_message_string)
-
-    return ServiceSpecification(pkg_name, srv_name, request_message, response_message)
+                "Message interface '{spec.base_type}' contains an unknown "
+                'field type: {field}'.format_map(locals()))

@@ -21,7 +21,7 @@ import sys
 import em
 
 from rosidl_parser import BaseType
-from rosidl_parser import PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR
+from rosidl_parser import NAMESPACE_SEPARATOR
 
 
 def convert_camel_case_to_lower_case_underscore(value):
@@ -59,7 +59,9 @@ def _get_base_type(pkg_name, idl_path):
     msg_name, extension = os.path.splitext(idl_filename)
     if extension != '.msg':
         return None
-    return BaseType(pkg_name + PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR + msg_name)
+    return BaseType(
+        pkg_name + NAMESPACE_SEPARATOR + 'msg' + NAMESPACE_SEPARATOR +
+        msg_name)
 
 
 def read_generator_arguments(input_file):

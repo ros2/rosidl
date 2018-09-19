@@ -25,7 +25,7 @@ function(rosidl_write_generator_arguments output_file)
     "TEMPLATE_DIR")
 
   set(REQUIRED_MULTI_VALUE_KEYWORDS
-    "ROS_INTERFACE_FILES")
+    "MESSAGE_FILES;SERVICE_FILES")
   set(OPTIONAL_MULTI_VALUE_KEYWORDS
     "ROS_INTERFACE_DEPENDENCIES"  # since the dependencies can be empty
     "TARGET_DEPENDENCIES"

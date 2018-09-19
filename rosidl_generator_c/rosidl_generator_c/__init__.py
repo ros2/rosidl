@@ -18,8 +18,11 @@ from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 from rosidl_cmake import expand_template
 from rosidl_cmake import get_newest_modification_time
 from rosidl_cmake import read_generator_arguments
-from rosidl_parser import parse_message_file
-from rosidl_parser import parse_service_file
+from rosidl_parser import MessageSpecification
+from rosidl_parser import ServiceSpecification
+# from rosidl_parser import parse_message_file
+# from rosidl_parser import parse_service_file
+from rosidl_parser.grammar import parse_idl_file
 
 
 def generate_c(generator_arguments_file):
@@ -44,46 +47,66 @@ def generate_c(generator_arguments_file):
     }
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
 
-    for ros_interface_file in args['ros_interface_files']:
-        extension = os.path.splitext(ros_interface_file)[1]
-        subfolder = os.path.basename(os.path.dirname(ros_interface_file))
-        if extension == '.msg':
-            spec = parse_message_file(args['package_name'], ros_interface_file)
+    for idl_file in args['message_files']:
+        subfolder = os.path.basename(os.path.dirname(idl_file))
+        spec = parse_idl_file(args['package_name'], 'msg', idl_file)
+        assert isinstance(spec, MessageSpecification)
+        for template_file, generated_filename in mapping_msgs.items():
+            generated_file = os.path.join(
+                args['output_dir'], subfolder, generated_filename %
+                convert_camel_case_to_lower_case_underscore(spec.base_type.type))
+            data = {
+                'spec': spec,
+                'pkg': spec.base_type.pkg_name,
+                'msg': spec.msg_name,
+                'type': spec.base_type.type,
+                'subfolder': subfolder,
+            }
+            data.update(functions)
+            expand_template(
+                template_file, data, generated_file,
+                minimum_timestamp=latest_target_timestamp)
+    for idl_file in args['service_files']:
+        subfolder = os.path.basename(os.path.dirname(idl_file))
+        spec = parse_idl_file(args['package_name'], 'srv', idl_file)
+        assert isinstance(spec, ServiceSpecification)
+        for template_file, generated_filename in mapping_srvs.items():
+            data = {'spec': spec}
+            data.update(functions)
+            generated_file = os.path.join(
+                args['output_dir'], subfolder, generated_filename %
+                convert_camel_case_to_lower_case_underscore(spec.srv_name))
+            expand_template(
+                template_file, data, generated_file,
+                minimum_timestamp=latest_target_timestamp)
+        for msg_spec in (spec.request, spec.response):
             for template_file, generated_filename in mapping_msgs.items():
                 generated_file = os.path.join(
                     args['output_dir'], subfolder, generated_filename %
-                    convert_camel_case_to_lower_case_underscore(spec.base_type.type))
+                    convert_camel_case_to_lower_case_underscore(
+                        msg_spec.base_type.type))
                 data = {
-                    'spec': spec,
-                    'pkg': spec.base_type.pkg_name,
-                    'msg': spec.msg_name,
-                    'type': spec.base_type.type,
+                    'spec': msg_spec,
+                    'pkg': msg_spec.base_type.pkg_name,
+                    'msg': msg_spec.msg_name,
+                    'type': msg_spec.base_type.type,
                     'subfolder': subfolder,
                 }
                 data.update(functions)
                 expand_template(
                     template_file, data, generated_file,
                     minimum_timestamp=latest_target_timestamp)
-        elif extension == '.srv':
-            spec = parse_service_file(args['package_name'], ros_interface_file)
-            for template_file, generated_filename in mapping_srvs.items():
-                data = {'spec': spec}
-                data.update(functions)
-                generated_file = os.path.join(
-                    args['output_dir'], subfolder, generated_filename %
-                    convert_camel_case_to_lower_case_underscore(spec.srv_name))
-                expand_template(
-                    template_file, data, generated_file,
-                    minimum_timestamp=latest_target_timestamp)
+
     return 0
 
 
+# TODO rename to IDL_TYPE_TO_C
 MSG_TYPE_TO_C = {
-    'bool': 'bool',
-    'byte': 'uint8_t',
+    'boolean': 'bool',
+    'octet': 'uint8_t',
     'char': 'signed char',
-    'float32': 'float',
-    'float64': 'double',
+    'float': 'float',
+    'double': 'double',
     'uint8': 'uint8_t',
     'int8': 'int8_t',
     'uint16': 'uint16_t',

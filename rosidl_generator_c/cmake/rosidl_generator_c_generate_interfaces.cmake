@@ -12,49 +12,50 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set(rosidl_generate_interfaces_c_IDL_FILES
-  ${rosidl_generate_interfaces_IDL_FILES})
+set(rosidl_generate_interfaces_c_MESSAGE_FILES
+  ${rosidl_generate_interfaces_MESSAGE_FILES})
+set(rosidl_generate_interfaces_c_SERVICE_FILES
+  ${rosidl_generate_interfaces_SERVICE_FILES})
 set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c/${PROJECT_NAME}")
 set(_generated_msg_headers "")
 set(_generated_msg_sources "")
-set(_generated_srv_headers "")
-set(_generated_srv_sources "")
-foreach(_idl_file ${rosidl_generate_interfaces_c_IDL_FILES})
+foreach(_idl_file ${rosidl_generate_interfaces_c_MESSAGE_FILES})
   get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
   get_filename_component(_msg_name "${_idl_file}" NAME_WE)
-  get_filename_component(_extension "${_idl_file}" EXT)
+  string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
+  list(APPEND _generated_msg_headers
+    "${_output_path}/${_parent_folder}/${_header_name}.h"
+    "${_output_path}/${_parent_folder}/${_header_name}__functions.h"
+    "${_output_path}/${_parent_folder}/${_header_name}__struct.h"
+    "${_output_path}/${_parent_folder}/${_header_name}__type_support.h"
+  )
+  list(APPEND _generated_msg_sources
+    "${_output_path}/${_parent_folder}/${_header_name}__functions.c"
+  )
+endforeach()
+set(_generated_srv_headers "")
+set(_generated_srv_sources "")
+foreach(_idl_file ${rosidl_generate_interfaces_c_SERVICE_FILES})
+  get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
+  get_filename_component(_parent_folder "${_parent_folder}" NAME)
+  get_filename_component(_msg_name "${_idl_file}" NAME_WE)
   string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
 
-  if(_extension STREQUAL ".msg")
-    if(_parent_folder STREQUAL "msg")
-      list(APPEND _generated_msg_headers
-        "${_output_path}/${_parent_folder}/${_header_name}.h"
-        "${_output_path}/${_parent_folder}/${_header_name}__functions.h"
-        "${_output_path}/${_parent_folder}/${_header_name}__struct.h"
-        "${_output_path}/${_parent_folder}/${_header_name}__type_support.h"
-      )
-      list(APPEND _generated_msg_sources
-        "${_output_path}/${_parent_folder}/${_header_name}__functions.c"
-      )
-    else()
-      list(APPEND _generated_srv_headers
-        "${_output_path}/${_parent_folder}/${_header_name}.h"
-        "${_output_path}/${_parent_folder}/${_header_name}__functions.h"
-        "${_output_path}/${_parent_folder}/${_header_name}__struct.h"
-        "${_output_path}/${_parent_folder}/${_header_name}__type_support.h"
-      )
-      list(APPEND _generated_srv_sources
-        "${_output_path}/${_parent_folder}/${_header_name}__functions.c"
-      )
-    endif()
-  elseif(_extension STREQUAL ".srv")
+  list(APPEND _generated_srv_headers
+    "${_output_path}/${_parent_folder}/${_header_name}.h"
+  )
+  foreach(_suffix "request" "response")
     list(APPEND _generated_srv_headers
-      "${_output_path}/${_parent_folder}/${_header_name}.h"
+      "${_output_path}/${_parent_folder}/${_header_name}__${_suffix}.h"
+      "${_output_path}/${_parent_folder}/${_header_name}__${_suffix}__functions.h"
+      "${_output_path}/${_parent_folder}/${_header_name}__${_suffix}__struct.h"
+      "${_output_path}/${_parent_folder}/${_header_name}__${_suffix}__type_support.h"
     )
-  else()
-    list(REMOVE_ITEM rosidl_generate_interfaces_c_IDL_FILES ${_idl_file})
-  endif()
+    list(APPEND _generated_srv_sources
+      "${_output_path}/${_parent_folder}/${_header_name}__${_suffix}__functions.c"
+    )
+  endforeach()
 endforeach()
 
 set(_dependency_files "")
@@ -80,7 +81,8 @@ set(target_dependencies
   "${rosidl_generator_c_TEMPLATE_DIR}/msg__struct.h.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/msg__type_support.h.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/srv.h.em"
-  ${rosidl_generate_interfaces_c_IDL_FILES}
+  ${rosidl_generate_interfaces_c_MESSAGE_FILES}
+  ${rosidl_generate_interfaces_c_SERVICE_FILES}
   ${_dependency_files})
 foreach(dep ${target_dependencies})
   if(NOT EXISTS "${dep}")
@@ -92,7 +94,8 @@ set(generator_arguments_file "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c__ar
 rosidl_write_generator_arguments(
   "${generator_arguments_file}"
   PACKAGE_NAME "${PROJECT_NAME}"
-  ROS_INTERFACE_FILES "${rosidl_generate_interfaces_c_IDL_FILES}"
+  MESSAGE_FILES "${rosidl_generate_interfaces_c_MESSAGE_FILES}"
+  SERVICE_FILES "${rosidl_generate_interfaces_c_SERVICE_FILES}"
   ROS_INTERFACE_DEPENDENCIES "${_dependencies}"
   OUTPUT_DIR "${_output_path}"
   TEMPLATE_DIR "${rosidl_generator_c_TEMPLATE_DIR}"

@@ -22,15 +22,14 @@ import em
 def expand_template(template_name, data, output_file):
     content = evaluate_template(template_name, data)
 
-    if os.path.exists(output_file):
-        with open(output_file, 'r') as h:
-            if h.read() == content:
-                return
-    elif os.path.dirname(output_file):
-        os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    if output_file.exists():
+        existing_content = output_file.read_text()
+        if existing_content == content:
+            return
+    elif output_file.parent:
+        os.makedirs(str(output_file.parent), exist_ok=True)
 
-    with open(output_file, 'w') as h:
-        h.write(content)
+    output_file.write_text(content)
 
 
 _interpreter = None

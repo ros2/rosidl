@@ -24,7 +24,7 @@ function(rosidl_write_generator_arguments output_file)
     "OUTPUT_DIR"
     "TEMPLATE_DIR")
 
-  set(REQUIRED_MULTI_VALUE_KEYWORDS
+  set(ANY_REQUIRED_MULTI_VALUE_KEYWORDS
     "MESSAGE_FILES;SERVICE_FILES")
   set(OPTIONAL_MULTI_VALUE_KEYWORDS
     "ROS_INTERFACE_DEPENDENCIES"  # since the dependencies can be empty
@@ -35,19 +35,30 @@ function(rosidl_write_generator_arguments output_file)
     ARG
     ""
     "${REQUIRED_ONE_VALUE_KEYWORDS}"
-    "${REQUIRED_MULTI_VALUE_KEYWORDS};${OPTIONAL_MULTI_VALUE_KEYWORDS}"
+    "${ANY_REQUIRED_MULTI_VALUE_KEYWORDS};${OPTIONAL_MULTI_VALUE_KEYWORDS}"
     ${ARGN})
   if(ARG_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "rosidl_write_generator_arguments() called with unused "
       "arguments: ${ARG_UNPARSED_ARGUMENTS}")
   endif()
-  foreach(required_argument ${REQUIRED_ONE_VALUE_KEYWORDS};${REQUIRED_MULTI_VALUE_KEYWORDS})
+  foreach(required_argument ${REQUIRED_ONE_VALUE_KEYWORDS})
     if(NOT ARG_${required_argument})
       message(FATAL_ERROR
         "rosidl_write_generator_arguments() must be invoked with the "
         "${required_argument} argument")
     endif()
   endforeach()
+  set(any_required_arguments "")
+  foreach(required_argument ${ANY_REQUIRED_MULTI_VALUE_KEYWORDS})
+    if(ARG_${required_argument})
+      list(APPEND any_required_arguments "${required_argument}")
+    endif()
+  endforeach()
+  if("${any_required_arguments}" STREQUAL "")
+    message(FATAL_ERROR
+      "rosidl_write_generator_arguments() must be invoked with at least one of "
+      "the ${ANY_REQUIRED_MULTI_VALUE_KEYWORDS} arguments")
+  endif()
 
   # create folder
   get_filename_component(output_path "${output_file}" PATH)

@@ -47,7 +47,7 @@ def generate_c(generator_arguments_file):
     }
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
 
-    for idl_file in args['message_files']:
+    for idl_file in args.get('message_files', []):
         subfolder = os.path.basename(os.path.dirname(idl_file))
         spec = parse_idl_file(args['package_name'], 'msg', idl_file)
         assert isinstance(spec, MessageSpecification)
@@ -66,7 +66,7 @@ def generate_c(generator_arguments_file):
             expand_template(
                 template_file, data, generated_file,
                 minimum_timestamp=latest_target_timestamp)
-    for idl_file in args['service_files']:
+    for idl_file in args.get('service_files', []):
         subfolder = os.path.basename(os.path.dirname(idl_file))
         spec = parse_idl_file(args['package_name'], 'srv', idl_file)
         assert isinstance(spec, ServiceSpecification)

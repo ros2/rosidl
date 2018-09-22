@@ -21,6 +21,7 @@ add_library(${PROJECT_NAME}
   "src/primitives_array_functions.c"
   "src/service_type_support.c"
   "src/string_functions.c"
+  "src/u16string_functions.c"
 )
 ament_target_dependencies(${PROJECT_NAME}
   "rosidl_typesupport_interface")

@@ -102,11 +102,13 @@ def generate_c(generator_arguments_file):
 
 # TODO rename to IDL_TYPE_TO_C
 MSG_TYPE_TO_C = {
-    'boolean': 'bool',
-    'octet': 'uint8_t',
-    'char': 'signed char',
     'float': 'float',
     'double': 'double',
+    'long double': 'long double',
+    'char': 'signed char',
+    'wchar': 'uint16_t',
+    'boolean': 'bool',
+    'octet': 'uint8_t',
     'uint8': 'uint8_t',
     'int8': 'int8_t',
     'uint16': 'uint16_t',
@@ -116,6 +118,7 @@ MSG_TYPE_TO_C = {
     'uint64': 'uint64_t',
     'int64': 'int64_t',
     'string': 'rosidl_generator_c__String',
+    'wstring': 'rosidl_generator_c__U16String',
 }
 
 

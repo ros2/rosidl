@@ -88,7 +88,7 @@ function(rosidl_write_generator_arguments output_file)
   endforeach()
 
   # write array values
-  foreach(multi_value_argument ${REQUIRED_MULTI_VALUE_KEYWORDS} ${OPTIONAL_MULTI_VALUE_KEYWORDS})
+  foreach(multi_value_argument ${ANY_REQUIRED_MULTI_VALUE_KEYWORDS} ${OPTIONAL_MULTI_VALUE_KEYWORDS})
     if(ARG_${multi_value_argument})
       # write conditional comma and mandatory newline and indentation
       if(NOT first_element)

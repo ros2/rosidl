@@ -55,9 +55,9 @@ def parse_idl_string(package_name, namespace, interface_name, idl_string):
         srv = ServiceSpecification(
             package_name, interface_name,
             MessageSpecification(
-                package_name, namespace, interface_name + '_Request', [], []),
+                package_name, namespace, interface_name + SERVICE_REQUEST_MESSAGE_SUFFIX, [], []),
             MessageSpecification(
-                package_name, namespace, interface_name + '_Response', [], []))
+                package_name, namespace, interface_name + SERVICE_RESPONSE_MESSAGE_SUFFIX, [], []))
         visit_tree(tree, srv)
         return srv
 
@@ -92,9 +92,9 @@ def visit_struct_def(tree, spec):
         assert c.value == spec.msg_name
         msg = spec
     if isinstance(spec, ServiceSpecification):
-        if c.value == spec.srv_name + '_Request':
+        if c.value == spec.srv_name + SERVICE_REQUEST_MESSAGE_SUFFIX:
             msg = spec.request
-        elif c.value == spec.srv_name + '_Response':
+        elif c.value == spec.srv_name + SERVICE_RESPONSE_MESSAGE_SUFFIX:
             msg = spec.response
         else:
             assert False

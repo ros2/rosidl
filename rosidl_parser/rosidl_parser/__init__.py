@@ -15,12 +15,8 @@
 import re
 
 NAMESPACE_SEPARATOR = '::'
-COMMENT_DELIMITER = '#'
-CONSTANT_SEPARATOR = '='
-ARRAY_UPPER_BOUND_TOKEN = '<='
-STRING_UPPER_BOUND_TOKEN = '<='
+STRING_UPPER_BOUND_TOKENS = ('<', '>')
 
-SERVICE_REQUEST_RESPONSE_SEPARATOR = '---'
 SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
 SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
 
@@ -111,7 +107,9 @@ def is_valid_message_name(name):
         prefix = 'Sample_'
         if name.startswith(prefix):
             name = name[len(prefix):]
-        for service_suffix in ['_Request', '_Response']:
+        for service_suffix in [
+            SERVICE_REQUEST_MESSAGE_SUFFIX, SERVICE_RESPONSE_MESSAGE_SUFFIX
+        ]:
             if name.endswith(service_suffix):
                 name = name[:-len(service_suffix)]
                 break
@@ -142,14 +140,23 @@ class BaseType:
             self.type = type_string
             self.string_upper_bound = None
 
-        elif type_string.startswith('string%s' % STRING_UPPER_BOUND_TOKEN):
+        elif (
+            (
+                type_string.startswith(
+                    'string%s' % STRING_UPPER_BOUND_TOKENS[0]) or
+                type_string.startswith(
+                    'wstring%s' % STRING_UPPER_BOUND_TOKENS[0])
+            ) and type_string.endswith(STRING_UPPER_BOUND_TOKENS[1])
+        ):
             self.pkg_name = None
-            self.type = 'string'
-            upper_bound_string = type_string[len(self.type) +
-                                             len(STRING_UPPER_BOUND_TOKEN):]
+            self.type = type_string.split(STRING_UPPER_BOUND_TOKENS[0], 1)[0]
+            upper_bound_string = type_string[
+                len(self.type) + len(STRING_UPPER_BOUND_TOKENS[0]):
+                -len(STRING_UPPER_BOUND_TOKENS[1])]
 
-            ex = TypeError(("the upper bound of the string type '%s' must " +
-                            'be a valid integer value > 0') % type_string)
+            ex = TypeError(
+                "the upper bound of the {self.type} type '{type_string}' must "
+                'be a valid integer value > 0'.format_map(locals()))
             try:
                 self.string_upper_bound = int(upper_bound_string)
             except ValueError:
@@ -204,8 +211,9 @@ class BaseType:
 
         s = self.type
         if self.string_upper_bound:
-            s += '%s%u' % \
-                (STRING_UPPER_BOUND_TOKEN, self.string_upper_bound)
+            s += '%s%u%s' % (
+                STRING_UPPER_BOUND_TOKENS[0], self.string_upper_bound,
+                STRING_UPPER_BOUND_TOKENS[1])
         return s
 
 

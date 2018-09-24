@@ -56,6 +56,25 @@ def main(argv=sys.argv[1:]):
 
     message_files = []
     service_files = []
+
+    for message_file in args.message_files:
+        message_file = pathlib.Path(message_file)
+        interface_type, idl_file = convert_to_idl(
+            args.package_dir, args.package_name, message_file, output_dir,
+            interface_type = InterfaceType.MESSAGE)
+        if interface_type != InterfaceType.MESSAGE:
+            raise ValueError("Expected message but was something else")
+        message_files.append(idl_file)
+
+    for service_file in args.service_files:
+        service_file = pathlib.Path(message_file)
+        interface_type, idl_file = convert_to_idl(
+            args.package_dir, args.package_name, service_file, output_dir,
+            interface_type = InterfaceType.SERVICE)
+        if interface_type != InterfaceType.SERVICE:
+            raise ValueError("Expected service but was something else")
+        service_files.append(idl_file)
+
     for interface_file in args.interface_files:
         interface_file = pathlib.Path(interface_file)
 

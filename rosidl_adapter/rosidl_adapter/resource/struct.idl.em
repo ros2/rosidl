@@ -30,12 +30,16 @@ else:
 @[for k, v in typedefs.items()]@
     typedef @(v) @(k);
 @[end for]@
+@[if msg.constants]@
+    module Constants {
+@[  for constant in msg.constants]@
+      const @(get_idl_type(constant.type)) @(constant.name) = @(constant.value);
+@[  end for]@
+    };
+@[end if]@
 @#
     struct @(msg.msg_name) {
 @# use comments as docblocks once they are available
-@[for constant in msg.constants]@
-      @(get_idl_type(constant.type)) @(constant.name) = @(constant.value);
-@[end for]@
 @[if msg.fields]@
 @[  for field in msg.fields]@
 @[    if field.default_value is not None]@

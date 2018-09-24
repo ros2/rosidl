@@ -32,6 +32,10 @@ def convert_msg_to_idl(package_dir, package_name, input_file, output_dir):
         'get_idl_type': get_idl_type,
         'get_include_file': get_include_file,
     }
+
+    print('\n'.join([c.name for c in msg.constants]))
+    print('\n'.join([f.name for f in msg.fields]))
+
     expand_template('msg.idl.em', data, output_file)
     return output_file
 

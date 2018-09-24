@@ -55,6 +55,8 @@ VALID_MESSAGE_NAME_PATTERN = re.compile('^[A-Z][A-Za-z0-9]*$')
 # VALID_MESSAGE_NAME_PATTERN = re.compile('^[A-Za-z][A-Za-z0-9]*$')
 VALID_CONSTANT_NAME_PATTERN = re.compile('^[A-Z]([A-Z0-9_]?[A-Z0-9]+)*$')
 
+ARRAY_UPPER_BOUND_TOKEN = '<='
+
 
 class InvalidSpecification(Exception):
     pass

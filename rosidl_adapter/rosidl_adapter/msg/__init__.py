@@ -63,7 +63,9 @@ def escape_string(string):
     """Escape string according to IDL 4.2 section 7.2.6.2.2 ."""
     estr = string.encode().decode('unicode_escape')
     # Escape quotes too
-    estr.replace('"', '\\"')
+    estr = estr.replace('"', '\\"')
+    estr = estr.replace("'", "\\'")
+    estr = estr.replace('?', '\\?')
     return estr
 
 
@@ -77,7 +79,6 @@ def contains_unicode(string):
 
 
 def to_literal(idl_type, value):
-    import sys; sys.stderr.write(repr(idl_type) + ', ' + repr(value) + '\n')
     if 'string' == idl_type:
         return to_string_literal(value)
     elif 'char' == idl_type:

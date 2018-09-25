@@ -71,7 +71,7 @@ wide_string_literal:  "L\"" CHAR* "\""
 // 7.2.6.4 Floating-point Literals
 floating_pt_literal: DIGIT+ "." DIGIT+ "e"i DIGIT*
   | "." DIGIT+ ("e"i DIGIT*)?
-  | DIGIT+ "." ("e"i DIGIT*)?
+  | DIGIT+ "." DIGIT* ("e"i DIGIT*)?
   | DIGIT+ "e"i DIGIT*
 
 // 7.2.6.5 Fixed-Point Literals

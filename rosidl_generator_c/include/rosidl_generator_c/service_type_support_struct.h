@@ -29,12 +29,12 @@ typedef struct rosidl_service_type_support_t rosidl_service_type_support_t;
 typedef const rosidl_service_type_support_t * (* rosidl_service_typesupport_handle_function)(
   const rosidl_service_type_support_t *, const char *);
 
-typedef struct rosidl_service_type_support_t
+struct rosidl_service_type_support_t
 {
   const char * typesupport_identifier;
   const void * data;
   rosidl_service_typesupport_handle_function func;
-} rosidl_service_type_support_t;
+};
 
 ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_service_type_support_t * get_service_typesupport_handle(

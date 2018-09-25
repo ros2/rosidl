@@ -33,7 +33,7 @@ else:
 @[if msg.constants]@
     module @(msg.msg_name)_Constants {
 @[  for constant in msg.constants]@
-      const @(get_idl_type(constant.type)) @(constant.name) = @(constant.value);
+      const @(get_idl_type(constant.type)) @(constant.name) = @(to_literal(get_idl_type(constant.type), constant.value));
 @[  end for]@
     };
 @[end if]@
@@ -43,7 +43,7 @@ else:
 @[if msg.fields]@
 @[  for field in msg.fields]@
 @[    if field.default_value is not None]@
-      @@default (value=@(field.default_value))
+      @@default (value=@(to_literal(get_idl_type(field.type), field.default_value)))
 @[    end if]@
 @{
 idl_type = get_idl_type(field.type)

@@ -42,9 +42,9 @@ wide_character_literal: "L'" CHAR "'"
 
 CHAR: _CHARACTERS
   | DIGIT
-  | _GRAPHIC_CHAR
   | _FORMATTING_CHARACTERS
   | _ESCAPE_SEQUENCES
+  | _GRAPHIC_CHAR
 
 // Table 7-2: Characters
 _CHARACTERS: LETTER | /[ÃãÄäÅåÆæÇçÈèÉéÊêËëÌìÍíÎîÏïÑñÒòÓóÔôÕõÖöØøÙùÚúÛûÜüßÿ]/

@@ -43,7 +43,12 @@ else:
 @[if msg.fields]@
 @[  for field in msg.fields]@
 @[    if field.default_value is not None]@
+@{      idl_type = get_idl_type(field.type)}@
+@[      if '[' in idl_type or '<' in idl_type]@
+      @@verbatim(language="rosidl_array_init", text=@(to_literal('string', repr(field.default_value))))
+@[      else]@
       @@default (value=@(to_literal(get_idl_type(field.type), field.default_value)))
+@[      end if]@
 @[    end if]@
 @{
 idl_type = get_idl_type(field.type)

@@ -79,6 +79,7 @@ def contains_unicode(string):
 
 
 def to_literal(idl_type, value):
+    import sys; sys.stderr.write(repr(idl_type) + ', ' + repr(value) + '\n')
     if 'string' == idl_type:
         return to_string_literal(value)
     return value

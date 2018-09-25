@@ -183,6 +183,30 @@ def visit_member(tree, msg):
 
         annotations.append((annotation_type, annotation_args))
 
+    field_default_value = None
+    for atype, args in annotations:
+        # Silently ignore unsupported annotations
+        if 'default' == atype:
+            # Only allow one default annotation
+            assert field_default_value is None
+            assert len(args) == 1
+            arg = args[0]
+            assert 'value' == arg[0]
+            field_default_value = arg[1]
+        elif 'verbatim' == atype:
+            if len(args) == 2:
+                language = None
+                text = None
+                for arg in args:
+                    if 'language' == arg[0]:
+                        language = arg[1]
+                    elif 'text' == arg[0]:
+                        text = arg[1]
+
+                if 'rosidl_array_init' == language:
+                    assert field_default_value is None
+                    field_default_value = text
+
     if field_type is not None:
         # TODO extract array typedefs from AST and resolve them correctly
         parts = field_type.split('__')
@@ -194,4 +218,4 @@ def visit_member(tree, msg):
         msg.fields.append(
             Field(
                 Type(field_type, context_package_name=msg.base_type.pkg_name),
-                field_name))
+                field_name, default_value_string=field_default_value))

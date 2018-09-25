@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import sys
 
 from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 from rosidl_cmake import expand_template
@@ -48,54 +49,65 @@ def generate_c(generator_arguments_file):
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
 
     for idl_file in args.get('message_files', []):
-        subfolder = os.path.basename(os.path.dirname(idl_file))
-        spec = parse_idl_file(args['package_name'], 'msg', idl_file)
-        assert isinstance(spec, MessageSpecification)
-        for template_file, generated_filename in mapping_msgs.items():
-            generated_file = os.path.join(
-                args['output_dir'], subfolder, generated_filename %
-                convert_camel_case_to_lower_case_underscore(spec.base_type.type))
-            data = {
-                'spec': spec,
-                'pkg': spec.base_type.pkg_name,
-                'msg': spec.msg_name,
-                'type': spec.base_type.type,
-                'subfolder': subfolder,
-            }
-            data.update(functions)
-            expand_template(
-                template_file, data, generated_file,
-                minimum_timestamp=latest_target_timestamp)
-    for idl_file in args.get('service_files', []):
-        subfolder = os.path.basename(os.path.dirname(idl_file))
-        spec = parse_idl_file(args['package_name'], 'srv', idl_file)
-        assert isinstance(spec, ServiceSpecification)
-        for template_file, generated_filename in mapping_srvs.items():
-            data = {'spec': spec}
-            data.update(functions)
-            generated_file = os.path.join(
-                args['output_dir'], subfolder, generated_filename %
-                convert_camel_case_to_lower_case_underscore(spec.srv_name))
-            expand_template(
-                template_file, data, generated_file,
-                minimum_timestamp=latest_target_timestamp)
-        for msg_spec in (spec.request, spec.response):
+        try:
+            subfolder = os.path.basename(os.path.dirname(idl_file))
+            spec = parse_idl_file(args['package_name'], 'msg', idl_file)
+            assert isinstance(spec, MessageSpecification)
             for template_file, generated_filename in mapping_msgs.items():
                 generated_file = os.path.join(
                     args['output_dir'], subfolder, generated_filename %
-                    convert_camel_case_to_lower_case_underscore(
-                        msg_spec.base_type.type))
+                    convert_camel_case_to_lower_case_underscore(spec.base_type.type))
                 data = {
-                    'spec': msg_spec,
-                    'pkg': msg_spec.base_type.pkg_name,
-                    'msg': msg_spec.msg_name,
-                    'type': msg_spec.base_type.type,
+                    'spec': spec,
+                    'pkg': spec.base_type.pkg_name,
+                    'msg': spec.msg_name,
+                    'type': spec.base_type.type,
                     'subfolder': subfolder,
                 }
                 data.update(functions)
                 expand_template(
                     template_file, data, generated_file,
                     minimum_timestamp=latest_target_timestamp)
+        except Exception as e:
+            print("Error processing message file: %s"%idl_file,
+                    file=sys.stderr)
+            raise(e)
+
+    for idl_file in args.get('service_files', []):
+        try:
+            subfolder = os.path.basename(os.path.dirname(idl_file))
+            spec = parse_idl_file(args['package_name'], 'srv', idl_file)
+            assert isinstance(spec, ServiceSpecification)
+            for template_file, generated_filename in mapping_srvs.items():
+                data = {'spec': spec}
+                data.update(functions)
+                generated_file = os.path.join(
+                    args['output_dir'], subfolder, generated_filename %
+                    convert_camel_case_to_lower_case_underscore(spec.srv_name))
+                expand_template(
+                    template_file, data, generated_file,
+                    minimum_timestamp=latest_target_timestamp)
+            for msg_spec in (spec.request, spec.response):
+                for template_file, generated_filename in mapping_msgs.items():
+                    generated_file = os.path.join(
+                        args['output_dir'], subfolder, generated_filename %
+                        convert_camel_case_to_lower_case_underscore(
+                            msg_spec.base_type.type))
+                    data = {
+                        'spec': msg_spec,
+                        'pkg': msg_spec.base_type.pkg_name,
+                        'msg': msg_spec.msg_name,
+                        'type': msg_spec.base_type.type,
+                        'subfolder': subfolder,
+                    }
+                    data.update(functions)
+                    expand_template(
+                        template_file, data, generated_file,
+                        minimum_timestamp=latest_target_timestamp)
+        except Exception as e:
+            print("Error processing message file: %s"%idl_file,
+                    file=sys.stderr)
+            raise(e)
 
     return 0
 

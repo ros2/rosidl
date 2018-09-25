@@ -18,13 +18,15 @@ module @(pkg_name) {
 TEMPLATE(
     'struct.idl.em',
     msg=srv.request,
-    get_idl_type=get_idl_type)
+    get_idl_type=get_idl_type,
+    to_literal=to_literal)
 }@
 @{
 TEMPLATE(
     'struct.idl.em',
     msg=srv.response,
-    get_idl_type=get_idl_type)
+    get_idl_type=get_idl_type,
+    to_literal=to_literal)
 }@
   };
 };

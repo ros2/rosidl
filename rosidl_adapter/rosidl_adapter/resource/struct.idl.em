@@ -31,7 +31,7 @@ else:
     typedef @(v) @(k);
 @[end for]@
 @[if msg.constants]@
-    module Constants {
+    module @(msg.msg_name)_Constants {
 @[  for constant in msg.constants]@
       const @(get_idl_type(constant.type)) @(constant.name) = @(constant.value);
 @[  end for]@

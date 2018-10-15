@@ -14,6 +14,7 @@
 
 from rosidl_adapter.msg import get_idl_type
 from rosidl_adapter.msg import get_include_file
+from rosidl_adapter.msg import to_literal
 from rosidl_adapter.resource import expand_template
 from rosidl_adapter.srv.parser import parse_service_string
 
@@ -33,6 +34,7 @@ def convert_srv_to_idl(package_dir, package_name, input_file, output_dir):
         'srv': srv,
         'get_idl_type': get_idl_type,
         'get_include_file': get_include_file,
+        'to_literal': to_literal,
     }
     expand_template('srv.idl.em', data, output_file)
     return output_file

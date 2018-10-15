@@ -18,7 +18,8 @@ module @(pkg_name) {
 TEMPLATE(
     'struct.idl.em',
     msg=msg,
-    get_idl_type=get_idl_type)
+    get_idl_type=get_idl_type,
+    to_literal=to_literal)
 }@
   };
 };

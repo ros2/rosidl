@@ -17,6 +17,7 @@ import pathlib
 
 from lark import Lark
 from lark.lexer import Token
+from lark.reconstruct import Reconstructor
 from lark.tree import Tree
 
 from rosidl_parser import Field
@@ -28,6 +29,7 @@ with open(os.path.join(os.path.dirname(__file__), 'grammar.lark'), 'r') as h:
     grammar = h.read()
 
 parser = Lark(grammar, start='specification')
+reconstructor = Reconstructor(parser)
 
 
 def parse_idl_file(package_name, namespace, file_):
@@ -122,24 +124,31 @@ def get_scoped_name(tree):
 
 def visit_member(tree, msg):
     assert tree.data == 'member'
-    assert len(tree.children) == 2
 
-    c = tree.children[0]
-    assert c.data == 'type_spec'
-    assert len(c.children) == 1
-    c = c.children[0]
-    if c.data == 'simple_type_spec':
-        assert len(c.children) == 1
-        c = c.children[0]
-        assert c.data == 'scoped_name'
-        field_type = '::'.join(get_scoped_name(c))
+    type_spec = None
+    declarators = None
+    annotation_applications = []
+    for child in tree.children:
+        if 'type_spec' == child.data:
+            assert type_spec is None
+            type_spec = child
+        elif 'declarators' == child.data:
+            assert declarators is None
+            declarators = child
+        else:
+            assert 'annotation_appl' == child.data
+            annotation_applications.append(child)
+
+    if type_spec.data == 'simple_type_spec':
+        assert len(type_spec.children) == 1
+        type_spec = type_spec.children[0]
+        assert type_spec.data == 'scoped_name'
+        field_type = '::'.join(get_scoped_name(type_spec))
     else:
         field_type = None
 
-    c = tree.children[1]
-    assert c.data == 'declarators'
-    assert len(c.children) == 1
-    c = c.children[0]
+    assert len(declarators.children) == 1
+    c = declarators.children[0]
     assert c.data == 'declarator'
     assert len(c.children) == 1
     c = c.children[0]
@@ -149,6 +158,54 @@ def visit_member(tree, msg):
     assert isinstance(c, Token)
     assert c.type == 'IDENTIFIER'
     field_name = c.value
+
+    annotations = []
+    for c in annotation_applications:
+        sn = list(c.find_data('scoped_name'))[0]
+        assert sn.data == 'scoped_name'
+        assert len(sn.children) == 1
+        sn = sn.children[0]
+        assert isinstance(sn, Token)
+        assert sn.type == 'IDENTIFIER'
+        annotation_type = sn.value
+
+        annotation_args = []
+        for params in list(c.find_data('annotation_appl_params')):
+            assert len(params.children) >= 1
+            for param in params.children:
+                assert param.data == 'annotation_appl_param'
+                ident = param.children[0]
+                assert isinstance(ident, Token)
+
+                value = list(param.find_data('const_expr'))[0]
+                value = reconstructor.reconstruct(value)
+                annotation_args.append((ident.value, value))
+
+        annotations.append((annotation_type, annotation_args))
+
+    field_default_value = None
+    for atype, args in annotations:
+        # Silently ignore unsupported annotations
+        if 'default' == atype:
+            # Only allow one default annotation
+            assert field_default_value is None
+            assert len(args) == 1
+            arg = args[0]
+            assert 'value' == arg[0]
+            field_default_value = arg[1]
+        elif 'verbatim' == atype:
+            if len(args) == 2:
+                language = None
+                text = None
+                for arg in args:
+                    if 'language' == arg[0]:
+                        language = arg[1]
+                    elif 'text' == arg[0]:
+                        text = arg[1]
+
+                if 'rosidl_array_init' == language:
+                    assert field_default_value is None
+                    field_default_value = text
 
     if field_type is not None:
         # TODO extract array typedefs from AST and resolve them correctly
@@ -161,4 +218,4 @@ def visit_member(tree, msg):
         msg.fields.append(
             Field(
                 Type(field_type, context_package_name=msg.base_type.pkg_name),
-                field_name))
+                field_name, default_value_string=field_default_value))

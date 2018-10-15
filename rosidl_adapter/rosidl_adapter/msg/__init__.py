@@ -31,7 +31,12 @@ def convert_msg_to_idl(package_dir, package_name, input_file, output_dir):
         'msg': msg,
         'get_idl_type': get_idl_type,
         'get_include_file': get_include_file,
+        'to_literal': to_literal,
     }
+
+    print('\n'.join([c.name for c in msg.constants]))
+    print('\n'.join([f.name for f in msg.fields]))
+
     expand_template('msg.idl.em', data, output_file)
     return output_file
 
@@ -39,7 +44,7 @@ def convert_msg_to_idl(package_dir, package_name, input_file, output_dir):
 MSG_TYPE_TO_IDL = {
     'bool': 'boolean',
     'byte': 'octet',
-    'char': 'char',
+    'char': 'int8',
     'int8': 'int8',
     'uint8': 'uint8',
     'int16': 'int16',
@@ -52,6 +57,40 @@ MSG_TYPE_TO_IDL = {
     'float64': 'double',
     'string': 'string',
 }
+
+
+def escape_string(string):
+    """Escape string according to IDL 4.2 section 7.2.6.2.2 ."""
+    estr = string.encode().decode('unicode_escape')
+    # Escape quotes too
+    estr = estr.replace('"', '\\"')
+    estr = estr.replace("'", "\\'")
+    estr = estr.replace('?', '\\?')
+    return estr
+
+
+def contains_unicode(string):
+    """Return true if string has unicode code points."""
+    try:
+        string.encode().decode('ascii')
+    except UnicodeDecodeError:
+        return True
+    return False
+
+
+def to_literal(idl_type, value):
+    import sys; sys.stderr.write(repr(idl_type) + ', ' + repr(value) + '\n')
+    if 'string' == idl_type:
+        return to_string_literal(value)
+    return value
+
+
+def to_string_literal(string):
+    """Convert string to character literal as described in IDL 4.2 section  7.2.6.3 ."""
+    estr = escape_string(string)
+    if contains_unicode(string):
+        return 'L"{0}"'.format(estr)
+    return '"{0}"'.format(estr)
 
 
 def get_include_file(base_type):

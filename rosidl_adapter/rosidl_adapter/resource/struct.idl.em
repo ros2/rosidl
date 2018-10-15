@@ -30,16 +30,25 @@ else:
 @[for k, v in typedefs.items()]@
     typedef @(v) @(k);
 @[end for]@
+@[if msg.constants]@
+    module @(msg.msg_name)_Constants {
+@[  for constant in msg.constants]@
+      const @(get_idl_type(constant.type)) @(constant.name) = @(to_literal(get_idl_type(constant.type), constant.value));
+@[  end for]@
+    };
+@[end if]@
 @#
     struct @(msg.msg_name) {
 @# use comments as docblocks once they are available
-@[for constant in msg.constants]@
-      @(get_idl_type(constant.type)) @(constant.name) = @(constant.value);
-@[end for]@
 @[if msg.fields]@
 @[  for field in msg.fields]@
 @[    if field.default_value is not None]@
-      @@default (value=@(field.default_value))
+@{      idl_type = get_idl_type(field.type)}@
+@[      if '[' in idl_type or '<' in idl_type]@
+      @@verbatim(language="rosidl_array_init", text=@(to_literal('string', repr(field.default_value))))
+@[      else]@
+      @@default (value=@(to_literal(get_idl_type(field.type), field.default_value)))
+@[      end if]@
 @[    end if]@
 @{
 idl_type = get_idl_type(field.type)

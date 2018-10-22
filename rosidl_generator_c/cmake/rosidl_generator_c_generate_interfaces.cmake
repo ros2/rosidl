@@ -19,6 +19,8 @@ set(_generated_msg_headers "")
 set(_generated_msg_sources "")
 set(_generated_srv_headers "")
 set(_generated_srv_sources "")
+set(_generated_action_headers "")
+set(_generated_action_sources "")
 foreach(_idl_file ${rosidl_generate_interfaces_c_IDL_FILES})
   get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
@@ -26,30 +28,31 @@ foreach(_idl_file ${rosidl_generate_interfaces_c_IDL_FILES})
   get_filename_component(_extension "${_idl_file}" EXT)
   string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
 
-  if(_extension STREQUAL ".msg")
-    if(_parent_folder STREQUAL "msg")
-      list(APPEND _generated_msg_headers
-        "${_output_path}/${_parent_folder}/${_header_name}.h"
-        "${_output_path}/${_parent_folder}/${_header_name}__functions.h"
-        "${_output_path}/${_parent_folder}/${_header_name}__struct.h"
-        "${_output_path}/${_parent_folder}/${_header_name}__type_support.h"
-      )
-      list(APPEND _generated_msg_sources
-        "${_output_path}/${_parent_folder}/${_header_name}__functions.c"
-      )
-    else()
-      list(APPEND _generated_srv_headers
-        "${_output_path}/${_parent_folder}/${_header_name}.h"
-        "${_output_path}/${_parent_folder}/${_header_name}__functions.h"
-        "${_output_path}/${_parent_folder}/${_header_name}__struct.h"
-        "${_output_path}/${_parent_folder}/${_header_name}__type_support.h"
-      )
-      list(APPEND _generated_srv_sources
-        "${_output_path}/${_parent_folder}/${_header_name}__functions.c"
-      )
-    endif()
+  if (_parent_folder STREQUAL "msg")
+    set(_generated_headers "_generated_msg_headers")
+    set(_generated_sources "_generated_msg_sources")
+  elseif(_parent_folder STREQUAL "srv")
+    set(_generated_headers "_generated_srv_headers")
+    set(_generated_sources "_generated_srv_sources")
+  elseif(_parent_folder STREQUAL "action")
+    set(_generated_headers "_generated_action_headers")
+    set(_generated_sources "_generated_action_sources")
+  else()
+    message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
+  endif()
+
+  if (_extension STREQUAL ".msg")
+    list(APPEND ${_generated_headers}
+      "${_output_path}/${_parent_folder}/${_header_name}.h"
+      "${_output_path}/${_parent_folder}/${_header_name}__functions.h"
+      "${_output_path}/${_parent_folder}/${_header_name}__struct.h"
+      "${_output_path}/${_parent_folder}/${_header_name}__type_support.h"
+    )
+    list(APPEND ${_generated_sources}
+      "${_output_path}/${_parent_folder}/${_header_name}__functions.c"
+    )
   elseif(_extension STREQUAL ".srv")
-    list(APPEND _generated_srv_headers
+    list(APPEND ${_generated_headers}
       "${_output_path}/${_parent_folder}/${_header_name}.h"
     )
   else()
@@ -100,7 +103,7 @@ rosidl_write_generator_arguments(
 )
 
 add_custom_command(
-  OUTPUT ${_generated_msg_headers} ${_generated_msg_sources} ${_generated_srv_headers} ${_generated_srv_sources}
+  OUTPUT ${_generated_msg_headers} ${_generated_msg_sources} ${_generated_srv_headers} ${_generated_srv_sources} ${_generated_action_headers} ${_generated_action_sources}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_c_BIN}
   --generator-arguments-file "${generator_arguments_file}"
   DEPENDS ${target_dependencies}
@@ -123,7 +126,8 @@ list(APPEND _generated_msg_headers "${_visibility_control_file}")
 set(_target_suffix "__rosidl_generator_c")
 
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} ${rosidl_generator_c_LIBRARY_TYPE}
-  ${_generated_msg_headers} ${_generated_msg_sources} ${_generated_srv_headers} ${_generated_srv_sources})
+  ${_generated_msg_headers} ${_generated_msg_sources} ${_generated_srv_headers} ${_generated_srv_sources}
+  ${_generated_action_headers} ${_generated_action_sources})
 if(rosidl_generate_interfaces_LIBRARY_NAME)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PROPERTIES OUTPUT_NAME "${rosidl_generate_interfaces_LIBRARY_NAME}${_target_suffix}")
@@ -168,6 +172,12 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
       DESTINATION "include/${PROJECT_NAME}/srv"
     )
   endif()
+  if(NOT _generated_action_headers STREQUAL "")
+    install(
+      FILES ${_generated_action_headers}
+      DESTINATION "include/${PROJECT_NAME}/action"
+    )
+  endif()
   ament_export_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix})
   install(
     TARGETS ${rosidl_generate_interfaces_TARGET}${_target_suffix}
@@ -183,7 +193,9 @@ if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
     NOT _generated_msg_headers STREQUAL "" OR
     NOT _generated_msg_sources STREQUAL "" OR
     NOT _generated_srv_headers STREQUAL "" OR
-    NOT _generated_srv_sources STREQUAL ""
+    NOT _generated_srv_sources STREQUAL "" OR
+    NOT _generated_action_headers STREQUAL "" OR
+    NOT _generated_action_sources STREQUAL ""
   )
     find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(

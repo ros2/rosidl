@@ -53,10 +53,10 @@ static rosidl_service_type_support_t @(function_prefix)__@(spec.srv_name)_servic
 
 // Forward declaration of request/response type support functions
 const rosidl_message_type_support_t *
-ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), srv, @(spec.srv_name)_Request)();
+ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(subfolder), @(spec.srv_name)_Request)();
 
 const rosidl_message_type_support_t *
-ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), srv, @(spec.srv_name)_Response)();
+ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(subfolder), @(spec.srv_name)_Response)();
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(spec.pkg_name)
 const rosidl_service_type_support_t *
@@ -71,12 +71,12 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspecti
   if (!service_members->request_members_) {
     service_members->request_members_ =
       (const rosidl_typesupport_introspection_c__MessageMembers *)
-      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), srv, @(spec.srv_name)_Request)()->data;
+      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(subfolder), @(spec.srv_name)_Request)()->data;
   }
   if (!service_members->response_members_) {
     service_members->response_members_ =
       (const rosidl_typesupport_introspection_c__MessageMembers *)
-      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), srv, @(spec.srv_name)_Response)()->data;
+      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(subfolder), @(spec.srv_name)_Response)()->data;
   }
 
   return &@(function_prefix)__@(spec.srv_name)_service_type_support_handle;

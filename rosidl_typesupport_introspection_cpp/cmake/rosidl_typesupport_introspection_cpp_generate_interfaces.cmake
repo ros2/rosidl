@@ -30,7 +30,7 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
     list(APPEND _generated_msg_source_files
       "${_output_path}/${_parent_folder}/${_header_name}__type_support.cpp"
     )
-  elseif(_parent_folder STREQUAL "srv")
+  elseif(_parent_folder STREQUAL "srv" OR _parent_folder STREQUAL "action")
     list(APPEND _generated_srv_header_files
       "${_output_path}/${_parent_folder}/${_header_name}__rosidl_typesupport_introspection_cpp.hpp"
     )

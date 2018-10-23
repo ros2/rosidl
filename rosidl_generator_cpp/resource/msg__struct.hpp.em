@@ -100,10 +100,10 @@ def generate_default_string(membset):
                 strlist.append('this->%s.resize(%d);' % (member.name, member.num_prealloc))
             if isinstance(member.default_value, list):
                 if all(v == member.default_value[0] for v in member.default_value):
-                    strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (member.name, member.name, member.default_value[0]))
+                    strlist.append('std::fill(this->%s.begin(), this->%s.end(), static_cast<typename decltype(this->%s)::value_type>(%s));' % (member.name, member.name, member.name, member.default_value[0]))
                 else:
                     for index, val in enumerate(member.default_value):
-                        strlist.append('this->%s[%d] = %s;' % (member.name, index, val))
+                        strlist.append('this->%s[%d] = static_cast<typename decltype(this->%s)::value_type>(%s);' % (member.name, index, member.name, val))
             else:
                 strlist.append('this->%s = %s;' % (member.name, member.default_value))
 
@@ -118,7 +118,7 @@ def generate_zero_string(membset, fill_args):
             if member.zero_need_array_override:
                 strlist.append('this->%s.fill(%s{%s});' % (member.name, msg_type_only_to_cpp(member.type), fill_args))
             else:
-                strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (member.name, member.name, member.zero_value[0]))
+                strlist.append('std::fill(this->%s.begin(), this->%s.end(), static_cast<typename decltype(this->%s)::value_type>(%s));' % (member.name, member.name, member.name, member.zero_value[0]))
         else:
             strlist.append('this->%s = %s;' % (member.name, member.zero_value))
     return strlist

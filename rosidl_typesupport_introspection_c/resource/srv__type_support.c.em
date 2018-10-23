@@ -7,12 +7,15 @@
 @# Context:
 @#  - spec (rosidl_parser.ServiceSpecification)
 @#    Parsed specification of the .srv file
+@#  - subfolder (string)
+@#    The subfolder / subnamespace of the message
+@#    Either 'srv' or 'action'
 @#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @
 @{
 header_guard_parts = [
-    spec.pkg_name, 'srv',
+    spec.pkg_name, subfolder,
     get_header_filename_from_msg_name(spec.srv_name) + '__type_support_h']
 header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 
@@ -24,9 +27,9 @@ function_prefix = '%s__srv__rosidl_typesupport_introspection_c' % spec.pkg_name
 #include <rosidl_generator_c/service_type_support_struct.h>
 #include "@(spec.pkg_name)/msg/rosidl_typesupport_introspection_c__visibility_control.h"
 
-#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__rosidl_typesupport_introspection_c.h"
-#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.request.base_type.type))__rosidl_typesupport_introspection_c.h"
-#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.response.base_type.type))__rosidl_typesupport_introspection_c.h"
+#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.srv_name))__rosidl_typesupport_introspection_c.h"
+#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.request.base_type.type))__rosidl_typesupport_introspection_c.h"
+#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.response.base_type.type))__rosidl_typesupport_introspection_c.h"
 
 #include "rosidl_typesupport_introspection_c/identifier.h"
 #include "rosidl_typesupport_introspection_c/service_introspection.h"

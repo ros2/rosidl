@@ -18,8 +18,8 @@
 
 #include <string>
 
+#include "rosidl_generator_cpp/msg/primitives.hpp"
 #include "rosidl_generator_cpp/msg/primitives_default.hpp"
-#include "rosidl_generator_cpp/msg/primitives_static.hpp"
 #include "rosidl_generator_cpp/msg/various.hpp"
 
 template<typename Callable>
@@ -62,20 +62,20 @@ TEST(Test_msg_initialization, no_arg_constructor) {
   ASSERT_EQ(50000000ULL, primitives_def.uint64_value);
   ASSERT_EQ("bar", primitives_def.string_value);
 
-  rosidl_generator_cpp::msg::PrimitivesStatic primitives_static;
-  ASSERT_FALSE(primitives_static.bool_value);
-  ASSERT_EQ(0, primitives_static.byte_value);
-  ASSERT_EQ(0, primitives_static.char_value);
-  ASSERT_EQ(0.0f, primitives_static.float32_value);
-  ASSERT_EQ(0.0, primitives_static.float64_value);
-  ASSERT_EQ(0, primitives_static.int8_value);
-  ASSERT_EQ(0, primitives_static.uint8_value);
-  ASSERT_EQ(0, primitives_static.int16_value);
-  ASSERT_EQ(0, primitives_static.uint16_value);
-  ASSERT_EQ(0L, primitives_static.int32_value);
-  ASSERT_EQ(0UL, primitives_static.uint32_value);
-  ASSERT_EQ(0LL, primitives_static.int64_value);
-  ASSERT_EQ(0ULL, primitives_static.uint64_value);
+  rosidl_generator_cpp::msg::Primitives primitives;
+  ASSERT_FALSE(primitives.bool_value);
+  ASSERT_EQ(0, primitives.byte_value);
+  ASSERT_EQ(0, primitives.char_value);
+  ASSERT_EQ(0.0f, primitives.float32_value);
+  ASSERT_EQ(0.0, primitives.float64_value);
+  ASSERT_EQ(0, primitives.int8_value);
+  ASSERT_EQ(0, primitives.uint8_value);
+  ASSERT_EQ(0, primitives.int16_value);
+  ASSERT_EQ(0, primitives.uint16_value);
+  ASSERT_EQ(0L, primitives.int32_value);
+  ASSERT_EQ(0UL, primitives.uint32_value);
+  ASSERT_EQ(0LL, primitives.int64_value);
+  ASSERT_EQ(0ULL, primitives.uint64_value);
 
   rosidl_generator_cpp::msg::Various various_def;
 

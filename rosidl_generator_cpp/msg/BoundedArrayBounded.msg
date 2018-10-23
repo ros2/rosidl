@@ -1,1 +1,1 @@
-PrimitivesBounded[<=3] primitive_values
+PrimitivesBounded[<=3] primitive_array_values

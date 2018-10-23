@@ -28,8 +28,7 @@ if(BUILD_TESTING)
 
     "msg/FieldsWithSameTypeSomeDefaults.msg"
 
-    "msg/PrimitiveStaticArrays.msg"
-
+    "msg/Primitives.msg"
     "msg/PrimitivesBounded.msg"
     "msg/PrimitivesConstants.msg"
     "msg/PrimitivesDefault.msg"

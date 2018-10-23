@@ -28,8 +28,8 @@
 #include "rosidl_generator_cpp/msg/bounded_array_static.hpp"
 #include "rosidl_generator_cpp/msg/bounded_array_unbounded.hpp"
 
-#include "rosidl_generator_cpp/msg/primitive_static_arrays.hpp"
 
+#include "rosidl_generator_cpp/msg/primitives.hpp"
 #include "rosidl_generator_cpp/msg/primitives_bounded.hpp"
 #include "rosidl_generator_cpp/msg/primitives_constants.hpp"
 #include "rosidl_generator_cpp/msg/primitives_default.hpp"
@@ -67,8 +67,8 @@ TEST(Test_rosidl_generator_traits, has_fixed_size) {
     "PrimitivesDefault::has_fixed_size is true");
 
   static_assert(
-    rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::PrimitivesStatic>::value,
-    "PrimitivesStatic::has_fixed_size is false");
+    rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::Primitives>::value,
+    "Primitives::has_fixed_size is false");
 
   static_assert(
     !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::PrimitivesBounded>::value,
@@ -80,8 +80,8 @@ TEST(Test_rosidl_generator_traits, has_fixed_size) {
 
   static_assert(
     rosidl_generator_traits::has_fixed_size<
-      rosidl_generator_cpp::msg::PrimitiveStaticArrays>::value,
-    "PrimitivesStaticArray::has_fixed_size is false");
+      rosidl_generator_cpp::msg::PrimitivesStatic>::value,
+    "PrimitivesStatic::has_fixed_size is false");
 
   static_assert(
     rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::StaticArrayStatic>::value,
@@ -153,8 +153,8 @@ TEST(Test_rosidl_generator_traits, has_bounded_size) {
     "PrimitivesDefault::has_bounded_size is true");
 
   static_assert(
-    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::PrimitivesStatic>::value,
-    "PrimitivesStatic::has_bounded_size is false");
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::Primitives>::value,
+    "Primitives::has_bounded_size is false");
 
   static_assert(
     rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::PrimitivesBounded>::value,
@@ -167,8 +167,8 @@ TEST(Test_rosidl_generator_traits, has_bounded_size) {
 
   static_assert(
     rosidl_generator_traits::has_bounded_size<
-      rosidl_generator_cpp::msg::PrimitiveStaticArrays>::value,
-    "PrimitivesStaticArray::has_bounded_size is false");
+      rosidl_generator_cpp::msg::PrimitivesStatic>::value,
+    "PrimitivesStatic::has_bounded_size is false");
 
   static_assert(
     rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::StaticArrayStatic>::value,
@@ -238,7 +238,7 @@ TEST(Test_rosidl_generator_traits, has_bounded_size) {
   Message.FieldName = FinalValue; \
   ASSERT_STREQ(FinalValue, Message.FieldName.c_str());
 
-void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic message)
+void test_message_primitives(rosidl_generator_cpp::msg::Primitives message)
 {
 // workaround for https://github.com/google/googletest/issues/322
 #ifdef __linux__
@@ -375,7 +375,7 @@ void test_message_primitives_unbounded(rosidl_generator_cpp::msg::PrimitivesUnbo
   std::copy_n(pattern_ ## FieldName.begin(), ArraySize, Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
-void test_message_primitives_static_arrays(rosidl_generator_cpp::msg::PrimitiveStaticArrays message)
+void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic message)
 {
   TEST_STATIC_ARRAY_PRIMITIVE(message, bool_value, bool, PRIMITIVES_ARRAY_SIZE, \
     false, true)
@@ -407,14 +407,14 @@ void test_message_primitives_static_arrays(rosidl_generator_cpp::msg::PrimitiveS
 
 // Primitives static
 TEST(Test_messages, primitives_static) {
-  rosidl_generator_cpp::msg::PrimitivesStatic message;
-  test_message_primitives_static(message);
+  rosidl_generator_cpp::msg::Primitives message;
+  test_message_primitives(message);
 }
 
 // Primitives static arrays
 TEST(Test_messages, primitives_static_arrays) {
-  rosidl_generator_cpp::msg::PrimitiveStaticArrays message;
-  test_message_primitives_static_arrays(message);
+  rosidl_generator_cpp::msg::PrimitivesStatic message;
+  test_message_primitives_static(message);
 }
 
 // Primitives bounded arrays
@@ -433,7 +433,7 @@ TEST(Test_messages, primitives_unbounded) {
 TEST(Test_messages, static_array_static) {
   rosidl_generator_cpp::msg::StaticArrayStatic message;
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_static(message.primitive_values[i]);
+    test_message_primitives_static(message.primitive_array_values[i]);
   }
 }
 
@@ -441,7 +441,7 @@ TEST(Test_messages, static_array_static) {
 TEST(Test_messages, static_array_bounded) {
   rosidl_generator_cpp::msg::StaticArrayBounded message;
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_bounded(message.primitive_values[i]);
+    test_message_primitives_bounded(message.primitive_array_values[i]);
   }
 }
 
@@ -449,61 +449,61 @@ TEST(Test_messages, static_array_bounded) {
 TEST(Test_messages, static_array_unbounded) {
   rosidl_generator_cpp::msg::StaticArrayUnbounded message;
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_unbounded(message.primitive_values[i]);
+    test_message_primitives_unbounded(message.primitive_array_values[i]);
   }
 }
 
 // Bounded array of a submessage of static primitive
 TEST(Test_messages, bounded_array_static) {
   rosidl_generator_cpp::msg::BoundedArrayStatic message;
-  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
+  message.primitive_array_values.resize(SUBMESSAGE_ARRAY_SIZE);
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_static(message.primitive_values[i]);
+    test_message_primitives_static(message.primitive_array_values[i]);
   }
 }
 
 // Bounded array of a submessage of bounded array of primitives
 TEST(Test_messages, bounded_array_bounded) {
   rosidl_generator_cpp::msg::BoundedArrayBounded message;
-  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
+  message.primitive_array_values.resize(SUBMESSAGE_ARRAY_SIZE);
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_bounded(message.primitive_values[i]);
+    test_message_primitives_bounded(message.primitive_array_values[i]);
   }
 }
 
 // Bounded array of a submessage of unbounded array of primitives
 TEST(Test_messages, bounded_array_unbounded) {
   rosidl_generator_cpp::msg::BoundedArrayUnbounded message;
-  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
+  message.primitive_array_values.resize(SUBMESSAGE_ARRAY_SIZE);
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_unbounded(message.primitive_values[i]);
+    test_message_primitives_unbounded(message.primitive_array_values[i]);
   }
 }
 
 // Unbounded array of a submessage of static primitives
 TEST(Test_messages, unbounded_array_static) {
   rosidl_generator_cpp::msg::UnboundedArrayStatic message;
-  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
+  message.primitive_array_values.resize(SUBMESSAGE_ARRAY_SIZE);
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_static(message.primitive_values[i]);
+    test_message_primitives_static(message.primitive_array_values[i]);
   }
 }
 
 // Unbounded array of a submessage of bounded primitive
 TEST(Test_messages, unbounded_array_bounded) {
   rosidl_generator_cpp::msg::UnboundedArrayBounded message;
-  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
+  message.primitive_array_values.resize(SUBMESSAGE_ARRAY_SIZE);
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_bounded(message.primitive_values[i]);
+    test_message_primitives_bounded(message.primitive_array_values[i]);
   }
 }
 
 // Unbounded array of a submessage of unbounded array of primitives
 TEST(Test_messages, unbounded_array_unbounded) {
   rosidl_generator_cpp::msg::UnboundedArrayUnbounded message;
-  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
+  message.primitive_array_values.resize(SUBMESSAGE_ARRAY_SIZE);
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_unbounded(message.primitive_values[i]);
+    test_message_primitives_unbounded(message.primitive_array_values[i]);
   }
 }
 

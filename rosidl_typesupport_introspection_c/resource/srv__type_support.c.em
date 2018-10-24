@@ -19,7 +19,7 @@ header_guard_parts = [
     get_header_filename_from_msg_name(spec.srv_name) + '__type_support_h']
 header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 
-function_prefix = '%s__srv__rosidl_typesupport_introspection_c' % spec.pkg_name
+function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.pkg_name, subfolder)
 }@
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
@@ -60,7 +60,7 @@ ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspecti
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(spec.pkg_name)
 const rosidl_service_type_support_t *
-ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(spec.srv_name))() {
+ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(subfolder), @(spec.srv_name))() {
   if (!@(function_prefix)__@(spec.srv_name)_service_type_support_handle.typesupport_identifier) {
     @(function_prefix)__@(spec.srv_name)_service_type_support_handle.typesupport_identifier =
       rosidl_typesupport_introspection_c__identifier;

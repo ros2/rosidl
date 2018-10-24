@@ -112,7 +112,7 @@ extern "C"
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_service_type_support_t *
-ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_cpp, @(spec.pkg_name), @(spec.srv_name))() {
+ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_cpp, @(spec.pkg_name), @(subfolder), @(spec.srv_name))() {
   return ::rosidl_typesupport_introspection_cpp::get_service_type_support_handle<@(spec.pkg_name)::@(subfolder)::@(spec.srv_name)>();
 }
 

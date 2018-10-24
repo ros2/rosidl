@@ -45,7 +45,7 @@ const rosidl_service_type_support_t * get_service_typesupport_handle_function(
   const rosidl_service_type_support_t * handle, const char * identifier);
 
 #define ROSIDL_GET_SRV_TYPE_SUPPORT(PkgName, SrvName) \
-  ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_c, PkgName, SrvName)()
+  ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_c, PkgName, srv, SrvName)()
 
 #ifdef __cplusplus
 }

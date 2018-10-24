@@ -43,7 +43,7 @@ extern "C"
 // Forward declare the get type support functions for this type.
 ROSIDL_GENERATOR_C_PUBLIC_@(spec.pkg_name)
 const rosidl_service_type_support_t *
-  ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_c, @(spec.pkg_name), @(spec.srv_name))();
+  ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_c, @(spec.pkg_name), @(subfolder), @(spec.srv_name))();
 
 #if defined(__cplusplus)
 }

@@ -100,8 +100,9 @@ def generate_default_string(membset):
                 strlist.append('this->%s.resize(%d);' % (member.name, member.num_prealloc))
             if isinstance(member.default_value, list):
                 if all(v == member.default_value[0] for v in member.default_value):
-                    # Specifying type for std::fill because of MSBuild warning about cast (C4244)
-                    # TODO(jacobperron): Investigate reason build warnings on Windows
+                    # Specifying type for std::fill because of MSVC 14.12 warning about casting 'const int' to smaller types (C4244)
+                    # For more info, see https://github.com/ros2/rosidl/issues/309
+                    # TODO(jacobperron): Investigate reason for build warnings on Windows
                     # TODO(jacobperron): Write test case for this path of execution
                     strlist.append('std::fill<typename %s::iterator, %s>(this->%s.begin(), this->%s.end(), %s);' % (msg_type_to_cpp(member.type), msg_type_only_to_cpp(member.type), member.name, member.name, member.default_value[0]))
                 else:
@@ -121,8 +122,9 @@ def generate_zero_string(membset, fill_args):
             if member.zero_need_array_override:
                 strlist.append('this->%s.fill(%s{%s});' % (member.name, msg_type_only_to_cpp(member.type), fill_args))
             else:
-                # Specifying type for std::fill because of MSBuild warning about cast (C4244)
-                # TODO(jacobperron): Investigate reason build warnings on Windows
+                # Specifying type for std::fill because of MSVC 14.12 warning about casting 'const int' to smaller types (C4244)
+                # For more info, see https://github.com/ros2/rosidl/issues/309
+                # TODO(jacobperron): Investigate reason for build warnings on Windows
                 strlist.append('std::fill<typename %s::iterator, %s>(this->%s.begin(), this->%s.end(), %s);' % (msg_type_to_cpp(member.type), msg_type_only_to_cpp(member.type), member.name, member.name, member.zero_value[0]))
         else:
             strlist.append('this->%s = %s;' % (member.name, member.zero_value))

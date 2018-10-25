@@ -705,3 +705,66 @@ def parse_service_string(pkg_name, srv_name, message_string):
         pkg_name, srv_name + SERVICE_RESPONSE_MESSAGE_SUFFIX, response_message_string)
 
     return ServiceSpecification(pkg_name, srv_name, request_message, response_message)
+
+def parse_action_file(pkg_name, interface_filename):
+    basename = os.path.basename(interface_filename)
+    srv_name = os.path.splitext(basename)[0]
+    with open(interface_filename, 'r') as h:
+        return parse_action_string(pkg_name, srv_name, h.read())
+
+
+def parse_action_string(pkg_name, srv_name, message_string):
+    lines = message_string.splitlines()
+    separator_indices = [
+        index for index, line in enumerate(lines) if line == SERVICE_REQUEST_RESPONSE_SEPARATOR]
+    if not separator_indices:
+        raise InvalidServiceSpecification(
+            "Could not find separator '%s' between action goal, result and feedback services" %
+            SERVICE_REQUEST_RESPONSE_SEPARATOR)
+    if len(separator_indices) != 3:
+        raise InvalidServiceSpecification(
+            "Could not find unique separator '%s' between action goal, result and \
+            feedback services" %
+            SERVICE_REQUEST_RESPONSE_SEPARATOR)
+
+    services = []
+    message = None
+    #----------------------------------------------------------------------------------------------
+    ## Send goal
+    implicit_input = ["string uuid"]
+    request_message_string = '\n'.join(lines[:separator_indices[0]] + implicit_input)
+    request_message = parse_message_string(
+        pkg_name, srv_name + SERVICE_REQUEST_MESSAGE_SUFFIX, request_message_string)
+
+    implicit_output = ["bool accepted", "time timestamp"]
+    response_message_string = '\n'.join(implicit_output)
+    response_message = parse_message_string(
+        pkg_name, srv_name + SERVICE_RESPONSE_MESSAGE_SUFFIX, response_message_string)
+
+    services.append(ServiceSpecification(pkg_name, srv_name, request_message, response_message))
+    #----------------------------------------------------------------------------------------------
+
+    #----------------------------------------------------------------------------------------------
+    ## Get result
+    implicit_input = ["string uuid"]
+    request_message_string = '\n'.join(implicit_input)
+    request_message = parse_message_string(
+        pkg_name, srv_name + SERVICE_REQUEST_MESSAGE_SUFFIX, request_message_string)
+
+    implicit_output = ["string status"]
+    response_message_string = '\n'.join(
+        lines[separator_indices[0] + 1 : separator_indices[1]] + implicit_output)
+    response_message = parse_message_string(
+        pkg_name, srv_name + SERVICE_RESPONSE_MESSAGE_SUFFIX, response_message_string)
+
+    services.append(ServiceSpecification(pkg_name, srv_name, request_message, response_message))
+    #----------------------------------------------------------------------------------------------
+
+    #----------------------------------------------------------------------------------------------
+    ## Feedback message
+    message_string = '\n'.join(lines[separator_indices[1] + 1:])
+    message = parse_message_string(
+        pkg_name, srv_name + "_feeeback", message_string)
+    #----------------------------------------------------------------------------------------------
+
+    return (services, message)

@@ -25,6 +25,10 @@ SERVICE_REQUEST_RESPONSE_SEPARATOR = '---'
 SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
 SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
 
+ACTION_GOAL_MESSAGE_SUFFIX =  '_Goal'
+ACTION_RESULT_MESSAGE_SUFFIX =  '_Result'
+ACTION_FEEDBACK_MESSAGE_SUFFIX = '_Feedback'
+
 PRIMITIVE_TYPES = [
     'bool',
     'byte',
@@ -708,12 +712,12 @@ def parse_service_string(pkg_name, srv_name, message_string):
 
 def parse_action_file(pkg_name, interface_filename):
     basename = os.path.basename(interface_filename)
-    srv_name = os.path.splitext(basename)[0]
+    action_name = os.path.splitext(basename)[0]
     with open(interface_filename, 'r') as h:
-        return parse_action_string(pkg_name, srv_name, h.read())
+        return parse_action_string(pkg_name, action_name, h.read())
 
 
-def parse_action_string(pkg_name, srv_name, message_string):
+def parse_action_string(pkg_name, action_name, message_string):
     lines = message_string.splitlines()
     separator_indices = [
         index for index, line in enumerate(lines) if line == SERVICE_REQUEST_RESPONSE_SEPARATOR]
@@ -734,14 +738,18 @@ def parse_action_string(pkg_name, srv_name, message_string):
     implicit_input = ["string uuid"]
     request_message_string = '\n'.join(lines[:separator_indices[0]] + implicit_input)
     request_message = parse_message_string(
-        pkg_name, srv_name + SERVICE_REQUEST_MESSAGE_SUFFIX, request_message_string)
+        pkg_name,
+        action_name + ACTION_GOAL_MESSAGE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX,
+        request_message_string)
 
     implicit_output = ["bool accepted", "time timestamp"]
     response_message_string = '\n'.join(implicit_output)
     response_message = parse_message_string(
-        pkg_name, srv_name + SERVICE_RESPONSE_MESSAGE_SUFFIX, response_message_string)
+        pkg_name,
+        action_name + ACTION_GOAL_MESSAGE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX,
+        response_message_string)
 
-    services.append(ServiceSpecification(pkg_name, srv_name, request_message, response_message))
+    services.append(ServiceSpecification(pkg_name, action_name, request_message, response_message))
     #----------------------------------------------------------------------------------------------
 
     #----------------------------------------------------------------------------------------------
@@ -749,22 +757,28 @@ def parse_action_string(pkg_name, srv_name, message_string):
     implicit_input = ["string uuid"]
     request_message_string = '\n'.join(implicit_input)
     request_message = parse_message_string(
-        pkg_name, srv_name + SERVICE_REQUEST_MESSAGE_SUFFIX, request_message_string)
+        pkg_name,
+        action_name + ACTION_RESULT_MESSAGE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX,
+        request_message_string)
 
     implicit_output = ["string status"]
     response_message_string = '\n'.join(
         lines[separator_indices[0] + 1 : separator_indices[1]] + implicit_output)
     response_message = parse_message_string(
-        pkg_name, srv_name + SERVICE_RESPONSE_MESSAGE_SUFFIX, response_message_string)
+        pkg_name,
+        action_name + ACTION_RESULT_MESSAGE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX,
+        response_message_string)
 
-    services.append(ServiceSpecification(pkg_name, srv_name, request_message, response_message))
+    services.append(ServiceSpecification(pkg_name, action_name, request_message, response_message))
     #----------------------------------------------------------------------------------------------
 
     #----------------------------------------------------------------------------------------------
     ## Feedback message
-    message_string = '\n'.join(lines[separator_indices[1] + 1:])
+    implicit_input = ["string uuid"]
+    message_string = '\n'.join(
+        lines[separator_indices[1] + 1:] + implicit_output)
     message = parse_message_string(
-        pkg_name, srv_name + "_feeeback", message_string)
+        pkg_name, action_name + ACTION_FEEDBACK_MESSAGE_SUFFIX, message_string)
     #----------------------------------------------------------------------------------------------
 
     return (services, message)

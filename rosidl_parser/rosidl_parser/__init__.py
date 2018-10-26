@@ -732,7 +732,6 @@ def parse_action_string(pkg_name, action_name, message_string):
             SERVICE_REQUEST_RESPONSE_SEPARATOR)
 
     services = []
-    message = None
     #----------------------------------------------------------------------------------------------
     ## Send goal
     implicit_input = ["string uuid"]
@@ -777,8 +776,8 @@ def parse_action_string(pkg_name, action_name, message_string):
     implicit_input = ["string uuid"]
     message_string = '\n'.join(
         lines[separator_indices[1] + 1:] + implicit_output)
-    message = parse_message_string(
+    feedback_msg = parse_message_string(
         pkg_name, action_name + ACTION_FEEDBACK_MESSAGE_SUFFIX, message_string)
     #----------------------------------------------------------------------------------------------
 
-    return (services, message)
+    return (services, feedback_msg)

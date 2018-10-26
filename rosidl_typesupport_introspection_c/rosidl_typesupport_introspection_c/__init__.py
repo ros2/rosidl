@@ -89,9 +89,7 @@ def generate_c(generator_arguments_file):
                     minimum_timestamp=latest_target_timestamp)
 
         elif extension == '.action':
-            action = spec = parse_action_file(pkg_name, ros_interface_file)
-            services = action[0]
-            message = action[1]
+            (services, feedback_msg) = spec = parse_action_file(pkg_name, ros_interface_file)
 
             for spec in services:
                 validate_field_types(spec, known_msg_types)
@@ -106,8 +104,8 @@ def generate_c(generator_arguments_file):
                         template_file, data, generated_file,
                         minimum_timestamp=latest_target_timestamp)
 
-            # feedback message spec
-            spec = message
+            # action feedback message spec
+            spec = feedback_msg
             validate_field_types(spec, known_msg_types)
             for template_file, generated_filename in mapping_msgs.items():
                 generated_file = os.path.join(

@@ -77,10 +77,9 @@ def generate_c(generator_arguments_file):
                     template_file, data, generated_file,
                     minimum_timestamp=latest_target_timestamp)
         elif extension == '.action':
-            action = parse_action_file(args['package_name'], ros_interface_file)
-            services = action[0]
-            message = action[1]
+            (services, feedback_msg) = parse_action_file(args['package_name'], ros_interface_file)
 
+            # action services spec
             for spec in services:
                 for template_file, generated_filename in mapping_srvs.items():
                     data = {'spec': spec, 'subfolder': subfolder}
@@ -91,8 +90,9 @@ def generate_c(generator_arguments_file):
                     expand_template(
                         template_file, data, generated_file,
                         minimum_timestamp=latest_target_timestamp)
-            # for feedback message spec
-            spec = message
+
+            # action feedback message spec
+            spec = feedback_msg
             for template_file, generated_filename in mapping_msgs.items():
                 generated_file = os.path.join(
                     args['output_dir'], subfolder, generated_filename %

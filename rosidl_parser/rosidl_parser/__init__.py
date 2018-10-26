@@ -122,15 +122,16 @@ def is_valid_message_name(name):
         prefix = 'Sample_'
         if name.startswith(prefix):
             name = name[len(prefix):]
-        for service_suffix in ['_Request', '_Response']:
-            if name.endswith(service_suffix):
-                name = name[:-len(service_suffix)]
-                break
-        # check for action messages suffixes
-        for action_suffix in ['_Goal', '_Result', '_Feedback']:
-            if name.endswith(action_suffix):
-                name = name[:-len(action_suffix)]
-                break
+        suffixes = [
+            SERVICE_REQUEST_MESSAGE_SUFFIX,
+            SERVICE_RESPONSE_MESSAGE_SUFFIX,
+            ACTION_GOAL_MESSAGE_SUFFIX,
+            ACTION_RESULT_MESSAGE_SUFFIX,
+            ACTION_FEEDBACK_MESSAGE_SUFFIX,
+        ]
+        for suffix in suffixes:
+            if name.endswith(suffix):
+                name = name[:-len(suffix)]
         m = VALID_MESSAGE_NAME_PATTERN.match(name)
     except (AttributeError, TypeError):
         raise InvalidResourceName(name)

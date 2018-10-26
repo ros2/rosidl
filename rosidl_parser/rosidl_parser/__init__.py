@@ -403,6 +403,17 @@ class MessageSpecification:
             len(self.constants) == len(other.constants) and \
             self.constants == other.constants
 
+    def __str__(self):
+        """Output an equivalent .msg IDL string."""
+        output = ['# ', str(self.base_type), '\n']
+        for constant in self.constants:
+            output.extend((str(constant), '\n'))
+        for field in self.fields:
+            output.extend((str(field), '\n'))
+        # Get rid of last newline
+        del output[-1]
+        return ''.join(output)
+
 
 def parse_message_file(pkg_name, interface_filename):
     basename = os.path.basename(interface_filename)
@@ -707,6 +718,14 @@ class ServiceSpecification:
         self.srv_name = srv_name
         self.request = request_message
         self.response = response_message
+
+    def __str__(self):
+        """Output an equivalent .srv IDL string."""
+        output = ['# ', str(self.pkg_name), '/', str(self.srv_name), '\n']
+        output.append(str(self.request))
+        output.append('\n---\n')
+        output.append(str(self.response))
+        return ''.join(output)
 
 
 def parse_service_file(pkg_name, interface_filename):

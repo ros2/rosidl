@@ -24,7 +24,7 @@ foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(_extension "${_idl_file}" EXT)
   string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
 
-  if (_parent_folder STREQUAL "msg")
+  if(_parent_folder STREQUAL "msg")
     set(_generated_files "_generated_msg_files")
   elseif(_parent_folder STREQUAL "srv")
     set(_generated_files "_generated_srv_files")
@@ -128,8 +128,8 @@ endif()
 
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
   if(NOT _generated_msg_files STREQUAL "" OR
-     NOT _generated_srv_files STREQUAL "" OR
-     NOT _generated_action_files STREQUAL "")
+    NOT _generated_srv_files STREQUAL "" OR
+    NOT _generated_action_files STREQUAL "")
     find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(
       TESTNAME "cppcheck_rosidl_generated_cpp"

@@ -89,8 +89,8 @@ rosidl_write_generator_arguments(
 
 add_custom_command(
   OUTPUT ${_generated_msg_header_files} ${_generated_msg_source_files}
-         ${_generated_srv_header_files} ${_generated_srv_source_files}
-         ${_generated_action_header_files} ${_generated_action_source_files}
+    ${_generated_srv_header_files} ${_generated_srv_source_files}
+    ${_generated_action_header_files} ${_generated_action_source_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_typesupport_introspection_c_BIN}
   --generator-arguments-file "${generator_arguments_file}"
   DEPENDS ${target_dependencies}
@@ -178,8 +178,8 @@ endif()
 
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
   if(NOT _generated_msg_header_files STREQUAL "" OR
-     NOT _generated_srv_header_files STREQUAL "" OR
-     NOT _generated_action_header_files STREQUAL "")
+    NOT _generated_srv_header_files STREQUAL "" OR
+    NOT _generated_action_header_files STREQUAL "")
     find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(
       TESTNAME "cppcheck_rosidl_typesupport_introspection_c"

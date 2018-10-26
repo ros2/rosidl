@@ -28,7 +28,7 @@ foreach(_idl_file ${rosidl_generate_interfaces_c_IDL_FILES})
   get_filename_component(_extension "${_idl_file}" EXT)
   string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
 
-  if (_parent_folder STREQUAL "msg")
+  if(_parent_folder STREQUAL "msg")
     set(_generated_headers "_generated_msg_headers")
     set(_generated_sources "_generated_msg_sources")
   elseif(_parent_folder STREQUAL "srv")
@@ -41,7 +41,7 @@ foreach(_idl_file ${rosidl_generate_interfaces_c_IDL_FILES})
     message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
   endif()
 
-  if (_extension STREQUAL ".msg")
+  if(_extension STREQUAL ".msg")
     list(APPEND ${_generated_headers}
       "${_output_path}/${_parent_folder}/${_header_name}.h"
       "${_output_path}/${_parent_folder}/${_header_name}__functions.h"

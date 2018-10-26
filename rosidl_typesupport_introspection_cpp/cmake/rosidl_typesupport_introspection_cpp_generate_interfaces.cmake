@@ -170,8 +170,8 @@ endif()
 
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
   if(NOT _generated_msg_header_files STREQUAL "" OR
-     NOT _generated_srv_header_files STREQUAL "" OR
-     NOT _generated_action_header_files STREQUAL "")
+    NOT _generated_srv_header_files STREQUAL "" OR
+    NOT _generated_action_header_files STREQUAL "")
     find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(
       TESTNAME "cppcheck_rosidl_typesupport_introspection_cpp"

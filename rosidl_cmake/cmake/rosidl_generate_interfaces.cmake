@@ -87,15 +87,14 @@ macro(rosidl_generate_interfaces target)
     endforeach()
   endforeach()
 
-  # Separate action files from other interface files
-  rosidl_identify_action_idls(${_idl_files}
-    OUTPUT_ACTION_VAR _action_files
-    OUTPUT_IDL_VAR _idl_files)
-
+  # This block exists because CMake only allows targets to depend on generated files
+  # from the same CMakeLists.txt file. If an extension generated the `_Request` and `_Response`
+  # message then it would be in a different file and the files couldn't be depended upon by
+  # cmake targets.
   foreach(_idl_file ${_idl_files})
     get_filename_component(_extension "${_idl_file}" EXT)
-    # generate request and response messages for services
     if(_extension STREQUAL ".srv")
+      # generate request and response messages for services
       get_filename_component(_name "${_idl_file}" NAME_WE)
       get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
       get_filename_component(_parent_folder "${_parent_folder}" NAME)
@@ -131,6 +130,22 @@ macro(rosidl_generate_interfaces target)
   foreach(_idl_file ${_idl_files})
     stamp("${_idl_file}")
   endforeach()
+
+  # Separate action files from other interface files
+  rosidl_identify_action_idls(${_idl_files}
+    OUTPUT_ACTION_VAR _action_files
+    OUTPUT_IDL_VAR _idl_files)
+
+  # Convert action files into messages and services
+  if (_action_files)
+    rosidl_convert_actions_to_msg_and_srv(${target} ${_action_files}
+      OUTPUT_IDL_VAR _action_msg_and_srv_files)
+    foreach(_idl_file ${_action_msg_and_srv_files})
+      list(APPEND _idl_files "${_idl_file}")
+      # Tell CMake in this directory scope that these files are generated
+      set_property(SOURCE ${_idl_file} PROPERTY GENERATED 1)
+    endforeach()
+  endif()
 
   add_custom_target(
     ${target} ALL

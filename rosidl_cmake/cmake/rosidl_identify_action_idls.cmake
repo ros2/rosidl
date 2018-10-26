@@ -51,5 +51,5 @@ function(rosidl_identify_action_idls)
   endforeach()
 
   set(${_ARG_OUTPUT_ACTION_VAR} ${_action_files} PARENT_SCOPE)
-  set(${_ARG_OUTPUT_IDL_VAR} ${_idl_files} PARENT_SCOPE)
+  set(${_ARG_OUTPUT_IDL_VAR} ${_non_action_files} PARENT_SCOPE)
 endfunction()

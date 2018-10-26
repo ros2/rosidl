@@ -87,6 +87,11 @@ macro(rosidl_generate_interfaces target)
     endforeach()
   endforeach()
 
+  # Separate action files from other interface files
+  rosidl_identify_action_idls(${_idl_files}
+    OUTPUT_ACTION_VAR _action_files
+    OUTPUT_IDL_VAR _idl_files)
+
   foreach(_idl_file ${_idl_files})
     get_filename_component(_extension "${_idl_file}" EXT)
     # generate request and response messages for services

@@ -734,14 +734,14 @@ def parse_action_string(pkg_name, action_name, message_string):
     services = []
     #----------------------------------------------------------------------------------------------
     ## Send goal
-    implicit_input = ["string uuid"]
+    implicit_input = ["uint8[16] uuid"]
     request_message_string = '\n'.join(lines[:separator_indices[0]] + implicit_input)
     request_message = parse_message_string(
         pkg_name,
         action_name + ACTION_GOAL_MESSAGE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX,
         request_message_string)
 
-    implicit_output = ["bool accepted", "time timestamp"]
+    implicit_output = ["bool accepted", "builtin_interfaces/Time stamp"]
     response_message_string = '\n'.join(implicit_output)
     response_message = parse_message_string(
         pkg_name,
@@ -753,14 +753,14 @@ def parse_action_string(pkg_name, action_name, message_string):
 
     #----------------------------------------------------------------------------------------------
     ## Get result
-    implicit_input = ["string uuid"]
+    implicit_input = ["uint8[16] uuid"]
     request_message_string = '\n'.join(implicit_input)
     request_message = parse_message_string(
         pkg_name,
         action_name + ACTION_RESULT_MESSAGE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX,
         request_message_string)
 
-    implicit_output = ["string status"]
+    implicit_output = ["int8 status"]
     response_message_string = '\n'.join(
         lines[separator_indices[0] + 1 : separator_indices[1]] + implicit_output)
     response_message = parse_message_string(
@@ -773,7 +773,7 @@ def parse_action_string(pkg_name, action_name, message_string):
 
     #----------------------------------------------------------------------------------------------
     ## Feedback message
-    implicit_input = ["string uuid"]
+    implicit_input = ["uint8[16] uuid"]
     message_string = '\n'.join(
         lines[separator_indices[1] + 1:] + implicit_output)
     feedback_msg = parse_message_string(

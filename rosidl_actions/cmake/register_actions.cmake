@@ -12,23 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-macro(rosidl_actions_extras BIN GENERATOR_FILES TEMPLATE_DIR)
+macro(rosidl_actions_extras BIN GENERATOR_FILES)
   find_package(ament_cmake_core QUIET REQUIRED)
-  ament_register_extension(
-    "rosidl_convert_actions_to_msg_and_srv"
-    "rosidl_actions"
-    "rosidl_actions_convert_actions_to_msg_and_srv.cmake")
-  ament_register_extension(
-    "rosidl_generate_action_interfaces"
-    "rosidl_actions"
-    "rosidl_actions_generate_action_interfaces.cmake")
 
   normalize_path(BIN "${BIN}")
   set(rosidl_actions_BIN "${BIN}")
 
   normalize_path(GENERATOR_FILES "${GENERATOR_FILES}")
   set(rosidl_actions_GENERATOR_FILES "${GENERATOR_FILES}")
-
-  normalize_path(TEMPLATE_DIR "${TEMPLATE_DIR}")
-  set(rosidl_actions_TEMPLATE_DIR "${TEMPLATE_DIR}")
 endmacro()

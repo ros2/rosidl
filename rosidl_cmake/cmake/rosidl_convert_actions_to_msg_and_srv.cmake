@@ -38,28 +38,55 @@ function(rosidl_convert_actions_to_msg_and_srv target)
 
   set(_action_files ${_ARG_UNPARSED_ARGUMENTS})
 
-  set(_sub_target "${target}+_convert_actions_to_msg_and_srv")
+  # Make a list of files that will be generated
+  set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/action_msg_and_srv/${PROJECT_NAME}")
+  set(_generated_action_idl_files "")
+  foreach(_action_file ${_action_files})
+    get_filename_component(_parent_folder "${_action_file}" DIRECTORY)
+    get_filename_component(_parent_folder "${_parent_folder}" NAME)
+    get_filename_component(_action_name "${_action_file}" NAME_WE)
+    get_filename_component(_extension "${_action_file}" EXT)
 
-  add_custom_target(
-    ${_sub_target}
-    DEPENDS
-    ${_action_files}
-    SOURCES
-    ${_action_files}
+    if(NOT _extension STREQUAL ".action")
+      message(FATAL_ERROR "action files must end in .action")
+    endif()
+
+    list(APPEND _generated_action_idl_files
+      "${_output_path}/${_parent_folder}/${_action_name}_Goal.srv")
+    list(APPEND _generated_action_idl_files
+      "${_output_path}/${_parent_folder}/${_action_name}_Result.srv")
+    list(APPEND _generated_action_idl_files
+      "${_output_path}/${_parent_folder}/${_action_name}_Feedback.msg")
+  endforeach()
+
+  # Write generator arguments
+  set(generator_arguments_file "${CMAKE_CURRENT_BINARY_DIR}/rosidl_actions_convert_actions_to_msg_and_srv__arguments.json")
+  rosidl_write_generator_arguments(
+    "${generator_arguments_file}"
+    PACKAGE_NAME "${PROJECT_NAME}"  # TODO(sloretz) why is this required?
+    ROS_INTERFACE_FILES "${_action_files}"
+    ROS_INTERFACE_DEPENDENCIES ""
+    OUTPUT_DIR "${_output_path}"
+    TEMPLATE_DIR "dontneedthisbutitisrequired"
   )
 
-  # Call ament extension to do the generation
-  # A target name that generators may want to use to prefix their own target names
-  set(rosidl_convert_actions_to_msg_and_srv_TARGET ${_sub_target})
-  # Give extensions a list of .action files to generate interfaces from
-  set(rosidl_convert_actions_to_msg_and_srv_ACTION_FILES ${_action_files})
-  # If true the extension should not install anything it generates
-  set(rosidl_convert_actions_to_msg_and_srv_SKIP_INSTALL ${_ARG_SKIP_INSTALL})
-  # If true the extension should create tests for language specific linters
-  set(rosidl_convert_actions_to_msg_and_srv_ADD_LINTER_TESTS ${_ARG_ADD_LINTER_TESTS})
-  # Extension should append to this variable
-  set(rosidl_convert_actions_to_msg_and_srv_OUTPUT_IDL "")
-  ament_execute_extensions("rosidl_convert_actions_to_msg_and_srv")
+  find_package(rosidl_actions REQUIRED)
 
-  set(${_ARG_OUTPUT_IDL_VAR} ${rosidl_convert_actions_to_msg_and_srv_OUTPUT_IDL} PARENT_SCOPE)
+  # Cmake boilerplate to trigger generation
+  add_custom_command(
+    OUTPUT ${_generated_action_idl_files}
+    COMMAND ${PYTHON_EXECUTABLE} ${rosidl_actions_BIN}
+    --generator-arguments-file "${generator_arguments_file}"
+    DEPENDS ${_action_files}
+    COMMENT "Generating .msg and .srv for ROS .action interfaces"
+    VERBATIM
+  )
+
+  add_custom_target(
+    ${target}
+    DEPENDS
+    ${_generated_action_idl_files}
+  )
+
+  set(${_ARG_OUTPUT_IDL_VAR} ${_generated_action_idl_files} PARENT_SCOPE)
 endfunction()

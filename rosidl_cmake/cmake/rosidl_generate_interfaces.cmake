@@ -138,13 +138,10 @@ macro(rosidl_generate_interfaces target)
 
   # Convert action files into messages and services
   if (_action_files)
-    rosidl_convert_actions_to_msg_and_srv(${target} ${_action_files}
+    set(_convert_actions_target "${target}+_convert_actions_to_msg_and_srv")
+    rosidl_convert_actions_to_msg_and_srv(${_convert_actions_target} ${_action_files}
       OUTPUT_IDL_VAR _action_msg_and_srv_files)
-    foreach(_idl_file ${_action_msg_and_srv_files})
-      list(APPEND _idl_files "${_idl_file}")
-      # Tell CMake in this directory scope that these files are generated
-      set_property(SOURCE ${_idl_file} PROPERTY GENERATED 1)
-    endforeach()
+    message(WARNING "xxx got generated files '${_action_msg_and_srv_files}'")
   endif()
 
   add_custom_target(
@@ -152,9 +149,16 @@ macro(rosidl_generate_interfaces target)
     DEPENDS
     ${_idl_files}
     ${_dep_files}
+    ${_convert_actions_target}
     SOURCES
     ${_idl_files}
   )
+
+  # Tell CMake in this directory scope that these files are generated
+  foreach(_idl_file ${_action_msg_and_srv_files})
+    list(APPEND _idl_files "${_idl_file}")
+    set_property(SOURCE ${_idl_file} PROPERTY GENERATED 1)
+  endforeach()
 
   if(NOT _ARG_SKIP_INSTALL)
     if(NOT _ARG_SKIP_GROUP_MEMBERSHIP_CHECK)
@@ -202,6 +206,7 @@ macro(rosidl_generate_interfaces target)
   set(rosidl_generate_interfaces_TARGET ${target})
   set(rosidl_generate_interfaces_IDL_FILES ${_idl_files})
   set(rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES ${_recursive_dependencies})
+  set(rosidl_generate_interfaces_DEPEND_ON_TARGETS "${_convert_actions_target}")
   set(rosidl_generate_interfaces_LIBRARY_NAME ${_ARG_LIBRARY_NAME})
   set(rosidl_generate_interfaces_SKIP_INSTALL ${_ARG_SKIP_INSTALL})
   set(rosidl_generate_interfaces_ADD_LINTER_TESTS ${_ARG_ADD_LINTER_TESTS})

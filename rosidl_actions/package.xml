@@ -8,17 +8,13 @@
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <buildtool_export_depend>rosidl_cmake</buildtool_export_depend>
 
   <depend>rosidl_parser</depend>
-  <depend>rosidl_cmake</depend>
 
   <test_depend>ament_cmake_pytest</test_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
   <test_depend>python3-pytest</test_depend>
-
-  <member_of_group>rosidl_generator_packages</member_of_group>
 
   <export>
     <build_type>ament_cmake</build_type>

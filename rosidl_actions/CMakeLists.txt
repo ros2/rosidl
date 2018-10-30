@@ -7,9 +7,6 @@ find_package(ament_cmake_python REQUIRED)
 
 # TODO(sloretz) what does this do?
 ament_export_dependencies(ament_cmake)
-ament_export_dependencies(rosidl_cmake)
-ament_index_register_resource("rosidl_generator_packages")
-
 ament_python_install_package(${PROJECT_NAME})
 
 if(BUILD_TESTING)
@@ -34,6 +31,6 @@ install(
 )
 
 install(
-  DIRECTORY cmake resource
+  DIRECTORY cmake
   DESTINATION share/${PROJECT_NAME}
 )

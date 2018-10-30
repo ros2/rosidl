@@ -18,7 +18,6 @@ from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 from rosidl_cmake import expand_template
 from rosidl_cmake import get_newest_modification_time
 from rosidl_cmake import read_generator_arguments
-from rosidl_parser import parse_action_file
 from rosidl_parser import parse_message_file
 from rosidl_parser import parse_service_file
 
@@ -73,38 +72,6 @@ def generate_c(generator_arguments_file):
                 generated_file = os.path.join(
                     args['output_dir'], subfolder, generated_filename %
                     convert_camel_case_to_lower_case_underscore(spec.srv_name))
-                expand_template(
-                    template_file, data, generated_file,
-                    minimum_timestamp=latest_target_timestamp)
-        elif extension == '.action':
-            (services, feedback_msg) = parse_action_file(args['package_name'], ros_interface_file)
-
-            # action services spec
-            for spec in services:
-                for template_file, generated_filename in mapping_srvs.items():
-                    data = {'spec': spec, 'subfolder': subfolder}
-                    data.update(functions)
-                    generated_file = os.path.join(
-                        args['output_dir'], subfolder, generated_filename %
-                        convert_camel_case_to_lower_case_underscore(spec.srv_name))
-                    expand_template(
-                        template_file, data, generated_file,
-                        minimum_timestamp=latest_target_timestamp)
-
-            # action feedback message spec
-            spec = feedback_msg
-            for template_file, generated_filename in mapping_msgs.items():
-                generated_file = os.path.join(
-                    args['output_dir'], subfolder, generated_filename %
-                    convert_camel_case_to_lower_case_underscore(spec.base_type.type))
-                data = {
-                    'spec': spec,
-                    'pkg': spec.base_type.pkg_name,
-                    'msg': spec.msg_name,
-                    'type': spec.base_type.type,
-                    'subfolder': subfolder,
-                }
-                data.update(functions)
                 expand_template(
                     template_file, data, generated_file,
                     minimum_timestamp=latest_target_timestamp)

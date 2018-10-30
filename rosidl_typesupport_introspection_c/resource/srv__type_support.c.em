@@ -7,16 +7,19 @@
 @# Context:
 @#  - spec (rosidl_parser.ServiceSpecification)
 @#    Parsed specification of the .srv file
+@#  - subfolder (string)
+@#    The subfolder / subnamespace of the message
+@#    Either 'srv' or 'action'
 @#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @
 @{
 header_guard_parts = [
-    spec.pkg_name, 'srv',
+    spec.pkg_name, subfolder,
     get_header_filename_from_msg_name(spec.srv_name) + '__type_support_h']
 header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 
-function_prefix = '%s__srv__rosidl_typesupport_introspection_c' % spec.pkg_name
+function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.pkg_name, subfolder)
 }@
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
@@ -24,9 +27,9 @@ function_prefix = '%s__srv__rosidl_typesupport_introspection_c' % spec.pkg_name
 #include <rosidl_generator_c/service_type_support_struct.h>
 #include "@(spec.pkg_name)/msg/rosidl_typesupport_introspection_c__visibility_control.h"
 
-#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__rosidl_typesupport_introspection_c.h"
-#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.request.base_type.type))__rosidl_typesupport_introspection_c.h"
-#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.response.base_type.type))__rosidl_typesupport_introspection_c.h"
+#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.srv_name))__rosidl_typesupport_introspection_c.h"
+#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.request.base_type.type))__rosidl_typesupport_introspection_c.h"
+#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.response.base_type.type))__rosidl_typesupport_introspection_c.h"
 
 #include "rosidl_typesupport_introspection_c/identifier.h"
 #include "rosidl_typesupport_introspection_c/service_introspection.h"
@@ -50,14 +53,14 @@ static rosidl_service_type_support_t @(function_prefix)__@(spec.srv_name)_servic
 
 // Forward declaration of request/response type support functions
 const rosidl_message_type_support_t *
-ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), srv, @(spec.srv_name)_Request)();
+ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(subfolder), @(spec.srv_name)_Request)();
 
 const rosidl_message_type_support_t *
-ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), srv, @(spec.srv_name)_Response)();
+ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(subfolder), @(spec.srv_name)_Response)();
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(spec.pkg_name)
 const rosidl_service_type_support_t *
-ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(spec.srv_name))() {
+ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(subfolder), @(spec.srv_name))() {
   if (!@(function_prefix)__@(spec.srv_name)_service_type_support_handle.typesupport_identifier) {
     @(function_prefix)__@(spec.srv_name)_service_type_support_handle.typesupport_identifier =
       rosidl_typesupport_introspection_c__identifier;
@@ -68,12 +71,12 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspecti
   if (!service_members->request_members_) {
     service_members->request_members_ =
       (const rosidl_typesupport_introspection_c__MessageMembers *)
-      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), srv, @(spec.srv_name)_Request)()->data;
+      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(subfolder), @(spec.srv_name)_Request)()->data;
   }
   if (!service_members->response_members_) {
     service_members->response_members_ =
       (const rosidl_typesupport_introspection_c__MessageMembers *)
-      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), srv, @(spec.srv_name)_Response)()->data;
+      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(subfolder), @(spec.srv_name)_Response)()->data;
   }
 
   return &@(function_prefix)__@(spec.srv_name)_service_type_support_handle;

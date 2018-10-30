@@ -7,6 +7,9 @@
 @# Context:
 @#  - spec (rosidl_parser.ServiceSpecification)
 @#    Parsed specification of the .srv file
+@#  - subfolder (string)
+@#    The subfolder / subnamespace of the message
+@#    Either 'srv' or 'action'
 @#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @
@@ -17,19 +20,19 @@
 
 #include "rosidl_typesupport_introspection_cpp/visibility_control.h"
 
-#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__struct.hpp"
+#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.srv_name))__struct.hpp"
 #include "rosidl_typesupport_introspection_cpp/identifier.hpp"
 #include "rosidl_typesupport_introspection_cpp/message_type_support_decl.hpp"
 #include "rosidl_typesupport_introspection_cpp/service_introspection.hpp"
 #include "rosidl_typesupport_introspection_cpp/service_type_support_decl.hpp"
 
-#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.request.base_type.type))__struct.hpp"
-#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.response.base_type.type))__struct.hpp"
+#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.request.base_type.type))__struct.hpp"
+#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.response.base_type.type))__struct.hpp"
 
 namespace @(spec.pkg_name)
 {
 
-namespace srv
+namespace @(subfolder)
 {
 
 namespace rosidl_typesupport_introspection_cpp
@@ -53,7 +56,7 @@ static const rosidl_service_type_support_t @(spec.srv_name)_service_type_support
 
 }  // namespace rosidl_typesupport_introspection_cpp
 
-}  // namespace srv
+}  // namespace @(subfolder)
 
 }  // namespace @(spec.pkg_name)
 
@@ -64,11 +67,11 @@ namespace rosidl_typesupport_introspection_cpp
 template<>
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_service_type_support_t *
-get_service_type_support_handle<@(spec.pkg_name)::srv::@(spec.srv_name)>()
+get_service_type_support_handle<@(spec.pkg_name)::@(subfolder)::@(spec.srv_name)>()
 {
   // get a handle to the value to be returned
   auto service_type_support =
-    &::@(spec.pkg_name)::srv::rosidl_typesupport_introspection_cpp::@(spec.srv_name)_service_type_support_handle;
+    &::@(spec.pkg_name)::@(subfolder)::rosidl_typesupport_introspection_cpp::@(spec.srv_name)_service_type_support_handle;
   // get a non-const and properly typed version of the data void *
   auto service_members = const_cast<::rosidl_typesupport_introspection_cpp::ServiceMembers *>(
     static_cast<const ::rosidl_typesupport_introspection_cpp::ServiceMembers *>(
@@ -84,7 +87,7 @@ get_service_type_support_handle<@(spec.pkg_name)::srv::@(spec.srv_name)>()
       const ::rosidl_typesupport_introspection_cpp::MessageMembers *
       >(
       ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<
-        ::@(spec.pkg_name)::srv::@(spec.request.base_type.type)
+        ::@(spec.pkg_name)::@(subfolder)::@(spec.request.base_type.type)
       >()->data
       );
     // initialize the response_members_ with the static function from the external library
@@ -92,7 +95,7 @@ get_service_type_support_handle<@(spec.pkg_name)::srv::@(spec.srv_name)>()
       const ::rosidl_typesupport_introspection_cpp::MessageMembers *
       >(
       ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<
-        ::@(spec.pkg_name)::srv::@(spec.response.base_type.type)
+        ::@(spec.pkg_name)::@(subfolder)::@(spec.response.base_type.type)
       >()->data
       );
   }
@@ -109,8 +112,8 @@ extern "C"
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_service_type_support_t *
-ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_cpp, @(spec.pkg_name), @(spec.srv_name))() {
-  return ::rosidl_typesupport_introspection_cpp::get_service_type_support_handle<@(spec.pkg_name)::srv::@(spec.srv_name)>();
+ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_cpp, @(spec.pkg_name), @(subfolder), @(spec.srv_name))() {
+  return ::rosidl_typesupport_introspection_cpp::get_service_type_support_handle<@(spec.pkg_name)::@(subfolder)::@(spec.srv_name)>();
 }
 
 #ifdef __cplusplus

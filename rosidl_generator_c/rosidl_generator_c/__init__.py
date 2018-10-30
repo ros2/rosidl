@@ -67,7 +67,7 @@ def generate_c(generator_arguments_file):
         elif extension == '.srv':
             spec = parse_service_file(args['package_name'], ros_interface_file)
             for template_file, generated_filename in mapping_srvs.items():
-                data = {'spec': spec}
+                data = {'spec': spec, 'subfolder': subfolder}
                 data.update(functions)
                 generated_file = os.path.join(
                     args['output_dir'], subfolder, generated_filename %

@@ -15,7 +15,7 @@
 @#    full type of the message; equivalent to spec.base_type.type
 @#  - subfolder (string)
 @#    The subfolder / subnamespace of the message
-@#    Either 'msg' or 'srv'
+@#    Could be 'msg', 'srv' or 'action'
 @#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @

@@ -18,28 +18,33 @@ set(_generated_msg_header_files "")
 set(_generated_msg_source_files "")
 set(_generated_srv_header_files "")
 set(_generated_srv_source_files "")
+set(_generated_action_header_files "")
+set(_generated_action_source_files "")
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
+  get_filename_component(_extension "${_idl_file}" EXT)
   get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
   get_filename_component(_msg_name "${_idl_file}" NAME_WE)
   string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
-  if(_parent_folder STREQUAL "msg")
-    list(APPEND _generated_msg_header_files
-      "${_output_path}/${_parent_folder}/${_header_name}__rosidl_typesupport_introspection_cpp.hpp"
-    )
-    list(APPEND _generated_msg_source_files
-      "${_output_path}/${_parent_folder}/${_header_name}__type_support.cpp"
-    )
-  elseif(_parent_folder STREQUAL "srv")
-    list(APPEND _generated_srv_header_files
-      "${_output_path}/${_parent_folder}/${_header_name}__rosidl_typesupport_introspection_cpp.hpp"
-    )
-    list(APPEND _generated_srv_source_files
-      "${_output_path}/${_parent_folder}/${_header_name}__type_support.cpp"
-    )
+  if(_extension STREQUAL ".msg")
+    set(_allowed_parent_folders "msg" "srv" "action")
+    if(NOT _parent_folder IN_LIST _allowed_parent_folders)
+      message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
+    endif()
+  elseif(_extension STREQUAL ".srv")
+    set(_allowed_parent_folders "srv" "action")
+    if(NOT _parent_folder IN_LIST _allowed_parent_folders)
+      message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
+    endif()
   else()
-    message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
+    message(FATAL_ERROR "Interface file with unknown extension: ${_idl_file}")
   endif()
+  set(_generated_source_files "_generated_${_parent_folder}_source_files")
+  set(_generated_header_files "_generated_${_parent_folder}_header_files")
+  list(APPEND ${_generated_header_files}
+    "${_output_path}/${_parent_folder}/${_header_name}__rosidl_typesupport_introspection_cpp.hpp")
+  list(APPEND ${_generated_source_files}
+    "${_output_path}/${_parent_folder}/${_header_name}__type_support.cpp")
 endforeach()
 
 set(_dependency_files "")
@@ -85,6 +90,7 @@ rosidl_write_generator_arguments(
 add_custom_command(
   OUTPUT ${_generated_msg_header_files} ${_generated_msg_source_files}
     ${_generated_srv_header_files} ${_generated_srv_source_files}
+    ${_generated_action_header_files} ${_generated_action_source_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_typesupport_introspection_cpp_BIN}
   --generator-arguments-file "${generator_arguments_file}"
   DEPENDS ${target_dependencies}
@@ -96,7 +102,8 @@ set(_target_suffix "__rosidl_typesupport_introspection_cpp")
 
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} ${rosidl_typesupport_introspection_cpp_LIBRARY_TYPE}
   ${_generated_msg_header_files} ${_generated_msg_source_files}
-  ${_generated_srv_header_files} ${_generated_srv_source_files})
+  ${_generated_srv_header_files} ${_generated_srv_source_files}
+  ${_generated_action_header_files} ${_generated_action_source_files})
 if(rosidl_generate_interfaces_LIBRARY_NAME)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PROPERTIES OUTPUT_NAME "${rosidl_generate_interfaces_LIBRARY_NAME}${_target_suffix}")
@@ -146,6 +153,12 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
       DESTINATION "include/${PROJECT_NAME}/srv"
     )
   endif()
+  if(NOT _generated_action_header_files STREQUAL "")
+    install(
+      FILES ${_generated_action_header_files}
+      DESTINATION "include/${PROJECT_NAME}/action"
+    )
+  endif()
   install(
     TARGETS ${rosidl_generate_interfaces_TARGET}${_target_suffix}
     ARCHIVE DESTINATION lib
@@ -156,7 +169,9 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
 endif()
 
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
-  if(NOT _generated_msg_header_files STREQUAL "" OR NOT _generated_srv_header_files STREQUAL "")
+  if(NOT _generated_msg_header_files STREQUAL "" OR
+    NOT _generated_srv_header_files STREQUAL "" OR
+    NOT _generated_action_header_files STREQUAL "")
     find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(
       TESTNAME "cppcheck_rosidl_typesupport_introspection_cpp"

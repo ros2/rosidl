@@ -709,7 +709,7 @@ def validate_field_types(spec, known_msg_types):
         if base_type not in known_msg_types:
             raise UnknownMessageType(
                 "%s interface '%s' contains an unknown field type: %s" %
-                (spec_type, spec.base_type, field))
+                (spec_type, base_type, field))
 
 
 class ServiceSpecification:
@@ -760,6 +760,13 @@ def parse_service_string(pkg_name, srv_name, message_string):
 
     return ServiceSpecification(pkg_name, srv_name, request_message, response_message)
 
+class ActionSpecification:
+
+    def __init__(self, pkg_name, action_name, services, feedback_message):
+        self.pkg_name = pkg_name
+        self.action_name = action_name
+        self.services = services
+        self.feedback = feedback_message
 
 def parse_action_file(pkg_name, interface_filename):
     basename = os.path.basename(interface_filename)
@@ -833,4 +840,4 @@ def parse_action_string(pkg_name, action_name, action_string):
         pkg_name, action_name + ACTION_FEEDBACK_MESSAGE_SUFFIX, message_string)
     # ---------------------------------------------------------------------------------------------
 
-    return (services, feedback_msg)
+    return ActionSpecification(pkg_name, action_name, services, feedback_msg)

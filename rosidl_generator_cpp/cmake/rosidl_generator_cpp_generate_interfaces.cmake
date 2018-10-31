@@ -61,6 +61,8 @@ set(target_dependencies
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__struct.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__traits.hpp.em"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/action.hpp.em"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/action__struct.hpp.em"
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files})
 foreach(dep ${target_dependencies})

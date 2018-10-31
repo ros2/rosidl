@@ -87,10 +87,7 @@ macro(rosidl_generate_interfaces target)
     endforeach()
   endforeach()
 
-  # This block exists because CMake only allows targets to depend on generated files
-  # from the same CMakeLists.txt file. If an extension generated the `_Request` and `_Response`
-  # message then it would be in a different file and the files couldn't be depended upon by
-  # cmake targets.
+  # Split .srv into two .msg files
   foreach(_idl_file ${_idl_files})
     get_filename_component(_extension "${_idl_file}" EXT)
     if(_extension STREQUAL ".srv")
@@ -141,7 +138,6 @@ macro(rosidl_generate_interfaces target)
     set(_convert_actions_target "${target}+_convert_actions_to_msg_and_srv")
     rosidl_convert_actions_to_msg_and_srv(${_convert_actions_target} ${_action_files}
       OUTPUT_IDL_VAR _action_msg_and_srv_files)
-    message(WARNING "xxx got generated files '${_action_msg_and_srv_files}'")
   endif()
 
   add_custom_target(
@@ -206,7 +202,6 @@ macro(rosidl_generate_interfaces target)
   set(rosidl_generate_interfaces_TARGET ${target})
   set(rosidl_generate_interfaces_IDL_FILES ${_idl_files})
   set(rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES ${_recursive_dependencies})
-  set(rosidl_generate_interfaces_DEPEND_ON_TARGETS "${_convert_actions_target}")
   set(rosidl_generate_interfaces_LIBRARY_NAME ${_ARG_LIBRARY_NAME})
   set(rosidl_generate_interfaces_SKIP_INSTALL ${_ARG_SKIP_INSTALL})
   set(rosidl_generate_interfaces_ADD_LINTER_TESTS ${_ARG_ADD_LINTER_TESTS})

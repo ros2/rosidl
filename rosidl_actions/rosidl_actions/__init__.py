@@ -36,11 +36,17 @@ def generate_msg_and_srv(generator_arguments_file):
             except FileExistsError:
                 pass
 
+            generated_folder = os.path.join(args['output_dir'], subfolder)
             for service in services:
-                generated_file = os.path.join(
-                    args['output_dir'], subfolder, service.srv_name + '.srv')
-                with open(generated_file, 'w+') as fout:
+                srv_file = os.path.join(generated_folder, service.srv_name + '.srv')
+                req_file = os.path.join(generated_folder, service.srv_name + '_Request.msg')
+                rsp_file = os.path.join(generated_folder, service.srv_name + '_Response.msg')
+                with open(srv_file, 'w+') as fout:
                     fout.write(str(service))
+                with open(req_file, 'w+') as fout:
+                    fout.write(str(service.request))
+                with open(rsp_file, 'w+') as fout:
+                    fout.write(str(service.response))
 
             generated_file = os.path.join(args['output_dir'], subfolder, message.msg_name + '.msg')
             with open(generated_file, 'w+') as fout:

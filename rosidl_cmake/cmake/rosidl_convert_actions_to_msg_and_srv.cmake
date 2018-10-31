@@ -54,7 +54,15 @@ function(rosidl_convert_actions_to_msg_and_srv target)
     list(APPEND _generated_action_idl_files
       "${_output_path}/${_parent_folder}/${_action_name}_Goal.srv")
     list(APPEND _generated_action_idl_files
+      "${_output_path}/${_parent_folder}/${_action_name}_Goal_Request.msg")
+    list(APPEND _generated_action_idl_files
+      "${_output_path}/${_parent_folder}/${_action_name}_Goal_Response.msg")
+    list(APPEND _generated_action_idl_files
       "${_output_path}/${_parent_folder}/${_action_name}_Result.srv")
+    list(APPEND _generated_action_idl_files
+      "${_output_path}/${_parent_folder}/${_action_name}_Result_Request.msg")
+    list(APPEND _generated_action_idl_files
+      "${_output_path}/${_parent_folder}/${_action_name}_Result_Response.msg")
     list(APPEND _generated_action_idl_files
       "${_output_path}/${_parent_folder}/${_action_name}_Feedback.msg")
   endforeach()

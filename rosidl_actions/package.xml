@@ -4,7 +4,8 @@
   <name>rosidl_actions</name>
   <version>0.5.1</version>
   <description>Converts action files into message and service files.</description>
-  <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
+  <author email="sloretz@openrobotics.org">Shane Loretz</author>
+  <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

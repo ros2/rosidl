@@ -32,4 +32,10 @@
     typesupport_name, get_service_type_support_handle, \
     package_name, interface_type, service_name)
 
+#define ROSIDL_TYPESUPPORT_INTERFACE__ACTION_SYMBOL_NAME( \
+    typesupport_name, package_name, interface_type, action_name) \
+  ROSIDL_TYPESUPPORT_INTERFACE__SYMBOL_NAME( \
+    typesupport_name, get_action_type_support_handle, \
+    package_name, interface_type, action_name)
+
 #endif  // ROSIDL_TYPESUPPORT_INTERFACE__MACROS_H_

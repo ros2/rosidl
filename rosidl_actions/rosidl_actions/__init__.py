@@ -31,10 +31,7 @@ def generate_msg_and_srv(generator_arguments_file):
             services, message = parse_action_file(args['package_name'], ros_interface_file)
 
             # create folder if necessary
-            try:
-                os.makedirs(os.path.join(args['output_dir'], subfolder))
-            except FileExistsError:
-                pass
+            os.makedirs(os.path.join(args['output_dir'], subfolder), exist_ok=True)
 
             generated_folder = os.path.join(args['output_dir'], subfolder)
             for service in services:

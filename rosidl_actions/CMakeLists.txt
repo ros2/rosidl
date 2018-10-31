@@ -5,7 +5,6 @@ project(rosidl_actions)
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 
-# TODO(sloretz) what does this do?
 ament_export_dependencies(ament_cmake)
 ament_python_install_package(${PROJECT_NAME})
 

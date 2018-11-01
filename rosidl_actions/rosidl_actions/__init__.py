@@ -14,14 +14,12 @@
 
 import os
 
-from rosidl_cmake import convert_camel_case_to_lower_case_underscore
-from rosidl_cmake import expand_template
-from rosidl_cmake import get_newest_modification_time
 from rosidl_cmake import read_generator_arguments
 from rosidl_parser import parse_action_file
 
 
 def generate_msg_and_srv(generator_arguments_file):
+    """Write 'msg' and 'srv' files from 'action' files."""
     args = read_generator_arguments(generator_arguments_file)
 
     for ros_interface_file in args['ros_interface_files']:

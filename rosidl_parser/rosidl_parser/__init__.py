@@ -25,6 +25,7 @@ SERVICE_REQUEST_RESPONSE_SEPARATOR = '---'
 SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
 SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
 
+ACTION_REQUEST_RESPONSE_SEPARATOR = '---'
 ACTION_GOAL_MESSAGE_SUFFIX =  '_Goal'
 ACTION_RESULT_MESSAGE_SUFFIX =  '_Result'
 ACTION_FEEDBACK_MESSAGE_SUFFIX = '_Feedback'
@@ -717,25 +718,20 @@ def parse_action_file(pkg_name, interface_filename):
         return parse_action_string(pkg_name, action_name, h.read())
 
 
-def parse_action_string(pkg_name, action_name, message_string):
-    lines = message_string.splitlines()
-    separator_indices = [
-        index for index, line in enumerate(lines) if line == SERVICE_REQUEST_RESPONSE_SEPARATOR]
-    if not separator_indices:
+def parse_action_string(pkg_name, action_name, action_string):
+    action_blocks = action_string.split(ACTION_REQUEST_RESPONSE_SEPARATOR)
+    if len(action_blocks) != 2:
         raise InvalidServiceSpecification(
-            "Could not find separator '%s' between action goal, result and feedback services" %
-            SERVICE_REQUEST_RESPONSE_SEPARATOR)
-    if len(separator_indices) != 3:
-        raise InvalidServiceSpecification(
-            "Could not find unique separator '%s' between action goal, result and \
-            feedback services" %
-            SERVICE_REQUEST_RESPONSE_SEPARATOR)
+            "Number of '%s' separators nonconformant with action definition" %
+            ACTION_REQUEST_RESPONSE_SEPARATOR)
+
+    goal_service_string, result_service_string, feedback_message_string = action_blocks
 
     services = []
     #----------------------------------------------------------------------------------------------
     ## Send goal
     implicit_input = ["uint8[16] uuid"]
-    request_message_string = '\n'.join(lines[:separator_indices[0]] + implicit_input)
+    request_message_string = goal_service_string + '\n' + '\n'.join(implicit_input)
     request_message = parse_message_string(
         pkg_name,
         action_name + ACTION_GOAL_MESSAGE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX,
@@ -748,7 +744,11 @@ def parse_action_string(pkg_name, action_name, message_string):
         action_name + ACTION_GOAL_MESSAGE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX,
         response_message_string)
 
-    services.append(ServiceSpecification(pkg_name, action_name, request_message, response_message))
+    services.append(ServiceSpecification(
+        pkg_name,
+        action_name + ACTION_GOAL_MESSAGE_SUFFIX,
+        request_message,
+        response_message))
     #----------------------------------------------------------------------------------------------
 
     #----------------------------------------------------------------------------------------------
@@ -761,21 +761,23 @@ def parse_action_string(pkg_name, action_name, message_string):
         request_message_string)
 
     implicit_output = ["int8 status"]
-    response_message_string = '\n'.join(
-        lines[separator_indices[0] + 1 : separator_indices[1]] + implicit_output)
+    response_message_string = result_service_string + '\n' + '\n'.join(implicit_output)
     response_message = parse_message_string(
         pkg_name,
         action_name + ACTION_RESULT_MESSAGE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX,
         response_message_string)
 
-    services.append(ServiceSpecification(pkg_name, action_name, request_message, response_message))
+    services.append(ServiceSpecification(
+        pkg_name,
+        action_name + ACTION_RESULT_MESSAGE_SUFFIX,
+        request_message,
+        response_message))
     #----------------------------------------------------------------------------------------------
 
     #----------------------------------------------------------------------------------------------
     ## Feedback message
     implicit_input = ["uint8[16] uuid"]
-    message_string = '\n'.join(
-        lines[separator_indices[1] + 1:] + implicit_output)
+    message_string = feedback_message_string + '\n' + '\n'.join(implicit_input)
     feedback_msg = parse_message_string(
         pkg_name, action_name + ACTION_FEEDBACK_MESSAGE_SUFFIX, message_string)
     #----------------------------------------------------------------------------------------------

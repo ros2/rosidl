@@ -401,6 +401,7 @@ def parse_message_file(pkg_name, interface_filename):
 def parse_message_string(pkg_name, msg_name, message_string):
     fields = []
     constants = []
+    field_names = []
 
     lines = message_string.splitlines()
     for line in lines:
@@ -436,6 +437,17 @@ def parse_message_string(pkg_name, msg_name, message_string):
                     line=line, pkg=pkg_name, msg=msg_name, err=err,
                 ))
                 raise
+
+            # check for possible field name collision in message definition
+            if field_name in field_names:
+                print("Duplicate parameter name '{field_name}' processing '{line}' of \
+                    '{pkg}/{msg}'. If this resulted from an action definition please \
+                    check for implicit parameter names (uuid, status)".format(
+                    field_name=field_name, line=line, pkg=pkg_name, msg=msg_name))
+                raise InvalidResourceName(field_name)
+            else:
+                field_names.append(field_name)
+
         else:
             # line contains a constant
             name, _, value = rest.partition(CONSTANT_SEPARATOR)
@@ -720,8 +732,8 @@ def parse_action_file(pkg_name, interface_filename):
 
 def parse_action_string(pkg_name, action_name, action_string):
     action_blocks = action_string.split(ACTION_REQUEST_RESPONSE_SEPARATOR)
-    if len(action_blocks) != 2:
-        raise InvalidServiceSpecification(
+    if len(action_blocks) != 3:
+        raise InvalidSpecification(
             "Number of '%s' separators nonconformant with action definition" %
             ACTION_REQUEST_RESPONSE_SEPARATOR)
 

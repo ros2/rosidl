@@ -26,4 +26,4 @@ const rosidl_action_type_support_t * get_action_type_support_handle();
 
 }  // namespace rosidl_generator_cpp
 
-#endif  // ROSIDL_GENERATOR_CPP__SERVICE_TYPE_SUPPORT_DECL_HPP_
+#endif  // ROSIDL_GENERATOR_CPP__ACTION_TYPE_SUPPORT_DECL_HPP_

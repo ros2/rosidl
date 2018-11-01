@@ -134,7 +134,7 @@ macro(rosidl_generate_interfaces target)
     OUTPUT_IDL_VAR _idl_files)
 
   # Convert action files into messages and services
-  if (_action_files)
+  if(_action_files)
     set(_convert_actions_target "${target}+_convert_actions_to_msg_and_srv")
     rosidl_convert_actions_to_msg_and_srv(${_convert_actions_target} ${_action_files}
       OUTPUT_IDL_VAR _action_msg_and_srv_files)

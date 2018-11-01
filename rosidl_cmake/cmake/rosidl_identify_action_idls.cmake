@@ -41,7 +41,7 @@ function(rosidl_identify_action_idls)
 
   set(_action_files "")
   set(_non_action_files "")
-  foreach (_idl_file ${_ARG_UNPARSED_ARGUMENTS})
+  foreach(_idl_file ${_ARG_UNPARSED_ARGUMENTS})
     get_filename_component(_extension "${_idl_file}" EXT)
     if(_extension STREQUAL ".action")
       list(APPEND _action_files ${_idl_file})

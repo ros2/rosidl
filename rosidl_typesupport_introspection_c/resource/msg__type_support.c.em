@@ -40,7 +40,7 @@ for field in spec.fields:
         if field.type.type == 'string':
             field_names = includes.setdefault('rosidl_generator_c/string_functions.h', [])
         else:
-            field_names = includes.setdefault('rosidl_generator_c/primitives_array_functions.h', [])
+            field_names = includes.setdefault('rosidl_generator_c/primitives_sequence_functions.h', [])
         field_names.append(field.name)
     if not field.type.is_primitive_type():
         field_names = includes.setdefault(

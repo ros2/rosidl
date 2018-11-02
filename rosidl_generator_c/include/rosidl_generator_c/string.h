@@ -17,7 +17,7 @@
 
 #include <stddef.h>
 
-#include "rosidl_generator_c/primitives_array.h"
+#include "rosidl_generator_c/primitives_sequence.h"
 
 /// String struct
 typedef struct rosidl_generator_c__String

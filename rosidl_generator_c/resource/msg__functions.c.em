@@ -41,7 +41,7 @@ for field in spec.fields:
             field_names.append(field.name)
         else:
             if field.type.is_dynamic_array():
-                field_names = includes.setdefault('rosidl_generator_c/primitives_array_functions.h', [])
+                field_names = includes.setdefault('rosidl_generator_c/primitives_sequence_functions.h', [])
                 field_names.append(field.name)
     else:
         field_names = includes.setdefault(

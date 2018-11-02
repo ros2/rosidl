@@ -22,7 +22,7 @@
 #include "rosidl_generator_c/msg/nested__functions.h"
 #include "rosidl_generator_c/msg/various__struct.h"
 #include "rosidl_generator_c/msg/various__functions.h"
-#include "rosidl_generator_c/primitives_array_functions.h"
+#include "rosidl_generator_c/primitives_sequence_functions.h"
 #include "rosidl_generator_c/string_functions.h"
 
 int func()
@@ -64,13 +64,13 @@ int func()
     return 1;
   }
 
-  bool success = rosidl_generator_c__uint64__Array__init(&msg->unbounded_uint64_values, 5);
+  bool success = rosidl_generator_c__uint64__Sequence__init(&msg->unbounded_uint64_values, 5);
   if (!success) {
     fprintf(stderr, "failed to allocate primitive array\n");
     return 1;
   }
 
-  success = rosidl_generator_c__msg__Nested__Array__init(&msg->unbounded_nested, 10);
+  success = rosidl_generator_c__msg__Nested__Sequence__init(&msg->unbounded_nested, 10);
   if (!success) {
     fprintf(stderr, "failed to allocate sub message array\n");
     return 1;

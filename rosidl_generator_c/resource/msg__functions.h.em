@@ -23,7 +23,7 @@ header_guard_parts = [
 header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 
 msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_type.type)
-array_typename = '%s__Array' % msg_typename
+sequence_typename = '%s__Sequence' % msg_typename
 }@
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
@@ -102,7 +102,7 @@ void
  */
 ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
 bool
-@(array_typename)__init(@(array_typename) * array, size_t size);
+@(sequence_typename)__init(@(sequence_typename) * array, size_t size);
 
 /// Finalize array of @(spec.base_type.pkg_name)/@(spec.base_type.type) messages.
 /**
@@ -112,28 +112,28 @@ bool
  */
 ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
 void
-@(array_typename)__fini(@(array_typename) * array);
+@(sequence_typename)__fini(@(sequence_typename) * array);
 
 /// Create array of @(spec.base_type.pkg_name)/@(spec.base_type.type) messages.
 /**
  * It allocates the memory for the array and
- * calls @(array_typename)__init().
+ * calls @(sequence_typename)__init().
  * \param[in] size The size / capacity of the array.
  * \return The pointer to the initialized array if successful, otherwise NULL
  */
 ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
-@(array_typename) *
-@(array_typename)__create(size_t size);
+@(sequence_typename) *
+@(sequence_typename)__create(size_t size);
 
 /// Destroy array of @(spec.base_type.pkg_name)/@(spec.base_type.type) messages.
 /**
- * It calls @(array_typename)__fini() on the array,
+ * It calls @(sequence_typename)__fini() on the array,
  * and frees the memory of the array.
  * \param[in,out] array The initialized array pointer.
  */
 ROSIDL_GENERATOR_C_PUBLIC_@(spec.base_type.pkg_name)
 void
-@(array_typename)__destroy(@(array_typename) * array);
+@(sequence_typename)__destroy(@(sequence_typename) * array);
 
 #ifdef __cplusplus
 }

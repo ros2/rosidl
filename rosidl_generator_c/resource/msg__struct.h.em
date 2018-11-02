@@ -24,7 +24,7 @@ header_guard_parts = [
 header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 
 msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_type.type)
-array_typename = '%s__Array' % msg_typename
+sequence_typename = '%s__Sequence' % msg_typename
 }@
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
@@ -51,7 +51,7 @@ for field in spec.fields:
             field_names.append(field.name)
         else:
             if field.type.is_dynamic_array():
-                field_names = includes.setdefault('rosidl_generator_c/primitives_array.h', [])
+                field_names = includes.setdefault('rosidl_generator_c/primitives_sequence.h', [])
                 field_names.append(field.name)
     else:
         field_names = includes.setdefault(
@@ -164,14 +164,14 @@ typedef struct @(msg_typename)
 @# Struct for an array of messages
 @#######################################################################
 /// Struct for an array of messages
-typedef struct @(array_typename)
+typedef struct @(sequence_typename)
 {
   @(msg_typename) * data;
   /// The number of valid items in data
   size_t size;
   /// The number of allocated items in data
   size_t capacity;
-} @(array_typename);
+} @(sequence_typename);
 
 #ifdef __cplusplus
 }

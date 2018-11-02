@@ -18,7 +18,7 @@ find_package(rosidl_typesupport_interface REQUIRED)
 include_directories(include)
 add_library(${PROJECT_NAME}
   "src/message_type_support.c"
-  "src/primitives_array_functions.c"
+  "src/primitives_sequence_functions.c"
   "src/service_type_support.c"
   "src/string_functions.c"
 )

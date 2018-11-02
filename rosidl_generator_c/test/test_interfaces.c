@@ -21,7 +21,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "rosidl_generator_c/primitives_array_functions.h"
+#include "rosidl_generator_c/primitives_sequence_functions.h"
 #include "rosidl_generator_c/string_functions.h"
 
 #include "rosidl_generator_c/msg/bool.h"
@@ -339,7 +339,7 @@ int test_string_arrays(void)
   res = rosidl_generator_c__msg__StringArrays__init(strings);
   EXPECT_EQ(res, true);
 
-  rosidl_generator_c__String__Array__init(&strings->string_dynamic_array_value, 3);
+  rosidl_generator_c__String__Sequence__init(&strings->string_dynamic_array_value, 3);
   res = rosidl_generator_c__String__assign(
     &strings->string_dynamic_array_value.data[0], TEST_STRING);
   EXPECT_EQ(true, res);
@@ -370,7 +370,7 @@ int test_string_arrays(void)
   EXPECT_EQ(true, res);
   EXPECT_EQ(0, strcmp(strings->string_static_array_value[2].data, TEST_STRING3));
 
-  rosidl_generator_c__String__Array__init(&strings->string_bounded_array_value, 4);
+  rosidl_generator_c__String__Sequence__init(&strings->string_bounded_array_value, 4);
   res = rosidl_generator_c__String__assign(
     &strings->string_bounded_array_value.data[0], TEST_STRING);
   EXPECT_EQ(true, res);
@@ -455,7 +455,7 @@ int test_primitives_unbounded_arrays(void)
   EXPECT_NE(NULL, arrays);
 
   // bool_array
-  res = rosidl_generator_c__bool__Array__init(&arrays->bool_array, ARRAY_SIZE);
+  res = rosidl_generator_c__bool__Sequence__init(&arrays->bool_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   // load values
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -475,7 +475,7 @@ int test_primitives_unbounded_arrays(void)
   }
 
   // byte_array
-  res = rosidl_generator_c__byte__Array__init(&arrays->byte_array, ARRAY_SIZE);
+  res = rosidl_generator_c__byte__Sequence__init(&arrays->byte_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   uint8_t test_array_byte[7] = {0, 57, 110, 177, 201, 240, 255};
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -488,7 +488,7 @@ int test_primitives_unbounded_arrays(void)
 
 
   // char array
-  res = rosidl_generator_c__char__Array__init(&arrays->char_array, ARRAY_SIZE);
+  res = rosidl_generator_c__char__Sequence__init(&arrays->char_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   char test_array_char[7] = {'a', '5', '#', 'Z', '@', '-', ' '};
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -500,7 +500,7 @@ int test_primitives_unbounded_arrays(void)
   }
 
   // float32 array
-  res = rosidl_generator_c__float32__Array__init(&arrays->float32_array, ARRAY_SIZE);
+  res = rosidl_generator_c__float32__Sequence__init(&arrays->float32_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   float test_array_float32[7] = {
     -3.000001f, 22143.541325f, 6331.00432f, -214.66241f, 0.000001f, 1415555.12345f, -1.11154f
@@ -514,7 +514,7 @@ int test_primitives_unbounded_arrays(void)
   }
 
   // float64 array
-  res = rosidl_generator_c__float64__Array__init(&arrays->float64_array, ARRAY_SIZE);
+  res = rosidl_generator_c__float64__Sequence__init(&arrays->float64_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   double test_array_float64[7] = {
     -120310.00843902140001, 22143.54483920141325, 6331.0048392104432, -214.62850432596241,
@@ -529,7 +529,7 @@ int test_primitives_unbounded_arrays(void)
   }
 
   // int8 array
-  res = rosidl_generator_c__int8__Array__init(&arrays->int8_array, ARRAY_SIZE);
+  res = rosidl_generator_c__int8__Sequence__init(&arrays->int8_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   int8_t test_array_int8[7] = {-127, -55, -30, 0, 58, 100, 127};
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -541,7 +541,7 @@ int test_primitives_unbounded_arrays(void)
   }
 
   // int16 array
-  res = rosidl_generator_c__int16__Array__init(&arrays->int16_array, ARRAY_SIZE);
+  res = rosidl_generator_c__int16__Sequence__init(&arrays->int16_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   int16_t test_array_int16[7] =
   {-32767, -22222, -11111, 0, 11111, 22222, 32767};
@@ -554,7 +554,7 @@ int test_primitives_unbounded_arrays(void)
   }
 
   // int32 array
-  res = rosidl_generator_c__int32__Array__init(&arrays->int32_array, ARRAY_SIZE);
+  res = rosidl_generator_c__int32__Sequence__init(&arrays->int32_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   int32_t test_array_int32[7] =
   {INT32_MIN, INT32_MIN / 2, INT32_MIN / 4, 0L, INT32_MAX / 4, INT32_MAX / 2, INT32_MAX};
@@ -567,7 +567,7 @@ int test_primitives_unbounded_arrays(void)
   }
 
   // int64 array
-  res = rosidl_generator_c__int64__Array__init(&arrays->int64_array, ARRAY_SIZE);
+  res = rosidl_generator_c__int64__Sequence__init(&arrays->int64_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   int64_t test_array_int64[7] = {
     -9223372036854775807LL, -5000000000000000000LL, -1111111111111111111LL, 0,
@@ -582,7 +582,7 @@ int test_primitives_unbounded_arrays(void)
   }
 
   // uint8 array
-  res = rosidl_generator_c__uint8__Array__init(&arrays->uint8_array, ARRAY_SIZE);
+  res = rosidl_generator_c__uint8__Sequence__init(&arrays->uint8_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   uint8_t test_array_uint8[7] = {0, 5, 70, 128, 180, 220, 255};
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -594,7 +594,7 @@ int test_primitives_unbounded_arrays(void)
   }
 
   // uint16 array
-  res = rosidl_generator_c__uint16__Array__init(&arrays->uint16_array, ARRAY_SIZE);
+  res = rosidl_generator_c__uint16__Sequence__init(&arrays->uint16_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   uint16_t test_array_uint16[7] = {0U, 11111U, 22222U, 33333U, 44444U, 55555U, 65535U};
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -606,7 +606,7 @@ int test_primitives_unbounded_arrays(void)
   }
 
   // uint32 array
-  res = rosidl_generator_c__uint32__Array__init(&arrays->uint32_array, ARRAY_SIZE);
+  res = rosidl_generator_c__uint32__Sequence__init(&arrays->uint32_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   uint32_t test_array_uint32[7] = {
     0UL, 100UL, 2000UL, 30000UL, 444444UL, 567890123UL, 4294967295UL
@@ -620,7 +620,7 @@ int test_primitives_unbounded_arrays(void)
   }
 
   // uint64 array
-  res = rosidl_generator_c__uint64__Array__init(&arrays->uint64_array, ARRAY_SIZE);
+  res = rosidl_generator_c__uint64__Sequence__init(&arrays->uint64_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   uint64_t test_array_uint64[7] = {
     0ULL, 10000ULL, 30000000ULL, 444444444ULL, 567890123456789ULL,
@@ -652,7 +652,7 @@ int test_primitives_bounded_arrays(void)
   EXPECT_NE(NULL, arrays);
 
   // bool_array
-  res = rosidl_generator_c__bool__Array__init(&arrays->bool_array, ARRAY_SIZE);
+  res = rosidl_generator_c__bool__Sequence__init(&arrays->bool_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   // load values
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -672,7 +672,7 @@ int test_primitives_bounded_arrays(void)
   }
 
   // byte_array
-  res = rosidl_generator_c__byte__Array__init(&arrays->byte_array, ARRAY_SIZE);
+  res = rosidl_generator_c__byte__Sequence__init(&arrays->byte_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   uint8_t test_array_byte[8] = {0, 57, 110, 177, 201, 240, 255, 111};
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -685,7 +685,7 @@ int test_primitives_bounded_arrays(void)
 
 
   // char array
-  res = rosidl_generator_c__char__Array__init(&arrays->char_array, ARRAY_SIZE);
+  res = rosidl_generator_c__char__Sequence__init(&arrays->char_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   char test_array_char[7] = {'a', '5', '#', 'Z', '@', '-', ' '};
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -698,7 +698,7 @@ int test_primitives_bounded_arrays(void)
   }
 
   // float32 array
-  res = rosidl_generator_c__float32__Array__init(&arrays->float32_array, ARRAY_SIZE);
+  res = rosidl_generator_c__float32__Sequence__init(&arrays->float32_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   float test_array_float32[7] = {
     -3.000001f, 22143.541325f, 6331.00432f, -214.66241f, 0.000001f, 1415555.12345f, -1.11154f
@@ -712,7 +712,7 @@ int test_primitives_bounded_arrays(void)
   }
 
   // float64 array
-  res = rosidl_generator_c__float64__Array__init(&arrays->float64_array, ARRAY_SIZE);
+  res = rosidl_generator_c__float64__Sequence__init(&arrays->float64_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   double test_array_float64[7] = {
     -120310.00843902140001, 22143.54483920141325, 6331.0048392104432, -214.62850432596241,
@@ -727,7 +727,7 @@ int test_primitives_bounded_arrays(void)
   }
 
   // int8 array
-  res = rosidl_generator_c__int8__Array__init(&arrays->int8_array, ARRAY_SIZE);
+  res = rosidl_generator_c__int8__Sequence__init(&arrays->int8_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   int8_t test_array_int8[7] = {-127, -55, -30, 0, 58, 100, 127};
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -739,7 +739,7 @@ int test_primitives_bounded_arrays(void)
   }
 
   // int16 array
-  res = rosidl_generator_c__int16__Array__init(&arrays->int16_array, ARRAY_SIZE);
+  res = rosidl_generator_c__int16__Sequence__init(&arrays->int16_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   int16_t test_array_int16[7] =
   {-32767, -22222, -11111, 0, 11111, 22222, 32767};
@@ -752,7 +752,7 @@ int test_primitives_bounded_arrays(void)
   }
 
   // int32 array
-  res = rosidl_generator_c__int32__Array__init(&arrays->int32_array, ARRAY_SIZE);
+  res = rosidl_generator_c__int32__Sequence__init(&arrays->int32_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   int32_t test_array_int32[7] =
   {INT32_MIN, INT32_MIN / 2, INT32_MIN / 4, 0L, INT32_MAX / 4, INT32_MAX / 2, INT32_MAX};
@@ -765,7 +765,7 @@ int test_primitives_bounded_arrays(void)
   }
 
   // int64 array
-  res = rosidl_generator_c__int64__Array__init(&arrays->int64_array, ARRAY_SIZE);
+  res = rosidl_generator_c__int64__Sequence__init(&arrays->int64_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   int64_t test_array_int64[7] = {
     -9223372036854775807LL, -5000000000000000000LL, -1111111111111111111, 0,
@@ -780,7 +780,7 @@ int test_primitives_bounded_arrays(void)
   }
 
   // uint8 array
-  res = rosidl_generator_c__uint8__Array__init(&arrays->uint8_array, ARRAY_SIZE);
+  res = rosidl_generator_c__uint8__Sequence__init(&arrays->uint8_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   uint8_t test_array_uint8[7] = {0, 5, 70, 128, 180, 220, 255};
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -792,7 +792,7 @@ int test_primitives_bounded_arrays(void)
   }
 
   // uint16 array
-  res = rosidl_generator_c__uint16__Array__init(&arrays->uint16_array, ARRAY_SIZE);
+  res = rosidl_generator_c__uint16__Sequence__init(&arrays->uint16_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   uint16_t test_array_uint16[7] = {0U, 11111U, 22222U, 33333U, 44444U, 55555U, 65535U};
   for (i = 0; i < ARRAY_SIZE; i++) {
@@ -804,7 +804,7 @@ int test_primitives_bounded_arrays(void)
   }
 
   // uint32 array
-  res = rosidl_generator_c__uint32__Array__init(&arrays->uint32_array, ARRAY_SIZE);
+  res = rosidl_generator_c__uint32__Sequence__init(&arrays->uint32_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   uint32_t test_array_uint32[7] =
   {0UL, 100UL, 2000UL, 30000UL, 444444UL, 567890123UL, 4294967295UL};
@@ -817,7 +817,7 @@ int test_primitives_bounded_arrays(void)
   }
 
   // uint64 array
-  res = rosidl_generator_c__uint64__Array__init(&arrays->uint64_array, ARRAY_SIZE);
+  res = rosidl_generator_c__uint64__Sequence__init(&arrays->uint64_array, ARRAY_SIZE);
   EXPECT_EQ(true, res);
   uint64_t test_array_uint64[7] = {
     0ULL, 10000ULL, 30000000ULL, 444444444ULL, 567890123456789ULL,
@@ -1059,7 +1059,7 @@ int test_bounded_array_nested(void)
   rosidl_generator_c__msg__BoundedArrayNested * msg =
     rosidl_generator_c__msg__BoundedArrayNested__create();
 
-  rosidl_generator_c__msg__Primitives__Array__init(&msg->primitive_values, size);
+  rosidl_generator_c__msg__Primitives__Sequence__init(&msg->primitive_values, size);
   msg->primitive_values.data[0].bool_value = false;
   msg->primitive_values.data[1].bool_value = true;
   msg->primitive_values.data[0].byte_value = 0;
@@ -1141,7 +1141,7 @@ int test_dynamic_array_nested(void)
   rosidl_generator_c__msg__DynamicArrayNested * msg =
     rosidl_generator_c__msg__DynamicArrayNested__create();
 
-  rosidl_generator_c__msg__Primitives__Array__init(&msg->primitive_values, size);
+  rosidl_generator_c__msg__Primitives__Sequence__init(&msg->primitive_values, size);
   msg->primitive_values.data[0].bool_value = false;
   msg->primitive_values.data[1].bool_value = true;
   msg->primitive_values.data[0].byte_value = 0;
@@ -1275,62 +1275,62 @@ int test_dynamic_array_primitives_nested(void)
   size_t size = 4;
   rosidl_generator_c__msg__DynamicArrayPrimitivesNested * msg =
     rosidl_generator_c__msg__DynamicArrayPrimitivesNested__create();
-  rosidl_generator_c__msg__DynamicArrayPrimitives__Array__init(&msg->msgs, size);
+  rosidl_generator_c__msg__DynamicArrayPrimitives__Sequence__init(&msg->msgs, size);
 
   for (i = 0; i < size; i++) {
-    res = rosidl_generator_c__bool__Array__init(&msg->msgs.data[i].bool_values, size);
+    res = rosidl_generator_c__bool__Sequence__init(&msg->msgs.data[i].bool_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].bool_values.data[0] = false;
     msg->msgs.data[i].bool_values.data[1] = true;
-    res = rosidl_generator_c__byte__Array__init(&msg->msgs.data[i].byte_values, size);
+    res = rosidl_generator_c__byte__Sequence__init(&msg->msgs.data[i].byte_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].byte_values.data[0] = 0;
     msg->msgs.data[i].byte_values.data[1] = UINT8_MAX;
-    res = rosidl_generator_c__char__Array__init(&msg->msgs.data[i].char_values, size);
+    res = rosidl_generator_c__char__Sequence__init(&msg->msgs.data[i].char_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].char_values.data[0] = SCHAR_MIN;
     msg->msgs.data[i].char_values.data[1] = SCHAR_MAX;
-    res = rosidl_generator_c__float32__Array__init(&msg->msgs.data[i].float32_values, size);
+    res = rosidl_generator_c__float32__Sequence__init(&msg->msgs.data[i].float32_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].float32_values.data[0] = FLT_MIN;
     msg->msgs.data[i].float32_values.data[1] = FLT_MAX;
-    res = rosidl_generator_c__float64__Array__init(&msg->msgs.data[i].float64_values, size);
+    res = rosidl_generator_c__float64__Sequence__init(&msg->msgs.data[i].float64_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].float64_values.data[0] = DBL_MIN;
     msg->msgs.data[i].float64_values.data[1] = DBL_MAX;
-    res = rosidl_generator_c__int8__Array__init(&msg->msgs.data[i].int8_values, size);
+    res = rosidl_generator_c__int8__Sequence__init(&msg->msgs.data[i].int8_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].int8_values.data[0] = INT8_MIN;
     msg->msgs.data[i].int8_values.data[1] = INT8_MAX;
-    res = rosidl_generator_c__uint8__Array__init(&msg->msgs.data[i].uint8_values, size);
+    res = rosidl_generator_c__uint8__Sequence__init(&msg->msgs.data[i].uint8_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].uint8_values.data[0] = 0;
     msg->msgs.data[i].uint8_values.data[1] = UINT8_MAX;
-    res = rosidl_generator_c__int16__Array__init(&msg->msgs.data[i].int16_values, size);
+    res = rosidl_generator_c__int16__Sequence__init(&msg->msgs.data[i].int16_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].int16_values.data[0] = INT16_MIN;
     msg->msgs.data[i].int16_values.data[1] = INT16_MAX;
-    res = rosidl_generator_c__uint16__Array__init(&msg->msgs.data[i].uint16_values, size);
+    res = rosidl_generator_c__uint16__Sequence__init(&msg->msgs.data[i].uint16_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].uint16_values.data[0] = 0;
     msg->msgs.data[i].uint16_values.data[1] = UINT16_MAX;
-    res = rosidl_generator_c__int32__Array__init(&msg->msgs.data[i].int32_values, size);
+    res = rosidl_generator_c__int32__Sequence__init(&msg->msgs.data[i].int32_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].int32_values.data[0] = INT32_MIN;
     msg->msgs.data[i].int32_values.data[1] = INT32_MAX;
-    res = rosidl_generator_c__uint32__Array__init(&msg->msgs.data[i].uint32_values, size);
+    res = rosidl_generator_c__uint32__Sequence__init(&msg->msgs.data[i].uint32_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].uint32_values.data[0] = 0;
     msg->msgs.data[i].uint32_values.data[1] = UINT32_MAX;
-    res = rosidl_generator_c__int64__Array__init(&msg->msgs.data[i].int64_values, size);
+    res = rosidl_generator_c__int64__Sequence__init(&msg->msgs.data[i].int64_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].int64_values.data[0] = INT64_MIN;
     msg->msgs.data[i].int64_values.data[1] = INT64_MAX;
-    res = rosidl_generator_c__uint64__Array__init(&msg->msgs.data[i].uint64_values, size);
+    res = rosidl_generator_c__uint64__Sequence__init(&msg->msgs.data[i].uint64_values, size);
     EXPECT_EQ(true, res);
     msg->msgs.data[i].uint64_values.data[0] = 0;
     msg->msgs.data[i].uint64_values.data[1] = UINT64_MAX;
-    res = rosidl_generator_c__String__Array__init(&msg->msgs.data[i].string_values, size);
+    res = rosidl_generator_c__String__Sequence__init(&msg->msgs.data[i].string_values, size);
     EXPECT_EQ(true, res);
     res = rosidl_generator_c__String__assign(&msg->msgs.data[i].string_values.data[0], TEST_STRING);
     EXPECT_EQ(true, res);

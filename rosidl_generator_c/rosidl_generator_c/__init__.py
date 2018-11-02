@@ -132,7 +132,7 @@ def msg_type_to_c(type_, name_):
             # Dynamic sized array
             if type_.is_primitive_type() and type_.type != 'string':
                 c_type = 'rosidl_generator_c__%s' % type_.type
-            return '%s__Array %s' % (c_type, name_)
+            return '%s__Sequence %s' % (c_type, name_)
         else:
             # Static sized array (field specific)
             return '%s %s[%d]' % \

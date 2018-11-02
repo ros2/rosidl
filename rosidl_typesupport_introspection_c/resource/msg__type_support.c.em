@@ -40,7 +40,7 @@ for field in spec.fields:
         if field.type.type == 'string':
             field_names = includes.setdefault('rosidl_generator_c/string_functions.h', [])
         else:
-            field_names = includes.setdefault('rosidl_generator_c/primitives_array_functions.h', [])
+            field_names = includes.setdefault('rosidl_generator_c/primitives_sequence_functions.h', [])
         field_names.append(field.name)
     if not field.type.is_primitive_type():
         field_names = includes.setdefault(
@@ -83,8 +83,8 @@ size_t @(function_prefix)__size_function__@(spec.base_type.type)__@(field.name)(
   (void)untyped_member;
   return @(field.type.array_size);
 @[      else]@
-  const @(field.type.pkg_name)__msg__@(field.type.type)__Array * member =
-    (const @(field.type.pkg_name)__msg__@(field.type.type)__Array *)(untyped_member);
+  const @(field.type.pkg_name)__msg__@(field.type.type)__Sequence * member =
+    (const @(field.type.pkg_name)__msg__@(field.type.type)__Sequence *)(untyped_member);
   return member->size;
 @[      end if]@
 }
@@ -97,8 +97,8 @@ const void * @(function_prefix)__get_const_function__@(spec.base_type.type)__@(f
     (const @(field.type.pkg_name)__msg__@(field.type.type) **)(untyped_member);
   return &(*member)[index];
 @[      else]@
-  const @(field.type.pkg_name)__msg__@(field.type.type)__Array * member =
-    (const @(field.type.pkg_name)__msg__@(field.type.type)__Array *)(untyped_member);
+  const @(field.type.pkg_name)__msg__@(field.type.type)__Sequence * member =
+    (const @(field.type.pkg_name)__msg__@(field.type.type)__Sequence *)(untyped_member);
   return &member->data[index];
 @[      end if]@
 }
@@ -111,8 +111,8 @@ void * @(function_prefix)__get_function__@(spec.base_type.type)__@(field.name)(
     (@(field.type.pkg_name)__msg__@(field.type.type) **)(untyped_member);
   return &(*member)[index];
 @[      else]@
-  @(field.type.pkg_name)__msg__@(field.type.type)__Array * member =
-    (@(field.type.pkg_name)__msg__@(field.type.type)__Array *)(untyped_member);
+  @(field.type.pkg_name)__msg__@(field.type.type)__Sequence * member =
+    (@(field.type.pkg_name)__msg__@(field.type.type)__Sequence *)(untyped_member);
   return &member->data[index];
 @[      end if]@
 }
@@ -121,10 +121,10 @@ void * @(function_prefix)__get_function__@(spec.base_type.type)__@(field.name)(
 bool @(function_prefix)__resize_function__@(spec.base_type.type)__@(field.name)(
   void * untyped_member, size_t size)
 {
-  @(field.type.pkg_name)__msg__@(field.type.type)__Array * member =
-    (@(field.type.pkg_name)__msg__@(field.type.type)__Array *)(untyped_member);
-  @(field.type.pkg_name)__msg__@(field.type.type)__Array__fini(member);
-  return @(field.type.pkg_name)__msg__@(field.type.type)__Array__init(member, size);
+  @(field.type.pkg_name)__msg__@(field.type.type)__Sequence * member =
+    (@(field.type.pkg_name)__msg__@(field.type.type)__Sequence *)(untyped_member);
+  @(field.type.pkg_name)__msg__@(field.type.type)__Sequence__fini(member);
+  return @(field.type.pkg_name)__msg__@(field.type.type)__Sequence__init(member, size);
 }
 
 @[      end if]@

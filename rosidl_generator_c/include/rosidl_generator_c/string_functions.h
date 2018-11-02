@@ -52,22 +52,22 @@ rosidl_generator_c__String__assign(
 
 ROSIDL_GENERATOR_C_PUBLIC
 bool
-rosidl_generator_c__String__Array__init(
-  rosidl_generator_c__String__Array * array, size_t size);
+rosidl_generator_c__String__Sequence__init(
+  rosidl_generator_c__String__Sequence * sequence, size_t size);
 
 ROSIDL_GENERATOR_C_PUBLIC
 void
-rosidl_generator_c__String__Array__fini(
-  rosidl_generator_c__String__Array * array);
+rosidl_generator_c__String__Sequence__fini(
+  rosidl_generator_c__String__Sequence * sequence);
 
 ROSIDL_GENERATOR_C_PUBLIC
-rosidl_generator_c__String__Array *
-rosidl_generator_c__String__Array__create(size_t size);
+rosidl_generator_c__String__Sequence *
+rosidl_generator_c__String__Sequence__create(size_t size);
 
 ROSIDL_GENERATOR_C_PUBLIC
 void
-rosidl_generator_c__String__Array__destroy(
-  rosidl_generator_c__String__Array * array);
+rosidl_generator_c__String__Sequence__destroy(
+  rosidl_generator_c__String__Sequence * sequence);
 
 #ifdef __cplusplus
 }

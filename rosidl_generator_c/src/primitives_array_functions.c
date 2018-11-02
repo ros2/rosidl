@@ -16,13 +16,13 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "rosidl_generator_c/primitives_array_functions.h"
+#include "rosidl_generator_c/primitives_sequence_functions.h"
 
-#define ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(STRUCT_NAME, TYPE_NAME) \
-  bool rosidl_generator_c__ ## STRUCT_NAME ## __Array__init( \
-    rosidl_generator_c__ ## STRUCT_NAME ## __Array * array, size_t size) \
+#define ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(STRUCT_NAME, TYPE_NAME) \
+  bool rosidl_generator_c__ ## STRUCT_NAME ## __Sequence__init( \
+    rosidl_generator_c__ ## STRUCT_NAME ## __Sequence * sequence, size_t size) \
   { \
-    if (!array) { \
+    if (!sequence) { \
       return false; \
     } \
     TYPE_NAME * data = NULL; \
@@ -32,43 +32,43 @@
         return false; \
       } \
     } \
-    array->data = data; \
-    array->size = size; \
-    array->capacity = size; \
+    sequence->data = data; \
+    sequence->size = size; \
+    sequence->capacity = size; \
     return true; \
   } \
  \
-  void rosidl_generator_c__ ## STRUCT_NAME ## __Array__fini( \
-    rosidl_generator_c__ ## STRUCT_NAME ## __Array * array) \
+  void rosidl_generator_c__ ## STRUCT_NAME ## __Sequence__fini( \
+    rosidl_generator_c__ ## STRUCT_NAME ## __Sequence * sequence) \
   { \
-    if (!array) { \
+    if (!sequence) { \
       return; \
     } \
-    if (array->data) { \
+    if (sequence->data) { \
       /* ensure that data and capacity values are consistent */ \
-      assert(array->capacity > 0); \
-      free(array->data); \
-      array->data = NULL; \
-      array->size = 0; \
-      array->capacity = 0; \
+      assert(sequence->capacity > 0); \
+      free(sequence->data); \
+      sequence->data = NULL; \
+      sequence->size = 0; \
+      sequence->capacity = 0; \
     } else { \
       /* ensure that data, size, and capacity values are consistent */ \
-      assert(0 == array->size); \
-      assert(0 == array->capacity); \
+      assert(0 == sequence->size); \
+      assert(0 == sequence->capacity); \
     } \
   }
 
-// array functions for all primitive types
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(bool, bool)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(byte, uint8_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(char, signed char)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(float32, float)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(float64, double)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(int8, int8_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(uint8, uint8_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(int16, int16_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(uint16, uint16_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(int32, int32_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(uint32, uint32_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(int64, int64_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_ARRAY_FUNCTIONS(uint64, uint64_t)
+// sequence functions for all primitive types
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(bool, bool)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(byte, uint8_t)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(char, signed char)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(float32, float)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(float64, double)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int8, int8_t)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint8, uint8_t)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int16, int16_t)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint16, uint16_t)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int32, int32_t)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint32, uint32_t)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int64, int64_t)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint64, uint64_t)

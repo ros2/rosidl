@@ -29,6 +29,6 @@ typedef struct rosidl_generator_c__String
   size_t capacity;
 } rosidl_generator_c__String;
 
-ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(String, rosidl_generator_c__String)
+ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(String, rosidl_generator_c__String)
 
 #endif  // ROSIDL_GENERATOR_C__STRING_H_

@@ -103,10 +103,10 @@ rosidl_generator_c__String__assign(
 }
 
 bool
-rosidl_generator_c__String__Array__init(
-  rosidl_generator_c__String__Array * array, size_t size)
+rosidl_generator_c__String__Sequence__init(
+  rosidl_generator_c__String__Sequence * sequence, size_t size)
 {
-  if (!array) {
+  if (!sequence) {
     return false;
   }
   rosidl_generator_c__String * data = NULL;
@@ -115,7 +115,7 @@ rosidl_generator_c__String__Array__init(
     if (!data) {
       return false;
     }
-    // initialize all array elements
+    // initialize all sequence elements
     for (size_t i = 0; i < size; ++i) {
       if (!rosidl_generator_c__String__init(&data[i])) {
         /* free currently allocated and return false */
@@ -127,59 +127,59 @@ rosidl_generator_c__String__Array__init(
       }
     }
   }
-  array->data = data;
-  array->size = size;
-  array->capacity = size;
+  sequence->data = data;
+  sequence->size = size;
+  sequence->capacity = size;
   return true;
 }
 
 void
-rosidl_generator_c__String__Array__fini(
-  rosidl_generator_c__String__Array * array)
+rosidl_generator_c__String__Sequence__fini(
+  rosidl_generator_c__String__Sequence * sequence)
 {
-  if (!array) {
+  if (!sequence) {
     return;
   }
-  if (array->data) {
+  if (sequence->data) {
     // ensure that data and capacity values are consistent
-    assert(array->capacity > 0);
-    // finalize all array elements
-    for (size_t i = 0; i < array->capacity; ++i) {
-      rosidl_generator_c__String__fini(&array->data[i]);
+    assert(sequence->capacity > 0);
+    // finalize all sequence elements
+    for (size_t i = 0; i < sequence->capacity; ++i) {
+      rosidl_generator_c__String__fini(&sequence->data[i]);
     }
-    free(array->data);
-    array->data = NULL;
-    array->size = 0;
-    array->capacity = 0;
+    free(sequence->data);
+    sequence->data = NULL;
+    sequence->size = 0;
+    sequence->capacity = 0;
   } else {
     // ensure that data, size, and capacity values are consistent
-    assert(0 == array->size);
-    assert(0 == array->capacity);
+    assert(0 == sequence->size);
+    assert(0 == sequence->capacity);
   }
 }
 
-rosidl_generator_c__String__Array *
-rosidl_generator_c__String__Array__create(size_t size)
+rosidl_generator_c__String__Sequence *
+rosidl_generator_c__String__Sequence__create(size_t size)
 {
-  rosidl_generator_c__String__Array * array =
-    (rosidl_generator_c__String__Array *)malloc(sizeof(rosidl_generator_c__String__Array));
-  if (!array) {
+  rosidl_generator_c__String__Sequence * sequence =
+    (rosidl_generator_c__String__Sequence *)malloc(sizeof(rosidl_generator_c__String__Sequence));
+  if (!sequence) {
     return NULL;
   }
-  bool success = rosidl_generator_c__String__Array__init(array, size);
+  bool success = rosidl_generator_c__String__Sequence__init(sequence, size);
   if (!success) {
-    free(array);
+    free(sequence);
     return NULL;
   }
-  return array;
+  return sequence;
 }
 
 void
-rosidl_generator_c__String__Array__destroy(
-  rosidl_generator_c__String__Array * array)
+rosidl_generator_c__String__Sequence__destroy(
+  rosidl_generator_c__String__Sequence * sequence)
 {
-  if (array) {
-    rosidl_generator_c__String__Array__fini(array);
+  if (sequence) {
+    rosidl_generator_c__String__Sequence__fini(sequence);
   }
-  free(array);
+  free(sequence);
 }

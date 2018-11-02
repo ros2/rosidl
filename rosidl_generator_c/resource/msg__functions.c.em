@@ -19,7 +19,7 @@ from rosidl_generator_c import primitive_value_to_c
 from rosidl_generator_c import value_to_c
 
 msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_type.type)
-array_typename = '%s__Array' % msg_typename
+sequence_typename = '%s__Sequence' % msg_typename
 }@
 #include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__functions.h"
 
@@ -144,18 +144,18 @@ for field in spec.fields:
     else:  # dynamic array
         if field.default_value is None:
             # initialize the dynamic array with a capacity of zero
-            lines.append('if (!%s__Array__init(&msg->%s, 0)) {' % (get_typename_of_base_type(field.type), field.name))
+            lines.append('if (!%s__Sequence__init(&msg->%s, 0)) {' % (get_typename_of_base_type(field.type), field.name))
             lines.append('  %s__fini(msg);' % msg_typename)
             lines.append('  return false;')
             lines.append('}')
         else:
             # initialize the dynamic array with the number of default values
             lines.append('{')
-            lines.append('  bool success = %s__Array__init(&msg->%s, %d);' % (get_typename_of_base_type(field.type), field.name, len(field.default_value)))
+            lines.append('  bool success = %s__Sequence__init(&msg->%s, %d);' % (get_typename_of_base_type(field.type), field.name, len(field.default_value)))
             lines.append('  if (!success) {')
             lines.append('    goto %s%d;' % (label_prefix, last_label_index))
             abort_lines[0:0] = [
-                '  %s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name),
+                '  %s__Sequence__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name),
                 '%s%d:' % (label_prefix, last_label_index),
             ]
             last_label_index += 1
@@ -220,7 +220,7 @@ for field in spec.fields:
 
     else:
         # finalize the dynamic array
-        lines.append('%s__Array__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name))
+        lines.append('%s__Sequence__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name))
 for line in lines:
     print('  ' + line)
 }@
@@ -256,7 +256,7 @@ void
 @# array functions
 @#######################################################################
 bool
-@(array_typename)__init(@(array_typename) * array, size_t size)
+@(sequence_typename)__init(@(sequence_typename) * array, size_t size)
 {
   if (!array) {
     return false;
@@ -291,7 +291,7 @@ bool
 }
 
 void
-@(array_typename)__fini(@(array_typename) * array)
+@(sequence_typename)__fini(@(sequence_typename) * array)
 {
   if (!array) {
     return;
@@ -314,14 +314,14 @@ void
   }
 }
 
-@(array_typename) *
-@(array_typename)__create(size_t size)
+@(sequence_typename) *
+@(sequence_typename)__create(size_t size)
 {
-  @(array_typename) * array = (@(array_typename) *)malloc(sizeof(@(array_typename)));
+  @(sequence_typename) * array = (@(sequence_typename) *)malloc(sizeof(@(sequence_typename)));
   if (!array) {
     return NULL;
   }
-  bool success = @(array_typename)__init(array, size);
+  bool success = @(sequence_typename)__init(array, size);
   if (!success) {
     free(array);
     return NULL;
@@ -330,10 +330,10 @@ void
 }
 
 void
-@(array_typename)__destroy(@(array_typename) * array)
+@(sequence_typename)__destroy(@(sequence_typename) * array)
 {
   if (array) {
-    @(array_typename)__fini(array);
+    @(sequence_typename)__fini(array);
   }
   free(array);
 }

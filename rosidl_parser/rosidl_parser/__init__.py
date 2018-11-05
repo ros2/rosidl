@@ -700,6 +700,12 @@ def validate_field_types(spec, known_msg_types):
     elif isinstance(spec, ServiceSpecification):
         spec_type = 'Service'
         fields = spec.request.fields + spec.response.fields
+    elif isinstance(spec, ActionSpecification):
+        spec_type = 'Action'
+        fields = []
+        for service in spec.services:
+            fields += service.request.fields
+            fields += service.response.fields
     else:
         assert False, 'Unknown specification type: %s' % type(spec)
     for field in fields:
@@ -767,6 +773,7 @@ class ActionSpecification:
         self.action_name = action_name
         self.services = services
         self.feedback = feedback_message
+
 
 def parse_action_file(pkg_name, interface_filename):
     basename = os.path.basename(interface_filename)

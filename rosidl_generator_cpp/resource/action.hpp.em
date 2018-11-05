@@ -21,6 +21,6 @@ header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
-#include "rosidl_generator_c/action_type_support_struct.h"
+#include <@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.action_name))__struct.hpp>
 
 #endif  // @(header_guard_variable)

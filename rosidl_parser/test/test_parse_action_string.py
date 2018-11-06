@@ -14,7 +14,6 @@
 
 import pytest
 
-# from rosidl_parser import InvalidServiceSpecification
 from rosidl_parser import ImplicitFieldCollision
 from rosidl_parser import InvalidActionSpecification
 from rosidl_parser import parse_action_string

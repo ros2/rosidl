@@ -26,9 +26,10 @@ SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
 SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
 
 ACTION_REQUEST_RESPONSE_SEPARATOR = '---'
-ACTION_GOAL_MESSAGE_SUFFIX =  'Goal'
-ACTION_RESULT_MESSAGE_SUFFIX =  'Result'
+ACTION_GOAL_MESSAGE_SUFFIX = 'Goal'
+ACTION_RESULT_MESSAGE_SUFFIX = 'Result'
 ACTION_FEEDBACK_MESSAGE_SUFFIX = 'Feedback'
+ACTION_IMPLICIT_FIELDS = ['uuid', 'status']
 
 PRIMITIVE_TYPES = [
     'bool',
@@ -66,6 +67,10 @@ class InvalidSpecification(Exception):
     pass
 
 
+class InvalidActionSpecification(InvalidSpecification):
+    pass
+
+
 class InvalidServiceSpecification(InvalidSpecification):
     pass
 
@@ -75,6 +80,10 @@ class InvalidResourceName(InvalidSpecification):
 
 
 class InvalidFieldDefinition(InvalidSpecification):
+    pass
+
+
+class ImplicitFieldCollision(InvalidSpecification):
     pass
 
 
@@ -401,7 +410,8 @@ def parse_message_file(pkg_name, interface_filename):
 def parse_message_string(pkg_name, msg_name, message_string):
     fields = []
     constants = []
-    field_names = []
+    # check for field name collision with action implicit parameters
+    action_fields = {i: 0 for i in ACTION_IMPLICIT_FIELDS}
 
     lines = message_string.splitlines()
     for line in lines:
@@ -438,15 +448,17 @@ def parse_message_string(pkg_name, msg_name, message_string):
                 ))
                 raise
 
-            # check for possible field name collision in message definition
-            if field_name in field_names:
-                print("Duplicate parameter name '{field_name}' processing '{line}' of \
-                    '{pkg}/{msg}'. If this resulted from an action definition please \
+            # check for field name collision with action implicit parameters
+            # (e.g. 2 or more occurrences of a field_name contained in ACTION_IMPLICIT_FIELDS,
+            # including the implicit one)
+            if field_name in ACTION_IMPLICIT_FIELDS and action_fields[field_name] >= 1:
+                raise ImplicitFieldCollision("Duplicate parameter name '{field_name}' \
+                    found processing '{line}' of '{pkg}/{msg}'. \
+                    If this resulted from an action definition please \
                     check for implicit parameter names (uuid, status)".format(
                     field_name=field_name, line=line, pkg=pkg_name, msg=msg_name))
-                raise InvalidResourceName(field_name)
-            else:
-                field_names.append(field_name)
+            elif field_name in ACTION_IMPLICIT_FIELDS:
+                action_fields[field_name] += 1
 
         else:
             # line contains a constant
@@ -723,6 +735,7 @@ def parse_service_string(pkg_name, srv_name, message_string):
 
     return ServiceSpecification(pkg_name, srv_name, request_message, response_message)
 
+
 def parse_action_file(pkg_name, interface_filename):
     basename = os.path.basename(interface_filename)
     action_name = os.path.splitext(basename)[0]
@@ -733,23 +746,23 @@ def parse_action_file(pkg_name, interface_filename):
 def parse_action_string(pkg_name, action_name, action_string):
     action_blocks = action_string.split(ACTION_REQUEST_RESPONSE_SEPARATOR)
     if len(action_blocks) != 3:
-        raise InvalidSpecification(
+        raise InvalidActionSpecification(
             "Number of '%s' separators nonconformant with action definition" %
             ACTION_REQUEST_RESPONSE_SEPARATOR)
 
     goal_service_string, result_service_string, feedback_message_string = action_blocks
 
     services = []
-    #----------------------------------------------------------------------------------------------
-    ## Send goal
-    implicit_input = ["uint8[16] uuid"]
-    request_message_string = goal_service_string + '\n' + '\n'.join(implicit_input)
+    # ---------------------------------------------------------------------------------------------
+    # Send goal
+    implicit_input = ['uint8[16] uuid']
+    request_message_string = '\n'.join(implicit_input) + '\n' + goal_service_string
     request_message = parse_message_string(
         pkg_name,
         action_name + ACTION_GOAL_MESSAGE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX,
         request_message_string)
 
-    implicit_output = ["bool accepted", "builtin_interfaces/Time stamp"]
+    implicit_output = ['bool accepted', 'builtin_interfaces/Time stamp']
     response_message_string = '\n'.join(implicit_output)
     response_message = parse_message_string(
         pkg_name,
@@ -761,19 +774,19 @@ def parse_action_string(pkg_name, action_name, action_string):
         action_name + ACTION_GOAL_MESSAGE_SUFFIX,
         request_message,
         response_message))
-    #----------------------------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
 
-    #----------------------------------------------------------------------------------------------
-    ## Get result
-    implicit_input = ["uint8[16] uuid"]
+    # ---------------------------------------------------------------------------------------------
+    # Get result
+    implicit_input = ['uint8[16] uuid']
     request_message_string = '\n'.join(implicit_input)
     request_message = parse_message_string(
         pkg_name,
         action_name + ACTION_RESULT_MESSAGE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX,
         request_message_string)
 
-    implicit_output = ["int8 status"]
-    response_message_string = result_service_string + '\n' + '\n'.join(implicit_output)
+    implicit_output = ['int8 status']
+    response_message_string = '\n'.join(implicit_output) + '\n' + result_service_string
     response_message = parse_message_string(
         pkg_name,
         action_name + ACTION_RESULT_MESSAGE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX,
@@ -784,14 +797,14 @@ def parse_action_string(pkg_name, action_name, action_string):
         action_name + ACTION_RESULT_MESSAGE_SUFFIX,
         request_message,
         response_message))
-    #----------------------------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
 
-    #----------------------------------------------------------------------------------------------
-    ## Feedback message
-    implicit_input = ["uint8[16] uuid"]
-    message_string = feedback_message_string + '\n' + '\n'.join(implicit_input)
+    # ---------------------------------------------------------------------------------------------
+    # Feedback message
+    implicit_input = ['uint8[16] uuid']
+    message_string = '\n'.join(implicit_input) + '\n' + feedback_message_string
     feedback_msg = parse_message_string(
         pkg_name, action_name + ACTION_FEEDBACK_MESSAGE_SUFFIX, message_string)
-    #----------------------------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------
 
     return (services, feedback_msg)

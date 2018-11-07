@@ -80,7 +80,7 @@ def test_valid_action_string1():
 
 def test_valid_action_string2():
     (services, feedback_msg) = parse_action_string(
-        'pkg', 'Foo', '#comment\n \nbool foo\n---\n#comment\n \nint8 bar\n---\nbool foo')
+        'pkg', 'Foo', '#comment---\n \nbool foo\n---\n#comment\n \nint8 bar\n---\nbool foo')
     assert len(services) == 2
     goal_service, result_service = services
     # Goal service checks

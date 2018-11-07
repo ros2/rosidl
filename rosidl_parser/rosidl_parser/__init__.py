@@ -749,7 +749,8 @@ def parse_action_file(pkg_name, interface_filename):
 
 
 def parse_action_string(pkg_name, action_name, action_string):
-    action_blocks = action_string.split(ACTION_REQUEST_RESPONSE_SEPARATOR)
+    action_blocks = re.split(
+        '^' + ACTION_REQUEST_RESPONSE_SEPARATOR + '$', action_string, flags=re.MULTILINE)
     if len(action_blocks) != 3:
         raise InvalidActionSpecification(
             "Number of '%s' separators nonconformant with action definition" %

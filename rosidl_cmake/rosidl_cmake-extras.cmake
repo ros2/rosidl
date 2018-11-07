@@ -28,7 +28,6 @@ macro(_rosidl_cmake_register_package_hook)
 endmacro()
 
 include("${rosidl_cmake_DIR}/rosidl_convert_actions_to_msg_and_srv.cmake")
-include("${rosidl_cmake_DIR}/rosidl_generate_action_interfaces.cmake")
 include("${rosidl_cmake_DIR}/rosidl_generate_interfaces.cmake")
 include("${rosidl_cmake_DIR}/rosidl_identify_action_idls.cmake")
 include("${rosidl_cmake_DIR}/rosidl_target_interfaces.cmake")

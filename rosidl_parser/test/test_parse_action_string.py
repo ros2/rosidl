@@ -49,24 +49,24 @@ def test_valid_action_string1():
     goal_service, result_service = services
     # Goal service checks
     assert goal_service.pkg_name == 'pkg'
-    assert goal_service.srv_name == 'FooGoal'
+    assert goal_service.srv_name == 'Foo_Goal'
     assert goal_service.request.base_type.pkg_name == 'pkg'
-    assert goal_service.request.base_type.type == 'FooGoal_Request'
+    assert goal_service.request.base_type.type == 'Foo_Goal_Request'
     assert len(goal_service.request.fields) == 2  # including implicit uuid
     assert len(goal_service.request.constants) == 0
     assert goal_service.response.base_type.pkg_name == 'pkg'
-    assert goal_service.response.base_type.type == 'FooGoal_Response'
+    assert goal_service.response.base_type.type == 'Foo_Goal_Response'
     assert len(goal_service.response.fields) == 2
     assert len(goal_service.response.constants) == 0
     # Result service checks
     assert result_service.pkg_name == 'pkg'
-    assert result_service.srv_name == 'FooResult'
+    assert result_service.srv_name == 'Foo_Result'
     assert result_service.request.base_type.pkg_name == 'pkg'
-    assert result_service.request.base_type.type == 'FooResult_Request'
+    assert result_service.request.base_type.type == 'Foo_Result_Request'
     assert len(result_service.request.fields) == 1  # implicit uuid
     assert len(result_service.request.constants) == 0
     assert result_service.response.base_type.pkg_name == 'pkg'
-    assert result_service.response.base_type.type == 'FooResult_Response'
+    assert result_service.response.base_type.type == 'Foo_Result_Response'
     assert len(result_service.response.fields) == 2
     assert len(result_service.response.constants) == 0
     # Feedback message checks
@@ -85,24 +85,24 @@ def test_valid_action_string2():
     goal_service, result_service = services
     # Goal service checks
     assert goal_service.pkg_name == 'pkg'
-    assert goal_service.srv_name == 'FooGoal'
+    assert goal_service.srv_name == 'Foo_Goal'
     assert goal_service.request.base_type.pkg_name == 'pkg'
-    assert goal_service.request.base_type.type == 'FooGoal_Request'
+    assert goal_service.request.base_type.type == 'Foo_Goal_Request'
     assert len(goal_service.request.fields) == 2  # including implicit uuid
     assert len(goal_service.request.constants) == 0
     assert goal_service.response.base_type.pkg_name == 'pkg'
-    assert goal_service.response.base_type.type == 'FooGoal_Response'
+    assert goal_service.response.base_type.type == 'Foo_Goal_Response'
     assert len(goal_service.response.fields) == 2
     assert len(goal_service.response.constants) == 0
     # Result service checks
     assert result_service.pkg_name == 'pkg'
-    assert result_service.srv_name == 'FooResult'
+    assert result_service.srv_name == 'Foo_Result'
     assert result_service.request.base_type.pkg_name == 'pkg'
-    assert result_service.request.base_type.type == 'FooResult_Request'
+    assert result_service.request.base_type.type == 'Foo_Result_Request'
     assert len(result_service.request.fields) == 1  # implicit uuid
     assert len(result_service.request.constants) == 0
     assert result_service.response.base_type.pkg_name == 'pkg'
-    assert result_service.response.base_type.type == 'FooResult_Response'
+    assert result_service.response.base_type.type == 'Foo_Result_Response'
     assert len(result_service.response.fields) == 2
     assert len(result_service.response.constants) == 0
     # Feedback message checks
@@ -123,24 +123,24 @@ def test_valid_action_string3():
     goal_service, result_service = services
     # Goal service checks
     assert goal_service.pkg_name == 'pkg'
-    assert goal_service.srv_name == 'FooGoal'
+    assert goal_service.srv_name == 'Foo_Goal'
     assert goal_service.request.base_type.pkg_name == 'pkg'
-    assert goal_service.request.base_type.type == 'FooGoal_Request'
+    assert goal_service.request.base_type.type == 'Foo_Goal_Request'
     assert len(goal_service.request.fields) == 3  # including implicit uuid
     assert len(goal_service.request.constants) == 0
     assert goal_service.response.base_type.pkg_name == 'pkg'
-    assert goal_service.response.base_type.type == 'FooGoal_Response'
+    assert goal_service.response.base_type.type == 'Foo_Goal_Response'
     assert len(goal_service.response.fields) == 2
     assert len(goal_service.response.constants) == 0
     # Result service checks
     assert result_service.pkg_name == 'pkg'
-    assert result_service.srv_name == 'FooResult'
+    assert result_service.srv_name == 'Foo_Result'
     assert result_service.request.base_type.pkg_name == 'pkg'
-    assert result_service.request.base_type.type == 'FooResult_Request'
+    assert result_service.request.base_type.type == 'Foo_Result_Request'
     assert len(result_service.request.fields) == 1  # implicit uuid
     assert len(result_service.request.constants) == 0
     assert result_service.response.base_type.pkg_name == 'pkg'
-    assert result_service.response.base_type.type == 'FooResult_Response'
+    assert result_service.response.base_type.type == 'Foo_Result_Response'
     assert len(result_service.response.fields) == 2
     assert len(result_service.response.constants) == 1
     assert result_service.response.constants[0].type == 'bool'

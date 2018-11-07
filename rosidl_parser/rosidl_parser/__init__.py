@@ -26,9 +26,9 @@ SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
 SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
 
 ACTION_REQUEST_RESPONSE_SEPARATOR = '---'
-ACTION_GOAL_MESSAGE_SUFFIX = 'Goal'
-ACTION_RESULT_MESSAGE_SUFFIX = 'Result'
-ACTION_FEEDBACK_MESSAGE_SUFFIX = 'Feedback'
+ACTION_GOAL_MESSAGE_SUFFIX = '_Goal'
+ACTION_RESULT_MESSAGE_SUFFIX = '_Result'
+ACTION_FEEDBACK_MESSAGE_SUFFIX = '_Feedback'
 ACTION_IMPLICIT_FIELDS = ['uuid', 'status']
 
 PRIMITIVE_TYPES = [
@@ -125,6 +125,11 @@ def is_valid_message_name(name):
         for service_suffix in ['_Request', '_Response']:
             if name.endswith(service_suffix):
                 name = name[:-len(service_suffix)]
+                break
+        # check for action messages suffixes
+        for action_suffix in ['_Goal', '_Result', '_Feedback']:
+            if name.endswith(action_suffix):
+                name = name[:-len(action_suffix)]
                 break
         m = VALID_MESSAGE_NAME_PATTERN.match(name)
     except (AttributeError, TypeError):

@@ -39,7 +39,7 @@ function(rosidl_convert_actions_to_msg_and_srv target)
   set(_action_files ${_ARG_UNPARSED_ARGUMENTS})
 
   # Make a list of files that will be generated
-  set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/action_msg_and_srv/${PROJECT_NAME}")
+  set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_actions/${PROJECT_NAME}")
   set(_generated_action_idl_files "")
   foreach(_action_file ${_action_files})
     get_filename_component(_parent_folder "${_action_file}" DIRECTORY)

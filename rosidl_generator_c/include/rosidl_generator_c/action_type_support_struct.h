@@ -36,9 +36,9 @@ struct rosidl_action_type_support_t
   const rosidl_message_type_support_t * status_message_type_support;
 };
 
-#define ROSIDL_GET_ACTION_TYPE_SUPPORT(PkgName, Subfolder, Name) \
+#define ROSIDL_GET_ACTION_TYPE_SUPPORT(PkgName, Name) \
   ROSIDL_TYPESUPPORT_INTERFACE__ACTION_SYMBOL_NAME( \
-    rosidl_typesupport_c, PkgName, Subfolder, Name)()
+    rosidl_typesupport_c, PkgName, action, Name)()
 
 #ifdef __cplusplus
 }

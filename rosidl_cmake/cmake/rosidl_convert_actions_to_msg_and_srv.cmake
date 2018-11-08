@@ -12,12 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Convert action files from messages to services
+# Convert action files from messages to services.
+#
+# This function declares what message and service files will be created given
+# action files.
+# It creates a custom target which generates messages and services when the
+# .action files change.
 #
 # :param target: A target name to use to generate the .msg and .srv files
 # :type target: string
-# :param idl_files: A variable with a list of IDL files that may be actions.
-# :type target: list of strings
+# :param ARGN: Paths to .action files
+# :type ARGN: strings
 # :param OUTPUT_IDL_VAR: Set to a list of message and service files
 # :type OUTPUT_IDL_VAR: list of strings
 #

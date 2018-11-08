@@ -14,8 +14,8 @@
 
 # Determine which IDL files are describing action files.
 #
-# :param idl_files: A variable with a list of IDL files that may be actions.
-# :type target: list of strings
+# :param ARGN: Paths to files that may or may not be actions
+# :type ARGN: strings
 # :param OUTPUT_ACTION_VAR: Set to a list of files that are actions.
 # :type OUTPUT_ACTION_VAR: list of strings
 # :param OUTPUT_IDL_VAR: Set to a list of files that are not actions.

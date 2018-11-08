@@ -90,8 +90,8 @@ macro(rosidl_generate_interfaces target)
   # Split .srv into two .msg files
   foreach(_idl_file ${_idl_files})
     get_filename_component(_extension "${_idl_file}" EXT)
+    # generate request and response messages for services
     if(_extension STREQUAL ".srv")
-      # generate request and response messages for services
       get_filename_component(_name "${_idl_file}" NAME_WE)
       get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
       get_filename_component(_parent_folder "${_parent_folder}" NAME)

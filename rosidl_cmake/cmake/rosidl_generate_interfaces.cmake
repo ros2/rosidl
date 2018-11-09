@@ -87,6 +87,7 @@ macro(rosidl_generate_interfaces target)
     endforeach()
   endforeach()
 
+  # Split .srv into two .msg files
   foreach(_idl_file ${_idl_files})
     get_filename_component(_extension "${_idl_file}" EXT)
     # generate request and response messages for services
@@ -127,14 +128,33 @@ macro(rosidl_generate_interfaces target)
     stamp("${_idl_file}")
   endforeach()
 
+  # Separate action files from other interface files
+  rosidl_identify_action_idls(${_idl_files}
+    OUTPUT_ACTION_VAR _action_files
+    OUTPUT_IDL_VAR _idl_files)
+
+  # Convert action files into messages and services
+  if(_action_files)
+    set(_convert_actions_target "${target}+_convert_actions_to_msg_and_srv")
+    rosidl_convert_actions_to_msg_and_srv(${_convert_actions_target} ${_action_files}
+      OUTPUT_IDL_VAR _action_msg_and_srv_files)
+  endif()
+
   add_custom_target(
     ${target} ALL
     DEPENDS
     ${_idl_files}
     ${_dep_files}
+    ${_convert_actions_target}
     SOURCES
     ${_idl_files}
   )
+
+  # Tell CMake in this directory scope that these files are generated
+  foreach(_idl_file ${_action_msg_and_srv_files})
+    list(APPEND _idl_files "${_idl_file}")
+    set_property(SOURCE ${_idl_file} PROPERTY GENERATED 1)
+  endforeach()
 
   if(NOT _ARG_SKIP_INSTALL)
     if(NOT _ARG_SKIP_GROUP_MEMBERSHIP_CHECK)

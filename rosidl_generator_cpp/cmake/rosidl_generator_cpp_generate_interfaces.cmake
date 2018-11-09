@@ -65,7 +65,10 @@ set(target_dependencies
   ${_dependency_files})
 foreach(dep ${target_dependencies})
   if(NOT EXISTS "${dep}")
-    message(FATAL_ERROR "Target dependency '${dep}' does not exist")
+    get_property(is_generated SOURCE "${dep}" PROPERTY GENERATED)
+    if(NOT ${_is_generated})
+      message(FATAL_ERROR "Target dependency '${dep}' does not exist")
+    endif()
   endif()
 endforeach()
 

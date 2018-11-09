@@ -122,15 +122,16 @@ def is_valid_message_name(name):
         prefix = 'Sample_'
         if name.startswith(prefix):
             name = name[len(prefix):]
-        for service_suffix in ['_Request', '_Response']:
-            if name.endswith(service_suffix):
-                name = name[:-len(service_suffix)]
-                break
-        # check for action messages suffixes
-        for action_suffix in ['_Goal', '_Result', '_Feedback']:
-            if name.endswith(action_suffix):
-                name = name[:-len(action_suffix)]
-                break
+        suffixes = [
+            SERVICE_REQUEST_MESSAGE_SUFFIX,
+            SERVICE_RESPONSE_MESSAGE_SUFFIX,
+            ACTION_GOAL_MESSAGE_SUFFIX,
+            ACTION_RESULT_MESSAGE_SUFFIX,
+            ACTION_FEEDBACK_MESSAGE_SUFFIX,
+        ]
+        for suffix in suffixes:
+            if name.endswith(suffix):
+                name = name[:-len(suffix)]
         m = VALID_MESSAGE_NAME_PATTERN.match(name)
     except (AttributeError, TypeError):
         raise InvalidResourceName(name)
@@ -402,6 +403,17 @@ class MessageSpecification:
             self.fields == other.fields and \
             len(self.constants) == len(other.constants) and \
             self.constants == other.constants
+
+    def __str__(self):
+        """Output an equivalent .msg IDL string."""
+        output = ['# ', str(self.base_type), '\n']
+        for constant in self.constants:
+            output.extend((str(constant), '\n'))
+        for field in self.fields:
+            output.extend((str(field), '\n'))
+        # Get rid of last newline
+        del output[-1]
+        return ''.join(output)
 
 
 def parse_message_file(pkg_name, interface_filename):
@@ -707,6 +719,14 @@ class ServiceSpecification:
         self.srv_name = srv_name
         self.request = request_message
         self.response = response_message
+
+    def __str__(self):
+        """Output an equivalent .srv IDL string."""
+        output = ['# ', str(self.pkg_name), '/', str(self.srv_name), '\n']
+        output.append(str(self.request))
+        output.append('\n---\n')
+        output.append(str(self.response))
+        return ''.join(output)
 
 
 def parse_service_file(pkg_name, interface_filename):

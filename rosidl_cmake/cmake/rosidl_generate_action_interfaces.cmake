@@ -55,7 +55,7 @@ function(rosidl_generate_action_interfaces target)
   set(_idl_files ${_ARG_UNPARSED_ARGUMENTS})
 
   # Create a custom target
-  set(_sub_target "${target}+convert_action_to_msg_and_srv")
+  set(_sub_target "${target}+generate_action_interfaces")
   add_custom_target(
     ${_sub_target} ALL
     DEPENDS

@@ -14,6 +14,7 @@
 
 import os
 import pathlib
+import sys
 
 from lark import Lark
 from lark.lexer import Token
@@ -24,6 +25,8 @@ from rosidl_parser import Field
 from rosidl_parser import MessageSpecification
 from rosidl_parser import ServiceSpecification
 from rosidl_parser import Type
+from rosidl_parser.definition import SERVICE_REQUEST_MESSAGE_SUFFIX
+from rosidl_parser.definition import SERVICE_RESPONSE_MESSAGE_SUFFIX
 
 with open(os.path.join(os.path.dirname(__file__), 'grammar.lark'), 'r') as h:
     grammar = h.read()
@@ -39,7 +42,7 @@ def parse_idl_file(package_name, namespace, file_):
         return parse_idl_string(
             package_name, namespace, pathlib.Path(file_).stem, content)
     except Exception as e:
-        print(file_)
+        print(str(e), file_, file=sys.stderr)
         raise
 
 

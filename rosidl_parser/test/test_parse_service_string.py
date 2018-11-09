@@ -16,7 +16,9 @@ import pytest
 
 from rosidl_parser import InvalidFieldDefinition
 from rosidl_parser import InvalidServiceSpecification
-from rosidl_parser import parse_service_string
+# from rosidl_parser import parse_service_string
+
+parse_service_string = None
 
 
 def test_parse_service_string():

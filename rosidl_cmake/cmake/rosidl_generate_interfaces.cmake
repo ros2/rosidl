@@ -1,4 +1,4 @@
-# Copyright 2014-2015 Open Source Robotics Foundation, Inc.
+# Copyright 2014-2018 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,17 +21,13 @@
 #   specific generators might use the _name as a prefix for their own
 #   generation step
 # :type target: string
-# :param MESSAGE_FILES: the interface files containing message definitions
-#   where each value might be either an absolute path or path relative to the
-#   CMAKE_CURRENT_SOURCE_DIR.
-# :type MESSAGE_FILES: list of strings
-# :param SERVICE_FILES: the interface files containing service definitions
-#   where each value might be either an absolute path or path relative to the
-#   CMAKE_CURRENT_SOURCE_DIR.
-# :type SERVICE_FILES: list of strings
-# :param ARGN: for backward compatibility (and cases where a single interface
-#   file contains more than one definition) where each value might be either an
-#   absolute path or path relative to the CMAKE_CURRENT_SOURCE_DIR.
+# :param ARGN: the interface file containing message and service definitions
+#   where each value might be either a path relative to the
+#   CMAKE_CURRENT_SOURCE_DIR or a tuple separated by a colon with an absolute
+#   base path and a path relative to that base path.
+#   For backward compatibility if an interface file doesn't end in ``.idl`` it
+#   is being passed to ``rosidl_adapter`` (if available) to be transformed into
+#   an ``.idl`` file.
 # :type ARGN: list of strings
 # :param DEPENDENCIES: the packages from which message types are
 #   being used
@@ -53,11 +49,11 @@
 macro(rosidl_generate_interfaces target)
   cmake_parse_arguments(_ARG
     "ADD_LINTER_TESTS;SKIP_INSTALL;SKIP_GROUP_MEMBERSHIP_CHECK"
-    "LIBRARY_NAME" "DEPENDENCIES;MESSAGE_FILES;SERVICE_FILES"
+    "LIBRARY_NAME" "DEPENDENCIES"
     ${ARGN})
   if(NOT _ARG_UNPARSED_ARGUMENTS)
-    message(FATAL_ERROR "rosidl_generate_interfaces() called without any idl "
-      "files")
+    message(FATAL_ERROR "rosidl_generate_interfaces() called without any "
+      "interface files")
   endif()
 
   if(_${PROJECT_NAME}_AMENT_PACKAGE)
@@ -65,59 +61,60 @@ macro(rosidl_generate_interfaces target)
       "rosidl_generate_interfaces() must be called before ament_package()")
   endif()
 
+  set(_interface_files ${_ARG_UNPARSED_ARGUMENTS})
+
   _rosidl_cmake_register_package_hook()
   ament_export_dependencies(${_ARG_DEPENDENCIES})
 
-  # check all interface files and make them absolute paths
-  _check_existing_files(_message_files "MESSAGE_FILES" ${_ARG_MESSAGE_FILES})
-  _check_existing_files(_service_files "SERVICE_FILES" ${_ARG_SERVICE_FILES})
-  _check_existing_files(_interface_files "" ${_ARG_UNPARSED_ARGUMENTS})
+  # check that all interface files exist
+  # absolute paths are returned as is
+  # relative paths are returned as colon separated tuples
+  # of the base path and the relative path
+  _check_existing_files(_interface_tuples ${_interface_files})
 
   # stamp all interface files
-  foreach(_interface_file ${_message_files} ${_service_files} ${_interface_files})
+  foreach(_interface_file ${_interface_files})
     stamp("${_interface_file}")
   endforeach()
 
-  # move .msg / .srv files into specific category
-  set(_remaining_interface_files "")
-  foreach(_interface_file ${_interface_files})
-    get_filename_component(_extension "${_interface_file}" EXT)
-    if("${_extension}" STREQUAL ".msg")
-      list(APPEND _message_files "${_interface_file}")
-    elseif("${_extension}" STREQUAL ".srv")
-      list(APPEND _service_files "${_interface_file}")
+  # separate idl files from non-idl files
+  set(_idl_tuples "")
+  set(_non_idl_tuples "")
+  foreach(_tuple ${_interface_tuples})
+    get_filename_component(_extension "${_tuple}" EXT)
+    if("${_extension}" STREQUAL ".idl")
+      list(APPEND _idl_tuples "${_tuple}")
     else()
-      list(APPEND _remaining_interface_files "${_interface_file}")
+      list(APPEND _non_idl_tuples "${_tuple}")
     endif()
   endforeach()
-  set(_interface_files ${_remaining_interface_files})
 
-  # collect all message files from dependencies
+  # adapt all non-idl files
+  if(NOT "${_non_idl_tuples}" STREQUAL "")
+    if(rosidl_adapter_FOUND)
+      rosidl_adapt_interfaces(
+        _idl_adapter_tuples
+        TARGET ${target}
+        ${_non_idl_tuples}
+      )
+    endif()
+  endif()
+  # afterwards all remaining interface files are .idl files
+  list(APPEND _idl_tuples ${_idl_adapter_tuples})
+
+  # collect all idl files from dependencies
   set(_dep_files)
   foreach(_dep ${_ARG_DEPENDENCIES})
     if(NOT ${_dep}_FOUND)
       message(FATAL_ERROR "rosidl_generate_interfaces() the passed dependency "
         "'${_dep}' has not been found before using find_package()")
     endif()
-    foreach(_idl_file ${${_dep}_MESSAGE_FILES})
+    foreach(_idl_file ${${_dep}_IDL_FILES})
       set(_abs_idl_file "${${_dep}_DIR}/../${_idl_file}")
       normalize_path(_abs_idl_file "${_abs_idl_file}")
       list(APPEND _dep_files "${_abs_idl_file}")
     endforeach()
   endforeach()
-
-  # adapt all incoming interface files
-  rosidl_adapt_interfaces(
-    _adapted_idl_message_files _adapted_idl_service_files
-    TARGET ${target}
-    MESSAGE_FILES ${_message_files}
-    SERVICE_FILES ${_service_files}
-    INTERFACE_FILES ${_interface_files}
-  )
-  # afterwards all remaining interface files are .idl files
-  set(_message_files ${_adapted_idl_message_files})
-  set(_service_files ${_adapted_idl_service_files})
-  set(_idl_files ${_message_files} ${_service_files})
 
   # file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/srv")
 
@@ -153,13 +150,19 @@ macro(rosidl_generate_interfaces target)
   #   endif()
   # endforeach()
 
+  set(_abs_idl_files "")
+  foreach(_idl_tuple ${_idl_tuples})
+  string(REPLACE ":" "/" _abs_idl_file "${_idl_tuple}")
+    list(APPEND _abs_idl_files "${_abs_idl_file}")
+  endforeach()
+
   add_custom_target(
     ${target} ALL
     DEPENDS
-    ${_idl_files}
+    ${_abs_idl_files}
     ${_dep_files}
     SOURCES
-    ${_idl_files}
+    ${_abs_idl_files}
   )
 
   if(NOT _ARG_SKIP_INSTALL)
@@ -178,7 +181,7 @@ macro(rosidl_generate_interfaces target)
     endif()
     # register interfaces with the ament index
     set(_idl_files_lines)
-    foreach(_idl_file ${_idl_files})
+    foreach(_idl_file ${_abs_idl_files})
       get_filename_component(_interface_name "${_idl_file}" NAME)
       list(APPEND _idl_files_lines "${_interface_name}")
     endforeach()
@@ -204,8 +207,7 @@ macro(rosidl_generate_interfaces target)
   # which is ensured by every generator finding its dependencies first
   # and then registering itself as an extension
   set(rosidl_generate_interfaces_TARGET ${target})
-  set(rosidl_generate_interfaces_MESSAGE_FILES ${_message_files})
-  set(rosidl_generate_interfaces_SERVICE_FILES ${_service_files})
+  set(rosidl_generate_interfaces_IDL_TUPLES ${_idl_tuples})
   set(rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES ${_recursive_dependencies})
   set(rosidl_generate_interfaces_LIBRARY_NAME ${_ARG_LIBRARY_NAME})
   set(rosidl_generate_interfaces_SKIP_INSTALL ${_ARG_SKIP_INSTALL})
@@ -214,7 +216,7 @@ macro(rosidl_generate_interfaces target)
 
   if(NOT _ARG_SKIP_INSTALL)
     # install interface files to subfolders based on their extension
-    foreach(_idl_file ${_idl_files})
+    foreach(_idl_file ${_abs_idl_files})
       get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
       get_filename_component(_parent_folder "${_parent_folder}" NAME)
       install(
@@ -222,23 +224,36 @@ macro(rosidl_generate_interfaces target)
         DESTINATION "share/${PROJECT_NAME}/${_parent_folder}"
       )
       get_filename_component(_name "${_idl_file}" NAME)
-      list(APPEND _rosidl_cmake_INTERFACE_FILES "${_parent_folder}/${_name}")
+      list(APPEND _rosidl_cmake_IDL_FILES "${_parent_folder}/${_name}")
     endforeach()
   endif()
 endmacro()
 
-function(_check_existing_files var keyword)
-  set(${var} "")
+function(_check_existing_files tuples_var)
+  set(tuples "")
   foreach(file ${ARGN})
-    set(abs_file "${file}")
-    if(NOT IS_ABSOLUTE "${abs_file}")
-      set(abs_file "${CMAKE_CURRENT_SOURCE_DIR}/${abs_file}")
+    if(IS_ABSOLUTE "${file}")
+      string(FIND "${file}" ":" index)
+      if(index EQUAL -1)
+        message(FATAL_ERROR "rosidl_generate_interfaces() the passed absolute "
+          "file '${file}' must be represented as an absolute base path "
+          "separated by a colon from the relative path to the interface file")
+      endif()
+      string(REPLACE ":" "/" _abs_file "${file}")
+      if(NOT EXISTS "${_abs_file}")
+        message(FATAL_ERROR "rosidl_generate_interfaces() the passed file "
+          "'${_abs_file}' doesn't exist")
+      endif()
+      list(APPEND tuples "${file}")
+    else()
+      set(abs_file "${CMAKE_CURRENT_SOURCE_DIR}/${file}")
+      if(NOT EXISTS "${abs_file}")
+        message(FATAL_ERROR "rosidl_generate_interfaces() the passed file "
+            "'${file}' doesn't exist relative to the CMAKE_CURRENT_SOURCE_DIR "
+            "'${CMAKE_CURRENT_SOURCE_DIR}'")
+      endif()
+      list(APPEND tuples "${CMAKE_CURRENT_SOURCE_DIR}:${file}")
     endif()
-    if(NOT EXISTS "${abs_file}")
-      message(FATAL_ERROR "rosidl_generate_interfaces(${keyword}) the passed "
-        "file '${file}' doesn't exist")
-    endif()
-    list(APPEND ${var} "${abs_file}")
   endforeach()
-  set(${var} "${${var}}" PARENT_SCOPE)
+  set(${tuples_var} "${tuples}" PARENT_SCOPE)
 endfunction()

@@ -45,17 +45,17 @@
 #
 # @public
 #
-function(rosidl_adapt_interfaces messages_var services_var)
-  cmake_parse_arguments(ARG
-    "" "TARGET" "MESSAGE_FILES;SERVICE_FILES;INTERFACE_FILES"
+function(rosidl_adapt_interfaces idl_var)
+  cmake_parse_arguments(ARG "" "TARGET" ""
     ${ARGN})
-  if(ARG_UNPARSED_ARGUMENTS)
-    message(FATAL_ERROR "rosidl_adapt_interfaces() called with unused "
-      "arguments: ${ARG_UNPARSED_ARGUMENTS}")
-  endif()
-  if(NOT ARG_MESSAGE_FILES AND NOT ARG_SERVICE_FILES AND NOT ARG_INTERFACE_FILES)
+  if(NOT ARG_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "rosidl_adapt_interfaces() called without any "
       "interface files")
+  endif()
+
+  if(NOT rosidl_adapter_FOUND)
+    message(FATAL_ERROR "rosidl_adapt_interfaces() called without "
+      "find_package(rosidl_adapter) successfuly being called")
   endif()
 
   find_package(PythonInterp REQUIRED)
@@ -63,24 +63,41 @@ function(rosidl_adapt_interfaces messages_var services_var)
     message(FATAL_ERROR "Variable 'PYTHON_EXECUTABLE' must not be empty")
   endif()
 
-  set(_messages_output "${CMAKE_CURRENT_BINARY_DIR}/rosidl_adapter/${ARG_TARGET}.messages")
-  set(_services_output "${CMAKE_CURRENT_BINARY_DIR}/rosidl_adapter/${ARG_TARGET}.services")
-  execute_process(
-    COMMAND
+  set(_idl_output "${CMAKE_CURRENT_BINARY_DIR}/rosidl_adapter/${ARG_TARGET}.idls")
+  # TODO needs to use a JSON file for arguments otherwise the command might become too long
+  set(cmd
     "${PYTHON_EXECUTABLE}" -m rosidl_adapter
-    --package-dir "${CMAKE_SOURCE_DIR}"
     --package-name ${PROJECT_NAME}
-    --message-files ${ARG_MESSAGE_FILES}
-    --service-files ${ARG_SERVICE_FILES}
-    --interface-files ${ARG_INTERFACE_FILES}
+    --interface-files ${ARG_UNPARSED_ARGUMENTS}
     --output-dir "${CMAKE_CURRENT_BINARY_DIR}/rosidl_adapter"
-    --output-messages-file "${_messages_output}"
-    --output-services-file "${_services_output}"
+    --output-file "${_idl_output}")
+  execute_process(
+    COMMAND ${cmd}
     OUTPUT_QUIET
+    ERROR_VARIABLE error
+    RESULT_VARIABLE result
   )
+  if(NOT result EQUAL 0)
+    string(REPLACE ";" " " cmd_str "${cmd}")
+    message(FATAL_ERROR
+      "execute_process(${cmd_str}) returned error code ${result}:\n${error}")
+  endif()
 
-  file(STRINGS "${_messages_output}" message_files)
-  file(STRINGS "${_services_output}" service_files)
-  set(${messages_var} ${message_files} PARENT_SCOPE)
-  set(${services_var} ${service_files} PARENT_SCOPE)
+  file(STRINGS "${_idl_output}" idl_files)
+
+  # split each absolute file into a tuple
+  set(idl_tuples "")
+  set(basepath "${CMAKE_CURRENT_BINARY_DIR}/rosidl_adapter/${PROJECT_NAME}")
+  string(LENGTH "${basepath}" length)
+  foreach(idl_file ${idl_files})
+    string(SUBSTRING "${idl_file}" 0 ${length} prefix)
+    if(NOT "${prefix}" STREQUAL "${basepath}")
+      message(FATAL_ERROR "boom")
+    endif()
+    math(EXPR index "${length} + 1")
+    string(SUBSTRING "${idl_file}" ${index} -1 rel_idl_file)
+    list(APPEND idl_tuples "${basepath}:${rel_idl_file}")
+  endforeach()
+
+  set(${idl_var} ${idl_tuples} PARENT_SCOPE)
 endfunction()

@@ -2,6 +2,7 @@
 // with input from @(pkg_name)/@(relative_input_file)
 
 @{
+from rosidl_adapter.msg import get_include_file
 include_files = set()
 for field in msg.fields:
     include_file = get_include_file(field.type)
@@ -18,8 +19,7 @@ module @(pkg_name) {
 TEMPLATE(
     'struct.idl.em',
     msg=msg,
-    get_idl_type=get_idl_type,
-    to_literal=to_literal)
+)
 }@
   };
 };

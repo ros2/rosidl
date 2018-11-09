@@ -19,6 +19,9 @@ import pytest
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import Constant
+from rosidl_parser.definition import IdlLocator
+from rosidl_parser.definition import Include
 from rosidl_parser.definition import Message
 from rosidl_parser.definition import Service
 from rosidl_parser.definition import String
@@ -26,54 +29,61 @@ from rosidl_parser.definition import UnboundedSequence
 from rosidl_parser.definition import WString
 from rosidl_parser.parser import parse_idl_file
 
-MESSAGE_IDL_FILE = pathlib.Path(__file__).parent / 'MyMessage.idl'
-SERVICE_IDL_FILE = pathlib.Path(__file__).parent / 'MyService.idl'
+MESSAGE_IDL_LOCATOR = IdlLocator(
+    pathlib.Path(__file__).parent, pathlib.Path('msg') / 'MyMessage.idl')
+SERVICE_IDL_LOCATOR = IdlLocator(
+    pathlib.Path(__file__).parent, pathlib.Path('srv') / 'MyService.idl')
 
 
 @pytest.fixture(scope='module')
-def msg():
-    return parse_idl_file(MESSAGE_IDL_FILE)
+def message_idl_file():
+    return parse_idl_file(MESSAGE_IDL_LOCATOR)
 
 
-def test_message_parser_specification(msg):
-    assert isinstance(msg, Message)
+def test_message_parser(message_idl_file):
+    messages = message_idl_file.content.get_elements_of_type(Message)
+    assert len(messages) == 1
 
 
-def test_message_parser_includes(msg):
-    assert len(msg.includes) == 2
-    assert msg.includes[0] == 'OtherMessage.idl'
-    assert msg.includes[1] == 'pkgname/msg/OtherMessage.idl'
+def test_message_parser_includes(message_idl_file):
+    includes = message_idl_file.content.get_elements_of_type(Include)
+    assert len(includes) == 2
+    assert includes[0].locator == 'OtherMessage.idl'
+    assert includes[1].locator == 'pkgname/msg/OtherMessage.idl'
 
 
-def test_message_parser_constants(msg):
-    assert len(msg.constants) == 5
+def test_message_parser_constants(message_idl_file):
+    constants = message_idl_file.content.get_elements_of_type(Constant)
+    assert len(constants) == 5
 
-    assert 'SHORT_CONSTANT' in msg.constants
-    assert isinstance(msg.constants['SHORT_CONSTANT'][0], BasicType)
-    assert msg.constants['SHORT_CONSTANT'][0].type == 'int16'
-    assert msg.constants['SHORT_CONSTANT'][1] == -23
+    constant = [c for c in constants if c.name == 'SHORT_CONSTANT']
+    assert len(constant) == 1
+    constant = constant[0]
+    assert isinstance(constant.type, BasicType)
+    assert constant.type.type == 'int16'
+    assert constant.value == -23
 
-    assert 'UNSIGNED_LONG_CONSTANT' in msg.constants
-    assert isinstance(msg.constants['UNSIGNED_LONG_CONSTANT'][0], BasicType)
-    assert msg.constants['UNSIGNED_LONG_CONSTANT'][0].type == 'uint32'
-    assert msg.constants['UNSIGNED_LONG_CONSTANT'][1] == 42
+    # assert 'UNSIGNED_LONG_CONSTANT' in msg.constants
+    # assert isinstance(msg.constants['UNSIGNED_LONG_CONSTANT'][0], BasicType)
+    # assert msg.constants['UNSIGNED_LONG_CONSTANT'][0].type == 'uint32'
+    # assert msg.constants['UNSIGNED_LONG_CONSTANT'][1] == 42
 
-    assert 'FLOAT_CONSTANT' in msg.constants
-    assert isinstance(msg.constants['FLOAT_CONSTANT'][0], BasicType)
-    assert msg.constants['FLOAT_CONSTANT'][0].type == 'float'
-    assert msg.constants['FLOAT_CONSTANT'][1] == 1.25
+    # assert 'FLOAT_CONSTANT' in msg.constants
+    # assert isinstance(msg.constants['FLOAT_CONSTANT'][0], BasicType)
+    # assert msg.constants['FLOAT_CONSTANT'][0].type == 'float'
+    # assert msg.constants['FLOAT_CONSTANT'][1] == 1.25
 
-    assert 'BOOLEAN_CONSTANT' in msg.constants
-    assert isinstance(msg.constants['BOOLEAN_CONSTANT'][0], BasicType)
-    assert msg.constants['BOOLEAN_CONSTANT'][0].type == 'boolean'
-    assert msg.constants['BOOLEAN_CONSTANT'][1] is True
+    # assert 'BOOLEAN_CONSTANT' in msg.constants
+    # assert isinstance(msg.constants['BOOLEAN_CONSTANT'][0], BasicType)
+    # assert msg.constants['BOOLEAN_CONSTANT'][0].type == 'boolean'
+    # assert msg.constants['BOOLEAN_CONSTANT'][1] is True
 
-    assert 'STRING_CONSTANT' in msg.constants
-    assert isinstance(msg.constants['STRING_CONSTANT'][0], String)
-    assert msg.constants['STRING_CONSTANT'][1] == 'string_value'
+    # assert 'STRING_CONSTANT' in msg.constants
+    # assert isinstance(msg.constants['STRING_CONSTANT'][0], String)
+    # assert msg.constants['STRING_CONSTANT'][1] == 'string_value'
 
 
-def test_message_parser_structure(msg):
+def _test_message_parser_structure(message_idl_file):
     assert msg.structure.type.namespaces == ['rosidl_parser', 'msg']
     assert msg.structure.type.name == 'MyMessage'
     assert len(msg.structure.members) == 30
@@ -118,7 +128,7 @@ def test_message_parser_structure(msg):
     assert msg.structure.members[29].name == 'array_short_values'
 
 
-def test_message_parser_annotations(msg):
+def _test_message_parser_annotations(message_idl_file):
     assert len(msg.structure.members[2].annotations) == 1
 
     assert msg.structure.members[2].annotations[0][0] == 'default'
@@ -139,8 +149,16 @@ def test_message_parser_annotations(msg):
     assert msg.structure.members[3].annotations[1][1]['max'] == 10
 
 
-def test_service_parser():
-    srv = parse_idl_file(SERVICE_IDL_FILE)
+@pytest.fixture(scope='module')
+def service_idl_file():
+    return parse_idl_file(SERVICE_IDL_LOCATOR)
+
+
+def test_service_parser(service_idl_file):
+    services = service_idl_file.content.get_elements_of_type(Service)
+    assert len(services) == 1
+
+    srv = services[0]
     assert isinstance(srv, Service)
     assert srv.structure_type.namespaces == ['rosidl_parser', 'srv']
     assert srv.structure_type.name == 'MyService'

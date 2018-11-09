@@ -1,6 +1,10 @@
 @#typedefs for arrays need to be defined outside of the struct
 @{
 from collections import OrderedDict
+
+from rosidl_adapter.msg import get_idl_type
+from rosidl_adapter.msg import to_idl_literal
+
 typedefs = OrderedDict()
 def get_idl_type_identifier(idl_type):
     return idl_type.replace('::', '__').replace('[', '__').replace(']', '')
@@ -33,7 +37,7 @@ else:
 @[if msg.constants]@
     module @(msg.msg_name)_Constants {
 @[  for constant in msg.constants]@
-      const @(get_idl_type(constant.type)) @(constant.name) = @(to_literal(get_idl_type(constant.type), constant.value));
+      const @(get_idl_type(constant.type)) @(constant.name) = @(to_idl_literal(get_idl_type(constant.type), constant.value));
 @[  end for]@
     };
 @[end if]@
@@ -43,12 +47,7 @@ else:
 @[if msg.fields]@
 @[  for field in msg.fields]@
 @[    if field.default_value is not None]@
-@{      idl_type = get_idl_type(field.type)}@
-@[      if '[' in idl_type or '<' in idl_type]@
-      @@verbatim(language="rosidl_array_init", text=@(to_literal('string', repr(field.default_value))))
-@[      else]@
-      @@default (value=@(to_literal(get_idl_type(field.type), field.default_value)))
-@[      end if]@
+      @@default (value=@(to_idl_literal(get_idl_type(field.type), field.default_value)))
 @[    end if]@
 @{
 idl_type = get_idl_type(field.type)

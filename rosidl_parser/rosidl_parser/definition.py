@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from collections import OrderedDict
+import pathlib
 
 
 BASIC_TYPES = [
@@ -65,15 +66,21 @@ class BasicType(BaseType):
         self.type = typename
 
 
-class StructureType(BaseType):
+class NamedType(BaseType):
+
+    __slots__ = ('name')
+
+    def __init__(self, name):
+        super().__init__()
+        self.name = name
+
+
+class NamespacedType(BaseType):
 
     __slots__ = ('namespaces', 'name')
 
     def __init__(self, namespaces, name):
         super().__init__()
-
-        assert len(namespaces) == 2
-        assert namespaces[1] in ('msg', 'srv', 'action')
         self.namespaces = namespaces
         self.name = name
 
@@ -104,25 +111,31 @@ class WString(BaseString):
 
 # the following types are templated on a base type
 
-class Array(AbstractType):
-
-    __slots__ = ('basetype', 'size')
-
-    def __init__(self, basetype, size):
-        super().__init__()
-        assert isinstance(basetype, BaseType)
-        self.basetype = basetype
-        self.size = size
-
-
-class Sequence(AbstractType):
+class NestedType(AbstractType):
 
     __slots__ = ('basetype', )
 
     def __init__(self, basetype):
         super().__init__()
-        assert isinstance(basetype, BaseType)
+        assert isinstance(basetype, BaseType), basetype
         self.basetype = basetype
+
+
+class Array(NestedType):
+
+    __slots__ = ('size')
+
+    def __init__(self, basetype, size):
+        super().__init__(basetype)
+        self.size = size
+
+
+class Sequence(NestedType):
+
+    __slots__ = set()
+
+    def __init__(self, basetype):
+        super().__init__(basetype)
 
 
 class UnboundedSequence(Sequence):
@@ -148,12 +161,41 @@ class BoundedSequence(Sequence):
 #     pass
 
 
+class Annotation:
+
+    __slots__ = ('name', 'value')
+
+    def __init__(self, name, value):
+        assert isinstance(name, str)
+        self.name = name
+        self.value = value
+
+
 class Annotatable:
 
     __slots__ = ('annotations', )
 
     def __init__(self):
         self.annotations = []
+
+    def get_annotation_value(self, name):
+        values = self.get_annotation_values(name)
+        if not values:
+            raise ValueError("No '{name}' annotation".format_map(locals()))
+        if len(values) > 1:
+            raise ValueError("Multiple '{name}' annotations".format_map(locals()))
+        return values[0]
+
+    def get_annotation_values(self, name):
+        return [a.value for a in self.annotations if a.name == name]
+
+    def has_annotation(self, name):
+        values = self.get_annotation_values(name)
+        return len(values) == 1
+
+    def has_annotations(self, name):
+        annotations = self.get_annotation_values(name)
+        return bool(annotations)
 
 
 class Member(Annotatable):
@@ -173,33 +215,32 @@ class Structure(Annotatable):
 
     def __init__(self, type_):
         super().__init__()
-        assert isinstance(type_, StructureType)
+        assert isinstance(type_, NamespacedType)
         self.type = type_
         self.members = []
 
 
+class Include:
+
+    __slots__ = ('locator', )
+
+    def __init__(self, locator):
+        self.locator = locator
+
+
 class Constant(Annotatable):
 
-    __slots__ = ('type', 'name', 'value')
+    __slots__ = ('name', 'type', 'value')
 
-    def __init__(self, type_, name, value):
+    def __init__(self, name, type_, value):
         super().__init__()
         assert isinstance(type_, AbstractType)
-        self.type = type_
         self.name = name
+        self.type = type_
         self.value = value
 
 
-class Interface:
-
-    __slots__ = ('includes')
-
-    def __init__(self):
-        super().__init__()
-        self.includes = []
-
-
-class Message(Interface):
+class Message:
 
     __slots__ = ('structure', 'constants', 'enums')
 
@@ -211,14 +252,14 @@ class Message(Interface):
         self.enums = []
 
 
-class Service(Interface):
+class Service:
 
     __slots__ = ('structure_type', 'request_message', 'response_message')
 
     def __init__(self, type_, request, response):
         super().__init__()
 
-        assert isinstance(type_, StructureType)
+        assert isinstance(type_, NamespacedType)
         self.structure_type = type_
 
         assert isinstance(request, Message)
@@ -232,3 +273,52 @@ class Service(Interface):
         assert response.structure.type.name == type_.name + \
             SERVICE_RESPONSE_MESSAGE_SUFFIX
         self.response_message = response
+
+
+class IdlIdentifier:
+
+    __slots__ = ('package_name', 'relative_path')
+
+    def __init__(self, package_name, relative_path):
+        super().__init__()
+        assert isinstance(package_name, str)
+        self.package_name = package_name
+        assert isinstance(relative_path, pathlib.Path)
+        self.relative_path = relative_path
+
+
+class IdlLocator:
+
+    __slots__ = ('basepath', 'relative_path')
+
+    def __init__(self, basepath, relative_path):
+        super().__init__()
+        self.basepath = pathlib.Path(basepath)
+        self.relative_path = pathlib.Path(relative_path)
+
+    def get_absolute_path(self):
+        return self.basepath / self.relative_path
+
+
+class IdlContent:
+
+    __slots__ = ('elements', )
+
+    def __init__(self):
+        super().__init__()
+        self.elements = []
+
+    def get_elements_of_type(self, type_):
+        return [e for e in self.elements if isinstance(e, type_)]
+
+
+class IdlFile:
+
+    __slots__ = ('locator', 'content')
+
+    def __init__(self, locator, content):
+        super().__init__()
+        assert isinstance(locator, IdlLocator)
+        self.locator = locator
+        assert isinstance(content, IdlContent)
+        self.content = content

@@ -1,4 +1,4 @@
-# Copyright 2015 Open Source Robotics Foundation, Inc.
+# Copyright 2015-2018 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ function(rosidl_write_generator_arguments output_file)
     "OUTPUT_DIR"
     "TEMPLATE_DIR")
 
-  set(ANY_REQUIRED_MULTI_VALUE_KEYWORDS
-    "MESSAGE_FILES;SERVICE_FILES")
+  set(REQUIRED_MULTI_VALUE_KEYWORDS
+    "IDL_TUPLES")
   set(OPTIONAL_MULTI_VALUE_KEYWORDS
     "ROS_INTERFACE_DEPENDENCIES"  # since the dependencies can be empty
     "TARGET_DEPENDENCIES"
@@ -35,7 +35,7 @@ function(rosidl_write_generator_arguments output_file)
     ARG
     ""
     "${REQUIRED_ONE_VALUE_KEYWORDS}"
-    "${ANY_REQUIRED_MULTI_VALUE_KEYWORDS};${OPTIONAL_MULTI_VALUE_KEYWORDS}"
+    "${REQUIRED_MULTI_VALUE_KEYWORDS};${OPTIONAL_MULTI_VALUE_KEYWORDS}"
     ${ARGN})
   if(ARG_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "rosidl_write_generator_arguments() called with unused "
@@ -48,17 +48,13 @@ function(rosidl_write_generator_arguments output_file)
         "${required_argument} argument")
     endif()
   endforeach()
-  set(any_required_arguments "")
-  foreach(required_argument ${ANY_REQUIRED_MULTI_VALUE_KEYWORDS})
-    if(ARG_${required_argument})
-      list(APPEND any_required_arguments "${required_argument}")
+  foreach(required_argument ${REQUIRED_MULTI_VALUE_KEYWORDS})
+    if("${ARG_${required_argument}}" STREQUAL "")
+      message(FATAL_ERROR
+        "rosidl_write_generator_arguments() must be invoked with at least one "
+        "argument to ${required_argument}")
     endif()
   endforeach()
-  if("${any_required_arguments}" STREQUAL "")
-    message(FATAL_ERROR
-      "rosidl_write_generator_arguments() must be invoked with at least one of "
-      "the ${ANY_REQUIRED_MULTI_VALUE_KEYWORDS} arguments")
-  endif()
 
   # create folder
   get_filename_component(output_path "${output_file}" PATH)
@@ -88,7 +84,7 @@ function(rosidl_write_generator_arguments output_file)
   endforeach()
 
   # write array values
-  foreach(multi_value_argument ${ANY_REQUIRED_MULTI_VALUE_KEYWORDS} ${OPTIONAL_MULTI_VALUE_KEYWORDS})
+  foreach(multi_value_argument ${REQUIRED_MULTI_VALUE_KEYWORDS} ${OPTIONAL_MULTI_VALUE_KEYWORDS})
     if(ARG_${multi_value_argument})
       # write conditional comma and mandatory newline and indentation
       if(NOT first_element)

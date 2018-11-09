@@ -27,7 +27,8 @@ macro(_rosidl_cmake_register_package_hook)
   endif()
 endmacro()
 
-include("${rosidl_cmake_DIR}/rosidl_adapt_interfaces.cmake")
+find_package(rosidl_adapter)  # not required, being used when available
+
 include("${rosidl_cmake_DIR}/rosidl_generate_interfaces.cmake")
 include("${rosidl_cmake_DIR}/rosidl_target_interfaces.cmake")
 include("${rosidl_cmake_DIR}/rosidl_write_generator_arguments.cmake")

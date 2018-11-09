@@ -2,6 +2,7 @@
 // with input from @(pkg_name)/@(relative_input_file)
 
 @{
+from rosidl_adapter.msg import get_include_file
 include_files = set()
 for field in srv.request.fields + srv.response.fields:
     include_file = get_include_file(field.type)
@@ -13,20 +14,18 @@ for field in srv.request.fields + srv.response.fields:
 @[end for]@
 
 module @(pkg_name) {
-  module msg {
+  module srv {
 @{
 TEMPLATE(
     'struct.idl.em',
     msg=srv.request,
-    get_idl_type=get_idl_type,
-    to_literal=to_literal)
+)
 }@
 @{
 TEMPLATE(
     'struct.idl.em',
     msg=srv.response,
-    get_idl_type=get_idl_type,
-    to_literal=to_literal)
+)
 }@
   };
 };

@@ -16,7 +16,9 @@ import pytest
 
 from rosidl_parser import InvalidFieldDefinition
 from rosidl_parser import InvalidResourceName
-from rosidl_parser import parse_message_string
+# from rosidl_parser import parse_message_string
+
+parse_message_string = None
 
 
 def test_parse_message_string():

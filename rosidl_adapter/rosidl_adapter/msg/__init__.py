@@ -17,25 +17,22 @@ from rosidl_adapter.resource import expand_template
 
 
 def convert_msg_to_idl(package_dir, package_name, input_file, output_dir):
+    assert package_dir.is_absolute()
+    assert not input_file.is_absolute()
     assert input_file.suffix == '.msg'
 
     print('Reading input file: {input_file}'.format_map(locals()))
-    content = input_file.read_text(encoding='utf-8')
+    abs_input_file = package_dir / input_file
+    content = abs_input_file.read_text(encoding='utf-8')
     msg = parse_message_string(package_name, input_file.stem, content)
 
     output_file = output_dir / input_file.with_suffix('.idl').name
     print('Writing output file: {output_file}'.format_map(locals()))
     data = {
         'pkg_name': package_name,
-        'relative_input_file': input_file.absolute().relative_to(package_dir),
+        'relative_input_file': input_file,
         'msg': msg,
-        'get_idl_type': get_idl_type,
-        'get_include_file': get_include_file,
-        'to_literal': to_literal,
     }
-
-    print('\n'.join([c.name for c in msg.constants]))
-    print('\n'.join([f.name for f in msg.fields]))
 
     expand_template('msg.idl.em', data, output_file)
     return output_file
@@ -44,7 +41,7 @@ def convert_msg_to_idl(package_dir, package_name, input_file, output_dir):
 MSG_TYPE_TO_IDL = {
     'bool': 'boolean',
     'byte': 'octet',
-    'char': 'int8',
+    'char': 'uint8',
     'int8': 'int8',
     'uint8': 'uint8',
     'int16': 'int16',
@@ -59,37 +56,24 @@ MSG_TYPE_TO_IDL = {
 }
 
 
-def escape_string(string):
-    """Escape string according to IDL 4.2 section 7.2.6.2.2 ."""
-    estr = string.encode().decode('unicode_escape')
-    # Escape quotes too
-    estr = estr.replace('"', '\\"')
-    estr = estr.replace("'", "\\'")
-    estr = estr.replace('?', '\\?')
-    return estr
+def to_idl_literal(idl_type, value):
+    if idl_type[-1] in (']', '>'):
+        elements = [repr(v) for v in value]
+        while len(elements) < 2:
+            elements.append('')
+        return '"(%s)"' % ', '.join(e.replace('"', r'\"') for e in elements)
 
-
-def contains_unicode(string):
-    """Return true if string has unicode code points."""
-    try:
-        string.encode().decode('ascii')
-    except UnicodeDecodeError:
-        return True
-    return False
-
-
-def to_literal(idl_type, value):
-    import sys; sys.stderr.write(repr(idl_type) + ', ' + repr(value) + '\n')
+    if 'boolean' == idl_type:
+        return 'TRUE' if value else 'FALSE'
     if 'string' == idl_type:
-        return to_string_literal(value)
+        return string_to_idl_string_literal(value)
     return value
 
 
-def to_string_literal(string):
+def string_to_idl_string_literal(string):
     """Convert string to character literal as described in IDL 4.2 section  7.2.6.3 ."""
-    estr = escape_string(string)
-    if contains_unicode(string):
-        return 'L"{0}"'.format(estr)
+    estr = string.encode().decode('unicode_escape')
+    estr = estr.replace('"', r'\"')
     return '"{0}"'.format(estr)
 
 

@@ -15,6 +15,7 @@
 from io import StringIO
 import json
 import os
+import pathlib
 import re
 import sys
 
@@ -78,7 +79,24 @@ def get_newest_modification_time(target_dependencies):
     return newest_timestamp
 
 
-def expand_template(template_file, data, output_file, minimum_timestamp=None):
+template_prefix_path = []
+
+
+def get_template_path(template_name):
+    global template_prefix_path
+    for basepath in template_prefix_path:
+        template_path = basepath / template_name
+        if template_path.exists():
+            return template_path
+    raise RuntimeError(
+        "Failed to find template '{template_name}'".format_map(locals()))
+
+
+interpreter = None
+
+
+def expand_template(template_path, template_name, data, output_file, minimum_timestamp=None):
+    global interpreter
     output = StringIO()
     interpreter = em.Interpreter(
         output=output,
@@ -86,17 +104,32 @@ def expand_template(template_file, data, output_file, minimum_timestamp=None):
             em.BUFFERED_OPT: True,
             em.RAW_OPT: True,
         },
-        globals=data,
     )
-    with open(template_file, 'r') as h:
-        try:
-            interpreter.file(h)
-        except Exception:
-            if os.path.exists(output_file):
-                os.remove(output_file)
-            print("Exception when expanding '%s' into '%s'" %
-                  (template_file, output_file), file=sys.stderr)
-            raise
+
+    global template_prefix_path
+    template_prefix_path.append(pathlib.Path(template_path))
+    template_path = get_template_path(template_name)
+
+    # create copy before manipulating
+    data = dict(data)
+    _add_helper_functions(data)
+
+    try:
+        with template_path.open('r') as h:
+            template_content = h.read()
+            interpreter.invoke(
+                'beforeFile', name=template_name, file=h, locals=data)
+        interpreter.string(template_content, template_path, locals=data)
+        interpreter.invoke('afterFile')
+    except Exception as e:  # noqa: F841
+        if os.path.exists(output_file):
+            os.remove(output_file)
+        print("{e.__class__.__name__} when expanding '{template_name}' into "
+              "'{output_file}': {e}".format_map(locals()), file=sys.stderr)
+        raise
+    finally:
+        template_prefix_path.pop()
+
     content = output.getvalue()
     interpreter.shutdown()
 
@@ -117,3 +150,24 @@ def expand_template(template_file, data, output_file, minimum_timestamp=None):
 
     with open(output_file, 'w') as h:
         h.write(content)
+
+
+def _add_helper_functions(data):
+    data['TEMPLATE'] = _expand_template
+
+
+def _expand_template(template_name, **kwargs):
+    global interpreter
+    template_path = get_template_path(template_name)
+    _add_helper_functions(kwargs)
+    with template_path.open('r') as h:
+        interpreter.invoke(
+            'beforeInclude', name=str(template_path), file=h, locals=kwargs)
+        content = h.read()
+    try:
+        interpreter.string(content, str(template_path), kwargs)
+    except Exception as e:  # noqa: F841
+        print("{e.__class__.__name__} in template '{template_path}': {e}"
+              .format_map(locals()), file=sys.stderr)
+        raise
+    interpreter.invoke('afterInclude')

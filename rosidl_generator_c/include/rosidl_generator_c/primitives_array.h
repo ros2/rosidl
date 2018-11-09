@@ -19,6 +19,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// TODO(dirk-thomas) rename to BASIC_SEQUENCE
 #define ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(STRUCT_NAME, TYPE_NAME) \
   typedef struct rosidl_generator_c__ ## STRUCT_NAME ## __Array \
   { \
@@ -27,19 +28,21 @@
     size_t capacity; /*!< The number of allocated items in data */ \
   } rosidl_generator_c__ ## STRUCT_NAME ## __Array;
 
-// array types for all primitive types
-ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(bool, bool)
-ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(byte, uint8_t)
+// array types for all basic types
+ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(float, float)
+ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(double, double)
+ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(long_double, long double)
 ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(char, signed char)
-ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(float32, float)
-ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(float64, double)
-ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(int8, int8_t)
+ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(wchar, uint16_t)
+ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(boolean, bool)
+ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(octet, uint8_t)
 ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(uint8, uint8_t)
-ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(int16, int16_t)
+ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(int8, int8_t)
 ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(uint16, uint16_t)
-ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(int32, int32_t)
+ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(int16, int16_t)
 ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(uint32, uint32_t)
-ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(int64, int64_t)
+ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(int32, int32_t)
 ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(uint64, uint64_t)
+ROSIDL_GENERATOR_C__PRIMITIVE_ARRAY(int64, int64_t)
 
 #endif  // ROSIDL_GENERATOR_C__PRIMITIVES_ARRAY_H_

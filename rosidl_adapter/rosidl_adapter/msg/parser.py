@@ -14,6 +14,7 @@
 
 import os
 import re
+import sys
 
 PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR = '/'
 COMMENT_DELIMITER = '#'
@@ -406,7 +407,7 @@ def parse_message_string(pkg_name, msg_name, message_string):
         type_string, _, rest = line.partition(' ')
         rest = rest.lstrip()
         if not rest:
-            print('Error with:', pkg_name, msg_name)
+            print('Error with:', pkg_name, msg_name, file=sys.stderr)
             raise InvalidFieldDefinition(line)
         index = rest.find(CONSTANT_SEPARATOR)
         if index == -1:
@@ -422,7 +423,7 @@ def parse_message_string(pkg_name, msg_name, message_string):
             except Exception as err:
                 print("Error processing '{line}' of '{pkg}/{msg}': '{err}'".format(
                     line=line, pkg=pkg_name, msg=msg_name, err=err,
-                ))
+                ), file=sys.stderr)
                 raise
         else:
             # line contains a constant

@@ -88,6 +88,7 @@ if(BUILD_TESTING)
     "msg/Uint8.msg"
     "msg/Various.msg"
     "msg/Wire.msg"
+    "srv/AddTwoInts.srv"
   )
 
   include(cmake/register_c.cmake)

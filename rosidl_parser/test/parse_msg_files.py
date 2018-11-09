@@ -37,9 +37,8 @@ def main(argv=sys.argv[1:]):
         pkg_name = os.path.basename(os.path.dirname(os.path.dirname(filename)))
         try:
             rosidl_parser.parse_message_file(pkg_name, filename)
-            print(pkg_name, filename)
         except Exception as e:
-            print(' ', pkg_name, filename, str(e))
+            print(' ', pkg_name, filename, str(e), file=sys.stderr)
             raise
 
     return 0

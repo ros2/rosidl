@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from collections import OrderedDict
 import os
 import sys
 
@@ -21,17 +20,25 @@ from lark.lexer import Token
 from lark.reconstruct import Reconstructor
 from lark.tree import Tree
 
+from rosidl_parser.definition import AbstractType
+from rosidl_parser.definition import Annotation
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import Constant
+from rosidl_parser.definition import IdlContent
+from rosidl_parser.definition import IdlFile
+from rosidl_parser.definition import Include
 from rosidl_parser.definition import Member
 from rosidl_parser.definition import Message
+from rosidl_parser.definition import NamedType
+from rosidl_parser.definition import NamespacedType
+from rosidl_parser.definition import NestedType
 from rosidl_parser.definition import Service
 from rosidl_parser.definition import SERVICE_REQUEST_MESSAGE_SUFFIX
 from rosidl_parser.definition import SERVICE_RESPONSE_MESSAGE_SUFFIX
 from rosidl_parser.definition import String
 from rosidl_parser.definition import Structure
-from rosidl_parser.definition import StructureType
 from rosidl_parser.definition import UnboundedSequence
 from rosidl_parser.definition import WString
 
@@ -42,76 +49,98 @@ parser = Lark(grammar, start='specification')
 reconstructor = Reconstructor(parser)
 
 
-def parse_idl_file(file_):
-    with open(file_, 'r') as h:
-        content = h.read()
+def parse_idl_file(locator, png_file=None):
+    string = locator.get_absolute_path().read_text()
     try:
-        return parse_idl_string(content)
-    except Exception:
-        print(file_, file=sys.stderr)
+        content = parse_idl_string(string, png_file=png_file)
+    except Exception as e:
+        print(str(e), str(locator.get_absolute_path()), file=sys.stderr)
         raise
+    return IdlFile(locator, content)
 
 
-def parse_idl_string(idl_string, pydot_file=None):
+def parse_idl_string(idl_string, png_file=None):
     global parser
     tree = parser.parse(idl_string)
 
-    try:
-        if pydot_file:
+    if png_file:
+        try:
             from lark.tree import pydot__tree_to_png
-    except ImportError:
-        pass
-    else:
-        pydot__tree_to_png(tree, pydot_file)
+        except ImportError:
+            pass
+        else:
+            os.makedirs(os.path.dirname(png_file), exist_ok=True)
+            pydot__tree_to_png(tree, png_file)
 
-    return extract_interface_from_ast(tree)
+    return extract_content_from_ast(tree)
 
 
-def extract_interface_from_ast(tree):
-    includes = []
+def extract_content_from_ast(tree):
+    content = IdlContent()
+
     include_directives = tree.find_data('include_directive')
     for include_directive in include_directives:
         assert len(include_directive.children) == 1
         child = include_directive.children[0]
         assert child.data in ('h_char_sequence', 'q_char_sequence')
         include_token = next(child.scan_values(_find_tokens(None)))
-        includes.append(include_token.value)
+        content.elements.append(Include(include_token.value))
 
-    constants = OrderedDict()
     const_dcls = tree.find_data('const_dcl')
     for const_dcl in const_dcls:
         const_type = next(const_dcl.find_data('const_type'))
         const_expr = next(const_dcl.find_data('const_expr'))
-        constants[get_first_identifier_value(const_dcl)] = (
+        content.elements.append(Constant(
+            get_first_identifier_value(const_dcl),
             get_abstract_type_from_const_expr(const_type),
-            get_const_expr_value(const_expr))
+            get_const_expr_value(const_expr)))
+
+    typedefs = {}
+    typedef_dcls = tree.find_data('typedef_dcl')
+    for typedef_dcl in typedef_dcls:
+        assert len(typedef_dcl.children) == 1
+        child = typedef_dcl.children[0]
+        assert 'type_declarator' == child.data
+        assert len(child.children) == 2
+        abstract_type = get_abstract_type(child.children[0])
+        child = child.children[1]
+        assert 'any_declarators' == child.data
+        assert len(child.children) == 1, 'Only support single typedefs atm'
+        child = child.children[0]
+        identifier = get_first_identifier_value(child)
+        assert identifier not in typedefs
+        typedefs[identifier] = get_abstract_type_optionally_as_array(abstract_type, child)
 
     struct_defs = list(tree.find_data('struct_def'))
     if len(struct_defs) == 1:
-        msg = Message(Structure(StructureType(
+        msg = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[0]),
             name=get_first_identifier_value(struct_defs[0]))))
-        msg.includes += includes
-        msg.constants.update(constants)
         add_message_members(msg, struct_defs[0])
-        return msg
+        resolve_typedefed_names(msg.structure, typedefs)
+        # TODO move "global" constants/enums within a "matching" namespace into the message
+        msg.constants.update({c.name: c for c in content.elements if isinstance(c, Constant)})
+        # msg.constants.update(constants)
+        content.elements.append(msg)
 
-    if len(struct_defs) == 2:
-        request = Message(Structure(StructureType(
+    elif len(struct_defs) == 2:
+        request = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[0]),
             name=get_first_identifier_value(struct_defs[0]))))
         assert request.structure.type.name.endswith(
             SERVICE_REQUEST_MESSAGE_SUFFIX)
-        request.includes += includes
         add_message_members(request, struct_defs[0])
+        resolve_typedefed_names(request.structure, typedefs)
+        # TODO move "global" constants/enums within a "matching" namespace into the request message
 
-        response = Message(Structure(StructureType(
+        response = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[1]),
             name=get_first_identifier_value(struct_defs[1]))))
         assert response.structure.type.name.endswith(
             SERVICE_RESPONSE_MESSAGE_SUFFIX)
-        response.includes += includes
         add_message_members(response, struct_defs[1])
+        resolve_typedefed_names(response.structure, typedefs)
+        # TODO move "global" constants/enums within a "matching" namespace into the response msg
 
         assert request.structure.type.namespaces == \
             response.structure.type.namespaces
@@ -122,15 +151,42 @@ def extract_interface_from_ast(tree):
         assert request_basename == response_basename
 
         srv = Service(
-            StructureType(
+            NamespacedType(
                 namespaces=request.structure.type.namespaces,
                 name=request_basename),
             request, response)
-        return srv
+        content.elements.append(srv)
 
-    assert False, \
-        'Currently only .idl files with 1 (a message) or 2 (a service) ' \
-        'structures are supported'
+    else:
+        assert False, \
+            'Currently only .idl files with 1 (a message) or 2 (a service) ' \
+            'structures are supported'
+
+    return content
+
+
+def resolve_typedefed_names(structure, typedefs):
+    for member in structure.members:
+        type_ = member.type
+        if isinstance(type_, NestedType):
+            type_ = type_.basetype
+        assert isinstance(type_, AbstractType)
+        if isinstance(type_, NamedType):
+            assert type_.name in typedefs, 'Unknown named type: ' + type_.name
+            typedefed_type = typedefs[type_.name]
+
+            # second level of indirection for arrays of structures
+            if isinstance(typedefed_type, NestedType):
+                if isinstance(typedefed_type.basetype, NamedType):
+                    assert typedefed_type.basetype.name in typedefs, \
+                        'Unknown named type: ' + typedefed_type.basetype.name
+                    typedefed_type.basetype = \
+                        typedefs[typedefed_type.basetype.name]
+
+            if isinstance(member.type, NestedType):
+                member.type.basetype = typedefed_type
+            else:
+                member.type = typedefed_type
 
 
 def get_first_identifier_value(tree):
@@ -187,6 +243,20 @@ def get_abstract_type_from_const_expr(const_expr):
     return BasicType(BASE_TYPE_SPEC_TO_IDL_TYPE[child.data])
 
 
+def get_abstract_type_optionally_as_array(abstract_type, declarator):
+    assert len(declarator.children) == 1
+    child = declarator.children[0]
+    if child.data == 'array_declarator':
+        fixed_array_sizes = list(child.find_data('fixed_array_size'))
+        assert len(fixed_array_sizes) == 1, \
+            'Unsupported multidimensional array: ' + str(declarator)
+        positive_int_const = next(
+            fixed_array_sizes[0].find_data('positive_int_const'))
+        size = get_positive_int_const(positive_int_const)
+        abstract_type = Array(abstract_type, size)
+    return abstract_type
+
+
 def add_message_members(msg, tree):
     members = tree.find_data('member')
     for member in members:
@@ -194,7 +264,7 @@ def add_message_members(msg, tree):
         # the highest type_spec in the subtree is therefore the last item
         type_specs = list(member.find_data('type_spec'))
         type_spec = type_specs[-1]
-        abstract_type = get_abstract_type(type_spec)
+        abstract_type = get_abstract_type_from_type_spec(type_spec)
         declarators = member.find_data('declarator')
         annotations = get_annotations(member)
         for declarator in declarators:
@@ -232,13 +302,16 @@ BASE_TYPE_SPEC_TO_IDL_TYPE = {
 }
 
 
-def get_abstract_type(type_spec):
+def get_abstract_type_from_type_spec(type_spec):
     assert len(type_spec.children) == 1
     child = type_spec.children[0]
+    return get_abstract_type(child)
 
-    if 'simple_type_spec' == child.data:
-        assert len(child.children) == 1
-        child = child.children[0]
+
+def get_abstract_type(tree):
+    if 'simple_type_spec' == tree.data:
+        assert len(tree.children) == 1
+        child = tree.children[0]
 
         if 'base_type_spec' == child.data:
             while len(child.children) == 1:
@@ -246,20 +319,26 @@ def get_abstract_type(type_spec):
             return BasicType(BASE_TYPE_SPEC_TO_IDL_TYPE[child.data])
 
         if 'scoped_name' == child.data:
-            assert False, 'TODO'
+            scoped_name_separators = list(
+                child.find_data('scoped_name_separator'))
+            if not scoped_name_separators:
+                return NamedType(get_first_identifier_value(child))
+            identifiers = list(child.scan_values(_find_tokens('IDENTIFIER')))
+            assert len(identifiers) > 1
+            return NamespacedType(identifiers[:-1], identifiers[-1])
 
         assert False, 'Unsupported tree: ' + str(child)
 
-    if 'template_type_spec' == child.data:
-        assert len(child.children) == 1
-        child = child.children[0]
+    if 'template_type_spec' == tree.data:
+        assert len(tree.children) == 1
+        child = tree.children[0]
 
         if 'sequence_type' == child.data:
             # the find_data methods seems to traverse the tree in post order
             # the highest type_spec in the subtree is therefore the last item
             type_specs = list(child.find_data('type_spec'))
             type_spec = type_specs[-1]
-            basetype = get_abstract_type(type_spec)
+            basetype = get_abstract_type_from_type_spec(type_spec)
             positive_int_consts = list(child.find_data('positive_int_const'))
             if positive_int_consts:
                 upper_bound = get_positive_int_const(positive_int_consts[-1])
@@ -282,7 +361,7 @@ def get_abstract_type(type_spec):
 
         assert False, 'Unsupported tree: ' + str(child)
 
-    assert False, 'Unsupported tree: ' + str(type_spec)
+    assert False, 'Unsupported tree: ' + str(tree)
 
 
 def get_positive_int_const(positive_int_const):
@@ -327,7 +406,7 @@ def get_annotations(tree):
             const_expr = next(annotation_appl.find_data('const_expr'))
             value = get_const_expr_value(const_expr)
         annotations.append(
-            (get_first_identifier_value(annotation_appl), value))
+            Annotation(get_first_identifier_value(annotation_appl), value))
 
     return annotations
 
@@ -335,7 +414,7 @@ def get_annotations(tree):
 def get_const_expr_value(const_expr):
     literals = list(const_expr.find_data('literal'))
     # TODO support arbitrary expressions
-    assert len(literals) == 1
+    assert len(literals) == 1, str(const_expr)
 
     unary_operator_minuses = list(const_expr.find_data('unary_operator_minus'))
     negate_value = len(unary_operator_minuses) % 2
@@ -398,5 +477,8 @@ def get_floating_pt_literal_value(floating_pt_literal):
 def get_string_literal_value(string_literal):
     value = ''
     for child in string_literal.children:
-        value += child.value
+        if child.value == r'\"':
+            value += '"'
+        else:
+            value += child.value
     return value

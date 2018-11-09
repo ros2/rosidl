@@ -18,7 +18,9 @@ import tempfile
 
 import pytest
 
-from rosidl_parser import parse_message_file
+# from rosidl_parser import parse_message_file
+
+parse_message_file = None
 
 
 def test_parse_message_file():

@@ -7,21 +7,21 @@
 @# Context:
 @#  - spec (rosidl_parser.ServiceSpecification)
 @#    Parsed specification of the .srv file
-@#  - get_header_filename_from_srv_name (function)
 @#######################################################################
 @
 @{
+from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 header_guard_parts = [
     spec.pkg_name, 'srv',
-    get_header_filename_from_msg_name(spec.srv_name) + '_h']
+    convert_camel_case_to_lower_case_underscore(spec.srv_name) + '_h']
 header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 pkg = spec.pkg_name
 }@
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
-#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__request.h"
-#include "@(spec.pkg_name)/srv/@(get_header_filename_from_msg_name(spec.srv_name))__response.h"
+#include "@(spec.pkg_name)/srv/@(convert_camel_case_to_lower_case_underscore(spec.srv_name))__request.h"
+#include "@(spec.pkg_name)/srv/@(convert_camel_case_to_lower_case_underscore(spec.srv_name))__response.h"
 
 #include "rosidl_generator_c/message_type_support_struct.h"
 

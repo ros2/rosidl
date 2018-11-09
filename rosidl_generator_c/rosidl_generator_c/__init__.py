@@ -46,9 +46,6 @@ def generate_c(generator_arguments_file):
     for template_file in mapping.keys():
         assert os.path.exists(template_file), 'Could not find template: ' + template_file
 
-    functions = {
-        'get_header_filename_from_msg_name': convert_camel_case_to_lower_case_underscore,
-    }
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
 
     for idl_tuple in args.get('idl_tuples', []):
@@ -71,7 +68,6 @@ def generate_c(generator_arguments_file):
                     'interface_path': idl_rel_path,
                     'content': idl_file.content,
                 }
-                data.update(functions)
                 expand_template(
                     template_dir, os.path.basename(template_file), data,
                     generated_file, minimum_timestamp=latest_target_timestamp)

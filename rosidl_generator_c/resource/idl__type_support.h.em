@@ -8,11 +8,11 @@
 @#  - package_name (string)
 @#  - interface_path (Path relative to the directory named after the package)
 @#  - interfaces (list of interfaces, either Messages or Services)
-@#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @{
+from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 include_parts = [package_name] + list(interface_path.parents[0].parts) + \
-    [get_header_filename_from_msg_name(interface_path.stem)]
+    [convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 header_guard_variable = '__'.join([x.upper() for x in include_parts]) + \
     '__TYPE_SUPPORT_H_'
 }@

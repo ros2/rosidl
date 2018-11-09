@@ -8,11 +8,11 @@
 @#  - package_name (string)
 @#  - interface_path (Path relative to the directory named after the package)
 @#  - interfaces (list of interfaces, either Messages or Services)
-@#  - get_header_filename_from_msg_name (function)
 @#######################################################################
 @{
+from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 include_parts = [package_name] + list(interface_path.parents[0].parts) + \
-    [get_header_filename_from_msg_name(interface_path.stem)]
+    [convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 include_base = '/'.join(include_parts)
 }@
 #include "@(include_base)__functions.h"
@@ -34,7 +34,6 @@ from rosidl_parser.definition import Message
 TEMPLATE(
     'msg__functions.c.em',
     package_name=package_name, interface_path=interface_path,
-    get_header_filename_from_msg_name=get_header_filename_from_msg_name,
     message=message)
 }@
 @[end for]@
@@ -51,7 +50,6 @@ from rosidl_parser.definition import Service
 TEMPLATE(
     'msg__functions.c.em',
     package_name=package_name, interface_path=interface_path,
-    get_header_filename_from_msg_name=get_header_filename_from_msg_name,
     message=service.request_message)
 }@
 
@@ -59,7 +57,6 @@ TEMPLATE(
 TEMPLATE(
     'msg__functions.c.em',
     package_name=package_name, interface_path=interface_path,
-    get_header_filename_from_msg_name=get_header_filename_from_msg_name,
     message=service.response_message)
 }@
 @[end for]@

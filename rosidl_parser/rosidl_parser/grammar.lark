@@ -58,7 +58,7 @@ _CHARACTERS: LETTER | /[ÃãÄäÅåÆæÇçÈèÉéÊêËëÌìÍíÎîÏïÑñ
 _GRAPHIC_CHAR: "!" | "\"" | "#" | "$" | "%" | "&" | "'" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | ":" | ";" | "<" | "=" | ">" | "?" | "@" | "[" | "\\" | "]" | "^" | "_" | "`" | "{" | "|" | "}" | "~"
 | "¡" | "¢" | "£" | "¤" | "¥" | "¦" | "§" | " ̈ " | "©" | "a" | "«" | "¬" | "®" | " ̄" | "°" | "±" | "2" | "3" | " ́ " | "μ" | "¶" | "•" | " ̧ "| "1" | "o" | "»" | "¿" | "×" | "÷"
 
-// Table 7-5: Formatting characters, missing: TODO
+// Table 7-5: Formatting characters, missing some uncommon ones
 _FORMATTING_CHARACTERS: "\t" | "\n" | "\r"
 
 // Table 7-9: Escape sequences

@@ -4,6 +4,7 @@ from collections import OrderedDict
 
 from rosidl_adapter.msg import get_idl_type
 from rosidl_adapter.msg import to_idl_literal
+from rosidl_adapter.msg import string_to_idl_string_literal
 
 typedefs = OrderedDict()
 def get_idl_type_identifier(idl_type):
@@ -42,12 +43,32 @@ else:
     };
 @[end if]@
 @#
+@[if msg.annotations.get('comment', [])]@
+    /*
+@[  for comment in msg.annotations['comment']]@
+     *@(comment)
+@[  end for]@
+     */
+@[end if]@
     struct @(msg.msg_name) {
 @# use comments as docblocks once they are available
 @[if msg.fields]@
-@[  for field in msg.fields]@
+@[  for i, field in enumerate(msg.fields)]@
+@[if i > 0]@
+
+@[end if]@
+@[    if field.annotations.get('comment', [])]@
+      /*
+@[      for comment in field.annotations['comment']]@
+       *@(comment)
+@[      end for]@
+       */
+@[    end if]@
 @[    if field.default_value is not None]@
       @@default (value=@(to_idl_literal(get_idl_type(field.type), field.default_value)))
+@[    end if]@
+@[    if 'unit' in field.annotations]@
+      @@unit (value=@(string_to_idl_string_literal(field.annotations['unit'])))
 @[    end if]@
 @{
 idl_type = get_idl_type(field.type)

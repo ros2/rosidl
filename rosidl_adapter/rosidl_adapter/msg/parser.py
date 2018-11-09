@@ -268,7 +268,7 @@ class Type(BaseType):
 
 class Constant:
 
-    __slots__ = ['type', 'name', 'value']
+    __slots__ = ['type', 'name', 'value', 'annotations']
 
     def __init__(self, primitive_type, name, value_string):
         if primitive_type not in PRIMITIVE_TYPES:
@@ -283,6 +283,8 @@ class Constant:
 
         self.value = parse_primitive_value_string(
             Type(primitive_type), value_string)
+
+        self.annotations = {}
 
     def __eq__(self, other):
         if other is None or not isinstance(other, Constant):
@@ -313,6 +315,7 @@ class Field:
         else:
             self.default_value = parse_value_string(
                 type_, default_value_string)
+        self.annotations = {}
 
     def __eq__(self, other):
         if other is None or not isinstance(other, Field):
@@ -339,6 +342,7 @@ class MessageSpecification:
         self.base_type = BaseType(
             pkg_name + PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR + msg_name)
         self.msg_name = msg_name
+        self.annotations = {}
 
         self.fields = []
         for index, field in enumerate(fields):
@@ -388,26 +392,58 @@ def parse_message_file(pkg_name, interface_filename):
 
 
 def parse_message_string(pkg_name, msg_name, message_string):
+    file_level_ended = False
+    message_comments = []
     fields = []
     constants = []
+    last_element = None  # either a field or a constant
 
+    current_comments = []
     lines = message_string.splitlines()
     for line in lines:
-        # ignore whitespaces and comments
-        line = line.strip()
+        line = line.rstrip()
+
+        # ignore empty lines
         if not line:
+            # file-level comments stop at the first empty line
+            file_level_ended = True
             continue
+
         index = line.find(COMMENT_DELIMITER)
-        if index == 0:
+
+        # file-level comment line
+        if index == 0 and not file_level_ended:
+            message_comments.append(line[len(COMMENT_DELIMITER):])
             continue
-        if index != -1:
+
+        file_level_ended = True
+
+        # comment
+        comment = None
+        if index >= 0:
+            comment = line[index + len(COMMENT_DELIMITER):]
             line = line[:index]
+
+        if comment is not None:
+            if line and not line.strip():
+                # indented comment line
+                # append to previous field / constant if available or ignore
+                if last_element is not None:
+                    comment_lines = last_element.annotations.setdefault(
+                        'comment', [])
+                    comment_lines.append(line[index + len(COMMENT_DELIMITER):])
+                continue
+            # collect "unused" comments
+            current_comments.append(comment)
+
             line = line.rstrip()
+            if not line:
+                continue
 
         type_string, _, rest = line.partition(' ')
         rest = rest.lstrip()
         if not rest:
-            print('Error with:', pkg_name, msg_name, file=sys.stderr)
+            print('Error with:', pkg_name, msg_name, line, file=sys.stderr)
             raise InvalidFieldDefinition(line)
         index = rest.find(CONSTANT_SEPARATOR)
         if index == -1:
@@ -425,14 +461,62 @@ def parse_message_string(pkg_name, msg_name, message_string):
                     line=line, pkg=pkg_name, msg=msg_name, err=err,
                 ), file=sys.stderr)
                 raise
+            last_element = fields[-1]
         else:
             # line contains a constant
             name, _, value = rest.partition(CONSTANT_SEPARATOR)
             name = name.rstrip()
             value = value.lstrip()
             constants.append(Constant(type_string, name, value))
+            last_element = constants[-1]
 
-    return MessageSpecification(pkg_name, msg_name, fields, constants)
+        # add "unused" comments to the field / constant
+        comment_lines = last_element.annotations.setdefault(
+            'comment', [])
+        comment_lines += current_comments
+        current_comments = []
+
+    msg = MessageSpecification(pkg_name, msg_name, fields, constants)
+    msg.annotations['comment'] = message_comments
+
+    # condense comment lines, extract special annotations
+    process_comments(msg)
+    for field in fields:
+        process_comments(field)
+    for constant in constants:
+        process_comments(constant)
+
+    return msg
+
+
+def process_comments(instance):
+    if 'comment' in instance.annotations:
+        lines = instance.annotations['comment']
+        # remove empty leading lines
+        while lines and lines[0] == '':
+            del lines[0]
+        # remove empty trailing lines
+        while lines and lines[-1] == '':
+            del lines[-1]
+        # remove consecutive empty lines
+        length = len(lines)
+        i = 1
+        while i < length:
+            if lines[i] == '' and lines[i-1] == '':
+                lines[i-1:i+1] = ['']
+                length -= 1
+                continue
+            i += 1
+        # look for a unit in brackets
+        # the unit should not contains a comma since it might be a range
+        comment = '\n'.join(lines)
+        pattern = r'(\s*\[([^,\]]+)\])'
+        matches = re.findall(pattern, comment)
+        if len(matches) == 1:
+            instance.annotations['unit'] = matches[0][1]
+            # remove the unit from the comment
+            for i, line in enumerate(lines):
+                lines[i] = line.replace(matches[0][0], '')
 
 
 def parse_value_string(type_, value_string):

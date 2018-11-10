@@ -68,6 +68,10 @@ function(rosidl_generate_action_interfaces target)
     ${_idl_files}
   )
 
+  # downstream packages need to depend on action_msgs if they have actions
+  list_append_unique(_ARG_DEPENDENCY_PACKAGE_NAMES "action_msgs")
+  ament_export_dependencies(action_msgs)
+
   # A target name that generators may want to use to prefix their own target names
   set(rosidl_generate_action_interfaces_TARGET ${target})
   # Give extensions a list of .action files to generate interfaces from

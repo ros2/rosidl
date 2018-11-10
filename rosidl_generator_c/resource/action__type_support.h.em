@@ -1,8 +1,8 @@
-// generated from rosidl_generator_c/resource/action.h.em
+// generated from rosidl_generator_c/resource/action__type_support.h.em
 // generated code does not contain a copyright notice
 
 @#######################################################################
-@# EmPy template for generating <action>.hp files
+@# EmPy template for generating <action>__type_support.h files
 @#
 @# Context:
 @#  - spec (rosidl_parser.ActionSpecification)
@@ -15,7 +15,7 @@
 @{
 header_guard_parts = [
     spec.pkg_name, subfolder,
-    get_header_filename_from_msg_name(spec.action_name) + '_h']
+    get_header_filename_from_msg_name(spec.action_name) + '__type_support_h']
 header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 }@
 
@@ -27,14 +27,18 @@ extern "C"
 {
 #endif
 
-#include <action_msgs/msg/goal_info.h>
-#include <action_msgs/msg/goal_status_array.h>
-#include <action_msgs/srv/cancel_goal.h>
+#include "rosidl_generator_c/action_type_support_struct.h"
+#include "rosidl_typesupport_interface/macros.h"
 
-#include <@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.action_name))__feedback.h>
-#include <@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.action_name))__goal.h>
-#include <@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.action_name))__result.h>
-#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.action_name))__type_support.h"
+#include "test_msgs/action/rosidl_generator_c__visibility_control.h"
+
+/* *INDENT-OFF* */
+// Forward declare the get type support functions for this type.
+ROSIDL_GENERATOR_C_PUBLIC_@(spec.pkg_name)_ACTION
+const rosidl_action_type_support_t *
+ROSIDL_TYPESUPPORT_INTERFACE__ACTION_SYMBOL_NAME(
+  rosidl_typesupport_c, @(spec.pkg_name), @(subfolder), @(spec.action_name))();
+/* *INDENT-ON* */
 
 #ifdef __cplusplus
 }

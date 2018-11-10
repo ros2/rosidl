@@ -39,6 +39,7 @@ def generate_c(generator_arguments_file):
     }
     mapping_action = {
         os.path.join(template_dir, 'action.h.em'): '%s.h',
+        os.path.join(template_dir, 'action__type_support.h.em'): '%s__type_support.h',
     }
     for template_file in list(mapping_msgs.keys()) + list(mapping_srvs.keys()):
         assert os.path.exists(template_file), 'Could not find template: ' + template_file

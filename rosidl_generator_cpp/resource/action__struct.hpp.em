@@ -21,7 +21,7 @@ header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
-#include <action_msgs/msg/cancel_goal.hpp>
+#include <action_msgs/srv/cancel_goal.hpp>
 #include <action_msgs/msg/goal_info.hpp>
 #include <action_msgs/msg/goal_status_array.hpp>
 #include <@(spec.pkg_name)/action/@(get_header_filename_from_msg_name(spec.action_name))__feedback.hpp>

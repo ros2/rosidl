@@ -19,6 +19,11 @@ macro(rosidl_generator_cpp_extras BIN GENERATOR_FILES TEMPLATE_DIR)
     "rosidl_generator_cpp"
     "rosidl_generator_cpp_generate_interfaces.cmake")
 
+ament_register_extension(
+  "rosidl_generate_action_interfaces"
+  "rosidl_generator_cpp"
+  "rosidl_generator_cpp_generate_action_interfaces.cmake")
+
   normalize_path(BIN "${BIN}")
   set(rosidl_generator_cpp_BIN "${BIN}")
 

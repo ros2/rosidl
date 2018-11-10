@@ -28,6 +28,9 @@
 #   be either an absolute path or path relative to the
 #   CMAKE_INSTALL_PREFIX.
 # :type ARGN: list of strings
+# :param DEPENDENCY_PACKAGE_NAMES: Packages with interface files generation
+# should depend on
+# :type DEPENDENCY_PACKAGE_NAMES: list of strings
 # :param TARGET_DEPENDENCIES: cmake targets or files the generated target
 #   should depend on
 # :type TARGET_DEPENDENCIES: list of strings
@@ -75,6 +78,8 @@ function(rosidl_generate_action_interfaces target)
   set(rosidl_generate_action_interfaces_SKIP_INSTALL ${_ARG_SKIP_INSTALL})
   # If true the extension should create tests for language specific linters
   set(rosidl_generate_action_interfaces_ADD_LINTER_TESTS ${_ARG_ADD_LINTER_TESTS})
+  # Packages that generated code should depend on
+  set(rosidl_generate_action_interfaces_DEPENDENCY_PACKAGE_NAMES ${_ARG_DEPENDENCY_PACKAGE_NAMES})
   ament_execute_extensions("rosidl_generate_action_interfaces")
 
   add_dependencies(${target} ${_sub_target})

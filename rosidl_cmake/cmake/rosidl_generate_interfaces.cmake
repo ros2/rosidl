@@ -221,6 +221,10 @@ macro(rosidl_generate_interfaces target)
     if(_ARG_LIBRARY_NAME)
       set(_library_name "LIBRARY ${_ARG_LIBRARY_NAME}")
     endif()
+    set(_pkg_depends "")
+    if(_recursive_dependencies)
+      set(_pkg_depends "DEPENDENCY_PACKAGE_NAMES ${_recursive_dependencies}")
+    endif()
     rosidl_generate_action_interfaces(${target}
       ${_skip_install}
       ${_add_linter_tests}

@@ -766,6 +766,7 @@ def parse_service_string(pkg_name, srv_name, message_string):
 
     return ServiceSpecification(pkg_name, srv_name, request_message, response_message)
 
+
 class ActionSpecification:
 
     def __init__(self, pkg_name, action_name, services, feedback_message):

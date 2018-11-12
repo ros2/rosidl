@@ -43,6 +43,7 @@ def generate_msg_and_srv(generator_arguments_file):
                 with open(rsp_file, 'w+') as fout:
                     fout.write(str(service.response))
 
-            generated_file = os.path.join(args['output_dir'], subfolder, action.feedback.msg_name + '.msg')
+            generated_file = os.path.join(
+                args['output_dir'], subfolder, action.feedback.msg_name + '.msg')
             with open(generated_file, 'w+') as fout:
                 fout.write(str(action.feedback))

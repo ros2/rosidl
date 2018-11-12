@@ -86,57 +86,31 @@ add_custom_command(
   VERBATIM
 )
 
-set(_target_suffix "__generate_action_interfaces__rosidl_generator_cpp")
+set(_target_suffix "__cpp__actions")
 
-add_library(${rosidl_generate_action_interfaces_TARGET}${_target_suffix} ${rosidl_generator_cpp_LIBRARY_TYPE} ${_generated_files})
-set_target_properties(${rosidl_generate_action_interfaces_TARGET}${_target_suffix} PROPERTIES LINKER_LANGUAGE CXX)
-if(rosidl_generate_action_interfaces_LIBRARY_NAME)
-  set_target_properties(${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-    PROPERTIES OUTPUT_NAME "${rosidl_generate_action_interfaces_LIBRARY_NAME}${_target_suffix}")
+if(TARGET ${rosidl_generate_action_interfaces_TARGET}${_target_suffix})
+  message(WARNING "Custom target ${rosidl_generate_interfaces_TARGET}${_target_suffix} already exists")
+else()
+  add_custom_target(
+    ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    DEPENDS
+    ${_generated_files}
+  )
 endif()
-if(WIN32)
-  target_compile_definitions(${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-    PRIVATE "ROSIDL_GENERATOR_CPP_BUILDING_DLL")
-endif()
-set_target_properties(${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-  PROPERTIES CXX_STANDARD 14)
-
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set_target_properties(${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-    PROPERTIES COMPILE_OPTIONS -Wall -Wextra -Wpedantic)
-endif()
-target_include_directories(${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-  PUBLIC
-  ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp
-)
-
-ament_target_dependencies(${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-  "rosidl_generator_c"
-  "rosidl_generator_cpp"
-  "rosidl_typesupport_interface")
-foreach(_pkg_name ${rosidl_generate_action_interfaces_DEPENDENCY_PACKAGE_NAMES})
-  ament_target_dependencies(
-    ${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-    ${_pkg_name})
-endforeach()
 
 add_dependencies(
-  ${rosidl_generate_action_interfaces_TARGET}
-  ${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-)
-add_dependencies(
-  ${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-  ${rosidl_generate_action_interfaces_TARGET}__cpp
+  ${rosidl_generate_interfaces_TARGET}
+  ${rosidl_generate_interfaces_TARGET}${_target_suffix}
 )
 
 if(NOT rosidl_generate_action_interfaces_SKIP_INSTALL)
-  install(
-    TARGETS ${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
-  )
-  ament_export_libraries(${rosidl_generate_action_interfaces_TARGET}${_target_suffix})
+  if(NOT _generated_files STREQUAL "")
+    install(
+      FILES ${_generated_files}
+      DESTINATION "include/${PROJECT_NAME}/action"
+    )
+  endif()
+  ament_export_include_directories(include)
 endif()
 
 if(BUILD_TESTING AND rosidl_generate_action_interfaces_ADD_LINTER_TESTS)

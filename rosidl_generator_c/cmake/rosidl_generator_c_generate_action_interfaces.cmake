@@ -32,6 +32,7 @@ foreach(_idl_file ${rosidl_generate_action_interfaces_IDL_FILES})
   string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
   list(APPEND _generated_files
     "${_output_path}/${_parent_folder}/${_header_name}.h"
+    "${_output_path}/${_parent_folder}/${_header_name}__type_support.h"
   )
 endforeach()
 
@@ -95,52 +96,31 @@ configure_file(
   @ONLY
 )
 
-set(_target_suffix "__generate_action_interfaces__rosidl_generator_c")
+set(_target_suffix "__c__actions")
 
-add_library(${rosidl_generate_action_interfaces_TARGET}${_target_suffix} ${rosidl_generator_c_LIBRARY_TYPE} ${_generated_files})
-set_target_properties(${rosidl_generate_action_interfaces_TARGET}${_target_suffix} PROPERTIES LINKER_LANGUAGE CXX)
-if(rosidl_generate_action_interfaces_LIBRARY_NAME)
-  set_target_properties(${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-    PROPERTIES OUTPUT_NAME "${rosidl_generate_action_interfaces_LIBRARY_NAME}${_target_suffix}")
+if(TARGET ${rosidl_generate_action_interfaces_TARGET}${_target_suffix})
+  message(WARNING "Custom target ${rosidl_generate_interfaces_TARGET}${_target_suffix} already exists")
+else()
+  add_custom_target(
+    ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    DEPENDS
+    ${_generated_files}
+  )
 endif()
-if(WIN32)
-  target_compile_definitions(${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-    PRIVATE "ROSIDL_GENERATOR_c_BUILDING_DLL")
-endif()
-set_target_properties(${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-  PROPERTIES CXX_STANDARD 14)
-
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set_target_properties(${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-    PROPERTIES COMPILE_OPTIONS -Wall -Wextra -Wpedantic)
-endif()
-target_include_directories(${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-  PUBLIC
-  ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c
-)
-
-ament_target_dependencies(${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-  "rosidl_generator_c"
-  "rosidl_typesupport_interface")
-foreach(_pkg_name ${rosidl_generate_action_interfaces_DEPENDENCY_PACKAGE_NAMES})
-  ament_target_dependencies(
-    ${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-    ${_pkg_name})
-endforeach()
 
 add_dependencies(
-  ${rosidl_generate_action_interfaces_TARGET}
-  ${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
+  ${rosidl_generate_interfaces_TARGET}
+  ${rosidl_generate_interfaces_TARGET}${_target_suffix}
 )
 
 if(NOT rosidl_generate_action_interfaces_SKIP_INSTALL)
-  install(
-    TARGETS ${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
-  )
-  ament_export_libraries(${rosidl_generate_action_interfaces_TARGET}${_target_suffix})
+  if(NOT _generated_files STREQUAL "")
+    install(
+      FILES ${_generated_files}
+      DESTINATION "include/${PROJECT_NAME}/action"
+    )
+  endif()
+  ament_export_include_directories(include)
 endif()
 
 if(BUILD_TESTING AND rosidl_generate_action_interfaces_ADD_LINTER_TESTS)

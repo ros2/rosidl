@@ -89,18 +89,18 @@ add_custom_command(
 set(_target_suffix "__cpp__actions")
 
 if(TARGET ${rosidl_generate_action_interfaces_TARGET}${_target_suffix})
-  message(WARNING "Custom target ${rosidl_generate_interfaces_TARGET}${_target_suffix} already exists")
+  message(WARNING "Custom target ${rosidl_generate_action_interfaces_TARGET}${_target_suffix} already exists")
 else()
   add_custom_target(
-    ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    ${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
     DEPENDS
     ${_generated_files}
   )
 endif()
 
 add_dependencies(
-  ${rosidl_generate_interfaces_TARGET}
-  ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  ${rosidl_generate_action_interfaces_TARGET}
+  ${rosidl_generate_action_interfaces_TARGET}${_target_suffix}
 )
 
 if(NOT rosidl_generate_action_interfaces_SKIP_INSTALL)

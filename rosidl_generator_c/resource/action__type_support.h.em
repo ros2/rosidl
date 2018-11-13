@@ -30,7 +30,7 @@ extern "C"
 #include "rosidl_generator_c/action_type_support_struct.h"
 #include "rosidl_typesupport_interface/macros.h"
 
-#include "test_msgs/action/rosidl_generator_c__visibility_control.h"
+#include "@(spec.pkg_name)/@(subfolder)/rosidl_generator_c__visibility_control.h"
 
 /* *INDENT-OFF* */
 // Forward declare the get type support functions for this type.

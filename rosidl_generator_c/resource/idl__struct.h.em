@@ -15,6 +15,8 @@ include_parts = [package_name] + list(interface_path.parents[0].parts) + \
     [convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 header_guard_variable = '__'.join([x.upper() for x in include_parts]) + \
     '__STRUCT_H_'
+
+include_directives = set()
 }@
 
 #ifndef @(header_guard_variable)
@@ -40,7 +42,7 @@ from rosidl_parser.definition import Message
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=message)
+    message=message, include_directives=include_directives)
 }@
 
 @[end for]@
@@ -56,14 +58,14 @@ from rosidl_parser.definition import Service
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=service.request_message)
+    message=service.request_message, include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=service.response_message)
+    message=service.response_message, include_directives=include_directives)
 }@
 
 @[end for]@

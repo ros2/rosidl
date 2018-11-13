@@ -12,72 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import pathlib
-import sys
-
 from rosidl_cmake import convert_camel_case_to_lower_case_underscore
-from rosidl_cmake import expand_template
-from rosidl_cmake import get_newest_modification_time
-from rosidl_cmake import read_generator_arguments
+from rosidl_cmake import generate_files
 from rosidl_parser.definition import AbstractType
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BaseString
 from rosidl_parser.definition import BasicType
-from rosidl_parser.definition import IdlLocator
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import Sequence
 from rosidl_parser.definition import String
 from rosidl_parser.definition import WString
-from rosidl_parser.parser import parse_idl_file
 
 
 def generate_c(generator_arguments_file):
-    args = read_generator_arguments(generator_arguments_file)
-
-    template_dir = args['template_dir']
     mapping = {
-        os.path.join(template_dir, 'idl.h.em'): '%s.h',
-        os.path.join(template_dir, 'idl__functions.c.em'): '%s__functions.c',
-        os.path.join(template_dir, 'idl__functions.h.em'): '%s__functions.h',
-        os.path.join(template_dir, 'idl__struct.h.em'): '%s__struct.h',
-        os.path.join(template_dir, 'idl__type_support.h.em'): '%s__type_support.h',
+        'idl.h.em': '%s.h',
+        'idl__functions.c.em': '%s__functions.c',
+        'idl__functions.h.em': '%s__functions.h',
+        'idl__struct.h.em': '%s__struct.h',
+        'idl__type_support.h.em': '%s__type_support.h',
     }
-    for template_file in mapping.keys():
-        assert os.path.exists(template_file), 'Could not find template: ' + template_file
-
-    latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
-
-    for idl_tuple in args.get('idl_tuples', []):
-        idl_parts = idl_tuple.split(':', 1)
-        assert len(idl_parts) == 2
-        locator = IdlLocator(*idl_parts)
-        idl_rel_path = pathlib.Path(idl_parts[1])
-        try:
-            idl_file = parse_idl_file(
-                locator, png_file=os.path.join(
-                    args['output_dir'], str(idl_rel_path.parent),
-                    idl_rel_path.stem) + '.png')
-            for template_file, generated_filename in mapping.items():
-                generated_file = os.path.join(
-                    args['output_dir'], str(idl_rel_path.parent),
-                    generated_filename %
-                    convert_camel_case_to_lower_case_underscore(idl_rel_path.stem))
-                data = {
-                    'package_name': args['package_name'],
-                    'interface_path': idl_rel_path,
-                    'content': idl_file.content,
-                }
-                expand_template(
-                    template_dir, os.path.basename(template_file), data,
-                    generated_file, minimum_timestamp=latest_target_timestamp)
-        except Exception as e:
-            print(
-                'Error processing idl file: ' +
-                str(locator.get_absolute_path()), file=sys.stderr)
-            raise(e)
-
-    return 0
+    generate_files(generator_arguments_file, mapping)
 
 
 BASIC_IDL_TYPES_TO_C = {

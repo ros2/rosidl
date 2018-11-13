@@ -23,6 +23,8 @@ import em
 
 from rosidl_parser import BaseType
 from rosidl_parser import NAMESPACE_SEPARATOR
+from rosidl_parser.definition import IdlLocator
+from rosidl_parser.parser import parse_idl_file
 
 
 def convert_camel_case_to_lower_case_underscore(value):
@@ -79,6 +81,48 @@ def get_newest_modification_time(target_dependencies):
     return newest_timestamp
 
 
+def generate_files(generator_arguments_file, mapping):
+    args = read_generator_arguments(generator_arguments_file)
+
+    template_basepath = pathlib.Path(args['template_dir'])
+    for template_filename in mapping.keys():
+        assert (template_basepath / template_filename).exists(), \
+            'Could not find template: ' + template_filename
+
+    latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
+
+    for idl_tuple in args.get('idl_tuples', []):
+        idl_parts = idl_tuple.split(':', 1)
+        assert len(idl_parts) == 2
+        locator = IdlLocator(*idl_parts)
+        idl_rel_path = pathlib.Path(idl_parts[1])
+        try:
+            idl_file = parse_idl_file(
+                locator, png_file=os.path.join(
+                    args['output_dir'], str(idl_rel_path.parent),
+                    idl_rel_path.stem) + '.png')
+            for template_file, generated_filename in mapping.items():
+                generated_file = os.path.join(
+                    args['output_dir'], str(idl_rel_path.parent),
+                    generated_filename %
+                    convert_camel_case_to_lower_case_underscore(idl_rel_path.stem))
+                data = {
+                    'package_name': args['package_name'],
+                    'interface_path': idl_rel_path,
+                    'content': idl_file.content,
+                }
+                expand_template(
+                    template_basepath, os.path.basename(template_file), data,
+                    generated_file, minimum_timestamp=latest_target_timestamp)
+        except Exception as e:
+            print(
+                'Error processing idl file: ' +
+                str(locator.get_absolute_path()), file=sys.stderr)
+            raise(e)
+
+    return 0
+
+
 template_prefix_path = []
 
 
@@ -95,7 +139,7 @@ def get_template_path(template_name):
 interpreter = None
 
 
-def expand_template(template_path, template_name, data, output_file, minimum_timestamp=None):
+def expand_template(template_basepath, template_name, data, output_file, minimum_timestamp=None):
     global interpreter
     output = StringIO()
     interpreter = em.Interpreter(
@@ -107,7 +151,7 @@ def expand_template(template_path, template_name, data, output_file, minimum_tim
     )
 
     global template_prefix_path
-    template_prefix_path.append(pathlib.Path(template_path))
+    template_prefix_path.append(template_basepath)
     template_path = get_template_path(template_name)
 
     # create copy before manipulating

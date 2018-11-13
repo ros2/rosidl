@@ -46,7 +46,7 @@ for member in message.structure.members:
 // Constants defined in the message
 @[for constant in message.constants.values()]@
 
-/// Constant `@(constant.name)`.
+/// Constant '@(constant.name)'.
 @[    if isinstance(constant.type, BasicType)]@
 @[        if constant.type.type in (
               'short', 'unsigned short', 'long', 'unsigned long', 'long long', 'unsigned long long',
@@ -74,8 +74,14 @@ static const char * const @(idl_structure_type_to_c_typename(message.structure.t
 // Include directives for member types
 @[    for header_file, member_names in includes.items()]@
 @[        for member_name in member_names]@
-// Member `@(member_name)`
+// Member '@(member_name)'
 @[        end for]@
+@[        if header_file in include_directives]@
+// already included above
+// @
+@[        else]@
+@{include_directives.add(header_file)}@
+@[        end if]@
 #include "@(header_file)"
 @[    end for]@
 @[end if]@

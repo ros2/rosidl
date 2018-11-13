@@ -108,8 +108,12 @@ def extract_content_from_ast(tree):
         assert len(child.children) == 1, 'Only support single typedefs atm'
         child = child.children[0]
         identifier = get_first_identifier_value(child)
-        assert identifier not in typedefs
-        typedefs[identifier] = get_abstract_type_optionally_as_array(abstract_type, child)
+        abstract_type = get_abstract_type_optionally_as_array(
+            abstract_type, child)
+        if identifier in typedefs:
+            assert typedefs[identifier] == abstract_type
+        else:
+            typedefs[identifier] = abstract_type
 
     struct_defs = list(tree.find_data('struct_def'))
     if len(struct_defs) == 1:

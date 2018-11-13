@@ -50,6 +50,9 @@ class AbstractType:
 
     __slots__ = ()
 
+    def __eq__(self, other):
+        return type(self) == type(other)
+
 
 class BaseType(AbstractType):
 
@@ -65,6 +68,9 @@ class BasicType(BaseType):
         assert typename in BASIC_TYPES
         self.type = typename
 
+    def __eq__(self, other):
+        return super().__eq__(other) and self.type == other.type
+
 
 class NamedType(BaseType):
 
@@ -73,6 +79,9 @@ class NamedType(BaseType):
     def __init__(self, name):
         super().__init__()
         self.name = name
+
+    def __eq__(self, other):
+        return super().__eq__(other) and self.name == other.name
 
 
 class NamespacedType(BaseType):
@@ -84,6 +93,10 @@ class NamespacedType(BaseType):
         self.namespaces = namespaces
         self.name = name
 
+    def __eq__(self, other):
+        return super().__eq__(other) and \
+            self.namespaces == other.namespaces and self.name == other.name
+
 
 class BaseString(BaseType):
 
@@ -91,6 +104,10 @@ class BaseString(BaseType):
 
     def __init__(self, maximum_size=None):
         self.maximum_size = maximum_size
+
+    def __eq__(self, other):
+        return super().__eq__(other) and \
+            self.maximum_size == other.maximum_size
 
 
 class String(BaseString):
@@ -120,6 +137,9 @@ class NestedType(AbstractType):
         assert isinstance(basetype, BaseType), basetype
         self.basetype = basetype
 
+    def __eq__(self, other):
+        return super().__eq__(other) and self.basetype == other.basetype
+
 
 class Array(NestedType):
 
@@ -128,6 +148,9 @@ class Array(NestedType):
     def __init__(self, basetype, size):
         super().__init__(basetype)
         self.size = size
+
+    def __eq__(self, other):
+        return super().__eq__(other) and self.size == other.size
 
 
 class Sequence(NestedType):
@@ -154,6 +177,9 @@ class BoundedSequence(Sequence):
         super().__init__(basetype)
         assert isinstance(upper_bound, int)
         self.upper_bound = upper_bound
+
+    def __eq__(self, other):
+        return super().__eq__(other) and self.upper_bound == other.upper_bound
 
 
 # class Enumeration:

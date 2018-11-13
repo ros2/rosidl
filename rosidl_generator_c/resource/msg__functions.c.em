@@ -8,7 +8,6 @@ from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import NestedType
 from rosidl_parser.definition import Sequence
 from rosidl_parser.definition import String
-from rosidl_parser.definition import Structure
 from rosidl_parser.definition import WString
 from rosidl_generator_c import basetype_to_c
 from rosidl_generator_c import idl_structure_type_sequence_to_c_typename
@@ -58,6 +57,12 @@ for member in message.structure.members:
 @[        for member_name in member_names]@
 // Member `@(member_name)`
 @[        end for]@
+@[        if header_file in include_directives]@
+// already included above
+// @
+@[        else]@
+@{include_directives.add(header_file)}@
+@[        end if]@
 #include "@(header_file)"
 @[    end for]@
 @[end if]@
@@ -85,7 +90,7 @@ for member in message.structure.members:
                 # set default value for each array element
                 for i, default_value in enumerate(literal_eval(member.get_annotation_value('default')['value'])):
                     lines.append('msg->%s[%d] = %s;' % (member.name, i, value_to_c(member.type.basetype, default_value)))
-        elif isinstance(member.type.basetype, BaseString) or isinstance(member.type.basetype, Structure):
+        elif isinstance(member.type.basetype, BaseString) or isinstance(member.type.basetype, NamespacedType): 
             # initialize each array element
             lines.append('for (size_t i = 0; i < %d; ++i) {' % member.type.size)
             lines.append('  if (!%s__init(&msg->%s[i])) {' % (basetype_to_c(member.type.basetype), member.name))

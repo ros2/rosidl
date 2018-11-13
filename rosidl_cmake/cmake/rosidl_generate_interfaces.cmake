@@ -207,6 +207,32 @@ macro(rosidl_generate_interfaces target)
   set(rosidl_generate_interfaces_ADD_LINTER_TESTS ${_ARG_ADD_LINTER_TESTS})
   ament_execute_extensions("rosidl_generate_interfaces")
 
+  if(_action_files)
+    # Invoke generation for `.action` files
+    set(_skip_install "")
+    if(_ARG_SKIP_INSTALL)
+      set(_skip_install "SKIP_INSTALL")
+    endif()
+    set(_add_linter_tests "")
+    if(_ARG_ADD_LINTER_TESTS)
+      set(_add_linter_tests "ADD_LINTER_TESTS")
+    endif()
+    set(_library_name "")
+    if(_ARG_LIBRARY_NAME)
+      set(_library_name "LIBRARY ${_ARG_LIBRARY_NAME}")
+    endif()
+    set(_pkg_depends "")
+    if(_recursive_dependencies)
+      set(_pkg_depends "DEPENDENCY_PACKAGE_NAMES ${_recursive_dependencies}")
+    endif()
+    rosidl_generate_action_interfaces(${target}
+      ${_skip_install}
+      ${_add_linter_tests}
+      ${_library_name}
+      ${_action_files}
+    )
+  endif()
+
   if(NOT _ARG_SKIP_INSTALL)
     # install interface files to subfolders based on their extension
     foreach(_idl_file ${_idl_files})

@@ -18,6 +18,7 @@ from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 from rosidl_cmake import expand_template
 from rosidl_cmake import get_newest_modification_time
 from rosidl_cmake import read_generator_arguments
+from rosidl_parser import parse_action_file
 from rosidl_parser import parse_message_file
 from rosidl_parser import parse_service_file
 
@@ -35,6 +36,10 @@ def generate_c(generator_arguments_file):
     }
     mapping_srvs = {
         os.path.join(template_dir, 'srv.h.em'): '%s.h',
+    }
+    mapping_action = {
+        os.path.join(template_dir, 'action.h.em'): '%s.h',
+        os.path.join(template_dir, 'action__type_support.h.em'): '%s__type_support.h',
     }
     for template_file in list(mapping_msgs.keys()) + list(mapping_srvs.keys()):
         assert os.path.exists(template_file), 'Could not find template: ' + template_file
@@ -72,6 +77,17 @@ def generate_c(generator_arguments_file):
                 generated_file = os.path.join(
                     args['output_dir'], subfolder, generated_filename %
                     convert_camel_case_to_lower_case_underscore(spec.srv_name))
+                expand_template(
+                    template_file, data, generated_file,
+                    minimum_timestamp=latest_target_timestamp)
+        elif extension == '.action':
+            spec = parse_action_file(args['package_name'], ros_interface_file)
+            for template_file, generated_filename in mapping_action.items():
+                data = {'spec': spec, 'subfolder': subfolder}
+                data.update(functions)
+                generated_file = os.path.join(
+                    args['output_dir'], subfolder, generated_filename %
+                    convert_camel_case_to_lower_case_underscore(spec.action_name))
                 expand_template(
                     template_file, data, generated_file,
                     minimum_timestamp=latest_target_timestamp)

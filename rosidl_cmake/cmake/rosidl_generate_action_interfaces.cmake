@@ -68,9 +68,12 @@ function(rosidl_generate_action_interfaces target)
     ${_idl_files}
   )
 
-  # downstream packages need to depend on action_msgs if they have actions
+  # downstream packages need to depend on action_msgs for cancel and status messages
   list_append_unique(_ARG_DEPENDENCY_PACKAGE_NAMES "action_msgs")
+  # downstream packages need to depend on builtin_interfaces for builtin_interfaces/Time
+  list_append_unique(_ARG_DEPENDENCY_PACKAGE_NAMES "builtin_interfaces")
   ament_export_dependencies(action_msgs)
+  ament_export_dependencies(builtin_interfaces)
 
   # A target name that generators may want to use to prefix their own target names
   set(rosidl_generate_action_interfaces_TARGET ${target})

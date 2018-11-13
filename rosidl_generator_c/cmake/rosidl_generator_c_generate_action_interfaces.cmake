@@ -95,6 +95,7 @@ configure_file(
   "${_visibility_control_file}"
   @ONLY
 )
+list(APPEND _generated_files ${_visibility_control_file})
 
 set(_target_suffix "__c__actions")
 

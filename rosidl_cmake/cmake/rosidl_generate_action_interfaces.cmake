@@ -45,49 +45,49 @@
 #
 # @public
 #
-function(rosidl_generate_action_interfaces target)
-  cmake_parse_arguments(_ARG
+macro(rosidl_generate_action_interfaces target)
+  cmake_parse_arguments(_ARG_RGAI
     "ADD_LINTER_TESTS;SKIP_INSTALL"
     "LIBRARY_NAME" "TARGET_DEPENDENCIES"
     ${ARGN})
-  if(NOT _ARG_UNPARSED_ARGUMENTS)
+  if(NOT _ARG_RGAI_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "rosidl_generate_action_interfaces() called without any idl "
       "files")
   endif()
 
-  set(_idl_files ${_ARG_UNPARSED_ARGUMENTS})
+  set(_rgai_idl_files ${_ARG_RGAI_UNPARSED_ARGUMENTS})
 
   # Create a custom target
-  set(_sub_target "${target}+generate_action_interfaces")
+  set(_rgai_sub_target "${target}+generate_action_interfaces")
   add_custom_target(
-    ${_sub_target} ALL
+    ${_rgai_sub_target} ALL
     DEPENDS
-    ${_idl_files}
-    ${_ARG_TARGET_DEPENDENCIES}
+    ${_rgai_idl_files}
+    ${_ARG_RGAI_TARGET_DEPENDENCIES}
     SOURCES
-    ${_idl_files}
+    ${_rgai_idl_files}
   )
 
   # downstream packages need to depend on action_msgs for cancel and status messages
-  list_append_unique(_ARG_DEPENDENCY_PACKAGE_NAMES "action_msgs")
+  list_append_unique(_ARG_RGAI_DEPENDENCY_PACKAGE_NAMES "action_msgs")
   # downstream packages need to depend on builtin_interfaces for builtin_interfaces/Time
-  list_append_unique(_ARG_DEPENDENCY_PACKAGE_NAMES "builtin_interfaces")
+  list_append_unique(_ARG_RGAI_DEPENDENCY_PACKAGE_NAMES "builtin_interfaces")
   ament_export_dependencies(action_msgs)
   ament_export_dependencies(builtin_interfaces)
 
   # A target name that generators may want to use to prefix their own target names
   set(rosidl_generate_action_interfaces_TARGET ${target})
   # Give extensions a list of .action files to generate interfaces from
-  set(rosidl_generate_action_interfaces_IDL_FILES ${_idl_files})
+  set(rosidl_generate_action_interfaces_IDL_FILES ${_rgai_idl_files})
   # TODO(sloretz) Where is LIBRARY_NAME used?
-  set(rosidl_generate_action_interfaces_LIBRARY_NAME ${_ARG_LIBRARY_NAME})
+  set(rosidl_generate_action_interfaces_LIBRARY_NAME ${_ARG_RGAI_LIBRARY_NAME})
   # If true the extension should not install anything it generates
-  set(rosidl_generate_action_interfaces_SKIP_INSTALL ${_ARG_SKIP_INSTALL})
+  set(rosidl_generate_action_interfaces_SKIP_INSTALL ${_ARG_RGAI_SKIP_INSTALL})
   # If true the extension should create tests for language specific linters
-  set(rosidl_generate_action_interfaces_ADD_LINTER_TESTS ${_ARG_ADD_LINTER_TESTS})
+  set(rosidl_generate_action_interfaces_ADD_LINTER_TESTS ${_ARG_RGAI_ADD_LINTER_TESTS})
   # Packages that generated code should depend on
-  set(rosidl_generate_action_interfaces_DEPENDENCY_PACKAGE_NAMES ${_ARG_DEPENDENCY_PACKAGE_NAMES})
+  set(rosidl_generate_action_interfaces_DEPENDENCY_PACKAGE_NAMES ${_ARG_RGAI_DEPENDENCY_PACKAGE_NAMES})
   ament_execute_extensions("rosidl_generate_action_interfaces")
 
-  add_dependencies(${target} ${_sub_target})
-endfunction()
+  add_dependencies(${target} ${_rgai_sub_target})
+endmacro()

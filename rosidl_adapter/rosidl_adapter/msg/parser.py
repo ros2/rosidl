@@ -431,7 +431,7 @@ def parse_message_string(pkg_name, msg_name, message_string):
                 if last_element is not None:
                     comment_lines = last_element.annotations.setdefault(
                         'comment', [])
-                    comment_lines.append(line[index + len(COMMENT_DELIMITER):])
+                    comment_lines.append(comment)
                 continue
             # collect "unused" comments
             current_comments.append(comment)

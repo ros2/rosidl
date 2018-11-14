@@ -14,6 +14,11 @@ endif()
 
 ament_package()
 
+install(PROGRAMS
+  scripts/msg2idl.py
+  scripts/srv2idl.py
+  DESTINATION lib/${PROJECT_NAME})
+
 if(BUILD_TESTING)
   find_package(ament_cmake_pytest REQUIRED)
   ament_add_pytest_test(pytest test)

@@ -14,7 +14,7 @@
 
 import pytest
 
-from rosidl_parser import Constant
+from rosidl_adapter.parser import Constant
 
 
 def test_constant_constructor():

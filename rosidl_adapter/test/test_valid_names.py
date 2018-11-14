@@ -14,11 +14,11 @@
 
 import pytest
 
-from rosidl_parser import InvalidResourceName
-from rosidl_parser import is_valid_constant_name
-from rosidl_parser import is_valid_field_name
-from rosidl_parser import is_valid_message_name
-from rosidl_parser import is_valid_package_name
+from rosidl_adapter.parser import InvalidResourceName
+from rosidl_adapter.parser import is_valid_constant_name
+from rosidl_adapter.parser import is_valid_field_name
+from rosidl_adapter.parser import is_valid_message_name
+from rosidl_adapter.parser import is_valid_package_name
 
 
 def test_is_valid_package_name():

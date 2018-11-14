@@ -14,12 +14,12 @@
 
 import pytest
 
-from rosidl_parser import BaseType
-from rosidl_parser import Field
-from rosidl_parser import MessageSpecification
-from rosidl_parser import Type
-from rosidl_parser import UnknownMessageType
-from rosidl_parser import validate_field_types
+from rosidl_adapter.parser import BaseType
+from rosidl_adapter.parser import Field
+from rosidl_adapter.parser import MessageSpecification
+from rosidl_adapter.parser import Type
+from rosidl_adapter.parser import UnknownMessageType
+from rosidl_adapter.parser import validate_field_types
 
 
 def test_validate_field_types():

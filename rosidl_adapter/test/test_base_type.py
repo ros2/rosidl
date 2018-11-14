@@ -14,8 +14,8 @@
 
 import pytest
 
-from rosidl_parser import BaseType
-from rosidl_parser import InvalidResourceName
+from rosidl_adapter.parser import BaseType
+from rosidl_adapter.parser import InvalidResourceName
 
 
 def test_base_type_constructor():

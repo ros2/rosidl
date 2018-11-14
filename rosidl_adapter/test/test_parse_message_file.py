@@ -18,7 +18,7 @@ import tempfile
 
 import pytest
 
-from rosidl_parser import parse_message_file
+from rosidl_adapter.parser import parse_message_file
 
 
 def test_parse_message_file():

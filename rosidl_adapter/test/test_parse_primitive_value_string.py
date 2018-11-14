@@ -14,9 +14,9 @@
 
 import pytest
 
-from rosidl_parser import InvalidValue
-from rosidl_parser import parse_primitive_value_string
-from rosidl_parser import Type
+from rosidl_adapter.parser import InvalidValue
+from rosidl_adapter.parser import parse_primitive_value_string
+from rosidl_adapter.parser import Type
 
 
 def test_parse_primitive_value_string_invalid():

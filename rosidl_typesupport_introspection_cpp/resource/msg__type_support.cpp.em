@@ -56,7 +56,7 @@ size_t size_function__@(spec.base_type.type)__@(field.name)(const void * untyped
 const void * get_const_function__@(spec.base_type.type)__@(field.name)(const void * untyped_member, size_t index)
 {
 @[      if field.type.array_size and not field.type.is_upper_bound]@
-  const auto member =
+  const auto & member =
     *reinterpret_cast<const std::array<@(field.type.pkg_name)::msg::@(field.type.type), @(field.type.array_size)> *>(untyped_member);
 @[      else]@
   const std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> & member =
@@ -68,7 +68,7 @@ const void * get_const_function__@(spec.base_type.type)__@(field.name)(const voi
 void * get_function__@(spec.base_type.type)__@(field.name)(void * untyped_member, size_t index)
 {
 @[      if field.type.array_size and not field.type.is_upper_bound]@
-  auto member =
+  auto & member =
     *reinterpret_cast<std::array<@(field.type.pkg_name)::msg::@(field.type.type), @(field.type.array_size)> *>(untyped_member);
 @[      else]@
   std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> & member =

@@ -9,10 +9,13 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <exec_depend>python3-lark-parser</exec_depend>
   <exec_depend>rosidl_adapter</exec_depend> <!-- TODO(dirk-thomas) only for backward compatibilty -->
 
+  <test_depend>ament_cmake_pytest</test_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
+  <test_depend>python3-pytest</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

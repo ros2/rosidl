@@ -14,9 +14,9 @@
 
 import pytest
 
-from rosidl_parser import ImplicitFieldCollision
-from rosidl_parser import InvalidActionSpecification
-from rosidl_parser import parse_action_string
+from rosidl_adapter.parser import ImplicitFieldCollision
+from rosidl_adapter.parser import InvalidActionSpecification
+from rosidl_adapter.parser import parse_action_string
 
 
 def test_invalid_action_specification():

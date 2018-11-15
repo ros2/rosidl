@@ -18,7 +18,7 @@ import argparse
 import os
 import sys
 
-import rosidl_parser
+from rosidl_adapter.parser import parse_message_file
 
 
 def main(argv=sys.argv[1:]):
@@ -36,7 +36,7 @@ def main(argv=sys.argv[1:]):
     for filename in files:
         pkg_name = os.path.basename(os.path.dirname(os.path.dirname(filename)))
         try:
-            rosidl_parser.parse_message_file(pkg_name, filename)
+            parse_message_file(pkg_name, filename)
             print(pkg_name, filename)
         except Exception as e:
             print(' ', pkg_name, filename, str(e))

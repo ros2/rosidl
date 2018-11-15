@@ -14,10 +14,10 @@
 
 import pytest
 
-from rosidl_parser import Constant
-from rosidl_parser import Field
-from rosidl_parser import MessageSpecification
-from rosidl_parser import Type
+from rosidl_adapter.parser import Constant
+from rosidl_adapter.parser import Field
+from rosidl_adapter.parser import MessageSpecification
+from rosidl_adapter.parser import Type
 
 
 def test_message_specification_constructor():

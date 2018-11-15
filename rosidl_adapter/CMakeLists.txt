@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(rosidl_parser NONE)
+project(rosidl_adapter NONE)
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
@@ -13,3 +13,8 @@ if(BUILD_TESTING)
 endif()
 
 ament_package()
+
+if(BUILD_TESTING)
+  find_package(ament_cmake_pytest REQUIRED)
+  ament_add_pytest_test(pytest test)
+endif()

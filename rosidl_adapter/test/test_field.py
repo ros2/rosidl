@@ -14,9 +14,9 @@
 
 import pytest
 
-from rosidl_parser import Field
-from rosidl_parser import InvalidValue
-from rosidl_parser import Type
+from rosidl_adapter.parser import Field
+from rosidl_adapter.parser import InvalidValue
+from rosidl_adapter.parser import Type
 
 
 def test_field_constructor():

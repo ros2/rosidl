@@ -14,7 +14,7 @@
 
 import pytest
 
-from rosidl_parser import Type
+from rosidl_adapter.parser import Type
 
 
 def test_type_constructor():

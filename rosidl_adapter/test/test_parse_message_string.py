@@ -14,9 +14,9 @@
 
 import pytest
 
-from rosidl_parser import InvalidFieldDefinition
-from rosidl_parser import InvalidResourceName
-from rosidl_parser import parse_message_string
+from rosidl_adapter.parser import InvalidFieldDefinition
+from rosidl_adapter.parser import InvalidResourceName
+from rosidl_adapter.parser import parse_message_string
 
 
 def test_parse_message_string():

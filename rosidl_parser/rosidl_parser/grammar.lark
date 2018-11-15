@@ -40,11 +40,13 @@ hexadecimal_literal: "0x"i HEXDIGIT+
 character_literal: "'" CHAR "'"
 wide_character_literal: "L'" CHAR "'"
 
-CHAR: _CHARACTERS
+CHAR: CHAR_SPACE
+  | _CHARACTERS
   | DIGIT
   | _FORMATTING_CHARACTERS
   | _ESCAPE_SEQUENCES
   | _GRAPHIC_CHAR
+CHAR_SPACE: " "
 
 // Table 7-2: Characters
 _CHARACTERS: LETTER | /[ÃãÄäÅåÆæÇçÈèÉéÊêËëÌìÍíÎîÏïÑñÒòÓóÔôÕõÖöØøÙùÚúÛûÜüßÿ]/
@@ -67,10 +69,13 @@ string_literal: "\"" CHAR* "\""
 wide_string_literal:  "L\"" CHAR* "\""
 
 // 7.2.6.4 Floating-point Literals
-floating_pt_literal: DIGIT+ "." DIGIT+ "e"i DIGIT*
-  | "." DIGIT+ ("e"i DIGIT*)?
-  | DIGIT+ "." DIGIT* ("e"i DIGIT*)?
-  | DIGIT+ "e"i DIGIT*
+floating_pt_literal: DIGIT+ floating_pt_literal_dot DIGIT+ floating_pt_literal_e DIGIT*
+  | floating_pt_literal_dot DIGIT+ (floating_pt_literal_e DIGIT*)?
+  | DIGIT+ floating_pt_literal_dot DIGIT* (floating_pt_literal_e DIGIT*)?
+  | DIGIT+ floating_pt_literal_e DIGIT*
+// separate rules to identify the components
+floating_pt_literal_dot: "."
+floating_pt_literal_e: "e"i
 
 // 7.2.6.5 Fixed-Point Literals
 fixed_pt_literal: DIGIT+ "." DIGIT+ "d"i
@@ -102,8 +107,10 @@ module_dcl: annotation_appl* "module" IDENTIFIER "{" definition+ "}"
 
 // (4)
 scoped_name: IDENTIFIER
-  | "::" IDENTIFIER
-  | scoped_name "::" IDENTIFIER
+  | scoped_name_separator IDENTIFIER
+  | scoped_name scoped_name_separator IDENTIFIER
+// separate rule to identify the separator
+scoped_name_separator: "::"
 
 // (5)
 const_dcl: "const" const_type IDENTIFIER "=" const_expr
@@ -156,9 +163,13 @@ unary_expr: unary_operator primary_expr
   | primary_expr
 
 // (15)
-unary_operator: "-"
-  | "+"
-  | "~"
+unary_operator: unary_operator_minus
+  | unary_operator_plus
+  | unary_operator_tilde
+// separate rules to identify the unary operator
+unary_operator_minus: "-"
+unary_operator_plus: "+"
+unary_operator_tilde: "~"
 
 // (16)
 primary_expr: scoped_name
@@ -176,8 +187,11 @@ literal: integer_literal
   | wide_string_literal
 
 // (18)
-boolean_literal: "TRUE"
-  | "FALSE"
+boolean_literal: boolean_literal_true
+  | boolean_literal_false
+// separate rules to identify the boolean literal
+boolean_literal_true: "TRUE"
+boolean_literal_false: "FALSE"
 
 // (19)
 positive_int_const: const_expr
@@ -204,9 +218,13 @@ base_type_spec: integer_type
   | octet_type
 
 // (24)
-floating_pt_type: "float"
-  | "double"
-  | "long" "double"
+floating_pt_type: floating_pt_type_float
+  | floating_pt_type_double
+  | floating_pt_type_long_double
+// separate rules to identify the floating point type
+floating_pt_type_float: "float"
+floating_pt_type_double: "double"
+floating_pt_type_long_double: "long" "double"
 
 // (25)
 integer_type: signed_int

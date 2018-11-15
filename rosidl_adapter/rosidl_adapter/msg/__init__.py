@@ -21,13 +21,15 @@ def convert_msg_to_idl(package_dir, package_name, input_file, output_dir):
     assert not input_file.is_absolute()
     assert input_file.suffix == '.msg'
 
-    print('Reading input file: {input_file}'.format_map(locals()))
+    abs_input_file = package_dir / input_file
+    print('Reading input file: {abs_input_file}'.format_map(locals()))
     abs_input_file = package_dir / input_file
     content = abs_input_file.read_text(encoding='utf-8')
     msg = parse_message_string(package_name, input_file.stem, content)
 
     output_file = output_dir / input_file.with_suffix('.idl').name
-    print('Writing output file: {output_file}'.format_map(locals()))
+    abs_output_file = output_file.absolute()
+    print('Writing output file: {abs_output_file}'.format_map(locals()))
     data = {
         'pkg_name': package_name,
         'relative_input_file': input_file,

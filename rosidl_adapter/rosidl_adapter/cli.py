@@ -45,4 +45,6 @@ def convert_files_to_idl(extension, conversion_function, argv=sys.argv[1:]):
         pkg = parse_package(package_dir, warnings=warnings)
 
         conversion_function(
-            package_dir, pkg.name, interface_file, interface_file.parent)
+            package_dir, pkg.name,
+            interface_file.absolute().relative_to(package_dir),
+            interface_file.parent)

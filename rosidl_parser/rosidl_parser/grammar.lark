@@ -106,7 +106,7 @@ definition: module_dcl ";"
 module_dcl: annotation_appl* "module" IDENTIFIER "{" definition+ "}"
 
 // (4)
-scoped_name: IDENTIFIER
+scoped_name.1: IDENTIFIER
   | scoped_name_separator IDENTIFIER
   | scoped_name scoped_name_separator IDENTIFIER
 // separate rule to identify the separator
@@ -177,7 +177,7 @@ primary_expr: scoped_name
   | "(" const_expr ")"
 
 // (17)
-literal: integer_literal
+literal.2: integer_literal
   | floating_pt_literal
   | fixed_pt_literal
   | character_literal
@@ -210,7 +210,7 @@ simple_type_spec: base_type_spec
   | scoped_name
 
 // (23)
-base_type_spec: integer_type
+base_type_spec.2: integer_type
   | floating_pt_type
   | char_type
   | wide_char_type
@@ -218,7 +218,7 @@ base_type_spec: integer_type
   | octet_type
 
 // (24)
-floating_pt_type: floating_pt_type_float
+floating_pt_type.2: floating_pt_type_float
   | floating_pt_type_double
   | floating_pt_type_long_double
 // separate rules to identify the floating point type
@@ -227,7 +227,7 @@ floating_pt_type_double: "double"
 floating_pt_type_long_double: "long" "double"
 
 // (25)
-integer_type: signed_int
+integer_type.2: signed_int
   | unsigned_int
 
 // (26), (206)
@@ -267,19 +267,19 @@ unsigned_longlong_int: "unsigned" "long" "long"
   | "uint64"
 
 // (34)
-char_type: "char"
+char_type.2: "char"
 
 // (35)
-wide_char_type: "wchar"
+wide_char_type.2: "wchar"
 
 // (36)
-boolean_type: "boolean"
+boolean_type.2: "boolean"
 
 // (37)
-octet_type: "octet"
+octet_type.2: "octet"
 
 // (38)
-template_type_spec: sequence_type
+template_type_spec.2: sequence_type
   | string_type
   | wide_string_type
   | fixed_pt_type
@@ -289,18 +289,18 @@ sequence_type: "sequence" "<" type_spec "," positive_int_const ">"
   | "sequence" "<" type_spec ">"
 
 // (40)
-string_type: "string" "<" positive_int_const ">"
+string_type.2: "string" "<" positive_int_const ">"
   | "string"
 
 // (41)
-wide_string_type: "wstring" "<" positive_int_const ">"
+wide_string_type.2: "wstring" "<" positive_int_const ">"
   | "wstring"
 
 // (42)
 fixed_pt_type: "fixed" "<" positive_int_const "," positive_int_const ">"
 
 // (43)
-fixed_pt_const_type: "fixed"
+fixed_pt_const_type.2: "fixed"
 
 // (44)
 constr_type_dcl: struct_dcl

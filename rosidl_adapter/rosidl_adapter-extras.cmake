@@ -12,17 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# copied from rosidl_adapter/rosidl_adapter-extras.cmake
 
-def convert_to_idl(package_dir, package_name, interface_file, output_dir):
-    if interface_file.suffix == '.msg':
-        from rosidl_adapter.msg import convert_msg_to_idl
-        return convert_msg_to_idl(
-            package_dir, package_name, interface_file, output_dir / 'msg')
-
-    if interface_file.suffix == '.srv':
-        from rosidl_adapter.srv import convert_srv_to_idl
-        return convert_srv_to_idl(
-            package_dir, package_name, interface_file, output_dir / 'srv')
-
-    assert False, "Unsupported interface type '{interface_file.suffix}'" \
-        .format_map(locals())
+include("${rosidl_adapter_DIR}/rosidl_adapt_interfaces.cmake")

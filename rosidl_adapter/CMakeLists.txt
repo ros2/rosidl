@@ -12,7 +12,14 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-ament_package()
+ament_package(
+  CONFIG_EXTRAS "rosidl_adapter-extras.cmake"
+)
+
+install(
+  DIRECTORY cmake
+  DESTINATION share/${PROJECT_NAME}
+)
 
 install(PROGRAMS
   scripts/msg2idl.py

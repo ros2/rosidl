@@ -30,7 +30,7 @@ ACTION_REQUEST_RESPONSE_SEPARATOR = '---'
 ACTION_GOAL_SERVICE_SUFFIX = '_Goal'
 ACTION_RESULT_SERVICE_SUFFIX = '_Result'
 ACTION_FEEDBACK_MESSAGE_SUFFIX = '_Feedback'
-ACTION_IMPLICIT_FIELDS = ['uuid', 'status']
+ACTION_IMPLICIT_FIELDS = ['goal_id', 'status']
 
 PRIMITIVE_TYPES = [
     'bool',
@@ -513,7 +513,7 @@ def parse_message_string(pkg_name, msg_name, message_string):
                 raise ImplicitFieldCollision("Duplicate parameter name '{field_name}' \
                     found processing '{line}' of '{pkg}/{msg}'. \
                     If this resulted from an action definition please \
-                    check for implicit parameter names (uuid, status)".format(
+                    check for implicit parameter names (goal_id, status)".format(
                     field_name=field_name, line=line, pkg=pkg_name, msg=msg_name))
             elif field_name in ACTION_IMPLICIT_FIELDS:
                 action_fields[field_name] += 1
@@ -884,7 +884,7 @@ def parse_action_string(pkg_name, action_name, action_string):
 
     # ---------------------------------------------------------------------------------------------
     # Send goal
-    implicit_input = ['uint8[16] uuid']
+    implicit_input = ['UUID goal_id']
     request_message_string = '\n'.join(implicit_input) + '\n' + goal_service_string
     request_message = parse_message_string(
         pkg_name,
@@ -907,7 +907,7 @@ def parse_action_string(pkg_name, action_name, action_string):
 
     # ---------------------------------------------------------------------------------------------
     # Get result
-    implicit_input = ['uint8[16] uuid']
+    implicit_input = ['UUID goal_id']
     request_message_string = '\n'.join(implicit_input)
     request_message = parse_message_string(
         pkg_name,
@@ -930,7 +930,7 @@ def parse_action_string(pkg_name, action_name, action_string):
 
     # ---------------------------------------------------------------------------------------------
     # Feedback message
-    implicit_input = ['uint8[16] uuid']
+    implicit_input = ['UUID goal_id']
     message_string = '\n'.join(implicit_input) + '\n' + feedback_message_string
     feedback_msg = parse_message_string(
         pkg_name, action_name + ACTION_FEEDBACK_MESSAGE_SUFFIX, message_string)

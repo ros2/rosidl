@@ -32,7 +32,7 @@ def generate_msg_and_srv(generator_arguments_file):
             os.makedirs(os.path.join(args['output_dir'], subfolder), exist_ok=True)
 
             generated_folder = os.path.join(args['output_dir'], subfolder)
-            for service in action.services:
+            for service in [action.goal_service, action.result_service]:
                 srv_file = os.path.join(generated_folder, service.srv_name + '.srv')
                 req_file = os.path.join(generated_folder, service.srv_name + '_Request.msg')
                 rsp_file = os.path.join(generated_folder, service.srv_name + '_Response.msg')

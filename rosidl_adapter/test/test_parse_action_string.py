@@ -44,10 +44,9 @@ def test_valid_action_string():
 
 def test_valid_action_string1():
     spec = parse_action_string('pkg', 'Foo', 'bool foo\n---\nint8 bar\n---\nbool foo')
-    services = spec.services
+    goal_service = spec.goal_service
+    result_service = spec.result_service
     feedback_msg = spec.feedback
-    assert len(services) == 2
-    goal_service, result_service = services
     # Goal service checks
     assert goal_service.pkg_name == 'pkg'
     assert goal_service.srv_name == 'Foo_Goal'
@@ -82,10 +81,9 @@ def test_valid_action_string1():
 def test_valid_action_string2():
     spec = parse_action_string(
         'pkg', 'Foo', '#comment---\n \nbool foo\n---\n#comment\n \nint8 bar\n---\nbool foo')
-    services = spec.services
+    goal_service = spec.goal_service
+    result_service = spec.result_service
     feedback_msg = spec.feedback
-    assert len(services) == 2
-    goal_service, result_service = services
     # Goal service checks
     assert goal_service.pkg_name == 'pkg'
     assert goal_service.srv_name == 'Foo_Goal'
@@ -122,10 +120,9 @@ def test_valid_action_string3():
         'pkg',
         'Foo',
         'bool foo\nstring status\n---\nbool FOO=1\nint8 bar\n---\nbool BAR=1\nbool foo')
-    services = spec.services
+    goal_service = spec.goal_service
+    result_service = spec.result_service
     feedback_msg = spec.feedback
-    assert len(services) == 2
-    goal_service, result_service = services
     # Goal service checks
     assert goal_service.pkg_name == 'pkg'
     assert goal_service.srv_name == 'Foo_Goal'

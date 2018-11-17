@@ -24,5 +24,10 @@ def convert_to_idl(package_dir, package_name, interface_file, output_dir):
         return convert_srv_to_idl(
             package_dir, package_name, interface_file, output_dir / 'srv')
 
+    if interface_file.suffix == '.action':
+        from rosidl_adapter.action import convert_action_to_idl
+        return convert_action_to_idl(
+            package_dir, package_name, interface_file, output_dir / 'action')
+
     assert False, "Unsupported interface type '{interface_file.suffix}'" \
         .format_map(locals())

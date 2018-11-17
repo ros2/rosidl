@@ -27,8 +27,8 @@ SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
 SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
 
 ACTION_REQUEST_RESPONSE_SEPARATOR = '---'
-ACTION_GOAL_MESSAGE_SUFFIX = '_Goal'
-ACTION_RESULT_MESSAGE_SUFFIX = '_Result'
+ACTION_GOAL_SERVICE_SUFFIX = '_Goal'
+ACTION_RESULT_SERVICE_SUFFIX = '_Result'
 ACTION_FEEDBACK_MESSAGE_SUFFIX = '_Feedback'
 ACTION_IMPLICIT_FIELDS = ['uuid', 'status']
 
@@ -126,8 +126,8 @@ def is_valid_message_name(name):
         suffixes = [
             SERVICE_REQUEST_MESSAGE_SUFFIX,
             SERVICE_RESPONSE_MESSAGE_SUFFIX,
-            ACTION_GOAL_MESSAGE_SUFFIX,
-            ACTION_RESULT_MESSAGE_SUFFIX,
+            ACTION_GOAL_SERVICE_SUFFIX,
+            ACTION_RESULT_SERVICE_SUFFIX,
             ACTION_FEEDBACK_MESSAGE_SUFFIX,
         ]
         for suffix in suffixes:
@@ -791,7 +791,7 @@ def validate_field_types(spec, known_msg_types):
     elif isinstance(spec, ActionSpecification):
         spec_type = 'Action'
         fields = []
-        for service in spec.services:
+        for service in [spec.goal_service, spec.result_service]:
             fields += service.request.fields
             fields += service.response.fields
     else:
@@ -857,10 +857,11 @@ def parse_service_string(pkg_name, srv_name, message_string):
 
 class ActionSpecification:
 
-    def __init__(self, pkg_name, action_name, services, feedback_message):
+    def __init__(self, pkg_name, action_name, goal_service, result_service, feedback_message):
         self.pkg_name = pkg_name
         self.action_name = action_name
-        self.services = services
+        self.goal_service = goal_service
+        self.result_service = result_service
         self.feedback = feedback_message
 
 
@@ -881,28 +882,27 @@ def parse_action_string(pkg_name, action_name, action_string):
 
     goal_service_string, result_service_string, feedback_message_string = action_blocks
 
-    services = []
     # ---------------------------------------------------------------------------------------------
     # Send goal
     implicit_input = ['uint8[16] uuid']
     request_message_string = '\n'.join(implicit_input) + '\n' + goal_service_string
     request_message = parse_message_string(
         pkg_name,
-        action_name + ACTION_GOAL_MESSAGE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX,
+        action_name + ACTION_GOAL_SERVICE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX,
         request_message_string)
 
     implicit_output = ['bool accepted', 'builtin_interfaces/Time stamp']
     response_message_string = '\n'.join(implicit_output)
     response_message = parse_message_string(
         pkg_name,
-        action_name + ACTION_GOAL_MESSAGE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX,
+        action_name + ACTION_GOAL_SERVICE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX,
         response_message_string)
 
-    services.append(ServiceSpecification(
+    goal_service = ServiceSpecification(
         pkg_name,
-        action_name + ACTION_GOAL_MESSAGE_SUFFIX,
+        action_name + ACTION_GOAL_SERVICE_SUFFIX,
         request_message,
-        response_message))
+        response_message)
     # ---------------------------------------------------------------------------------------------
 
     # ---------------------------------------------------------------------------------------------
@@ -911,21 +911,21 @@ def parse_action_string(pkg_name, action_name, action_string):
     request_message_string = '\n'.join(implicit_input)
     request_message = parse_message_string(
         pkg_name,
-        action_name + ACTION_RESULT_MESSAGE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX,
+        action_name + ACTION_RESULT_SERVICE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX,
         request_message_string)
 
     implicit_output = ['int8 status']
     response_message_string = '\n'.join(implicit_output) + '\n' + result_service_string
     response_message = parse_message_string(
         pkg_name,
-        action_name + ACTION_RESULT_MESSAGE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX,
+        action_name + ACTION_RESULT_SERVICE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX,
         response_message_string)
 
-    services.append(ServiceSpecification(
+    result_service = ServiceSpecification(
         pkg_name,
-        action_name + ACTION_RESULT_MESSAGE_SUFFIX,
+        action_name + ACTION_RESULT_SERVICE_SUFFIX,
         request_message,
-        response_message))
+        response_message)
     # ---------------------------------------------------------------------------------------------
 
     # ---------------------------------------------------------------------------------------------
@@ -936,4 +936,4 @@ def parse_action_string(pkg_name, action_name, action_string):
         pkg_name, action_name + ACTION_FEEDBACK_MESSAGE_SUFFIX, message_string)
     # ---------------------------------------------------------------------------------------------
 
-    return ActionSpecification(pkg_name, action_name, services, feedback_msg)
+    return ActionSpecification(pkg_name, action_name, goal_service, result_service, feedback_msg)

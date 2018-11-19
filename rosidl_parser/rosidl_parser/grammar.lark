@@ -17,7 +17,7 @@
 
 // 7.2.2 Comments
 COMMENT: "//" /[^\n]/*
-  | "/*" /(.|\n)+/ "*/"
+  | "/*" /(.|\n)+?/ "*/"
 %ignore COMMENT
 
 

@@ -1,0 +1,13 @@
+module rosidl_parser {
+  module action {
+    struct MyAction_Goal_Request {
+      int32 input_value;
+    };
+    struct MyAction_Result_Response {
+      uint32 output_value;
+    };
+    struct MyAction_Feedback {
+      float progress_value;
+    };
+  };
+};

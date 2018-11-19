@@ -16,6 +16,7 @@ import pathlib
 
 import pytest
 
+from rosidl_parser.definition import Action
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
@@ -23,6 +24,7 @@ from rosidl_parser.definition import Constant
 from rosidl_parser.definition import IdlLocator
 from rosidl_parser.definition import Include
 from rosidl_parser.definition import Message
+from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import Service
 from rosidl_parser.definition import String
 from rosidl_parser.definition import UnboundedSequence
@@ -33,6 +35,8 @@ MESSAGE_IDL_LOCATOR = IdlLocator(
     pathlib.Path(__file__).parent, pathlib.Path('msg') / 'MyMessage.idl')
 SERVICE_IDL_LOCATOR = IdlLocator(
     pathlib.Path(__file__).parent, pathlib.Path('srv') / 'MyService.idl')
+ACTION_IDL_LOCATOR = IdlLocator(
+    pathlib.Path(__file__).parent, pathlib.Path('action') / 'MyAction.idl')
 
 
 @pytest.fixture(scope='module')
@@ -180,3 +184,122 @@ def test_service_parser(service_idl_file):
     assert srv.structure_type.name == 'MyService'
     assert len(srv.request_message.structure.members) == 2
     assert len(srv.response_message.structure.members) == 1
+
+
+@pytest.fixture(scope='module')
+def action_idl_file():
+    return parse_idl_file(ACTION_IDL_LOCATOR)
+
+
+def test_action_parser(action_idl_file):
+    actions = action_idl_file.content.get_elements_of_type(Action)
+    assert len(actions) == 1
+
+    action = actions[0]
+    assert isinstance(action, Action)
+    assert action.structure_type.namespaces == ['rosidl_parser', 'action']
+    assert action.structure_type.name == 'MyAction'
+
+    # check messages defined in the idl file
+    structure = action.goal_request.structure
+    assert structure.type.namespaces == ['rosidl_parser', 'action']
+    assert structure.type.name == 'MyAction_Goal_Request'
+    assert len(structure.members) == 1
+    assert isinstance(structure.members[0].type, BasicType)
+    assert structure.members[0].type.type == 'int32'
+    assert structure.members[0].name == 'input_value'
+
+    structure = action.result_response.structure
+    assert structure.type.namespaces == ['rosidl_parser', 'action']
+    assert structure.type.name == 'MyAction_Result_Response'
+    assert len(structure.members) == 1
+    assert isinstance(structure.members[0].type, BasicType)
+    assert structure.members[0].type.type == 'uint32'
+    assert structure.members[0].name == 'output_value'
+
+    structure = action.feedback.structure
+    assert structure.type.namespaces == ['rosidl_parser', 'action']
+    assert structure.type.name == 'MyAction_Feedback'
+    assert len(structure.members) == 1
+    assert isinstance(structure.members[0].type, BasicType)
+    assert structure.members[0].type.type == 'float'
+    assert structure.members[0].name == 'progress_value'
+
+    # check derived goal service
+    structure_type = action.goal_service.structure_type
+    assert structure_type.namespaces == ['rosidl_parser', 'action']
+    assert structure_type.name == 'MyAction_Action_Goal'
+
+    structure = action.goal_service.request_message.structure
+    assert len(structure.members) == 2
+
+    assert isinstance(structure.members[0].type, Array)
+    assert structure.members[0].type.size == 16
+    assert isinstance(structure.members[0].type.basetype, BasicType)
+    assert structure.members[0].type.basetype.type == 'uint8'
+    assert structure.members[0].name == 'uuid'
+
+    assert isinstance(structure.members[1].type, NamespacedType)
+    assert structure.members[1].type.namespaces == \
+        action.goal_request.structure.type.namespaces
+    assert structure.members[1].type.name == \
+        action.goal_request.structure.type.name
+
+    structure = action.goal_service.response_message.structure
+    assert len(structure.members) == 2
+
+    assert isinstance(structure.members[0].type, BasicType)
+    assert structure.members[0].type.type == 'boolean'
+    assert structure.members[0].name == 'accepted'
+
+    assert isinstance(structure.members[1].type, NamespacedType)
+    assert structure.members[1].type.namespaces == [
+        'builtin_interfaces', 'msg']
+    assert structure.members[1].type.name == 'Time'
+    assert structure.members[1].name == 'stamp'
+
+    # check derived result service
+    structure_type = action.result_service.structure_type
+    assert structure_type.namespaces == ['rosidl_parser', 'action']
+    assert structure_type.name == 'MyAction_Action_Result'
+
+    structure = action.result_service.request_message.structure
+    assert len(structure.members) == 1
+
+    assert isinstance(structure.members[0].type, Array)
+    assert structure.members[0].type.size == 16
+    assert isinstance(structure.members[0].type.basetype, BasicType)
+    assert structure.members[0].type.basetype.type == 'uint8'
+    assert structure.members[0].name == 'uuid'
+
+    structure = action.result_service.response_message.structure
+    assert len(structure.members) == 2
+
+    assert isinstance(structure.members[0].type, BasicType)
+    assert structure.members[0].type.type == 'int8'
+    assert structure.members[0].name == 'status'
+
+    assert isinstance(structure.members[1].type, NamespacedType)
+    assert structure.members[1].type.namespaces == \
+        action.result_response.structure.type.namespaces
+    assert structure.members[1].type.name == \
+        action.result_response.structure.type.name
+
+    # check derived feedback message
+    structure = action.feedback_message.structure
+    assert structure.type.namespaces == ['rosidl_parser', 'action']
+    assert structure.type.name == 'MyAction_Action_Feedback'
+
+    assert len(structure.members) == 2
+
+    assert isinstance(structure.members[0].type, Array)
+    assert structure.members[0].type.size == 16
+    assert isinstance(structure.members[0].type.basetype, BasicType)
+    assert structure.members[0].type.basetype.type == 'uint8'
+    assert structure.members[0].name == 'uuid'
+
+    assert isinstance(structure.members[1].type, NamespacedType)
+    assert structure.members[1].type.namespaces == \
+        action.feedback.structure.type.namespaces
+    assert structure.members[1].type.name == \
+        action.feedback.structure.type.name

@@ -40,7 +40,13 @@ namespace rosidl_typesupport_introspection_cpp
 
 @[if spec.fields]@
 @[  for field in spec.fields]@
-@[    if field.type.is_array and not field.type.type == 'bool']@
+@{
+def is_vector_bool(field):
+  return field.type.type == 'bool' and not (field.type.array_size and not field.type.is_upper_bound)
+
+}@
+@# exclude std::vector<bool> because of specialization in their API
+@[    if field.type.is_array and not is_vector_bool(field)]@
 @{
 # from rosidl_generator_cpp import msg_type_only_to_cpp
 # type = msg_type_only_to_cpp(field.type)
@@ -127,7 +133,7 @@ for index, field in enumerate(spec.fields):
     # void * default_value_
     print('    nullptr,  // default value')  # TODO default value to be set
 
-    function_suffix = '%s__%s' % (spec.base_type.type, field.name) if field.type.is_array and not field.type.type == 'bool' else None
+    function_suffix = '%s__%s' % (spec.base_type.type, field.name) if field.type.is_array and not is_vector_bool(field) else None
 
     # size_t(const void *) size_function
     print('    %s,  // size() function pointer' % ('size_function__%s' % function_suffix if function_suffix else 'nullptr'))

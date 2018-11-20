@@ -72,8 +72,11 @@ macro(rosidl_generate_action_interfaces target)
   list_append_unique(_ARG_RGAI_DEPENDENCY_PACKAGE_NAMES "action_msgs")
   # downstream packages need to depend on builtin_interfaces for builtin_interfaces/Time
   list_append_unique(_ARG_RGAI_DEPENDENCY_PACKAGE_NAMES "builtin_interfaces")
+  # downstream packages need to depend on unique_identifier_msgs for unique_identifier_msgs/UUID
+  list_append_unique(_ARG_RGAI_DEPENDENCY_PACKAGE_NAMES "unique_identifier_msgs")
   ament_export_dependencies(action_msgs)
   ament_export_dependencies(builtin_interfaces)
+  ament_export_dependencies(unique_identifier_msgs)
 
   # A target name that generators may want to use to prefix their own target names
   set(rosidl_generate_action_interfaces_TARGET ${target})

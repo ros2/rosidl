@@ -884,7 +884,7 @@ def parse_action_string(pkg_name, action_name, action_string):
 
     # ---------------------------------------------------------------------------------------------
     # Send goal
-    implicit_input = ['UUID goal_id']
+    implicit_input = ['unique_identifier_msgs/UUID goal_id']
     request_message_string = '\n'.join(implicit_input) + '\n' + goal_service_string
     request_message = parse_message_string(
         pkg_name,
@@ -907,7 +907,7 @@ def parse_action_string(pkg_name, action_name, action_string):
 
     # ---------------------------------------------------------------------------------------------
     # Get result
-    implicit_input = ['UUID goal_id']
+    implicit_input = ['unique_identifier_msgs/UUID goal_id']
     request_message_string = '\n'.join(implicit_input)
     request_message = parse_message_string(
         pkg_name,
@@ -930,7 +930,7 @@ def parse_action_string(pkg_name, action_name, action_string):
 
     # ---------------------------------------------------------------------------------------------
     # Feedback message
-    implicit_input = ['UUID goal_id']
+    implicit_input = ['unique_identifier_msgs/UUID goal_id']
     message_string = '\n'.join(implicit_input) + '\n' + feedback_message_string
     feedback_msg = parse_message_string(
         pkg_name, action_name + ACTION_FEEDBACK_MESSAGE_SUFFIX, message_string)

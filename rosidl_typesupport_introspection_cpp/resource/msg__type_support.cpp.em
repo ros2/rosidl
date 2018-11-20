@@ -16,6 +16,7 @@
 #include <array>
 // providing offsetof()
 #include <cstddef>
+#include <string>
 #include <vector>
 
 #include "rosidl_generator_c/message_type_support_struct.h"
@@ -40,15 +41,27 @@ namespace rosidl_typesupport_introspection_cpp
 
 @[if spec.fields]@
 @[  for field in spec.fields]@
-@[    if not field.type.is_primitive_type() and field.type.is_array]@
+@{
+def is_vector_bool(field):
+  return field.type.type == 'bool' and not (field.type.array_size and not field.type.is_upper_bound)
+}@
+@# exclude std::vector<bool> because of specialization in their API
+@[    if field.type.is_array and not is_vector_bool(field)]@
+@{
+# from rosidl_generator_cpp import msg_type_only_to_cpp
+# type = msg_type_only_to_cpp(field.type)
+default_type = str(field.type.pkg_name) + '::msg::' + field.type.type
+type_ = cpp_primitives.get(field.type.type, default_type)
+if field.type.type == 'string':
+    type_ = 'std::string'
+}@
 size_t size_function__@(spec.base_type.type)__@(field.name)(const void * untyped_member)
 {
 @[      if field.type.array_size and not field.type.is_upper_bound]@
   (void)untyped_member;
   return @(field.type.array_size);
 @[      else]@
-  const auto * member =
-    reinterpret_cast<const std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> *>(untyped_member);
+  const auto * member = reinterpret_cast<const std::vector<@(type_)> *>(untyped_member);
   return member->size();
 @[      end if]@
 }
@@ -57,10 +70,10 @@ const void * get_const_function__@(spec.base_type.type)__@(field.name)(const voi
 {
 @[      if field.type.array_size and not field.type.is_upper_bound]@
   const auto & member =
-    *reinterpret_cast<const std::array<@(field.type.pkg_name)::msg::@(field.type.type), @(field.type.array_size)> *>(untyped_member);
+    *reinterpret_cast<const std::array<@(type_), @(field.type.array_size)> *>(untyped_member);
 @[      else]@
   const auto & member =
-    *reinterpret_cast<const std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> *>(untyped_member);
+    *reinterpret_cast<const std::vector<@(type_)> *>(untyped_member);
 @[      end if]@
   return &member[index];
 }
@@ -69,10 +82,10 @@ void * get_function__@(spec.base_type.type)__@(field.name)(void * untyped_member
 {
 @[      if field.type.array_size and not field.type.is_upper_bound]@
   auto & member =
-    *reinterpret_cast<std::array<@(field.type.pkg_name)::msg::@(field.type.type), @(field.type.array_size)> *>(untyped_member);
+    *reinterpret_cast<std::array<@(type_), @(field.type.array_size)> *>(untyped_member);
 @[      else]@
   auto & member =
-    *reinterpret_cast<std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> *>(untyped_member);
+    *reinterpret_cast<std::vector<@(type_)> *>(untyped_member);
 @[      end if]@
   return &member[index];
 }
@@ -81,7 +94,7 @@ void * get_function__@(spec.base_type.type)__@(field.name)(void * untyped_member
 void resize_function__@(spec.base_type.type)__@(field.name)(void * untyped_member, size_t size)
 {
   auto * member =
-    reinterpret_cast<std::vector<@(field.type.pkg_name)::msg::@(field.type.type)> *>(untyped_member);
+    reinterpret_cast<std::vector<@(type_)> *>(untyped_member);
   member->resize(size);
 }
 
@@ -120,7 +133,7 @@ for index, field in enumerate(spec.fields):
     # void * default_value_
     print('    nullptr,  // default value')  # TODO default value to be set
 
-    function_suffix = '%s__%s' % (spec.base_type.type, field.name) if not field.type.is_primitive_type() and field.type.is_array else None
+    function_suffix = '%s__%s' % (spec.base_type.type, field.name) if field.type.is_array and not is_vector_bool(field) else None
 
     # size_t(const void *) size_function
     print('    %s,  // size() function pointer' % ('size_function__%s' % function_suffix if function_suffix else 'nullptr'))

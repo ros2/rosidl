@@ -19,6 +19,7 @@ from rosidl_cmake import expand_template
 from rosidl_cmake import extract_message_types
 from rosidl_cmake import get_newest_modification_time
 from rosidl_cmake import read_generator_arguments
+from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 from rosidl_parser import parse_message_file
 from rosidl_parser import parse_service_file
 from rosidl_parser import validate_field_types
@@ -67,7 +68,7 @@ def generate_cpp(generator_arguments_file):
                     args['output_dir'], subfolder, generated_filename %
                     convert_camel_case_to_lower_case_underscore(spec.base_type.type))
 
-                data = {'spec': spec, 'subfolder': subfolder}
+                data = {'spec': spec, 'subfolder': subfolder, 'cpp_primitives': MSG_TYPE_TO_CPP}
                 data.update(functions)
                 expand_template(
                     template_file, data, generated_file,

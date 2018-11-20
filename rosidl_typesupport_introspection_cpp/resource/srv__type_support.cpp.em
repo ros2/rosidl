@@ -20,14 +20,20 @@
 
 #include "rosidl_typesupport_introspection_cpp/visibility_control.h"
 
-#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.srv_name))__struct.hpp"
+@{
+header_filename = get_header_filename_from_msg_name(spec.srv_name)
+if header_filename.endswith('__goal'):
+    header_filename = header_filename[:-6]
+elif header_filename.endswith('__result'):
+    header_filename = header_filename[:-8]
+elif header_filename.endswith('__feedback'):
+    header_filename = header_filename[:-10]
+}@
+#include "@(spec.pkg_name)/@(subfolder)/@(header_filename)__struct.hpp"
 #include "rosidl_typesupport_introspection_cpp/identifier.hpp"
 #include "rosidl_typesupport_introspection_cpp/message_type_support_decl.hpp"
 #include "rosidl_typesupport_introspection_cpp/service_introspection.hpp"
 #include "rosidl_typesupport_introspection_cpp/service_type_support_decl.hpp"
-
-#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.request.base_type.type))__struct.hpp"
-#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.response.base_type.type))__struct.hpp"
 
 namespace @(spec.pkg_name)
 {

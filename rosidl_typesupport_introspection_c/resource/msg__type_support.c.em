@@ -27,7 +27,20 @@ function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.base_type
 #include "rosidl_typesupport_introspection_c/identifier.h"
 #include "rosidl_typesupport_introspection_c/message_introspection.h"
 
-#include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.h"
+@{
+header_filename = get_header_filename_from_msg_name(spec.base_type.type)
+if header_filename.endswith('__request'):
+    header_filename = header_filename[:-9]
+elif header_filename.endswith('__response'):
+    header_filename = header_filename[:-10]
+if header_filename.endswith('__goal'):
+    header_filename = header_filename[:-6]
+elif header_filename.endswith('__result'):
+    header_filename = header_filename[:-8]
+elif header_filename.endswith('__feedback'):
+    header_filename = header_filename[:-10]
+}@
+#include "@(spec.base_type.pkg_name)/@(subfolder)/@(header_filename)__struct.h"
 
 @#######################################################################
 @# include message dependencies

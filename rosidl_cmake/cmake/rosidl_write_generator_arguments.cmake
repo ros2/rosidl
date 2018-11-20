@@ -26,6 +26,7 @@ function(rosidl_write_generator_arguments output_file)
     "TEMPLATE_DIR")
 
   set(REQUIRED_MULTI_VALUE_KEYWORDS  # only require one of them
+    "IDL_TUPLES"
     "NON_IDL_TUPLES"
     "ROS_INTERFACE_FILES")
   set(OPTIONAL_MULTI_VALUE_KEYWORDS

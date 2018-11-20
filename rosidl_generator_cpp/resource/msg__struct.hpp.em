@@ -1,70 +1,63 @@
-// generated from rosidl_generator_cpp/resource/msg__struct.hpp.em
-// generated code does not contain a copyright notice
-
-@#######################################################################
-@# EmPy template for generating <msg>__struct.hpp files
-@#
-@# Context:
-@#  - spec (rosidl_parser.MessageSpecification)
-@#    Parsed specification of the .msg file
-@#  - subfolder (string)
-@#    The subfolder / subnamespace of the message
-@#    Either 'msg' or 'srv'
-@#  - get_header_filename_from_msg_name (function)
-@#######################################################################
-@
-@{
-header_guard_parts = [
-    spec.base_type.pkg_name, subfolder,
-    get_header_filename_from_msg_name(spec.base_type.type) + '__struct_hpp']
-header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
-}@
-#ifndef @(header_guard_variable)
-#define @(header_guard_variable)
-
+@# Included from rosidl_generator_cpp/resource/idl__struct.hpp.em
 // Protect against ERROR being predefined on Windows, in case somebody defines a
 // constant by that name.
 #if defined(_WIN32) && defined(ERROR)
   #undef ERROR
 #endif
-
+@
 @{
 from rosidl_generator_cpp import create_init_alloc_and_member_lists
 from rosidl_generator_cpp import escape_string
-from rosidl_generator_cpp import msg_type_only_to_cpp
 from rosidl_generator_cpp import msg_type_to_cpp
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
+from rosidl_parser.definition import BaseString
+from rosidl_parser.definition import BasicType
+from rosidl_parser.definition import NamespacedType
+from rosidl_parser.definition import NestedType
 
-cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
-cpp_class = '%s_' % spec.base_type.type
-cpp_full_name = '%s%s' % (cpp_namespace, cpp_class)
-cpp_full_name_with_alloc = '%s<ContainerAllocator>' % (cpp_full_name)
+message_typename = '::'.join(message.structure.type.namespaces + [message.structure.type.name])
 }@
-#include <rosidl_generator_cpp/bounded_vector.hpp>
-#include <rosidl_generator_cpp/message_initialization.hpp>
-#include <algorithm>
-#include <array>
-#include <memory>
-#include <string>
-#include <vector>
-
-// include message dependencies
+@
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Collect necessary include directives for all members
 @{
-includes = {}
-for field in spec.fields:
-    if not field.type.is_primitive_type():
-        key = '%s/msg/%s.hpp' % \
-            (field.type.pkg_name, get_header_filename_from_msg_name(field.type.type))
-        if key not in includes:
-            includes[key] = set([])
-        includes[key].add(field.name)
-for key in sorted(includes.keys()):
-    print('#include "%s"  // %s' % (key, ', '.join(includes[key])))
+from collections import OrderedDict
+from rosidl_cmake import convert_camel_case_to_lower_case_underscore
+includes = OrderedDict()
+for member in message.structure.members:
+    print('// member:', member.name)
+    type_ = member.type
+    if isinstance(type_, NestedType):
+        type_ = type_.basetype
+    if isinstance(type_, NamespacedType):
+        member_names = includes.setdefault(
+            '/'.join((type_.namespaces + [convert_camel_case_to_lower_case_underscore(type_.name)])) + '__struct.hpp', [])
+        member_names.append(member.name)
 }@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+@
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@[if includes]@
+
+// Include directives for member types
+@[    for header_file, member_names in includes.items()]@
+@[        for member_name in member_names]@
+// Member '@(member_name)'
+@[        end for]@
+@[        if header_file in include_directives]@
+// already included above
+// @
+@[        else]@
+@{include_directives.add(header_file)}@
+@[        end if]@
+#include "@(header_file)"
+@[    end for]@
+@[end if]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @{
 deprecated_macro_name = \
-    '_'.join(['DEPRECATED', spec.base_type.pkg_name, subfolder, spec.base_type.type])
+    '__'.join(['DEPRECATED', package_name] + list(interface_path.parents[0].parts) + [message.structure.type.name])
 }@
 #ifndef _WIN32
 # define @(deprecated_macro_name) __attribute__((deprecated))
@@ -72,17 +65,16 @@ deprecated_macro_name = \
 # define @(deprecated_macro_name) __declspec(deprecated)
 #endif
 
-namespace @(spec.base_type.pkg_name)
+@[for ns in message.structure.type.namespaces]@
+namespace @(ns)
 {
 
-namespace @(subfolder)
-{
-
+@[end for]@
 // message struct
 template<class ContainerAllocator>
-struct @(spec.base_type.type)_
+struct @(message.structure.type.name)_
 {
-  using Type = @(spec.base_type.type)_<ContainerAllocator>;
+  using Type = @(message.structure.type.name)_<ContainerAllocator>;
 
 @{
 # The creation of the constructors for messages is a bit complicated.  The goal
@@ -90,7 +82,7 @@ struct @(spec.base_type.type)_
 # message get initialized via the _init parameter to the constructor.  See
 # http://design.ros2.org/articles/generated_interfaces_cpp.html#constructors
 # for a detailed explanation of the different _init parameters.
-init_list, alloc_list, member_list = create_init_alloc_and_member_lists(spec)
+init_list, alloc_list, member_list = create_init_alloc_and_member_lists(message)
 
 def generate_default_string(membset):
     strlist = []
@@ -100,11 +92,7 @@ def generate_default_string(membset):
                 strlist.append('this->%s.resize(%d);' % (member.name, member.num_prealloc))
             if isinstance(member.default_value, list):
                 if all(v == member.default_value[0] for v in member.default_value):
-                    # Specifying type for std::fill because of MSVC 14.12 warning about casting 'const int' to smaller types (C4244)
-                    # For more info, see https://github.com/ros2/rosidl/issues/309
-                    # TODO(jacobperron): Investigate reason for build warnings on Windows
-                    # TODO(jacobperron): Write test case for this path of execution
-                    strlist.append('std::fill<typename %s::iterator, %s>(this->%s.begin(), this->%s.end(), %s);' % (msg_type_to_cpp(member.type), msg_type_only_to_cpp(member.type), member.name, member.name, member.default_value[0]))
+                    strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (member.name, member.name, member.default_value[0]))
                 else:
                     for index, val in enumerate(member.default_value):
                         strlist.append('this->%s[%d] = %s;' % (member.name, index, val))
@@ -114,6 +102,7 @@ def generate_default_string(membset):
     return strlist
 
 def generate_zero_string(membset, fill_args):
+    from rosidl_generator_cpp import msg_type_only_to_cpp
     strlist = []
     for member in membset.members:
         if isinstance(member.zero_value, list):
@@ -122,15 +111,12 @@ def generate_zero_string(membset, fill_args):
             if member.zero_need_array_override:
                 strlist.append('this->%s.fill(%s{%s});' % (member.name, msg_type_only_to_cpp(member.type), fill_args))
             else:
-                # Specifying type for std::fill because of MSVC 14.12 warning about casting 'const int' to smaller types (C4244)
-                # For more info, see https://github.com/ros2/rosidl/issues/309
-                # TODO(jacobperron): Investigate reason for build warnings on Windows
-                strlist.append('std::fill<typename %s::iterator, %s>(this->%s.begin(), this->%s.end(), %s);' % (msg_type_to_cpp(member.type), msg_type_only_to_cpp(member.type), member.name, member.name, member.zero_value[0]))
+                strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (member.name, member.name, member.zero_value[0]))
         else:
             strlist.append('this->%s = %s;' % (member.name, member.zero_value))
     return strlist
 }@
-  explicit @(spec.base_type.type)_(rosidl_generator_cpp::MessageInitialization _init = rosidl_generator_cpp::MessageInitialization::ALL)
+  explicit @(message.structure.type.name)_(rosidl_generator_cpp::MessageInitialization _init = rosidl_generator_cpp::MessageInitialization::ALL)
 @[if init_list]@
   : @(',\n    '.join(init_list))
 @[end if]@
@@ -165,7 +151,7 @@ def generate_zero_string(membset, fill_args):
 @[end for]@
   }
 
-  explicit @(spec.base_type.type)_(const ContainerAllocator & _alloc, rosidl_generator_cpp::MessageInitialization _init = rosidl_generator_cpp::MessageInitialization::ALL)
+  explicit @(message.structure.type.name)_(const ContainerAllocator & _alloc, rosidl_generator_cpp::MessageInitialization _init = rosidl_generator_cpp::MessageInitialization::ALL)
 @[if alloc_list]@
   : @(',\n    '.join(alloc_list))
 @[end if]@
@@ -204,112 +190,112 @@ def generate_zero_string(membset, fill_args):
   }
 
   // field types and members
-@[for field in spec.fields]@
-  using _@(field.name)_type =
-    @(msg_type_to_cpp(field.type));
-  _@(field.name)_type @(field.name);
+@[for member in message.structure.members]@
+  using _@(member.name)_type =
+    @(msg_type_to_cpp(member.type));
+  _@(member.name)_type @(member.name);
 @[end for]@
 
   // setters for named parameter idiom
-@[for field in spec.fields]@
-  Type * set__@(field.name)(
-    const @(msg_type_to_cpp(field.type)) & _arg)
+@[for member in message.structure.members]@
+  Type * set__@(member.name)(
+    const @(msg_type_to_cpp(member.type)) & _arg)
   {
-    this->@(field.name) = _arg;
+    this->@(member.name) = _arg;
     return this;
   }
 @[end for]@
 
   // constant declarations
-@[for constant in spec.constants]@
-@[if constant.type == 'string']
-  static const @(MSG_TYPE_TO_CPP[constant.type]) @(constant.name);
-@[else]@
-  static constexpr @(MSG_TYPE_TO_CPP[constant.type]) @(constant.name) =
-@[if constant.type in ('bool', 'byte', 'int8', 'int16', 'int32', 'int64', 'char')]@
-    @(int(constant.value));
-@[elif constant.type in ('uint8', 'uint16', 'uint32', 'uint64')]@
-    @(int(constant.value))u;
-@[else]@
+@[for constant in message.constants.values()]@
+@[ if isinstance(constant.type, BaseString)]@
+  static const @(MSG_TYPE_TO_CPP['string']) @(constant.name);
+@[ else]@
+  static constexpr @(MSG_TYPE_TO_CPP[constant.type.type]) @(constant.name) =
+@[  if isinstance(constant.type, BasicType) and constant.type.type in ['short', 'unsigned short', 'long', 'unsigned long', 'long long', 'unsigned long long', 'char', 'wchar', 'boolean', 'octet', 'int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64']]@
+    @(int(constant.value))@
+@[   if constant.type.type.startswith('u')]@
+u@
+@[   end if];
+@[  else]@
     @(constant.value);
 @[  end if]@
-@[end if]@
+@[ end if]@
 @[end for]@
 
   // pointer types
   using RawPtr =
-    @(cpp_full_name)<ContainerAllocator> *;
+    @(message_typename)_<ContainerAllocator> *;
   using ConstRawPtr =
-    const @(cpp_full_name)<ContainerAllocator> *;
+    const @(message_typename)_<ContainerAllocator> *;
   using SharedPtr =
-    std::shared_ptr<@(cpp_full_name)<ContainerAllocator>>;
+    std::shared_ptr<@(message_typename)_<ContainerAllocator>>;
   using ConstSharedPtr =
-    std::shared_ptr<@(cpp_full_name)<ContainerAllocator> const>;
+    std::shared_ptr<@(message_typename)_<ContainerAllocator> const>;
 
   template<typename Deleter = std::default_delete<
-      @(cpp_full_name)<ContainerAllocator>>>
+      @(message_typename)_<ContainerAllocator>>>
   using UniquePtrWithDeleter =
-    std::unique_ptr<@(cpp_full_name)<ContainerAllocator>, Deleter>;
+    std::unique_ptr<@(message_typename)_<ContainerAllocator>, Deleter>;
 
   using UniquePtr = UniquePtrWithDeleter<>;
 
   template<typename Deleter = std::default_delete<
-      @(cpp_full_name)<ContainerAllocator>>>
+      @(message_typename)_<ContainerAllocator>>>
   using ConstUniquePtrWithDeleter =
-    std::unique_ptr<@(cpp_full_name)<ContainerAllocator> const, Deleter>;
+    std::unique_ptr<@(message_typename)_<ContainerAllocator> const, Deleter>;
   using ConstUniquePtr = ConstUniquePtrWithDeleter<>;
 
   using WeakPtr =
-    std::weak_ptr<@(cpp_full_name)<ContainerAllocator>>;
+    std::weak_ptr<@(message_typename)_<ContainerAllocator>>;
   using ConstWeakPtr =
-    std::weak_ptr<@(cpp_full_name)<ContainerAllocator> const>;
+    std::weak_ptr<@(message_typename)_<ContainerAllocator> const>;
 
   // pointer types similar to ROS 1, use SharedPtr / ConstSharedPtr instead
   // NOTE: Can't use 'using' here because GNU C++ can't parse attributes properly
   typedef @(deprecated_macro_name)
-    std::shared_ptr<@(cpp_full_name)<ContainerAllocator>>
+    std::shared_ptr<@(message_typename)_<ContainerAllocator>>
     Ptr;
   typedef @(deprecated_macro_name)
-    std::shared_ptr<@(cpp_full_name)<ContainerAllocator> const>
+    std::shared_ptr<@(message_typename)_<ContainerAllocator> const>
     ConstPtr;
 
   // comparison operators
-  bool operator==(const @(spec.base_type.type)_ & other) const
+  bool operator==(const @(message.structure.type.name)_ & other) const
   {
-@[if not spec.fields]@
+@[if not message.structure.members]@
     (void)other;
 @[end if]@
-@[for field in spec.fields]@
-    if (this->@(field.name) != other.@(field.name)) {
+@[for member in message.structure.members]@
+    if (this->@(member.name) != other.@(member.name)) {
       return false;
     }
 @[end for]@
     return true;
   }
-  bool operator!=(const @(spec.base_type.type)_ & other) const
+  bool operator!=(const @(message.structure.type.name)_ & other) const
   {
     return !this->operator==(other);
   }
-};  // struct @(cpp_class)
+};  // struct @(message.structure.type.name)_
 
 // alias to use template instance with default allocator
-using @(spec.base_type.type) =
-  @(cpp_full_name)<std::allocator<void>>;
+using @(message.structure.type.name) =
+  @(message_typename)_<std::allocator<void>>;
 
 // constant definitions
-@[for c in spec.constants]@
-@[if c.type == 'string']@
+@[for c in message.constants.values()]@
+@[ if isinstance(c.type, BaseString)]@
 template<typename ContainerAllocator>
-const @(MSG_TYPE_TO_CPP[c.type])
-@(spec.base_type.type)_<ContainerAllocator>::@(c.name) = "@(escape_string(c.value))";
+const @(MSG_TYPE_TO_CPP['string'])
+@(message.structure.type.name)_<ContainerAllocator>::@(c.name) = "@(escape_string(c.value))";
 @[ else ]@
 template<typename ContainerAllocator>
-constexpr @(MSG_TYPE_TO_CPP[c.type]) @(spec.base_type.type)_<ContainerAllocator>::@(c.name);
-@[end if]@
+constexpr @(MSG_TYPE_TO_CPP[c.type.type]) @(message.structure.type.name)_<ContainerAllocator>::@(c.name);
+@[ end if]@
 @[end for]@
+@
+@[for ns in reversed(message.structure.type.namespaces)]@
 
-}  // namespace @(subfolder)
-
-}  // namespace @(spec.base_type.pkg_name)
-
-#endif  // @(header_guard_variable)
+}  // namespace @(ns)
+@[end for]@

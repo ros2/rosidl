@@ -35,20 +35,51 @@ extern "C"
   void rosidl_generator_c__ ## STRUCT_NAME ## __Sequence__fini( \
     rosidl_generator_c__ ## STRUCT_NAME ## __Sequence * sequence);
 
-// sequence functions for all primitive types
-ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(bool, bool)
-ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(byte, uint8_t)
-ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(char, char)
-ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(float32, float)
-ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(float64, double)
-ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int8, int8_t)
+// array functions for all basic types
+ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(float, float)
+ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(double, double)
+ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(long_double, long double)
+ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(char, signed char)
+ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(wchar, uint16_t)
+ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(boolean, bool)
+ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(octet, uint8_t)
 ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint8, uint8_t)
-ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int16, int16_t)
+ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int8, int8_t)
 ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint16, uint16_t)
-ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int32, int32_t)
+ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int16, int16_t)
 ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint32, uint32_t)
-ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int64, int64_t)
+ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int32, int32_t)
 ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint64, uint64_t)
+ROSIDL_GENERATOR_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int64, int64_t)
+
+// emulate legacy API
+ROSIDL_GENERATOR_C_PUBLIC
+bool rosidl_generator_c__bool__Sequence__init(
+  rosidl_generator_c__boolean__Sequence * sequence, size_t size);
+ROSIDL_GENERATOR_C_PUBLIC
+void rosidl_generator_c__bool__Sequence__fini(
+  rosidl_generator_c__boolean__Sequence * sequence);
+
+ROSIDL_GENERATOR_C_PUBLIC
+bool rosidl_generator_c__byte__Sequence__init(
+  rosidl_generator_c__octet__Sequence * sequence, size_t size);
+ROSIDL_GENERATOR_C_PUBLIC
+void rosidl_generator_c__byte__Sequence__fini(
+  rosidl_generator_c__octet__Sequence * sequence);
+
+ROSIDL_GENERATOR_C_PUBLIC
+bool rosidl_generator_c__float32__Sequence__init(
+  rosidl_generator_c__float__Sequence * sequence, size_t size);
+ROSIDL_GENERATOR_C_PUBLIC
+void rosidl_generator_c__float32__Sequence__fini(
+  rosidl_generator_c__float__Sequence * sequence);
+
+ROSIDL_GENERATOR_C_PUBLIC
+bool rosidl_generator_c__float64__Sequence__init(
+  rosidl_generator_c__double__Sequence * sequence, size_t size);
+ROSIDL_GENERATOR_C_PUBLIC
+void rosidl_generator_c__float64__Sequence__fini(
+  rosidl_generator_c__double__Sequence * sequence);
 
 #ifdef __cplusplus
 }

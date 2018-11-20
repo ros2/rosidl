@@ -1,44 +1,34 @@
-// generated from rosidl_generator_cpp/resource/srv__struct.hpp.em
-// generated code does not contain a copyright notice
-
-@#######################################################################
-@# EmPy template for generating <srv>__struct.hpp files
-@#
-@# Context:
-@#  - spec (rosidl_parser.ServiceSpecification)
-@#    Parsed specification of the .srv file
-@#  - subfolder (string)
-@#    The subfolder / subnamespace of the message
-@#    Either 'srv' or 'action'
-@#  - get_header_filename_from_msg_name (function)
-@#######################################################################
-@
+@# Included from rosidl_generator_cpp/resource/idl__struct.hpp.em
 @{
-header_guard_parts = [
-    spec.pkg_name, subfolder,
-    get_header_filename_from_msg_name(spec.srv_name) + '__struct_hpp']
-header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
+TEMPLATE(
+    'msg__struct.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    message=service.request_message, include_directives=include_directives)
 }@
-#ifndef @(header_guard_variable)
-#define @(header_guard_variable)
 
-#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.srv_name))__request.hpp"
-#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.srv_name))__response.hpp"
+@{
+TEMPLATE(
+    'msg__struct.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    message=service.response_message, include_directives=include_directives)
+}@
 
-namespace @(spec.pkg_name)
+@[for ns in service.structure_type.namespaces]@
+namespace @(ns)
 {
 
-namespace @(subfolder)
+@[end for]@
+@
+struct @(service.structure_type.name)
 {
-
-struct @(spec.srv_name)
-{
-  using Request = @(spec.pkg_name)::@(subfolder)::@(spec.srv_name)_Request;
-  using Response = @(spec.pkg_name)::@(subfolder)::@(spec.srv_name)_Response;
+@{
+service_typename = '::'.join(service.structure_type.namespaces + [service.structure_type.name])
+}@
+  using Request = @(service_typename)_Request;
+  using Response = @(service_typename)_Response;
 };
+@
+@[for ns in reversed(service.structure_type.namespaces)]@
 
-}  // namespace @(subfolder)
-
-}  // namespace @(spec.pkg_name)
-
-#endif  // @(header_guard_variable)
+}  // namespace @(ns)
+@[end for]@

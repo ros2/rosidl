@@ -16,6 +16,7 @@
 #include <array>
 // providing offsetof()
 #include <cstddef>
+#include <string>
 #include <vector>
 
 #include "rosidl_generator_c/message_type_support_struct.h"

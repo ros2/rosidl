@@ -19,10 +19,10 @@ from rosidl_cmake import expand_template
 from rosidl_cmake import extract_message_types
 from rosidl_cmake import get_newest_modification_time
 from rosidl_cmake import read_generator_arguments
+from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 from rosidl_parser import parse_message_file
 from rosidl_parser import parse_service_file
 from rosidl_parser import validate_field_types
-from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 
 
 def generate_cpp(generator_arguments_file):

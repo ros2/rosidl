@@ -1,4 +1,5 @@
 // generated from rosidl_generator_cpp/resource/action.hpp.em
+// with input from @(package_name):@(interface_path)
 // generated code does not contain a copyright notice
 
 @#######################################################################

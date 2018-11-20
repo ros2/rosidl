@@ -27,19 +27,31 @@
     size_t capacity; /*!< The number of allocated items in data */ \
   } rosidl_generator_c__ ## STRUCT_NAME ## __Sequence;
 
-// sequence types for all primitive types
-ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(bool, bool)
-ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(byte, uint8_t)
+// sequence types for all basic types
+ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(float, float)
+ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(double, double)
+ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(long_double, long double)
 ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(char, signed char)
-ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(float32, float)
-ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(float64, double)
-ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(int8, int8_t)
+ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(wchar, uint16_t)
+ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(boolean, bool)
+ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(octet, uint8_t)
 ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(uint8, uint8_t)
-ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(int16, int16_t)
+ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(int8, int8_t)
 ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(uint16, uint16_t)
-ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(int32, int32_t)
+ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(int16, int16_t)
 ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(uint32, uint32_t)
-ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(int64, int64_t)
+ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(int32, int32_t)
 ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(uint64, uint64_t)
+ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(int64, int64_t)
+
+// emulate legacy API
+typedef rosidl_generator_c__boolean__Sequence
+  rosidl_generator_c__bool__Sequence;
+typedef rosidl_generator_c__octet__Sequence
+  rosidl_generator_c__byte__Sequence;
+typedef rosidl_generator_c__float__Sequence
+  rosidl_generator_c__float32__Sequence;
+typedef rosidl_generator_c__double__Sequence
+  rosidl_generator_c__float64__Sequence;
 
 #endif  // ROSIDL_GENERATOR_C__PRIMITIVES_SEQUENCE_H_

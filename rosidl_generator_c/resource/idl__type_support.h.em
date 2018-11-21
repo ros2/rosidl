@@ -55,6 +55,57 @@ TEMPLATE(
 }@
 
 @[end for]@
+@
+@#######################################################################
+@# Handle action
+@#######################################################################
+@{
+from rosidl_parser.definition import Action
+}@
+@[for action in content.get_elements_of_type(Action)]@
+@{
+TEMPLATE(
+    'action__type_support.h.em',
+    package_name=package_name, action=action)
+}@
+
+@{
+TEMPLATE(
+    'msg__type_support.h.em',
+    package_name=package_name, message=action.goal_request)
+}@
+
+@{
+TEMPLATE(
+    'msg__type_support.h.em',
+    package_name=package_name, message=action.result_response)
+}@
+
+@{
+TEMPLATE(
+    'msg__type_support.h.em',
+    package_name=package_name, message=action.feedback)
+}@
+
+@{
+TEMPLATE(
+    'srv__type_support.h.em',
+    package_name=package_name, service=action.goal_service)
+}@
+
+@{
+TEMPLATE(
+    'srv__type_support.h.em',
+    package_name=package_name, service=action.result_service)
+}@
+
+@{
+TEMPLATE(
+    'msg__type_support.h.em',
+    package_name=package_name, message=action.feedback_message)
+}@
+
+@[end for]@
 #ifdef __cplusplus
 }
 #endif

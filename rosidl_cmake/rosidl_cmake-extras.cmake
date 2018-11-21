@@ -29,10 +29,7 @@ endmacro()
 
 find_package(rosidl_adapter)  # not required, being used when available
 
-include("${rosidl_cmake_DIR}/rosidl_convert_actions_to_msg_and_srv.cmake")
-include("${rosidl_cmake_DIR}/rosidl_generate_action_interfaces.cmake")
 include("${rosidl_cmake_DIR}/rosidl_generate_interfaces.cmake")
-include("${rosidl_cmake_DIR}/rosidl_identify_action_idls.cmake")
 include("${rosidl_cmake_DIR}/rosidl_target_interfaces.cmake")
 include("${rosidl_cmake_DIR}/rosidl_write_generator_arguments.cmake")
 include("${rosidl_cmake_DIR}/string_camel_case_to_lower_case_underscore.cmake")

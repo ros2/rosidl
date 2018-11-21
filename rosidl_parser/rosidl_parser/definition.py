@@ -44,6 +44,11 @@ BASIC_TYPES = [
 SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
 SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
 
+ACTION_GOAL_SERVICE_SUFFIX = '_Goal'
+ACTION_RESULT_SERVICE_SUFFIX = '_Result'
+ACTION_FEEDBACK_MESSAGE_SUFFIX = '_Feedback'
+ACTION_WRAPPER_TYPE_SUFFIX = '_Action'
+
 
 class AbstractType:
     """The base class for all types."""
@@ -347,17 +352,18 @@ class Structure(Annotatable):
 
     __slots__ = ('type', 'members')
 
-    def __init__(self, type_):
+    def __init__(self, type_, members=None):
         """
         Constructor.
 
         :param NamespacedType type_: the namespaced type identifying the
           structure
+        :param list members: the members of the structure
         """
         super().__init__()
         assert isinstance(type_, NamespacedType)
         self.type = type_
-        self.members = []
+        self.members = members or []
 
 
 class Include:
@@ -442,6 +448,106 @@ class Service:
         assert response.structure.type.name == type_.name + \
             SERVICE_RESPONSE_MESSAGE_SUFFIX
         self.response_message = response
+
+
+class Action:
+    """A namespaced type of an action including the derived types."""
+
+    __slots__ = (
+        'structure_type', 'goal_request', 'result_response', 'feedback',
+        'goal_service', 'result_service', 'feedback_message')
+
+    def __init__(self, type_, goal_request, result_response, feedback):
+        """
+        Constructor.
+
+        From the provide type the actually used services and message are
+        derived.
+
+        :param NamespacedType type_: the namespaced type identifying the action
+        :param Message goal_request: the goal request message
+        :param Message result_response: the result response message
+        :param Message feedback: the feedback message
+        """
+        super().__init__()
+
+        assert isinstance(type_, NamespacedType)
+        self.structure_type = type_
+
+        assert isinstance(goal_request, Message)
+        assert goal_request.structure.type.namespaces == type_.namespaces
+        assert goal_request.structure.type.name == type_.name + \
+            ACTION_GOAL_SERVICE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX
+        self.goal_request = goal_request
+
+        assert isinstance(result_response, Message)
+        assert result_response.structure.type.namespaces == type_.namespaces
+        assert result_response.structure.type.name == type_.name + \
+            ACTION_RESULT_SERVICE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX
+        self.result_response = result_response
+
+        assert isinstance(feedback, Message)
+        assert feedback.structure.type.namespaces == type_.namespaces
+        assert feedback.structure.type.name == type_.name + \
+            ACTION_FEEDBACK_MESSAGE_SUFFIX
+        self.feedback = feedback
+
+        # derived types
+        goal_service_name = type_.name + ACTION_WRAPPER_TYPE_SUFFIX + \
+            ACTION_GOAL_SERVICE_SUFFIX
+        self.goal_service = Service(
+            NamespacedType(
+                namespaces=type_.namespaces, name=goal_service_name),
+            request=Message(Structure(
+                NamespacedType(
+                    namespaces=type_.namespaces,
+                    name=goal_service_name + SERVICE_REQUEST_MESSAGE_SUFFIX),
+                members=[
+                    Member(Array(BasicType('uint8'), 16), 'uuid'),
+                    Member(goal_request.structure.type, 'request')]
+            )),
+            response=Message(Structure(
+                NamespacedType(
+                    namespaces=type_.namespaces,
+                    name=goal_service_name + SERVICE_RESPONSE_MESSAGE_SUFFIX),
+                members=[
+                    Member(BasicType('boolean'), 'accepted'),
+                    Member(
+                        NamespacedType(['builtin_interfaces', 'msg'], 'Time'),
+                        'stamp')]
+            )),
+        )
+
+        result_service_name = type_.name + ACTION_WRAPPER_TYPE_SUFFIX + \
+            ACTION_RESULT_SERVICE_SUFFIX
+        self.result_service = Service(
+            NamespacedType(
+                namespaces=type_.namespaces, name=result_service_name),
+            request=Message(Structure(
+                NamespacedType(
+                    namespaces=type_.namespaces,
+                    name=result_service_name + SERVICE_REQUEST_MESSAGE_SUFFIX),
+                members=[Member(Array(BasicType('uint8'), 16), 'uuid')]
+            )),
+            response=Message(Structure(
+                NamespacedType(
+                    namespaces=type_.namespaces,
+                    name=result_service_name + SERVICE_RESPONSE_MESSAGE_SUFFIX),
+                members=[
+                    Member(BasicType('int8'), 'status'),
+                    Member(result_response.structure.type, 'response')]
+            )),
+        )
+
+        self.feedback_message = Message(Structure(
+            NamespacedType(
+                namespaces=type_.namespaces,
+                name=type_.name + ACTION_WRAPPER_TYPE_SUFFIX +
+                ACTION_FEEDBACK_MESSAGE_SUFFIX),
+            members=[
+                Member(Array(BasicType('uint8'), 16), 'uuid'),
+                Member(feedback.structure.type, 'feedback')]
+        ))
 
 
 class IdlLocator:

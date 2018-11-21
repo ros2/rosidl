@@ -17,14 +17,17 @@ def convert_to_idl(package_dir, package_name, interface_file, output_dir):
     if interface_file.suffix == '.msg':
         from rosidl_adapter.msg import convert_msg_to_idl
         return convert_msg_to_idl(
-            package_dir, package_name, interface_file,
-            output_dir / package_name / 'msg')
+            package_dir, package_name, interface_file, output_dir / 'msg')
 
     if interface_file.suffix == '.srv':
         from rosidl_adapter.srv import convert_srv_to_idl
         return convert_srv_to_idl(
-            package_dir, package_name, interface_file,
-            output_dir / package_name / 'srv')
+            package_dir, package_name, interface_file, output_dir / 'srv')
+
+    if interface_file.suffix == '.action':
+        from rosidl_adapter.action import convert_action_to_idl
+        return convert_action_to_idl(
+            package_dir, package_name, interface_file, output_dir / 'action')
 
     assert False, "Unsupported interface type '{interface_file.suffix}'" \
         .format_map(locals())

@@ -21,6 +21,10 @@ from lark.reconstruct import Reconstructor
 from lark.tree import Tree
 
 from rosidl_parser.definition import AbstractType
+from rosidl_parser.definition import Action
+from rosidl_parser.definition import ACTION_FEEDBACK_MESSAGE_SUFFIX
+from rosidl_parser.definition import ACTION_GOAL_SERVICE_SUFFIX
+from rosidl_parser.definition import ACTION_RESULT_SERVICE_SUFFIX
 from rosidl_parser.definition import Annotation
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
@@ -162,10 +166,58 @@ def extract_content_from_ast(tree):
             request, response)
         content.elements.append(srv)
 
+    elif len(struct_defs) == 3:
+        goal_request = Message(Structure(NamespacedType(
+            namespaces=get_module_identifier_values(tree, struct_defs[0]),
+            name=get_first_identifier_value(struct_defs[0]))))
+        assert goal_request.structure.type.name.endswith(
+            ACTION_GOAL_SERVICE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX)
+        add_message_members(goal_request, struct_defs[0])
+        resolve_typedefed_names(goal_request.structure, typedefs)
+        # TODO move "global" constants/enums within a "matching" namespace into
+        # the goal request message
+
+        result_response = Message(Structure(NamespacedType(
+            namespaces=get_module_identifier_values(tree, struct_defs[1]),
+            name=get_first_identifier_value(struct_defs[1]))))
+        assert result_response.structure.type.name.endswith(
+            ACTION_RESULT_SERVICE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX)
+        add_message_members(result_response, struct_defs[1])
+        resolve_typedefed_names(result_response.structure, typedefs)
+        # TODO move "global" constants/enums within a "matching" namespace into
+        # the result response message
+
+        assert goal_request.structure.type.namespaces == \
+            result_response.structure.type.namespaces
+        goal_request_basename = goal_request.structure.type.name[
+            :-len(ACTION_GOAL_SERVICE_SUFFIX +
+                  SERVICE_REQUEST_MESSAGE_SUFFIX)]
+        result_response_basename = result_response.structure.type.name[
+            :-len(ACTION_RESULT_SERVICE_SUFFIX +
+                  SERVICE_RESPONSE_MESSAGE_SUFFIX)]
+        assert goal_request_basename == result_response_basename
+
+        feedback_message = Message(Structure(NamespacedType(
+            namespaces=get_module_identifier_values(tree, struct_defs[2]),
+            name=get_first_identifier_value(struct_defs[2]))))
+        assert feedback_message.structure.type.name.endswith(
+            ACTION_FEEDBACK_MESSAGE_SUFFIX)
+        add_message_members(feedback_message, struct_defs[2])
+        resolve_typedefed_names(feedback_message.structure, typedefs)
+        # TODO move "global" constants/enums within a "matching" namespace into
+        # the feedback message
+
+        action = Action(
+            NamespacedType(
+                namespaces=goal_request.structure.type.namespaces,
+                name=goal_request_basename),
+            goal_request, result_response, feedback_message)
+        content.elements.append(action)
+
     else:
         assert False, \
-            'Currently only .idl files with 1 (a message) or 2 (a service) ' \
-            'structures are supported'
+            'Currently only .idl files with 1 (a message), 2 (a service) ' \
+            'and 3 (an action) structures are supported'
 
     return content
 

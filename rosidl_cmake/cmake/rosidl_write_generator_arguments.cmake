@@ -20,11 +20,13 @@
 #
 function(rosidl_write_generator_arguments output_file)
   set(REQUIRED_ONE_VALUE_KEYWORDS
-    "PACKAGE_NAME"
+    "PACKAGE_NAME")
+  set(OPTIONAL_ONE_VALUE_KEYWORDS
     "OUTPUT_DIR"
     "TEMPLATE_DIR")
 
-  set(REQUIRED_MULTI_VALUE_KEYWORDS
+  set(REQUIRED_MULTI_VALUE_KEYWORDS  # only require one of them
+    "NON_IDL_TUPLES"
     "ROS_INTERFACE_FILES")
   set(OPTIONAL_MULTI_VALUE_KEYWORDS
     "ROS_INTERFACE_DEPENDENCIES"  # since the dependencies can be empty
@@ -34,20 +36,31 @@ function(rosidl_write_generator_arguments output_file)
   cmake_parse_arguments(
     ARG
     ""
-    "${REQUIRED_ONE_VALUE_KEYWORDS}"
+    "${REQUIRED_ONE_VALUE_KEYWORDS};${OPTIONAL_ONE_VALUE_KEYWORDS}"
     "${REQUIRED_MULTI_VALUE_KEYWORDS};${OPTIONAL_MULTI_VALUE_KEYWORDS}"
     ${ARGN})
   if(ARG_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "rosidl_write_generator_arguments() called with unused "
       "arguments: ${ARG_UNPARSED_ARGUMENTS}")
   endif()
-  foreach(required_argument ${REQUIRED_ONE_VALUE_KEYWORDS};${REQUIRED_MULTI_VALUE_KEYWORDS})
+  foreach(required_argument ${REQUIRED_ONE_VALUE_KEYWORDS})
     if(NOT ARG_${required_argument})
       message(FATAL_ERROR
         "rosidl_write_generator_arguments() must be invoked with the "
         "${required_argument} argument")
     endif()
   endforeach()
+  set(has_a_required_multi_value_argument FALSE)
+  foreach(required_argument ${REQUIRED_MULTI_VALUE_KEYWORDS})
+    if(ARG_${required_argument})
+      set(has_a_required_multi_value_argument TRUE)
+    endif()
+  endforeach()
+  if(NOT has_a_required_multi_value_argument)
+    message(FATAL_ERROR
+      "rosidl_write_generator_arguments() must be invoked with at least one of "
+      "the ${REQUIRED_MULTI_VALUE_KEYWORDS} arguments")
+  endif()
 
   # create folder
   get_filename_component(output_path "${output_file}" PATH)
@@ -60,7 +73,7 @@ function(rosidl_write_generator_arguments output_file)
   set(first_element TRUE)
 
   # write string values
-  foreach(one_value_argument ${REQUIRED_ONE_VALUE_KEYWORDS})
+  foreach(one_value_argument ${REQUIRED_ONE_VALUE_KEYWORDS} ${OPTIONAL_ONE_VALUE_KEYWORDS})
     if(ARG_${one_value_argument})
       # write conditional comma and mandatory newline
       if(NOT first_element)

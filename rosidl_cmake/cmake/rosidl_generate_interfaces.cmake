@@ -188,33 +188,14 @@ macro(rosidl_generate_interfaces target)
     endif()
   endforeach()
 
-  # Separate action files from other interface files
-  rosidl_identify_action_idls(${_non_idl_files}
-    OUTPUT_ACTION_VAR _action_files
-    OUTPUT_IDL_VAR _non_idl_files)
-
-  # Convert action files into messages and services
-  if(_action_files)
-    set(_convert_actions_target "${target}+_convert_actions_to_msg_and_srv")
-    rosidl_convert_actions_to_msg_and_srv(${_convert_actions_target} ${_action_files}
-      OUTPUT_IDL_VAR _action_msg_and_srv_files)
-  endif()
-
   add_custom_target(
     ${target} ALL
     DEPENDS
     ${_non_idl_files}
     ${_dep_files}
-    ${_convert_actions_target}
     SOURCES
     ${_non_idl_files}
   )
-
-  # Tell CMake in this directory scope that these files are generated
-  foreach(_idl_file ${_action_msg_and_srv_files})
-    list(APPEND _non_idl_files "${_idl_file}")
-    set_property(SOURCE ${_idl_file} PROPERTY GENERATED 1)
-  endforeach()
 
   if(NOT _ARG_SKIP_INSTALL)
     if(NOT _ARG_SKIP_GROUP_MEMBERSHIP_CHECK)
@@ -278,33 +259,6 @@ macro(rosidl_generate_interfaces target)
   unset(rosidl_generate_interfaces_IDL_TUPLES)
   set(rosidl_generate_interfaces_IDL_FILES ${_non_idl_files})
   ament_execute_extensions("rosidl_generate_interfaces")
-
-  if(_action_files)
-    # Invoke generation for `.action` files
-    set(_skip_install "")
-    if(_ARG_SKIP_INSTALL)
-      set(_skip_install "SKIP_INSTALL")
-    endif()
-    set(_add_linter_tests "")
-    if(_ARG_ADD_LINTER_TESTS)
-      set(_add_linter_tests "ADD_LINTER_TESTS")
-    endif()
-    set(_library_name "")
-    if(_ARG_LIBRARY_NAME)
-      set(_library_name "LIBRARY" "${_ARG_LIBRARY_NAME}")
-    endif()
-    set(_pkg_depends "")
-    if(_recursive_dependencies)
-      set(_pkg_depends "DEPENDENCY_PACKAGE_NAMES" "${_recursive_dependencies}")
-    endif()
-    rosidl_generate_action_interfaces(${target}
-      ${_skip_install}
-      ${_add_linter_tests}
-      ${_library_name}
-      ${_action_files}
-      ${_pkg_depends}
-    )
-  endif()
 
   if(NOT _ARG_SKIP_INSTALL)
     foreach(_idl_tuple ${_idl_tuples})

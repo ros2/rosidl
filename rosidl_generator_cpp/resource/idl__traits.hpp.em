@@ -56,4 +56,55 @@ TEMPLATE(
 }@
 
 @[end for]@
+@
+@#######################################################################
+@# Handle action
+@#######################################################################
+@{
+from rosidl_parser.definition import Action
+}@
+@[for action in content.get_elements_of_type(Action)]@
+@{
+TEMPLATE(
+    'msg__traits.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    message=action.goal_request)
+}@
+
+@{
+TEMPLATE(
+    'msg__traits.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    message=action.result_response)
+}@
+
+@{
+TEMPLATE(
+    'msg__traits.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    message=action.feedback)
+}@
+
+@{
+TEMPLATE(
+    'srv__traits.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    service=action.goal_service)
+}@
+
+@{
+TEMPLATE(
+    'srv__traits.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    service=action.result_service)
+}@
+
+@{
+TEMPLATE(
+    'msg__traits.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    message=action.feedback_message)
+}@
+
+@[end for]@
 #endif  // @(header_guard_variable)

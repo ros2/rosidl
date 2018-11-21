@@ -48,6 +48,7 @@ endforeach()
 set(target_dependencies
   "${rosidl_generator_c_BIN}"
   ${rosidl_generator_c_GENERATOR_FILES}
+  "${rosidl_generator_c_TEMPLATE_DIR}/action__type_support.h.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/idl.h.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/idl__functions.c.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/idl__functions.h.em"

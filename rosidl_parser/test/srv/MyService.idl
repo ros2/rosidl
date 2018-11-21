@@ -1,0 +1,11 @@
+module rosidl_parser {
+  module srv {
+    struct MyService_Request {
+      short short_value;
+      string string_value;
+    };
+    struct MyService_Response {
+      boolean boolean_value;
+    };
+  };
+};

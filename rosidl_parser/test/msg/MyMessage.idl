@@ -1,0 +1,49 @@
+#include "OtherMessage.idl"
+#include <pkgname/msg/OtherMessage.idl>
+
+module rosidl_parser {
+  module msg {
+    module MyMessage_constants {
+      const short SHORT_CONSTANT = -23;
+      const unsigned long UNSIGNED_LONG_CONSTANT = 42;
+      const float FLOAT_CONSTANT = 1.25;
+      const boolean BOOLEAN_CONSTANT = TRUE;
+      const string STRING_CONSTANT = "string_value";
+    };
+
+    struct MyMessage {
+      short short_value, short_value2;
+      @default ( value=123 )
+      unsigned short unsigned_short_value;
+      @key
+      @range ( min=-10, max=10 )
+      long long_value;
+      unsigned long unsigned_long_value;
+      long long long_long_value;
+      unsigned long long unsigned_long_long_value;
+      float float_value;
+      double double_value;
+      long double long_double_value;
+      char char_value;
+      wchar wchar_value;
+      boolean boolean_value;
+      octet octet_value;
+      int8 int8_value;
+      uint8 uint8_value;
+      int16 int16_value;
+      uint16 uint16_value;
+      int32 int32_value;
+      uint32 uint32_value;
+      int64 int64_value;
+      uint64 uint64_value;
+      string string_value;
+      string<5> bounded_string_value;
+      wstring wstring_value;
+      wstring<23> bounded_wstring_value;
+      wstring<UNSIGNED_LONG_CONSTANT> constant_bounded_wstring_value;
+      sequence<short> unbounded_short_values;
+      sequence<short, 5> bounded_short_values;
+      short array_short_values[23];
+    };
+  };
+};

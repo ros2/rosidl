@@ -19,10 +19,29 @@ from rosidl_cmake import expand_template
 from rosidl_cmake import extract_message_types
 from rosidl_cmake import get_newest_modification_time
 from rosidl_cmake import read_generator_arguments
-from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 from rosidl_parser import parse_message_file
 from rosidl_parser import parse_service_file
 from rosidl_parser import validate_field_types
+
+
+# HACK temporary map until the generator uses the IDL-base pipeline
+MSG_TYPE_TO_CPP = {
+    'bool': 'bool',
+    'byte': 'uint8_t',
+    'char': 'char',
+    'float32': 'float',
+    'float64': 'double',
+    'uint8': 'uint8_t',
+    'int8': 'int8_t',
+    'uint16': 'uint16_t',
+    'int16': 'int16_t',
+    'uint32': 'uint32_t',
+    'int32': 'int32_t',
+    'uint64': 'uint64_t',
+    'int64': 'int64_t',
+    'string': 'std::basic_string<char, std::char_traits<char>, ' +
+              'typename ContainerAllocator::template rebind<char>::other>',
+}
 
 
 def generate_cpp(generator_arguments_file):

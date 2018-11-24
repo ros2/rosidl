@@ -20,7 +20,6 @@ from rosidl_parser.definition import Action
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
-from rosidl_parser.definition import Constant
 from rosidl_parser.definition import IdlLocator
 from rosidl_parser.definition import Include
 from rosidl_parser.definition import Message
@@ -56,50 +55,38 @@ def test_message_parser_includes(message_idl_file):
     assert includes[1].locator == 'pkgname/msg/OtherMessage.idl'
 
 
-def test_message_parser_constants(message_idl_file):
-    constants = message_idl_file.content.get_elements_of_type(Constant)
+def test_message_parser_structure(message_idl_file):
+    messages = message_idl_file.content.get_elements_of_type(Message)
+    assert len(messages) == 1
+
+    constants = messages[0].constants
     assert len(constants) == 5
 
-    constant = [c for c in constants if c.name == 'SHORT_CONSTANT']
-    assert len(constant) == 1
-    constant = constant[0]
+    constant = constants['SHORT_CONSTANT']
     assert isinstance(constant.type, BasicType)
     assert constant.type.type == 'int16'
     assert constant.value == -23
 
-    constant = [c for c in constants if c.name == 'UNSIGNED_LONG_CONSTANT']
-    assert len(constant) == 1
-    constant = constant[0]
+    constant = constants['UNSIGNED_LONG_CONSTANT']
     assert isinstance(constant.type, BasicType)
     assert constant.type.type == 'uint32'
     assert constant.value == 42
 
-    constant = [c for c in constants if c.name == 'FLOAT_CONSTANT']
-    assert len(constant) == 1
-    constant = constant[0]
+    constant = constants['FLOAT_CONSTANT']
     assert isinstance(constant.type, BasicType)
     assert constant.type.type == 'float'
     assert constant.value == 1.25
 
-    constant = [c for c in constants if c.name == 'BOOLEAN_CONSTANT']
-    assert len(constant) == 1
-    constant = constant[0]
+    constant = constants['BOOLEAN_CONSTANT']
     assert isinstance(constant.type, BasicType)
     assert constant.type.type == 'boolean'
     assert constant.value is True
 
-    constant = [c for c in constants if c.name == 'STRING_CONSTANT']
-    assert len(constant) == 1
-    constant = constant[0]
+    constant = constants['STRING_CONSTANT']
     assert isinstance(constant.type, String)
     assert constant.value == 'string_value'
 
-
-def test_message_parser_structure(message_idl_file):
-    messages = message_idl_file.content.get_elements_of_type(Message)
-    assert len(messages) == 1
     structure = messages[0].structure
-
     assert structure.type.namespaces == ['rosidl_parser', 'msg']
     assert structure.type.name == 'MyMessage'
     assert len(structure.members) == 30
@@ -185,6 +172,22 @@ def test_service_parser(service_idl_file):
     assert len(srv.request_message.structure.members) == 2
     assert len(srv.response_message.structure.members) == 1
 
+    constants = srv.request_message.constants
+    assert len(constants) == 1
+
+    constant = constants['SHORT_CONSTANT']
+    assert isinstance(constant.type, BasicType)
+    assert constant.type.type == 'int16'
+    assert constant.value == -23
+
+    constants = srv.response_message.constants
+    assert len(constants) == 1
+
+    constant = constants['UNSIGNED_LONG_CONSTANT']
+    assert isinstance(constant.type, BasicType)
+    assert constant.type.type == 'uint32'
+    assert constant.value == 42
+
 
 @pytest.fixture(scope='module')
 def action_idl_file():
@@ -201,6 +204,13 @@ def test_action_parser(action_idl_file):
     assert action.structure_type.name == 'MyAction'
 
     # check messages defined in the idl file
+    constants = action.goal_request.constants
+    assert len(constants) == 1
+    constant = constants['SHORT_CONSTANT']
+    assert isinstance(constant.type, BasicType)
+    assert constant.type.type == 'int16'
+    assert constant.value == -23
+
     structure = action.goal_request.structure
     assert structure.type.namespaces == ['rosidl_parser', 'action']
     assert structure.type.name == 'MyAction_Goal_Request'
@@ -209,6 +219,13 @@ def test_action_parser(action_idl_file):
     assert structure.members[0].type.type == 'int32'
     assert structure.members[0].name == 'input_value'
 
+    constants = action.result_response.constants
+    assert len(constants) == 1
+    constant = constants['UNSIGNED_LONG_CONSTANT']
+    assert isinstance(constant.type, BasicType)
+    assert constant.type.type == 'uint32'
+    assert constant.value == 42
+
     structure = action.result_response.structure
     assert structure.type.namespaces == ['rosidl_parser', 'action']
     assert structure.type.name == 'MyAction_Result_Response'
@@ -216,6 +233,13 @@ def test_action_parser(action_idl_file):
     assert isinstance(structure.members[0].type, BasicType)
     assert structure.members[0].type.type == 'uint32'
     assert structure.members[0].name == 'output_value'
+
+    constants = action.feedback.constants
+    assert len(constants) == 1
+    constant = constants['FLOAT_CONSTANT']
+    assert isinstance(constant.type, BasicType)
+    assert constant.type.type == 'float'
+    assert constant.value == 1.25
 
     structure = action.feedback.structure
     assert structure.type.namespaces == ['rosidl_parser', 'action']

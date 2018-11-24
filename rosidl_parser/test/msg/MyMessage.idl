@@ -3,7 +3,7 @@
 
 module rosidl_parser {
   module msg {
-    module MyMessage_constants {
+    module MyMessage_Constants {
       const short SHORT_CONSTANT = -23;
       const unsigned long UNSIGNED_LONG_CONSTANT = 42;
       const float FLOAT_CONSTANT = 1.25;

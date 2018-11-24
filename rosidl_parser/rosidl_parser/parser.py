@@ -30,6 +30,7 @@ from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
 from rosidl_parser.definition import Constant
+from rosidl_parser.definition import CONSTANT_MODULE_SUFFIX
 from rosidl_parser.definition import IdlContent
 from rosidl_parser.definition import IdlFile
 from rosidl_parser.definition import Include
@@ -91,11 +92,15 @@ def extract_content_from_ast(tree):
         include_token = next(child.scan_values(_find_tokens(None)))
         content.elements.append(Include(include_token.value))
 
+    constants = {}
     const_dcls = tree.find_data('const_dcl')
     for const_dcl in const_dcls:
         const_type = next(const_dcl.find_data('const_type'))
         const_expr = next(const_dcl.find_data('const_expr'))
-        content.elements.append(Constant(
+        module_identifiers = get_module_identifier_values(tree, const_dcl)
+        module_comments = constants.setdefault(
+            module_identifiers[-1], [])
+        module_comments.append(Constant(
             get_first_identifier_value(const_dcl),
             get_abstract_type_from_const_expr(const_type),
             get_const_expr_value(const_expr)))
@@ -127,9 +132,10 @@ def extract_content_from_ast(tree):
             name=get_first_identifier_value(struct_defs[0]))))
         add_message_members(msg, struct_defs[0])
         resolve_typedefed_names(msg.structure, typedefs)
-        # TODO move "global" constants/enums within a "matching" namespace into the message
-        msg.constants.update({c.name: c for c in content.elements if isinstance(c, Constant)})
-        # msg.constants.update(constants)
+        constant_module_name = msg.structure.type.name + CONSTANT_MODULE_SUFFIX
+        if constant_module_name in constants:
+            msg.constants.update(
+                {c.name: c for c in constants[constant_module_name]})
         content.elements.append(msg)
 
     elif len(struct_defs) == 2:
@@ -140,7 +146,11 @@ def extract_content_from_ast(tree):
             SERVICE_REQUEST_MESSAGE_SUFFIX)
         add_message_members(request, struct_defs[0])
         resolve_typedefed_names(request.structure, typedefs)
-        # TODO move "global" constants/enums within a "matching" namespace into the request message
+        constant_module_name = \
+            request.structure.type.name + CONSTANT_MODULE_SUFFIX
+        if constant_module_name in constants:
+            request.constants.update(
+                {c.name: c for c in constants[constant_module_name]})
 
         response = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[1]),
@@ -149,7 +159,11 @@ def extract_content_from_ast(tree):
             SERVICE_RESPONSE_MESSAGE_SUFFIX)
         add_message_members(response, struct_defs[1])
         resolve_typedefed_names(response.structure, typedefs)
-        # TODO move "global" constants/enums within a "matching" namespace into the response msg
+        constant_module_name = \
+            response.structure.type.name + CONSTANT_MODULE_SUFFIX
+        if constant_module_name in constants:
+            response.constants.update(
+                {c.name: c for c in constants[constant_module_name]})
 
         assert request.structure.type.namespaces == \
             response.structure.type.namespaces
@@ -174,8 +188,11 @@ def extract_content_from_ast(tree):
             ACTION_GOAL_SERVICE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX)
         add_message_members(goal_request, struct_defs[0])
         resolve_typedefed_names(goal_request.structure, typedefs)
-        # TODO move "global" constants/enums within a "matching" namespace into
-        # the goal request message
+        constant_module_name = \
+            goal_request.structure.type.name + CONSTANT_MODULE_SUFFIX
+        if constant_module_name in constants:
+            goal_request.constants.update(
+                {c.name: c for c in constants[constant_module_name]})
 
         result_response = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[1]),
@@ -184,8 +201,11 @@ def extract_content_from_ast(tree):
             ACTION_RESULT_SERVICE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX)
         add_message_members(result_response, struct_defs[1])
         resolve_typedefed_names(result_response.structure, typedefs)
-        # TODO move "global" constants/enums within a "matching" namespace into
-        # the result response message
+        constant_module_name = \
+            result_response.structure.type.name + CONSTANT_MODULE_SUFFIX
+        if constant_module_name in constants:
+            result_response.constants.update(
+                {c.name: c for c in constants[constant_module_name]})
 
         assert goal_request.structure.type.namespaces == \
             result_response.structure.type.namespaces
@@ -204,8 +224,11 @@ def extract_content_from_ast(tree):
             ACTION_FEEDBACK_MESSAGE_SUFFIX)
         add_message_members(feedback_message, struct_defs[2])
         resolve_typedefed_names(feedback_message.structure, typedefs)
-        # TODO move "global" constants/enums within a "matching" namespace into
-        # the feedback message
+        constant_module_name = \
+            feedback_message.structure.type.name + CONSTANT_MODULE_SUFFIX
+        if constant_module_name in constants:
+            feedback_message.constants.update(
+                {c.name: c for c in constants[constant_module_name]})
 
         action = Action(
             NamespacedType(

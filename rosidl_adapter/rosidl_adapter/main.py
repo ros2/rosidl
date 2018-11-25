@@ -14,7 +14,6 @@
 
 import argparse
 import json
-import os
 import pathlib
 import sys
 
@@ -58,5 +57,4 @@ def main(argv=sys.argv[1:]):
     output_file.parent.mkdir(exist_ok=True)
     with output_file.open('w') as h:
         for basepath, relative_path in idl_tuples:
-            line = '{basepath}:{relative_path}\n'.format_map(locals())
-            h.write(line.replace(os.sep, '/'))
+            h.write('{basepath}:{relative_path}\n'.format_map(locals()))

@@ -25,7 +25,6 @@ from collections import OrderedDict
 from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 includes = OrderedDict()
 for member in message.structure.members:
-    print('// member:', member.name)
     type_ = member.type
     if isinstance(type_, NestedType):
         type_ = type_.basetype

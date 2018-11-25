@@ -17,6 +17,8 @@ include_parts = [package_name] + list(interface_path.parents[0].parts) + \
 include_base = '/'.join(include_parts)
 header_guard_variable = '__'.join([x.upper() for x in include_parts]) + \
     '__TRAITS_HPP_'
+
+include_directives = set()
 }@
 
 #ifndef @(header_guard_variable)
@@ -37,7 +39,8 @@ from rosidl_parser.definition import Message
 @{
 TEMPLATE(
     'msg__traits.hpp.em',
-    package_name=package_name, interface_path=interface_path, message=message)
+    package_name=package_name, interface_path=interface_path, message=message,
+    include_directives=include_directives)
 }@
 
 @[end for]@
@@ -49,6 +52,20 @@ TEMPLATE(
 from rosidl_parser.definition import Service
 }@
 @[for service in content.get_elements_of_type(Service)]@
+@{
+TEMPLATE(
+    'msg__traits.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    message=service.request_message, include_directives=include_directives)
+}@
+
+@{
+TEMPLATE(
+    'msg__traits.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    message=service.response_message, include_directives=include_directives)
+}@
+
 @{
 TEMPLATE(
     'srv__traits.hpp.em',
@@ -68,21 +85,21 @@ from rosidl_parser.definition import Action
 TEMPLATE(
     'msg__traits.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.goal_request)
+    message=action.goal_request, include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'msg__traits.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.result_response)
+    message=action.result_response, include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'msg__traits.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.feedback)
+    message=action.feedback, include_directives=include_directives)
 }@
 
 @{
@@ -103,7 +120,7 @@ TEMPLATE(
 TEMPLATE(
     'msg__traits.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.feedback_message)
+    message=action.feedback_message, include_directives=include_directives)
 }@
 
 @[end for]@

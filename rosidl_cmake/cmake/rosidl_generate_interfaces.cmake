@@ -70,7 +70,6 @@ macro(rosidl_generate_interfaces target)
   # of the base path and the relative path
   set(_interface_tuples "")
   foreach(_file ${_ARG_UNPARSED_ARGUMENTS})
-    file(TO_CMAKE_PATH "${_file}" _file)
     if(IS_ABSOLUTE "${_file}")
       string(FIND "${_file}" ":" _index)
       if(_index EQUAL -1)
@@ -91,8 +90,7 @@ macro(rosidl_generate_interfaces target)
             "'${_file}' doesn't exist relative to the "
             "CMAKE_CURRENT_SOURCE_DIR '${CMAKE_CURRENT_SOURCE_DIR}'")
       endif()
-      file(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}" _cmake_current_source_dir)
-      list(APPEND _interface_tuples "${_cmake_current_source_dir}:${_file}")
+      list(APPEND _interface_tuples "${CMAKE_CURRENT_SOURCE_DIR}:${_file}")
     endif()
   endforeach()
 

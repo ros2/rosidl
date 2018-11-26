@@ -18,6 +18,7 @@ import sys
 from lark import Lark
 from lark.lexer import Token
 from lark.reconstruct import Reconstructor
+from lark.tree import pydot__tree_to_png
 from lark.tree import Tree
 
 from rosidl_parser.definition import AbstractType
@@ -70,13 +71,11 @@ def parse_idl_string(idl_string, png_file=None):
     tree = parser.parse(idl_string)
 
     if png_file:
+        os.makedirs(os.path.dirname(png_file), exist_ok=True)
         try:
-            from lark.tree import pydot__tree_to_png
+            pydot__tree_to_png(tree, png_file)
         except ImportError:
             pass
-        else:
-            os.makedirs(os.path.dirname(png_file), exist_ok=True)
-            pydot__tree_to_png(tree, png_file)
 
     return extract_content_from_ast(tree)
 

@@ -173,7 +173,8 @@ rosidl_generator_c__U16String__Sequence *
 rosidl_generator_c__U16String__Sequence__create(size_t size)
 {
   rosidl_generator_c__U16String__Sequence * sequence =
-    (rosidl_generator_c__U16String__Sequence *)malloc(sizeof(rosidl_generator_c__U16String__Sequence));
+    (rosidl_generator_c__U16String__Sequence *)malloc(
+    sizeof(rosidl_generator_c__U16String__Sequence));
   if (!sequence) {
     return NULL;
   }

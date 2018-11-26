@@ -77,53 +77,53 @@ ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int64, int64_t)
 
 // emulate legacy API
 bool rosidl_generator_c__bool__Sequence__init(
-  rosidl_generator_c__boolean__Sequence * sequence, size_t size
-) {
+  rosidl_generator_c__boolean__Sequence * sequence, size_t size)
+{
   return rosidl_generator_c__boolean__Sequence__init(
     sequence, size);
 }
 void rosidl_generator_c__bool__Sequence__fini(
-  rosidl_generator_c__boolean__Sequence * sequence
-) {
+  rosidl_generator_c__boolean__Sequence * sequence)
+{
   rosidl_generator_c__boolean__Sequence__fini(
     sequence);
 }
 
 bool rosidl_generator_c__byte__Sequence__init(
-  rosidl_generator_c__octet__Sequence * sequence, size_t size
-) {
+  rosidl_generator_c__octet__Sequence * sequence, size_t size)
+{
   return rosidl_generator_c__octet__Sequence__init(
     sequence, size);
 }
 void rosidl_generator_c__byte__Sequence__fini(
-  rosidl_generator_c__octet__Sequence * sequence
-) {
+  rosidl_generator_c__octet__Sequence * sequence)
+{
   rosidl_generator_c__octet__Sequence__fini(
     sequence);
 }
 
 bool rosidl_generator_c__float32__Sequence__init(
-  rosidl_generator_c__float__Sequence * sequence, size_t size
-) {
+  rosidl_generator_c__float__Sequence * sequence, size_t size)
+{
   return rosidl_generator_c__float__Sequence__init(
     sequence, size);
 }
 void rosidl_generator_c__float32__Sequence__fini(
-  rosidl_generator_c__float__Sequence * sequence
-) {
+  rosidl_generator_c__float__Sequence * sequence)
+{
   rosidl_generator_c__float__Sequence__fini(
     sequence);
 }
 
 bool rosidl_generator_c__float64__Sequence__init(
-  rosidl_generator_c__double__Sequence * sequence, size_t size
-) {
+  rosidl_generator_c__double__Sequence * sequence, size_t size)
+{
   return rosidl_generator_c__double__Sequence__init(
     sequence, size);
 }
 void rosidl_generator_c__float64__Sequence__fini(
-  rosidl_generator_c__double__Sequence * sequence
-) {
+  rosidl_generator_c__double__Sequence * sequence)
+{
   rosidl_generator_c__double__Sequence__fini(
     sequence);
 }

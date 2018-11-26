@@ -16,10 +16,16 @@ include_parts = [package_name] + list(interface_path.parents[0].parts) + \
     [convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 header_guard_variable = '__'.join([x.upper() for x in include_parts]) + \
     '__TYPE_SUPPORT_H_'
+
+include_directives = set()
 }@
 
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
+
+#include "rosidl_typesupport_interface/macros.h"
+
+#include "@(package_name)/msg/rosidl_generator_c__visibility_control.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -36,7 +42,8 @@ from rosidl_parser.definition import Message
 @{
 TEMPLATE(
     'msg__type_support.h.em',
-    package_name=package_name, message=message)
+    package_name=package_name, message=message,
+    include_directives=include_directives)
 }@
 
 @[end for]@
@@ -51,7 +58,8 @@ from rosidl_parser.definition import Service
 @{
 TEMPLATE(
     'srv__type_support.h.em',
-    package_name=package_name, service=service)
+    package_name=package_name, service=service,
+    include_directives=include_directives)
 }@
 
 @[end for]@
@@ -66,43 +74,50 @@ from rosidl_parser.definition import Action
 @{
 TEMPLATE(
     'action__type_support.h.em',
-    package_name=package_name, action=action)
+    package_name=package_name, action=action,
+    include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'msg__type_support.h.em',
-    package_name=package_name, message=action.goal_request)
+    package_name=package_name, message=action.goal_request,
+    include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'msg__type_support.h.em',
-    package_name=package_name, message=action.result_response)
+    package_name=package_name, message=action.result_response,
+    include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'msg__type_support.h.em',
-    package_name=package_name, message=action.feedback)
+    package_name=package_name, message=action.feedback,
+    include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'srv__type_support.h.em',
-    package_name=package_name, service=action.goal_service)
+    package_name=package_name, service=action.goal_service,
+    include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'srv__type_support.h.em',
-    package_name=package_name, service=action.result_service)
+    package_name=package_name, service=action.result_service,
+    include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'msg__type_support.h.em',
-    package_name=package_name, message=action.feedback_message)
+    package_name=package_name, message=action.feedback_message,
+    include_directives=include_directives)
 }@
 
 @[end for]@

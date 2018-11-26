@@ -90,7 +90,7 @@ def generate_files(generator_arguments_file, mapping, additional_context=None):
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
 
     for idl_tuple in args.get('idl_tuples', []):
-        idl_parts = idl_tuple.split(':', 1)
+        idl_parts = idl_tuple.rsplit(':', 1)
         assert len(idl_parts) == 2
         locator = IdlLocator(*idl_parts)
         idl_rel_path = pathlib.Path(idl_parts[1])

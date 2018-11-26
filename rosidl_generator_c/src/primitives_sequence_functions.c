@@ -85,7 +85,7 @@ bool rosidl_generator_c__bool__Sequence__init(
 void rosidl_generator_c__bool__Sequence__fini(
   rosidl_generator_c__boolean__Sequence * sequence
 ) {
-  return rosidl_generator_c__boolean__Sequence__fini(
+  rosidl_generator_c__boolean__Sequence__fini(
     sequence);
 }
 
@@ -98,7 +98,7 @@ bool rosidl_generator_c__byte__Sequence__init(
 void rosidl_generator_c__byte__Sequence__fini(
   rosidl_generator_c__octet__Sequence * sequence
 ) {
-  return rosidl_generator_c__octet__Sequence__fini(
+  rosidl_generator_c__octet__Sequence__fini(
     sequence);
 }
 
@@ -111,7 +111,7 @@ bool rosidl_generator_c__float32__Sequence__init(
 void rosidl_generator_c__float32__Sequence__fini(
   rosidl_generator_c__float__Sequence * sequence
 ) {
-  return rosidl_generator_c__float__Sequence__fini(
+  rosidl_generator_c__float__Sequence__fini(
     sequence);
 }
 
@@ -124,6 +124,6 @@ bool rosidl_generator_c__float64__Sequence__init(
 void rosidl_generator_c__float64__Sequence__fini(
   rosidl_generator_c__double__Sequence * sequence
 ) {
-  return rosidl_generator_c__double__Sequence__fini(
+  rosidl_generator_c__double__Sequence__fini(
     sequence);
 }

@@ -1,9 +1,9 @@
-// generated from rosidl_generator_c/resource/idl__functions.h.em
+// generated from rosidl_generator_c/resource/idl__functions.c.em
 // with input from @(package_name):@(interface_path)
 // generated code does not contain a copyright notice
 @
 @#######################################################################
-@# EmPy template for generating <idl>__functions.h files
+@# EmPy template for generating <idl>__functions.c files
 @#
 @# Context:
 @#  - package_name (string)

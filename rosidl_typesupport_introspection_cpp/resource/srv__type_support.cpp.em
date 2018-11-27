@@ -26,8 +26,6 @@ if header_filename.endswith('__goal'):
     header_filename = header_filename[:-6]
 elif header_filename.endswith('__result'):
     header_filename = header_filename[:-8]
-elif header_filename.endswith('__feedback'):
-    header_filename = header_filename[:-10]
 }@
 #include "@(spec.pkg_name)/@(subfolder)/@(header_filename)__struct.hpp"
 #include "rosidl_typesupport_introspection_cpp/identifier.hpp"

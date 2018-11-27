@@ -8,7 +8,7 @@
 @# Context:
 @#  - package_name (string)
 @#  - interface_path (Path relative to the directory named after the package)
-@#  - content (list of interfaces, either Messages or Services)
+@#  - content (IdlContent, list of elements, e.g. Messages or Services)
 @#######################################################################
 @
 @{

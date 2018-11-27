@@ -34,6 +34,7 @@ struct @(action.structure_type.name)
   using GoalStatusMessage = action_msgs::msg::GoalStatusArray;
   using GoalRequestService = @(action_name)@(ACTION_WRAPPER_TYPE_SUFFIX)@(ACTION_GOAL_SERVICE_SUFFIX);
   using GoalResultService = @(action_name)@(ACTION_WRAPPER_TYPE_SUFFIX)@(ACTION_RESULT_SERVICE_SUFFIX);
+  using FeedbackMessage = @(action_name)@(ACTION_WRAPPER_TYPE_SUFFIX)@(ACTION_FEEDBACK_MESSAGE_SUFFIX);
 
   using Goal = @(action_name)@(ACTION_GOAL_SERVICE_SUFFIX)@(SERVICE_REQUEST_MESSAGE_SUFFIX);
   using Result = @(action_name)@(ACTION_RESULT_SERVICE_SUFFIX)@(SERVICE_RESPONSE_MESSAGE_SUFFIX);

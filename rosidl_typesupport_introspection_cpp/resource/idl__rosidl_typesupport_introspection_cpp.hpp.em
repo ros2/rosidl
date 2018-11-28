@@ -87,6 +87,4 @@ TEMPLATE(
 }@
 @[end for]@
 
-#ifdef __cplusplus
-}
-#endif
+#endif  // @(header_guard_variable)

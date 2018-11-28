@@ -1,5 +1,19 @@
 @# Included from rosidl_typesupport_introspection_c/resource/idl__type_support.c.em
 @{
+TEMPLATE(
+    'msg__type_support.cpp.em',
+    package_name=package_name, interface_path=interface_path, message=service.request_message,
+    include_directives=include_directives)
+}@
+
+@{
+TEMPLATE(
+    'msg__type_support.cpp.em',
+    package_name=package_name, interface_path=interface_path, message=service.response_message,
+    include_directives=include_directives)
+}@
+
+@{
 from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 include_parts = [package_name] + list(interface_path.parents[0].parts) + \
     [convert_camel_case_to_lower_case_underscore(interface_path.stem)]

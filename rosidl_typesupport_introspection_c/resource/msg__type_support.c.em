@@ -35,7 +35,11 @@ function_prefix = '__'.join(include_parts) + '__rosidl_typesupport_introspection
 @[    else]@
 @{include_directives.add(header_file)}@
 @[    end if]@
+@[    if '/' not in header_file]@
+#include <@(header_file)>
+@[    else]@
 #include "@(header_file)"
+@[    end if]@
 @[end for]@
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

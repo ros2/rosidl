@@ -12,7 +12,7 @@ find_package(ament_cmake_core QUIET REQUIRED)
 # this should be an extension of "rosidl_generator_cpp"
 # which can then ensure that there is only one
 ament_register_extension(
-  "rosidl_generate_interfaces"
+  "rosidl_generate_idl_interfaces"
   "rosidl_typesupport_introspection_cpp"
   "rosidl_typesupport_introspection_cpp_generate_interfaces.cmake")
 

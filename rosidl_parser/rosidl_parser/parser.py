@@ -17,7 +17,6 @@ import sys
 
 from lark import Lark
 from lark.lexer import Token
-from lark.reconstruct import Reconstructor
 from lark.tree import pydot__tree_to_png
 from lark.tree import Tree
 
@@ -52,8 +51,7 @@ grammar_file = os.path.join(os.path.dirname(__file__), 'grammar.lark')
 with open(grammar_file, mode='r', encoding='utf-8') as h:
     grammar = h.read()
 
-parser = Lark(grammar, start='specification')
-reconstructor = Reconstructor(parser)
+_parser = None
 
 
 def parse_idl_file(locator, png_file=None):
@@ -67,8 +65,10 @@ def parse_idl_file(locator, png_file=None):
 
 
 def parse_idl_string(idl_string, png_file=None):
-    global parser
-    tree = parser.parse(idl_string)
+    global _parser
+    if _parser is None:
+        _parser = Lark(grammar, start='specification')
+    tree = _parser.parse(idl_string)
 
     if png_file:
         os.makedirs(os.path.dirname(png_file), exist_ok=True)

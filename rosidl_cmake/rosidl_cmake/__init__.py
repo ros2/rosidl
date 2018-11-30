@@ -96,7 +96,7 @@ def generate_files(generator_arguments_file, mapping, additional_context=None, k
         idl_rel_path = pathlib.Path(idl_parts[1])
         idl_stem = idl_rel_path.stem
         if not keep_case:
-            idl_stem = convert_camel_case_to_lower_case_underscore(idl_rel_path.stem)
+            idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)
         try:
             idl_file = parse_idl_file(
                 locator, png_file=os.path.join(

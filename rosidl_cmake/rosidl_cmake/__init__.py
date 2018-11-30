@@ -79,7 +79,7 @@ def get_newest_modification_time(target_dependencies):
     return newest_timestamp
 
 
-def generate_files(generator_arguments_file, mapping, additional_context=None):
+def generate_files(generator_arguments_file, mapping, additional_context=None, keep_case=False):
     args = read_generator_arguments(generator_arguments_file)
 
     template_basepath = pathlib.Path(args['template_dir'])
@@ -94,6 +94,9 @@ def generate_files(generator_arguments_file, mapping, additional_context=None):
         assert len(idl_parts) == 2
         locator = IdlLocator(*idl_parts)
         idl_rel_path = pathlib.Path(idl_parts[1])
+        idl_stem = idl_rel_path.stem
+        if not keep_case:
+            idl_stem = convert_camel_case_to_lower_case_underscore(idl_rel_path.stem)
         try:
             idl_file = parse_idl_file(
                 locator, png_file=os.path.join(
@@ -103,7 +106,7 @@ def generate_files(generator_arguments_file, mapping, additional_context=None):
                 generated_file = os.path.join(
                     args['output_dir'], str(idl_rel_path.parent),
                     generated_filename %
-                    convert_camel_case_to_lower_case_underscore(idl_rel_path.stem))
+                    idl_stem)
                 data = {
                     'package_name': args['package_name'],
                     'interface_path': idl_rel_path,

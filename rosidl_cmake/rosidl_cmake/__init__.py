@@ -105,8 +105,7 @@ def generate_files(generator_arguments_file, mapping, additional_context=None, k
             for template_file, generated_filename in mapping.items():
                 generated_file = os.path.join(
                     args['output_dir'], str(idl_rel_path.parent),
-                    generated_filename %
-                    idl_stem)
+                    generated_filename % idl_stem)
                 data = {
                     'package_name': args['package_name'],
                     'interface_path': idl_rel_path,

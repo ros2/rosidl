@@ -457,7 +457,7 @@ class Action:
 
     __slots__ = (
         'structure_type', 'goal_request', 'result_response', 'feedback',
-        'goal_service', 'result_service', 'feedback_message')
+        'goal_service', 'result_service', 'feedback_message', 'includes')
 
     def __init__(self, type_, goal_request, result_response, feedback):
         """
@@ -550,6 +550,10 @@ class Action:
                 Member(Array(BasicType('uint8'), 16), 'uuid'),
                 Member(feedback.structure.type, 'feedback')]
         ))
+
+        self.includes = [
+            Include('builtin_interfaces/msg/Time.idl')
+        ]
 
 
 class IdlLocator:

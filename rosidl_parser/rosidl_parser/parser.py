@@ -235,6 +235,7 @@ def extract_content_from_ast(tree):
                 name=goal_request_basename),
             goal_request, result_response, feedback_message)
         content.elements.append(action)
+        content.elements.extend(action.includes)
 
     else:
         assert False, \

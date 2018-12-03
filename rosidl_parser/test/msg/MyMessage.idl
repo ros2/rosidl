@@ -44,6 +44,7 @@ module rosidl_parser {
       sequence<short> unbounded_short_values;
       sequence<short, 5> bounded_short_values;
       sequence<string<3>> unbounded_values_of_bounded_strings;
+      sequence<string<3>, 4> bounded_values_of_bounded_strings;
       short array_short_values[23];
     };
   };

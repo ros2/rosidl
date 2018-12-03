@@ -420,6 +420,10 @@ def get_abstract_type(tree):
             basetype = get_abstract_type_from_type_spec(type_spec)
             positive_int_consts = list(child.find_data('positive_int_const'))
             if positive_int_consts:
+                path = _find_path(child, positive_int_consts[0])
+                if len(path) > 2 and path[-2].data == 'string_type':
+                    positive_int_consts.pop()
+            if positive_int_consts:
                 upper_bound = get_positive_int_const(positive_int_consts[-1])
                 return BoundedSequence(basetype, upper_bound)
             else:

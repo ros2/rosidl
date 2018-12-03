@@ -89,7 +89,7 @@ def test_message_parser_structure(message_idl_file):
     structure = messages[0].structure
     assert structure.type.namespaces == ['rosidl_parser', 'msg']
     assert structure.type.name == 'MyMessage'
-    assert len(structure.members) == 30
+    assert len(structure.members) == 31
 
     assert isinstance(structure.members[0].type, BasicType)
     assert structure.members[0].type.type == 'int16'
@@ -124,11 +124,17 @@ def test_message_parser_structure(message_idl_file):
     assert structure.members[28].type.basetype.type == 'int16'
     assert structure.members[28].type.upper_bound == 5
     assert structure.members[28].name == 'bounded_short_values'
-    assert isinstance(structure.members[29].type, Array)
-    assert isinstance(structure.members[29].type.basetype, BasicType)
-    assert structure.members[29].type.basetype.type == 'int16'
-    assert structure.members[29].type.size == 23
-    assert structure.members[29].name == 'array_short_values'
+
+    assert isinstance(structure.members[29].type, UnboundedSequence)
+    assert isinstance(structure.members[29].type.basetype, String)
+    assert structure.members[29].type.basetype.maximum_size == 3
+    assert structure.members[29].name == 'unbounded_values_of_bounded_strings'
+
+    assert isinstance(structure.members[30].type, Array)
+    assert isinstance(structure.members[30].type.basetype, BasicType)
+    assert structure.members[30].type.basetype.type == 'int16'
+    assert structure.members[30].type.size == 23
+    assert structure.members[30].name == 'array_short_values'
 
 
 def test_message_parser_annotations(message_idl_file):

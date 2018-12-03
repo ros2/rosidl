@@ -90,6 +90,8 @@ def get_idl_type(type_):
         identifier = MSG_TYPE_TO_IDL[type_]
     elif type_.is_primitive_type():
         identifier = MSG_TYPE_TO_IDL[type_.type]
+        if identifier == 'string' and type_.string_upper_bound is not None:
+            identifier += '<{type_.string_upper_bound}>'.format_map(locals())
     else:
         identifier = '{type_.pkg_name}::msg::{type_.type}' \
             .format_map(locals())

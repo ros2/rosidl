@@ -8,7 +8,9 @@ from rosidl_adapter.msg import string_to_idl_string_literal
 
 typedefs = OrderedDict()
 def get_idl_type_identifier(idl_type):
-    return idl_type.replace('::', '__').replace('[', '__').replace(']', '')
+    return idl_type.replace('::', '__') \
+        .replace('<', '__').replace('>', '') \
+        .replace('[', '__').replace(']', '')
 }@
 @[for field in msg.fields]@
 @{

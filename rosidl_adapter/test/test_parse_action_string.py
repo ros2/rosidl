@@ -31,11 +31,13 @@ def test_invalid_action_specification():
 def test_action_implicit_field_collision():
     # uuid collision on send goal service
     with pytest.raises(ImplicitFieldCollision):
-        parse_action_string('pkg', 'Foo', 'bool foo\nstring goal_id\n---\nint8 bar\n---\nbool foo')
+        parse_action_string(
+            'pkg', 'Foo', 'bool foo\nstring action_goal_id\n---\nint8 bar\n---\nbool foo')
 
     # status collision on get result service
     with pytest.raises(ImplicitFieldCollision):
-        parse_action_string('pkg', 'Foo', 'bool foo\n---\nint8 bar\nstring status\n---\nbool foo')
+        parse_action_string(
+            'pkg', 'Foo', 'bool foo\n---\nint8 bar\nstring action_status\n---\nbool foo')
 
 
 def test_valid_action_string():
@@ -72,7 +74,7 @@ def test_valid_action_string1():
     # Feedback message checks
     assert len(feedback_msg.fields) == 2
     assert feedback_msg.fields[0].type.type == 'UUID'
-    assert feedback_msg.fields[0].name == 'goal_id'
+    assert feedback_msg.fields[0].name == 'action_goal_id'
     assert feedback_msg.fields[1].type.type == 'bool'
     assert feedback_msg.fields[1].name == 'foo'
     assert len(feedback_msg.constants) == 0
@@ -109,7 +111,7 @@ def test_valid_action_string2():
     # Feedback message checks
     assert len(feedback_msg.fields) == 2
     assert feedback_msg.fields[0].type.type == 'UUID'
-    assert feedback_msg.fields[0].name == 'goal_id'
+    assert feedback_msg.fields[0].name == 'action_goal_id'
     assert feedback_msg.fields[1].type.type == 'bool'
     assert feedback_msg.fields[1].name == 'foo'
     assert len(feedback_msg.constants) == 0
@@ -151,7 +153,7 @@ def test_valid_action_string3():
     # Feedback message checks
     assert len(feedback_msg.fields) == 2
     assert feedback_msg.fields[0].type.type == 'UUID'
-    assert feedback_msg.fields[0].name == 'goal_id'
+    assert feedback_msg.fields[0].name == 'action_goal_id'
     assert feedback_msg.fields[1].type.type == 'bool'
     assert feedback_msg.fields[1].name == 'foo'
     assert len(feedback_msg.constants) == 1

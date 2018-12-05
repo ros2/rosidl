@@ -236,8 +236,8 @@ def extract_content_from_ast(tree):
             goal_request, result_response, feedback_message)
 
         all_includes = content.get_elements_of_type(Include)
-        unique_include_locators = set([
-            include.locator for include in all_includes])
+        unique_include_locators = {
+            include.locator for include in all_includes}
         content.elements += [
             include for include in action.implicit_includes
             if include.locator not in unique_include_locators]

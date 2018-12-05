@@ -270,3 +270,6 @@ if isinstance(type_, NestedType):
   }
   return &@(function_prefix)__@(message.structure.type.name)_message_type_support_handle;
 }
+#ifdef __cplusplus
+}
+#endif

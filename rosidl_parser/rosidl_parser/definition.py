@@ -403,9 +403,9 @@ class Constant(Annotatable):
 
 
 class Message:
-    """A structure containing constants and enums."""
+    """A structure containing constants."""
 
-    __slots__ = ('structure', 'constants', 'enums')
+    __slots__ = ('structure', 'constants')
 
     def __init__(self, structure):
         """
@@ -417,7 +417,6 @@ class Message:
         assert isinstance(structure, Structure)
         self.structure = structure
         self.constants = OrderedDict()
-        self.enums = []
 
 
 class Service:

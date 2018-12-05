@@ -98,10 +98,7 @@ def generate_files(generator_arguments_file, mapping, additional_context=None, k
         if not keep_case:
             idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)
         try:
-            idl_file = parse_idl_file(
-                locator, png_file=os.path.join(
-                    args['output_dir'], str(idl_rel_path.parent),
-                    idl_rel_path.stem) + '.png')
+            idl_file = parse_idl_file(locator)
             for template_file, generated_filename in mapping.items():
                 generated_file = os.path.join(
                     args['output_dir'], str(idl_rel_path.parent),

@@ -21,7 +21,15 @@ for member in message.structure.members:
         type_ = type_.basetype
     if isinstance(type_, NamespacedType):
         filename_prefix = convert_camel_case_to_lower_case_underscore(type_.name)
-        if filename_prefix.endswith('__feedback'):
+        if filename_prefix.endswith('__request'):
+            filename_prefix = filename_prefix[:-9]
+        elif filename_prefix.endswith('__response'):
+            filename_prefix = filename_prefix[:-10]
+        if filename_prefix.endswith('__goal'):
+            filename_prefix = filename_prefix[:-6]
+        elif filename_prefix.endswith('__result'):
+            filename_prefix = filename_prefix[:-8]
+        elif filename_prefix.endswith('__feedback'):
             filename_prefix = filename_prefix[:-10]
         member_names = includes.setdefault(
             '/'.join((type_.namespaces + [filename_prefix])) + '__traits.hpp', [])

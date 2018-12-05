@@ -457,7 +457,8 @@ class Action:
 
     __slots__ = (
         'structure_type', 'goal_request', 'result_response', 'feedback',
-        'goal_service', 'result_service', 'feedback_message', 'includes')
+        'goal_service', 'result_service', 'feedback_message',
+        'implicit_includes')
 
     def __init__(self, type_, goal_request, result_response, feedback):
         """
@@ -493,6 +494,11 @@ class Action:
         assert feedback.structure.type.name == type_.name + \
             ACTION_FEEDBACK_MESSAGE_SUFFIX
         self.feedback = feedback
+
+        # necessary include for injected timestamp member
+        self.implicit_includes = [
+            Include('builtin_interfaces/msg/Time.idl')
+        ]
 
         # derived types
         goal_service_name = type_.name + ACTION_WRAPPER_TYPE_SUFFIX + \
@@ -550,10 +556,6 @@ class Action:
                 Member(Array(BasicType('uint8'), 16), 'uuid'),
                 Member(feedback.structure.type, 'feedback')]
         ))
-
-        self.includes = [
-            Include('builtin_interfaces/msg/Time.idl')
-        ]
 
 
 class IdlLocator:

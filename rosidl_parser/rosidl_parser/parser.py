@@ -65,10 +65,8 @@ def parse_idl_file(locator, png_file=None):
 
 
 def parse_idl_string(idl_string, png_file=None):
-    global _parser
-    if _parser is None:
-        _parser = Lark(grammar, start='specification')
-    tree = _parser.parse(idl_string)
+    tree = get_ast_from_idl_string(idl_string)
+    content = extract_content_from_ast(tree)
 
     if png_file:
         os.makedirs(os.path.dirname(png_file), exist_ok=True)
@@ -77,7 +75,14 @@ def parse_idl_string(idl_string, png_file=None):
         except ImportError:
             pass
 
-    return extract_content_from_ast(tree)
+    return content
+
+
+def get_ast_from_idl_string(idl_string):
+    global _parser
+    if _parser is None:
+        _parser = Lark(grammar, start='specification')
+    return _parser.parse(idl_string)
 
 
 def extract_content_from_ast(tree):

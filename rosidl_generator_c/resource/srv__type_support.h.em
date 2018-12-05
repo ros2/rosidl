@@ -1,4 +1,18 @@
 @# Included from rosidl_generator_c/resource/idl__type_support.h.em
+@{
+TEMPLATE(
+    'msg__type_support.h.em',
+    package_name=package_name, message=service.request_message,
+    include_directives=include_directives)
+}@
+
+@{
+TEMPLATE(
+    'msg__type_support.h.em',
+    package_name=package_name, message=service.response_message,
+    include_directives=include_directives)
+}@
+
 @{header_file = 'rosidl_generator_c/service_type_support_struct.h'}@
 @[if header_file in include_directives]@
 // already included above

@@ -234,7 +234,13 @@ def extract_content_from_ast(tree):
                 namespaces=goal_request.structure.type.namespaces,
                 name=goal_request_basename),
             goal_request, result_response, feedback_message)
-        content.elements.append(action)
+
+        all_includes = content.get_elements_of_type(Include)
+        unique_include_locators = set([
+            include.locator for include in all_includes])
+        content.elements += [
+            include for include in action.implicit_includes
+            if include.locator not in unique_include_locators]
 
     else:
         assert False, \

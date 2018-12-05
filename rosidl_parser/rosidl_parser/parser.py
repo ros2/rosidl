@@ -242,6 +242,8 @@ def extract_content_from_ast(tree):
             include for include in action.implicit_includes
             if include.locator not in unique_include_locators]
 
+        content.elements.append(action)
+
     else:
         assert False, \
             'Currently only .idl files with 1 (a message), 2 (a service) ' \

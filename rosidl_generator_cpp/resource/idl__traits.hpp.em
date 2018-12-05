@@ -54,20 +54,6 @@ from rosidl_parser.definition import Service
 @[for service in content.get_elements_of_type(Service)]@
 @{
 TEMPLATE(
-    'msg__traits.hpp.em',
-    package_name=package_name, interface_path=interface_path,
-    message=service.request_message, include_directives=include_directives)
-}@
-
-@{
-TEMPLATE(
-    'msg__traits.hpp.em',
-    package_name=package_name, interface_path=interface_path,
-    message=service.response_message, include_directives=include_directives)
-}@
-
-@{
-TEMPLATE(
     'srv__traits.hpp.em',
     package_name=package_name, interface_path=interface_path, service=service)
 }@

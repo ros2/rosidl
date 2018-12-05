@@ -1,5 +1,19 @@
 @# Included from rosidl_typesupport_introspection_c/resource/idl__rosidl_typesupport_introspection_c.h.em
 @{
+TEMPLATE(
+    'msg__rosidl_typesupport_introspection_c.h.em',
+    package_name=package_name, interface_path=interface_path, message=service.request_message,
+    include_directives=include_directives)
+}@
+
+@{
+TEMPLATE(
+    'msg__rosidl_typesupport_introspection_c.h.em',
+    package_name=package_name, interface_path=interface_path, message=service.response_message,
+    include_directives=include_directives)
+}@
+
+@{
 header_files = [
     'rosidl_generator_c/service_type_support_struct.h',
     'rosidl_typesupport_interface/macros.h',

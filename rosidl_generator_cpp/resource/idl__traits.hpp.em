@@ -55,7 +55,8 @@ from rosidl_parser.definition import Service
 @{
 TEMPLATE(
     'srv__traits.hpp.em',
-    package_name=package_name, interface_path=interface_path, service=service)
+    package_name=package_name, interface_path=interface_path, service=service,
+    include_directives=include_directives)
 }@
 
 @[end for]@
@@ -92,14 +93,14 @@ TEMPLATE(
 TEMPLATE(
     'srv__traits.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    service=action.goal_service)
+    service=action.goal_service, include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'srv__traits.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    service=action.result_service)
+    service=action.result_service, include_directives=include_directives)
 }@
 
 @{

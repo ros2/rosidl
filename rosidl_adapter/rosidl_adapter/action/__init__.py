@@ -30,7 +30,7 @@ def convert_action_to_idl(package_dir, package_name, input_file, output_dir):
     # HACK as long as the return action specification contains implicitly added
     # fields they have to be skipped when generating .idl files
     assert len(action.goal_service.request.fields) >= 1
-    assert action.goal_service.request.fields[0].name == 'uuid'
+    assert action.goal_service.request.fields[0].name == 'action_goal_id'
     action.goal_service.request.fields.pop(0)
     assert len(action.goal_service.response.fields) >= 2
     assert action.goal_service.response.fields[0].name == 'accepted'
@@ -39,14 +39,14 @@ def convert_action_to_idl(package_dir, package_name, input_file, output_dir):
     action.goal_service.response.fields.pop(0)
 
     assert len(action.result_service.request.fields) >= 1
-    assert action.result_service.request.fields[0].name == 'uuid'
+    assert action.result_service.request.fields[0].name == 'action_goal_id'
     action.result_service.request.fields.pop(0)
     assert len(action.result_service.response.fields) >= 1
-    assert action.result_service.response.fields[0].name == 'status'
+    assert action.result_service.response.fields[0].name == 'action_status'
     action.result_service.response.fields.pop(0)
 
     assert len(action.feedback.fields) >= 1
-    assert action.feedback.fields[0].name == 'uuid'
+    assert action.feedback.fields[0].name == 'action_goal_id'
     action.feedback.fields.pop(0)
 
     output_file = output_dir / input_file.with_suffix('.idl').name

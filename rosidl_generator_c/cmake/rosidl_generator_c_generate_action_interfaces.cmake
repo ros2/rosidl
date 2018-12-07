@@ -66,7 +66,7 @@ foreach(dep ${target_dependencies})
   endif()
 endforeach()
 
-set(generator_arguments_file "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c__generate_action_interfaces__arguments.json")
+set(generator_arguments_file "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c__gen_actions__arguments.json")
 rosidl_write_generator_arguments(
   "${generator_arguments_file}"
   PACKAGE_NAME "${PROJECT_NAME}"
@@ -128,13 +128,13 @@ if(BUILD_TESTING AND rosidl_generate_action_interfaces_ADD_LINTER_TESTS)
   if(NOT _generated_files STREQUAL "")
     find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(
-      TESTNAME "cppcheck_rosidl_generator_c_generate_action_interfaces"
+      TESTNAME "cppcheck_rosidl_generator_c_gen_actions"
       "${_output_path}")
 
     find_package(ament_cmake_cpplint REQUIRED)
     get_filename_component(_cpplint_root "${_output_path}" DIRECTORY)
     ament_cpplint(
-      TESTNAME "cpplint_rosidl_generator_c_generate_action_interfaces"
+      TESTNAME "cpplint_rosidl_generator_c_gen_actions"
       # the generated code might contain longer lines for templated types
       MAX_LINE_LENGTH 999
       ROOT "${_cpplint_root}"
@@ -142,7 +142,7 @@ if(BUILD_TESTING AND rosidl_generate_action_interfaces_ADD_LINTER_TESTS)
 
     find_package(ament_cmake_uncrustify REQUIRED)
     ament_uncrustify(
-      TESTNAME "uncrustify_rosidl_generator_c_generate_action_interfaces"
+      TESTNAME "uncrustify_rosidl_generator_c_gen_actions"
       # the generated code might contain longer lines for templated types
       MAX_LINE_LENGTH 999
       "${_output_path}")

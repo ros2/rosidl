@@ -58,7 +58,7 @@ macro(rosidl_generate_action_interfaces target)
   set(_rgai_idl_files ${_ARG_RGAI_UNPARSED_ARGUMENTS})
 
   # Create a custom target
-  set(_rgai_sub_target "${target}+generate_action_interfaces")
+  set(_rgai_sub_target "${target}+generate_actions")
   add_custom_target(
     ${_rgai_sub_target} ALL
     DEPENDS

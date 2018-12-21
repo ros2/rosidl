@@ -48,7 +48,8 @@
 macro(rosidl_generate_action_interfaces target)
   cmake_parse_arguments(_ARG_RGAI
     "ADD_LINTER_TESTS;SKIP_INSTALL"
-    "LIBRARY_NAME" "TARGET_DEPENDENCIES"
+    "LIBRARY_NAME"
+    "TARGET_DEPENDENCIES;DEPENDENCY_PACKAGE_NAMES"
     ${ARGN})
   if(NOT _ARG_RGAI_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "rosidl_generate_action_interfaces() called without any idl "

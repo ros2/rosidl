@@ -256,16 +256,20 @@ macro(rosidl_generate_interfaces target)
   unset(rosidl_generate_interfaces_IDL_FILES)
   ament_execute_extensions("rosidl_generate_idl_interfaces")
 
-  unset(rosidl_generate_interfaces_IDL_TUPLES)
-  set(_non_idl_without_action_files "")
-  foreach(_non_idl_file ${_non_idl_files})
-    get_filename_component(_extension "${_non_idl_file}" EXT)
-    if(NOT "${_extension}" STREQUAL ".action")
-      list(APPEND _non_idl_without_action_files "${_non_idl_file}")
-    endif()
-  endforeach()
-  set(rosidl_generate_interfaces_IDL_FILES ${_non_idl_without_action_files})
-  ament_execute_extensions("rosidl_generate_interfaces")
+  # check for extensions registered with the previous extension point
+  set(obsolete_extension_point "rosidl_generate_interfaces")
+  if(AMENT_EXTENSIONS_${obsolete_extension_point})
+    foreach(_extension ${AMENT_EXTENSIONS_${obsolete_extension_point}})
+      string(REPLACE ":" ";" _extension_list "${_extension}")
+      list(GET _extension_list 0 _pkg_name)
+      message(WARNING "Package '${_pkg_name}' registered an extension for the "
+        "obsolete extension point '${obsolete_extension_point}'. "
+        "It is being skipped and needs to be updated to the new extension "
+        "point 'rosidl_generate_idl_interfaces'."
+        "Please refer to the migration steps on the Crystal release page for "
+        "more details.")
+    endforeach()
+  endif()
 
   if(NOT _ARG_SKIP_INSTALL)
     foreach(_idl_tuple ${_idl_tuples})

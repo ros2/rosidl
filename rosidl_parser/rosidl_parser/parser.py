@@ -134,6 +134,8 @@ def extract_content_from_ast(tree):
         msg = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[0]),
             name=get_first_identifier_value(struct_defs[0]))))
+        annotations = get_annotations(struct_defs[0])
+        msg.structure.annotations += annotations
         add_message_members(msg, struct_defs[0])
         resolve_typedefed_names(msg.structure, typedefs)
         constant_module_name = msg.structure.type.name + CONSTANT_MODULE_SUFFIX
@@ -487,8 +489,12 @@ def get_positive_int_const(positive_int_const):
 
 def get_annotations(tree):
     annotations = []
-    annotation_appls = tree.find_data('annotation_appl')
-    for annotation_appl in annotation_appls:
+    for c in tree.children:
+        if not isinstance(c, Tree):
+            continue
+        if c.data != 'annotation_appl':
+            continue
+        annotation_appl = c
         params = list(annotation_appl.find_data('annotation_appl_param'))
         if params:
             value = {}

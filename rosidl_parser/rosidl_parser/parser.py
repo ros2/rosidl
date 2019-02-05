@@ -133,7 +133,7 @@ def extract_content_from_ast(tree):
     if len(struct_defs) == 1:
         msg = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[0]),
-            name=get_first_identifier_value(struct_defs[0]))))
+            name=get_child_identifier_value(struct_defs[0]))))
         annotations = get_annotations(struct_defs[0])
         msg.structure.annotations += annotations
         add_message_members(msg, struct_defs[0])
@@ -147,7 +147,7 @@ def extract_content_from_ast(tree):
     elif len(struct_defs) == 2:
         request = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[0]),
-            name=get_first_identifier_value(struct_defs[0]))))
+            name=get_child_identifier_value(struct_defs[0]))))
         assert request.structure.type.name.endswith(
             SERVICE_REQUEST_MESSAGE_SUFFIX)
         add_message_members(request, struct_defs[0])
@@ -160,7 +160,7 @@ def extract_content_from_ast(tree):
 
         response = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[1]),
-            name=get_first_identifier_value(struct_defs[1]))))
+            name=get_child_identifier_value(struct_defs[1]))))
         assert response.structure.type.name.endswith(
             SERVICE_RESPONSE_MESSAGE_SUFFIX)
         add_message_members(response, struct_defs[1])
@@ -189,7 +189,7 @@ def extract_content_from_ast(tree):
     elif len(struct_defs) == 3:
         goal_request = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[0]),
-            name=get_first_identifier_value(struct_defs[0]))))
+            name=get_child_identifier_value(struct_defs[0]))))
         assert goal_request.structure.type.name.endswith(
             ACTION_GOAL_SERVICE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX)
         add_message_members(goal_request, struct_defs[0])
@@ -202,7 +202,7 @@ def extract_content_from_ast(tree):
 
         result_response = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[1]),
-            name=get_first_identifier_value(struct_defs[1]))))
+            name=get_child_identifier_value(struct_defs[1]))))
         assert result_response.structure.type.name.endswith(
             ACTION_RESULT_SERVICE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX)
         add_message_members(result_response, struct_defs[1])
@@ -225,7 +225,7 @@ def extract_content_from_ast(tree):
 
         feedback_message = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[2]),
-            name=get_first_identifier_value(struct_defs[2]))))
+            name=get_child_identifier_value(struct_defs[2]))))
         assert feedback_message.structure.type.name.endswith(
             ACTION_FEEDBACK_MESSAGE_SUFFIX)
         add_message_members(feedback_message, struct_defs[2])
@@ -287,6 +287,16 @@ def get_first_identifier_value(tree):
     """Get the value of the first identifier token for a node."""
     identifier_token = next(tree.scan_values(_find_tokens('IDENTIFIER')))
     return identifier_token.value
+
+
+def get_child_identifier_value(tree):
+    """Get the value of the first child identifier token for a node."""
+    for c in tree.children:
+        if not isinstance(c, Token):
+            continue
+        if c.type == 'IDENTIFIER':
+            return c.value
+    return None
 
 
 def _find_tokens(token_type):

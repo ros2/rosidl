@@ -4,7 +4,7 @@
   <name>rosidl_adapter</name>
   <version>0.6.2</version>
   <description>
-    API an scripts to parse .msg/.srv/.action files and convert them to .idl.
+    API and scripts to parse .msg/.srv/.action files and convert them to .idl.
   </description>
   <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
   <license>Apache License 2.0</license>

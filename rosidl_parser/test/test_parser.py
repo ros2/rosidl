@@ -225,14 +225,14 @@ def test_action_parser(action_idl_file):
     assert action.structure_type.name == 'MyAction'
 
     # check messages defined in the idl file
-    constants = action.goal_request.constants
+    constants = action.goal.constants
     assert len(constants) == 1
     constant = constants['SHORT_CONSTANT']
     assert isinstance(constant.type, BasicType)
     assert constant.type.type == 'int16'
     assert constant.value == -23
 
-    structure = action.goal_request.structure
+    structure = action.goal.structure
     assert structure.type.namespaces == ['rosidl_parser', 'action']
     assert structure.type.name == 'MyAction_Goal_Request'
     assert len(structure.members) == 1
@@ -240,14 +240,14 @@ def test_action_parser(action_idl_file):
     assert structure.members[0].type.type == 'int32'
     assert structure.members[0].name == 'input_value'
 
-    constants = action.result_response.constants
+    constants = action.result.constants
     assert len(constants) == 1
     constant = constants['UNSIGNED_LONG_CONSTANT']
     assert isinstance(constant.type, BasicType)
     assert constant.type.type == 'uint32'
     assert constant.value == 42
 
-    structure = action.result_response.structure
+    structure = action.result.structure
     assert structure.type.namespaces == ['rosidl_parser', 'action']
     assert structure.type.name == 'MyAction_Result_Response'
     assert len(structure.members) == 1
@@ -271,11 +271,11 @@ def test_action_parser(action_idl_file):
     assert structure.members[0].name == 'progress_value'
 
     # check derived goal service
-    structure_type = action.goal_service.structure_type
+    structure_type = action.send_goal_service.structure_type
     assert structure_type.namespaces == ['rosidl_parser', 'action']
     assert structure_type.name == 'MyAction_Action_Goal'
 
-    structure = action.goal_service.request_message.structure
+    structure = action.send_goal_service.request_message.structure
     assert len(structure.members) == 2
 
     assert isinstance(structure.members[0].type, Array)
@@ -286,11 +286,11 @@ def test_action_parser(action_idl_file):
 
     assert isinstance(structure.members[1].type, NamespacedType)
     assert structure.members[1].type.namespaces == \
-        action.goal_request.structure.type.namespaces
+        action.goal.structure.type.namespaces
     assert structure.members[1].type.name == \
-        action.goal_request.structure.type.name
+        action.goal.structure.type.name
 
-    structure = action.goal_service.response_message.structure
+    structure = action.send_goal_service.response_message.structure
     assert len(structure.members) == 2
 
     assert isinstance(structure.members[0].type, BasicType)
@@ -304,11 +304,11 @@ def test_action_parser(action_idl_file):
     assert structure.members[1].name == 'stamp'
 
     # check derived result service
-    structure_type = action.result_service.structure_type
+    structure_type = action.get_result_service.structure_type
     assert structure_type.namespaces == ['rosidl_parser', 'action']
     assert structure_type.name == 'MyAction_Action_Result'
 
-    structure = action.result_service.request_message.structure
+    structure = action.get_result_service.request_message.structure
     assert len(structure.members) == 1
 
     assert isinstance(structure.members[0].type, Array)
@@ -317,7 +317,7 @@ def test_action_parser(action_idl_file):
     assert structure.members[0].type.basetype.type == 'uint8'
     assert structure.members[0].name == 'uuid'
 
-    structure = action.result_service.response_message.structure
+    structure = action.get_result_service.response_message.structure
     assert len(structure.members) == 2
 
     assert isinstance(structure.members[0].type, BasicType)
@@ -326,9 +326,9 @@ def test_action_parser(action_idl_file):
 
     assert isinstance(structure.members[1].type, NamespacedType)
     assert structure.members[1].type.namespaces == \
-        action.result_response.structure.type.namespaces
+        action.result.structure.type.namespaces
     assert structure.members[1].type.name == \
-        action.result_response.structure.type.name
+        action.result.structure.type.name
 
     # check derived feedback message
     structure = action.feedback_message.structure

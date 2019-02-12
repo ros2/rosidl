@@ -81,14 +81,14 @@ TEMPLATE(
 @{
 TEMPLATE(
     'msg__type_support.h.em',
-    package_name=package_name, message=action.goal_request,
+    package_name=package_name, message=action.goal,
     include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'msg__type_support.h.em',
-    package_name=package_name, message=action.result_response,
+    package_name=package_name, message=action.result,
     include_directives=include_directives)
 }@
 
@@ -102,14 +102,14 @@ TEMPLATE(
 @{
 TEMPLATE(
     'srv__type_support.h.em',
-    package_name=package_name, service=action.goal_service,
+    package_name=package_name, service=action.send_goal_service,
     include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'srv__type_support.h.em',
-    package_name=package_name, service=action.result_service,
+    package_name=package_name, service=action.get_result_service,
     include_directives=include_directives)
 }@
 

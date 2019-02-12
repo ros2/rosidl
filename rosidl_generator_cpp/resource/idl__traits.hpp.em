@@ -72,14 +72,14 @@ from rosidl_parser.definition import Action
 TEMPLATE(
     'msg__traits.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.goal_request, include_directives=include_directives)
+    message=action.goal, include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'msg__traits.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.result_response, include_directives=include_directives)
+    message=action.result, include_directives=include_directives)
 }@
 
 @{
@@ -93,14 +93,14 @@ TEMPLATE(
 TEMPLATE(
     'srv__traits.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    service=action.goal_service, include_directives=include_directives)
+    service=action.send_goal_service, include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'srv__traits.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    service=action.result_service, include_directives=include_directives)
+    service=action.get_result_service, include_directives=include_directives)
 }@
 
 @{

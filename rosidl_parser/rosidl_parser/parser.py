@@ -22,9 +22,9 @@ from lark.tree import Tree
 
 from rosidl_parser.definition import AbstractType
 from rosidl_parser.definition import Action
-from rosidl_parser.definition import ACTION_FEEDBACK_MESSAGE_SUFFIX
-from rosidl_parser.definition import ACTION_GOAL_SERVICE_SUFFIX
-from rosidl_parser.definition import ACTION_RESULT_SERVICE_SUFFIX
+from rosidl_parser.definition import ACTION_FEEDBACK_SUFFIX
+from rosidl_parser.definition import ACTION_GOAL_SUFFIX
+from rosidl_parser.definition import ACTION_RESULT_SUFFIX
 from rosidl_parser.definition import Annotation
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
@@ -187,47 +187,42 @@ def extract_content_from_ast(tree):
         content.elements.append(srv)
 
     elif len(struct_defs) == 3:
-        goal_request = Message(Structure(NamespacedType(
+        goal = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[0]),
             name=get_child_identifier_value(struct_defs[0]))))
-        assert goal_request.structure.type.name.endswith(
-            ACTION_GOAL_SERVICE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX)
-        add_message_members(goal_request, struct_defs[0])
-        resolve_typedefed_names(goal_request.structure, typedefs)
+        assert goal.structure.type.name.endswith(ACTION_GOAL_SUFFIX)
+        add_message_members(goal, struct_defs[0])
+        resolve_typedefed_names(goal.structure, typedefs)
         constant_module_name = \
-            goal_request.structure.type.name + CONSTANT_MODULE_SUFFIX
+            goal.structure.type.name + CONSTANT_MODULE_SUFFIX
         if constant_module_name in constants:
-            goal_request.constants.update(
+            goal.constants.update(
                 {c.name: c for c in constants[constant_module_name]})
 
-        result_response = Message(Structure(NamespacedType(
+        result = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[1]),
             name=get_child_identifier_value(struct_defs[1]))))
-        assert result_response.structure.type.name.endswith(
-            ACTION_RESULT_SERVICE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX)
-        add_message_members(result_response, struct_defs[1])
-        resolve_typedefed_names(result_response.structure, typedefs)
+        assert result.structure.type.name.endswith(ACTION_RESULT_SUFFIX)
+        add_message_members(result, struct_defs[1])
+        resolve_typedefed_names(result.structure, typedefs)
         constant_module_name = \
-            result_response.structure.type.name + CONSTANT_MODULE_SUFFIX
+            result.structure.type.name + CONSTANT_MODULE_SUFFIX
         if constant_module_name in constants:
-            result_response.constants.update(
+            result.constants.update(
                 {c.name: c for c in constants[constant_module_name]})
 
-        assert goal_request.structure.type.namespaces == \
-            result_response.structure.type.namespaces
-        goal_request_basename = goal_request.structure.type.name[
-            :-len(ACTION_GOAL_SERVICE_SUFFIX +
-                  SERVICE_REQUEST_MESSAGE_SUFFIX)]
-        result_response_basename = result_response.structure.type.name[
-            :-len(ACTION_RESULT_SERVICE_SUFFIX +
-                  SERVICE_RESPONSE_MESSAGE_SUFFIX)]
-        assert goal_request_basename == result_response_basename
+        assert goal.structure.type.namespaces == \
+            result.structure.type.namespaces
+        goal_basename = goal.structure.type.name[:-len(ACTION_GOAL_SUFFIX)]
+        result_basename = result.structure.type.name[
+            :-len(ACTION_RESULT_SUFFIX)]
+        assert goal_basename == result_basename
 
         feedback_message = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[2]),
             name=get_child_identifier_value(struct_defs[2]))))
         assert feedback_message.structure.type.name.endswith(
-            ACTION_FEEDBACK_MESSAGE_SUFFIX)
+            ACTION_FEEDBACK_SUFFIX)
         add_message_members(feedback_message, struct_defs[2])
         resolve_typedefed_names(feedback_message.structure, typedefs)
         constant_module_name = \
@@ -238,9 +233,9 @@ def extract_content_from_ast(tree):
 
         action = Action(
             NamespacedType(
-                namespaces=goal_request.structure.type.namespaces,
-                name=goal_request_basename),
-            goal_request, result_response, feedback_message)
+                namespaces=goal.structure.type.namespaces,
+                name=goal_basename),
+            goal, result, feedback_message)
 
         all_includes = content.get_elements_of_type(Include)
         unique_include_locators = {

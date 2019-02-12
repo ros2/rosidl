@@ -27,6 +27,10 @@ SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
 SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
 
 ACTION_REQUEST_RESPONSE_SEPARATOR = '---'
+ACTION_GOAL_SUFFIX = '_Goal'
+ACTION_RESULT_SUFFIX = '_Result'
+ACTION_FEEDBACK_SUFFIX = '_Feedback'
+
 ACTION_GOAL_SERVICE_SUFFIX = '_Goal'
 ACTION_RESULT_SERVICE_SUFFIX = '_Result'
 ACTION_FEEDBACK_MESSAGE_SUFFIX = '_Feedback'
@@ -809,11 +813,13 @@ def validate_field_types(spec, known_msg_types):
 
 class ServiceSpecification:
 
-    def __init__(self, pkg_name, srv_name, request_message, response_message):
+    def __init__(self, pkg_name, srv_name, request, response):
         self.pkg_name = pkg_name
         self.srv_name = srv_name
-        self.request = request_message
-        self.response = response_message
+        assert isinstance(request, MessageSpecification)
+        self.request = request
+        assert isinstance(response, MessageSpecification)
+        self.response = response
 
     def __str__(self):
         """Output an equivalent .srv IDL string."""
@@ -858,12 +864,15 @@ def parse_service_string(pkg_name, srv_name, message_string):
 
 class ActionSpecification:
 
-    def __init__(self, pkg_name, action_name, goal_service, result_service, feedback_message):
+    def __init__(self, pkg_name, action_name, goal, result, feedback):
         self.pkg_name = pkg_name
         self.action_name = action_name
-        self.goal_service = goal_service
-        self.result_service = result_service
-        self.feedback = feedback_message
+        assert isinstance(goal, MessageSpecification)
+        self.goal = goal
+        assert isinstance(result, MessageSpecification)
+        self.result = result
+        assert isinstance(feedback, MessageSpecification)
+        self.feedback = feedback
 
 
 def parse_action_file(pkg_name, interface_filename):
@@ -881,60 +890,15 @@ def parse_action_string(pkg_name, action_name, action_string):
             "Number of '%s' separators nonconformant with action definition" %
             ACTION_REQUEST_RESPONSE_SEPARATOR)
 
-    goal_service_string, result_service_string, feedback_message_string = action_blocks
+    goal_string, result_string, feedback_string = action_blocks
 
-    # ---------------------------------------------------------------------------------------------
-    # Send goal
-    implicit_input = ['unique_identifier_msgs/UUID action_goal_id']
-    request_message_string = '\n'.join(implicit_input) + '\n' + goal_service_string
-    request_message = parse_message_string(
-        pkg_name,
-        action_name + ACTION_GOAL_SERVICE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX,
-        request_message_string)
-
-    implicit_output = ['bool accepted', 'builtin_interfaces/Time stamp']
-    response_message_string = '\n'.join(implicit_output)
-    response_message = parse_message_string(
-        pkg_name,
-        action_name + ACTION_GOAL_SERVICE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX,
-        response_message_string)
-
-    goal_service = ServiceSpecification(
-        pkg_name,
-        action_name + ACTION_GOAL_SERVICE_SUFFIX,
-        request_message,
-        response_message)
+    goal_message = parse_message_string(
+        pkg_name, action_name + ACTION_GOAL_SUFFIX, goal_string)
+    result_message = parse_message_string(
+        pkg_name, action_name + ACTION_RESULT_SUFFIX, result_string)
+    feedback_message = parse_message_string(
+        pkg_name, action_name + ACTION_FEEDBACK_SUFFIX, feedback_string)
     # ---------------------------------------------------------------------------------------------
 
-    # ---------------------------------------------------------------------------------------------
-    # Get result
-    implicit_input = ['unique_identifier_msgs/UUID action_goal_id']
-    request_message_string = '\n'.join(implicit_input)
-    request_message = parse_message_string(
-        pkg_name,
-        action_name + ACTION_RESULT_SERVICE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX,
-        request_message_string)
-
-    implicit_output = ['int8 action_status']
-    response_message_string = '\n'.join(implicit_output) + '\n' + result_service_string
-    response_message = parse_message_string(
-        pkg_name,
-        action_name + ACTION_RESULT_SERVICE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX,
-        response_message_string)
-
-    result_service = ServiceSpecification(
-        pkg_name,
-        action_name + ACTION_RESULT_SERVICE_SUFFIX,
-        request_message,
-        response_message)
-    # ---------------------------------------------------------------------------------------------
-
-    # ---------------------------------------------------------------------------------------------
-    # Feedback message
-    implicit_input = ['unique_identifier_msgs/UUID action_goal_id']
-    message_string = '\n'.join(implicit_input) + '\n' + feedback_message_string
-    feedback_msg = parse_message_string(
-        pkg_name, action_name + ACTION_FEEDBACK_MESSAGE_SUFFIX, message_string)
-    # ---------------------------------------------------------------------------------------------
-
-    return ActionSpecification(pkg_name, action_name, goal_service, result_service, feedback_msg)
+    return ActionSpecification(
+        pkg_name, action_name, goal_message, result_message, feedback_message)

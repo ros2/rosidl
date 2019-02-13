@@ -65,7 +65,9 @@ _FORMATTING_CHARACTERS: "\t" | "\n" | "\r"
 _ESCAPE_SEQUENCES: "\\n" | "\\t" | "\\v" | "\\b" | "\\r" | "\\f" | "\\a" | "\\\\" | "\\?" | "\\'" | "\\\"" | "\\" "0".."7" "0".."7" | "\\x" HEXDIGIT HEXDIGIT | "\\" HEXDIGIT HEXDIGIT HEXDIGIT HEXDIGIT
 
 // 7.2.6.3 String Literals
-string_literal: "\"" CHAR* "\""
+// string_literal: "\"" CHAR* "\""
+// replace precise rule based on the spec with regex for parsing performance
+string_literal: "\"\"" | "\"" /(\\\"|[^"])+/ "\""
 wide_string_literal:  "L\"" CHAR* "\""
 
 // 7.2.6.4 Floating-point Literals

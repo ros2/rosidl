@@ -582,10 +582,15 @@ def get_floating_pt_literal_value(floating_pt_literal):
 
 
 def get_string_literal_value(string_literal):
-    value = ''
-    for child in string_literal.children:
-        if child.value == r'\"':
-            value += '"'
-        else:
-            value += child.value
+    assert len(string_literal.children) == 1
+    child = string_literal.children[0]
+    assert isinstance(child, Token)
+    value = child.value
+    # unescape double quote and backslash if preceeded by a backslash
+    i = 0
+    while i < len(value):
+        if value[i] == '\\':
+            if i + 1 < len(value) and value[i + 1] in ('"', '\\'):
+                value = value[:i] + value[i + 1:]
+        i += 1
     return value

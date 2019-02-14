@@ -14,7 +14,6 @@
 
 import pytest
 
-from rosidl_adapter.parser import ImplicitFieldCollision
 from rosidl_adapter.parser import InvalidActionSpecification
 from rosidl_adapter.parser import parse_action_string
 
@@ -26,18 +25,6 @@ def test_invalid_action_specification():
     # too few action separators (---)
     with pytest.raises(InvalidActionSpecification):
         parse_action_string('pkg', 'Foo', 'bool foo\n---\nint8 bar')
-
-
-def test_action_implicit_field_collision():
-    # uuid collision on send goal service
-    with pytest.raises(ImplicitFieldCollision):
-        parse_action_string(
-            'pkg', 'Foo', 'bool foo\nstring action_goal_id\n---\nint8 bar\n---\nbool foo')
-
-    # status collision on get result service
-    with pytest.raises(ImplicitFieldCollision):
-        parse_action_string(
-            'pkg', 'Foo', 'bool foo\n---\nint8 bar\nstring action_status\n---\nbool foo')
 
 
 def test_valid_action_string():

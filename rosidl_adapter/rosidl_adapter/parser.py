@@ -88,10 +88,6 @@ class InvalidFieldDefinition(InvalidSpecification):
     pass
 
 
-class ImplicitFieldCollision(InvalidSpecification):
-    pass
-
-
 class UnknownMessageType(InvalidSpecification):
     pass
 
@@ -441,9 +437,6 @@ def parse_message_string(pkg_name, msg_name, message_string):
     constants = []
     last_element = None  # either a field or a constant
 
-    # check for field name collision with action implicit parameters
-    action_fields = {i: 0 for i in ACTION_IMPLICIT_FIELDS}
-
     current_comments = []
     lines = message_string.splitlines()
     for line in lines:
@@ -509,19 +502,6 @@ def parse_message_string(pkg_name, msg_name, message_string):
                     file=sys.stderr)
                 raise
             last_element = fields[-1]
-
-            # check for field name collision with action implicit parameters
-            # (e.g. 2 or more occurrences of a field_name contained in ACTION_IMPLICIT_FIELDS,
-            # including the implicit one)
-            if field_name in ACTION_IMPLICIT_FIELDS and action_fields[field_name] >= 1:
-                raise ImplicitFieldCollision("Duplicate parameter name '{field_name}' \
-                    found processing '{line}' of '{pkg}/{msg}'. \
-                    If this resulted from an action definition please \
-                    check for implicit parameter names {fields}".format(
-                    field_name=field_name, line=line, pkg=pkg_name, msg=msg_name,
-                    fields=repr(ACTION_IMPLICIT_FIELDS)))
-            elif field_name in ACTION_IMPLICIT_FIELDS:
-                action_fields[field_name] += 1
 
         else:
             # line contains a constant

@@ -1,15 +1,15 @@
 module rosidl_parser {
   module action {
-    module MyAction_Goal_Request_Constants {
+    module MyAction_Goal_Constants {
       const short SHORT_CONSTANT = -23;
     };
-    struct MyAction_Goal_Request {
+    struct MyAction_Goal {
       int32 input_value;
     };
-    module MyAction_Result_Response_Constants {
+    module MyAction_Result_Constants {
       const unsigned long UNSIGNED_LONG_CONSTANT = 42;
     };
-    struct MyAction_Result_Response {
+    struct MyAction_Result {
       uint32 output_value;
     };
     module MyAction_Feedback_Constants {

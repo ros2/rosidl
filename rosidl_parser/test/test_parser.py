@@ -234,7 +234,7 @@ def test_action_parser(action_idl_file):
 
     structure = action.goal.structure
     assert structure.type.namespaces == ['rosidl_parser', 'action']
-    assert structure.type.name == 'MyAction_Goal_Request'
+    assert structure.type.name == 'MyAction_Goal'
     assert len(structure.members) == 1
     assert isinstance(structure.members[0].type, BasicType)
     assert structure.members[0].type.type == 'int32'
@@ -249,7 +249,7 @@ def test_action_parser(action_idl_file):
 
     structure = action.result.structure
     assert structure.type.namespaces == ['rosidl_parser', 'action']
-    assert structure.type.name == 'MyAction_Result_Response'
+    assert structure.type.name == 'MyAction_Result'
     assert len(structure.members) == 1
     assert isinstance(structure.members[0].type, BasicType)
     assert structure.members[0].type.type == 'uint32'
@@ -273,7 +273,7 @@ def test_action_parser(action_idl_file):
     # check derived goal service
     structure_type = action.send_goal_service.structure_type
     assert structure_type.namespaces == ['rosidl_parser', 'action']
-    assert structure_type.name == 'MyAction_Action_Goal'
+    assert structure_type.name == 'MyAction_SendGoal'
 
     structure = action.send_goal_service.request_message.structure
     assert len(structure.members) == 2
@@ -282,7 +282,7 @@ def test_action_parser(action_idl_file):
     assert structure.members[0].type.size == 16
     assert isinstance(structure.members[0].type.basetype, BasicType)
     assert structure.members[0].type.basetype.type == 'uint8'
-    assert structure.members[0].name == 'uuid'
+    assert structure.members[0].name == 'goal_id'
 
     assert isinstance(structure.members[1].type, NamespacedType)
     assert structure.members[1].type.namespaces == \
@@ -306,7 +306,7 @@ def test_action_parser(action_idl_file):
     # check derived result service
     structure_type = action.get_result_service.structure_type
     assert structure_type.namespaces == ['rosidl_parser', 'action']
-    assert structure_type.name == 'MyAction_Action_Result'
+    assert structure_type.name == 'MyAction_GetResult'
 
     structure = action.get_result_service.request_message.structure
     assert len(structure.members) == 1
@@ -315,7 +315,7 @@ def test_action_parser(action_idl_file):
     assert structure.members[0].type.size == 16
     assert isinstance(structure.members[0].type.basetype, BasicType)
     assert structure.members[0].type.basetype.type == 'uint8'
-    assert structure.members[0].name == 'uuid'
+    assert structure.members[0].name == 'goal_id'
 
     structure = action.get_result_service.response_message.structure
     assert len(structure.members) == 2
@@ -333,7 +333,7 @@ def test_action_parser(action_idl_file):
     # check derived feedback message
     structure = action.feedback_message.structure
     assert structure.type.namespaces == ['rosidl_parser', 'action']
-    assert structure.type.name == 'MyAction_Action_Feedback'
+    assert structure.type.name == 'MyAction_FeedbackMessage'
 
     assert len(structure.members) == 2
 
@@ -341,7 +341,7 @@ def test_action_parser(action_idl_file):
     assert structure.members[0].type.size == 16
     assert isinstance(structure.members[0].type.basetype, BasicType)
     assert structure.members[0].type.basetype.type == 'uint8'
-    assert structure.members[0].name == 'uuid'
+    assert structure.members[0].name == 'goal_id'
 
     assert isinstance(structure.members[1].type, NamespacedType)
     assert structure.members[1].type.namespaces == \

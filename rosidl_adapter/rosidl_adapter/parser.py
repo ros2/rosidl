@@ -679,7 +679,7 @@ def parse_primitive_value_string(type_, value_string):
                 "must be either 'true' / '1' or 'false' / '0'")
         return value_string.lower() in true_values
 
-    if primitive_type == 'byte':
+    if primitive_type in ('byte', 'char'):
         # same as uint8
         ex = InvalidValue(primitive_type, value_string,
                           'must be a valid integer value >= 0 and <= 255')
@@ -688,18 +688,6 @@ def parse_primitive_value_string(type_, value_string):
         except ValueError:
             raise ex
         if value < 0 or value > 255:
-            raise ex
-        return value
-
-    if primitive_type == 'char':
-        # same as int8
-        ex = InvalidValue(primitive_type, value_string,
-                          'must be a valid integer value >= -128 and <= 127')
-        try:
-            value = int(value_string)
-        except ValueError:
-            raise ex
-        if value < -128 or value > 127:
             raise ex
         return value
 

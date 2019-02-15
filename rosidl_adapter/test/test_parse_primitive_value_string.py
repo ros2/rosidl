@@ -50,7 +50,7 @@ def test_parse_primitive_value_string_bool():
 def test_parse_primitive_value_string_integer():
     integer_types = {
         'byte': [8, True],
-        'char': [8, False],
+        'char': [8, True],
         'int8': [8, False],
         'uint8': [8, True],
         'int16': [16, False],

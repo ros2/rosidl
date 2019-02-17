@@ -278,10 +278,10 @@ def test_action_parser(action_idl_file):
     structure = action.send_goal_service.request_message.structure
     assert len(structure.members) == 2
 
-    assert isinstance(structure.members[0].type, Array)
-    assert structure.members[0].type.size == 16
-    assert isinstance(structure.members[0].type.basetype, BasicType)
-    assert structure.members[0].type.basetype.type == 'uint8'
+    assert isinstance(structure.members[0].type, NamespacedType)
+    assert structure.members[0].type.namespaces == [
+        'unique_identifier_msgs', 'msg']
+    assert structure.members[0].type.name == 'UUID'
     assert structure.members[0].name == 'goal_id'
 
     assert isinstance(structure.members[1].type, NamespacedType)
@@ -311,10 +311,10 @@ def test_action_parser(action_idl_file):
     structure = action.get_result_service.request_message.structure
     assert len(structure.members) == 1
 
-    assert isinstance(structure.members[0].type, Array)
-    assert structure.members[0].type.size == 16
-    assert isinstance(structure.members[0].type.basetype, BasicType)
-    assert structure.members[0].type.basetype.type == 'uint8'
+    assert isinstance(structure.members[0].type, NamespacedType)
+    assert structure.members[0].type.namespaces == [
+        'unique_identifier_msgs', 'msg']
+    assert structure.members[0].type.name == 'UUID'
     assert structure.members[0].name == 'goal_id'
 
     structure = action.get_result_service.response_message.structure
@@ -337,10 +337,10 @@ def test_action_parser(action_idl_file):
 
     assert len(structure.members) == 2
 
-    assert isinstance(structure.members[0].type, Array)
-    assert structure.members[0].type.size == 16
-    assert isinstance(structure.members[0].type.basetype, BasicType)
-    assert structure.members[0].type.basetype.type == 'uint8'
+    assert isinstance(structure.members[0].type, NamespacedType)
+    assert structure.members[0].type.namespaces == [
+        'unique_identifier_msgs', 'msg']
+    assert structure.members[0].type.name == 'UUID'
     assert structure.members[0].name == 'goal_id'
 
     assert isinstance(structure.members[1].type, NamespacedType)

@@ -498,11 +498,13 @@ class Action:
 
         # necessary include for injected timestamp member
         self.implicit_includes = [
-            Include('builtin_interfaces/msg/Time.idl')
+            Include('builtin_interfaces/msg/Time.idl'),
+            Include('unique_identifier_msgs/msg/UUID.idl'),
         ]
 
         # derived types
-        goal_id_type = Array(BasicType('uint8'), 16)
+        goal_id_type = NamespacedType(
+                namespaces=['unique_identifier_msgs', 'msg'], name='UUID')
 
         goal_service_name = type_.name + ACTION_GOAL_SERVICE_SUFFIX
         self.send_goal_service = Service(

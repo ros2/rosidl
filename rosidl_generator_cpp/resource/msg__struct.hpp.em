@@ -2,7 +2,7 @@
 // Protect against ERROR being predefined on Windows, in case somebody defines a
 // constant by that name.
 #if defined(_WIN32)
-  #if defined defined(ERROR)
+  #if defined(ERROR)
     #undef ERROR
   #endif
   #if defined(NO_ERROR)

@@ -48,7 +48,7 @@ struct @(action.structure_type.name)
 
     /// The generic service to cancel a goal.
     using CancelGoalService = action_msgs::srv::CancelGoal;
-    /// The generic service to get the status of a goal.
+    /// The generic message for the status of a goal.
     using GoalStatusMessage = action_msgs::msg::GoalStatusArray;
   };
 };

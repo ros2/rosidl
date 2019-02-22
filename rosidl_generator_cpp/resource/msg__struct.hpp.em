@@ -149,31 +149,41 @@ def generate_zero_string(membset, fill_args):
 @[if not member_list]@
     (void)_init;
 @[end if]@
-@[for membset in member_list]@
-@[ if membset.members[0].default_value is not None]@
+@{
+members_if_all_defaults = [m for m in member_list if m.members[0].default_value and not m.members[0].zero_value]
+members_else_if_zero = [m for m in member_list if m.members[0].default_value and m.members[0].zero_value]
+members_if_all_zero = [m for m in member_list if not m.members[0].default_value and m.members[0].zero_value]
+}@
+@[if members_if_all_defaults]@
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
       rosidl_generator_cpp::MessageInitialization::DEFAULTS_ONLY == _init)
     {
+@[for membset in members_if_all_defaults]@
 @[  for line in generate_default_string(membset)]@
       @(line)
 @[  end for]@
-@[  if membset.members[0].zero_value is not None]@
+@[end for]@
+@[if members_else_if_zero]@
     } else if (rosidl_generator_cpp::MessageInitialization::ZERO == _init) {
+@[  for membset in members_else_if_zero]@
 @[   for line in generate_zero_string(membset, '_init')]@
       @(line)
 @[   end for]@
-@[  end if]@
+@[  end for]@
+@[end if]@
     }
-@[ elif membset.members[0].zero_value is not None]@
+@[end if]@
+@[if members_if_all_zero]@
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
       rosidl_generator_cpp::MessageInitialization::ZERO == _init)
     {
+@[for membset in members_if_all_zero]@
 @[  for line in generate_zero_string(membset, '_init')]@
       @(line)
 @[  end for]@
-    }
-@[ end if]@
 @[end for]@
+    }
+@[end if]@
   }
 
   explicit @(message.structure.type.name)_(const ContainerAllocator & _alloc, rosidl_generator_cpp::MessageInitialization _init = rosidl_generator_cpp::MessageInitialization::ALL)
@@ -187,31 +197,36 @@ def generate_zero_string(membset, fill_args):
 @[if not alloc_list]@
     (void)_alloc;
 @[end if]@
-@[for membset in member_list]@
-@[ if membset.members[0].default_value is not None]@
+@[if members_if_all_defaults]@
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
       rosidl_generator_cpp::MessageInitialization::DEFAULTS_ONLY == _init)
     {
+@[for membset in members_if_all_defaults]@
 @[  for line in generate_default_string(membset)]@
       @(line)
 @[  end for]@
-@[  if membset.members[0].zero_value is not None]@
+@[end for]@
+@[if members_else_if_zero]@
     } else if (rosidl_generator_cpp::MessageInitialization::ZERO == _init) {
-@[   for line in generate_zero_string(membset, '_alloc, _init')]@
+@[  for membset in members_else_if_zero]@
+  @[   for line in generate_zero_string(membset, '_alloc, _init')]@
       @(line)
 @[   end for]@
-@[  end if]@
+@[  end for]@
+@[end if]@
     }
-@[ elif membset.members[0].zero_value is not None]@
+@[end if]@
+@[if members_if_all_zero]@
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
       rosidl_generator_cpp::MessageInitialization::ZERO == _init)
     {
+@[for membset in members_if_all_zero]@
 @[  for line in generate_zero_string(membset, '_alloc, _init')]@
       @(line)
 @[  end for]@
-    }
-@[ end if]@
 @[end for]@
+    }
+@[end if]@
   }
 
   // field types and members

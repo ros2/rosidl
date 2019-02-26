@@ -109,7 +109,9 @@ rosidl_generator_c__U16String__len(const uint16_t * value)
     return 0;
   }
   size_t len = 0;
-  while (value[len++]) {}
+  while (value[len]) {
+    len++;
+  }
   return len;
 }
 

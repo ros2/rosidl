@@ -187,9 +187,9 @@ TEST(Test_rosidl_generator_traits, has_bounded_size) {
     !rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::String>::value,
     "String::has_bounded_size is true");
 
-  // static_assert(
-  //   rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::StringBounded>::value,
-  //   "StringBounded::has_bounded_size is false");
+  static_assert(
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::StringBounded>::value,
+    "StringBounded::has_bounded_size is false");
 
   static_assert(
     !rosidl_generator_traits::has_bounded_size<

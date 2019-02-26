@@ -266,7 +266,7 @@ macro(rosidl_generate_interfaces target)
         "obsolete extension point '${obsolete_extension_point}'. "
         "It is being skipped and needs to be updated to the new extension "
         "point 'rosidl_generate_idl_interfaces'."
-        "Please refer to the migration steps on the Crystal release page for "
+        "Please refer to the migration steps on the Dashing release page for "
         "more details.")
     endforeach()
   endif()

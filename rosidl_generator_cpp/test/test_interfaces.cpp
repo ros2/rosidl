@@ -205,10 +205,10 @@ TEST(Test_rosidl_generator_traits, has_bounded_size) {
       rosidl_generator_cpp::msg::BoundedArrayBounded>::value,
     "BoundedArrayBounded::has_bounded_size is false");
 
-  // static_assert(
-  //   !rosidl_generator_traits::has_bounded_size<
-  //     rosidl_generator_cpp::msg::BoundedArrayUnbounded>::value,
-  //   "BoundedArrayUnbounded::has_bounded_size is true");
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::BoundedArrayUnbounded>::value,
+    "BoundedArrayUnbounded::has_bounded_size is true");
 
   static_assert(
     !rosidl_generator_traits::has_bounded_size<

@@ -2,6 +2,7 @@
 @{
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BaseString
+from rosidl_parser.definition import BoundedSequence
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import Sequence
 from rosidl_parser.definition import UnboundedSequence
@@ -17,7 +18,7 @@ from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 includes = OrderedDict()
 for member in message.structure.members:
     type_ = member.type
-    if isinstance(type_, Array):
+    if isinstance(type_, Array) or isinstance(type_, BoundedSequence):
         type_ = type_.basetype
     if isinstance(type_, NamespacedType):
         filename_prefix = convert_camel_case_to_lower_case_underscore(type_.name)
@@ -97,7 +98,7 @@ for member in message.structure.members:
     if isinstance(type_, UnboundedSequence):
         bounded_template_string = 'false'
         break
-    if isinstance(type_, Array):
+    if isinstance(type_, Array) or isinstance(type_, BoundedSequence):
         type_ = type_.basetype
     if isinstance(type_, BaseString) and type_.maximum_size is None:
         bounded_template_string = 'false'

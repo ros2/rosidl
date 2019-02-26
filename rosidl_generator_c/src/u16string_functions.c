@@ -25,11 +25,11 @@ rosidl_generator_c__U16String__init(rosidl_generator_c__U16String * str)
   if (!str) {
     return false;
   }
-  str->data = malloc(1);
+  str->data = malloc(sizeof(uint16_t));
   if (!str->data) {
     return false;
   }
-  str->data[0] = '\0';
+  str->data[0] = 0;
   str->size = 0;
   str->capacity = 1;
   return true;

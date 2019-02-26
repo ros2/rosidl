@@ -65,7 +65,6 @@ def idl_structure_type_to_c_typename(structure_type):
 
 
 def idl_structure_type_sequence_to_c_typename(structure_type):
-    # TODO rename struct from _Array to _Sequence
     return idl_structure_type_to_c_typename(structure_type) + '__Sequence'
 
 

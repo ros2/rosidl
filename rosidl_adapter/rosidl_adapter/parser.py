@@ -34,7 +34,6 @@ ACTION_FEEDBACK_SUFFIX = '_Feedback'
 ACTION_GOAL_SERVICE_SUFFIX = '_Goal'
 ACTION_RESULT_SERVICE_SUFFIX = '_Result'
 ACTION_FEEDBACK_MESSAGE_SUFFIX = '_Feedback'
-ACTION_IMPLICIT_FIELDS = ['action_goal_id', 'action_status']
 
 PRIMITIVE_TYPES = [
     'bool',

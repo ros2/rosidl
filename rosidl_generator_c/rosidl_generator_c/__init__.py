@@ -126,20 +126,6 @@ def value_to_c(type_, value):
 
     return basic_value_to_c(type_, value)
 
-    # if not type_.is_array:
-    #     return basic_value_to_c(type_.type, value)
-
-    # c_values = []
-    # for single_value in value:
-    #     c_value = basic_value_to_c(type_.type, single_value)
-    #     c_values.append(c_value)
-    # c_value = '{%s}' % ', '.join(c_values)
-    # if len(c_values) > 1:
-    #     # Only wrap in a second set of {} if the array length is > 1.
-    #     # This avoids "warning: braces around scalar initializer"
-    #     c_value = '{%s}' % c_value
-    # return c_value
-
 
 def basic_value_to_c(type_, value):
     assert isinstance(type_, BasicType)

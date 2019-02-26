@@ -124,7 +124,7 @@ rosidl_generator_c__U16String__Sequence__init(
   }
   rosidl_generator_c__U16String * data = NULL;
   if (size) {
-    data = (rosidl_generator_c__U16String *)calloc(size, sizeof(rosidl_generator_c__U16String));
+    data = (rosidl_generator_c__U16String *)malloc(size * sizeof(rosidl_generator_c__U16String));
     if (!data) {
       return false;
     }

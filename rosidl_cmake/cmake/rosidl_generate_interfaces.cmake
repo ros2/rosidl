@@ -254,6 +254,13 @@ macro(rosidl_generate_interfaces target)
 
   set(rosidl_generate_interfaces_IDL_TUPLES ${_idl_tuples})
   unset(rosidl_generate_interfaces_IDL_FILES)
+
+  set(rosidl_generate_interfaces_ABS_IDL_FILES)
+  foreach(_idl_tuple ${rosidl_generate_interfaces_IDL_TUPLES})
+    string(REGEX REPLACE ":([^:]*)$" "/\\1" _abs_idl_file "${_idl_tuple}")
+    list(APPEND rosidl_generate_interfaces_ABS_IDL_FILES "${_abs_idl_file}")
+  endforeach()
+
   ament_execute_extensions("rosidl_generate_idl_interfaces")
 
   # check for extensions registered with the previous extension point

@@ -15,6 +15,9 @@ from rosidl_generator_cpp import create_init_alloc_and_member_lists
 from rosidl_generator_cpp import escape_string
 from rosidl_generator_cpp import msg_type_to_cpp
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
+from rosidl_parser.definition import ACTION_FEEDBACK_SUFFIX
+from rosidl_parser.definition import ACTION_GOAL_SUFFIX
+from rosidl_parser.definition import ACTION_RESULT_SUFFIX
 from rosidl_parser.definition import BaseString
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import NamespacedType
@@ -34,19 +37,16 @@ for member in message.structure.members:
     if isinstance(type_, NestedType):
         type_ = type_.basetype
     if isinstance(type_, NamespacedType):
-        filename_prefix = convert_camel_case_to_lower_case_underscore(type_.name)
-        if filename_prefix.endswith('__request'):
-            filename_prefix = filename_prefix[:-9]
-        elif filename_prefix.endswith('__response'):
-            filename_prefix = filename_prefix[:-10]
-        if filename_prefix.endswith('__goal'):
-            filename_prefix = filename_prefix[:-6]
-        elif filename_prefix.endswith('__result'):
-            filename_prefix = filename_prefix[:-8]
-        elif filename_prefix.endswith('__feedback'):
-            filename_prefix = filename_prefix[:-10]
+        if (
+            type_.name.endswith(ACTION_GOAL_SUFFIX) or
+            type_.name.endswith(ACTION_RESULT_SUFFIX) or
+            type_.name.endswith(ACTION_FEEDBACK_SUFFIX)
+        ):
+            typename = type_.name.rsplit('_', 1)[0]
+        else:
+            typename = type_.name
         member_names = includes.setdefault(
-            '/'.join((type_.namespaces + [filename_prefix])) + '__struct.hpp', [])
+            '/'.join((type_.namespaces + [convert_camel_case_to_lower_case_underscore(typename)])) + '__struct.hpp', [])
         member_names.append(member.name)
 }@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

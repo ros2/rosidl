@@ -24,22 +24,31 @@ extern "C"
 
 enum
 {
-  rosidl_typesupport_introspection_c__ROS_TYPE_BOOL = 1,
-  rosidl_typesupport_introspection_c__ROS_TYPE_BYTE = 2,
-  rosidl_typesupport_introspection_c__ROS_TYPE_CHAR = 3,
-  rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT32 = 4,
-  rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT64 = 5,
-  rosidl_typesupport_introspection_c__ROS_TYPE_INT8 = 6,
-  rosidl_typesupport_introspection_c__ROS_TYPE_UINT8 = 7,
-  rosidl_typesupport_introspection_c__ROS_TYPE_INT16 = 8,
-  rosidl_typesupport_introspection_c__ROS_TYPE_UINT16 = 9,
-  rosidl_typesupport_introspection_c__ROS_TYPE_INT32 = 10,
-  rosidl_typesupport_introspection_c__ROS_TYPE_UINT32 = 11,
-  rosidl_typesupport_introspection_c__ROS_TYPE_INT64 = 12,
-  rosidl_typesupport_introspection_c__ROS_TYPE_UINT64 = 13,
-  rosidl_typesupport_introspection_c__ROS_TYPE_STRING = 14,
+  rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT = 1,
+  rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE = 2,
+  rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE = 3,
+  rosidl_typesupport_introspection_c__ROS_TYPE_CHAR = 4,
+  rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR = 5,
+  rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN = 6,
+  rosidl_typesupport_introspection_c__ROS_TYPE_OCTET = 7,
+  rosidl_typesupport_introspection_c__ROS_TYPE_UINT8 = 8,
+  rosidl_typesupport_introspection_c__ROS_TYPE_INT8 = 9,
+  rosidl_typesupport_introspection_c__ROS_TYPE_UINT16 = 10,
+  rosidl_typesupport_introspection_c__ROS_TYPE_INT16 = 11,
+  rosidl_typesupport_introspection_c__ROS_TYPE_UINT32 = 12,
+  rosidl_typesupport_introspection_c__ROS_TYPE_INT32 = 13,
+  rosidl_typesupport_introspection_c__ROS_TYPE_UINT64 = 14,
+  rosidl_typesupport_introspection_c__ROS_TYPE_INT64 = 15,
+  rosidl_typesupport_introspection_c__ROS_TYPE_STRING = 16,
+  rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING = 17,
 
-  rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE = 15
+  rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE = 18,
+
+  // for backward compatibility only
+  rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT32 = 1,
+  rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT64 = 2,
+  rosidl_typesupport_introspection_c__ROS_TYPE_BOOL = 6,
+  rosidl_typesupport_introspection_c__ROS_TYPE_BYTE = 7
 };
 
 #ifdef __cplusplus

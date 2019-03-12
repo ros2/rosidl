@@ -250,7 +250,7 @@ void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic 
 #pragma GCC diagnostic pop
 #endif
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, byte_value, 0, 255)
-  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, char_value, CHAR_MIN, CHAR_MAX)
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, char_value, 0, UINT8_MAX)
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, float32_value, FLT_MIN, FLT_MAX)
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, float64_value, DBL_MIN, DBL_MAX)
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int8_value, INT8_MIN, INT8_MAX)
@@ -287,8 +287,8 @@ void test_message_primitives_bounded(rosidl_generator_cpp::msg::PrimitivesBounde
 {
   TEST_BOUNDED_ARRAY_PRIMITIVE(message, bool_value, bool, PRIMITIVES_ARRAY_SIZE, \
     false, true)
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, char_value, char, PRIMITIVES_ARRAY_SIZE, \
-    CHAR_MIN, CHAR_MAX)
+  TEST_BOUNDED_ARRAY_PRIMITIVE(message, char_value, unsigned char, PRIMITIVES_ARRAY_SIZE, \
+    0, UINT8_MAX)
   TEST_BOUNDED_ARRAY_PRIMITIVE(message, byte_value, uint8_t, PRIMITIVES_ARRAY_SIZE, \
     0, UINT8_MAX)
   TEST_BOUNDED_ARRAY_PRIMITIVE(message, float32_value, float, PRIMITIVES_ARRAY_SIZE, \
@@ -339,8 +339,8 @@ void test_message_primitives_unbounded(rosidl_generator_cpp::msg::PrimitivesUnbo
 {
   TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, bool_value, bool, PRIMITIVES_ARRAY_SIZE, \
     false, true)
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, char_value, char, PRIMITIVES_ARRAY_SIZE, \
-    CHAR_MIN, CHAR_MAX)
+  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, char_value, unsigned char, PRIMITIVES_ARRAY_SIZE, \
+    0, UINT8_MAX)
   TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, byte_value, uint8_t, PRIMITIVES_ARRAY_SIZE, \
     0, UINT8_MAX)
   TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, float32_value, float, PRIMITIVES_ARRAY_SIZE, \
@@ -379,8 +379,8 @@ void test_message_primitives_static_arrays(rosidl_generator_cpp::msg::PrimitiveS
 {
   TEST_STATIC_ARRAY_PRIMITIVE(message, bool_value, bool, PRIMITIVES_ARRAY_SIZE, \
     false, true)
-  TEST_STATIC_ARRAY_PRIMITIVE(message, char_value, char, PRIMITIVES_ARRAY_SIZE, \
-    CHAR_MIN, CHAR_MAX)
+  TEST_STATIC_ARRAY_PRIMITIVE(message, char_value, unsigned char, PRIMITIVES_ARRAY_SIZE, \
+    0, UINT8_MAX)
   TEST_STATIC_ARRAY_PRIMITIVE(message, byte_value, uint8_t, PRIMITIVES_ARRAY_SIZE, \
     0, UINT8_MAX)
   TEST_STATIC_ARRAY_PRIMITIVE(message, float32_value, float, PRIMITIVES_ARRAY_SIZE, \
@@ -540,7 +540,7 @@ TEST(Test_messages, primitives_default) {
 #pragma GCC diagnostic pop
 #endif
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, byte_value, 50, 255);
-  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, char_value, 100, CHAR_MAX);
+  TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, char_value, 100, UINT8_MAX);
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, float32_value, 1.125f, FLT_MAX);
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, float64_value, 1.125, DBL_MAX);
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int8_value, -50, INT8_MAX);

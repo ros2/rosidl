@@ -41,13 +41,18 @@ BASIC_TYPES = [
     'uint64',
 ]
 
+CONSTANT_MODULE_SUFFIX = '_Constants'
+
 SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
 SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
 
-ACTION_GOAL_SERVICE_SUFFIX = '_Goal'
-ACTION_RESULT_SERVICE_SUFFIX = '_Result'
-ACTION_FEEDBACK_MESSAGE_SUFFIX = '_Feedback'
-ACTION_WRAPPER_TYPE_SUFFIX = '_Action'
+ACTION_GOAL_SUFFIX = '_Goal'
+ACTION_RESULT_SUFFIX = '_Result'
+ACTION_FEEDBACK_SUFFIX = '_Feedback'
+
+ACTION_GOAL_SERVICE_SUFFIX = '_SendGoal'
+ACTION_RESULT_SERVICE_SUFFIX = '_GetResult'
+ACTION_FEEDBACK_MESSAGE_SUFFIX = '_FeedbackMessage'
 
 
 class AbstractType:
@@ -401,9 +406,9 @@ class Constant(Annotatable):
 
 
 class Message:
-    """A structure containing constants and enums."""
+    """A structure containing constants."""
 
-    __slots__ = ('structure', 'constants', 'enums')
+    __slots__ = ('structure', 'constants')
 
     def __init__(self, structure):
         """
@@ -415,7 +420,6 @@ class Message:
         assert isinstance(structure, Structure)
         self.structure = structure
         self.constants = OrderedDict()
-        self.enums = []
 
 
 class Service:
@@ -454,19 +458,20 @@ class Action:
     """A namespaced type of an action including the derived types."""
 
     __slots__ = (
-        'structure_type', 'goal_request', 'result_response', 'feedback',
-        'goal_service', 'result_service', 'feedback_message')
+        'structure_type', 'goal', 'result', 'feedback',
+        'send_goal_service', 'get_result_service', 'feedback_message',
+        'implicit_includes')
 
-    def __init__(self, type_, goal_request, result_response, feedback):
+    def __init__(self, type_, goal, result, feedback):
         """
         Constructor.
 
-        From the provide type the actually used services and message are
+        From the provided types the actually used services and messages are
         derived.
 
         :param NamespacedType type_: the namespaced type identifying the action
-        :param Message goal_request: the goal request message
-        :param Message result_response: the result response message
+        :param Message goal: the goal message
+        :param Message result: the result message
         :param Message feedback: the feedback message
         """
         super().__init__()
@@ -474,28 +479,35 @@ class Action:
         assert isinstance(type_, NamespacedType)
         self.structure_type = type_
 
-        assert isinstance(goal_request, Message)
-        assert goal_request.structure.type.namespaces == type_.namespaces
-        assert goal_request.structure.type.name == type_.name + \
-            ACTION_GOAL_SERVICE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX
-        self.goal_request = goal_request
+        # explicitly defined types
+        assert isinstance(goal, Message)
+        assert goal.structure.type.namespaces == type_.namespaces
+        assert goal.structure.type.name == type_.name + ACTION_GOAL_SUFFIX
+        self.goal = goal
 
-        assert isinstance(result_response, Message)
-        assert result_response.structure.type.namespaces == type_.namespaces
-        assert result_response.structure.type.name == type_.name + \
-            ACTION_RESULT_SERVICE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX
-        self.result_response = result_response
+        assert isinstance(result, Message)
+        assert result.structure.type.namespaces == type_.namespaces
+        assert result.structure.type.name == type_.name + ACTION_RESULT_SUFFIX
+        self.result = result
 
         assert isinstance(feedback, Message)
         assert feedback.structure.type.namespaces == type_.namespaces
         assert feedback.structure.type.name == type_.name + \
-            ACTION_FEEDBACK_MESSAGE_SUFFIX
+            ACTION_FEEDBACK_SUFFIX
         self.feedback = feedback
 
+        # necessary include for injected timestamp member
+        self.implicit_includes = [
+            Include('builtin_interfaces/msg/Time.idl'),
+            Include('unique_identifier_msgs/msg/UUID.idl'),
+        ]
+
         # derived types
-        goal_service_name = type_.name + ACTION_WRAPPER_TYPE_SUFFIX + \
-            ACTION_GOAL_SERVICE_SUFFIX
-        self.goal_service = Service(
+        goal_id_type = NamespacedType(
+                namespaces=['unique_identifier_msgs', 'msg'], name='UUID')
+
+        goal_service_name = type_.name + ACTION_GOAL_SERVICE_SUFFIX
+        self.send_goal_service = Service(
             NamespacedType(
                 namespaces=type_.namespaces, name=goal_service_name),
             request=Message(Structure(
@@ -503,8 +515,8 @@ class Action:
                     namespaces=type_.namespaces,
                     name=goal_service_name + SERVICE_REQUEST_MESSAGE_SUFFIX),
                 members=[
-                    Member(Array(BasicType('uint8'), 16), 'uuid'),
-                    Member(goal_request.structure.type, 'request')]
+                    Member(goal_id_type, 'goal_id'),
+                    Member(goal.structure.type, 'goal')]
             )),
             response=Message(Structure(
                 NamespacedType(
@@ -518,16 +530,15 @@ class Action:
             )),
         )
 
-        result_service_name = type_.name + ACTION_WRAPPER_TYPE_SUFFIX + \
-            ACTION_RESULT_SERVICE_SUFFIX
-        self.result_service = Service(
+        result_service_name = type_.name + ACTION_RESULT_SERVICE_SUFFIX
+        self.get_result_service = Service(
             NamespacedType(
                 namespaces=type_.namespaces, name=result_service_name),
             request=Message(Structure(
                 NamespacedType(
                     namespaces=type_.namespaces,
                     name=result_service_name + SERVICE_REQUEST_MESSAGE_SUFFIX),
-                members=[Member(Array(BasicType('uint8'), 16), 'uuid')]
+                members=[Member(goal_id_type, 'goal_id')]
             )),
             response=Message(Structure(
                 NamespacedType(
@@ -535,17 +546,16 @@ class Action:
                     name=result_service_name + SERVICE_RESPONSE_MESSAGE_SUFFIX),
                 members=[
                     Member(BasicType('int8'), 'status'),
-                    Member(result_response.structure.type, 'response')]
+                    Member(result.structure.type, 'result')]
             )),
         )
 
         self.feedback_message = Message(Structure(
             NamespacedType(
                 namespaces=type_.namespaces,
-                name=type_.name + ACTION_WRAPPER_TYPE_SUFFIX +
-                ACTION_FEEDBACK_MESSAGE_SUFFIX),
+                name=type_.name + ACTION_FEEDBACK_MESSAGE_SUFFIX),
             members=[
-                Member(Array(BasicType('uint8'), 16), 'uuid'),
+                Member(goal_id_type, 'goal_id'),
                 Member(feedback.structure.type, 'feedback')]
         ))
 

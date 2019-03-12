@@ -3,7 +3,7 @@
 
 module rosidl_parser {
   module msg {
-    module MyMessage_constants {
+    module MyMessage_Constants {
       const short SHORT_CONSTANT = -23;
       const unsigned long UNSIGNED_LONG_CONSTANT = 42;
       const float FLOAT_CONSTANT = 1.25;
@@ -11,6 +11,7 @@ module rosidl_parser {
       const string STRING_CONSTANT = "string_value";
     };
 
+    @verbatim ( language="comment", text="Documentation of MyMessage." )
     struct MyMessage {
       short short_value, short_value2;
       @default ( value=123 )
@@ -43,6 +44,8 @@ module rosidl_parser {
       wstring<UNSIGNED_LONG_CONSTANT> constant_bounded_wstring_value;
       sequence<short> unbounded_short_values;
       sequence<short, 5> bounded_short_values;
+      sequence<string<3>> unbounded_values_of_bounded_strings;
+      sequence<string<3>, 4> bounded_values_of_bounded_strings;
       short array_short_values[23];
     };
   };

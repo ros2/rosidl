@@ -21,6 +21,7 @@ add_library(${PROJECT_NAME}
   "src/primitives_sequence_functions.c"
   "src/service_type_support.c"
   "src/string_functions.c"
+  "src/u16string_functions.c"
 )
 ament_target_dependencies(${PROJECT_NAME}
   "rosidl_typesupport_interface")
@@ -87,6 +88,7 @@ if(BUILD_TESTING)
     "msg/Uint8.msg"
     "msg/Various.msg"
     "msg/Wire.msg"
+    "srv/AddTwoInts.srv"
   )
 
   include(cmake/register_c.cmake)

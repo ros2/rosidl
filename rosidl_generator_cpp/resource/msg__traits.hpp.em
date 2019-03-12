@@ -1,111 +1,117 @@
-// generated from rosidl_generator_cpp/resource/msg__traits.hpp.em
-// generated code does not contain a copyright notice
+@# Included from rosidl_generator_cpp/resource/idl__traits.hpp.em
+@{
+from rosidl_parser.definition import ACTION_FEEDBACK_SUFFIX
+from rosidl_parser.definition import ACTION_GOAL_SUFFIX
+from rosidl_parser.definition import ACTION_RESULT_SUFFIX
+from rosidl_parser.definition import Array
+from rosidl_parser.definition import BaseString
+from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import NamespacedType
+from rosidl_parser.definition import Sequence
+from rosidl_parser.definition import UnboundedSequence
 
-@#######################################################################
-@# EmPy template for generating <msg>__traits.hpp files
-@#
-@# Context:
-@#  - spec (rosidl_parser.MessageSpecification)
-@#    Parsed specification of the .msg file
-@#  - subfolder (string)
-@#    The subfolder / subnamespace of the message
-@#    Either 'msg' or 'srv'
-@#  - get_header_filename_from_msg_name (function)
-@#######################################################################
+message_typename = '::'.join(message.structure.type.namespaces + [message.structure.type.name])
+}@
 @
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Collect necessary include directives for all members
 @{
-header_guard_parts = [
-    spec.base_type.pkg_name, subfolder,
-    get_header_filename_from_msg_name(spec.base_type.type) + '__traits_hpp']
-header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
+from collections import OrderedDict
+from rosidl_cmake import convert_camel_case_to_lower_case_underscore
+includes = OrderedDict()
+for member in message.structure.members:
+    type_ = member.type
+    if isinstance(type_, Array) or isinstance(type_, BoundedSequence):
+        type_ = type_.basetype
+    if isinstance(type_, NamespacedType):
+        if (
+            type_.name.endswith(ACTION_GOAL_SUFFIX) or
+            type_.name.endswith(ACTION_RESULT_SUFFIX) or
+            type_.name.endswith(ACTION_FEEDBACK_SUFFIX)
+        ):
+            typename = type_.name.rsplit('_', 1)[0]
+        else:
+            typename = type_.name
+        member_names = includes.setdefault(
+            '/'.join((type_.namespaces + [convert_camel_case_to_lower_case_underscore(typename)])) + '__traits.hpp', [])
+        member_names.append(member.name)
 }@
-#ifndef @(header_guard_variable)
-#define @(header_guard_variable)
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+@
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@[if includes]@
+// Include directives for member types
+@[    for header_file, member_names in includes.items()]@
+@[        for member_name in member_names]@
+// Member '@(member_name)'
+@[        end for]@
+@[        if header_file in include_directives]@
+// already included above
+// @
+@[        else]@
+@{include_directives.add(header_file)}@
+@[        end if]@
+#include "@(header_file)"
+@[    end for]@
 
-@{
-cpp_namespace = '%s::%s::' % (spec.base_type.pkg_name, subfolder)
-}@
-#include <stdint.h>
-#include <type_traits>
-
+@[end if]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+@
 namespace rosidl_generator_traits
 {
 
-#ifndef __ROSIDL_GENERATOR_CPP_TRAITS
-#define __ROSIDL_GENERATOR_CPP_TRAITS
-
-template<typename T>
-inline const char * data_type();
-
-template<typename T>
-struct has_fixed_size : std::false_type {};
-
-template<typename T>
-struct has_bounded_size : std::false_type {};
-
-#endif  // __ROSIDL_GENERATOR_CPP_TRAITS
-
-#include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__struct.hpp"
+template<>
+inline const char * data_type<@(message_typename)>()
+{
+  return "@(message_typename)";
+}
 
 @{
-fixed_template_strings = []
-fixed = False
-
-for field in spec.fields:
-    if field.type.type == 'string':
+fixed_template_string = 'true'
+fixed_template_strings = set()
+for member in message.structure.members:
+    type_ = member.type
+    if isinstance(type_, Sequence):
+        fixed_template_string = 'false'
         break
-    if field.type.is_dynamic_array():
+    if isinstance(type_, Array):
+        type_ = type_.basetype
+    if isinstance(type_, BaseString):
+        fixed_template_string = 'false'
         break
-    if not field.type.is_primitive_type():
-        tmp_fixed_string = "has_fixed_size<{}::msg::{}>::value".format(
-            field.type.pkg_name, field.type.type)
-        if tmp_fixed_string not in fixed_template_strings:
-            fixed_template_strings.append(tmp_fixed_string)
+    if isinstance(type_, NamespacedType):
+        typename = '::'.join(type_.namespaces + [type_.name])
+        fixed_template_strings.add('has_fixed_size<{typename}>::value'.format_map(locals()))
 else:
-    fixed = True
-
-if fixed:
-    fixed_template_string = ' && '.join(fixed_template_strings) if fixed_template_strings else 'true'
-else:
-    fixed_template_string = 'false'
+    if fixed_template_strings:
+        fixed_template_string = ' && '.join(sorted(fixed_template_strings))
 }@
-
 template<>
-struct has_fixed_size<@(cpp_namespace)@(spec.base_type.type)>
+struct has_fixed_size<@(message_typename)>
   : std::integral_constant<bool, @(fixed_template_string)> {};
 
 @{
-bounded_template_strings = []
-bounded = False
-
-for field in spec.fields:
-    if field.type.type == 'string' and field.type.string_upper_bound is None:
+bounded_template_string = 'true'
+bounded_template_strings = set()
+for member in message.structure.members:
+    type_ = member.type
+    if isinstance(type_, UnboundedSequence):
+        bounded_template_string = 'false'
         break
-    if field.type.is_dynamic_array() and not field.type.is_upper_bound:
+    if isinstance(type_, Array) or isinstance(type_, BoundedSequence):
+        type_ = type_.basetype
+    if isinstance(type_, BaseString) and type_.maximum_size is None:
+        bounded_template_string = 'false'
         break
-    if not field.type.is_primitive_type():
-        tmp_bounded_string = "has_bounded_size<{}::msg::{}>::value".format(
-            field.type.pkg_name, field.type.type)
-        if tmp_bounded_string not in bounded_template_strings:
-            bounded_template_strings.append(tmp_bounded_string)
+    if isinstance(type_, NamespacedType):
+        typename = '::'.join(type_.namespaces + [type_.name])
+        bounded_template_strings.add('has_bounded_size<{typename}>::value'.format_map(locals()))
 else:
-    bounded = True
-
-if bounded:
-    bounded_template_string = ' && '.join(bounded_template_strings) if bounded_template_strings else 'true'
-else:
-    bounded_template_string = 'false'
+    if bounded_template_strings:
+        bounded_template_string = ' && '.join(sorted(bounded_template_strings))
 }@
 template<>
-struct has_bounded_size<@(cpp_namespace)@(spec.base_type.type)>
+struct has_bounded_size<@(message_typename)>
   : std::integral_constant<bool, @(bounded_template_string)> {};
 
-template<>
-inline const char * data_type<@(cpp_namespace)@(spec.base_type.type)>()
-{
-  return "@(cpp_namespace)@(spec.base_type.type)";
-}
-
 }  // namespace rosidl_generator_traits
-
-#endif  // @(header_guard_variable)

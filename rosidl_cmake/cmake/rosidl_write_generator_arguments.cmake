@@ -26,6 +26,7 @@ function(rosidl_write_generator_arguments output_file)
     "TEMPLATE_DIR")
 
   set(REQUIRED_MULTI_VALUE_KEYWORDS  # only require one of them
+    "IDL_TUPLES"
     "NON_IDL_TUPLES"
     "ROS_INTERFACE_FILES")
   set(OPTIONAL_MULTI_VALUE_KEYWORDS
@@ -84,8 +85,9 @@ function(rosidl_write_generator_arguments output_file)
       file(APPEND "${output_file}" "\n")
 
       string(TOLOWER "${one_value_argument}" key)
+      string(REPLACE "\\" "\\\\" value "${ARG_${one_value_argument}}")
       file(APPEND "${output_file}"
-        "  \"${key}\": \"${ARG_${one_value_argument}}\"")
+        "  \"${key}\": \"${value}\"")
     endif()
   endforeach()
 
@@ -109,9 +111,11 @@ function(rosidl_write_generator_arguments output_file)
       list(GET ARG_${multi_value_argument} -1 last_value)
       list(REMOVE_AT ARG_${multi_value_argument} -1)
       foreach(value ${ARG_${multi_value_argument}})
+        string(REPLACE "\\" "\\\\" value "${value}")
         file(APPEND "${output_file}"
           "    \"${value}\",\n")
       endforeach()
+      string(REPLACE "\\" "\\\\" last_value "${last_value}")
       file(APPEND "${output_file}"
         "    \"${last_value}\"\n")
 

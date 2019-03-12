@@ -1,64 +1,76 @@
-// generated from rosidl_typesupport_introspection_cpp/resource/srv__type_support.cpp.em
-// generated code does not contain a copyright notice
+@# Included from rosidl_typesupport_introspection_c/resource/idl__type_support.c.em
+@{
+TEMPLATE(
+    'msg__type_support.cpp.em',
+    package_name=package_name, interface_path=interface_path, message=service.request_message,
+    include_directives=include_directives)
+}@
 
-@#######################################################################
-@# EmPy template for generating <srv>__type_support.cpp files
-@#
-@# Context:
-@#  - spec (rosidl_parser.ServiceSpecification)
-@#    Parsed specification of the .srv file
-@#  - subfolder (string)
-@#    The subfolder / subnamespace of the message
-@#    Either 'srv' or 'action'
-@#  - get_header_filename_from_msg_name (function)
-@#######################################################################
-@
-#include <rosidl_generator_c/service_type_support_struct.h>
-#include <rosidl_typesupport_cpp/message_type_support.hpp>
-#include <rosidl_typesupport_cpp/service_type_support.hpp>
-#include "rosidl_typesupport_interface/macros.h"
+@{
+TEMPLATE(
+    'msg__type_support.cpp.em',
+    package_name=package_name, interface_path=interface_path, message=service.response_message,
+    include_directives=include_directives)
+}@
 
-#include "rosidl_typesupport_introspection_cpp/visibility_control.h"
+@{
+from rosidl_cmake import convert_camel_case_to_lower_case_underscore
+include_parts = [package_name] + list(interface_path.parents[0].parts) + \
+    [convert_camel_case_to_lower_case_underscore(interface_path.stem)]
+include_base = '/'.join(include_parts)
 
-#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.srv_name))__struct.hpp"
-#include "rosidl_typesupport_introspection_cpp/identifier.hpp"
-#include "rosidl_typesupport_introspection_cpp/message_type_support_decl.hpp"
-#include "rosidl_typesupport_introspection_cpp/service_introspection.hpp"
-#include "rosidl_typesupport_introspection_cpp/service_type_support_decl.hpp"
+header_files = [
+    'rosidl_generator_c/service_type_support_struct.h',
+    'rosidl_typesupport_cpp/message_type_support.hpp',
+    'rosidl_typesupport_cpp/service_type_support.hpp',
+    'rosidl_typesupport_interface/macros.h',
+    'rosidl_typesupport_introspection_cpp/visibility_control.h',
+    include_base + '__struct.hpp',
+    'rosidl_typesupport_introspection_cpp/identifier.hpp',
+    'rosidl_typesupport_introspection_cpp/message_type_support_decl.hpp',
+    'rosidl_typesupport_introspection_cpp/service_introspection.hpp',
+    'rosidl_typesupport_introspection_cpp/service_type_support_decl.hpp',
+]
+}@
+@[for header_file in header_files]@
+@[    if header_file in include_directives]@
+// already included above
+// @
+@[    else]@
+@{include_directives.add(header_file)}@
+@[    end if]@
+#include "@(header_file)"
+@[end for]@
+@[for ns in service.structure_type.namespaces]@
 
-#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.request.base_type.type))__struct.hpp"
-#include "@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.response.base_type.type))__struct.hpp"
-
-namespace @(spec.pkg_name)
+namespace @(ns)
 {
-
-namespace @(subfolder)
-{
+@[end for]@
 
 namespace rosidl_typesupport_introspection_cpp
 {
 
 // this is intentionally not const to allow initialization later to prevent an initialization race
-static ::rosidl_typesupport_introspection_cpp::ServiceMembers @(spec.srv_name)_service_members = {
-  "@(spec.pkg_name)",  // package name
-  "@(spec.srv_name)",  // service name
+static ::rosidl_typesupport_introspection_cpp::ServiceMembers @(service.structure_type.name)_service_members = {
+  "@(package_name)",  // package name
+  "@(service.structure_type.name)",  // service name
   // these two fields are initialized below on the first access
-  // see get_service_type_support_handle<@(spec.pkg_name)::@(spec.srv_name)>()
+  // see get_service_type_support_handle<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [service.structure_type.name]))>()
   nullptr,  // request message
   nullptr  // response message
 };
 
-static const rosidl_service_type_support_t @(spec.srv_name)_service_type_support_handle = {
+static const rosidl_service_type_support_t @(service.structure_type.name)_service_type_support_handle = {
   ::rosidl_typesupport_introspection_cpp::typesupport_identifier,
-  &@(spec.srv_name)_service_members,
+  &@(service.structure_type.name)_service_members,
   get_service_typesupport_handle_function,
 };
 
 }  // namespace rosidl_typesupport_introspection_cpp
+@[  for ns in reversed(service.structure_type.namespaces)]@
 
-}  // namespace @(subfolder)
-
-}  // namespace @(spec.pkg_name)
+}  // namespace @(ns)
+@[  end for]@
 
 
 namespace rosidl_typesupport_introspection_cpp
@@ -67,11 +79,11 @@ namespace rosidl_typesupport_introspection_cpp
 template<>
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_service_type_support_t *
-get_service_type_support_handle<@(spec.pkg_name)::@(subfolder)::@(spec.srv_name)>()
+get_service_type_support_handle<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [service.structure_type.name]))>()
 {
   // get a handle to the value to be returned
   auto service_type_support =
-    &::@(spec.pkg_name)::@(subfolder)::rosidl_typesupport_introspection_cpp::@(spec.srv_name)_service_type_support_handle;
+    &::@('::'.join([package_name] + list(interface_path.parents[0].parts)))::rosidl_typesupport_introspection_cpp::@(service.structure_type.name)_service_type_support_handle;
   // get a non-const and properly typed version of the data void *
   auto service_members = const_cast<::rosidl_typesupport_introspection_cpp::ServiceMembers *>(
     static_cast<const ::rosidl_typesupport_introspection_cpp::ServiceMembers *>(
@@ -87,7 +99,7 @@ get_service_type_support_handle<@(spec.pkg_name)::@(subfolder)::@(spec.srv_name)
       const ::rosidl_typesupport_introspection_cpp::MessageMembers *
       >(
       ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<
-        ::@(spec.pkg_name)::@(subfolder)::@(spec.request.base_type.type)
+        ::@('::'.join([package_name] + list(interface_path.parents[0].parts)))::@(service.request_message.structure.type.name)
       >()->data
       );
     // initialize the response_members_ with the static function from the external library
@@ -95,7 +107,7 @@ get_service_type_support_handle<@(spec.pkg_name)::@(subfolder)::@(spec.srv_name)
       const ::rosidl_typesupport_introspection_cpp::MessageMembers *
       >(
       ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<
-        ::@(spec.pkg_name)::@(subfolder)::@(spec.response.base_type.type)
+        ::@('::'.join([package_name] + list(interface_path.parents[0].parts)))::@(service.response_message.structure.type.name)
       >()->data
       );
   }
@@ -112,8 +124,8 @@ extern "C"
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_service_type_support_t *
-ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_cpp, @(spec.pkg_name), @(subfolder), @(spec.srv_name))() {
-  return ::rosidl_typesupport_introspection_cpp::get_service_type_support_handle<@(spec.pkg_name)::@(subfolder)::@(spec.srv_name)>();
+ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_cpp, @(', '.join([package_name] + list(interface_path.parents[0].parts) + [service.structure_type.name])))() {
+  return ::rosidl_typesupport_introspection_cpp::get_service_type_support_handle<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [service.structure_type.name]))>();
 }
 
 #ifdef __cplusplus

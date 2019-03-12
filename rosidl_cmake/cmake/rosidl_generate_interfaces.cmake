@@ -140,7 +140,7 @@ macro(rosidl_generate_interfaces target)
       message(FATAL_ERROR "rosidl_generate_interfaces() the passed dependency "
         "'${_dep}' has not been found before using find_package()")
     endif()
-    foreach(_idl_file ${${_dep}_INTERFACE_FILES})
+    foreach(_idl_file ${${_dep}_IDL_FILES})
       set(_abs_idl_file "${${_dep}_DIR}/../${_idl_file}")
       normalize_path(_abs_idl_file "${_abs_idl_file}")
       list(APPEND _dep_files "${_abs_idl_file}")
@@ -188,33 +188,14 @@ macro(rosidl_generate_interfaces target)
     endif()
   endforeach()
 
-  # Separate action files from other interface files
-  rosidl_identify_action_idls(${_non_idl_files}
-    OUTPUT_ACTION_VAR _action_files
-    OUTPUT_IDL_VAR _non_idl_files)
-
-  # Convert action files into messages and services
-  if(_action_files)
-    set(_convert_actions_target "${target}+_convert_actions_to_msg_and_srv")
-    rosidl_convert_actions_to_msg_and_srv(${_convert_actions_target} ${_action_files}
-      OUTPUT_IDL_VAR _action_msg_and_srv_files)
-  endif()
-
   add_custom_target(
     ${target} ALL
     DEPENDS
     ${_non_idl_files}
     ${_dep_files}
-    ${_convert_actions_target}
     SOURCES
     ${_non_idl_files}
   )
-
-  # Tell CMake in this directory scope that these files are generated
-  foreach(_idl_file ${_action_msg_and_srv_files})
-    list(APPEND _non_idl_files "${_idl_file}")
-    set_property(SOURCE ${_idl_file} PROPERTY GENERATED 1)
-  endforeach()
 
   if(NOT _ARG_SKIP_INSTALL)
     if(NOT _ARG_SKIP_GROUP_MEMBERSHIP_CHECK)
@@ -252,11 +233,11 @@ macro(rosidl_generate_interfaces target)
   # collect package names of recursive dependencies which contain interface files
   set(_recursive_dependencies)
   foreach(_dep ${_ARG_DEPENDENCIES})
-    if(DEFINED ${_dep}_INTERFACE_FILES)
+    if(DEFINED ${_dep}_IDL_FILES)
       list_append_unique(_recursive_dependencies "${_dep}")
     endif()
     foreach(_dep2 ${${_dep}_RECURSIVE_DEPENDENCIES})
-      if(DEFINED ${_dep2}_INTERFACE_FILES)
+      if(DEFINED ${_dep2}_IDL_FILES)
         list_append_unique(_recursive_dependencies "${_dep2}")
       endif()
     endforeach()
@@ -273,37 +254,28 @@ macro(rosidl_generate_interfaces target)
 
   set(rosidl_generate_interfaces_IDL_TUPLES ${_idl_tuples})
   unset(rosidl_generate_interfaces_IDL_FILES)
+
+  set(rosidl_generate_interfaces_ABS_IDL_FILES)
+  foreach(_idl_tuple ${rosidl_generate_interfaces_IDL_TUPLES})
+    string(REGEX REPLACE ":([^:]*)$" "/\\1" _abs_idl_file "${_idl_tuple}")
+    list(APPEND rosidl_generate_interfaces_ABS_IDL_FILES "${_abs_idl_file}")
+  endforeach()
+
   ament_execute_extensions("rosidl_generate_idl_interfaces")
 
-  unset(rosidl_generate_interfaces_IDL_TUPLES)
-  set(rosidl_generate_interfaces_IDL_FILES ${_non_idl_files})
-  ament_execute_extensions("rosidl_generate_interfaces")
-
-  if(_action_files)
-    # Invoke generation for `.action` files
-    set(_skip_install "")
-    if(_ARG_SKIP_INSTALL)
-      set(_skip_install "SKIP_INSTALL")
-    endif()
-    set(_add_linter_tests "")
-    if(_ARG_ADD_LINTER_TESTS)
-      set(_add_linter_tests "ADD_LINTER_TESTS")
-    endif()
-    set(_library_name "")
-    if(_ARG_LIBRARY_NAME)
-      set(_library_name "LIBRARY" "${_ARG_LIBRARY_NAME}")
-    endif()
-    set(_pkg_depends "")
-    if(_recursive_dependencies)
-      set(_pkg_depends "DEPENDENCY_PACKAGE_NAMES" "${_recursive_dependencies}")
-    endif()
-    rosidl_generate_action_interfaces(${target}
-      ${_skip_install}
-      ${_add_linter_tests}
-      ${_library_name}
-      ${_action_files}
-      ${_pkg_depends}
-    )
+  # check for extensions registered with the previous extension point
+  set(obsolete_extension_point "rosidl_generate_interfaces")
+  if(AMENT_EXTENSIONS_${obsolete_extension_point})
+    foreach(_extension ${AMENT_EXTENSIONS_${obsolete_extension_point}})
+      string(REPLACE ":" ";" _extension_list "${_extension}")
+      list(GET _extension_list 0 _pkg_name)
+      message(WARNING "Package '${_pkg_name}' registered an extension for the "
+        "obsolete extension point '${obsolete_extension_point}'. "
+        "It is being skipped and needs to be updated to the new extension "
+        "point 'rosidl_generate_idl_interfaces'."
+        "Please refer to the migration steps on the Dashing release page for "
+        "more details.")
+    endforeach()
   endif()
 
   if(NOT _ARG_SKIP_INSTALL)
@@ -317,7 +289,7 @@ macro(rosidl_generate_interfaces target)
         DESTINATION "share/${PROJECT_NAME}/${_parent_folders}"
       )
       file(TO_CMAKE_PATH "${_idl_relpath}" _idl_relpath)
-      list(APPEND _rosidl_cmake_INTERFACE_FILES "${_idl_relpath}")
+      list(APPEND _rosidl_cmake_IDL_FILES "${_idl_relpath}")
     endforeach()
     # install interface files to subfolders based on their extension
     foreach(_idl_file ${_non_idl_files})

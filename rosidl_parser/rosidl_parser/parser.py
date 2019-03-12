@@ -17,19 +17,20 @@ import sys
 
 from lark import Lark
 from lark.lexer import Token
-from lark.reconstruct import Reconstructor
+from lark.tree import pydot__tree_to_png
 from lark.tree import Tree
 
 from rosidl_parser.definition import AbstractType
 from rosidl_parser.definition import Action
-from rosidl_parser.definition import ACTION_FEEDBACK_MESSAGE_SUFFIX
-from rosidl_parser.definition import ACTION_GOAL_SERVICE_SUFFIX
-from rosidl_parser.definition import ACTION_RESULT_SERVICE_SUFFIX
+from rosidl_parser.definition import ACTION_FEEDBACK_SUFFIX
+from rosidl_parser.definition import ACTION_GOAL_SUFFIX
+from rosidl_parser.definition import ACTION_RESULT_SUFFIX
 from rosidl_parser.definition import Annotation
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
 from rosidl_parser.definition import Constant
+from rosidl_parser.definition import CONSTANT_MODULE_SUFFIX
 from rosidl_parser.definition import IdlContent
 from rosidl_parser.definition import IdlFile
 from rosidl_parser.definition import Include
@@ -50,8 +51,7 @@ grammar_file = os.path.join(os.path.dirname(__file__), 'grammar.lark')
 with open(grammar_file, mode='r', encoding='utf-8') as h:
     grammar = h.read()
 
-parser = Lark(grammar, start='specification')
-reconstructor = Reconstructor(parser)
+_parser = None
 
 
 def parse_idl_file(locator, png_file=None):
@@ -65,19 +65,24 @@ def parse_idl_file(locator, png_file=None):
 
 
 def parse_idl_string(idl_string, png_file=None):
-    global parser
-    tree = parser.parse(idl_string)
+    tree = get_ast_from_idl_string(idl_string)
+    content = extract_content_from_ast(tree)
 
     if png_file:
+        os.makedirs(os.path.dirname(png_file), exist_ok=True)
         try:
-            from lark.tree import pydot__tree_to_png
+            pydot__tree_to_png(tree, png_file)
         except ImportError:
             pass
-        else:
-            os.makedirs(os.path.dirname(png_file), exist_ok=True)
-            pydot__tree_to_png(tree, png_file)
 
-    return extract_content_from_ast(tree)
+    return content
+
+
+def get_ast_from_idl_string(idl_string):
+    global _parser
+    if _parser is None:
+        _parser = Lark(grammar, start='specification')
+    return _parser.parse(idl_string)
 
 
 def extract_content_from_ast(tree):
@@ -91,11 +96,15 @@ def extract_content_from_ast(tree):
         include_token = next(child.scan_values(_find_tokens(None)))
         content.elements.append(Include(include_token.value))
 
+    constants = {}
     const_dcls = tree.find_data('const_dcl')
     for const_dcl in const_dcls:
         const_type = next(const_dcl.find_data('const_type'))
         const_expr = next(const_dcl.find_data('const_expr'))
-        content.elements.append(Constant(
+        module_identifiers = get_module_identifier_values(tree, const_dcl)
+        module_comments = constants.setdefault(
+            module_identifiers[-1], [])
+        module_comments.append(Constant(
             get_first_identifier_value(const_dcl),
             get_abstract_type_from_const_expr(const_type),
             get_const_expr_value(const_expr)))
@@ -124,32 +133,43 @@ def extract_content_from_ast(tree):
     if len(struct_defs) == 1:
         msg = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[0]),
-            name=get_first_identifier_value(struct_defs[0]))))
+            name=get_child_identifier_value(struct_defs[0]))))
+        annotations = get_annotations(struct_defs[0])
+        msg.structure.annotations += annotations
         add_message_members(msg, struct_defs[0])
         resolve_typedefed_names(msg.structure, typedefs)
-        # TODO move "global" constants/enums within a "matching" namespace into the message
-        msg.constants.update({c.name: c for c in content.elements if isinstance(c, Constant)})
-        # msg.constants.update(constants)
+        constant_module_name = msg.structure.type.name + CONSTANT_MODULE_SUFFIX
+        if constant_module_name in constants:
+            msg.constants.update(
+                {c.name: c for c in constants[constant_module_name]})
         content.elements.append(msg)
 
     elif len(struct_defs) == 2:
         request = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[0]),
-            name=get_first_identifier_value(struct_defs[0]))))
+            name=get_child_identifier_value(struct_defs[0]))))
         assert request.structure.type.name.endswith(
             SERVICE_REQUEST_MESSAGE_SUFFIX)
         add_message_members(request, struct_defs[0])
         resolve_typedefed_names(request.structure, typedefs)
-        # TODO move "global" constants/enums within a "matching" namespace into the request message
+        constant_module_name = \
+            request.structure.type.name + CONSTANT_MODULE_SUFFIX
+        if constant_module_name in constants:
+            request.constants.update(
+                {c.name: c for c in constants[constant_module_name]})
 
         response = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[1]),
-            name=get_first_identifier_value(struct_defs[1]))))
+            name=get_child_identifier_value(struct_defs[1]))))
         assert response.structure.type.name.endswith(
             SERVICE_RESPONSE_MESSAGE_SUFFIX)
         add_message_members(response, struct_defs[1])
         resolve_typedefed_names(response.structure, typedefs)
-        # TODO move "global" constants/enums within a "matching" namespace into the response msg
+        constant_module_name = \
+            response.structure.type.name + CONSTANT_MODULE_SUFFIX
+        if constant_module_name in constants:
+            response.constants.update(
+                {c.name: c for c in constants[constant_module_name]})
 
         assert request.structure.type.namespaces == \
             response.structure.type.namespaces
@@ -167,51 +187,63 @@ def extract_content_from_ast(tree):
         content.elements.append(srv)
 
     elif len(struct_defs) == 3:
-        goal_request = Message(Structure(NamespacedType(
+        goal = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[0]),
-            name=get_first_identifier_value(struct_defs[0]))))
-        assert goal_request.structure.type.name.endswith(
-            ACTION_GOAL_SERVICE_SUFFIX + SERVICE_REQUEST_MESSAGE_SUFFIX)
-        add_message_members(goal_request, struct_defs[0])
-        resolve_typedefed_names(goal_request.structure, typedefs)
-        # TODO move "global" constants/enums within a "matching" namespace into
-        # the goal request message
+            name=get_child_identifier_value(struct_defs[0]))))
+        assert goal.structure.type.name.endswith(ACTION_GOAL_SUFFIX)
+        add_message_members(goal, struct_defs[0])
+        resolve_typedefed_names(goal.structure, typedefs)
+        constant_module_name = \
+            goal.structure.type.name + CONSTANT_MODULE_SUFFIX
+        if constant_module_name in constants:
+            goal.constants.update(
+                {c.name: c for c in constants[constant_module_name]})
 
-        result_response = Message(Structure(NamespacedType(
+        result = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[1]),
-            name=get_first_identifier_value(struct_defs[1]))))
-        assert result_response.structure.type.name.endswith(
-            ACTION_RESULT_SERVICE_SUFFIX + SERVICE_RESPONSE_MESSAGE_SUFFIX)
-        add_message_members(result_response, struct_defs[1])
-        resolve_typedefed_names(result_response.structure, typedefs)
-        # TODO move "global" constants/enums within a "matching" namespace into
-        # the result response message
+            name=get_child_identifier_value(struct_defs[1]))))
+        assert result.structure.type.name.endswith(ACTION_RESULT_SUFFIX)
+        add_message_members(result, struct_defs[1])
+        resolve_typedefed_names(result.structure, typedefs)
+        constant_module_name = \
+            result.structure.type.name + CONSTANT_MODULE_SUFFIX
+        if constant_module_name in constants:
+            result.constants.update(
+                {c.name: c for c in constants[constant_module_name]})
 
-        assert goal_request.structure.type.namespaces == \
-            result_response.structure.type.namespaces
-        goal_request_basename = goal_request.structure.type.name[
-            :-len(ACTION_GOAL_SERVICE_SUFFIX +
-                  SERVICE_REQUEST_MESSAGE_SUFFIX)]
-        result_response_basename = result_response.structure.type.name[
-            :-len(ACTION_RESULT_SERVICE_SUFFIX +
-                  SERVICE_RESPONSE_MESSAGE_SUFFIX)]
-        assert goal_request_basename == result_response_basename
+        assert goal.structure.type.namespaces == \
+            result.structure.type.namespaces
+        goal_basename = goal.structure.type.name[:-len(ACTION_GOAL_SUFFIX)]
+        result_basename = result.structure.type.name[
+            :-len(ACTION_RESULT_SUFFIX)]
+        assert goal_basename == result_basename
 
         feedback_message = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[2]),
-            name=get_first_identifier_value(struct_defs[2]))))
+            name=get_child_identifier_value(struct_defs[2]))))
         assert feedback_message.structure.type.name.endswith(
-            ACTION_FEEDBACK_MESSAGE_SUFFIX)
+            ACTION_FEEDBACK_SUFFIX)
         add_message_members(feedback_message, struct_defs[2])
         resolve_typedefed_names(feedback_message.structure, typedefs)
-        # TODO move "global" constants/enums within a "matching" namespace into
-        # the feedback message
+        constant_module_name = \
+            feedback_message.structure.type.name + CONSTANT_MODULE_SUFFIX
+        if constant_module_name in constants:
+            feedback_message.constants.update(
+                {c.name: c for c in constants[constant_module_name]})
 
         action = Action(
             NamespacedType(
-                namespaces=goal_request.structure.type.namespaces,
-                name=goal_request_basename),
-            goal_request, result_response, feedback_message)
+                namespaces=goal.structure.type.namespaces,
+                name=goal_basename),
+            goal, result, feedback_message)
+
+        all_includes = content.get_elements_of_type(Include)
+        unique_include_locators = {
+            include.locator for include in all_includes}
+        content.elements += [
+            include for include in action.implicit_includes
+            if include.locator not in unique_include_locators]
+
         content.elements.append(action)
 
     else:
@@ -250,6 +282,16 @@ def get_first_identifier_value(tree):
     """Get the value of the first identifier token for a node."""
     identifier_token = next(tree.scan_values(_find_tokens('IDENTIFIER')))
     return identifier_token.value
+
+
+def get_child_identifier_value(tree):
+    """Get the value of the first child identifier token for a node."""
+    for c in tree.children:
+        if not isinstance(c, Token):
+            continue
+        if c.type == 'IDENTIFIER':
+            return c.value
+    return None
 
 
 def _find_tokens(token_type):
@@ -398,6 +440,10 @@ def get_abstract_type(tree):
             basetype = get_abstract_type_from_type_spec(type_spec)
             positive_int_consts = list(child.find_data('positive_int_const'))
             if positive_int_consts:
+                path = _find_path(child, positive_int_consts[0])
+                if len(path) > 2 and path[-2].data == 'string_type':
+                    positive_int_consts.pop(0)
+            if positive_int_consts:
                 upper_bound = get_positive_int_const(positive_int_consts[-1])
                 return BoundedSequence(basetype, upper_bound)
             else:
@@ -448,8 +494,12 @@ def get_positive_int_const(positive_int_const):
 
 def get_annotations(tree):
     annotations = []
-    annotation_appls = tree.find_data('annotation_appl')
-    for annotation_appl in annotation_appls:
+    for c in tree.children:
+        if not isinstance(c, Tree):
+            continue
+        if c.data != 'annotation_appl':
+            continue
+        annotation_appl = c
         params = list(annotation_appl.find_data('annotation_appl_param'))
         if params:
             value = {}
@@ -532,10 +582,15 @@ def get_floating_pt_literal_value(floating_pt_literal):
 
 
 def get_string_literal_value(string_literal):
-    value = ''
-    for child in string_literal.children:
-        if child.value == r'\"':
-            value += '"'
-        else:
-            value += child.value
+    assert len(string_literal.children) == 1
+    child = string_literal.children[0]
+    assert isinstance(child, Token)
+    value = child.value
+    # unescape double quote and backslash if preceeded by a backslash
+    i = 0
+    while i < len(value):
+        if value[i] == '\\':
+            if i + 1 < len(value) and value[i + 1] in ('"', '\\'):
+                value = value[:i] + value[i + 1:]
+        i += 1
     return value

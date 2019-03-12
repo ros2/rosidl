@@ -1,4 +1,4 @@
-# Copyright 2014-2015 Open Source Robotics Foundation, Inc.
+# Copyright 2014-2018 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,30 +11,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp/${PROJECT_NAME}")
-set(_generated_msg_files "")
-set(_generated_srv_files "")
-set(_generated_action_files "")
-foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
-  get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
+set(_generated_headers "")
+foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
+  get_filename_component(_parent_folder "${_abs_idl_file}" DIRECTORY)
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
-  get_filename_component(_msg_name "${_idl_file}" NAME_WE)
-  get_filename_component(_extension "${_idl_file}" EXT)
-  string_camel_case_to_lower_case_underscore("${_msg_name}" _header_name)
+  get_filename_component(_idl_name "${_abs_idl_file}" NAME_WE)
+  string_camel_case_to_lower_case_underscore("${_idl_name}" _header_name)
 
-  if(_parent_folder STREQUAL "msg")
-    set(_generated_files "_generated_msg_files")
-  elseif(_parent_folder STREQUAL "srv")
-    set(_generated_files "_generated_srv_files")
-  elseif(_parent_folder STREQUAL "action")
-    set(_generated_files "_generated_action_files")
-  else()
-    message(FATAL_ERROR "Interface file with unknown parent folder: ${_idl_file}")
-  endif()
-
-  list(APPEND ${_generated_files}
+  list(APPEND _generated_headers
     "${_output_path}/${_parent_folder}/${_header_name}.hpp"
     "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
     "${_output_path}/${_parent_folder}/${_header_name}__traits.hpp"
@@ -44,7 +30,7 @@ endforeach()
 set(_dependency_files "")
 set(_dependencies "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
-  foreach(_idl_file ${${_pkg_name}_INTERFACE_FILES})
+  foreach(_idl_file ${${_pkg_name}_IDL_FILES})
     set(_abs_idl_file "${${_pkg_name}_DIR}/../${_idl_file}")
     normalize_path(_abs_idl_file "${_abs_idl_file}")
     list(APPEND _dependency_files "${_abs_idl_file}")
@@ -55,20 +41,19 @@ endforeach()
 set(target_dependencies
   "${rosidl_generator_cpp_BIN}"
   ${rosidl_generator_cpp_GENERATOR_FILES}
-  "${rosidl_generator_cpp_TEMPLATE_DIR}/msg.hpp.em"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/action__struct.hpp.em"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/idl.hpp.em"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/idl__struct.hpp.em"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/idl__traits.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__struct.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__traits.hpp.em"
-  "${rosidl_generator_cpp_TEMPLATE_DIR}/srv.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__struct.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__traits.hpp.em"
-  ${rosidl_generate_interfaces_IDL_FILES}
+  ${rosidl_generate_interfaces_ABS_IDL_FILES}
   ${_dependency_files})
 foreach(dep ${target_dependencies})
   if(NOT EXISTS "${dep}")
-    get_property(is_generated SOURCE "${dep}" PROPERTY GENERATED)
-    if(NOT ${_is_generated})
-      message(FATAL_ERROR "Target dependency '${dep}' does not exist")
-    endif()
+    message(FATAL_ERROR "Target dependency '${dep}' does not exist")
   endif()
 endforeach()
 
@@ -76,7 +61,7 @@ set(generator_arguments_file "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp__
 rosidl_write_generator_arguments(
   "${generator_arguments_file}"
   PACKAGE_NAME "${PROJECT_NAME}"
-  ROS_INTERFACE_FILES "${rosidl_generate_interfaces_IDL_FILES}"
+  IDL_TUPLES "${rosidl_generate_interfaces_IDL_TUPLES}"
   ROS_INTERFACE_DEPENDENCIES "${_dependencies}"
   OUTPUT_DIR "${_output_path}"
   TEMPLATE_DIR "${rosidl_generator_cpp_TEMPLATE_DIR}"
@@ -84,7 +69,7 @@ rosidl_write_generator_arguments(
 )
 
 add_custom_command(
-  OUTPUT ${_generated_msg_files} ${_generated_srv_files} ${_generated_action_files}
+  OUTPUT ${_generated_headers}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_cpp_BIN}
   --generator-arguments-file "${generator_arguments_file}"
   DEPENDS ${target_dependencies}
@@ -98,7 +83,7 @@ else()
   add_custom_target(
     ${rosidl_generate_interfaces_TARGET}__cpp
     DEPENDS
-    ${_generated_msg_files} ${_generated_srv_files} ${_generated_action_files}
+    ${_generated_headers}
   )
 endif()
 
@@ -108,31 +93,18 @@ add_dependencies(
 )
 
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
-  if(NOT _generated_msg_files STREQUAL "")
+  if(NOT _generated_headers STREQUAL "")
     install(
-      FILES ${_generated_msg_files}
-      DESTINATION "include/${PROJECT_NAME}/msg"
-    )
-  endif()
-  if(NOT _generated_srv_files STREQUAL "")
-    install(
-      FILES ${_generated_srv_files}
-      DESTINATION "include/${PROJECT_NAME}/srv"
-    )
-  endif()
-  if(NOT _generated_action_files STREQUAL "")
-    install(
-      FILES ${_generated_action_files}
-      DESTINATION "include/${PROJECT_NAME}/action"
+      DIRECTORY ${_output_path}/
+      DESTINATION "include/${PROJECT_NAME}"
+      PATTERN "*.hpp"
     )
   endif()
   ament_export_include_directories(include)
 endif()
 
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
-  if(NOT _generated_msg_files STREQUAL "" OR
-    NOT _generated_srv_files STREQUAL "" OR
-    NOT _generated_action_files STREQUAL "")
+  if(NOT _generated_headers STREQUAL "")
     find_package(ament_cmake_cppcheck REQUIRED)
     ament_cppcheck(
       TESTNAME "cppcheck_rosidl_generated_cpp"

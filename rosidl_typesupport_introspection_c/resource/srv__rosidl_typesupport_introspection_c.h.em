@@ -1,47 +1,35 @@
-// generated from
-// rosidl_typesupport_introspection_c/resource/srv__rosidl_typesupport_introspection_c.h.em
-// generated code does not contain a copyright notice
-
-@#######################################################################
-@# EmPy template for generating
-@# <srv>__rosidl_typesupport_introspection_c.h files
-@#
-@# Context:
-@#  - spec (rosidl_parser.MessageSpecification)
-@#    Parsed specification of the .srv file
-@#  - subfolder (string)
-@#    The subfolder / subnamespace of the message
-@#    Either 'srv' or 'action'
-@#  - get_header_filename_from_msg_name (function)
-@#######################################################################
-@
+@# Included from rosidl_typesupport_introspection_c/resource/idl__rosidl_typesupport_introspection_c.h.em
 @{
-header_guard_parts = [
-    spec.pkg_name, subfolder,
-    get_header_filename_from_msg_name(spec.srv_name) + '__rosidl_typesupport_introspection_c_h']
-header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
-
-function_prefix = '%s__%s__rosidl_typesupport_introspection_c' % (spec.pkg_name, subfolder)
+TEMPLATE(
+    'msg__rosidl_typesupport_introspection_c.h.em',
+    package_name=package_name, interface_path=interface_path, message=service.request_message,
+    include_directives=include_directives)
 }@
-#ifndef @(header_guard_variable)
-#define @(header_guard_variable)
 
-#include <rosidl_generator_c/service_type_support_struct.h>
-#include <rosidl_typesupport_interface/macros.h>
+@{
+TEMPLATE(
+    'msg__rosidl_typesupport_introspection_c.h.em',
+    package_name=package_name, interface_path=interface_path, message=service.response_message,
+    include_directives=include_directives)
+}@
 
-#include "@(spec.pkg_name)/msg/rosidl_typesupport_introspection_c__visibility_control.h"
+@{
+header_files = [
+    'rosidl_generator_c/service_type_support_struct.h',
+    'rosidl_typesupport_interface/macros.h',
+    package_name + '/msg/rosidl_typesupport_introspection_c__visibility_control.h',
+]
+}@
+@[for header_file in header_files]@
+@[    if header_file in include_directives]@
+// already included above
+// @
+@[    else]@
+@{include_directives.add(header_file)}@
+@[    end if]@
+#include "@(header_file)"
+@[end for]@
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-ROSIDL_TYPESUPPORT_INTROSPECTION_C_PUBLIC_@(spec.pkg_name)
+ROSIDL_TYPESUPPORT_INTROSPECTION_C_PUBLIC_@(package_name)
 const rosidl_service_type_support_t *
-  ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(spec.pkg_name), @(subfolder), @(spec.srv_name))();
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif  // @(header_guard_variable)
+  ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.structure_type.name))();

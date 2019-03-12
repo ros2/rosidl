@@ -1,4 +1,4 @@
-# Copyright 2014-2015 Open Source Robotics Foundation, Inc.
+# Copyright 2014-2018 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,98 +12,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+from ast import literal_eval
 
-from rosidl_cmake import convert_camel_case_to_lower_case_underscore
-from rosidl_cmake import expand_template
-from rosidl_cmake import get_newest_modification_time
-from rosidl_cmake import read_generator_arguments
-from rosidl_parser import parse_action_file
-from rosidl_parser import parse_message_file
-from rosidl_parser import parse_service_file
+from rosidl_cmake import generate_files
+from rosidl_parser.definition import Array
+from rosidl_parser.definition import BaseString
+from rosidl_parser.definition import BasicType
+from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import NamespacedType
+from rosidl_parser.definition import NestedType
+from rosidl_parser.definition import Sequence
+from rosidl_parser.definition import String
+from rosidl_parser.definition import UnboundedSequence
+from rosidl_parser.definition import WString
 
 
 def generate_cpp(generator_arguments_file):
-    args = read_generator_arguments(generator_arguments_file)
-
-    template_dir = args['template_dir']
-    mapping_msgs = {
-        os.path.join(template_dir, 'msg.hpp.em'): '%s.hpp',
-        os.path.join(template_dir, 'msg__struct.hpp.em'): '%s__struct.hpp',
-        os.path.join(template_dir, 'msg__traits.hpp.em'): '%s__traits.hpp',
+    mapping = {
+        'idl.hpp.em': '%s.hpp',
+        'idl__struct.hpp.em': '%s__struct.hpp',
+        'idl__traits.hpp.em': '%s__traits.hpp',
     }
-
-    mapping_srvs = {
-        os.path.join(template_dir, 'srv.hpp.em'): '%s.hpp',
-        os.path.join(template_dir, 'srv__struct.hpp.em'): '%s__struct.hpp',
-        os.path.join(template_dir, 'srv__traits.hpp.em'): '%s__traits.hpp',
-    }
-
-    mapping_actions = {
-        os.path.join(template_dir, 'action.hpp.em'): '%s.hpp',
-        os.path.join(template_dir, 'action__struct.hpp.em'): '%s__struct.hpp',
-    }
-
-    for template_file in mapping_msgs.keys():
-        assert os.path.exists(template_file), 'Could not find template: ' + template_file
-    for template_file in mapping_srvs.keys():
-        assert os.path.exists(template_file), 'Could not find template: ' + template_file
-    for template_file in mapping_actions.keys():
-        assert os.path.exists(template_file), 'Could not find template: ' + template_file
-
-    functions = {
-        'get_header_filename_from_msg_name': convert_camel_case_to_lower_case_underscore,
-    }
-    latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
-
-    for ros_interface_file in args['ros_interface_files']:
-        extension = os.path.splitext(ros_interface_file)[1]
-        subfolder = os.path.basename(os.path.dirname(ros_interface_file))
-        if extension == '.msg':
-            spec = parse_message_file(args['package_name'], ros_interface_file)
-            for template_file, generated_filename in mapping_msgs.items():
-                data = {'spec': spec, 'subfolder': subfolder}
-                data.update(functions)
-                generated_file = os.path.join(
-                    args['output_dir'], subfolder, generated_filename %
-                    convert_camel_case_to_lower_case_underscore(spec.base_type.type))
-                expand_template(
-                    template_file, data, generated_file,
-                    minimum_timestamp=latest_target_timestamp)
-
-        elif extension == '.srv':
-            spec = parse_service_file(args['package_name'], ros_interface_file)
-            for template_file, generated_filename in mapping_srvs.items():
-                data = {'spec': spec, 'subfolder': subfolder}
-                data.update(functions)
-                generated_file = os.path.join(
-                    args['output_dir'], subfolder, generated_filename %
-                    convert_camel_case_to_lower_case_underscore(spec.srv_name))
-                expand_template(
-                    template_file, data, generated_file,
-                    minimum_timestamp=latest_target_timestamp)
-
-        elif extension == '.action':
-            spec = parse_action_file(args['package_name'], ros_interface_file)
-            for template_file, generated_filename in mapping_actions.items():
-                data = {'spec': spec, 'subfolder': subfolder}
-                data.update(functions)
-                generated_file = os.path.join(
-                    args['output_dir'], subfolder, generated_filename %
-                    convert_camel_case_to_lower_case_underscore(spec.action_name))
-                expand_template(
-                    template_file, data, generated_file,
-                    minimum_timestamp=latest_target_timestamp)
-
-    return 0
+    generate_files(generator_arguments_file, mapping)
 
 
 MSG_TYPE_TO_CPP = {
-    'bool': 'bool',
-    'byte': 'uint8_t',
-    'char': 'char',
-    'float32': 'float',
-    'float64': 'double',
+    'boolean': 'bool',
+    'octet': 'unsigned char',  # TODO change to std::byte with C++17
+    'char': 'unsigned char',
+    'wchar': 'char16_t',
+    'float': 'float',
+    'double': 'double',
+    'long double': 'long double',
     'uint8': 'uint8_t',
     'int8': 'int8_t',
     'uint16': 'uint16_t',
@@ -127,11 +67,19 @@ def msg_type_only_to_cpp(type_):
     @param type_: The message type
     @type type_: rosidl_parser.Type
     """
-    if type_.is_primitive_type():
+    if isinstance(type_, NestedType):
+        type_ = type_.basetype
+    if isinstance(type_, BasicType):
         cpp_type = MSG_TYPE_TO_CPP[type_.type]
+    elif isinstance(type_, String):
+        cpp_type = MSG_TYPE_TO_CPP['string']
+    elif isinstance(type_, WString):
+        assert False, 'TBD'
+    elif isinstance(type_, NamespacedType):
+        typename = '::'.join(type_.namespaces + [type_.name])
+        cpp_type = typename + '_<ContainerAllocator>'
     else:
-        cpp_type = '%s::msg::%s_<ContainerAllocator>' % \
-            (type_.pkg_name, type_.type)
+        assert False, type_
 
     return cpp_type
 
@@ -149,17 +97,18 @@ def msg_type_to_cpp(type_):
     """
     cpp_type = msg_type_only_to_cpp(type_)
 
-    if type_.is_array:
-        if not type_.array_size:
+    if isinstance(type_, NestedType):
+        if isinstance(type_, UnboundedSequence):
             return \
                 ('std::vector<%s, typename ContainerAllocator::template ' +
                  'rebind<%s>::other>') % (cpp_type, cpp_type)
-        elif type_.is_upper_bound:
+        elif isinstance(type_, BoundedSequence):
             return \
                 ('rosidl_generator_cpp::BoundedVector<%s, %u, typename ContainerAllocator::' +
-                 'template rebind<%s>::other>') % (cpp_type, type_.array_size, cpp_type)
+                 'template rebind<%s>::other>') % (cpp_type, type_.upper_bound, cpp_type)
         else:
-            return 'std::array<%s, %u>' % (cpp_type, type_.array_size)
+            assert isinstance(type_, Array)
+            return 'std::array<%s, %u>' % (cpp_type, type_.size)
     else:
         return cpp_type
 
@@ -177,16 +126,17 @@ def value_to_cpp(type_, value):
     @type value: python builtin (bool, int, float, str or list)
     @returns: a string containing the C++ representation of the value
     """
-    assert type_.is_primitive_type(), "Could not convert non-primitive type '%s' to CPP" % (type_)
+    assert not isinstance(type_, NamespacedType), \
+        "Could not convert non-primitive type '%s' to CPP" % (type_)
     assert value is not None, "Value for type '%s' must not be None" % (type_)
 
-    if not type_.is_array:
+    if not isinstance(type_, NestedType):
         return primitive_value_to_cpp(type_, value)
 
     cpp_values = []
-    is_string_array = type_.__str__().startswith('string')
+    is_string_array = isinstance(type_.basetype, BaseString)
     for single_value in value:
-        cpp_value = primitive_value_to_cpp(type_, single_value)
+        cpp_value = primitive_value_to_cpp(type_.basetype, single_value)
         if is_string_array:
             tmp_cpp_value = '{%s}' % cpp_value
         else:
@@ -212,18 +162,23 @@ def primitive_value_to_cpp(type_, value):
     @type value: python builtin (bool, int, float or str)
     @returns: a string containing the C++ representation of the value
     """
-    assert type_.is_primitive_type(), "Could not convert non-primitive type '%s' to CPP" % (type_)
+    assert isinstance(type_, BasicType) or isinstance(type_, BaseString), \
+        "Could not convert non-primitive type '%s' to CPP" % (type_)
     assert value is not None, "Value for type '%s' must not be None" % (type_)
 
-    if type_.type == 'bool':
+    if isinstance(type_, BaseString):
+        return '"%s"' % escape_string(value)
+
+    if type_.type == 'boolean':
         return 'true' if value else 'false'
 
     if type_.type in [
-        'byte',
-        'char',
+        'short', 'unsigned short',
+        'char', 'wchar',
+        'double',
+        'octet',
         'int8', 'uint8',
         'int16', 'uint16',
-        'float64'
     ]:
         return str(value)
 
@@ -239,21 +194,18 @@ def primitive_value_to_cpp(type_, value):
     if type_.type == 'uint64':
         return '%sull' % value
 
-    if type_.type == 'float32':
+    if type_.type == 'float':
         return '%sf' % value
-
-    if type_.type == 'string':
-        return '"%s"' % escape_string(value)
 
     assert False, "unknown primitive type '%s'" % type_.type
 
 
 def default_value_from_type(type_):
-    if type_ == 'string':
+    if isinstance(type_, BaseString):
         return ''
-    elif type_ in ['float32', 'float64']:
+    elif isinstance(type_, BasicType) and type_.type in ['float', 'double']:
         return 0.0
-    elif type_ == 'bool':
+    elif isinstance(type_, BasicType) and type_.type == 'boolean':
         return False
     return 0
 
@@ -264,7 +216,7 @@ def escape_string(s):
     return s
 
 
-def create_init_alloc_and_member_lists(spec):
+def create_init_alloc_and_member_lists(message):
     # A Member object represents the information we need to know to initialize
     # a single member of the class.
     class Member:
@@ -307,40 +259,48 @@ def create_init_alloc_and_member_lists(spec):
     init_list = []
     alloc_list = []
     member_list = []
-    for field in spec.fields:
+    for field in message.structure.members:
         member = Member(field.name)
         member.type = field.type
-        if field.type.is_array:
-            if field.type.is_fixed_size_array():
-                alloc_list.append(field.name + '(_alloc)')
-                if field.type.is_primitive_type():
-                    default = default_value_from_type(field.type.type)
-                    single = primitive_value_to_cpp(field.type, default)
-                    member.zero_value = [single] * field.type.array_size
-                    if field.default_value is not None:
-                        member.default_value = []
-                        for val in field.default_value:
-                            member.default_value.append(primitive_value_to_cpp(field.type, val))
-                else:
-                    member.zero_value = []
-                    member.zero_need_array_override = True
+        if isinstance(field.type, Array):
+            alloc_list.append(field.name + '(_alloc)')
+            if isinstance(field.type.basetype, BasicType) or \
+                    isinstance(field.type.basetype, BaseString):
+                default = default_value_from_type(field.type.basetype)
+                single = primitive_value_to_cpp(field.type.basetype, default)
+                member.zero_value = [single] * field.type.size
+                if field.has_annotation('default'):
+                    default_value = literal_eval(
+                        field.get_annotation_value('default')['value'])
+                    member.default_value = []
+                    for val in default_value:
+                        member.default_value.append(
+                            primitive_value_to_cpp(field.type.basetype, val))
             else:
-                if field.default_value is not None:
-                    member.default_value = value_to_cpp(field.type, field.default_value)
-                    member.num_prealloc = len(field.default_value)
+                member.zero_value = []
+                member.zero_need_array_override = True
+        elif isinstance(field.type, Sequence):
+            if field.has_annotation('default'):
+                default_value = literal_eval(
+                    field.get_annotation_value('default')['value'])
+                member.default_value = value_to_cpp(field.type, default_value)
+                member.num_prealloc = len(default_value)
         else:
-            if field.type.is_primitive_type():
-                if field.type.type == 'string':
+            if isinstance(field.type, BasicType) or \
+                    isinstance(field.type, BaseString):
+                if isinstance(field.type, BaseString):
                     alloc_list.append(field.name + '(_alloc)')
-                default = default_value_from_type(field.type.type)
+                default = default_value_from_type(field.type)
                 member.zero_value = primitive_value_to_cpp(field.type, default)
-                if field.default_value is not None:
-                    member.default_value = primitive_value_to_cpp(field.type, field.default_value)
+                if field.has_annotation('default'):
+                    member.default_value = primitive_value_to_cpp(
+                        field.type,
+                        field.get_annotation_value('default')['value'])
             else:
                 init_list.append(field.name + '(_init)')
                 alloc_list.append(field.name + '(_alloc, _init)')
 
-        if member.default_value is not None or member.zero_value is not None:
+        if field.has_annotation('default') or member.zero_value is not None:
             if not member_list or not member_list[-1].add_member(member):
                 commonset = CommonMemberSet()
                 commonset.add_member(member)

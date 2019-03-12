@@ -1,5 +1,6 @@
 // generated from rosidl_adapter/resource/srv.idl.em
 // with input from @(pkg_name)/@(relative_input_file)
+// generated code does not contain a copyright notice
 
 @{
 from rosidl_adapter.msg import get_include_file

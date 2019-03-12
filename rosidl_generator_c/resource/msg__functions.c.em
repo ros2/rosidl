@@ -1,71 +1,89 @@
-// generated from rosidl_generator_c/resource/msg__functions.c.em
-// generated code does not contain a copyright notice
-
-@#######################################################################
-@# EmPy template for generating <msg>__functions.c files
-@#
-@# Context:
-@#  - spec (rosidl_parser.MessageSpecification)
-@#    Parsed specification of the .msg file
-@#  - subfolder (string)
-@#    The subfolder / subnamespace of the message
-@#    Either 'msg' or 'srv'
-@#  - get_header_filename_from_msg_name (function)
-@#######################################################################
-@
+@# Included from rosidl_generator_c/resource/idl__functions.c.em
 @{
-from rosidl_generator_c import get_typename_of_base_type
-from rosidl_generator_c import primitive_value_to_c
+from ast import literal_eval
+from rosidl_parser.definition import Array
+from rosidl_parser.definition import BasicType
+from rosidl_parser.definition import BaseString
+from rosidl_parser.definition import NamespacedType
+from rosidl_parser.definition import NestedType
+from rosidl_parser.definition import Sequence
+from rosidl_parser.definition import String
+from rosidl_parser.definition import WString
+from rosidl_generator_c import basetype_to_c
+from rosidl_generator_c import idl_structure_type_sequence_to_c_typename
+from rosidl_generator_c import idl_structure_type_to_c_include_prefix
+from rosidl_generator_c import idl_structure_type_to_c_typename
+from rosidl_generator_c import idl_type_to_c
+from rosidl_generator_c import interface_path_to_string
 from rosidl_generator_c import value_to_c
 
-msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_type.type)
-sequence_typename = '%s__Sequence' % msg_typename
+message_typename = idl_structure_type_to_c_typename(message.structure.type)
+array_typename = idl_structure_type_sequence_to_c_typename(
+    message.structure.type)
 }@
-#include "@(spec.base_type.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.base_type.type))__functions.h"
-
-#include <assert.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-
-@#######################################################################
-@# include message dependencies
-@#######################################################################
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Collect necessary include directives for all members
 @{
 from collections import OrderedDict
 includes = OrderedDict()
-for field in spec.fields:
-    if field.type.is_primitive_type():
-        if field.type.type == 'string':
-            field_names = includes.setdefault('rosidl_generator_c/string_functions.h', [])
-            field_names.append(field.name)
-        else:
-            if field.type.is_dynamic_array():
-                field_names = includes.setdefault('rosidl_generator_c/primitives_sequence_functions.h', [])
-                field_names.append(field.name)
-    else:
-        field_names = includes.setdefault(
-            '%s/msg/%s__functions.h' %
-            (field.type.pkg_name, get_header_filename_from_msg_name(field.type.type)),
-            [])
-        field_names.append(field.name)
+for member in message.structure.members:
+    if isinstance(member.type, Sequence) and isinstance(member.type.basetype, BasicType):
+        member_names = includes.setdefault(
+            'rosidl_generator_c/primitives_sequence_functions.h', [])
+        member_names.append(member.name)
+        continue
+    type_ = member.type
+    if isinstance(type_, NestedType):
+        type_ = type_.basetype
+    if isinstance(type_, String):
+        member_names = includes.setdefault('rosidl_generator_c/string_functions.h', [])
+        member_names.append(member.name)
+    elif isinstance(type_, WString):
+        member_names = includes.setdefault(
+            'rosidl_generator_c/u16string_functions.h', [])
+        member_names.append(member.name)
+    elif isinstance(type_, NamespacedType):
+        include_prefix = idl_structure_type_to_c_include_prefix(type_)
+        if include_prefix.endswith('__request'):
+            include_prefix = include_prefix[:-9]
+        elif include_prefix.endswith('__response'):
+            include_prefix = include_prefix[:-10]
+        if include_prefix.endswith('__goal'):
+            include_prefix = include_prefix[:-6]
+        elif include_prefix.endswith('__result'):
+            include_prefix = include_prefix[:-8]
+        elif include_prefix.endswith('__feedback'):
+            include_prefix = include_prefix[:-10]
+        member_names = includes.setdefault(
+            include_prefix + '__functions.h', [])
+        member_names.append(member.name)
 }@
-@[if includes]@
-// include message dependencies
-@[  for header_file, field_names in includes.items()]@
-@[    for field_name in field_names]@
-// @(field_name)
-@[    end for]@
-#include "@(header_file)"
-@[  end for]@
-
-@[end if]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 @
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@[if includes]@
+
+// Include directives for member types
+@[    for header_file, member_names in includes.items()]@
+@[        for member_name in member_names]@
+// Member `@(member_name)`
+@[        end for]@
+@[        if header_file in include_directives]@
+// already included above
+// @
+@[        else]@
+@{include_directives.add(header_file)}@
+@[        end if]@
+#include "@(header_file)"
+@[    end for]@
+@[end if]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 @#######################################################################
 @# message functions
 @#######################################################################
 bool
-@(msg_typename)__init(@(msg_typename) * msg)
+@(message_typename)__init(@(message_typename) * msg)
 {
   if (!msg) {
     return false;
@@ -75,110 +93,111 @@ label_prefix = 'abort_init_'
 last_label_index = 0
 lines = []
 abort_lines = []
-for field in spec.fields:
-    lines.append('// ' + field.name)
-    if not field.type.is_array:
-        # non-array field
-        if field.type.is_primitive_type():
-            if field.type.type == 'string':
-                lines.append('if (!rosidl_generator_c__String__init(&msg->%s)) {' % field.name)
-                lines.append('  %s__fini(msg);' % msg_typename)
-                lines.append('  return false;')
-                lines.append('}')
-                if field.default_value is not None:
-                    lines.append('{')
-                    value = value_to_c(field.type, field.default_value)
-                    lines.append('  bool success = rosidl_generator_c__String__assign(&msg->%s, %s);' % (field.name, value))
-                    lines.append('  if (!success) {')
-                    lines.append('    goto %s%s;' % (label_prefix, last_label_index))
-                    abort_lines[0:0] = [
-                      '  rosidl_generator_c__String__fini(&msg->%s);' % field.name,
-                      '%s%d:' % (label_prefix, last_label_index),
-                    ]
-                    last_label_index += 1
-                    lines.append('  }')
-                    lines.append('}')
-            elif field.default_value is not None:
-                # set default value of primitive type
-                lines.append('msg->%s = %s;' % (field.name, value_to_c(field.type, field.default_value)))
-
-        else:
-            # initialize the sub message
-            lines.append('if (!%s__%s__%s__init(&msg->%s)) {' % (field.type.pkg_name, 'msg', field.type.type, field.name))
-            lines.append('  %s__fini(msg);' % msg_typename)
-            lines.append('  return false;')
-            lines.append('}')
-        # no default value for nested messages yet
-    elif field.type.is_fixed_size_array():
-        if field.type.is_primitive_type() and field.type.type != 'string':
-            if field.default_value is not None:
+for member in message.structure.members:
+    lines.append('// ' + member.name)
+    if isinstance(member.type, Array):
+        if isinstance(member.type.basetype, BasicType):
+            if member.has_annotation('default'):
                 # set default value for each array element
-                for i, default_value in enumerate(field.default_value):
-                    lines.append('msg->%s[%d] = %s;' % (field.name, i, primitive_value_to_c(field.type.type, field.default_value[i])))
-        if not field.type.is_primitive_type() or field.type.type == 'string':
+                for i, default_value in enumerate(literal_eval(member.get_annotation_value('default')['value'])):
+                    lines.append('msg->%s[%d] = %s;' % (member.name, i, value_to_c(member.type.basetype, default_value)))
+        elif isinstance(member.type.basetype, BaseString) or isinstance(member.type.basetype, NamespacedType): 
             # initialize each array element
-            lines.append('for (size_t i = 0; i < %d; ++i) {' % field.type.array_size)
-            lines.append('  if (!%s__init(&msg->%s[i])) {' % (get_typename_of_base_type(field.type), field.name))
-            lines.append('    %s__fini(msg);' % msg_typename)
+            lines.append('for (size_t i = 0; i < %d; ++i) {' % member.type.size)
+            lines.append('  if (!%s__init(&msg->%s[i])) {' % (basetype_to_c(member.type.basetype), member.name))
+            lines.append('    %s__destroy(msg);' % message_typename)
             lines.append('    return false;')
             lines.append('  }')
             lines.append('}')
 
-            if field.default_value is not None:
-                for i, default_value in enumerate(field.default_value):
-                    if field.type.type == 'string':
+            if member.has_annotation('default'):
+                for i, default_value in enumerate(literal_eval(member.get_annotation_value('default')['value'])):
+                    if isinstance(member.type.basetype, BaseString):
                         lines.append('{')
                         lines.append(
-                            '  bool success = rosidl_generator_c__String__assign(&msg->%s[%d], %s);' % \
-                            (field.name, i, primitive_value_to_c(field.type.type, field.default_value[i])))
+                            '  bool success = %s__assign(&msg->%s[%d], %s);' % \
+                            (basetype_to_c(member.type.basetype), member.name, i, value_to_c(member.type.basetype, default_value)))
                         lines.append('  if (!success) {')
                         lines.append('    goto %s%s;' % (label_prefix, last_label_index))
                         abort_lines[0:0] = [
-                            '  rosidl_generator_c__String__fini(&msg->%s[%d]);' % (field.name, i),
+                            '  %s__fini(&msg->%s[%d]);' % (basetype_to_c(member.type.basetype), member.name, i),
                             '%s%d:' % (label_prefix, last_label_index),
                         ]
                         last_label_index += 1
                         lines.append('  }')
                         lines.append('}')
 
-    else:  # dynamic array
-        if field.default_value is None:
+    elif isinstance(member.type, Sequence):
+        if not member.has_annotation('default'):
             # initialize the dynamic array with a capacity of zero
-            lines.append('if (!%s__Sequence__init(&msg->%s, 0)) {' % (get_typename_of_base_type(field.type), field.name))
-            lines.append('  %s__fini(msg);' % msg_typename)
+            lines.append('if (!%s__init(&msg->%s, 0)) {' % (idl_type_to_c(member.type), member.name))
+            lines.append('  %s__destroy(msg);' % message_typename)
             lines.append('  return false;')
             lines.append('}')
         else:
             # initialize the dynamic array with the number of default values
             lines.append('{')
-            lines.append('  bool success = %s__Sequence__init(&msg->%s, %d);' % (get_typename_of_base_type(field.type), field.name, len(field.default_value)))
+            lines.append('  bool success = %s__init(&msg->%s, %d);' % (idl_type_to_c(member.type), member.name, len(literal_eval(member.get_annotation_value('default')['value']))))
             lines.append('  if (!success) {')
             lines.append('    goto %s%d;' % (label_prefix, last_label_index))
             abort_lines[0:0] = [
-                '  %s__Sequence__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name),
+                '  %s__fini(&msg->%s);' % (idl_type_to_c(member.type), member.name),
                 '%s%d:' % (label_prefix, last_label_index),
             ]
             last_label_index += 1
             lines.append('  }')
             lines.append('}')
             # set default value for each array element
-            for i, default_value in enumerate(field.default_value):
-                if field.type.type == 'string':
+            for i, default_value in enumerate(literal_eval(member.get_annotation_value('default')['value'])):
+                if isinstance(member.type.basetype, BaseString):
                     lines.append('{')
                     lines.append(
-                        '  bool success = rosidl_generator_c__String__assign(&msg->%s.data[%d], %s);' % \
-                        (field.name, i, primitive_value_to_c(field.type.type, field.default_value[i])))
+                        '  bool success = %s__assign(&msg->%s.data[%d], %s);' % \
+                        (basetype_to_c(member.type.basetype), member.name, i, value_to_c(member.type.basetype, default_value)))
                     lines.append('  if (!success) {')
                     lines.append('    goto %s%s;' % (label_prefix, last_label_index))
                     abort_lines[0:0] = [
-                        '  rosidl_generator_c__String__fini(&msg->%s.data[%d]);' % (field.name, i),
+                        '  %s__fini(&msg->%s.data[%d]);' % (basetype_to_c(member.type.basetype), member.name, i),
                         '%s%d:' % (label_prefix, last_label_index),
                     ]
                     last_label_index += 1
                     lines.append('  }')
                     lines.append('}')
                 else:
-                    lines.append('msg->%s.data[%d] = %s;' % (field.name, i, primitive_value_to_c(field.type.type, field.default_value[i])))
+                    lines.append('msg->%s.data[%d] = %s;' % (member.name, i, value_to_c(member.type.basetype, default_value)))
+
+    elif isinstance(member.type, NamespacedType):
+            # initialize the sub message
+            lines.append('if (!%s__init(&msg->%s)) {' % (basetype_to_c(member.type), member.name))
+            lines.append('  %s__destroy(msg);' % message_typename)
+            lines.append('  return false;')
+            lines.append('}')
+        # no default value for nested messages yet
+
+    elif isinstance(member.type, BaseString):
+        lines.append('if (!%s__init(&msg->%s)) {' % (basetype_to_c(member.type), member.name))
+        lines.append('  %s__destroy(msg);' % message_typename)
+        lines.append('  return false;')
+        lines.append('}')
+        if member.has_annotation('default'):
+            lines.append('{')
+            lines.append(
+                '  bool success = %s__assign(&msg->%s, %s);' % (
+                basetype_to_c(member.type), member.name,
+                value_to_c(member.type, member.get_annotation_value('default')['value'])))
+            lines.append('  if (!success) {')
+            lines.append('    goto %s%s;' % (label_prefix, last_label_index))
+            abort_lines[0:0] = [
+                '  %s__fini(&msg->%s);' % (basetype_to_c(member.type), member.name),
+                '%s%d:' % (label_prefix, last_label_index),
+            ]
+            last_label_index += 1
+            lines.append('  }')
+            lines.append('}')
+    elif isinstance(member.type, BasicType):
+        if member.has_annotation('default'):
+            # set default value of primitive type
+            lines.append('msg->%s = %s;' % (member.name, value_to_c(member.type, member.get_annotation_value('default')['value'])))
 
 for line in lines:
     print('  ' + line)
@@ -196,45 +215,41 @@ if abort_lines:
 }
 
 void
-@(msg_typename)__fini(@(msg_typename) * msg)
+@(message_typename)__fini(@(message_typename) * msg)
 {
   if (!msg) {
     return;
   }
 @{
 lines = []
-for field in spec.fields:
-    lines.append('// ' + field.name)
-    if not field.type.is_array:
-        # non-array field
-        if not field.type.is_primitive_type() or field.type.type == 'string':
-            # finalize sub messages and strings
-            lines.append('%s__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name))
-
-    elif field.type.is_fixed_size_array():
-        if not field.type.is_primitive_type() or field.type.type == 'string':
-            lines.append('for (size_t i = 0; i < %d; ++i) {' % field.type.array_size)
+for member in message.structure.members:
+    lines.append('// ' + member.name)
+    if isinstance(member.type, Array):
+        if isinstance(member.type.basetype, BaseString) or isinstance(member.type.basetype, NamespacedType):
+            lines.append('for (size_t i = 0; i < %d; ++i) {' % member.type.size)
             # initialize each array element
-            lines.append('  %s__fini(&msg->%s[i]);' % (get_typename_of_base_type(field.type), field.name))
+            lines.append('  %s__fini(&msg->%s[i]);' % (basetype_to_c(member.type.basetype), member.name))
             lines.append('}')
-
-    else:
+    elif isinstance(member.type, Sequence):
         # finalize the dynamic array
-        lines.append('%s__Sequence__fini(&msg->%s);' % (get_typename_of_base_type(field.type), field.name))
+        lines.append('%s__fini(&msg->%s);' % (idl_type_to_c(member.type), member.name))
+    elif not isinstance(member.type, BasicType):
+        # finalize non-array sub messages and strings
+        lines.append('%s__fini(&msg->%s);' % (basetype_to_c(member.type), member.name))
 for line in lines:
     print('  ' + line)
 }@
 }
 
-@(msg_typename) *
-@(msg_typename)__create()
+@(message_typename) *
+@(message_typename)__create()
 {
-  @(msg_typename) * msg = (@(msg_typename) *)malloc(sizeof(@(msg_typename)));
+  @(message_typename) * msg = (@(message_typename) *)malloc(sizeof(@(message_typename)));
   if (!msg) {
     return NULL;
   }
-  memset(msg, 0, sizeof(@(msg_typename)));
-  bool success = @(msg_typename)__init(msg);
+  memset(msg, 0, sizeof(@(message_typename)));
+  bool success = @(message_typename)__init(msg);
   if (!success) {
     free(msg);
     return NULL;
@@ -243,10 +258,10 @@ for line in lines:
 }
 
 void
-@(msg_typename)__destroy(@(msg_typename) * msg)
+@(message_typename)__destroy(@(message_typename) * msg)
 {
   if (msg) {
-    @(msg_typename)__fini(msg);
+    @(message_typename)__fini(msg);
   }
   free(msg);
 }
@@ -256,21 +271,21 @@ void
 @# array functions
 @#######################################################################
 bool
-@(sequence_typename)__init(@(sequence_typename) * array, size_t size)
+@(array_typename)__init(@(array_typename) * array, size_t size)
 {
   if (!array) {
     return false;
   }
-  @(msg_typename) * data = NULL;
+  @(message_typename) * data = NULL;
   if (size) {
-    data = (@(msg_typename) *)calloc(size, sizeof(@(msg_typename)));
+    data = (@(message_typename) *)calloc(size, sizeof(@(message_typename)));
     if (!data) {
       return false;
     }
     // initialize all array elements
     size_t i;
     for (i = 0; i < size; ++i) {
-      bool success = @(msg_typename)__init(&data[i]);
+      bool success = @(message_typename)__init(&data[i]);
       if (!success) {
         break;
       }
@@ -278,7 +293,7 @@ bool
     if (i < size) {
       // if initialization failed finalize the already initialized array elements
       for (; i > 0; --i) {
-        @(msg_typename)__fini(&data[i - 1]);
+        @(message_typename)__fini(&data[i - 1]);
       }
       free(data);
       return false;
@@ -291,7 +306,7 @@ bool
 }
 
 void
-@(sequence_typename)__fini(@(sequence_typename) * array)
+@(array_typename)__fini(@(array_typename) * array)
 {
   if (!array) {
     return;
@@ -301,7 +316,7 @@ void
     assert(array->capacity > 0);
     // finalize all array elements
     for (size_t i = 0; i < array->capacity; ++i) {
-      @(msg_typename)__fini(&array->data[i]);
+      @(message_typename)__fini(&array->data[i]);
     }
     free(array->data);
     array->data = NULL;
@@ -314,14 +329,14 @@ void
   }
 }
 
-@(sequence_typename) *
-@(sequence_typename)__create(size_t size)
+@(array_typename) *
+@(array_typename)__create(size_t size)
 {
-  @(sequence_typename) * array = (@(sequence_typename) *)malloc(sizeof(@(sequence_typename)));
+  @(array_typename) * array = (@(array_typename) *)malloc(sizeof(@(array_typename)));
   if (!array) {
     return NULL;
   }
-  bool success = @(sequence_typename)__init(array, size);
+  bool success = @(array_typename)__init(array, size);
   if (!success) {
     free(array);
     return NULL;
@@ -330,10 +345,10 @@ void
 }
 
 void
-@(sequence_typename)__destroy(@(sequence_typename) * array)
+@(array_typename)__destroy(@(array_typename) * array)
 {
   if (array) {
-    @(sequence_typename)__fini(array);
+    @(array_typename)__fini(array);
   }
   free(array);
 }

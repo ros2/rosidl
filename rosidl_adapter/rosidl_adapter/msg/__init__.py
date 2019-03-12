@@ -59,7 +59,7 @@ MSG_TYPE_TO_IDL = {
 
 
 def to_idl_literal(idl_type, value):
-    if idl_type[-1] in (']', '>'):
+    if idl_type[-1] == ']' or idl_type.startswith('sequence<'):
         elements = [repr(v) for v in value]
         while len(elements) < 2:
             elements.append('')
@@ -67,7 +67,7 @@ def to_idl_literal(idl_type, value):
 
     if 'boolean' == idl_type:
         return 'TRUE' if value else 'FALSE'
-    if 'string' == idl_type:
+    if idl_type.startswith('string'):
         return string_to_idl_string_literal(value)
     return value
 
@@ -90,6 +90,8 @@ def get_idl_type(type_):
         identifier = MSG_TYPE_TO_IDL[type_]
     elif type_.is_primitive_type():
         identifier = MSG_TYPE_TO_IDL[type_.type]
+        if identifier == 'string' and type_.string_upper_bound is not None:
+            identifier += '<{type_.string_upper_bound}>'.format_map(locals())
     else:
         identifier = '{type_.pkg_name}::msg::{type_.type}' \
             .format_map(locals())

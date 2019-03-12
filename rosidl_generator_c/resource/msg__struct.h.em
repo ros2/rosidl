@@ -1,140 +1,128 @@
-// generated from rosidl_generator_c/resource/msg__struct.h.em
-// generated code does not contain a copyright notice
-
-@#######################################################################
-@# EmPy template for generating <msg>__struct.h files
-@#
-@# Context:
-@#  - spec (rosidl_parser.MessageSpecification)
-@#    Parsed specification of the .msg file
-@#  - subfolder (string)
-@#    The subfolder / subnamespace of the message
-@#    Could be 'msg', 'srv' or 'action'
-@#  - get_header_filename_from_msg_name (function)
-@#######################################################################
-@
+@# Included from rosidl_generator_c/resource/idl__struct.h.em
 @{
-from rosidl_generator_c import msg_type_to_c
-from rosidl_generator_c import MSG_TYPE_TO_C
-from rosidl_generator_c import primitive_value_to_c
-
-header_guard_parts = [
-    spec.base_type.pkg_name, subfolder,
-    get_header_filename_from_msg_name(spec.base_type.type) + '__struct_h']
-header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
-
-msg_typename = '%s__%s__%s' % (spec.base_type.pkg_name, subfolder, spec.base_type.type)
-sequence_typename = '%s__Sequence' % msg_typename
+from rosidl_parser.definition import BaseString
+from rosidl_parser.definition import BasicType
+from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import NamespacedType
+from rosidl_parser.definition import NestedType
+from rosidl_parser.definition import Sequence
+from rosidl_parser.definition import String
+from rosidl_parser.definition import WString
+from rosidl_generator_c import basetype_to_c
+from rosidl_generator_c import idl_declaration_to_c
+from rosidl_generator_c import idl_structure_type_sequence_to_c_typename
+from rosidl_generator_c import idl_structure_type_to_c_include_prefix
+from rosidl_generator_c import idl_structure_type_to_c_typename
+from rosidl_generator_c import interface_path_to_string
+from rosidl_generator_c import value_to_c
 }@
-#ifndef @(header_guard_variable)
-#define @(header_guard_variable)
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-
-@#######################################################################
-@# include message dependencies
-@#######################################################################
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Collect necessary include directives for all members
 @{
 from collections import OrderedDict
 includes = OrderedDict()
-for field in spec.fields:
-    if field.type.is_primitive_type():
-        if field.type.type == 'string':
-            field_names = includes.setdefault('rosidl_generator_c/string.h', [])
-            field_names.append(field.name)
-        else:
-            if field.type.is_dynamic_array():
-                field_names = includes.setdefault('rosidl_generator_c/primitives_sequence.h', [])
-                field_names.append(field.name)
-    else:
-        field_names = includes.setdefault(
-            '%s/msg/%s__struct.h' %
-                (field.type.pkg_name, get_header_filename_from_msg_name(field.type.type)),
-            [])
-        field_names.append(field.name)
+for member in message.structure.members:
+    if isinstance(member.type, Sequence) and isinstance(member.type.basetype, BasicType):
+        member_names = includes.setdefault(
+            'rosidl_generator_c/primitives_sequence.h', [])
+        member_names.append(member.name)
+        continue
+    type_ = member.type
+    if isinstance(type_, NestedType):
+        type_ = type_.basetype
+    if isinstance(type_, String):
+        member_names = includes.setdefault('rosidl_generator_c/string.h', [])
+        member_names.append(member.name)
+    elif isinstance(type_, WString):
+        member_names = includes.setdefault(
+            'rosidl_generator_c/u16string.h', [])
+        member_names.append(member.name)
+    elif isinstance(type_, NamespacedType):
+        include_prefix = idl_structure_type_to_c_include_prefix(type_)
+        if include_prefix.endswith('__request'):
+            include_prefix = include_prefix[:-9]
+        elif include_prefix.endswith('__response'):
+            include_prefix = include_prefix[:-10]
+        if include_prefix.endswith('__goal'):
+            include_prefix = include_prefix[:-6]
+        elif include_prefix.endswith('__result'):
+            include_prefix = include_prefix[:-8]
+        elif include_prefix.endswith('__feedback'):
+            include_prefix = include_prefix[:-10]
+        member_names = includes.setdefault(
+            include_prefix + '__struct.h', [])
+        member_names.append(member.name)
 }@
-@
-@#######################################################################
-@# constants defined in the message
-@#######################################################################
-@{
-constants = []
-for constant in spec.constants:
-    if constant.type in ['byte', 'char', 'int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64']:
-        constants.append((
-            'enum',
-            constant.name,
-            '%s__%s' % (msg_typename, constant.name),
-            primitive_value_to_c(constant.type, constant.value),
-        ))
-    else:
-        constants.append((
-            'static',
-            constant.name,
-            '%s %s' % (constant.type, msg_typename + '__' + constant.name),
-            primitive_value_to_c(constant.type, constant.value),
-        ))
-}@
-@[if includes]@
-// include message dependencies
-@[  for header_file, field_names in includes.items()]@
-@[    for field_name in field_names]@
-// @(field_name)
-@[    end for]@
-#include "@(header_file)"
-@[  end for]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-@[end if]@
-@[if constants]@
-// constants defined in the message
-@[  for constant_type, constant_name, key, value in constants]@
-// @(constant_name)
-@[    if constant_type == 'enum']@
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+// Constants defined in the message
+@[for constant in message.constants.values()]@
+
+/// Constant '@(constant.name)'.
+@[    if isinstance(constant.type, BasicType)]@
+@[        if constant.type.type in (
+              'short', 'unsigned short', 'long', 'unsigned long', 'long long', 'unsigned long long',
+              'char', 'wchar', 'octet',
+              'int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64',
+          )]@
 enum
 {
-  @(key) = @(value)
+  @(idl_structure_type_to_c_typename(message.structure.type))__@(constant.name) = @(value_to_c(constant.type, constant.value))
 };
-@[    else]@
-@{
-(const_idl_type, const_c_name) = key.split()
-if const_idl_type == 'string':
-    const_c_type = 'char * const'
-else:
-    const_c_type = MSG_TYPE_TO_C[const_idl_type]
-}@
-static const @(const_c_type) @(const_c_name) = @(value);
+@[        elif constant.type.type in ('float', 'double', 'long double', 'boolean')]@
+static const @(basetype_to_c(constant.type)) @(idl_structure_type_to_c_typename(message.structure.type))__@(constant.name) = @(value_to_c(constant.type, constant.value));
+@[        else]@
+@{assert False, 'Unhandled basic type: ' + str(constant.type)}@
+@[        end if]@
+@[    elif isinstance(constant.type, String)]@
+static const char * const @(idl_structure_type_to_c_typename(message.structure.type))__@(constant.name) = @(value_to_c(constant.type, constant.value));
 @[    end if]@
-@[  end for]@
-
-@[end if]@
+@[end for]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 @
-@#######################################################################
-@# Constants for array fields with an upper bound
-@#######################################################################
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@[if includes]@
+
+// Include directives for member types
+@[    for header_file, member_names in includes.items()]@
+@[        for member_name in member_names]@
+// Member '@(member_name)'
+@[        end for]@
+@[        if header_file in include_directives]@
+// already included above
+// @
+@[        else]@
+@{include_directives.add(header_file)}@
+@[        end if]@
+#include "@(header_file)"
+@[    end for]@
+@[end if]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+@
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Constants for array and string fields with an upper bound
 @{
 upper_bounds = []
-for field in spec.fields:
-    if field.type.type == 'string' and field.type.string_upper_bound is not None:
+for member in message.structure.members:
+    type_ = member.type
+    if isinstance(type_, BoundedSequence):
         upper_bounds.append((
-            field.name,
-            '%s__%s__MAX_STRING_SIZE' % (msg_typename, field.name),
-            field.type.string_upper_bound,
+            member.name,
+            '%s__%s__MAX_SIZE' % (idl_structure_type_to_c_typename(message.structure.type), member.name),
+            type_.upper_bound,
         ))
-    if field.type.is_array and field.type.array_size and field.type.is_upper_bound:
+    if isinstance(type_, NestedType):
+        type_ = type_.basetype
+    if isinstance(type_, BaseString) and type_.maximum_size is not None:
         upper_bounds.append((
-            field.name,
-            '%s__%s__MAX_SIZE' % (msg_typename, field.name),
-            field.type.array_size,
+            member.name,
+            '%s__%s__MAX_STRING_SIZE' % (idl_structure_type_to_c_typename(message.structure.type), member.name),
+            type_.maximum_size,
         ))
 }@
 @[if upper_bounds]@
+
 // constants for array fields with an upper bound
 @[  for field_name, enum_name, enum_value in upper_bounds]@
 // @(field_name)
@@ -143,38 +131,26 @@ enum
   @(enum_name) = @(enum_value)
 };
 @[  end for]@
-
 @[end if]@
-@
-@#######################################################################
-@# Struct of message
-@#######################################################################
-/// Struct of message @(spec.base_type.pkg_name)/@(spec.base_type.type)
-typedef struct @(msg_typename)
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+// Struct defined in @(interface_path_to_string(interface_path)) in the package @(package_name).
+typedef struct @(idl_structure_type_to_c_typename(message.structure.type))
 {
-@[for field in spec.fields]@
-  @(msg_type_to_c(field.type, field.name));
+@[for member in message.structure.members]@
+  @(idl_declaration_to_c(member.type, member.name));
 @[end for]@
-@[if not spec.fields]@
-  bool _dummy;
-@[end if]@
-} @(msg_typename);
+} @(idl_structure_type_to_c_typename(message.structure.type));
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-@#######################################################################
-@# Struct for an array of messages
-@#######################################################################
-/// Struct for an array of messages
-typedef struct @(sequence_typename)
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+// Struct for a sequence of @(idl_structure_type_to_c_typename(message.structure.type)).
+typedef struct @(idl_structure_type_sequence_to_c_typename(message.structure.type))
 {
-  @(msg_typename) * data;
+  @(idl_structure_type_to_c_typename(message.structure.type)) * data;
   /// The number of valid items in data
   size_t size;
   /// The number of allocated items in data
   size_t capacity;
-} @(sequence_typename);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif  // @(header_guard_variable)
+} @(idl_structure_type_sequence_to_c_typename(message.structure.type));

@@ -1,14 +1,11 @@
 // generated from rosidl_adapter/resource/action.idl.em
 // with input from @(pkg_name)/@(relative_input_file)
+// generated code does not contain a copyright notice
 
 @{
 from rosidl_adapter.msg import get_include_file
 include_files = set()
-fields = action.goal_service.request.fields + \
-    action.goal_service.response.fields + \
-    action.result_service.request.fields + \
-    action.result_service.response.fields + \
-    action.feedback.fields
+fields = action.goal.fields + action.result.fields + action.feedback.fields
 for field in fields:
     include_file = get_include_file(field.type)
     if include_file is not None:
@@ -23,13 +20,13 @@ module @(pkg_name) {
 @{
 TEMPLATE(
     'struct.idl.em',
-    msg=action.goal_service.request,
+    msg=action.goal,
 )
 }@
 @{
 TEMPLATE(
     'struct.idl.em',
-    msg=action.result_service.response,
+    msg=action.result,
 )
 }@
 @{

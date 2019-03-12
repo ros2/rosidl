@@ -1,4 +1,4 @@
-# Copyright 2018 Open Source Robotics Foundation, Inc.
+# Copyright 2018-2019 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,28 +26,6 @@ def convert_action_to_idl(package_dir, package_name, input_file, output_dir):
     abs_input_file = package_dir / input_file
     content = abs_input_file.read_text(encoding='utf-8')
     action = parse_action_string(package_name, input_file.stem, content)
-
-    # HACK as long as the return action specification contains implicitly added
-    # fields they have to be skipped when generating .idl files
-    assert len(action.goal_service.request.fields) >= 1
-    assert action.goal_service.request.fields[0].name == 'action_goal_id'
-    action.goal_service.request.fields.pop(0)
-    assert len(action.goal_service.response.fields) >= 2
-    assert action.goal_service.response.fields[0].name == 'accepted'
-    assert action.goal_service.response.fields[1].name == 'stamp'
-    action.goal_service.response.fields.pop(1)
-    action.goal_service.response.fields.pop(0)
-
-    assert len(action.result_service.request.fields) >= 1
-    assert action.result_service.request.fields[0].name == 'action_goal_id'
-    action.result_service.request.fields.pop(0)
-    assert len(action.result_service.response.fields) >= 1
-    assert action.result_service.response.fields[0].name == 'action_status'
-    action.result_service.response.fields.pop(0)
-
-    assert len(action.feedback.fields) >= 1
-    assert action.feedback.fields[0].name == 'action_goal_id'
-    action.feedback.fields.pop(0)
 
     output_file = output_dir / input_file.with_suffix('.idl').name
     abs_output_file = output_file.absolute()

@@ -1,55 +1,103 @@
-// generated from rosidl_generator_cpp/resource/action__struct.hpp.em
-// generated code does not contain a copyright notice
-
-@#######################################################################
-@# EmPy template for generating <action>__struct.hpp files
-@#
-@# Context:
-@#  - spec (rosidl_parser.ActionSpecification)
-@#    Parsed specification of the .action file
-@#  - subfolder (string)
-@#    The subfolder / subnamespace of the message, usually 'action'
-@#  - get_header_filename_from_msg_name (function)
-@#######################################################################
-@
+@# Included from rosidl_generator_cpp/resource/idl__struct.hpp.em
 @{
-header_guard_parts = [
-    spec.pkg_name, subfolder,
-    get_header_filename_from_msg_name(spec.action_name) + '__struct_hpp']
-header_guard_variable = '__'.join([x.upper() for x in header_guard_parts]) + '_'
+from rosidl_parser.definition import ACTION_FEEDBACK_MESSAGE_SUFFIX
+from rosidl_parser.definition import ACTION_FEEDBACK_SUFFIX
+from rosidl_parser.definition import ACTION_GOAL_SERVICE_SUFFIX
+from rosidl_parser.definition import ACTION_GOAL_SUFFIX
+from rosidl_parser.definition import ACTION_RESULT_SERVICE_SUFFIX
+from rosidl_parser.definition import ACTION_RESULT_SUFFIX
+action_includes = (
+    'action_msgs/srv/cancel_goal.hpp',
+    'action_msgs/msg/goal_info.hpp',
+    'action_msgs/msg/goal_status_array.hpp',
+)
+action_name = '::'.join(action.structure_type.namespaces + [action.structure_type.name])
 }@
-#ifndef @(header_guard_variable)
-#define @(header_guard_variable)
+@{
+TEMPLATE(
+    'msg__struct.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    message=action.goal, include_directives=include_directives)
+}@
 
-#include <action_msgs/srv/cancel_goal.hpp>
-#include <action_msgs/msg/goal_info.hpp>
-#include <action_msgs/msg/goal_status_array.hpp>
-#include <@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.action_name))__feedback.hpp>
-#include <@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.action_name))__goal.hpp>
-#include <@(spec.pkg_name)/@(subfolder)/@(get_header_filename_from_msg_name(spec.action_name))__result.hpp>
+@{
+TEMPLATE(
+    'msg__struct.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    message=action.result, include_directives=include_directives)
+}@
 
-namespace @(spec.pkg_name)
+@{
+TEMPLATE(
+    'msg__struct.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    message=action.feedback, include_directives=include_directives)
+}@
+
+@{
+TEMPLATE(
+    'srv__struct.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    service=action.send_goal_service, include_directives=include_directives)
+}@
+
+@{
+TEMPLATE(
+    'srv__struct.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    service=action.get_result_service, include_directives=include_directives)
+}@
+
+@{
+TEMPLATE(
+    'msg__struct.hpp.em',
+    package_name=package_name, interface_path=interface_path,
+    message=action.feedback_message, include_directives=include_directives)
+}@
+
+@[for header_file in action_includes]@
+@[    if header_file in include_directives]@
+// already included above
+// @
+@[    else]@
+@{include_directives.add(header_file)}@
+@[    end if]@
+#include "@(header_file)"
+@[end for]@
+
+@[for ns in action.structure_type.namespaces]@
+namespace @(ns)
 {
 
-namespace @(subfolder)
+@[end for]@
+struct @(action.structure_type.name)
 {
+  /// The goal message defined in the action definition.
+  using Goal = @(action_name)@(ACTION_GOAL_SUFFIX);
+  /// The result message defined in the action definition.
+  using Result = @(action_name)@(ACTION_RESULT_SUFFIX);
+  /// The feedback message defined in the action definition.
+  using Feedback = @(action_name)@(ACTION_FEEDBACK_SUFFIX);
 
-struct @(spec.action_name)
-{
-  using CancelGoalService = action_msgs::srv::CancelGoal;
-  using GoalStatusMessage = action_msgs::msg::GoalStatusArray;
-  using GoalRequestService = @(spec.pkg_name)::@(subfolder)::@(spec.action_name)_Goal;
-  using GoalResultService = @(spec.pkg_name)::@(subfolder)::@(spec.action_name)_Result;
+  struct Impl
+  {
+    /// The send_goal service using a wrapped version of the goal message as a request.
+    using SendGoalService = @(action_name)@(ACTION_GOAL_SERVICE_SUFFIX);
+    /// The get_result service using a wrapped version of the result message as a response.
+    using GetResultService = @(action_name)@(ACTION_RESULT_SERVICE_SUFFIX);
+    /// The feedback message with generic fields which wraps the feedback message.
+    using FeedbackMessage = @(action_name)@(ACTION_FEEDBACK_MESSAGE_SUFFIX);
 
-  using Goal = GoalRequestService::Request;
-  using Result = GoalResultService::Response;
-  using Feedback = @(spec.pkg_name)::@(subfolder)::@(spec.action_name)_Feedback;
+    /// The generic service to cancel a goal.
+    using CancelGoalService = action_msgs::srv::CancelGoal;
+    /// The generic message for the status of a goal.
+    using GoalStatusMessage = action_msgs::msg::GoalStatusArray;
+  };
 };
 
-typedef struct @(spec.action_name) @(spec.action_name);
+typedef struct @(action.structure_type.name) @(action.structure_type.name);
+@
+@[for ns in reversed(action.structure_type.namespaces)]@
 
-}  // namespace @(subfolder)
-
-}  // namespace @(spec.pkg_name)
-
-#endif  // @(header_guard_variable)
+}  // namespace @(ns)
+@[end for]@

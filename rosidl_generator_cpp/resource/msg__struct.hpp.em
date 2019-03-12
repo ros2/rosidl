@@ -223,11 +223,11 @@ def generate_zero_string(membset, fill_args):
 
   // setters for named parameter idiom
 @[for member in message.structure.members]@
-  Type * set__@(member.name)(
+  Type & set__@(member.name)(
     const @(msg_type_to_cpp(member.type)) & _arg)
   {
     this->@(member.name) = _arg;
-    return this;
+    return *this;
   }
 @[end for]@
 

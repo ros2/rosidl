@@ -209,7 +209,7 @@ members_if_all_zero = [m for m in member_list if not m.members[0].default_value 
 @[if members_else_if_zero]@
     } else if (rosidl_generator_cpp::MessageInitialization::ZERO == _init) {
 @[  for membset in members_else_if_zero]@
-  @[   for line in generate_zero_string(membset, '_alloc, _init')]@
+@[   for line in generate_zero_string(membset, '_alloc, _init')]@
       @(line)
 @[   end for]@
 @[  end for]@

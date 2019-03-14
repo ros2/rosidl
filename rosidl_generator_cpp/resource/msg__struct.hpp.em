@@ -150,8 +150,8 @@ def generate_zero_string(membset, fill_args):
     (void)_init;
 @[end if]@
 @{
-members_if_all_defaults = [m for m in member_list if m.members[0].default_value and not m.members[0].zero_value]
-members_else_if_zero = [m for m in member_list if m.members[0].default_value and m.members[0].zero_value]
+members_if_all_defaults = [m for m in member_list if m.members[0].default_value]
+members_else_if_zero = [m for m in member_list if m.members[0].zero_value]
 members_if_all_zero = [m for m in member_list if not m.members[0].default_value and m.members[0].zero_value]
 }@
 @[if members_if_all_defaults]@

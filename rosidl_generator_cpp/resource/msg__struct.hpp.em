@@ -206,30 +206,30 @@ non_defaulted_zero_initialized_members = [
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
       rosidl_generator_cpp::MessageInitialization::DEFAULTS_ONLY == _init)
     {
-@[for membset in default_value_members]@
-@[  for line in generate_default_string(membset)]@
-      @(line)
-@[  end for]@
-@[end for]@
-@[if zero_value_members]@
-    } else if (rosidl_generator_cpp::MessageInitialization::ZERO == _init) {
-@[  for membset in zero_value_members]@
-@[    for line in generate_zero_string(membset, '_alloc, _init')]@
+@[  for membset in default_value_members]@
+@[    for line in generate_default_string(membset)]@
       @(line)
 @[    end for]@
 @[  end for]@
-@[end if]@
+@[  if zero_value_members]@
+    } else if (rosidl_generator_cpp::MessageInitialization::ZERO == _init) {
+@[    for membset in zero_value_members]@
+@[      for line in generate_zero_string(membset, '_alloc, _init')]@
+      @(line)
+@[      end for]@
+@[    end for]@
+@[  end if]@
     }
 @[end if]@
 @[if non_defaulted_zero_initialized_members]@
     if (rosidl_generator_cpp::MessageInitialization::ALL == _init ||
       rosidl_generator_cpp::MessageInitialization::ZERO == _init)
     {
-@[for membset in non_defaulted_zero_initialized_members]@
-@[  for line in generate_zero_string(membset, '_alloc, _init')]@
+@[  for membset in non_defaulted_zero_initialized_members]@
+@[    for line in generate_zero_string(membset, '_alloc, _init')]@
       @(line)
+@[    end for]@
 @[  end for]@
-@[end for]@
     }
 @[end if]@
   }

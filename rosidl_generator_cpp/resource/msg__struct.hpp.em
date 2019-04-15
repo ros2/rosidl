@@ -169,9 +169,9 @@ non_defaulted_zero_initialized_members = [
 @[  if zero_value_members]@
     } else if (rosidl_generator_cpp::MessageInitialization::ZERO == _init) {
 @[    for membset in zero_value_members]@
-@[     for line in generate_zero_string(membset, '_init')]@
+@[      for line in generate_zero_string(membset, '_init')]@
       @(line)
-@[     end for]@
+@[      end for]@
 @[    end for]@
 @[  end if]@
     }

@@ -3,7 +3,6 @@
 import argparse
 import sys
 
-from rosidl_parser import UnknownMessageType
 from rosidl_typesupport_introspection_cpp import generate_cpp
 
 
@@ -17,13 +16,7 @@ def main(argv=sys.argv[1:]):
         help='The location of the file containing the generator arguments')
     args = parser.parse_args(argv)
 
-    try:
-        return generate_cpp(
-            args.generator_arguments_file,
-        )
-    except UnknownMessageType as e:
-        print(str(e), file=sys.stderr)
-        return 1
+    return generate_cpp(args.generator_arguments_file)
 
 
 if __name__ == '__main__':

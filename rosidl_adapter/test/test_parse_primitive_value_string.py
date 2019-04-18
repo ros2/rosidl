@@ -148,7 +148,7 @@ def test_parse_primitive_value_string_string():
     assert value == '"foo'
 
     value = parse_primitive_value_string(
-        Type('string'), '\'foo')
+        Type('string'), "'foo")
     assert value == "'foo"
 
     value = parse_primitive_value_string(
@@ -156,7 +156,7 @@ def test_parse_primitive_value_string_string():
     assert value == '"foo'
 
     value = parse_primitive_value_string(
-        Type('string'), '\'fo\'o')
+        Type('string'), "'fo'o")
     assert value == "'fo'o"
 
     value = parse_primitive_value_string(

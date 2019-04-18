@@ -30,6 +30,15 @@ header_files = [
 #include "@(header_file)"
 @[end for]@
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_service_type_support_t *
   ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_cpp, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.structure_type.name))();
+
+#ifdef __cplusplus
+}
+#endif

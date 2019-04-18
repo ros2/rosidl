@@ -13,5 +13,5 @@ ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_message_type_support_t *
   ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(
   rosidl_typesupport_c,
-  @(',\n  '.join(message.structure.type.namespaces + [message.structure.type.name]))
+  @(',\n  '.join(message.structure.namespaced_type.namespaces + [message.structure.namespaced_type.name]))
 )();

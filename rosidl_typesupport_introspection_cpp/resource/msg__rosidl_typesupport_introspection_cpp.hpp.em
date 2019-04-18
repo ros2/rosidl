@@ -24,7 +24,7 @@ extern "C"
 // TODO(dirk-thomas) these visibility macros should be message package specific
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_message_type_support_t *
-  ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_cpp, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(message.structure.type.name))();
+  ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_cpp, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(message.structure.namespaced_type.name))();
 
 #ifdef __cplusplus
 }

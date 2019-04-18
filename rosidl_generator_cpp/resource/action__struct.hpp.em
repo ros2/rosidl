@@ -11,7 +11,7 @@ action_includes = (
     'action_msgs/msg/goal_info.hpp',
     'action_msgs/msg/goal_status_array.hpp',
 )
-action_name = '::'.join(action.structure_type.namespaces + [action.structure_type.name])
+action_name = '::'.join(action.namespaced_type.namespaces + [action.namespaced_type.name])
 }@
 @{
 TEMPLATE(
@@ -65,12 +65,12 @@ TEMPLATE(
 #include "@(header_file)"
 @[end for]@
 
-@[for ns in action.structure_type.namespaces]@
+@[for ns in action.namespaced_type.namespaces]@
 namespace @(ns)
 {
 
 @[end for]@
-struct @(action.structure_type.name)
+struct @(action.namespaced_type.name)
 {
   /// The goal message defined in the action definition.
   using Goal = @(action_name)@(ACTION_GOAL_SUFFIX);
@@ -95,9 +95,9 @@ struct @(action.structure_type.name)
   };
 };
 
-typedef struct @(action.structure_type.name) @(action.structure_type.name);
+typedef struct @(action.namespaced_type.name) @(action.namespaced_type.name);
 @
-@[for ns in reversed(action.structure_type.namespaces)]@
+@[for ns in reversed(action.namespaced_type.namespaces)]@
 
 }  // namespace @(ns)
 @[end for]@

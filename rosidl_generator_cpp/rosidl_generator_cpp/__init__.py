@@ -15,16 +15,16 @@
 from ast import literal_eval
 
 from rosidl_cmake import generate_files
+from rosidl_parser.definition import AbstractGenericString
+from rosidl_parser.definition import AbstractNestedType
+from rosidl_parser.definition import AbstractSequence
+from rosidl_parser.definition import AbstractString
+from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import Array
-from rosidl_parser.definition import BaseString
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
 from rosidl_parser.definition import NamespacedType
-from rosidl_parser.definition import NestedType
-from rosidl_parser.definition import Sequence
-from rosidl_parser.definition import String
 from rosidl_parser.definition import UnboundedSequence
-from rosidl_parser.definition import WString
 
 
 def generate_cpp(generator_arguments_file):
@@ -67,13 +67,13 @@ def msg_type_only_to_cpp(type_):
     @param type_: The message type
     @type type_: rosidl_parser.Type
     """
-    if isinstance(type_, NestedType):
-        type_ = type_.basetype
+    if isinstance(type_, AbstractNestedType):
+        type_ = type_.value_type
     if isinstance(type_, BasicType):
-        cpp_type = MSG_TYPE_TO_CPP[type_.type]
-    elif isinstance(type_, String):
+        cpp_type = MSG_TYPE_TO_CPP[type_.typename]
+    elif isinstance(type_, AbstractString):
         cpp_type = MSG_TYPE_TO_CPP['string']
-    elif isinstance(type_, WString):
+    elif isinstance(type_, AbstractWString):
         assert False, 'TBD'
     elif isinstance(type_, NamespacedType):
         typename = '::'.join(type_.namespaces + [type_.name])
@@ -97,7 +97,7 @@ def msg_type_to_cpp(type_):
     """
     cpp_type = msg_type_only_to_cpp(type_)
 
-    if isinstance(type_, NestedType):
+    if isinstance(type_, AbstractNestedType):
         if isinstance(type_, UnboundedSequence):
             return \
                 ('std::vector<%s, typename ContainerAllocator::template ' +
@@ -105,7 +105,7 @@ def msg_type_to_cpp(type_):
         elif isinstance(type_, BoundedSequence):
             return \
                 ('rosidl_generator_cpp::BoundedVector<%s, %u, typename ContainerAllocator::' +
-                 'template rebind<%s>::other>') % (cpp_type, type_.upper_bound, cpp_type)
+                 'template rebind<%s>::other>') % (cpp_type, type_.maximum_size, cpp_type)
         else:
             assert isinstance(type_, Array)
             return 'std::array<%s, %u>' % (cpp_type, type_.size)
@@ -130,13 +130,13 @@ def value_to_cpp(type_, value):
         "Could not convert non-primitive type '%s' to CPP" % (type_)
     assert value is not None, "Value for type '%s' must not be None" % (type_)
 
-    if not isinstance(type_, NestedType):
+    if not isinstance(type_, AbstractNestedType):
         return primitive_value_to_cpp(type_, value)
 
     cpp_values = []
-    is_string_array = isinstance(type_.basetype, BaseString)
+    is_string_array = isinstance(type_.value_type, AbstractGenericString)
     for single_value in value:
-        cpp_value = primitive_value_to_cpp(type_.basetype, single_value)
+        cpp_value = primitive_value_to_cpp(type_.value_type, single_value)
         if is_string_array:
             tmp_cpp_value = '{%s}' % cpp_value
         else:
@@ -162,17 +162,17 @@ def primitive_value_to_cpp(type_, value):
     @type value: python builtin (bool, int, float or str)
     @returns: a string containing the C++ representation of the value
     """
-    assert isinstance(type_, BasicType) or isinstance(type_, BaseString), \
+    assert isinstance(type_, BasicType) or isinstance(type_, AbstractGenericString), \
         "Could not convert non-primitive type '%s' to CPP" % (type_)
     assert value is not None, "Value for type '%s' must not be None" % (type_)
 
-    if isinstance(type_, BaseString):
+    if isinstance(type_, AbstractGenericString):
         return '"%s"' % escape_string(value)
 
-    if type_.type == 'boolean':
+    if type_.typename == 'boolean':
         return 'true' if value else 'false'
 
-    if type_.type in [
+    if type_.typename in [
         'short', 'unsigned short',
         'char', 'wchar',
         'double',
@@ -182,30 +182,30 @@ def primitive_value_to_cpp(type_, value):
     ]:
         return str(value)
 
-    if type_.type == 'int32':
+    if type_.typename == 'int32':
         return '%sl' % value
 
-    if type_.type == 'uint32':
+    if type_.typename == 'uint32':
         return '%sul' % value
 
-    if type_.type == 'int64':
+    if type_.typename == 'int64':
         return '%sll' % value
 
-    if type_.type == 'uint64':
+    if type_.typename == 'uint64':
         return '%sull' % value
 
-    if type_.type == 'float':
+    if type_.typename == 'float':
         return '%sf' % value
 
-    assert False, "unknown primitive type '%s'" % type_.type
+    assert False, "unknown primitive type '%s'" % type_.typename
 
 
 def default_value_from_type(type_):
-    if isinstance(type_, BaseString):
+    if isinstance(type_, AbstractGenericString):
         return ''
-    elif isinstance(type_, BasicType) and type_.type in ['float', 'double']:
+    elif isinstance(type_, BasicType) and type_.typename in ['float', 'double']:
         return 0.0
-    elif isinstance(type_, BasicType) and type_.type == 'boolean':
+    elif isinstance(type_, BasicType) and type_.typename == 'boolean':
         return False
     return 0
 
@@ -264,10 +264,10 @@ def create_init_alloc_and_member_lists(message):
         member.type = field.type
         if isinstance(field.type, Array):
             alloc_list.append(field.name + '(_alloc)')
-            if isinstance(field.type.basetype, BasicType) or \
-                    isinstance(field.type.basetype, BaseString):
-                default = default_value_from_type(field.type.basetype)
-                single = primitive_value_to_cpp(field.type.basetype, default)
+            if isinstance(field.type.value_type, BasicType) or \
+                    isinstance(field.type.value_type, AbstractGenericString):
+                default = default_value_from_type(field.type.value_type)
+                single = primitive_value_to_cpp(field.type.value_type, default)
                 member.zero_value = [single] * field.type.size
                 if field.has_annotation('default'):
                     default_value = literal_eval(
@@ -275,11 +275,11 @@ def create_init_alloc_and_member_lists(message):
                     member.default_value = []
                     for val in default_value:
                         member.default_value.append(
-                            primitive_value_to_cpp(field.type.basetype, val))
+                            primitive_value_to_cpp(field.type.value_type, val))
             else:
                 member.zero_value = []
                 member.zero_need_array_override = True
-        elif isinstance(field.type, Sequence):
+        elif isinstance(field.type, AbstractSequence):
             if field.has_annotation('default'):
                 default_value = literal_eval(
                     field.get_annotation_value('default')['value'])
@@ -287,8 +287,8 @@ def create_init_alloc_and_member_lists(message):
                 member.num_prealloc = len(default_value)
         else:
             if isinstance(field.type, BasicType) or \
-                    isinstance(field.type, BaseString):
-                if isinstance(field.type, BaseString):
+                    isinstance(field.type, AbstractGenericString):
+                if isinstance(field.type, AbstractGenericString):
                     alloc_list.append(field.name + '(_alloc)')
                 default = default_value_from_type(field.type)
                 member.zero_value = primitive_value_to_cpp(field.type, default)

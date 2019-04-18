@@ -41,7 +41,7 @@ header_files = [
 @[    end if]@
 #include "@(header_file)"
 @[end for]@
-@[for ns in service.structure_type.namespaces]@
+@[for ns in service.namespaced_type.namespaces]@
 
 namespace @(ns)
 {
@@ -51,23 +51,23 @@ namespace rosidl_typesupport_introspection_cpp
 {
 
 // this is intentionally not const to allow initialization later to prevent an initialization race
-static ::rosidl_typesupport_introspection_cpp::ServiceMembers @(service.structure_type.name)_service_members = {
+static ::rosidl_typesupport_introspection_cpp::ServiceMembers @(service.namespaced_type.name)_service_members = {
   "@(package_name)",  // package name
-  "@(service.structure_type.name)",  // service name
+  "@(service.namespaced_type.name)",  // service name
   // these two fields are initialized below on the first access
-  // see get_service_type_support_handle<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [service.structure_type.name]))>()
+  // see get_service_type_support_handle<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [service.namespaced_type.name]))>()
   nullptr,  // request message
   nullptr  // response message
 };
 
-static const rosidl_service_type_support_t @(service.structure_type.name)_service_type_support_handle = {
+static const rosidl_service_type_support_t @(service.namespaced_type.name)_service_type_support_handle = {
   ::rosidl_typesupport_introspection_cpp::typesupport_identifier,
-  &@(service.structure_type.name)_service_members,
+  &@(service.namespaced_type.name)_service_members,
   get_service_typesupport_handle_function,
 };
 
 }  // namespace rosidl_typesupport_introspection_cpp
-@[  for ns in reversed(service.structure_type.namespaces)]@
+@[  for ns in reversed(service.namespaced_type.namespaces)]@
 
 }  // namespace @(ns)
 @[  end for]@
@@ -79,11 +79,11 @@ namespace rosidl_typesupport_introspection_cpp
 template<>
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_service_type_support_t *
-get_service_type_support_handle<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [service.structure_type.name]))>()
+get_service_type_support_handle<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [service.namespaced_type.name]))>()
 {
   // get a handle to the value to be returned
   auto service_type_support =
-    &::@('::'.join([package_name] + list(interface_path.parents[0].parts)))::rosidl_typesupport_introspection_cpp::@(service.structure_type.name)_service_type_support_handle;
+    &::@('::'.join([package_name] + list(interface_path.parents[0].parts)))::rosidl_typesupport_introspection_cpp::@(service.namespaced_type.name)_service_type_support_handle;
   // get a non-const and properly typed version of the data void *
   auto service_members = const_cast<::rosidl_typesupport_introspection_cpp::ServiceMembers *>(
     static_cast<const ::rosidl_typesupport_introspection_cpp::ServiceMembers *>(
@@ -99,7 +99,7 @@ get_service_type_support_handle<@('::'.join([package_name] + list(interface_path
       const ::rosidl_typesupport_introspection_cpp::MessageMembers *
       >(
       ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<
-        ::@('::'.join([package_name] + list(interface_path.parents[0].parts)))::@(service.request_message.structure.type.name)
+        ::@('::'.join([package_name] + list(interface_path.parents[0].parts)))::@(service.request_message.structure.namespaced_type.name)
       >()->data
       );
     // initialize the response_members_ with the static function from the external library
@@ -107,7 +107,7 @@ get_service_type_support_handle<@('::'.join([package_name] + list(interface_path
       const ::rosidl_typesupport_introspection_cpp::MessageMembers *
       >(
       ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<
-        ::@('::'.join([package_name] + list(interface_path.parents[0].parts)))::@(service.response_message.structure.type.name)
+        ::@('::'.join([package_name] + list(interface_path.parents[0].parts)))::@(service.response_message.structure.namespaced_type.name)
       >()->data
       );
   }
@@ -124,8 +124,8 @@ extern "C"
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_service_type_support_t *
-ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_cpp, @(', '.join([package_name] + list(interface_path.parents[0].parts) + [service.structure_type.name])))() {
-  return ::rosidl_typesupport_introspection_cpp::get_service_type_support_handle<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [service.structure_type.name]))>();
+ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspection_cpp, @(', '.join([package_name] + list(interface_path.parents[0].parts) + [service.namespaced_type.name])))() {
+  return ::rosidl_typesupport_introspection_cpp::get_service_type_support_handle<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [service.namespaced_type.name]))>();
 }
 
 #ifdef __cplusplus

@@ -20,6 +20,7 @@ from lark.lexer import Token
 from lark.tree import pydot__tree_to_png
 from lark.tree import Tree
 
+from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractType
 from rosidl_parser.definition import Action
 from rosidl_parser.definition import ACTION_FEEDBACK_SUFFIX
@@ -29,6 +30,8 @@ from rosidl_parser.definition import Annotation
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import BoundedString
+from rosidl_parser.definition import BoundedWString
 from rosidl_parser.definition import Constant
 from rosidl_parser.definition import CONSTANT_MODULE_SUFFIX
 from rosidl_parser.definition import IdlContent
@@ -38,14 +41,13 @@ from rosidl_parser.definition import Member
 from rosidl_parser.definition import Message
 from rosidl_parser.definition import NamedType
 from rosidl_parser.definition import NamespacedType
-from rosidl_parser.definition import NestedType
 from rosidl_parser.definition import Service
 from rosidl_parser.definition import SERVICE_REQUEST_MESSAGE_SUFFIX
 from rosidl_parser.definition import SERVICE_RESPONSE_MESSAGE_SUFFIX
-from rosidl_parser.definition import String
 from rosidl_parser.definition import Structure
 from rosidl_parser.definition import UnboundedSequence
-from rosidl_parser.definition import WString
+from rosidl_parser.definition import UnboundedString
+from rosidl_parser.definition import UnboundedWString
 
 grammar_file = os.path.join(os.path.dirname(__file__), 'grammar.lark')
 with open(grammar_file, mode='r', encoding='utf-8') as h:
@@ -104,10 +106,11 @@ def extract_content_from_ast(tree):
         module_identifiers = get_module_identifier_values(tree, const_dcl)
         module_comments = constants.setdefault(
             module_identifiers[-1], [])
+        value = get_const_expr_value(const_expr)
         module_comments.append(Constant(
             get_first_identifier_value(const_dcl),
-            get_abstract_type_from_const_expr(const_type),
-            get_const_expr_value(const_expr)))
+            get_abstract_type_from_const_expr(const_type, value),
+            value))
 
     typedefs = {}
     typedef_dcls = tree.find_data('typedef_dcl')
@@ -138,50 +141,48 @@ def extract_content_from_ast(tree):
         msg.structure.annotations += annotations
         add_message_members(msg, struct_defs[0])
         resolve_typedefed_names(msg.structure, typedefs)
-        constant_module_name = msg.structure.type.name + CONSTANT_MODULE_SUFFIX
+        constant_module_name = msg.structure.namespaced_type.name + \
+            CONSTANT_MODULE_SUFFIX
         if constant_module_name in constants:
-            msg.constants.update(
-                {c.name: c for c in constants[constant_module_name]})
+            msg.constants += constants[constant_module_name]
         content.elements.append(msg)
 
     elif len(struct_defs) == 2:
         request = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[0]),
             name=get_child_identifier_value(struct_defs[0]))))
-        assert request.structure.type.name.endswith(
+        assert request.structure.namespaced_type.name.endswith(
             SERVICE_REQUEST_MESSAGE_SUFFIX)
         add_message_members(request, struct_defs[0])
         resolve_typedefed_names(request.structure, typedefs)
         constant_module_name = \
-            request.structure.type.name + CONSTANT_MODULE_SUFFIX
+            request.structure.namespaced_type.name + CONSTANT_MODULE_SUFFIX
         if constant_module_name in constants:
-            request.constants.update(
-                {c.name: c for c in constants[constant_module_name]})
+            request.constants += constants[constant_module_name]
 
         response = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[1]),
             name=get_child_identifier_value(struct_defs[1]))))
-        assert response.structure.type.name.endswith(
+        assert response.structure.namespaced_type.name.endswith(
             SERVICE_RESPONSE_MESSAGE_SUFFIX)
         add_message_members(response, struct_defs[1])
         resolve_typedefed_names(response.structure, typedefs)
         constant_module_name = \
-            response.structure.type.name + CONSTANT_MODULE_SUFFIX
+            response.structure.namespaced_type.name + CONSTANT_MODULE_SUFFIX
         if constant_module_name in constants:
-            response.constants.update(
-                {c.name: c for c in constants[constant_module_name]})
+            response.constants += constants[constant_module_name]
 
-        assert request.structure.type.namespaces == \
-            response.structure.type.namespaces
-        request_basename = request.structure.type.name[
+        assert request.structure.namespaced_type.namespaces == \
+            response.structure.namespaced_type.namespaces
+        request_basename = request.structure.namespaced_type.name[
             :-len(SERVICE_REQUEST_MESSAGE_SUFFIX)]
-        response_basename = response.structure.type.name[
+        response_basename = response.structure.namespaced_type.name[
             :-len(SERVICE_RESPONSE_MESSAGE_SUFFIX)]
         assert request_basename == response_basename
 
         srv = Service(
             NamespacedType(
-                namespaces=request.structure.type.namespaces,
+                namespaces=request.structure.namespaced_type.namespaces,
                 name=request_basename),
             request, response)
         content.elements.append(srv)
@@ -190,50 +191,50 @@ def extract_content_from_ast(tree):
         goal = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[0]),
             name=get_child_identifier_value(struct_defs[0]))))
-        assert goal.structure.type.name.endswith(ACTION_GOAL_SUFFIX)
+        assert goal.structure.namespaced_type.name.endswith(ACTION_GOAL_SUFFIX)
         add_message_members(goal, struct_defs[0])
         resolve_typedefed_names(goal.structure, typedefs)
         constant_module_name = \
-            goal.structure.type.name + CONSTANT_MODULE_SUFFIX
+            goal.structure.namespaced_type.name + CONSTANT_MODULE_SUFFIX
         if constant_module_name in constants:
-            goal.constants.update(
-                {c.name: c for c in constants[constant_module_name]})
+            goal.constants += constants[constant_module_name]
 
         result = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[1]),
             name=get_child_identifier_value(struct_defs[1]))))
-        assert result.structure.type.name.endswith(ACTION_RESULT_SUFFIX)
+        assert result.structure.namespaced_type.name.endswith(
+            ACTION_RESULT_SUFFIX)
         add_message_members(result, struct_defs[1])
         resolve_typedefed_names(result.structure, typedefs)
         constant_module_name = \
-            result.structure.type.name + CONSTANT_MODULE_SUFFIX
+            result.structure.namespaced_type.name + CONSTANT_MODULE_SUFFIX
         if constant_module_name in constants:
-            result.constants.update(
-                {c.name: c for c in constants[constant_module_name]})
+            result.constants += constants[constant_module_name]
 
-        assert goal.structure.type.namespaces == \
-            result.structure.type.namespaces
-        goal_basename = goal.structure.type.name[:-len(ACTION_GOAL_SUFFIX)]
-        result_basename = result.structure.type.name[
+        assert goal.structure.namespaced_type.namespaces == \
+            result.structure.namespaced_type.namespaces
+        goal_basename = goal.structure.namespaced_type.name[
+            :-len(ACTION_GOAL_SUFFIX)]
+        result_basename = result.structure.namespaced_type.name[
             :-len(ACTION_RESULT_SUFFIX)]
         assert goal_basename == result_basename
 
         feedback_message = Message(Structure(NamespacedType(
             namespaces=get_module_identifier_values(tree, struct_defs[2]),
             name=get_child_identifier_value(struct_defs[2]))))
-        assert feedback_message.structure.type.name.endswith(
+        assert feedback_message.structure.namespaced_type.name.endswith(
             ACTION_FEEDBACK_SUFFIX)
         add_message_members(feedback_message, struct_defs[2])
         resolve_typedefed_names(feedback_message.structure, typedefs)
         constant_module_name = \
-            feedback_message.structure.type.name + CONSTANT_MODULE_SUFFIX
+            feedback_message.structure.namespaced_type.name + \
+            CONSTANT_MODULE_SUFFIX
         if constant_module_name in constants:
-            feedback_message.constants.update(
-                {c.name: c for c in constants[constant_module_name]})
+            feedback_message.constants += constants[constant_module_name]
 
         action = Action(
             NamespacedType(
-                namespaces=goal.structure.type.namespaces,
+                namespaces=goal.structure.namespaced_type.namespaces,
                 name=goal_basename),
             goal, result, feedback_message)
 
@@ -257,23 +258,23 @@ def extract_content_from_ast(tree):
 def resolve_typedefed_names(structure, typedefs):
     for member in structure.members:
         type_ = member.type
-        if isinstance(type_, NestedType):
-            type_ = type_.basetype
+        if isinstance(type_, AbstractNestedType):
+            type_ = type_.value_type
         assert isinstance(type_, AbstractType)
         if isinstance(type_, NamedType):
             assert type_.name in typedefs, 'Unknown named type: ' + type_.name
             typedefed_type = typedefs[type_.name]
 
             # second level of indirection for arrays of structures
-            if isinstance(typedefed_type, NestedType):
-                if isinstance(typedefed_type.basetype, NamedType):
-                    assert typedefed_type.basetype.name in typedefs, \
-                        'Unknown named type: ' + typedefed_type.basetype.name
-                    typedefed_type.basetype = \
-                        typedefs[typedefed_type.basetype.name]
+            if isinstance(typedefed_type, AbstractNestedType):
+                if isinstance(typedefed_type.value_type, NamedType):
+                    assert typedefed_type.value_type.name in typedefs, \
+                        'Unknown named type: ' + typedefed_type.value_type.name
+                    typedefed_type.value_type = \
+                        typedefs[typedefed_type.value_type.name]
 
-            if isinstance(member.type, NestedType):
-                member.type.basetype = typedefed_type
+            if isinstance(member.type, AbstractNestedType):
+                member.type.value_type = typedefed_type
             else:
                 member.type = typedefed_type
 
@@ -322,19 +323,15 @@ def _find_path(node, target):
     return None
 
 
-def get_abstract_type_from_const_expr(const_expr):
+def get_abstract_type_from_const_expr(const_expr, value):
     assert len(const_expr.children) == 1
     child = const_expr.children[0]
 
     if child.data in ('string_type', 'wide_string_type'):
-        maximum_size = None
-        if len(child.children) == 1:
-            assert child.children[0].data == 'positive_int_const'
-            maximum_size = get_positive_int_const(child.children[0])
         if 'string_type' == child.data:
-            return String(maximum_size=maximum_size)
+            return BoundedString(len(value))
         if 'wide_string_type' == child.data:
-            return WString(maximum_size=maximum_size)
+            return BoundedWString(len(value))
         assert False
 
     while len(child.children) == 1:
@@ -444,20 +441,24 @@ def get_abstract_type(tree):
                 if len(path) > 2 and path[-2].data == 'string_type':
                     positive_int_consts.pop(0)
             if positive_int_consts:
-                upper_bound = get_positive_int_const(positive_int_consts[-1])
-                return BoundedSequence(basetype, upper_bound)
+                maximum_size = get_positive_int_const(positive_int_consts[-1])
+                return BoundedSequence(basetype, maximum_size)
             else:
                 return UnboundedSequence(basetype)
 
         if child.data in ('string_type', 'wide_string_type'):
-            maximum_size = None
             if len(child.children) == 1:
                 assert child.children[0].data == 'positive_int_const'
                 maximum_size = get_positive_int_const(child.children[0])
-            if 'string_type' == child.data:
-                return String(maximum_size=maximum_size)
-            if 'wide_string_type' == child.data:
-                return WString(maximum_size=maximum_size)
+                if 'string_type' == child.data:
+                    return BoundedString(maximum_size=maximum_size)
+                if 'wide_string_type' == child.data:
+                    return BoundedWString(maximum_size=maximum_size)
+            else:
+                if 'string_type' == child.data:
+                    return UnboundedString()
+                if 'wide_string_type' == child.data:
+                    return UnboundedWString()
 
         if 'fixed_pt_type' == child.data:
             assert False, 'TODO'

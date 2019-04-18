@@ -20,14 +20,16 @@ from rosidl_parser.definition import Action
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import BoundedString
+from rosidl_parser.definition import BoundedWString
 from rosidl_parser.definition import IdlLocator
 from rosidl_parser.definition import Include
 from rosidl_parser.definition import Message
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import Service
-from rosidl_parser.definition import String
 from rosidl_parser.definition import UnboundedSequence
-from rosidl_parser.definition import WString
+from rosidl_parser.definition import UnboundedString
+from rosidl_parser.definition import UnboundedWString
 from rosidl_parser.parser import parse_idl_file
 
 MESSAGE_IDL_LOCATOR = IdlLocator(
@@ -62,83 +64,81 @@ def test_message_parser_structure(message_idl_file):
     constants = messages[0].constants
     assert len(constants) == 5
 
-    constant = constants['SHORT_CONSTANT']
-    assert isinstance(constant.type, BasicType)
-    assert constant.type.type == 'int16'
-    assert constant.value == -23
+    assert constants[0].name == 'SHORT_CONSTANT'
+    assert isinstance(constants[0].type, BasicType)
+    assert constants[0].type.typename == 'int16'
+    assert constants[0].value == -23
 
-    constant = constants['UNSIGNED_LONG_CONSTANT']
-    assert isinstance(constant.type, BasicType)
-    assert constant.type.type == 'uint32'
-    assert constant.value == 42
+    assert constants[1].name == 'UNSIGNED_LONG_CONSTANT'
+    assert isinstance(constants[1].type, BasicType)
+    assert constants[1].type.typename == 'uint32'
+    assert constants[1].value == 42
 
-    constant = constants['FLOAT_CONSTANT']
-    assert isinstance(constant.type, BasicType)
-    assert constant.type.type == 'float'
-    assert constant.value == 1.25
+    assert constants[2].name == 'FLOAT_CONSTANT'
+    assert isinstance(constants[2].type, BasicType)
+    assert constants[2].type.typename == 'float'
+    assert constants[2].value == 1.25
 
-    constant = constants['BOOLEAN_CONSTANT']
-    assert isinstance(constant.type, BasicType)
-    assert constant.type.type == 'boolean'
-    assert constant.value is True
+    assert constants[3].name == 'BOOLEAN_CONSTANT'
+    assert isinstance(constants[3].type, BasicType)
+    assert constants[3].type.typename == 'boolean'
+    assert constants[3].value is True
 
-    constant = constants['STRING_CONSTANT']
-    assert isinstance(constant.type, String)
-    assert constant.value == 'string_value'
+    assert constants[4].name == 'STRING_CONSTANT'
+    assert isinstance(constants[4].type, BoundedString)
+    assert constants[4].value == 'string_value'
 
     structure = messages[0].structure
-    assert structure.type.namespaces == ['rosidl_parser', 'msg']
-    assert structure.type.name == 'MyMessage'
+    assert structure.namespaced_type.namespaces == ['rosidl_parser', 'msg']
+    assert structure.namespaced_type.name == 'MyMessage'
     assert len(structure.members) == 32
 
     assert isinstance(structure.members[0].type, BasicType)
-    assert structure.members[0].type.type == 'int16'
+    assert structure.members[0].type.typename == 'int16'
     assert structure.members[0].name == 'short_value'
     assert isinstance(structure.members[1].type, BasicType)
-    assert structure.members[1].type.type == 'int16'
+    assert structure.members[1].type.typename == 'int16'
     assert structure.members[1].name == 'short_value2'
 
-    assert isinstance(structure.members[22].type, String)
-    assert structure.members[22].type.maximum_size is None
+    assert isinstance(structure.members[22].type, UnboundedString)
     assert structure.members[22].name == 'string_value'
-    assert isinstance(structure.members[23].type, String)
+    assert isinstance(structure.members[23].type, BoundedString)
     assert structure.members[23].type.maximum_size == 5
     assert structure.members[23].name == 'bounded_string_value'
 
-    assert isinstance(structure.members[24].type, WString)
-    assert structure.members[24].type.maximum_size is None
+    assert isinstance(structure.members[24].type, UnboundedWString)
     assert structure.members[24].name == 'wstring_value'
-    assert isinstance(structure.members[25].type, WString)
+    assert isinstance(structure.members[25].type, BoundedWString)
     assert structure.members[25].type.maximum_size == 23
     assert structure.members[25].name == 'bounded_wstring_value'
-    assert isinstance(structure.members[26].type, WString)
+    assert isinstance(structure.members[26].type, BoundedWString)
     assert structure.members[26].type.maximum_size == 'UNSIGNED_LONG_CONSTANT'
     assert structure.members[26].name == 'constant_bounded_wstring_value'
 
     assert isinstance(structure.members[27].type, UnboundedSequence)
-    assert isinstance(structure.members[27].type.basetype, BasicType)
-    assert structure.members[27].type.basetype.type == 'int16'
+    assert isinstance(structure.members[27].type.value_type, BasicType)
+    assert structure.members[27].type.value_type.typename == 'int16'
     assert structure.members[27].name == 'unbounded_short_values'
     assert isinstance(structure.members[28].type, BoundedSequence)
-    assert isinstance(structure.members[28].type.basetype, BasicType)
-    assert structure.members[28].type.basetype.type == 'int16'
-    assert structure.members[28].type.upper_bound == 5
+    assert isinstance(structure.members[28].type.value_type, BasicType)
+    assert structure.members[28].type.value_type.typename == 'int16'
+    assert structure.members[28].type.maximum_size == 5
     assert structure.members[28].name == 'bounded_short_values'
 
     assert isinstance(structure.members[29].type, UnboundedSequence)
-    assert isinstance(structure.members[29].type.basetype, String)
-    assert structure.members[29].type.basetype.maximum_size == 3
+    assert isinstance(structure.members[29].type.value_type, BoundedString)
+    assert structure.members[29].type.value_type.maximum_size == 3
     assert structure.members[29].name == 'unbounded_values_of_bounded_strings'
 
     assert isinstance(structure.members[30].type, BoundedSequence)
-    assert isinstance(structure.members[30].type.basetype, String)
-    assert structure.members[30].type.basetype.maximum_size == 3
-    assert structure.members[30].type.upper_bound == 4
+    assert isinstance(structure.members[30].type.value_type, BoundedString)
+    assert structure.members[30].type.value_type.maximum_size == 3
+    assert structure.members[30].type.maximum_size == 4
     assert structure.members[30].name == 'bounded_values_of_bounded_strings'
 
     assert isinstance(structure.members[31].type, Array)
-    assert isinstance(structure.members[31].type.basetype, BasicType)
-    assert structure.members[31].type.basetype.type == 'int16'
+    assert isinstance(structure.members[31].type.value_type, BasicType)
+    assert structure.members[31].type.value_type.typename == 'int16'
     assert structure.members[31].type.size == 23
     assert structure.members[31].name == 'array_short_values'
 
@@ -188,26 +188,26 @@ def test_service_parser(service_idl_file):
 
     srv = services[0]
     assert isinstance(srv, Service)
-    assert srv.structure_type.namespaces == ['rosidl_parser', 'srv']
-    assert srv.structure_type.name == 'MyService'
+    assert srv.namespaced_type.namespaces == ['rosidl_parser', 'srv']
+    assert srv.namespaced_type.name == 'MyService'
     assert len(srv.request_message.structure.members) == 2
     assert len(srv.response_message.structure.members) == 1
 
     constants = srv.request_message.constants
     assert len(constants) == 1
 
-    constant = constants['SHORT_CONSTANT']
-    assert isinstance(constant.type, BasicType)
-    assert constant.type.type == 'int16'
-    assert constant.value == -23
+    assert constants[0].name == 'SHORT_CONSTANT'
+    assert isinstance(constants[0].type, BasicType)
+    assert constants[0].type.typename == 'int16'
+    assert constants[0].value == -23
 
     constants = srv.response_message.constants
     assert len(constants) == 1
 
-    constant = constants['UNSIGNED_LONG_CONSTANT']
-    assert isinstance(constant.type, BasicType)
-    assert constant.type.type == 'uint32'
-    assert constant.value == 42
+    assert constants[0].name == 'UNSIGNED_LONG_CONSTANT'
+    assert isinstance(constants[0].type, BasicType)
+    assert constants[0].type.typename == 'uint32'
+    assert constants[0].value == 42
 
 
 @pytest.fixture(scope='module')
@@ -221,59 +221,59 @@ def test_action_parser(action_idl_file):
 
     action = actions[0]
     assert isinstance(action, Action)
-    assert action.structure_type.namespaces == ['rosidl_parser', 'action']
-    assert action.structure_type.name == 'MyAction'
+    assert action.namespaced_type.namespaces == ['rosidl_parser', 'action']
+    assert action.namespaced_type.name == 'MyAction'
 
     # check messages defined in the idl file
     constants = action.goal.constants
     assert len(constants) == 1
-    constant = constants['SHORT_CONSTANT']
-    assert isinstance(constant.type, BasicType)
-    assert constant.type.type == 'int16'
-    assert constant.value == -23
+    assert constants[0].name == 'SHORT_CONSTANT'
+    assert isinstance(constants[0].type, BasicType)
+    assert constants[0].type.typename == 'int16'
+    assert constants[0].value == -23
 
     structure = action.goal.structure
-    assert structure.type.namespaces == ['rosidl_parser', 'action']
-    assert structure.type.name == 'MyAction_Goal'
+    assert structure.namespaced_type.namespaces == ['rosidl_parser', 'action']
+    assert structure.namespaced_type.name == 'MyAction_Goal'
     assert len(structure.members) == 1
     assert isinstance(structure.members[0].type, BasicType)
-    assert structure.members[0].type.type == 'int32'
+    assert structure.members[0].type.typename == 'int32'
     assert structure.members[0].name == 'input_value'
 
     constants = action.result.constants
     assert len(constants) == 1
-    constant = constants['UNSIGNED_LONG_CONSTANT']
-    assert isinstance(constant.type, BasicType)
-    assert constant.type.type == 'uint32'
-    assert constant.value == 42
+    assert constants[0].name == 'UNSIGNED_LONG_CONSTANT'
+    assert isinstance(constants[0].type, BasicType)
+    assert constants[0].type.typename == 'uint32'
+    assert constants[0].value == 42
 
     structure = action.result.structure
-    assert structure.type.namespaces == ['rosidl_parser', 'action']
-    assert structure.type.name == 'MyAction_Result'
+    assert structure.namespaced_type.namespaces == ['rosidl_parser', 'action']
+    assert structure.namespaced_type.name == 'MyAction_Result'
     assert len(structure.members) == 1
     assert isinstance(structure.members[0].type, BasicType)
-    assert structure.members[0].type.type == 'uint32'
+    assert structure.members[0].type.typename == 'uint32'
     assert structure.members[0].name == 'output_value'
 
     constants = action.feedback.constants
     assert len(constants) == 1
-    constant = constants['FLOAT_CONSTANT']
-    assert isinstance(constant.type, BasicType)
-    assert constant.type.type == 'float'
-    assert constant.value == 1.25
+    assert constants[0].name == 'FLOAT_CONSTANT'
+    assert isinstance(constants[0].type, BasicType)
+    assert constants[0].type.typename == 'float'
+    assert constants[0].value == 1.25
 
     structure = action.feedback.structure
-    assert structure.type.namespaces == ['rosidl_parser', 'action']
-    assert structure.type.name == 'MyAction_Feedback'
+    assert structure.namespaced_type.namespaces == ['rosidl_parser', 'action']
+    assert structure.namespaced_type.name == 'MyAction_Feedback'
     assert len(structure.members) == 1
     assert isinstance(structure.members[0].type, BasicType)
-    assert structure.members[0].type.type == 'float'
+    assert structure.members[0].type.typename == 'float'
     assert structure.members[0].name == 'progress_value'
 
     # check derived goal service
-    structure_type = action.send_goal_service.structure_type
-    assert structure_type.namespaces == ['rosidl_parser', 'action']
-    assert structure_type.name == 'MyAction_SendGoal'
+    namespaced_type = action.send_goal_service.namespaced_type
+    assert namespaced_type.namespaces == ['rosidl_parser', 'action']
+    assert namespaced_type.name == 'MyAction_SendGoal'
 
     structure = action.send_goal_service.request_message.structure
     assert len(structure.members) == 2
@@ -286,15 +286,15 @@ def test_action_parser(action_idl_file):
 
     assert isinstance(structure.members[1].type, NamespacedType)
     assert structure.members[1].type.namespaces == \
-        action.goal.structure.type.namespaces
+        action.goal.structure.namespaced_type.namespaces
     assert structure.members[1].type.name == \
-        action.goal.structure.type.name
+        action.goal.structure.namespaced_type.name
 
     structure = action.send_goal_service.response_message.structure
     assert len(structure.members) == 2
 
     assert isinstance(structure.members[0].type, BasicType)
-    assert structure.members[0].type.type == 'boolean'
+    assert structure.members[0].type.typename == 'boolean'
     assert structure.members[0].name == 'accepted'
 
     assert isinstance(structure.members[1].type, NamespacedType)
@@ -304,9 +304,9 @@ def test_action_parser(action_idl_file):
     assert structure.members[1].name == 'stamp'
 
     # check derived result service
-    structure_type = action.get_result_service.structure_type
-    assert structure_type.namespaces == ['rosidl_parser', 'action']
-    assert structure_type.name == 'MyAction_GetResult'
+    namespaced_type = action.get_result_service.namespaced_type
+    assert namespaced_type.namespaces == ['rosidl_parser', 'action']
+    assert namespaced_type.name == 'MyAction_GetResult'
 
     structure = action.get_result_service.request_message.structure
     assert len(structure.members) == 1
@@ -321,19 +321,19 @@ def test_action_parser(action_idl_file):
     assert len(structure.members) == 2
 
     assert isinstance(structure.members[0].type, BasicType)
-    assert structure.members[0].type.type == 'int8'
+    assert structure.members[0].type.typename == 'int8'
     assert structure.members[0].name == 'status'
 
     assert isinstance(structure.members[1].type, NamespacedType)
     assert structure.members[1].type.namespaces == \
-        action.result.structure.type.namespaces
+        action.result.structure.namespaced_type.namespaces
     assert structure.members[1].type.name == \
-        action.result.structure.type.name
+        action.result.structure.namespaced_type.name
 
     # check derived feedback message
     structure = action.feedback_message.structure
-    assert structure.type.namespaces == ['rosidl_parser', 'action']
-    assert structure.type.name == 'MyAction_FeedbackMessage'
+    assert structure.namespaced_type.namespaces == ['rosidl_parser', 'action']
+    assert structure.namespaced_type.name == 'MyAction_FeedbackMessage'
 
     assert len(structure.members) == 2
 
@@ -345,6 +345,6 @@ def test_action_parser(action_idl_file):
 
     assert isinstance(structure.members[1].type, NamespacedType)
     assert structure.members[1].type.namespaces == \
-        action.feedback.structure.type.namespaces
+        action.feedback.structure.namespaced_type.namespaces
     assert structure.members[1].type.name == \
-        action.feedback.structure.type.name
+        action.feedback.structure.namespaced_type.name

@@ -13,22 +13,22 @@ TEMPLATE(
     message=service.response_message, include_directives=include_directives)
 }@
 
-@[for ns in service.structure_type.namespaces]@
+@[for ns in service.namespaced_type.namespaces]@
 namespace @(ns)
 {
 
 @[end for]@
 @
-struct @(service.structure_type.name)
+struct @(service.namespaced_type.name)
 {
 @{
-service_typename = '::'.join(service.structure_type.namespaces + [service.structure_type.name])
+service_typename = '::'.join(service.namespaced_type.namespaces + [service.namespaced_type.name])
 }@
   using Request = @(service_typename)_Request;
   using Response = @(service_typename)_Response;
 };
 @
-@[for ns in reversed(service.structure_type.namespaces)]@
+@[for ns in reversed(service.namespaced_type.namespaces)]@
 
 }  // namespace @(ns)
 @[end for]@

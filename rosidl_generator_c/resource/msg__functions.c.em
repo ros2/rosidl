@@ -1,14 +1,14 @@
 @# Included from rosidl_generator_c/resource/idl__functions.c.em
 @{
 from ast import literal_eval
+from rosidl_parser.definition import AbstractNestedType
+from rosidl_parser.definition import AbstractSequence
+from rosidl_parser.definition import AbstractString
+from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
-from rosidl_parser.definition import BaseString
+from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import NamespacedType
-from rosidl_parser.definition import NestedType
-from rosidl_parser.definition import Sequence
-from rosidl_parser.definition import String
-from rosidl_parser.definition import WString
 from rosidl_generator_c import basetype_to_c
 from rosidl_generator_c import idl_structure_type_sequence_to_c_typename
 from rosidl_generator_c import idl_structure_type_to_c_include_prefix
@@ -17,9 +17,9 @@ from rosidl_generator_c import idl_type_to_c
 from rosidl_generator_c import interface_path_to_string
 from rosidl_generator_c import value_to_c
 
-message_typename = idl_structure_type_to_c_typename(message.structure.type)
+message_typename = idl_structure_type_to_c_typename(message.structure.namespaced_type)
 array_typename = idl_structure_type_sequence_to_c_typename(
-    message.structure.type)
+    message.structure.namespaced_type)
 }@
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 @# Collect necessary include directives for all members
@@ -27,18 +27,18 @@ array_typename = idl_structure_type_sequence_to_c_typename(
 from collections import OrderedDict
 includes = OrderedDict()
 for member in message.structure.members:
-    if isinstance(member.type, Sequence) and isinstance(member.type.basetype, BasicType):
+    if isinstance(member.type, AbstractSequence) and isinstance(member.type.value_type, BasicType):
         member_names = includes.setdefault(
             'rosidl_generator_c/primitives_sequence_functions.h', [])
         member_names.append(member.name)
         continue
     type_ = member.type
-    if isinstance(type_, NestedType):
-        type_ = type_.basetype
-    if isinstance(type_, String):
+    if isinstance(type_, AbstractNestedType):
+        type_ = type_.value_type
+    if isinstance(type_, AbstractString):
         member_names = includes.setdefault('rosidl_generator_c/string_functions.h', [])
         member_names.append(member.name)
-    elif isinstance(type_, WString):
+    elif isinstance(type_, AbstractWString):
         member_names = includes.setdefault(
             'rosidl_generator_c/u16string_functions.h', [])
         member_names.append(member.name)
@@ -96,15 +96,15 @@ abort_lines = []
 for member in message.structure.members:
     lines.append('// ' + member.name)
     if isinstance(member.type, Array):
-        if isinstance(member.type.basetype, BasicType):
+        if isinstance(member.type.value_type, BasicType):
             if member.has_annotation('default'):
                 # set default value for each array element
                 for i, default_value in enumerate(literal_eval(member.get_annotation_value('default')['value'])):
-                    lines.append('msg->%s[%d] = %s;' % (member.name, i, value_to_c(member.type.basetype, default_value)))
-        elif isinstance(member.type.basetype, BaseString) or isinstance(member.type.basetype, NamespacedType): 
+                    lines.append('msg->%s[%d] = %s;' % (member.name, i, value_to_c(member.type.value_type, default_value)))
+        elif isinstance(member.type.value_type, AbstractGenericString) or isinstance(member.type.value_type, NamespacedType): 
             # initialize each array element
             lines.append('for (size_t i = 0; i < %d; ++i) {' % member.type.size)
-            lines.append('  if (!%s__init(&msg->%s[i])) {' % (basetype_to_c(member.type.basetype), member.name))
+            lines.append('  if (!%s__init(&msg->%s[i])) {' % (basetype_to_c(member.type.value_type), member.name))
             lines.append('    %s__destroy(msg);' % message_typename)
             lines.append('    return false;')
             lines.append('  }')
@@ -112,22 +112,22 @@ for member in message.structure.members:
 
             if member.has_annotation('default'):
                 for i, default_value in enumerate(literal_eval(member.get_annotation_value('default')['value'])):
-                    if isinstance(member.type.basetype, BaseString):
+                    if isinstance(member.type.value_type, AbstractGenericString):
                         lines.append('{')
                         lines.append(
                             '  bool success = %s__assign(&msg->%s[%d], %s);' % \
-                            (basetype_to_c(member.type.basetype), member.name, i, value_to_c(member.type.basetype, default_value)))
+                            (basetype_to_c(member.type.value_type), member.name, i, value_to_c(member.type.value_type, default_value)))
                         lines.append('  if (!success) {')
                         lines.append('    goto %s%s;' % (label_prefix, last_label_index))
                         abort_lines[0:0] = [
-                            '  %s__fini(&msg->%s[%d]);' % (basetype_to_c(member.type.basetype), member.name, i),
+                            '  %s__fini(&msg->%s[%d]);' % (basetype_to_c(member.type.value_type), member.name, i),
                             '%s%d:' % (label_prefix, last_label_index),
                         ]
                         last_label_index += 1
                         lines.append('  }')
                         lines.append('}')
 
-    elif isinstance(member.type, Sequence):
+    elif isinstance(member.type, AbstractSequence):
         if not member.has_annotation('default'):
             # initialize the dynamic array with a capacity of zero
             lines.append('if (!%s__init(&msg->%s, 0)) {' % (idl_type_to_c(member.type), member.name))
@@ -149,22 +149,22 @@ for member in message.structure.members:
             lines.append('}')
             # set default value for each array element
             for i, default_value in enumerate(literal_eval(member.get_annotation_value('default')['value'])):
-                if isinstance(member.type.basetype, BaseString):
+                if isinstance(member.type.value_type, AbstractGenericString):
                     lines.append('{')
                     lines.append(
                         '  bool success = %s__assign(&msg->%s.data[%d], %s);' % \
-                        (basetype_to_c(member.type.basetype), member.name, i, value_to_c(member.type.basetype, default_value)))
+                        (basetype_to_c(member.type.value_type), member.name, i, value_to_c(member.type.value_type, default_value)))
                     lines.append('  if (!success) {')
                     lines.append('    goto %s%s;' % (label_prefix, last_label_index))
                     abort_lines[0:0] = [
-                        '  %s__fini(&msg->%s.data[%d]);' % (basetype_to_c(member.type.basetype), member.name, i),
+                        '  %s__fini(&msg->%s.data[%d]);' % (basetype_to_c(member.type.value_type), member.name, i),
                         '%s%d:' % (label_prefix, last_label_index),
                     ]
                     last_label_index += 1
                     lines.append('  }')
                     lines.append('}')
                 else:
-                    lines.append('msg->%s.data[%d] = %s;' % (member.name, i, value_to_c(member.type.basetype, default_value)))
+                    lines.append('msg->%s.data[%d] = %s;' % (member.name, i, value_to_c(member.type.value_type, default_value)))
 
     elif isinstance(member.type, NamespacedType):
             # initialize the sub message
@@ -174,7 +174,7 @@ for member in message.structure.members:
             lines.append('}')
         # no default value for nested messages yet
 
-    elif isinstance(member.type, BaseString):
+    elif isinstance(member.type, AbstractGenericString):
         lines.append('if (!%s__init(&msg->%s)) {' % (basetype_to_c(member.type), member.name))
         lines.append('  %s__destroy(msg);' % message_typename)
         lines.append('  return false;')
@@ -225,12 +225,12 @@ lines = []
 for member in message.structure.members:
     lines.append('// ' + member.name)
     if isinstance(member.type, Array):
-        if isinstance(member.type.basetype, BaseString) or isinstance(member.type.basetype, NamespacedType):
+        if isinstance(member.type.value_type, AbstractGenericString) or isinstance(member.type.value_type, NamespacedType):
             lines.append('for (size_t i = 0; i < %d; ++i) {' % member.type.size)
             # initialize each array element
-            lines.append('  %s__fini(&msg->%s[i]);' % (basetype_to_c(member.type.basetype), member.name))
+            lines.append('  %s__fini(&msg->%s[i]);' % (basetype_to_c(member.type.value_type), member.name))
             lines.append('}')
-    elif isinstance(member.type, Sequence):
+    elif isinstance(member.type, AbstractSequence):
         # finalize the dynamic array
         lines.append('%s__fini(&msg->%s);' % (idl_type_to_c(member.type), member.name))
     elif not isinstance(member.type, BasicType):

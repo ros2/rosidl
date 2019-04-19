@@ -12,34 +12,78 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from collections import OrderedDict
 import pathlib
+from typing import Iterable
+from typing import Tuple
 
+# Basic types as defined by the IDL specification
 
-"""Basic types as defined by the IDL specification."""
-BASIC_TYPES = [
-    'short',
-    'unsigned short',
-    'long',
-    'unsigned long',
-    'long long',
-    'unsigned long long',
+# 7.4.1.4.4.2 Basic Types
+SIGNED_NONEXPLICIT_INTEGER_TYPES = (  # rules (26)
+    'short',  # rule (27)
+    'long',  # rule (28)
+    'long long',  # rule (29)
+)
+UNSIGNED_NONEXPLICIT_INTEGER_TYPES = (  # rules (30)
+    'unsigned short',  # rule (31)
+    'unsigned long',  # rule (32)
+    'unsigned long long',  # rule (33)
+)
+NONEXPLICIT_INTEGER_TYPES = (
+    *SIGNED_NONEXPLICIT_INTEGER_TYPES,
+    *UNSIGNED_NONEXPLICIT_INTEGER_TYPES,
+)
+FLOATING_POINT_TYPES = (  # rule (24)
     'float',
     'double',
     'long double',
-    'char',
-    'wchar',
-    'boolean',
-    'octet',
-    'int8',
-    'uint8',
-    'int16',
-    'uint16',
-    'int32',
-    'uint32',
-    'int64',
-    'uint64',
-]
+)
+CHARACTER_TYPES = (
+    'char',  # rule (34)
+    'wchar',  # rule (35)
+)
+BOOLEAN_TYPE = 'boolean'  # rule (36)
+OCTET_TYPE = 'octet'  # rule (37)
+
+# 7.4.13.4.4 Integers restricted to holding 8-bits of information
+# 7.4.13.4.5 Explicitly-named Integer Types
+SIGNED_EXPLICIT_INTEGER_TYPES = (
+    'int8',  # rule (208)
+    'int16',  # rule (210)
+    'int32',  # rule (211)
+    'int64',  # rule (212)
+)
+UNSIGNED_EXPLICIT_INTEGER_TYPES = (
+    'uint8',  # rule (209)
+    'uint16',  # rule (213)
+    'uint32',  # rule (214)
+    'uint64',  # rule (215)
+)
+EXPLICIT_INTEGER_TYPES = (
+    *SIGNED_EXPLICIT_INTEGER_TYPES,
+    *UNSIGNED_EXPLICIT_INTEGER_TYPES,
+)
+SIGNED_INTEGER_TYPES = (   # rules (26) + (208) + (210-212)
+    *SIGNED_NONEXPLICIT_INTEGER_TYPES,
+    *SIGNED_EXPLICIT_INTEGER_TYPES,
+)
+UNSIGNED_INTEGER_TYPES = (   # rules (30) + (209) + (213-215)
+    *UNSIGNED_NONEXPLICIT_INTEGER_TYPES,
+    *UNSIGNED_EXPLICIT_INTEGER_TYPES,
+)
+INTEGER_TYPES = (   # rules (25) + (206-207) + (210-215)
+    *SIGNED_INTEGER_TYPES,
+    *UNSIGNED_INTEGER_TYPES,
+)
+
+"""All basic types as defined by the IDL specification."""
+BASIC_TYPES = (
+    *INTEGER_TYPES,
+    *FLOATING_POINT_TYPES,
+    *CHARACTER_TYPES,
+    BOOLEAN_TYPE,
+    OCTET_TYPE,
+)
 
 CONSTANT_MODULE_SUFFIX = '_Constants'
 
@@ -56,7 +100,7 @@ ACTION_FEEDBACK_MESSAGE_SUFFIX = '_FeedbackMessage'
 
 
 class AbstractType:
-    """The base class for all types."""
+    """The abstract base class for all types."""
 
     __slots__ = ()
 
@@ -64,41 +108,56 @@ class AbstractType:
         return type(self) == type(other)
 
 
-class BaseType(AbstractType):
-    """The base class for types which can be used inside nested types."""
+class AbstractNestableType(AbstractType):
+    """
+    The abstract base class for types which can be used inside nested types.
+
+    Arrays and sequences are nested types which contain elements of nestable
+    types.
+    Nestable types are:
+    - BasicType like numerics, character types, boolean and octet
+    - NamedType identified by a name which hasn't been resolved yet
+    - NamespacedType which describes another Structure
+    - Strings with any kind of character types, bounded as well as unbounded
+    """
 
     __slots__ = ()
 
 
-class BasicType(BaseType):
-    """A basic type according to the IDL specification."""
+class BasicType(AbstractNestableType):
+    """
+    A basic type according to the IDL specification.
 
-    __slots__ = ('type', )
+    Its `typename` attribute defines the specific numeric, character, boolean
+    or octet type.
+    """
 
-    def __init__(self, typename):
+    __slots__ = ('typename', )
+
+    def __init__(self, typename: str):
         """
         Constructor.
 
-        :param str typename: the name of the basic type
+        :param typename: the name of the basic type
         """
         super().__init__()
         assert typename in BASIC_TYPES
-        self.type = typename
+        self.typename = typename
 
     def __eq__(self, other):
-        return super().__eq__(other) and self.type == other.type
+        return super().__eq__(other) and self.typename == other.typename
 
 
-class NamedType(BaseType):
+class NamedType(AbstractNestableType):
     """A type identified by the name."""
 
     __slots__ = ('name')
 
-    def __init__(self, name):
+    def __init__(self, name: str):
         """
         Constructor.
 
-        :param str name: the name
+        :param name: the name
         """
         super().__init__()
         self.name = name
@@ -107,158 +166,221 @@ class NamedType(BaseType):
         return super().__eq__(other) and self.name == other.name
 
 
-class NamespacedType(BaseType):
+class NamespacedType(AbstractNestableType):
     """A type identified by a name in a namespaced scope."""
 
     __slots__ = ('namespaces', 'name')
 
-    def __init__(self, namespaces, name):
+    def __init__(self, namespaces: Iterable[str], name: str):
         """
         Constructor.
 
-        :param list[str] namespaces: the names of nested namespaces identifying
-          a specific scope
-        :param str name: the name of the type within that scope
+        :param namespaces: the names of nested namespaces identifying a
+          specific scope
+        :param name: the name of the type within that scope
         """
         super().__init__()
         self.namespaces = namespaces
         self.name = name
+
+    def namespaced_name(self) -> Tuple[str, ...]:
+        return (*self.namespaces, self.name)
 
     def __eq__(self, other):
         return super().__eq__(other) and \
             self.namespaces == other.namespaces and self.name == other.name
 
 
-class BaseString(BaseType):
-    """The base class of string types."""
+class AbstractGenericString(AbstractNestableType):
+    """The abstract base class of all string types."""
+
+    __slots__ = ()
+
+    def has_maximum_size(self):
+        raise NotImplementedError('Only implemented in subclasses')
+
+
+class AbstractString(AbstractGenericString):
+    """The abstract base class of 8-bit string types."""
+
+    __slots__ = ()
+
+
+class BoundedString(AbstractString):
+    """A 8-bit string type with a limited number of characters."""
 
     __slots__ = ('maximum_size', )
 
-    def __init__(self, maximum_size=None):
+    def __init__(self, maximum_size: int):
         """
         Constructor.
 
-        :param int maximum_size: the maximum length of the string in
-          characters, or None if unlimited
+        :param maximum_size: the maximum length of the string in characters
+          (must be greater than zero)
         """
+        super().__init__()
+        assert maximum_size > 0
         self.maximum_size = maximum_size
+
+    def has_maximum_size(self):
+        return True
 
     def __eq__(self, other):
         return super().__eq__(other) and \
             self.maximum_size == other.maximum_size
 
 
-class String(BaseString):
-    """A 8-bit string type."""
+class UnboundedString(AbstractString):
+    """A 8-bit string type with an unlimited number of characters."""
 
     __slots__ = ()
 
-    def __init__(self, maximum_size=None):
+    def has_maximum_size(self):
+        return False
+
+
+class AbstractWString(AbstractGenericString):
+    """The abstract base class of 16-bit string types."""
+
+    __slots__ = ()
+
+
+class BoundedWString(AbstractWString):
+    """A 16-bit string type."""
+
+    __slots__ = ('maximum_size', )
+
+    def __init__(self, maximum_size: int):
         """
         Constructor.
 
-        :param int maximum_size: the maximum length of the string in
-          characters, or None if unlimited
+        :param maximum_size: the maximum length of the string in characters
+          (must be greater than zero)
         """
-        super().__init__(maximum_size=maximum_size)
+        super().__init__()
+        # TODO(dirk-thomas) can't be enforced yet since the parser might pass a
+        # constant name
+        # assert maximum_size > 0
+        self.maximum_size = maximum_size
+
+    def has_maximum_size(self):
+        return True
+
+    def __eq__(self, other):
+        return super().__eq__(other) and \
+            self.maximum_size == other.maximum_size
 
 
-class WString(BaseString):
+class UnboundedWString(AbstractWString):
     """A 16-bit string type."""
 
     __slots__ = ()
 
-    def __init__(self, maximum_size=None):
-        """
-        Constructor.
-
-        :param int maximum_size: the maximum length of the string in
-          characters, or None if unlimited
-        """
-        super().__init__(maximum_size=maximum_size)
+    def has_maximum_size(self):
+        return False
 
 
 # the following types are templated on a base type
 
-class NestedType(AbstractType):
-    """The base class of nested types."""
+class AbstractNestedType(AbstractType):
+    """
+    The abstract base class of nested types.
 
-    __slots__ = ('basetype', )
+    Arrays and sequences are nested types which contain elements of nestable
+    types.
+    """
 
-    def __init__(self, basetype):
+    __slots__ = ('value_type', )
+
+    def __init__(self, value_type: AbstractNestableType):
         """
         Constructor.
 
-        :param BaseType basetype: the base of the nested type
+        :param value_type: the type of the nested elements
         """
         super().__init__()
-        assert isinstance(basetype, BaseType), basetype
-        self.basetype = basetype
+        assert isinstance(value_type, AbstractNestableType)
+        self.value_type = value_type
+
+    def has_maximum_size(self):
+        raise NotImplementedError('Only implemented in subclasses')
 
     def __eq__(self, other):
-        return super().__eq__(other) and self.basetype == other.basetype
+        return super().__eq__(other) and self.value_type == other.value_type
 
 
-class Array(NestedType):
+class Array(AbstractNestedType):
     """An array type with a static size."""
 
     __slots__ = ('size')
 
-    def __init__(self, basetype, size):
+    def __init__(self, value_type: AbstractNestableType, size: int):
         """
         Constructor.
 
-        :param BaseType basetype: the type of each element in the nested type
-        :param int size: the number of elements in the array
+        :param value_type: the type of each element in the array
+        :param size: the number of elements in the array (must be greater than
+          zero)
         """
-        super().__init__(basetype)
+        super().__init__(value_type)
+        assert size > 0
         self.size = size
+
+    def has_maximum_size(self):
+        return True
 
     def __eq__(self, other):
         return super().__eq__(other) and self.size == other.size
 
 
-class Sequence(NestedType):
-    """The base class of sequence types."""
+class AbstractSequence(AbstractNestedType):
+    """The abstract base class of sequence types."""
 
     __slots__ = set()
 
-    def __init__(self, basetype):
-        super().__init__(basetype)
+    def __init__(self, value_type: AbstractNestableType):
+        super().__init__(value_type)
 
 
-class UnboundedSequence(Sequence):
+class BoundedSequence(AbstractSequence):
+    """A sequence type with a maximum number of elements."""
+
+    __slots__ = ('maximum_size', )
+
+    def __init__(self, value_type: AbstractNestableType, maximum_size: int):
+        """
+        Constructor.
+
+        :param basetype: the type of each element in the sequence
+        :param maximum_size: the maximum number of elements in the sequence
+        """
+        super().__init__(value_type)
+        assert maximum_size > 0
+        self.maximum_size = maximum_size
+
+    def has_maximum_size(self):
+        return True
+
+    def __eq__(self, other):
+        return super().__eq__(other) and \
+            self.maximum_size == other.maximum_size
+
+
+class UnboundedSequence(AbstractSequence):
     """A sequence type with an unlimited number of elements."""
 
     __slots__ = ()
 
-    def __init__(self, basetype):
+    def __init__(self, value_type: AbstractNestableType):
         """
         Constructor.
 
-        :param BaseType basetype: the type of each element in the sequence
+        :param value_type: the type of each element in the sequence
         """
-        super().__init__(basetype)
+        super().__init__(value_type)
 
-
-class BoundedSequence(Sequence):
-    """A sequence type with a maximum number of elements."""
-
-    __slots__ = ('upper_bound', )
-
-    def __init__(self, basetype, upper_bound):
-        """
-        Constructor.
-
-        :param BaseType basetype: the type of each element in the sequence
-        :param int upper_bound: the maximum number of elements in the sequence
-        """
-        super().__init__(basetype)
-        assert isinstance(upper_bound, int)
-        self.upper_bound = upper_bound
-
-    def __eq__(self, other):
-        return super().__eq__(other) and self.upper_bound == other.upper_bound
+    def has_maximum_size(self):
+        return False
 
 
 class Annotation:
@@ -266,11 +388,11 @@ class Annotation:
 
     __slots__ = ('name', 'value')
 
-    def __init__(self, name, value):
+    def __init__(self, name: str, value):
         """
         Constructor.
 
-        :param str name: the type of the annotation as defined in the IDL spec
+        :param name: the type of the annotation as defined in the IDL spec
         :param value: the type of the value is defined by the annotation, it
           can be a primitive type like int or str or a dictionary containing
           multiple key-value pairs
@@ -301,7 +423,8 @@ class Annotatable:
         if not values:
             raise ValueError("No '{name}' annotation".format_map(locals()))
         if len(values) > 1:
-            raise ValueError("Multiple '{name}' annotations".format_map(locals()))
+            raise ValueError(
+                "Multiple '{name}' annotations".format_map(locals()))
         return values[0]
 
     def get_annotation_values(self, name):
@@ -339,12 +462,12 @@ class Member(Annotatable):
 
     __slots__ = ('type', 'name')
 
-    def __init__(self, type_, name):
+    def __init__(self, type_: AbstractType, name: str):
         """
         Constructor.
 
-        :param AbstractTypestr type_: the type of the member
-        :param str name: the name of the member
+        :param type_: the type of the member
+        :param name: the name of the member
         """
         super().__init__()
         assert isinstance(type_, AbstractType)
@@ -355,19 +478,18 @@ class Member(Annotatable):
 class Structure(Annotatable):
     """A namespaced type containing of a list of members."""
 
-    __slots__ = ('type', 'members')
+    __slots__ = ('namespaced_type', 'members')
 
-    def __init__(self, type_, members=None):
+    def __init__(self, namespaced_type: NamespacedType, members=None):
         """
         Constructor.
 
-        :param NamespacedType type_: the namespaced type identifying the
-          structure
+        :param namespaced_type: the namespaced type identifying the structure
         :param list members: the members of the structure
         """
         super().__init__()
-        assert isinstance(type_, NamespacedType)
-        self.type = type_
+        assert isinstance(namespaced_type, NamespacedType)
+        self.namespaced_type = namespaced_type
         self.members = members or []
 
 
@@ -390,12 +512,12 @@ class Constant(Annotatable):
 
     __slots__ = ('name', 'type', 'value')
 
-    def __init__(self, name, type_, value):
+    def __init__(self, name: str, type_: AbstractType, value):
         """
         Constructor.
 
-        :param str name: the name of the constant
-        :param AbstractTypestr type_: the type of the constant
+        :param name: the name of the constant
+        :param type_: the type of the constant
         :param value: the value of the constant
         """
         super().__init__()
@@ -410,47 +532,52 @@ class Message:
 
     __slots__ = ('structure', 'constants')
 
-    def __init__(self, structure):
+    def __init__(self, structure: Structure):
         """
         Constructor.
 
-        :param Structure structure: the structure of the message
+        :param structure: the structure of the message
         """
         super().__init__()
         assert isinstance(structure, Structure)
         self.structure = structure
-        self.constants = OrderedDict()
+        self.constants = []
 
 
 class Service:
     """A namespaced type containing a request and response message."""
 
-    __slots__ = ('structure_type', 'request_message', 'response_message')
+    __slots__ = ('namespaced_type', 'request_message', 'response_message')
 
-    def __init__(self, type_, request, response):
+    def __init__(
+        self, namespaced_type: NamespacedType, request: Message,
+        response: Message
+    ):
         """
         Constructor.
 
-        :param NamespacedType type_: the namespaced type identifying the
+        :param namespaced_type: the namespaced type identifying the
           service
-        :param Message request: the request message
-        :param Message response: the response message
+        :param request: the request message
+        :param response: the response message
         """
         super().__init__()
 
-        assert isinstance(type_, NamespacedType)
-        self.structure_type = type_
+        assert isinstance(namespaced_type, NamespacedType)
+        self.namespaced_type = namespaced_type
 
         assert isinstance(request, Message)
-        assert request.structure.type.namespaces == type_.namespaces
-        assert request.structure.type.name == type_.name + \
-            SERVICE_REQUEST_MESSAGE_SUFFIX
+        assert request.structure.namespaced_type.namespaces == \
+            namespaced_type.namespaces
+        assert request.structure.namespaced_type.name == \
+            namespaced_type.name + SERVICE_REQUEST_MESSAGE_SUFFIX
         self.request_message = request
 
         assert isinstance(response, Message)
-        assert response.structure.type.namespaces == type_.namespaces
-        assert response.structure.type.name == type_.name + \
-            SERVICE_RESPONSE_MESSAGE_SUFFIX
+        assert response.structure.namespaced_type.namespaces == \
+            namespaced_type.namespaces
+        assert response.structure.namespaced_type.name == \
+            namespaced_type.name + SERVICE_RESPONSE_MESSAGE_SUFFIX
         self.response_message = response
 
 
@@ -458,42 +585,50 @@ class Action:
     """A namespaced type of an action including the derived types."""
 
     __slots__ = (
-        'structure_type', 'goal', 'result', 'feedback',
+        'namespaced_type', 'goal', 'result', 'feedback',
         'send_goal_service', 'get_result_service', 'feedback_message',
         'implicit_includes')
 
-    def __init__(self, type_, goal, result, feedback):
+    def __init__(
+        self, namespaced_type: NamespacedType, goal: Message, result: Message,
+        feedback: Message
+    ):
         """
         Constructor.
 
         From the provided types the actually used services and messages are
         derived.
 
-        :param NamespacedType type_: the namespaced type identifying the action
-        :param Message goal: the goal message
-        :param Message result: the result message
-        :param Message feedback: the feedback message
+        :param namespaced_type: the namespaced type identifying the action
+        :param goal: the goal message
+        :param result: the result message
+        :param feedback: the feedback message
         """
         super().__init__()
 
-        assert isinstance(type_, NamespacedType)
-        self.structure_type = type_
+        assert isinstance(namespaced_type, NamespacedType)
+        self.namespaced_type = namespaced_type
 
         # explicitly defined types
         assert isinstance(goal, Message)
-        assert goal.structure.type.namespaces == type_.namespaces
-        assert goal.structure.type.name == type_.name + ACTION_GOAL_SUFFIX
+        assert goal.structure.namespaced_type.namespaces == \
+            namespaced_type.namespaces
+        assert goal.structure.namespaced_type.name == namespaced_type.name + \
+            ACTION_GOAL_SUFFIX
         self.goal = goal
 
         assert isinstance(result, Message)
-        assert result.structure.type.namespaces == type_.namespaces
-        assert result.structure.type.name == type_.name + ACTION_RESULT_SUFFIX
+        assert result.structure.namespaced_type.namespaces == \
+            namespaced_type.namespaces
+        assert result.structure.namespaced_type.name == \
+            namespaced_type.name + ACTION_RESULT_SUFFIX
         self.result = result
 
         assert isinstance(feedback, Message)
-        assert feedback.structure.type.namespaces == type_.namespaces
-        assert feedback.structure.type.name == type_.name + \
-            ACTION_FEEDBACK_SUFFIX
+        assert feedback.structure.namespaced_type.namespaces == \
+            namespaced_type.namespaces
+        assert feedback.structure.namespaced_type.name == \
+            namespaced_type.name + ACTION_FEEDBACK_SUFFIX
         self.feedback = feedback
 
         # necessary include for injected timestamp member
@@ -506,21 +641,21 @@ class Action:
         goal_id_type = NamespacedType(
                 namespaces=['unique_identifier_msgs', 'msg'], name='UUID')
 
-        goal_service_name = type_.name + ACTION_GOAL_SERVICE_SUFFIX
+        goal_service_name = namespaced_type.name + ACTION_GOAL_SERVICE_SUFFIX
         self.send_goal_service = Service(
             NamespacedType(
-                namespaces=type_.namespaces, name=goal_service_name),
+                namespaces=namespaced_type.namespaces, name=goal_service_name),
             request=Message(Structure(
                 NamespacedType(
-                    namespaces=type_.namespaces,
+                    namespaces=namespaced_type.namespaces,
                     name=goal_service_name + SERVICE_REQUEST_MESSAGE_SUFFIX),
                 members=[
                     Member(goal_id_type, 'goal_id'),
-                    Member(goal.structure.type, 'goal')]
+                    Member(goal.structure.namespaced_type, 'goal')]
             )),
             response=Message(Structure(
                 NamespacedType(
-                    namespaces=type_.namespaces,
+                    namespaces=namespaced_type.namespaces,
                     name=goal_service_name + SERVICE_RESPONSE_MESSAGE_SUFFIX),
                 members=[
                     Member(BasicType('boolean'), 'accepted'),
@@ -530,33 +665,35 @@ class Action:
             )),
         )
 
-        result_service_name = type_.name + ACTION_RESULT_SERVICE_SUFFIX
+        result_service_name = namespaced_type.name + \
+            ACTION_RESULT_SERVICE_SUFFIX
         self.get_result_service = Service(
             NamespacedType(
-                namespaces=type_.namespaces, name=result_service_name),
+                namespaces=namespaced_type.namespaces,
+                name=result_service_name),
             request=Message(Structure(
                 NamespacedType(
-                    namespaces=type_.namespaces,
+                    namespaces=namespaced_type.namespaces,
                     name=result_service_name + SERVICE_REQUEST_MESSAGE_SUFFIX),
                 members=[Member(goal_id_type, 'goal_id')]
             )),
             response=Message(Structure(
                 NamespacedType(
-                    namespaces=type_.namespaces,
+                    namespaces=namespaced_type.namespaces,
                     name=result_service_name + SERVICE_RESPONSE_MESSAGE_SUFFIX),
                 members=[
                     Member(BasicType('int8'), 'status'),
-                    Member(result.structure.type, 'result')]
+                    Member(result.structure.namespaced_type, 'result')]
             )),
         )
 
         self.feedback_message = Message(Structure(
             NamespacedType(
-                namespaces=type_.namespaces,
-                name=type_.name + ACTION_FEEDBACK_MESSAGE_SUFFIX),
+                namespaces=namespaced_type.namespaces,
+                name=namespaced_type.name + ACTION_FEEDBACK_MESSAGE_SUFFIX),
             members=[
                 Member(goal_id_type, 'goal_id'),
-                Member(feedback.structure.type, 'feedback')]
+                Member(feedback.structure.namespaced_type, 'feedback')]
         ))
 
 

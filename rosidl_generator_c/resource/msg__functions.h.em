@@ -4,9 +4,9 @@ from rosidl_generator_c import idl_structure_type_sequence_to_c_typename
 from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_generator_c import interface_path_to_string
 
-message_typename = idl_structure_type_to_c_typename(message.structure.type)
+message_typename = idl_structure_type_to_c_typename(message.structure.namespaced_type)
 array_typename = idl_structure_type_sequence_to_c_typename(
-    message.structure.type)
+    message.structure.namespaced_type)
 }@
 @#######################################################################
 @# message functions

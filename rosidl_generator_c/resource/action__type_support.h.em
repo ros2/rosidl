@@ -13,7 +13,7 @@ ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_action_type_support_t *
   ROSIDL_TYPESUPPORT_INTERFACE__ACTION_SYMBOL_NAME(
   rosidl_typesupport_c,
-  @(',\n  '.join(action.structure_type.namespaces + [action.structure_type.name]))
+  @(',\n  '.join(action.namespaced_type.namespaces + [action.namespaced_type.name]))
 )();
 
 @{

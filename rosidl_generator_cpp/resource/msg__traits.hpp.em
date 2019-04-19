@@ -10,7 +10,7 @@ from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import UnboundedSequence
 
-message_typename = '::'.join(message.structure.namespaced_type.namespaces + [message.structure.namespaced_type.name])
+message_typename = '::'.join(message.structure.namespaced_type.namespaced_name())
 }@
 @
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -21,7 +21,7 @@ from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 includes = OrderedDict()
 for member in message.structure.members:
     type_ = member.type
-    if isinstance(type_, Array) or isinstance(type_, BoundedSequence):
+    if isinstance(type_, (Array, BoundedSequence)):
         type_ = type_.value_type
     if isinstance(type_, NamespacedType):
         if (
@@ -80,7 +80,7 @@ for member in message.structure.members:
         fixed_template_string = 'false'
         break
     if isinstance(type_, NamespacedType):
-        typename = '::'.join(type_.namespaces + [type_.name])
+        typename = '::'.join(type_.namespaced_name())
         fixed_template_strings.add('has_fixed_size<{typename}>::value'.format_map(locals()))
 else:
     if fixed_template_strings:
@@ -98,13 +98,13 @@ for member in message.structure.members:
     if isinstance(type_, UnboundedSequence):
         bounded_template_string = 'false'
         break
-    if isinstance(type_, Array) or isinstance(type_, BoundedSequence):
+    if isinstance(type_, (Array, BoundedSequence)):
         type_ = type_.value_type
     if isinstance(type_, AbstractGenericString) and not type_.has_maximum_size():
         bounded_template_string = 'false'
         break
     if isinstance(type_, NamespacedType):
-        typename = '::'.join(type_.namespaces + [type_.name])
+        typename = '::'.join(type_.namespaced_name())
         bounded_template_strings.add('has_bounded_size<{typename}>::value'.format_map(locals()))
 else:
     if bounded_template_strings:

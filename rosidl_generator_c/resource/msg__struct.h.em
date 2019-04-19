@@ -6,8 +6,13 @@ from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import AbstractString
 from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import BasicType
+from rosidl_parser.definition import BOOLEAN_TYPE
 from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import CHARACTER_TYPES
+from rosidl_parser.definition import FLOATING_POINT_TYPES
+from rosidl_parser.definition import INTEGER_TYPES
 from rosidl_parser.definition import NamespacedType
+from rosidl_parser.definition import OCTET_TYPE
 from rosidl_generator_c import basetype_to_c
 from rosidl_generator_c import idl_declaration_to_c
 from rosidl_generator_c import idl_structure_type_sequence_to_c_typename
@@ -62,15 +67,13 @@ for member in message.structure.members:
 /// Constant '@(constant.name)'.
 @[    if isinstance(constant.type, BasicType)]@
 @[        if constant.type.typename in (
-              'short', 'unsigned short', 'long', 'unsigned long', 'long long', 'unsigned long long',
-              'char', 'wchar', 'octet',
-              'int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64',
-          )]@
+                *INTEGER_TYPES, *CHARACTER_TYPES, OCTET_TYPE
+        )]@
 enum
 {
   @(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(constant.name) = @(value_to_c(constant.type, constant.value))
 };
-@[        elif constant.type.typename in ('float', 'double', 'long double', 'boolean')]@
+@[        elif constant.type.typename in (*FLOATING_POINT_TYPES, BOOLEAN_TYPE)]@
 static const @(basetype_to_c(constant.type)) @(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(constant.name) = @(value_to_c(constant.type, constant.value));
 @[        else]@
 @{assert False, 'Unhandled basic type: ' + str(constant.type)}@

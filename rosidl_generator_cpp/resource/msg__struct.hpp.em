@@ -21,9 +21,14 @@ from rosidl_parser.definition import ACTION_FEEDBACK_SUFFIX
 from rosidl_parser.definition import ACTION_GOAL_SUFFIX
 from rosidl_parser.definition import ACTION_RESULT_SUFFIX
 from rosidl_parser.definition import BasicType
+from rosidl_parser.definition import BOOLEAN_TYPE
+from rosidl_parser.definition import CHARACTER_TYPES
+from rosidl_parser.definition import INTEGER_TYPES
 from rosidl_parser.definition import NamespacedType
+from rosidl_parser.definition import OCTET_TYPE
+from rosidl_parser.definition import UNSIGNED_INTEGER_TYPES
 
-message_typename = '::'.join(message.structure.namespaced_type.namespaces + [message.structure.namespaced_type.name])
+message_typename = '::'.join(message.structure.namespaced_type.namespaced_name())
 }@
 @
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -257,9 +262,9 @@ non_defaulted_zero_initialized_members = [
   static const @(MSG_TYPE_TO_CPP['string']) @(constant.name);
 @[ else]@
   static constexpr @(MSG_TYPE_TO_CPP[constant.type.typename]) @(constant.name) =
-@[  if isinstance(constant.type, BasicType) and constant.type.typename in ['short', 'unsigned short', 'long', 'unsigned long', 'long long', 'unsigned long long', 'char', 'wchar', 'boolean', 'octet', 'int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64']]@
+@[  if isinstance(constant.type, BasicType) and constant.type.typename in (*INTEGER_TYPES, *CHARACTER_TYPES, BOOLEAN_TYPE, OCTET_TYPE)]@
     @(int(constant.value))@
-@[   if constant.type.typename.startswith('u')]@
+@[   if constant.type.typename in UNSIGNED_INTEGER_TYPES]@
 u@
 @[   end if];
 @[  else]@

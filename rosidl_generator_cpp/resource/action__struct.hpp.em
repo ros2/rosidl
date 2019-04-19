@@ -11,7 +11,7 @@ action_includes = (
     'action_msgs/msg/goal_info.hpp',
     'action_msgs/msg/goal_status_array.hpp',
 )
-action_name = '::'.join(action.namespaced_type.namespaces + [action.namespaced_type.name])
+action_name = '::'.join(action.namespaced_type.namespaced_name())
 }@
 @{
 TEMPLATE(

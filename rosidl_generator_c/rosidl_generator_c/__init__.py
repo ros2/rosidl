@@ -21,7 +21,11 @@ from rosidl_parser.definition import AbstractType
 from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
+from rosidl_parser.definition import CHARACTER_TYPES
 from rosidl_parser.definition import NamespacedType
+from rosidl_parser.definition import OCTET_TYPE
+from rosidl_parser.definition import SIGNED_INTEGER_TYPES
+from rosidl_parser.definition import UNSIGNED_INTEGER_TYPES
 
 
 def generate_c(generator_arguments_file):
@@ -57,11 +61,11 @@ BASIC_IDL_TYPES_TO_C = {
 def idl_structure_type_to_c_include_prefix(namespaced_type):
     return '/'.join(
         convert_camel_case_to_lower_case_underscore(x)
-        for x in (namespaced_type.namespaces + [namespaced_type.name]))
+        for x in (namespaced_type.namespaced_name()))
 
 
 def idl_structure_type_to_c_typename(namespaced_type):
-    return '__'.join(namespaced_type.namespaces + [namespaced_type.name])
+    return '__'.join(namespaced_type.namespaced_name())
 
 
 def idl_structure_type_sequence_to_c_typename(namespaced_type):
@@ -134,17 +138,10 @@ def basic_value_to_c(type_, value):
     if 'boolean' == type_.typename:
         return 'true' if value else 'false'
 
-    if type_.typename in (
-        'short', 'long', 'long long',
-        'char', 'wchar', 'octet',
-        'int8', 'int16', 'int32', 'int64',
-    ):
+    if type_.typename in (*SIGNED_INTEGER_TYPES, *CHARACTER_TYPES, OCTET_TYPE):
         return str(value)
 
-    if type_.typename in (
-        'unsigned short', 'unsigned long', 'unsigned long long',
-        'uint8', 'uint16', 'uint32', 'uint64',
-    ):
+    if type_.typename in UNSIGNED_INTEGER_TYPES:
         return str(value) + 'u'
 
     if 'float' == type_.typename:

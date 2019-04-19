@@ -121,8 +121,8 @@ size_t @(function_prefix)__size_function__@(member.type.value_type.name)__@(memb
   (void)untyped_member;
   return @(member.type.size);
 @[    else]@
-  const @('__'.join(member.type.value_type.namespaces + [member.type.value_type.name]))__Sequence * member =
-    (const @('__'.join(member.type.value_type.namespaces + [member.type.value_type.name]))__Sequence *)(untyped_member);
+  const @('__'.join(member.type.value_type.namespaced_name()))__Sequence * member =
+    (const @('__'.join(member.type.value_type.namespaced_name()))__Sequence *)(untyped_member);
   return member->size;
 @[    end if]@
 }
@@ -131,12 +131,12 @@ const void * @(function_prefix)__get_const_function__@(member.type.value_type.na
   const void * untyped_member, size_t index)
 {
 @[    if isinstance(member.type, Array)]@
-  const @('__'.join(member.type.value_type.namespaces + [member.type.value_type.name])) ** member =
-    (const @('__'.join(member.type.value_type.namespaces + [member.type.value_type.name])) **)(untyped_member);
+  const @('__'.join(member.type.value_type.namespaced_name())) ** member =
+    (const @('__'.join(member.type.value_type.namespaced_name())) **)(untyped_member);
   return &(*member)[index];
 @[    else]@
-  const @('__'.join(member.type.value_type.namespaces + [member.type.value_type.name]))__Sequence * member =
-    (const @('__'.join(member.type.value_type.namespaces + [member.type.value_type.name]))__Sequence *)(untyped_member);
+  const @('__'.join(member.type.value_type.namespaced_name()))__Sequence * member =
+    (const @('__'.join(member.type.value_type.namespaced_name()))__Sequence *)(untyped_member);
   return &member->data[index];
 @[    end if]@
 }
@@ -145,12 +145,12 @@ void * @(function_prefix)__get_function__@(member.type.value_type.name)__@(membe
   void * untyped_member, size_t index)
 {
 @[    if isinstance(member.type, Array)]@
-  @('__'.join(member.type.value_type.namespaces + [member.type.value_type.name])) ** member =
-    (@('__'.join(member.type.value_type.namespaces + [member.type.value_type.name])) **)(untyped_member);
+  @('__'.join(member.type.value_type.namespaced_name())) ** member =
+    (@('__'.join(member.type.value_type.namespaced_name())) **)(untyped_member);
   return &(*member)[index];
 @[    else]@
-  @('__'.join(member.type.value_type.namespaces + [member.type.value_type.name]))__Sequence * member =
-    (@('__'.join(member.type.value_type.namespaces + [member.type.value_type.name]))__Sequence *)(untyped_member);
+  @('__'.join(member.type.value_type.namespaced_name()))__Sequence * member =
+    (@('__'.join(member.type.value_type.namespaced_name()))__Sequence *)(untyped_member);
   return &member->data[index];
 @[    end if]@
 }
@@ -159,10 +159,10 @@ void * @(function_prefix)__get_function__@(member.type.value_type.name)__@(membe
 bool @(function_prefix)__resize_function__@(member.type.value_type.name)__@(member.name)(
   void * untyped_member, size_t size)
 {
-  @('__'.join(member.type.value_type.namespaces + [member.type.value_type.name]))__Sequence * member =
-    (@('__'.join(member.type.value_type.namespaces + [member.type.value_type.name]))__Sequence *)(untyped_member);
-  @('__'.join(member.type.value_type.namespaces + [member.type.value_type.name]))__Sequence__fini(member);
-  return @('__'.join(member.type.value_type.namespaces + [member.type.value_type.name]))__Sequence__init(member, size);
+  @('__'.join(member.type.value_type.namespaced_name()))__Sequence * member =
+    (@('__'.join(member.type.value_type.namespaced_name()))__Sequence *)(untyped_member);
+  @('__'.join(member.type.value_type.namespaced_name()))__Sequence__fini(member);
+  return @('__'.join(member.type.value_type.namespaced_name()))__Sequence__init(member, size);
 }
 
 @[    end if]@
@@ -261,7 +261,7 @@ if isinstance(type_, AbstractNestedType):
 }@
 @[    if isinstance(type_, NamespacedType)]@
   @(function_prefix)__@(message.structure.namespaced_type.name)_message_member_array[@(i)].members_ =
-    ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join(type_.namespaces + [type_.name])))();
+    ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join(type_.namespaced_name())))();
 @[    end if]@
 @[end for]@
   if (!@(function_prefix)__@(message.structure.namespaced_type.name)_message_type_support_handle.typesupport_identifier) {

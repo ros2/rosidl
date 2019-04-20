@@ -17,44 +17,8 @@ ament_python_install_package(${PROJECT_NAME})
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   find_package(rosidl_generator_c REQUIRED)
+  find_package(test_interface_files REQUIRED)
   ament_lint_auto_find_test_dependencies()
-
-  set(message_files
-    "msg/BoundedArrayBounded.msg"
-    "msg/BoundedArrayStatic.msg"
-    "msg/BoundedArrayUnbounded.msg"
-
-    "msg/Empty.msg"
-
-    "msg/FieldsWithSameTypeSomeDefaults.msg"
-
-    "msg/PrimitiveStaticArrays.msg"
-
-    "msg/PrimitivesBounded.msg"
-    "msg/PrimitivesConstants.msg"
-    "msg/PrimitivesDefault.msg"
-    "msg/PrimitivesStatic.msg"
-    "msg/PrimitivesUnbounded.msg"
-
-    "msg/StaticArrayBounded.msg"
-    "msg/StaticArrayStatic.msg"
-    "msg/StaticArrayUnbounded.msg"
-
-    "msg/String.msg"
-    "msg/StringBounded.msg"
-    "msg/StringArrayStatic.msg"
-    "msg/StringArrays.msg"
-
-    "msg/UnboundedArrayBounded.msg"
-    "msg/UnboundedArrayStatic.msg"
-    "msg/UnboundedArrayUnbounded.msg"
-
-    "msg/Various.msg"
-  )
-
-  set(srv_files
-    "srv/ComplexTypeZeroFill.srv"
-  )
 
   include(cmake/register_cpp.cmake)
   set(rosidl_generator_cpp_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -66,8 +30,8 @@ if(BUILD_TESTING)
   )
 
   rosidl_generate_interfaces(${PROJECT_NAME}
-    ${message_files}
-    ${srv_files}
+    ${test_interface_files_MSG_FILES}
+    ${test_interface_files_SRV_FILES}
     ADD_LINTER_TESTS
     SKIP_INSTALL
   )
@@ -89,19 +53,19 @@ if(BUILD_TESTING)
   if(TARGET test_msg_initialization)
     add_dependencies(test_msg_initialization ${PROJECT_NAME})
   endif()
-  ament_add_gtest(test_srv_initialization test/test_srv_initialization.cpp)
-  if(TARGET test_srv_initialization)
-    add_dependencies(test_srv_initialization ${PROJECT_NAME})
-  endif()
-  ament_add_gtest(test_interfaces_cpp test/test_interfaces.cpp)
-  if(TARGET test_interfaces_cpp)
-    add_dependencies(test_interfaces_cpp ${PROJECT_NAME})
-  endif()
-  ament_add_gtest(test_msg_datatype test/test_msg_datatype.cpp)
-  if(TARGET test_msg_datatype)
-    add_dependencies(test_msg_datatype ${PROJECT_NAME})
-  endif()
-  # include the built files directly, instead of their install location
+  # ament_add_gtest(test_srv_initialization test/test_srv_initialization.cpp)
+  # if(TARGET test_srv_initialization)
+  #   add_dependencies(test_srv_initialization ${PROJECT_NAME})
+  # endif()
+  # ament_add_gtest(test_interfaces_cpp test/test_interfaces.cpp)
+  # if(TARGET test_interfaces_cpp)
+  #   add_dependencies(test_interfaces_cpp ${PROJECT_NAME})
+  # endif()
+  # ament_add_gtest(test_msg_datatype test/test_msg_datatype.cpp)
+  # if(TARGET test_msg_datatype)
+  #   add_dependencies(test_msg_datatype ${PROJECT_NAME})
+  # endif()
+  # # include the built files directly, instead of their install location
   include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
 endif()
 

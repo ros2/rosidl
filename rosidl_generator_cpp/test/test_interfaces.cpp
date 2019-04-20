@@ -22,34 +22,30 @@
 #include <algorithm>
 #include "test_array_generator.hpp"
 
+#include "rosidl_generator_cpp/msg/array_primitives.hpp"
+#include "rosidl_generator_cpp/msg/array_nested.hpp"
+// TODO(jacobperron): Add test case for ArrayBoundedPrimitivesNested (need interface)
+// #include "rosidl_generator_cpp/msg/array_bounded_primitives_nested.hpp"
+// TODO(jacobperron): Add test case for ArrayUnboundedPrimitivesNested (need interface)
+// #include "rosidl_generator_cpp/msg/array_unbounded_primitives_nested.hpp"
+#include "rosidl_generator_cpp/msg/bounded_sequence_nested.hpp"
+#include "rosidl_generator_cpp/msg/bounded_sequence_primitives.hpp"
+#include "rosidl_generator_cpp/msg/bounded_sequence_primitives_nested.hpp"
+// TODO(jacobperron): Add test case for BoundedSequenceUnboundedPrimitivesNested (need interface)
+// #include "rosidl_generator_cpp/msg/bounded_sequence_unbounded_primitives_nested.hpp"
+#include "rosidl_generator_cpp/msg/bounded_string.hpp"
 #include "rosidl_generator_cpp/msg/empty.hpp"
-
-#include "rosidl_generator_cpp/msg/bounded_array_bounded.hpp"
-#include "rosidl_generator_cpp/msg/bounded_array_static.hpp"
-#include "rosidl_generator_cpp/msg/bounded_array_unbounded.hpp"
-
-#include "rosidl_generator_cpp/msg/primitive_static_arrays.hpp"
-
-#include "rosidl_generator_cpp/msg/primitives_bounded.hpp"
+#include "rosidl_generator_cpp/msg/primitives.hpp"
 #include "rosidl_generator_cpp/msg/primitives_constants.hpp"
 #include "rosidl_generator_cpp/msg/primitives_default.hpp"
-#include "rosidl_generator_cpp/msg/primitives_static.hpp"
-#include "rosidl_generator_cpp/msg/primitives_unbounded.hpp"
+#include "rosidl_generator_cpp/msg/unbounded_sequence_nested.hpp"
+#include "rosidl_generator_cpp/msg/unbounded_sequence_primitives.hpp"
+#include "rosidl_generator_cpp/msg/unbounded_sequence_primitives_nested.hpp"
+// TODO(jacobperron): Add test case for UnboundedSequenceBoundedPrimitivesNested (need interface)
+// #include "rosidl_generator_cpp/msg/unbounded_sequence_bounded_primitives_nested.hpp"
 
-#include "rosidl_generator_cpp/msg/static_array_bounded.hpp"
-#include "rosidl_generator_cpp/msg/static_array_static.hpp"
-#include "rosidl_generator_cpp/msg/static_array_unbounded.hpp"
-
-#include "rosidl_generator_cpp/msg/string.hpp"
-#include "rosidl_generator_cpp/msg/string_bounded.hpp"
-#include "rosidl_generator_cpp/msg/string_array_static.hpp"
-#include "rosidl_generator_cpp/msg/string_arrays.hpp"
-
-#include "rosidl_generator_cpp/msg/unbounded_array_bounded.hpp"
-#include "rosidl_generator_cpp/msg/unbounded_array_static.hpp"
-#include "rosidl_generator_cpp/msg/unbounded_array_unbounded.hpp"
-
-#define PRIMITIVES_ARRAY_SIZE 10
+#define ARRAY_PRIMITIVES_SIZE 3
+#define BOUNDED_SEQUENCE_PRIMITIVES_SIZE 3
 #define BOUNDED_STRING_LENGTH 10
 #define SUBMESSAGE_ARRAY_SIZE 3
 
@@ -67,75 +63,73 @@ TEST(Test_rosidl_generator_traits, has_fixed_size) {
     "PrimitivesDefault::has_fixed_size is true");
 
   static_assert(
-    rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::PrimitivesStatic>::value,
-    "PrimitivesStatic::has_fixed_size is false");
-
-  static_assert(
-    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::PrimitivesBounded>::value,
-    "PrimitivesBounded::has_fixed_size is true");
-
-  static_assert(
-    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::PrimitivesUnbounded>::value,
-    "PrimitivesUnbounded::has_fixed_size is true");
-
-  static_assert(
-    rosidl_generator_traits::has_fixed_size<
-      rosidl_generator_cpp::msg::PrimitiveStaticArrays>::value,
-    "PrimitivesStaticArray::has_fixed_size is false");
-
-  static_assert(
-    rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::StaticArrayStatic>::value,
-    "StaticArrayStatic::has_fixed_size is false");
-
-  static_assert(
-    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::StaticArrayBounded>::value,
-    "StaticArrayBounded::has_fixed_size is true");
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::Primitives>::value,
+    "Primitives::has_fixed_size is true");
 
   static_assert(
     !rosidl_generator_traits::has_fixed_size<
-      rosidl_generator_cpp::msg::StaticArrayUnbounded>::value,
-    "StaticArrayUnbounded::has_fixed_size is true");
-
-  static_assert(
-    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::String>::value,
-    "String::has_fixed_size is true");
-
-  static_assert(
-    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::StringBounded>::value,
-    "StringBounded::has_fixed_size is true");
+      rosidl_generator_cpp::msg::BoundedSequencePrimitives>::value,
+    "BoundedSequencePrimitives::has_fixed_size is true");
 
   static_assert(
     !rosidl_generator_traits::has_fixed_size<
-      rosidl_generator_cpp::msg::StringArrayStatic>::value,
-    "StringArrayStatic::has_fixed_size is true");
+      rosidl_generator_cpp::msg::UnboundedSequencePrimitives>::value,
+    "UnboundedSequencePrimitives::has_fixed_size is true");
 
   static_assert(
-    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::BoundedArrayStatic>::value,
-    "BoundedArrayStatic::has_fixed_size is true");
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::ArrayPrimitives>::value,
+    "ArrayPrimitives::has_fixed_size is true");
 
   static_assert(
-    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::BoundedArrayBounded>::value,
-    "BoundedArrayBounded::has_fixed_size is true");
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::ArrayNested>::value,
+    "ArrayNested::has_fixed_size is true");
+
+  // TODO(jacobperron): Add interface file
+  // static_assert(
+  //   !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::ArrayBoundedPrimitivesNested>::value,
+  //   "ArrayBoundedPrimitivesNested::has_fixed_size is true");
+
+  // TODO(jacobperron): Add interface file
+  // static_assert(
+  //   !rosidl_generator_traits::has_fixed_size<
+  //     rosidl_generator_cpp::msg::ArrayUnboundedPrimitivesNested>::value,
+  //   "ArrayUnboundedPrimitivesNested::has_fixed_size is true");
+
+  static_assert(
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::BoundedString>::value,
+    "BoundedString::has_fixed_size is true");
 
   static_assert(
     !rosidl_generator_traits::has_fixed_size<
-      rosidl_generator_cpp::msg::BoundedArrayUnbounded>::value,
-    "BoundedArrayUnbounded::has_fixed_size is true");
+      rosidl_generator_cpp::msg::BoundedSequenceNested>::value,
+    "BoundedSequenceNested::has_fixed_size is true");
 
   static_assert(
     !rosidl_generator_traits::has_fixed_size<
-      rosidl_generator_cpp::msg::UnboundedArrayStatic>::value,
-    "UnboundedArrayStatic::has_fixed_size is true");
+      rosidl_generator_cpp::msg::BoundedSequencePrimitivesNested>::value,
+    "BoundedSequencePrimitivesNested::has_fixed_size is true");
+
+  // TODO(jacobperron): Add test interface
+  // static_assert(
+  //   !rosidl_generator_traits::has_fixed_size<
+  //     rosidl_generator_cpp::msg::BoundedSequenceUnboundedPrimitivesNested>::value,
+  //   "BoundedSequenceUnboundedPrimitivesNested::has_fixed_size is true");
 
   static_assert(
     !rosidl_generator_traits::has_fixed_size<
-      rosidl_generator_cpp::msg::UnboundedArrayBounded>::value,
-    "UnboundedArrayBounded::has_fixed_size is true");
+      rosidl_generator_cpp::msg::UnboundedSequenceNested>::value,
+    "UnboundedSequenceNested::has_fixed_size is true");
+
+  // TODO(jacobperron): Add test interface
+  // static_assert(
+  //   !rosidl_generator_traits::has_fixed_size<
+  //     rosidl_generator_cpp::msg::UnboundedSequenceBoundedPrimitivesNested>::value,
+  //   "UnboundedSequenceBoundedPrimitivesNested::has_fixed_size is true");
 
   static_assert(
     !rosidl_generator_traits::has_fixed_size<
-      rosidl_generator_cpp::msg::UnboundedArrayUnbounded>::value,
-    "UnboundedArrayUnbounded::has_fixed_size is true");
+      rosidl_generator_cpp::msg::UnboundedSequencePrimitivesNested>::value,
+    "UnboundedSequencePrimitivesNested::has_fixed_size is true");
 }
 
 TEST(Test_rosidl_generator_traits, has_bounded_size) {
@@ -153,77 +147,74 @@ TEST(Test_rosidl_generator_traits, has_bounded_size) {
     "PrimitivesDefault::has_bounded_size is true");
 
   static_assert(
-    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::PrimitivesStatic>::value,
-    "PrimitivesStatic::has_bounded_size is false");
-
-  static_assert(
-    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::PrimitivesBounded>::value,
-    "PrimitivesBounded::has_bounded_size is false");
+    !rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::Primitives>::value,
+    "Primitives::has_bounded_size is true");
 
   static_assert(
     !rosidl_generator_traits::has_bounded_size<
-      rosidl_generator_cpp::msg::PrimitivesUnbounded>::value,
-    "PrimitivesUnbounded::has_bounded_size is true");
-
-  static_assert(
-    rosidl_generator_traits::has_bounded_size<
-      rosidl_generator_cpp::msg::PrimitiveStaticArrays>::value,
-    "PrimitivesStaticArray::has_bounded_size is false");
-
-  static_assert(
-    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::StaticArrayStatic>::value,
-    "StaticArrayStatic::has_bounded_size is false");
-
-  static_assert(
-    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::StaticArrayBounded>::value,
-    "StaticArrayBounded::has_bounded_size is false");
+      rosidl_generator_cpp::msg::BoundedSequencePrimitives>::value,
+    "BoundedSequencePrimitives::has_bounded_size is true");
 
   static_assert(
     !rosidl_generator_traits::has_bounded_size<
-      rosidl_generator_cpp::msg::StaticArrayUnbounded>::value,
-    "StaticArrayUnbounded::has_bounded_size is true");
-
-  static_assert(
-    !rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::String>::value,
-    "String::has_bounded_size is true");
-
-  static_assert(
-    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::StringBounded>::value,
-    "StringBounded::has_bounded_size is false");
+      rosidl_generator_cpp::msg::UnboundedSequencePrimitives>::value,
+    "UnboundedSequencePrimitives::has_bounded_size is true");
 
   static_assert(
     !rosidl_generator_traits::has_bounded_size<
-      rosidl_generator_cpp::msg::StringArrayStatic>::value,
-    "StringArrayStatic::has_bounded_size is true");
+      rosidl_generator_cpp::msg::ArrayPrimitives>::value,
+    "ArrayPrimitives::has_bounded_size is true");
 
   static_assert(
-    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::BoundedArrayStatic>::value,
-    "BoundedArrayStatic::has_bounded_size is false");
+    !rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::ArrayNested>::value,
+    "ArrayNested::has_bounded_size is true");
+
+  // TODO(jacobperron): Add interface file
+  // static_assert(
+  //   rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::ArrayBoundedPrimitivesNested>::value,
+  //   "ArrayBoundedPrimitivesNested::has_bounded_size is false");
+
+  // TODO(jacobperron): Add interface file
+  // static_assert(
+  //   !rosidl_generator_traits::has_bounded_size<
+  //     rosidl_generator_cpp::msg::ArrayUnboundedPrimitivesNested>::value,
+  //   "ArrayUnboundedPrimitivesNested::has_bounded_size is true");
 
   static_assert(
-    rosidl_generator_traits::has_bounded_size<
-      rosidl_generator_cpp::msg::BoundedArrayBounded>::value,
-    "BoundedArrayBounded::has_bounded_size is false");
-
-  static_assert(
-    !rosidl_generator_traits::has_bounded_size<
-      rosidl_generator_cpp::msg::BoundedArrayUnbounded>::value,
-    "BoundedArrayUnbounded::has_bounded_size is true");
-
-  static_assert(
-    !rosidl_generator_traits::has_bounded_size<
-      rosidl_generator_cpp::msg::UnboundedArrayStatic>::value,
-    "UnboundedArrayStatic::has_bounded_size is true");
-
-  static_assert(
-    !rosidl_generator_traits::has_bounded_size<
-      rosidl_generator_cpp::msg::UnboundedArrayBounded>::value,
-    "UnboundedArrayBounded::has_bounded_size is true");
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::BoundedString>::value,
+    "BoundedString::has_bounded_size is false");
 
   static_assert(
     !rosidl_generator_traits::has_bounded_size<
-      rosidl_generator_cpp::msg::UnboundedArrayUnbounded>::value,
-    "UnboundedArrayUnbounded::has_bounded_size is true");
+      rosidl_generator_cpp::msg::BoundedSequenceNested>::value,
+    "BoundedSequenceNested::has_bounded_size is true");
+
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::BoundedSequencePrimitivesNested>::value,
+    "BoundedSequencePrimitivesNested::has_bounded_size is true");
+
+  // TODO(jacobperron): Add test interface
+  // static_assert(
+  //   !rosidl_generator_traits::has_bounded_size<
+  //     rosidl_generator_cpp::msg::BoundedSequenceUnboundedPrimitivesNested>::value,
+  //   "BoundedSequenceUnboundedPrimitivesNested::has_bounded_size is true");
+
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::UnboundedSequenceNested>::value,
+    "UnboundedSequenceNested::has_bounded_size is true");
+
+  // TODO(jacobperron): Add test interface
+  // static_assert(
+  //   !rosidl_generator_traits::has_bounded_size<
+  //     rosidl_generator_cpp::msg::UnboundedSequenceBoundedPrimitivesNested>::value,
+  //   "UnboundedSequenceBoundedPrimitivesNested::has_bounded_size is true");
+
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_cpp::msg::UnboundedSequencePrimitivesNested>::value,
+    "UnboundedSequencePrimitivesNested::has_bounded_size is true");
 }
 
 #define TEST_PRIMITIVE_FIELD_ASSIGNMENT(Message, FieldName, InitialValue, FinalValue) \
@@ -238,7 +229,7 @@ TEST(Test_rosidl_generator_traits, has_bounded_size) {
   Message.FieldName = FinalValue; \
   ASSERT_STREQ(FinalValue, Message.FieldName.c_str());
 
-void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic message)
+void test_message_primitives(rosidl_generator_cpp::msg::Primitives message)
 {
 // workaround for https://github.com/google/googletest/issues/322
 #ifdef __linux__
@@ -261,9 +252,10 @@ void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic 
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint32_value, 0ul, UINT32_MAX)
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, int64_value, INT64_MIN, INT64_MAX)
   TEST_PRIMITIVE_FIELD_ASSIGNMENT(message, uint64_value, 0ull, UINT64_MAX)
+  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "bar", "Hello World!")
 }
 
-#define TEST_BOUNDED_ARRAY_PRIMITIVE( \
+#define TEST_BOUNDED_SEQUENCE_PRIMITIVES( \
     Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal) \
   rosidl_generator_cpp::BoundedVector<PrimitiveType, ArraySize> pattern_ ## FieldName; \
   Message.FieldName.resize(ArraySize); \
@@ -273,7 +265,7 @@ void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic 
   std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
-#define TEST_BOUNDED_ARRAY_STRING( \
+#define TEST_BOUNDED_SEQUENCE_STRING( \
     Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal, MinLength, MaxLength) \
   rosidl_generator_cpp::BoundedVector<PrimitiveType, ArraySize> pattern_ ## FieldName; \
   Message.FieldName.resize(ArraySize); \
@@ -283,39 +275,40 @@ void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic 
   std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
-void test_message_primitives_bounded(rosidl_generator_cpp::msg::PrimitivesBounded message)
+void test_message_bounded_sequence_primitives(
+  rosidl_generator_cpp::msg::BoundedSequencePrimitives message)
 {
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, bool_value, bool, PRIMITIVES_ARRAY_SIZE, \
-    false, true)
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, char_value, unsigned char, PRIMITIVES_ARRAY_SIZE, \
-    0, UINT8_MAX)
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, byte_value, uint8_t, PRIMITIVES_ARRAY_SIZE, \
-    0, UINT8_MAX)
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, float32_value, float, PRIMITIVES_ARRAY_SIZE, \
-    FLT_MIN, FLT_MAX)
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, float64_value, double, PRIMITIVES_ARRAY_SIZE, \
-    DBL_MIN, DBL_MAX)
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, int8_value, int8_t, PRIMITIVES_ARRAY_SIZE, \
-    INT8_MIN, INT8_MAX)
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, uint8_value, uint8_t, PRIMITIVES_ARRAY_SIZE, \
-    0, UINT8_MAX)
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, int16_value, int16_t, PRIMITIVES_ARRAY_SIZE, \
-    INT16_MIN, INT16_MAX)
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, uint16_value, uint16_t, PRIMITIVES_ARRAY_SIZE, \
-    0, UINT16_MAX)
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, int32_value, int32_t, PRIMITIVES_ARRAY_SIZE, \
-    INT32_MIN, INT32_MAX)
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, uint32_value, uint32_t, PRIMITIVES_ARRAY_SIZE, \
-    0, UINT32_MAX)
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, int64_value, int64_t, PRIMITIVES_ARRAY_SIZE, \
-    INT64_MIN, INT64_MAX)
-  TEST_BOUNDED_ARRAY_PRIMITIVE(message, uint64_value, uint64_t, PRIMITIVES_ARRAY_SIZE, \
-    0, UINT64_MAX)
-  TEST_BOUNDED_ARRAY_STRING(message, string_values, std::string, PRIMITIVES_ARRAY_SIZE, \
-    0, UINT32_MAX, 0, BOUNDED_STRING_LENGTH)
+  TEST_BOUNDED_SEQUENCE_PRIMITIVES(message, bool_values, bool, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, false, true)
+  TEST_BOUNDED_SEQUENCE_PRIMITIVES(message, char_values, unsigned char, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, 0, UINT8_MAX)
+  TEST_BOUNDED_SEQUENCE_PRIMITIVES(message, byte_values, uint8_t, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, 0, UINT8_MAX)
+  TEST_BOUNDED_SEQUENCE_PRIMITIVES(message, float32_values, float, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, FLT_MIN, FLT_MAX)
+  TEST_BOUNDED_SEQUENCE_PRIMITIVES(message, float64_values, double, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, DBL_MIN, DBL_MAX)
+  TEST_BOUNDED_SEQUENCE_PRIMITIVES(message, int8_values, int8_t, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, INT8_MIN, INT8_MAX)
+  TEST_BOUNDED_SEQUENCE_PRIMITIVES(message, uint8_values, uint8_t, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, 0, UINT8_MAX)
+  TEST_BOUNDED_SEQUENCE_PRIMITIVES(message, int16_values, int16_t, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, INT16_MIN, INT16_MAX)
+  TEST_BOUNDED_SEQUENCE_PRIMITIVES(message, uint16_values, uint16_t, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, 0, UINT16_MAX)
+  TEST_BOUNDED_SEQUENCE_PRIMITIVES(message, int32_values, int32_t, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, INT32_MIN, INT32_MAX)
+  TEST_BOUNDED_SEQUENCE_PRIMITIVES(message, uint32_values, uint32_t, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, 0, UINT32_MAX)
+  TEST_BOUNDED_SEQUENCE_PRIMITIVES(message, int64_values, int64_t, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, INT64_MIN, INT64_MAX)
+  TEST_BOUNDED_SEQUENCE_PRIMITIVES(message, uint64_values, uint64_t, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, 0, UINT64_MAX)
+  TEST_BOUNDED_SEQUENCE_STRING(message, string_values, std::string, \
+    BOUNDED_SEQUENCE_PRIMITIVES_SIZE, 0, UINT32_MAX, 0, BOUNDED_STRING_LENGTH)
 }
 
-#define TEST_UNBOUNDED_ARRAY_PRIMITIVE( \
+#define TEST_UNBOUNDED_SEQUENCE_PRIMITIVES( \
     Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal) \
   std::vector<PrimitiveType> pattern_ ## FieldName(ArraySize); \
   pattern_ ## FieldName.resize(ArraySize); \
@@ -325,7 +318,7 @@ void test_message_primitives_bounded(rosidl_generator_cpp::msg::PrimitivesBounde
   std::copy_n(pattern_ ## FieldName.begin(), ArraySize, Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
-#define TEST_UNBOUNDED_ARRAY_STRING( \
+#define TEST_UNBOUNDED_SEQUENCE_STRING( \
     Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal, MinLength, MaxLength) \
   std::vector<PrimitiveType> pattern_ ## FieldName; \
   Message.FieldName.resize(ArraySize); \
@@ -335,39 +328,40 @@ void test_message_primitives_bounded(rosidl_generator_cpp::msg::PrimitivesBounde
   std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
-void test_message_primitives_unbounded(rosidl_generator_cpp::msg::PrimitivesUnbounded message)
+void test_message_unbounded_sequence_primitives(
+  rosidl_generator_cpp::msg::UnboundedSequencePrimitives message)
 {
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, bool_value, bool, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_PRIMITIVES(message, bool_values, bool, ARRAY_PRIMITIVES_SIZE, \
     false, true)
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, char_value, unsigned char, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_PRIMITIVES(message, char_values, unsigned char, ARRAY_PRIMITIVES_SIZE, \
     0, UINT8_MAX)
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, byte_value, uint8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_PRIMITIVES(message, byte_values, uint8_t, ARRAY_PRIMITIVES_SIZE, \
     0, UINT8_MAX)
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, float32_value, float, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_PRIMITIVES(message, float32_values, float, ARRAY_PRIMITIVES_SIZE, \
     FLT_MIN, FLT_MAX)
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, float64_value, double, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_PRIMITIVES(message, float64_values, double, ARRAY_PRIMITIVES_SIZE, \
     DBL_MIN, DBL_MAX)
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, int8_value, int8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_PRIMITIVES(message, int8_values, int8_t, ARRAY_PRIMITIVES_SIZE, \
     INT8_MIN, INT8_MAX)
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, uint8_value, uint8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_PRIMITIVES(message, uint8_values, uint8_t, ARRAY_PRIMITIVES_SIZE, \
     0, UINT8_MAX)
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, int16_value, int16_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_PRIMITIVES(message, int16_values, int16_t, ARRAY_PRIMITIVES_SIZE, \
     INT16_MIN, INT16_MAX)
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, uint16_value, uint16_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_PRIMITIVES(message, uint16_values, uint16_t, ARRAY_PRIMITIVES_SIZE, \
     0, UINT16_MAX)
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, int32_value, int32_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_PRIMITIVES(message, int32_values, int32_t, ARRAY_PRIMITIVES_SIZE, \
     INT32_MIN, INT32_MAX)
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, uint32_value, uint32_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_PRIMITIVES(message, uint32_values, uint32_t, ARRAY_PRIMITIVES_SIZE, \
     0, UINT32_MAX)
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, int64_value, int64_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_PRIMITIVES(message, int64_values, int64_t, ARRAY_PRIMITIVES_SIZE, \
     INT64_MIN, INT64_MAX)
-  TEST_UNBOUNDED_ARRAY_PRIMITIVE(message, uint64_value, uint64_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_PRIMITIVES(message, uint64_values, uint64_t, ARRAY_PRIMITIVES_SIZE, \
     0, UINT64_MAX)
-  TEST_UNBOUNDED_ARRAY_STRING(message, string_value, std::string, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_STRING(message, string_values, std::string, ARRAY_PRIMITIVES_SIZE, \
     0, UINT32_MAX, 0, UINT16_MAX)
 }
 
-#define TEST_STATIC_ARRAY_PRIMITIVE( \
+#define TEST_ARRAY_PRIMITIVES( \
     Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal) \
   std::array<PrimitiveType, ArraySize> pattern_ ## FieldName; \
   test_vector_fill<decltype(pattern_ ## FieldName)>( \
@@ -375,139 +369,153 @@ void test_message_primitives_unbounded(rosidl_generator_cpp::msg::PrimitivesUnbo
   std::copy_n(pattern_ ## FieldName.begin(), ArraySize, Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
-void test_message_primitives_static_arrays(rosidl_generator_cpp::msg::PrimitiveStaticArrays message)
+#define TEST_ARRAY_STRING( \
+    Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal, MinLength, MaxLength) \
+  std::array<PrimitiveType, ArraySize> pattern_ ## FieldName; \
+  test_vector_fill<decltype(pattern_ ## FieldName)>( \
+    &pattern_ ## FieldName, ArraySize, MinVal, MaxVal, MinLength, MaxLength); \
+  std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
+  ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
+
+void test_message_array_primitives(rosidl_generator_cpp::msg::ArrayPrimitives message)
 {
-  TEST_STATIC_ARRAY_PRIMITIVE(message, bool_value, bool, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_PRIMITIVES(message, bool_values, bool, ARRAY_PRIMITIVES_SIZE, \
     false, true)
-  TEST_STATIC_ARRAY_PRIMITIVE(message, char_value, unsigned char, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_PRIMITIVES(message, char_values, unsigned char, ARRAY_PRIMITIVES_SIZE, \
     0, UINT8_MAX)
-  TEST_STATIC_ARRAY_PRIMITIVE(message, byte_value, uint8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_PRIMITIVES(message, byte_values, uint8_t, ARRAY_PRIMITIVES_SIZE, \
     0, UINT8_MAX)
-  TEST_STATIC_ARRAY_PRIMITIVE(message, float32_value, float, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_PRIMITIVES(message, float32_values, float, ARRAY_PRIMITIVES_SIZE, \
     FLT_MIN, FLT_MAX)
-  TEST_STATIC_ARRAY_PRIMITIVE(message, float64_value, double, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_PRIMITIVES(message, float64_values, double, ARRAY_PRIMITIVES_SIZE, \
     DBL_MIN, DBL_MAX)
-  TEST_STATIC_ARRAY_PRIMITIVE(message, int8_value, int8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_PRIMITIVES(message, int8_values, int8_t, ARRAY_PRIMITIVES_SIZE, \
     INT8_MIN, INT8_MAX)
-  TEST_STATIC_ARRAY_PRIMITIVE(message, uint8_value, uint8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_PRIMITIVES(message, uint8_values, uint8_t, ARRAY_PRIMITIVES_SIZE, \
     0, UINT8_MAX)
-  TEST_STATIC_ARRAY_PRIMITIVE(message, int16_value, int16_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_PRIMITIVES(message, int16_values, int16_t, ARRAY_PRIMITIVES_SIZE, \
     INT16_MIN, INT16_MAX)
-  TEST_STATIC_ARRAY_PRIMITIVE(message, uint16_value, uint16_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_PRIMITIVES(message, uint16_values, uint16_t, ARRAY_PRIMITIVES_SIZE, \
     0, UINT16_MAX)
-  TEST_STATIC_ARRAY_PRIMITIVE(message, int32_value, int32_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_PRIMITIVES(message, int32_values, int32_t, ARRAY_PRIMITIVES_SIZE, \
     INT32_MIN, INT32_MAX)
-  TEST_STATIC_ARRAY_PRIMITIVE(message, uint32_value, uint32_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_PRIMITIVES(message, uint32_values, uint32_t, ARRAY_PRIMITIVES_SIZE, \
     0, UINT32_MAX)
-  TEST_STATIC_ARRAY_PRIMITIVE(message, int64_value, int64_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_PRIMITIVES(message, int64_values, int64_t, ARRAY_PRIMITIVES_SIZE, \
     INT64_MIN, INT64_MAX)
-  TEST_STATIC_ARRAY_PRIMITIVE(message, uint64_value, uint64_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_PRIMITIVES(message, uint64_values, uint64_t, ARRAY_PRIMITIVES_SIZE, \
     0, UINT64_MAX)
+  TEST_ARRAY_STRING(message, string_values, std::string, ARRAY_PRIMITIVES_SIZE, \
+    0, UINT32_MAX, 0, UINT16_MAX)
 }
 
-// Primitives static
-TEST(Test_messages, primitives_static) {
-  rosidl_generator_cpp::msg::PrimitivesStatic message;
-  test_message_primitives_static(message);
+// Primitives
+TEST(Test_messages, primitives) {
+  rosidl_generator_cpp::msg::Primitives message;
+  test_message_primitives(message);
 }
 
-// Primitives static arrays
-TEST(Test_messages, primitives_static_arrays) {
-  rosidl_generator_cpp::msg::PrimitiveStaticArrays message;
-  test_message_primitives_static_arrays(message);
+// Arrays of primitives
+TEST(Test_messages, array_primitives) {
+  rosidl_generator_cpp::msg::ArrayPrimitives message;
+  test_message_array_primitives(message);
 }
 
-// Primitives bounded arrays
-TEST(Test_messages, primitives_bounded) {
-  rosidl_generator_cpp::msg::PrimitivesBounded message;
-  test_message_primitives_bounded(message);
+// Bounded sequences of primitives
+TEST(Test_messages, bounded_sequence_primitives) {
+  rosidl_generator_cpp::msg::BoundedSequencePrimitives message;
+  test_message_bounded_sequence_primitives(message);
 }
 
-// Primitives unbounded arrays
-TEST(Test_messages, primitives_unbounded) {
-  rosidl_generator_cpp::msg::PrimitivesUnbounded message;
-  test_message_primitives_unbounded(message);
+// Unbounded sequences of primitives
+TEST(Test_messages, unbounded_sequence_primitives) {
+  rosidl_generator_cpp::msg::UnboundedSequencePrimitives message;
+  test_message_unbounded_sequence_primitives(message);
 }
 
-// Static array of a submessage of static primitives
-TEST(Test_messages, static_array_static) {
-  rosidl_generator_cpp::msg::StaticArrayStatic message;
+// Array of Primitives messages
+TEST(Test_messages, array_nested) {
+  rosidl_generator_cpp::msg::ArrayNested message;
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_static(message.primitive_values[i]);
+    test_message_primitives(message.primitives_values[i]);
   }
 }
 
-// Static array of a submessage of bounded array of primitives
-TEST(Test_messages, static_array_bounded) {
-  rosidl_generator_cpp::msg::StaticArrayBounded message;
+// TODO(jacobperron): Add interface file
+// Array of BoundedSequencePrimitives messages
+// TEST(Test_messages, array_bounded_primitives_nested) {
+//   rosidl_generator_cpp::msg::ArrayBoundedPrimitivesNested message;
+//   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
+//     test_message_bounded_sequence_primitives(message.bounded_sequence_primitives_values[i]);
+//   }
+// }
+
+// TODO(jacobperron): Add interface file
+// Array of UnboundedSequencePrimitives messages
+// TEST(Test_messages, array_unbounded_primitives_nested) {
+//   rosidl_generator_cpp::msg::ArrayUnboundedPrimitivesNested message;
+//   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
+//     test_message_unbounded_sequence_primitives(message.unbounded_sequence_primitives_values[i]);
+//   }
+// }
+
+// Bounded sequence of Primitives messages
+TEST(Test_messages, bounded_sequence_nested) {
+  rosidl_generator_cpp::msg::BoundedSequenceNested message;
+  message.primitives_values.resize(SUBMESSAGE_ARRAY_SIZE);
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_bounded(message.primitive_values[i]);
+    test_message_primitives(message.primitives_values[i]);
   }
 }
 
-// Static array of a submessage of unbounded array of primitives
-TEST(Test_messages, static_array_unbounded) {
-  rosidl_generator_cpp::msg::StaticArrayUnbounded message;
+// Bounded sequence of BoundedSequencePrimitives messages
+TEST(Test_messages, bounded_sequence_primitives_nested) {
+  rosidl_generator_cpp::msg::BoundedSequencePrimitivesNested message;
+  message.bounded_sequence_primitives_values.resize(SUBMESSAGE_ARRAY_SIZE);
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_unbounded(message.primitive_values[i]);
+    test_message_bounded_sequence_primitives(message.bounded_sequence_primitives_values[i]);
   }
 }
 
-// Bounded array of a submessage of static primitive
-TEST(Test_messages, bounded_array_static) {
-  rosidl_generator_cpp::msg::BoundedArrayStatic message;
-  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
+// TODO(jacobperron): Add test interface
+// Bounded sequence of UnboundedSequencePrimitives messages
+// TEST(Test_messages, bounded_array_unbounded) {
+//   rosidl_generator_cpp::msg::BoundedSequenceUnboundedPrimitivesNested message;
+//   message.unbounded_seqeuence_primitives_values.resize(SUBMESSAGE_ARRAY_SIZE);
+//   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
+//     test_message_unbounded_sequence_primitives(message.unbounded_sequence_primitive_values[i]);
+//   }
+// }
+
+// Unbounded sequence of Primitives messages
+TEST(Test_messages, unbounded_sequence_nested) {
+  rosidl_generator_cpp::msg::UnboundedSequenceNested message;
+  message.primitives_values.resize(SUBMESSAGE_ARRAY_SIZE);
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_static(message.primitive_values[i]);
+    test_message_primitives(message.primitives_values[i]);
   }
 }
 
-// Bounded array of a submessage of bounded array of primitives
-TEST(Test_messages, bounded_array_bounded) {
-  rosidl_generator_cpp::msg::BoundedArrayBounded message;
-  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
+// Unbounded sequence of BoundedSequencePrimitives messages
+// TODO(jacobperron): Add test interface
+// TEST(Test_messages, unbounded_sequence_bounded_primitives_nested) {
+//   rosidl_generator_cpp::msg::UnboundedSequenceBoundedPrimitivesNested message;
+//   message.bounded_sequence_primitives_values.resize(SUBMESSAGE_ARRAY_SIZE);
+//   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
+//     test_message_bounded_sequence_primitives(message.bounded_sequence_primitive_values[i]);
+//   }
+// }
+
+// Unbounded sequence of UnboundedSequencePrimitives messages
+TEST(Test_messages, unbounded_sequence_primitives_nested) {
+  rosidl_generator_cpp::msg::UnboundedSequencePrimitivesNested message;
+  message.unbounded_sequence_primitives_values.resize(SUBMESSAGE_ARRAY_SIZE);
   for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_bounded(message.primitive_values[i]);
+    test_message_unbounded_sequence_primitives(message.unbounded_sequence_primitives_values[i]);
   }
 }
 
-// Bounded array of a submessage of unbounded array of primitives
-TEST(Test_messages, bounded_array_unbounded) {
-  rosidl_generator_cpp::msg::BoundedArrayUnbounded message;
-  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
-  for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_unbounded(message.primitive_values[i]);
-  }
-}
-
-// Unbounded array of a submessage of static primitives
-TEST(Test_messages, unbounded_array_static) {
-  rosidl_generator_cpp::msg::UnboundedArrayStatic message;
-  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
-  for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_static(message.primitive_values[i]);
-  }
-}
-
-// Unbounded array of a submessage of bounded primitive
-TEST(Test_messages, unbounded_array_bounded) {
-  rosidl_generator_cpp::msg::UnboundedArrayBounded message;
-  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
-  for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_bounded(message.primitive_values[i]);
-  }
-}
-
-// Unbounded array of a submessage of unbounded array of primitives
-TEST(Test_messages, unbounded_array_unbounded) {
-  rosidl_generator_cpp::msg::UnboundedArrayUnbounded message;
-  message.primitive_values.resize(SUBMESSAGE_ARRAY_SIZE);
-  for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_unbounded(message.primitive_values[i]);
-  }
-}
-
-// Constant Primitives
+// Primitives with constants
 TEST(Test_messages, primitives_constants) {
   rosidl_generator_cpp::msg::PrimitivesConstants message;
   ASSERT_EQ(true, message.BOOL_CONST);
@@ -554,63 +562,12 @@ TEST(Test_messages, primitives_default) {
   TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "bar", "Hello World!")
 }
 
-// String arrays with default values
-TEST(Test_messages, string_arrays_default) {
-  // rosidl_generator_cpp::msg::StringArrays message;
-  rosidl_generator_cpp::msg::StringArrays message;
-
-  ASSERT_STREQ("Hello", message.def_string_static_array_value[0].c_str());
-  ASSERT_STREQ("World", message.def_string_static_array_value[1].c_str());
-  ASSERT_STREQ("!", message.def_string_static_array_value[2].c_str());
-
-  ASSERT_EQ(3ul, message.def_string_bounded_array_value.size());
-  ASSERT_STREQ("Hello", message.def_string_bounded_array_value[0].c_str());
-  ASSERT_STREQ("World", message.def_string_bounded_array_value[1].c_str());
-  ASSERT_STREQ("!", message.def_string_bounded_array_value[2].c_str());
-
-  ASSERT_EQ(5ul, message.def_string_dynamic_array_value.size());
-  ASSERT_STREQ("What", message.def_string_dynamic_array_value[0].c_str());
-  ASSERT_STREQ("a", message.def_string_dynamic_array_value[1].c_str());
-  ASSERT_STREQ("wonderful", message.def_string_dynamic_array_value[2].c_str());
-  ASSERT_STREQ("world", message.def_string_dynamic_array_value[3].c_str());
-  ASSERT_STREQ("!", message.def_string_dynamic_array_value[4].c_str());
-
-  ASSERT_EQ(4ul, message.def_various_commas.size());
-  ASSERT_STREQ("Hel,lo", message.def_various_commas[0].c_str());
-  ASSERT_STREQ(",World", message.def_various_commas[1].c_str());
-  ASSERT_STREQ("abcd", message.def_various_commas[2].c_str());
-  ASSERT_STREQ("!,", message.def_various_commas[3].c_str());
-
-  ASSERT_EQ(2ul, message.def_various_quotes.size());
-  ASSERT_STREQ("H\"el'lo", message.def_various_quotes[0].c_str());
-  ASSERT_STREQ("Wo'r\"ld", message.def_various_quotes[1].c_str());
-}
-
 // TODO(mikaelarguedas) reenable this test when bounded strings enforce length
 TEST(Test_messages, DISABLED_Test_bounded_strings) {
-  rosidl_generator_cpp::msg::StringBounded message;
-  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "", "Deep into")
+  rosidl_generator_cpp::msg::BoundedString message;
+  TEST_STRING_FIELD_ASSIGNMENT(message, bounded_string_value, "", "Deep into")
   std::string tooLongString = std::string("Too long string");
-  message.string_value = tooLongString;
+  message.bounded_string_value = tooLongString;
   tooLongString.resize(BOUNDED_STRING_LENGTH);
-  ASSERT_STREQ(tooLongString.c_str(), message.string_value.c_str());
-}
-
-TEST(Test_messages, Test_string) {
-  rosidl_generator_cpp::msg::String message;
-  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "", "Deep into")
-}
-
-#define TEST_STATIC_ARRAY_STRING( \
-    Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal, MinLength, MaxLength) \
-  std::array<PrimitiveType, ArraySize> pattern_ ## FieldName; \
-  test_vector_fill<decltype(pattern_ ## FieldName)>( \
-    &pattern_ ## FieldName, ArraySize, MinVal, MaxVal, MinLength, MaxLength); \
-  std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
-  ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
-
-TEST(Test_messages, Test_string_array_static) {
-  rosidl_generator_cpp::msg::StringArrayStatic message;
-  TEST_STATIC_ARRAY_STRING(message, string_value, std::string, PRIMITIVES_ARRAY_SIZE, \
-    0, UINT32_MAX, 0, UINT16_MAX)
+  ASSERT_STREQ(tooLongString.c_str(), message.bounded_string_value.c_str());
 }

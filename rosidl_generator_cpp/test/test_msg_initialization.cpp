@@ -18,8 +18,8 @@
 
 #include <string>
 
+#include "rosidl_generator_cpp/msg/primitives.hpp"
 #include "rosidl_generator_cpp/msg/primitives_default.hpp"
-#include "rosidl_generator_cpp/msg/primitives_static.hpp"
 #include "rosidl_generator_cpp/msg/various.hpp"
 
 template<typename Callable>
@@ -62,57 +62,54 @@ TEST(Test_msg_initialization, no_arg_constructor) {
   ASSERT_EQ(50000000ULL, primitives_def.uint64_value);
   ASSERT_EQ("bar", primitives_def.string_value);
 
-  rosidl_generator_cpp::msg::PrimitivesStatic primitives_static;
-  ASSERT_FALSE(primitives_static.bool_value);
-  ASSERT_EQ(0, primitives_static.byte_value);
-  ASSERT_EQ(0, primitives_static.char_value);
-  ASSERT_EQ(0.0f, primitives_static.float32_value);
-  ASSERT_EQ(0.0, primitives_static.float64_value);
-  ASSERT_EQ(0, primitives_static.int8_value);
-  ASSERT_EQ(0, primitives_static.uint8_value);
-  ASSERT_EQ(0, primitives_static.int16_value);
-  ASSERT_EQ(0, primitives_static.uint16_value);
-  ASSERT_EQ(0L, primitives_static.int32_value);
-  ASSERT_EQ(0UL, primitives_static.uint32_value);
-  ASSERT_EQ(0LL, primitives_static.int64_value);
-  ASSERT_EQ(0ULL, primitives_static.uint64_value);
+  rosidl_generator_cpp::msg::Primitives primitives;
+  ASSERT_FALSE(primitives.bool_value);
+  ASSERT_EQ(0, primitives.byte_value);
+  ASSERT_EQ(0, primitives.char_value);
+  ASSERT_EQ(0.0f, primitives.float32_value);
+  ASSERT_EQ(0.0, primitives.float64_value);
+  ASSERT_EQ(0, primitives.int8_value);
+  ASSERT_EQ(0, primitives.uint8_value);
+  ASSERT_EQ(0, primitives.int16_value);
+  ASSERT_EQ(0, primitives.uint16_value);
+  ASSERT_EQ(0L, primitives.int32_value);
+  ASSERT_EQ(0UL, primitives.uint32_value);
+  ASSERT_EQ(0LL, primitives.int64_value);
+  ASSERT_EQ(0ULL, primitives.uint64_value);
+  ASSERT_EQ("", primitives.string_value);
 
-  rosidl_generator_cpp::msg::Various various_def;
-
-  ASSERT_EQ(1.125f, various_def.float32_value);
-  ASSERT_EQ(2.4, various_def.float64_value);
-  ASSERT_EQ(0ULL, various_def.uint64_value);
-  ASSERT_EQ("bar", various_def.string_value);
-  ASSERT_TRUE(std::all_of(
-      various_def.float32_arr.begin(), various_def.float32_arr.end(), [](float i) {
-        return 0.0f == i;
-      }));
-  ASSERT_EQ(8.5, various_def.float64_arr[0]);
-  ASSERT_EQ(1.2, various_def.float64_arr[1]);
-  ASSERT_EQ(3.4, various_def.float64_arr[2]);
-  ASSERT_TRUE(std::all_of(
-      various_def.string_arr.begin(), various_def.string_arr.end(), [](std::string i) {
-        return "" == i;
-      }));
-  ASSERT_EQ(2UL, various_def.unbounded.size());
-  ASSERT_EQ(1.0f, various_def.unbounded[0]);
-  ASSERT_EQ(2.0f, various_def.unbounded[1]);
-  ASSERT_EQ(0UL, various_def.bounded_no_def.size());
-  ASSERT_EQ(2UL, various_def.bounded_def.size());
-  ASSERT_EQ(3.0f, various_def.bounded_def[0]);
-  ASSERT_EQ(4.0f, various_def.bounded_def[1]);
-  ASSERT_EQ(0UL, various_def.vec3.x);
-  ASSERT_EQ(45UL, various_def.vec3.y);
-  ASSERT_EQ(0UL, various_def.vec3.z);
-  ASSERT_EQ(2UL, various_def.vec3_fixed.size());
-  ASSERT_EQ(0UL, various_def.vec3_fixed[0].x);
-  ASSERT_EQ(0UL, various_def.vec3_fixed[1].x);
-  ASSERT_EQ(45UL, various_def.vec3_fixed[0].y);
-  ASSERT_EQ(45UL, various_def.vec3_fixed[1].y);
-  ASSERT_EQ(0UL, various_def.vec3_fixed[0].z);
-  ASSERT_EQ(0UL, various_def.vec3_fixed[1].z);
-  ASSERT_EQ(0UL, various_def.vec3_unbounded.size());
-  ASSERT_EQ(0UL, various_def.vec3_bounded.size());
+  rosidl_generator_cpp::msg::Various various;
+  ASSERT_EQ(1.125f, various.float32_value_def);
+  ASSERT_EQ(2.4, various.float64_value_def);
+  ASSERT_EQ(0ULL, various.uint64_value);
+  ASSERT_EQ("bar", various.string_value_def);
+  ASSERT_EQ(10UL, various.float32_arr.size());
+  for (const float value : various.float32_arr) {
+    ASSERT_EQ(0.0f, value);
+  }
+  ASSERT_EQ(0, various.array_alignment_check);
+  ASSERT_EQ(3UL, various.float64_arr_def.size());
+  ASSERT_EQ(8.5, various.float64_arr_def[0]);
+  ASSERT_EQ(1.2, various.float64_arr_def[1]);
+  ASSERT_EQ(3.4, various.float64_arr_def[2]);
+  ASSERT_EQ(3UL, various.string_arr.size());
+  for (const std::string value : various.string_arr) {
+    ASSERT_EQ("", value);
+  }
+  ASSERT_EQ(3UL, various.string_arr_def.size());
+  ASSERT_EQ("hello", various.string_arr_def[0]);
+  ASSERT_EQ("world", various.string_arr_def[1]);
+  ASSERT_EQ("!", various.string_arr_def[2]);
+  ASSERT_EQ(2UL, various.unbounded_seq_def.size());
+  ASSERT_EQ(1.0f, various.unbounded_seq_def[0]);
+  ASSERT_EQ(2.0f, various.unbounded_seq_def[1]);
+  ASSERT_EQ(0UL, various.unbounded_seq.size());
+  ASSERT_EQ(0, various.unbounded_alignment_check);
+  ASSERT_EQ(2UL, various.bounded_seq_def.size());
+  ASSERT_EQ(3.0f, various.bounded_seq_def[0]);
+  ASSERT_EQ(4.0f, various.bounded_seq_def[1]);
+  ASSERT_EQ(0UL, various.bounded_seq.size());
+  ASSERT_EQ(0, various.bounded_alignment_check);
 }
 
 TEST(Test_msg_initialization, all_constructor) {
@@ -132,42 +129,6 @@ TEST(Test_msg_initialization, all_constructor) {
   ASSERT_EQ(-40000000LL, primitives_def.int64_value);
   ASSERT_EQ(50000000ULL, primitives_def.uint64_value);
   ASSERT_EQ("bar", primitives_def.string_value);
-
-  rosidl_generator_cpp::msg::Various def(
-    rosidl_generator_cpp::MessageInitialization::ALL);
-
-  ASSERT_EQ(1.125f, def.float32_value);
-  ASSERT_EQ(2.4, def.float64_value);
-  ASSERT_EQ(0ULL, def.uint64_value);
-  ASSERT_EQ("bar", def.string_value);
-  ASSERT_TRUE(std::all_of(def.float32_arr.begin(), def.float32_arr.end(), [](float i) {
-      return 0.0f == i;
-    }));
-  ASSERT_EQ(8.5, def.float64_arr[0]);
-  ASSERT_EQ(1.2, def.float64_arr[1]);
-  ASSERT_EQ(3.4, def.float64_arr[2]);
-  ASSERT_TRUE(std::all_of(def.string_arr.begin(), def.string_arr.end(), [](std::string i) {
-      return "" == i;
-    }));
-  ASSERT_EQ(2UL, def.unbounded.size());
-  ASSERT_EQ(1.0f, def.unbounded[0]);
-  ASSERT_EQ(2.0f, def.unbounded[1]);
-  ASSERT_EQ(0UL, def.bounded_no_def.size());
-  ASSERT_EQ(2UL, def.bounded_def.size());
-  ASSERT_EQ(3.0f, def.bounded_def[0]);
-  ASSERT_EQ(4.0f, def.bounded_def[1]);
-  ASSERT_EQ(0UL, def.vec3.x);
-  ASSERT_EQ(45UL, def.vec3.y);
-  ASSERT_EQ(0UL, def.vec3.z);
-  ASSERT_EQ(2UL, def.vec3_fixed.size());
-  ASSERT_EQ(0UL, def.vec3_fixed[0].x);
-  ASSERT_EQ(0UL, def.vec3_fixed[1].x);
-  ASSERT_EQ(45UL, def.vec3_fixed[0].y);
-  ASSERT_EQ(45UL, def.vec3_fixed[1].y);
-  ASSERT_EQ(0UL, def.vec3_fixed[0].z);
-  ASSERT_EQ(0UL, def.vec3_fixed[1].z);
-  ASSERT_EQ(0UL, def.vec3_unbounded.size());
-  ASSERT_EQ(0UL, def.vec3_bounded.size());
 }
 
 TEST(Test_msg_initialization, zero_constructor) {
@@ -187,38 +148,6 @@ TEST(Test_msg_initialization, zero_constructor) {
   ASSERT_EQ(0LL, primitives_def.int64_value);
   ASSERT_EQ(0ULL, primitives_def.uint64_value);
   ASSERT_EQ("", primitives_def.string_value);
-
-  rosidl_generator_cpp::msg::Various def(
-    rosidl_generator_cpp::MessageInitialization::ZERO);
-
-  ASSERT_EQ(0.0f, def.float32_value);
-  ASSERT_EQ(0.0, def.float64_value);
-  ASSERT_EQ(0ULL, def.uint64_value);
-  ASSERT_EQ("", def.string_value);
-  ASSERT_TRUE(std::all_of(def.float32_arr.begin(), def.float32_arr.end(), [](float i) {
-      return 0.0f == i;
-    }));
-  ASSERT_TRUE(std::all_of(def.float64_arr.begin(), def.float64_arr.end(), [](double i) {
-      return 0.0 == i;
-    }));
-  ASSERT_TRUE(std::all_of(def.string_arr.begin(), def.string_arr.end(), [](std::string i) {
-      return "" == i;
-    }));
-  ASSERT_EQ(0UL, def.unbounded.size());
-  ASSERT_EQ(0UL, def.bounded_no_def.size());
-  ASSERT_EQ(0UL, def.bounded_def.size());
-  ASSERT_EQ(0UL, def.vec3.x);
-  ASSERT_EQ(0UL, def.vec3.y);
-  ASSERT_EQ(0UL, def.vec3.z);
-  ASSERT_EQ(2UL, def.vec3_fixed.size());
-  ASSERT_EQ(0UL, def.vec3_fixed[0].x);
-  ASSERT_EQ(0UL, def.vec3_fixed[1].x);
-  ASSERT_EQ(0UL, def.vec3_fixed[0].y);
-  ASSERT_EQ(0UL, def.vec3_fixed[1].y);
-  ASSERT_EQ(0UL, def.vec3_fixed[0].z);
-  ASSERT_EQ(0UL, def.vec3_fixed[1].z);
-  ASSERT_EQ(0UL, def.vec3_unbounded.size());
-  ASSERT_EQ(0UL, def.vec3_bounded.size());
 }
 
 TEST(Test_msg_initialization, defaults_only_constructor) {
@@ -250,10 +179,11 @@ TEST(Test_msg_initialization, defaults_only_constructor) {
   // ensures that the memory gets freed even if an ASSERT is raised
   SCOPE_EXIT(def->~Various_(); delete[] memory;);
 
-  ASSERT_EQ(1.125f, def->float32_value);
-  ASSERT_EQ(2.4, def->float64_value);
+  ASSERT_EQ(1.125f, def->float32_value_def);
+  ASSERT_EQ(2.4, def->float64_value_def);
   ASSERT_EQ(0xfefefefefefefefeULL, def->uint64_value);
-  ASSERT_EQ("bar", def->string_value);
+  ASSERT_EQ("bar", def->string_value_def);
+  ASSERT_EQ(10UL, def->float32_arr.size());
 #ifndef _WIN32
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
@@ -265,27 +195,29 @@ TEST(Test_msg_initialization, defaults_only_constructor) {
 #ifndef _WIN32
 #pragma GCC diagnostic pop
 #endif
-
-  ASSERT_EQ(8.5, def->float64_arr[0]);
-  ASSERT_EQ(1.2, def->float64_arr[1]);
-  ASSERT_EQ(3.4, def->float64_arr[2]);
+  ASSERT_EQ(0xfefefefe, static_cast<uint32_t>(def->array_alignment_check));
+  ASSERT_EQ(3UL, def->float64_arr_def.size());
+  ASSERT_EQ(8.5, def->float64_arr_def[0]);
+  ASSERT_EQ(1.2, def->float64_arr_def[1]);
+  ASSERT_EQ(3.4, def->float64_arr_def[2]);
+  ASSERT_EQ(3UL, def->string_arr.size());
   ASSERT_TRUE(std::all_of(def->string_arr.begin(), def->string_arr.end(), [](std::string i) {
       return "" == i;
     }));
-  ASSERT_EQ(1.0f, def->unbounded[0]);
-  ASSERT_EQ(2.0f, def->unbounded[1]);
-  ASSERT_EQ(0UL, def->bounded_no_def.size());
-  ASSERT_EQ(2UL, def->bounded_def.size());
-  ASSERT_EQ(3.0f, def->bounded_def[0]);
-  ASSERT_EQ(4.0f, def->bounded_def[1]);
-  ASSERT_EQ(0xfefefefe, def->vec3.x);
-  ASSERT_EQ(45UL, def->vec3.y);
-  ASSERT_EQ(0xfefefefe, def->vec3.z);
-  ASSERT_EQ(2UL, def->vec3_fixed.size());
-  ASSERT_EQ(45UL, def->vec3_fixed[0].y);
-  ASSERT_EQ(45UL, def->vec3_fixed[1].y);
-  ASSERT_EQ(0UL, def->vec3_unbounded.size());
-  ASSERT_EQ(0UL, def->vec3_bounded.size());
+  ASSERT_EQ(3UL, def->string_arr_def.size());
+  ASSERT_EQ("hello", def->string_arr_def[0]);
+  ASSERT_EQ("world", def->string_arr_def[1]);
+  ASSERT_EQ("!", def->string_arr_def[2]);
+  ASSERT_EQ(2UL, def->unbounded_seq_def.size());
+  ASSERT_EQ(1.0f, def->unbounded_seq_def[0]);
+  ASSERT_EQ(2.0f, def->unbounded_seq_def[1]);
+  ASSERT_EQ(0UL, def->bounded_seq.size());
+  ASSERT_EQ(2UL, def->bounded_seq_def.size());
+  ASSERT_EQ(0xfefefefe, static_cast<uint32_t>(def->unbounded_alignment_check));
+  ASSERT_EQ(3.0f, def->bounded_seq_def[0]);
+  ASSERT_EQ(4.0f, def->bounded_seq_def[1]);
+  ASSERT_EQ(0UL, def->bounded_seq.size());
+  ASSERT_EQ(0xfefefefe, static_cast<uint32_t>(def->bounded_alignment_check));
 }
 
 // This is a test to ensure that when the user passes SKIP to the constructor,
@@ -306,38 +238,41 @@ TEST(Test_msg_initialization, skip_constructor) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif
-  uint32_t float32_bit_pattern = *reinterpret_cast<uint32_t *>(&def->float32_value);
+  uint32_t float32_bit_pattern = *reinterpret_cast<uint32_t *>(&def->float32_value_def);
   ASSERT_EQ(0xfefefefe, float32_bit_pattern);
-  uint64_t float64_bit_pattern = *reinterpret_cast<uint64_t *>(&def->float64_value);
+  uint64_t float64_bit_pattern = *reinterpret_cast<uint64_t *>(&def->float64_value_def);
   ASSERT_EQ(0xfefefefefefefefeULL, float64_bit_pattern);
+  ASSERT_EQ(0xfefefefefefefefeULL, def->uint64_value);
+  ASSERT_EQ("", def->string_value_def);
   ASSERT_TRUE(std::all_of(def->float32_arr.begin(), def->float32_arr.end(), [](float i) {
       uint32_t float32_bit_pattern = *reinterpret_cast<uint32_t *>(&i);
       return 0xfefefefe == float32_bit_pattern;
     }));
-  ASSERT_TRUE(std::all_of(def->float64_arr.begin(), def->float64_arr.end(), [](double i) {
+  ASSERT_EQ(0xfefefefe, static_cast<uint32_t>(def->array_alignment_check));
+  ASSERT_TRUE(std::all_of(def->float64_arr_def.begin(), def->float64_arr_def.end(), [](double i) {
       uint64_t float64_bit_pattern = *reinterpret_cast<uint64_t *>(&i);
       return 0xfefefefefefefefe == float64_bit_pattern;
     }));
 #ifndef _WIN32
 #pragma GCC diagnostic pop
 #endif
-  ASSERT_EQ(0xfefefefefefefefeULL, def->uint64_value);
-  ASSERT_EQ("", def->string_value);
   ASSERT_TRUE(std::all_of(def->string_arr.begin(), def->string_arr.end(), [](std::string i) {
+      return "" == i;
+    }));
+  ASSERT_TRUE(
+    std::all_of(def->string_arr_def.begin(), def->string_arr_def.end(), [](std::string i) {
       return "" == i;
     }));
   // std::vector memory doesn't come from the memory we allocated above, but
   // instead comes from the allocator.  Thus, we don't expect it to be our
   // bitpattern for unbounded
-  ASSERT_EQ(0UL, def->bounded_no_def.size());
+  ASSERT_EQ(0UL, def->unbounded_seq_def.size());
+  ASSERT_EQ(0UL, def->unbounded_seq.size());
+  ASSERT_EQ(0xfefefefe, static_cast<uint32_t>(def->unbounded_alignment_check));
   // BoundedVector memory doesn't come from the memory we allocated above, but
   // instead comes from the allocator.  Thus, we don't expect it to be our
   // bitpattern for unbounded
-  ASSERT_EQ(0UL, def->bounded_def.size());
-  ASSERT_EQ(0xfefefefe, def->vec3.x);
-  ASSERT_EQ(0xfefefefe, def->vec3.y);
-  ASSERT_EQ(0xfefefefe, def->vec3.z);
-  ASSERT_EQ(2UL, def->vec3_fixed.size());
-  ASSERT_EQ(0UL, def->vec3_unbounded.size());
-  ASSERT_EQ(0UL, def->vec3_bounded.size());
+  ASSERT_EQ(0UL, def->bounded_seq_def.size());
+  ASSERT_EQ(0UL, def->bounded_seq.size());
+  ASSERT_EQ(0xfefefefe, static_cast<uint32_t>(def->bounded_alignment_check));
 }

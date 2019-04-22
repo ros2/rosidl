@@ -67,7 +67,7 @@ elif isinstance(member.type.value_type, AbstractString):
 elif isinstance(member.type.value_type, AbstractWString):
     assert False, 'Unknown type: ' + str(member.type.value_type)
 elif isinstance(member.type.value_type, NamespacedType):
-    type_ = '::'.join(member.type.value_type.namespaces + [member.type.value_type.name])
+    type_ = '::'.join(member.type.value_type.namespaced_name())
 }@
 size_t size_function__@(message.structure.namespaced_type.name)__@(member.name)(const void * untyped_member)
 {
@@ -151,7 +151,7 @@ for index, member in enumerate(message.structure.members):
         # size_t string_upper_bound
         print('    0,  // upper bound of string')
         # const rosidl_message_type_support_t * members_
-        print('    ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<%s>(),  // members of sub message' % '::'.join(type_.namespaces + [type_.name]))
+        print('    ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<%s>(),  // members of sub message' % '::'.join(type_.namespaced_name()))
     # bool is_array_
     print('    %s,  // is array' % ('true' if isinstance(member.type, AbstractNestedType) else 'false'))
     # size_t array_size_

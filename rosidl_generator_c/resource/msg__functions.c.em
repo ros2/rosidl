@@ -101,7 +101,7 @@ for member in message.structure.members:
                 # set default value for each array element
                 for i, default_value in enumerate(literal_eval(member.get_annotation_value('default')['value'])):
                     lines.append('msg->%s[%d] = %s;' % (member.name, i, value_to_c(member.type.value_type, default_value)))
-        elif isinstance(member.type.value_type, AbstractGenericString) or isinstance(member.type.value_type, NamespacedType): 
+        elif isinstance(member.type.value_type, (AbstractGenericString, NamespacedType)):
             # initialize each array element
             lines.append('for (size_t i = 0; i < %d; ++i) {' % member.type.size)
             lines.append('  if (!%s__init(&msg->%s[i])) {' % (basetype_to_c(member.type.value_type), member.name))
@@ -225,7 +225,7 @@ lines = []
 for member in message.structure.members:
     lines.append('// ' + member.name)
     if isinstance(member.type, Array):
-        if isinstance(member.type.value_type, AbstractGenericString) or isinstance(member.type.value_type, NamespacedType):
+        if isinstance(member.type.value_type, (AbstractGenericString, NamespacedType)):
             lines.append('for (size_t i = 0; i < %d; ++i) {' % member.type.size)
             # initialize each array element
             lines.append('  %s__fini(&msg->%s[i]);' % (basetype_to_c(member.type.value_type), member.name))

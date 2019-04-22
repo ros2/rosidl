@@ -23,6 +23,7 @@ from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import FLOATING_POINT_TYPES
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import UnboundedSequence
 
@@ -76,7 +77,7 @@ def msg_type_only_to_cpp(type_):
     elif isinstance(type_, AbstractWString):
         assert False, 'TBD'
     elif isinstance(type_, NamespacedType):
-        typename = '::'.join(type_.namespaces + [type_.name])
+        typename = '::'.join(type_.namespaced_name())
         cpp_type = typename + '_<ContainerAllocator>'
     else:
         assert False, type_
@@ -162,7 +163,7 @@ def primitive_value_to_cpp(type_, value):
     @type value: python builtin (bool, int, float or str)
     @returns: a string containing the C++ representation of the value
     """
-    assert isinstance(type_, BasicType) or isinstance(type_, AbstractGenericString), \
+    assert isinstance(type_, (BasicType, AbstractGenericString)), \
         "Could not convert non-primitive type '%s' to CPP" % (type_)
     assert value is not None, "Value for type '%s' must not be None" % (type_)
 
@@ -203,7 +204,7 @@ def primitive_value_to_cpp(type_, value):
 def default_value_from_type(type_):
     if isinstance(type_, AbstractGenericString):
         return ''
-    elif isinstance(type_, BasicType) and type_.typename in ['float', 'double']:
+    elif isinstance(type_, BasicType) and type_.typename in FLOATING_POINT_TYPES:
         return 0.0
     elif isinstance(type_, BasicType) and type_.typename == 'boolean':
         return False

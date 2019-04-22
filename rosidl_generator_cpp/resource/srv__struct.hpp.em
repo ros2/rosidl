@@ -22,7 +22,7 @@ namespace @(ns)
 struct @(service.namespaced_type.name)
 {
 @{
-service_typename = '::'.join(service.namespaced_type.namespaces + [service.namespaced_type.name])
+service_typename = '::'.join(service.namespaced_type.namespaced_name())
 }@
   using Request = @(service_typename)_Request;
   using Response = @(service_typename)_Response;

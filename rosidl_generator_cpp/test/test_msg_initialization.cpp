@@ -129,6 +129,41 @@ TEST(Test_msg_initialization, all_constructor) {
   ASSERT_EQ(-40000000LL, primitives_def.int64_value);
   ASSERT_EQ(50000000ULL, primitives_def.uint64_value);
   ASSERT_EQ("bar", primitives_def.string_value);
+
+  rosidl_generator_cpp::msg::Various def(
+    rosidl_generator_cpp::MessageInitialization::ALL);
+
+  ASSERT_EQ(1.125f, def.float32_value_def);
+  ASSERT_EQ(2.4, def.float64_value_def);
+  ASSERT_EQ(0ULL, def.uint64_value);
+  ASSERT_EQ("bar", def.string_value_def);
+  ASSERT_EQ(10UL, def.float32_arr.size());
+  for (const float value : def.float32_arr) {
+    ASSERT_EQ(0.0f, value);
+  }
+  ASSERT_EQ(0, def.array_alignment_check);
+  ASSERT_EQ(3UL, def.float64_arr_def.size());
+  ASSERT_EQ(8.5, def.float64_arr_def[0]);
+  ASSERT_EQ(1.2, def.float64_arr_def[1]);
+  ASSERT_EQ(3.4, def.float64_arr_def[2]);
+  ASSERT_EQ(3UL, def.string_arr.size());
+  for (const std::string value : def.string_arr) {
+    ASSERT_EQ("", value);
+  }
+  ASSERT_EQ(3UL, def.string_arr_def.size());
+  ASSERT_EQ("hello", def.string_arr_def[0]);
+  ASSERT_EQ("world", def.string_arr_def[1]);
+  ASSERT_EQ("!", def.string_arr_def[2]);
+  ASSERT_EQ(2UL, def.unbounded_seq_def.size());
+  ASSERT_EQ(1.0f, def.unbounded_seq_def[0]);
+  ASSERT_EQ(2.0f, def.unbounded_seq_def[1]);
+  ASSERT_EQ(0UL, def.unbounded_seq.size());
+  ASSERT_EQ(0, def.unbounded_alignment_check);
+  ASSERT_EQ(2UL, def.bounded_seq_def.size());
+  ASSERT_EQ(3.0f, def.bounded_seq_def[0]);
+  ASSERT_EQ(4.0f, def.bounded_seq_def[1]);
+  ASSERT_EQ(0UL, def.bounded_seq.size());
+  ASSERT_EQ(0, def.bounded_alignment_check);
 }
 
 TEST(Test_msg_initialization, zero_constructor) {
@@ -148,6 +183,37 @@ TEST(Test_msg_initialization, zero_constructor) {
   ASSERT_EQ(0LL, primitives_def.int64_value);
   ASSERT_EQ(0ULL, primitives_def.uint64_value);
   ASSERT_EQ("", primitives_def.string_value);
+
+  rosidl_generator_cpp::msg::Various def(
+    rosidl_generator_cpp::MessageInitialization::ZERO);
+
+  ASSERT_EQ(0.0f, def.float32_value_def);
+  ASSERT_EQ(0.0, def.float64_value_def);
+  ASSERT_EQ(0ULL, def.uint64_value);
+  ASSERT_EQ("", def.string_value_def);
+  ASSERT_EQ(10UL, def.float32_arr.size());
+  for (const float value : def.float32_arr) {
+    ASSERT_EQ(0.0f, value);
+  }
+  ASSERT_EQ(0, def.array_alignment_check);
+  ASSERT_EQ(3UL, def.float64_arr_def.size());
+  for (const double value : def.float64_arr_def) {
+    ASSERT_EQ(0.0, value);
+  }
+  ASSERT_EQ(3UL, def.string_arr.size());
+  for (const std::string value : def.string_arr) {
+    ASSERT_EQ("", value);
+  }
+  ASSERT_EQ(3UL, def.string_arr_def.size());
+  for (const std::string value : def.string_arr_def) {
+    ASSERT_EQ("", value);
+  }
+  ASSERT_EQ(0UL, def.unbounded_seq_def.size());
+  ASSERT_EQ(0UL, def.unbounded_seq.size());
+  ASSERT_EQ(0, def.unbounded_alignment_check);
+  ASSERT_EQ(0UL, def.bounded_seq_def.size());
+  ASSERT_EQ(0UL, def.bounded_seq.size());
+  ASSERT_EQ(0, def.bounded_alignment_check);
 }
 
 TEST(Test_msg_initialization, defaults_only_constructor) {

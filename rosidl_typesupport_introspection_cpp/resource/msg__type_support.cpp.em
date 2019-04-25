@@ -163,7 +163,7 @@ for index, member in enumerate(message.structure.members):
     # void * default_value_
     print('    nullptr,  // default value')  # TODO default value to be set
 
-    function_suffix = ('%s__%s' % (message.structure.namespaced_type.name, member.name)) if isinstance(member.type, AbstractNestedType) and isinstance(member.type.value_type, NamespacedType) else None
+    function_suffix = ('%s__%s' % (message.structure.namespaced_type.name, member.name)) if isinstance(member.type, AbstractNestedType) and not is_vector_bool(member) else None
 
     # size_t(const void *) size_function
     print('    %s,  // size() function pointer' % ('size_function__%s' % function_suffix if function_suffix else 'nullptr'))

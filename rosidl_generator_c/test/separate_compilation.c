@@ -14,16 +14,25 @@
 
 #include "./separate_compilation.h"  // NOLINT
 
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "rosidl_generator_c/msg/nested__struct.h"
-#include "rosidl_generator_c/msg/nested__functions.h"
+#include "rosidl_generator_c/msg/primitives__struct.h"
+#include "rosidl_generator_c/msg/primitives__functions.h"
+#include "rosidl_generator_c/msg/unbounded_sequence_nested__struct.h"
+#include "rosidl_generator_c/msg/unbounded_sequence_nested__functions.h"
 #include "rosidl_generator_c/msg/various__struct.h"
 #include "rosidl_generator_c/msg/various__functions.h"
 #include "rosidl_generator_c/primitives_sequence_functions.h"
 #include "rosidl_generator_c/string_functions.h"
+
+int floateq(const double lhs, const double rhs)
+{
+  const double EPS = 0.001;
+  return fabs(lhs - rhs) < EPS;
+}
 
 int func()
 {
@@ -33,76 +42,81 @@ int func()
     return 1;
   }
 
-  if (msg->int8_value != -5) {
+  if (!floateq(msg->float64_value_def, 2.4)) {
     fprintf(stderr, "wrong default value\n");
     return 1;
   }
 
-  if (msg->up_to_three_int32_values.data) {
+  if (msg->bounded_seq.data) {
     fprintf(stderr, "wrong bounded array initialization\n");
     return 1;
   }
-  if (msg->up_to_three_int32_values.capacity) {
+  if (msg->bounded_seq.capacity) {
     fprintf(stderr, "wrong bounded array initialization\n");
     return 1;
   }
 
-  if (!msg->up_to_three_int32_values_with_default_values.data) {
+  if (!msg->bounded_seq_def.data) {
     fprintf(stderr, "wrong bounded array with default values initialization\n");
     return 1;
   }
-  if (msg->up_to_three_int32_values_with_default_values.capacity != 2) {
+  if (msg->bounded_seq_def.capacity != 2) {
     fprintf(stderr, "wrong bounded array with default values initialization\n");
     return 1;
   }
-  if (msg->up_to_three_int32_values_with_default_values.data[0] != 5) {
+  if (!floateq(msg->bounded_seq_def.data[0], 3.0)) {
     fprintf(stderr, "wrong default value of bounded array\n");
     return 1;
   }
-  if (msg->up_to_three_int32_values_with_default_values.data[1] != 23) {
+  if (!floateq(msg->bounded_seq_def.data[1], 4.0)) {
     fprintf(stderr, "wrong default value of bounded array\n");
     return 1;
   }
 
-  bool success = rosidl_generator_c__uint64__Sequence__init(&msg->unbounded_uint64_values, 5);
+  bool success = rosidl_generator_c__float32__Sequence__init(&msg->unbounded_seq, 5);
   if (!success) {
     fprintf(stderr, "failed to allocate primitive array\n");
     return 1;
   }
 
-  success = rosidl_generator_c__msg__Nested__Sequence__init(&msg->unbounded_nested, 10);
+  rosidl_generator_c__msg__UnboundedSequenceNested * msg_nested =
+    rosidl_generator_c__msg__UnboundedSequenceNested__create();
+  if (!msg_nested) {
+    fprintf(stderr, "failed to allocate nested message\n");
+    return 1;
+  }
+
+  success = rosidl_generator_c__msg__Primitives__Sequence__init(
+    &msg_nested->primitives_values, 10);
   if (!success) {
     fprintf(stderr, "failed to allocate sub message array\n");
     return 1;
   }
 
-  if (msg->unbounded_nested.data[9].two_primitives[1].uint8_value != 23) {
-    fprintf(stderr, "wrong nested default value\n");
-    return 1;
-  }
-
-  int cmp = strcmp(
-    msg->unbounded_nested.data[9].two_primitives[1].string_value_with_default.data, "default");
-  if (cmp != 0) {
-    fprintf(stderr, "wrong nested default string value\n");
-    return 1;
-  }
+  // TODO(jacobperron): Add test for nested values with defaults
+  // int cmp = strcmp(
+  //   msg->unbounded_nested.data[9].two_primitives[1].string_value_with_default.data, "default");
+  // if (cmp != 0) {
+  //   fprintf(stderr, "wrong nested default string value\n");
+  //   return 1;
+  // }
 
   success = rosidl_generator_c__String__assign(
-    &msg->unbounded_nested.data[9].two_primitives[0].string_value_with_default, "foo");
+    &msg_nested->primitives_values.data[9].string_value, "foo");
   if (!success) {
     fprintf(stderr, "failed to assign string\n");
     return 1;
   }
 
-  cmp = strcmp(
-    msg->unbounded_nested.data[9].two_primitives[0].string_value_with_default.data, "foo");
+  int cmp = strcmp(
+    msg_nested->primitives_values.data[9].string_value.data, "foo");
   if (cmp != 0) {
     fprintf(stderr, "assigned string has wrong value\n");
     return 1;
   }
 
   rosidl_generator_c__msg__Various__destroy(msg);
+  rosidl_generator_c__msg__UnboundedSequenceNested__destroy(msg_nested);
 
   return 0;
 }

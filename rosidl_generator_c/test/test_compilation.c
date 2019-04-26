@@ -15,8 +15,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "rosidl_generator_c/msg/various__struct.h"
-#include "rosidl_generator_c/msg/various__functions.h"
+#include "rosidl_generator_c/msg/primitives_constants__struct.h"
+#include "rosidl_generator_c/msg/primitives_constants__functions.h"
 
 #include "./separate_compilation.h"
 
@@ -25,12 +25,12 @@ int main(int argc, char ** argv)
   (void)argc;
   (void)argv;
 
-  if (!rosidl_generator_c__msg__Various__FOO) {
+  if (!rosidl_generator_c__msg__PrimitivesConstants__BOOL_CONST) {
     fprintf(stderr, "wrong boolean constant\n");
     return 1;
   }
 
-  if (rosidl_generator_c__msg__Various__BAZ != 42) {
+  if (rosidl_generator_c__msg__PrimitivesConstants__INT8_CONST != -50) {
     fprintf(stderr, "wrong integer constant\n");
     return 1;
   }

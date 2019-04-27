@@ -133,6 +133,17 @@ macro(rosidl_generate_interfaces target)
   # afterwards all remaining interface files are .idl files
   list(APPEND _idl_tuples ${_idl_adapter_tuples})
 
+  # to generate .action interfaces, we need to depend on "action_msgs"
+  foreach(_tuple ${_interface_tuples})
+    get_filename_component(_extension "${_tuple}" EXT)
+    if("${_extension}" STREQUAL ".action")
+      find_package(action_msgs REQUIRED)
+      list_append_unique(_ARG_DEPENDENCIES "action_msgs")
+      ament_export_dependencies(action_msgs)
+      break()
+    endif()
+  endforeach()
+
   # collect all interface files from dependencies
   set(_dep_files)
   foreach(_dep ${_ARG_DEPENDENCIES})

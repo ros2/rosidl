@@ -475,7 +475,7 @@ public:
     if (size() >= _UpperBound) {
       throw std::length_error("Exceeded upper bound");
     }
-    _Base::emplace(__position, std::forward<_Args>(__args) ...);
+    return _Base::emplace(__position, std::forward<_Args>(__args) ...);
   }
 
   /// Insert given value into %BoundedVector before specified iterator.

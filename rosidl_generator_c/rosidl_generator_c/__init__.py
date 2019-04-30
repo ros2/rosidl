@@ -138,14 +138,14 @@ def basic_value_to_c(type_, value):
     if 'boolean' == type_.typename:
         return 'true' if value else 'false'
 
-    if type_.typename in [
-        'short', 'unsigned short',
-        'char', 'wchar',
-        'double',
-        'octet',
-        'int8', 'uint8',
-        'int16', 'uint16',
-    ]:
+    if type_.typename in (
+        *CHARACTER_TYPES,
+        OCTET_TYPE,
+        'int8',
+        'uint8',
+        'int16',
+        'uint16',
+    ):
         return str(value)
 
     if type_.typename == 'int32':
@@ -158,7 +158,7 @@ def basic_value_to_c(type_, value):
         # Handle edge case for INT64_MIN
         # See https://en.cppreference.com/w/cpp/language/integer_literal
         if -9223372036854775808 == value:
-            return '({0} - 1)'.format(value + 1)
+            return '({0}ll - 1)'.format(value + 1)
         return '{value}ll'.format_map(locals())
 
     if type_.typename == 'uint64':

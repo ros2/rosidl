@@ -193,7 +193,7 @@ def primitive_value_to_cpp(type_, value):
         # Handle edge case for INT64_MIN
         # See https://en.cppreference.com/w/cpp/language/integer_literal
         if -9223372036854775808 == value:
-            return '(%s - 1)' % (value + 1)
+            return '(%sll - 1)' % (value + 1)
         return '%sll' % value
 
     if type_.typename == 'uint64':

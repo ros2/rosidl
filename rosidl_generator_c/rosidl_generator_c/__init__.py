@@ -24,8 +24,6 @@ from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import CHARACTER_TYPES
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import OCTET_TYPE
-from rosidl_parser.definition import SIGNED_INTEGER_TYPES
-from rosidl_parser.definition import UNSIGNED_INTEGER_TYPES
 
 
 def generate_c(generator_arguments_file):

@@ -55,6 +55,8 @@ MSG_TYPE_TO_CPP = {
     'int64': 'int64_t',
     'string': 'std::basic_string<char, std::char_traits<char>, ' +
               'typename ContainerAllocator::template rebind<char>::other>',
+    'wstring': 'std::basic_string<char16_t, std::char_traits<char16_t>, ' +
+               'typename ContainerAllocator::template rebind<char16_t>::other>',
 }
 
 
@@ -75,7 +77,7 @@ def msg_type_only_to_cpp(type_):
     elif isinstance(type_, AbstractString):
         cpp_type = MSG_TYPE_TO_CPP['string']
     elif isinstance(type_, AbstractWString):
-        assert False, 'TBD'
+        cpp_type = MSG_TYPE_TO_CPP['wstring']
     elif isinstance(type_, NamespacedType):
         typename = '::'.join(type_.namespaced_name())
         cpp_type = typename + '_<ContainerAllocator>'
@@ -167,8 +169,11 @@ def primitive_value_to_cpp(type_, value):
         "Could not convert non-primitive type '%s' to CPP" % (type_)
     assert value is not None, "Value for type '%s' must not be None" % (type_)
 
-    if isinstance(type_, AbstractGenericString):
+    if isinstance(type_, AbstractString):
         return '"%s"' % escape_string(value)
+
+    if isinstance(type_, AbstractWString):
+        return 'u"%s"' % escape_wstring(value)
 
     if type_.typename == 'boolean':
         return 'true' if value else 'false'
@@ -219,6 +224,10 @@ def escape_string(s):
     s = s.replace('\\', '\\\\')
     s = s.replace('"', '\\"')
     return s
+
+
+def escape_wstring(s):
+    return escape_string(s)
 
 
 def create_init_alloc_and_member_lists(message):

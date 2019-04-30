@@ -66,9 +66,10 @@ _ESCAPE_SEQUENCES: "\\n" | "\\t" | "\\v" | "\\b" | "\\r" | "\\f" | "\\a" | "\\\\
 
 // 7.2.6.3 String Literals
 // string_literal: "\"" CHAR* "\""
-// replace precise rule based on the spec with regex for parsing performance
+// wide_string_literal:  "L\"" CHAR* "\""
+// replace precise rules based on the spec with regex for parsing performance
 string_literal: "\"\"" | "\"" /(\\\"|[^"])+/ "\""
-wide_string_literal:  "L\"" CHAR* "\""
+wide_string_literal: "L\"\"" | "L\"" /(\\\"|[^"])+/ "\""
 
 // 7.2.6.4 Floating-point Literals
 floating_pt_literal: DIGIT+ floating_pt_literal_dot DIGIT+ floating_pt_literal_e DIGIT*

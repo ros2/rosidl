@@ -138,11 +138,31 @@ def basic_value_to_c(type_, value):
     if 'boolean' == type_.typename:
         return 'true' if value else 'false'
 
-    if type_.typename in (*SIGNED_INTEGER_TYPES, *CHARACTER_TYPES, OCTET_TYPE):
+    if type_.typename in (
+        *CHARACTER_TYPES,
+        OCTET_TYPE,
+        'int8',
+        'uint8',
+        'int16',
+        'uint16',
+    ):
         return str(value)
 
-    if type_.typename in UNSIGNED_INTEGER_TYPES:
-        return str(value) + 'u'
+    if type_.typename == 'int32':
+        return '{value}l'.format_map(locals())
+
+    if type_.typename == 'uint32':
+        return '{value}ul'.format_map(locals())
+
+    if type_.typename == 'int64':
+        # Handle edge case for INT64_MIN
+        # See https://en.cppreference.com/w/cpp/language/integer_literal
+        if -9223372036854775808 == value:
+            return '({0}ll - 1)'.format(value + 1)
+        return '{value}ll'.format_map(locals())
+
+    if type_.typename == 'uint64':
+        return '{value}ull'.format_map(locals())
 
     if 'float' == type_.typename:
         return '{value}f'.format_map(locals())

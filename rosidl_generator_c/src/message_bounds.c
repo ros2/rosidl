@@ -15,7 +15,6 @@
 #include "rosidl_generator_c/message_bounds_struct.h"
 
 #include <assert.h>
-#include <stdio.h>
 #include <string.h>
 
 const rosidl_message_bounds_t * get_message_bounds_handle(

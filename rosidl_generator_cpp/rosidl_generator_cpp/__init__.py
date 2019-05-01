@@ -184,6 +184,10 @@ def primitive_value_to_cpp(type_, value):
         return str(value)
 
     if type_.typename == 'int32':
+        # Handle edge case for INT32_MIN
+        # Specifically, MSVC is not happy in this case
+        if -2147483648 == value:
+            return '({0}l - 1)'.format(value + 1)
         return '%sl' % value
 
     if type_.typename == 'uint32':

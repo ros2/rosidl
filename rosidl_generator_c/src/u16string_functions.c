@@ -134,6 +134,10 @@ rosidl_generator_c__U16String__resize(
   if (!str) {
     return false;
   }
+  // check valid range of n before allocating n + 1 characters
+  if (n > SIZE_MAX / sizeof(uint16_t) - 1) {
+    return false;
+  }
   uint16_t * data = realloc(str->data, (n + 1) * sizeof(uint16_t));
   if (!data) {
     return false;

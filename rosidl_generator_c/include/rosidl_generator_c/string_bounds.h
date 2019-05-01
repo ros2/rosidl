@@ -25,4 +25,3 @@ typedef struct rosidl_generator_c__String__bounds
 } rosidl_generator_c__String__bounds;
 
 #endif  // ROSIDL_GENERATOR_C__STRING_BOUNDS_H_
-

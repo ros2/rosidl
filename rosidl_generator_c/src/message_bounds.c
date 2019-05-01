@@ -39,4 +39,3 @@ const rosidl_message_bounds_t * get_message_bound_handle_function(
   }
   return 0;
 }
-

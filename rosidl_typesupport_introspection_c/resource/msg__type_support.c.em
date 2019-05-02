@@ -235,8 +235,7 @@ for index, member in enumerate(message.structure.members):
 };
 
 static const rosidl_typesupport_introspection_c__MessageMembers @(function_prefix)__@(message.structure.namespaced_type.name)_message_members = {
-  "@(package_name)",  // package name
-  "@('__'.join(list(interface_path.parents[0].parts)))",  // message namespace
+  "@('__'.join([package_name] + list(interface_path.parents[0].parts)))",  // message namespace
   "@(message.structure.namespaced_type.name)",  // message name
   @(len(message.structure.members)),  // number of fields
   sizeof(@('__'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))),

@@ -350,6 +350,7 @@ int test_wstrings(void)
 
   res = rosidl_generator_c__U16String__assign(&wstrings->empty_wstring, TEST_WSTRING);
   EXPECT_EQ(true, res);
+  // TODO(dirk-thomas) to be reenabled with the fields in the message
   // EXPECT_EQ(0, strcmp(wstrings->empty_wstring.data, TEST_WSTRING));
   // EXPECT_EQ(0, strcmp(wstrings->def_wstring.data, "Hello world!"));
   // EXPECT_EQ(0, strcmp(wstrings->def_wstring2.data, "Hello'world!"));

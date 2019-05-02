@@ -49,6 +49,8 @@
 #include "rosidl_generator_cpp/msg/unbounded_array_static.hpp"
 #include "rosidl_generator_cpp/msg/unbounded_array_unbounded.hpp"
 
+#include "rosidl_generator_cpp/msg/w_string.hpp"
+
 #define PRIMITIVES_ARRAY_SIZE 10
 #define BOUNDED_STRING_LENGTH 10
 #define SUBMESSAGE_ARRAY_SIZE 3
@@ -136,6 +138,10 @@ TEST(Test_rosidl_generator_traits, has_fixed_size) {
     !rosidl_generator_traits::has_fixed_size<
       rosidl_generator_cpp::msg::UnboundedArrayUnbounded>::value,
     "UnboundedArrayUnbounded::has_fixed_size is true");
+
+  static_assert(
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::WString>::value,
+    "WString::has_fixed_size is true");
 }
 
 TEST(Test_rosidl_generator_traits, has_bounded_size) {
@@ -224,6 +230,10 @@ TEST(Test_rosidl_generator_traits, has_bounded_size) {
     !rosidl_generator_traits::has_bounded_size<
       rosidl_generator_cpp::msg::UnboundedArrayUnbounded>::value,
     "UnboundedArrayUnbounded::has_bounded_size is true");
+
+  static_assert(
+    !rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::WString>::value,
+    "WString::has_bounded_size is true");
 }
 
 #define TEST_PRIMITIVE_FIELD_ASSIGNMENT(Message, FieldName, InitialValue, FinalValue) \
@@ -237,6 +247,10 @@ TEST(Test_rosidl_generator_traits, has_bounded_size) {
   ASSERT_STREQ(InitialValue, Message.FieldName.c_str()); \
   Message.FieldName = FinalValue; \
   ASSERT_STREQ(FinalValue, Message.FieldName.c_str());
+
+#define TEST_WSTRING_FIELD_ASSIGNMENT(Message, FieldName, InitialValue, FinalValue) \
+  Message.FieldName = InitialValue; \
+  Message.FieldName = FinalValue;
 
 void test_message_primitives_static(rosidl_generator_cpp::msg::PrimitivesStatic message)
 {
@@ -599,6 +613,11 @@ TEST(Test_messages, DISABLED_Test_bounded_strings) {
 TEST(Test_messages, Test_string) {
   rosidl_generator_cpp::msg::String message;
   TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "", "Deep into")
+}
+
+TEST(Test_messages, Test_wstring) {
+  rosidl_generator_cpp::msg::WString message;
+  TEST_WSTRING_FIELD_ASSIGNMENT(message, wstring_value, u"", u"wstring_value_\u2122")
 }
 
 #define TEST_STATIC_ARRAY_STRING( \

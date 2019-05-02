@@ -50,7 +50,9 @@ if(BUILD_TESTING)
     "msg/UnboundedArrayUnbounded.msg"
 
     "msg/Various.msg"
-  )
+
+    "msg/WString.msg"
+    )
 
   set(srv_files
     "srv/ComplexTypeZeroFill.srv"

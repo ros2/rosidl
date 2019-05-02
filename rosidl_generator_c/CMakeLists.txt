@@ -88,6 +88,7 @@ if(BUILD_TESTING)
     "msg/Uint8.msg"
     "msg/Various.msg"
     "msg/Wire.msg"
+    "msg/WStrings.msg"
     "srv/AddTwoInts.srv"
   )
 

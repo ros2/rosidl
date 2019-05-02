@@ -29,7 +29,7 @@ def expand_template(template_name, data, output_file):
     elif output_file.parent:
         os.makedirs(str(output_file.parent), exist_ok=True)
 
-    output_file.write_text(content)
+    output_file.write_text(content, encoding='utf-8')
 
 
 _interpreter = None

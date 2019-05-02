@@ -23,6 +23,7 @@
 
 #include "rosidl_generator_c/primitives_sequence_functions.h"
 #include "rosidl_generator_c/string_functions.h"
+#include "rosidl_generator_c/u16string_functions.h"
 
 #include "rosidl_generator_c/msg/bool.h"
 #include "rosidl_generator_c/msg/bounded_array_nested.h"
@@ -56,6 +57,7 @@
 #include "rosidl_generator_c/msg/uint8.h"
 #include "rosidl_generator_c/msg/various.h"
 #include "rosidl_generator_c/msg/wire.h"
+#include "rosidl_generator_c/msg/w_strings.h"
 
 #define TEST_STRING \
   "Deep into that darkness peering, long I stood there wondering, fearing"
@@ -63,6 +65,8 @@
   "The quick brown fox jumps over the lazy dog."
 #define TEST_STRING3 \
   "PACK MY BOX WITH FIVE DOZEN LIQUOR JUGS."
+#define TEST_WSTRING \
+  u"Deep into that darkness peering, long I stood there wondering, fearing \u2122"
 #define ARRAY_SIZE 7
 
 #define STRINGIFY(x) _STRINGIFY(x)
@@ -333,6 +337,38 @@ int test_strings(void)
   return 0;
 }
 
+/**
+ * Test message with different wstring types.
+ */
+int test_wstrings(void)
+{
+  bool res = false;
+  rosidl_generator_c__msg__WStrings * wstrings = NULL;
+
+  wstrings = rosidl_generator_c__msg__WStrings__create();
+  EXPECT_NE(wstrings, NULL);
+
+  res = rosidl_generator_c__U16String__assign(&wstrings->empty_wstring, TEST_WSTRING);
+  EXPECT_EQ(true, res);
+  // TODO(dirk-thomas) to be reenabled with the fields in the message
+  // EXPECT_EQ(0, strcmp(wstrings->empty_wstring.data, TEST_WSTRING));
+  // EXPECT_EQ(0, strcmp(wstrings->def_wstring.data, "Hello world!"));
+  // EXPECT_EQ(0, strcmp(wstrings->def_wstring2.data, "Hello'world!"));
+  // EXPECT_EQ(0, strcmp(wstrings->def_wstring3.data, "Hello\"world!"));
+  // EXPECT_EQ(0, strcmp(wstrings->def_wstring4.data, "Hello'world!"));
+  // EXPECT_EQ(0, strcmp(wstrings->def_wstring5.data, "Hello\"world!"));
+  // since upper-bound checking is not implemented yet, we restrict the string copying
+  // TODO(mikaelarguedas) Test string length properly instead of cheating copy
+  // res = rosidl_generator_c__String__assign(&wstrings->ub_wstring, TEST_WSTRING);
+  res = rosidl_generator_c__U16String__assignn(&wstrings->ub_wstring, TEST_WSTRING, 24);
+  EXPECT_EQ(true, res);
+  // EXPECT_EQ(0, strcmp(wstrings->ub_wstring.data, "Deep into that darknes"));
+  // EXPECT_EQ(0, strcmp(wstrings->ub_def_wstring.data, "Upper bounded string."));
+
+  rosidl_generator_c__msg__WStrings__destroy(wstrings);
+
+  return 0;
+}
 
 /**
  * Test message with different string array types.

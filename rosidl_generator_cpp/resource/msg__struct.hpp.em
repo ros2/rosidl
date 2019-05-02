@@ -13,10 +13,12 @@
 @{
 from rosidl_generator_cpp import create_init_alloc_and_member_lists
 from rosidl_generator_cpp import escape_string
+from rosidl_generator_cpp import escape_wstring
 from rosidl_generator_cpp import msg_type_to_cpp
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
-from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractNestedType
+from rosidl_parser.definition import AbstractString
+from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import ACTION_FEEDBACK_SUFFIX
 from rosidl_parser.definition import ACTION_GOAL_SUFFIX
 from rosidl_parser.definition import ACTION_RESULT_SUFFIX
@@ -258,8 +260,10 @@ non_defaulted_zero_initialized_members = [
 
   // constant declarations
 @[for constant in message.constants]@
-@[ if isinstance(constant.type, AbstractGenericString)]@
+@[ if isinstance(constant.type, AbstractString)]@
   static const @(MSG_TYPE_TO_CPP['string']) @(constant.name);
+@[ elif isinstance(constant.type, AbstractWString)]@
+  static const @(MSG_TYPE_TO_CPP['wstring']) @(constant.name);
 @[ else]@
   static constexpr @(MSG_TYPE_TO_CPP[constant.type.typename]) @(constant.name) =
 @[  if isinstance(constant.type, BasicType) and constant.type.typename in (*INTEGER_TYPES, *CHARACTER_TYPES, BOOLEAN_TYPE, OCTET_TYPE)]@
@@ -335,10 +339,14 @@ using @(message.structure.namespaced_type.name) =
 
 // constant definitions
 @[for c in message.constants]@
-@[ if isinstance(c.type, AbstractGenericString)]@
+@[ if isinstance(c.type, AbstractString)]@
 template<typename ContainerAllocator>
 const @(MSG_TYPE_TO_CPP['string'])
 @(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name) = "@(escape_string(c.value))";
+@[ elif isinstance(c.type, AbstractWString)]@
+template<typename ContainerAllocator>
+const @(MSG_TYPE_TO_CPP['wstring'])
+@(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name) = u"@(escape_wstring(c.value))";
 @[ else ]@
 template<typename ContainerAllocator>
 constexpr @(MSG_TYPE_TO_CPP[c.type.typename]) @(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name);

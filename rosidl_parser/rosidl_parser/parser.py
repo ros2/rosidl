@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import codecs
 import os
+import re
 import sys
 
 from lark import Lark
@@ -57,7 +59,7 @@ _parser = None
 
 
 def parse_idl_file(locator, png_file=None):
-    string = locator.get_absolute_path().read_text()
+    string = locator.get_absolute_path().read_text(encoding='utf-8')
     try:
         content = parse_idl_string(string, png_file=png_file)
     except Exception as e:
@@ -556,7 +558,11 @@ def get_const_expr_value(const_expr):
 
     if child.data == 'string_literal':
         assert not negate_value
-        return get_string_literal_value(child)
+        return get_string_literal_value(child, allow_unicode=False)
+
+    if child.data == 'wide_string_literal':
+        assert not negate_value
+        return get_string_literal_value(child, allow_unicode=True)
 
     assert False, 'Unsupported tree: ' + str(const_expr)
 
@@ -582,11 +588,14 @@ def get_floating_pt_literal_value(floating_pt_literal):
     return float(value)
 
 
-def get_string_literal_value(string_literal):
+def get_string_literal_value(string_literal, *, allow_unicode=False):
     assert len(string_literal.children) == 1
     child = string_literal.children[0]
     assert isinstance(child, Token)
     value = child.value
+
+    regex = _get_escape_sequences_regex(allow_unicode=allow_unicode)
+    value = regex.sub(_decode_escape_sequence, value)
     # unescape double quote and backslash if preceeded by a backslash
     i = 0
     while i < len(value):
@@ -595,3 +604,25 @@ def get_string_literal_value(string_literal):
                 value = value[:i] + value[i + 1:]
         i += 1
     return value
+
+
+def _get_escape_sequences_regex(*, allow_unicode):
+    # IDL Table 7-9: Escape sequences
+    pattern = '('
+    # newline, horizontal tab, vertical tab, backspace, carriage return,
+    # form feed, alert, backslash, question mark, single quote, double quote
+    pattern += '\\[ntvbrfa\\?\'"]'
+    # octal number
+    pattern += '|' + '\\[0-7]{1,3}'
+    # hexadecimal number
+    pattern += '|' + r'\\x.{1,2}'
+    if allow_unicode:
+        # unicode character
+        pattern += '|' + '\\u.{1,4}'
+    pattern += ')'
+
+    return re.compile(pattern)
+
+
+def _decode_escape_sequence(match):
+    return codecs.decode(match.group(0), 'unicode-escape')

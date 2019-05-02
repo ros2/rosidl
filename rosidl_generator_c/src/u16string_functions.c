@@ -95,6 +95,18 @@ rosidl_generator_c__U16String__assignn(
 }
 
 bool
+rosidl_generator_c__U16String__assignn_from_char(
+  rosidl_generator_c__U16String * str, const char * value, size_t n)
+{
+  // since n represents the number of 8-bit characters it must be an even number
+  if (n % 2 != 0) {
+    return false;
+  }
+  return rosidl_generator_c__U16String__assignn(
+    str, (const uint16_t *)value, n / 2);
+}
+
+bool
 rosidl_generator_c__U16String__assign(
   rosidl_generator_c__U16String * str, const uint16_t * value)
 {
@@ -113,6 +125,28 @@ rosidl_generator_c__U16String__len(const uint16_t * value)
     len++;
   }
   return len;
+}
+
+bool
+rosidl_generator_c__U16String__resize(
+  rosidl_generator_c__U16String * str, size_t n)
+{
+  if (!str) {
+    return false;
+  }
+  // check valid range of n before allocating n + 1 characters
+  if (n > SIZE_MAX / sizeof(uint16_t) - 1) {
+    return false;
+  }
+  uint16_t * data = realloc(str->data, (n + 1) * sizeof(uint16_t));
+  if (!data) {
+    return false;
+  }
+  data[n] = 0;
+  str->data = data;
+  str->size = n;
+  str->capacity = n + 1;
+  return true;
 }
 
 bool

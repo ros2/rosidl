@@ -51,7 +51,7 @@ PRIMITIVE_TYPES = [
     'int64',
     'uint64',
     'string',
-    # TODO reconsider wstring / u16string / u32string
+    'wstring',
     # TODO duration and time
     'duration',  # for compatibility only
     'time',  # for compatibility only
@@ -157,9 +157,12 @@ class BaseType:
             self.type = type_string
             self.string_upper_bound = None
 
-        elif type_string.startswith('string%s' % STRING_UPPER_BOUND_TOKEN):
+        elif (
+            type_string.startswith('string%s' % STRING_UPPER_BOUND_TOKEN) or
+            type_string.startswith('wstring%s' % STRING_UPPER_BOUND_TOKEN)
+        ):
             self.pkg_name = None
-            self.type = 'string'
+            self.type = type_string.split(STRING_UPPER_BOUND_TOKEN, 1)[0]
             upper_bound_string = type_string[len(self.type) +
                                              len(STRING_UPPER_BOUND_TOKEN):]
 
@@ -321,7 +324,7 @@ class Constant:
 
     def __str__(self):
         value = self.value
-        if self.type == 'string':
+        if self.type in ('string', 'wstring'):
             value = "'%s'" % value
         return '%s %s=%s' % (self.type, self.name, value)
 
@@ -356,7 +359,7 @@ class Field:
         s = '%s %s' % (str(self.type), self.name)
         if self.default_value is not None:
             if self.type.is_primitive_type() and not self.type.is_array and \
-                    self.type.type == 'string':
+                    self.type.type in ('string', 'wstring'):
                 s += " '%s'" % self.default_value
             else:
                 s += ' %s' % self.default_value
@@ -571,7 +574,7 @@ def parse_value_string(type_, value_string):
                 "array value must start with '[' and end with ']'")
         elements_string = value_string[1:-1]
 
-        if type_.type == 'string':
+        if type_.type in ('string', 'wstring'):
             # String arrays need special processing as the comma can be part of a quoted string
             # and not a separator of array elements
             value_strings = parse_string_array_value_string(elements_string, type_.array_size)
@@ -725,7 +728,7 @@ def parse_primitive_value_string(type_, value_string):
 
         return value
 
-    if primitive_type == 'string':
+    if primitive_type in ('string', 'wstring'):
         # remove outer quotes to allow leading / trailing spaces in the string
         for quote in ['"', "'"]:
             if value_string.startswith(quote) and value_string.endswith(quote):

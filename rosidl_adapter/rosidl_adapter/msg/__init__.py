@@ -55,6 +55,7 @@ MSG_TYPE_TO_IDL = {
     'float32': 'float',
     'float64': 'double',
     'string': 'string',
+    'wstring': 'wstring',
 }
 
 
@@ -69,6 +70,8 @@ def to_idl_literal(idl_type, value):
         return 'TRUE' if value else 'FALSE'
     if idl_type.startswith('string'):
         return string_to_idl_string_literal(value)
+    if idl_type.startswith('wstring'):
+        return string_to_idl_wstring_literal(value)
     return value
 
 
@@ -77,6 +80,10 @@ def string_to_idl_string_literal(string):
     estr = string.encode().decode('unicode_escape')
     estr = estr.replace('"', r'\"')
     return '"{0}"'.format(estr)
+
+
+def string_to_idl_wstring_literal(string):
+    return string_to_idl_string_literal(string)
 
 
 def get_include_file(base_type):
@@ -90,7 +97,10 @@ def get_idl_type(type_):
         identifier = MSG_TYPE_TO_IDL[type_]
     elif type_.is_primitive_type():
         identifier = MSG_TYPE_TO_IDL[type_.type]
-        if identifier == 'string' and type_.string_upper_bound is not None:
+        if (
+            identifier in ('string', 'wstring') and
+            type_.string_upper_bound is not None
+        ):
             identifier += '<{type_.string_upper_bound}>'.format_map(locals())
     else:
         identifier = '{type_.pkg_name}::msg::{type_.type}' \

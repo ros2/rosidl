@@ -9,6 +9,7 @@ module rosidl_parser {
       const float FLOAT_CONSTANT = 1.25;
       const boolean BOOLEAN_CONSTANT = TRUE;
       const string STRING_CONSTANT = "string_value";
+      const wstring WSTRING_CONSTANT = "wstring_value_\u2122";
     };
 
     @verbatim ( language="comment", text="Documentation of MyMessage." )

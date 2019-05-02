@@ -126,6 +126,9 @@ def value_to_c(type_, value):
     if isinstance(type_, AbstractString):
         return '"%s"' % escape_string(value)
 
+    if isinstance(type_, AbstractWString):
+        return 'u"%s"' % escape_wstring(value)
+
     return basic_value_to_c(type_, value)
 
 
@@ -179,3 +182,7 @@ def escape_string(s):
     s = s.replace('\\', '\\\\')
     s = s.replace('"', r'\"')
     return s
+
+
+def escape_wstring(s):
+    return escape_string(s)

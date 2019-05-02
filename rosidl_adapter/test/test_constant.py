@@ -42,3 +42,4 @@ def test_constant_methods():
     assert str(Constant('bool', 'FOO', '1')) == 'bool FOO=True'
 
     assert str(Constant('string', 'FOO', 'foo')) == "string FOO='foo'"
+    assert str(Constant('wstring', 'FOO', 'foo')) == "wstring FOO='foo'"

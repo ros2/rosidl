@@ -33,22 +33,25 @@ def test_base_type_constructor():
         'uint32',
         'int64',
         'uint64',
-        'string']
+        'string',
+        'wstring',
+    ]
     for primitive_type in primitive_types:
         base_type = BaseType(primitive_type)
         assert base_type.pkg_name is None
         assert base_type.type == primitive_type
         assert base_type.string_upper_bound is None
 
-    base_type = BaseType('string<=23')
-    assert base_type.pkg_name is None
-    assert base_type.type == 'string'
-    assert base_type.string_upper_bound == 23
+    for string_type in ('string', 'wstring'):
+        base_type = BaseType('%s<=23' % string_type)
+        assert base_type.pkg_name is None
+        assert base_type.type == string_type
+        assert base_type.string_upper_bound == 23
 
-    with pytest.raises(TypeError):
-        BaseType('string<=upperbound')
-    with pytest.raises(TypeError):
-        BaseType('string<=0')
+        with pytest.raises(TypeError):
+            BaseType('%s<=upperbound' % string_type)
+        with pytest.raises(TypeError):
+            BaseType('%s<=0' % string_type)
 
     base_type = BaseType('pkg/Msg')
     assert base_type.pkg_name == 'pkg'
@@ -84,3 +87,4 @@ def test_base_type_methods():
     assert str(BaseType('pkg/Foo')) == 'pkg/Foo'
     assert str(BaseType('bool')) == 'bool'
     assert str(BaseType('string<=5')) == 'string<=5'
+    assert str(BaseType('wstring<=5')) == 'wstring<=5'

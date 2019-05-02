@@ -47,12 +47,22 @@ rosidl_generator_c__U16String__assignn(
 
 ROSIDL_GENERATOR_C_PUBLIC
 bool
+rosidl_generator_c__U16String__assignn_from_char(
+  rosidl_generator_c__U16String * str, const char * value, size_t n);
+
+ROSIDL_GENERATOR_C_PUBLIC
+bool
 rosidl_generator_c__U16String__assign(
   rosidl_generator_c__U16String * str, const uint16_t * value);
 
 ROSIDL_GENERATOR_C_PUBLIC
 size_t
 rosidl_generator_c__U16String__len(const uint16_t * value);
+
+ROSIDL_GENERATOR_C_PUBLIC
+bool
+rosidl_generator_c__U16String__resize(
+  rosidl_generator_c__U16String * str, size_t n);
 
 ROSIDL_GENERATOR_C_PUBLIC
 bool

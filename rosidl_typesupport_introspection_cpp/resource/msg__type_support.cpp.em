@@ -65,7 +65,7 @@ if isinstance(member.type.value_type, BasicType):
 elif isinstance(member.type.value_type, AbstractString):
     type_ = 'std::string'
 elif isinstance(member.type.value_type, AbstractWString):
-    assert False, 'Unknown type: ' + str(member.type.value_type)
+    type_ = 'std::u16string'
 elif isinstance(member.type.value_type, NamespacedType):
     type_ = '::'.join(member.type.value_type.namespaced_name())
 }@

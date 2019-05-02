@@ -59,7 +59,7 @@ _parser = None
 
 
 def parse_idl_file(locator, png_file=None):
-    string = locator.get_absolute_path().read_text()
+    string = locator.get_absolute_path().read_text(encoding='utf-8')
     try:
         content = parse_idl_string(string, png_file=png_file)
     except Exception as e:

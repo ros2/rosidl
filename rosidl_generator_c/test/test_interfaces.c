@@ -369,7 +369,7 @@ int test_wstrings(void)
   return 0;
 }
 
- /**
+/**
  * Test message with different string array types.
  */
 int test_string_arrays(void)

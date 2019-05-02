@@ -52,7 +52,7 @@ if(BUILD_TESTING)
     "msg/Various.msg"
 
     "msg/WString.msg"
-    )
+  )
 
   set(srv_files
     "srv/ComplexTypeZeroFill.srv"

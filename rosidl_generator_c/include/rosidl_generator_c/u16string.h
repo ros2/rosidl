@@ -22,7 +22,8 @@
 /// U16String struct
 typedef struct rosidl_generator_c__U16String
 {
-  uint16_t * data;
+  /// The pointer to the first character.
+  uint_least16_t * data;  // using uint_least16_t to match a C++ std::u16string
   /// The length of the u16string (excluding the null byte).
   size_t size;
   /// The capacity represents the number of allocated characters (including the null byte).

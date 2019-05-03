@@ -74,6 +74,6 @@ idl_type = get_idl_type_identifier(idl_type)
       @(idl_type) @(field.name);
 @[  end for]@
 @[else]@
-      boolean structure_needs_at_least_one_member;
+      uint8 structure_needs_at_least_one_member;
 @[end if]@
     };

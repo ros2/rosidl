@@ -23,7 +23,7 @@ def expand_template(template_name, data, output_file):
     content = evaluate_template(template_name, data)
 
     if output_file.exists():
-        existing_content = output_file.read_text()
+        existing_content = output_file.read_text(encoding='utf-8')
         if existing_content == content:
             return
     elif output_file.parent:

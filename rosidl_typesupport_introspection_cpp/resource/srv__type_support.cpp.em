@@ -52,7 +52,7 @@ namespace rosidl_typesupport_introspection_cpp
 
 // this is intentionally not const to allow initialization later to prevent an initialization race
 static ::rosidl_typesupport_introspection_cpp::ServiceMembers @(service.namespaced_type.name)_service_members = {
-  "@(package_name)",  // package name
+  "@('::'.join([package_name] + list(interface_path.parents[0].parts)))",  // service namespace
   "@(service.namespaced_type.name)",  // service name
   // these two fields are initialized below on the first access
   // see get_service_type_support_handle<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [service.namespaced_type.name]))>()

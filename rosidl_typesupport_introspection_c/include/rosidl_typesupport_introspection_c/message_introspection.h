@@ -42,7 +42,7 @@ typedef struct rosidl_typesupport_introspection_c__MessageMember
 
 typedef struct rosidl_typesupport_introspection_c__MessageMembers
 {
-  const char * package_name_;
+  const char * message_namespace_;
   const char * message_name_;
   uint32_t member_count_;
   size_t size_of_;

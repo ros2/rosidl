@@ -25,7 +25,7 @@
 
 typedef struct rosidl_typesupport_introspection_c__ServiceMembers
 {
-  const char * package_name_;
+  const char * service_namespace_;
   const char * service_name_;
   const rosidl_typesupport_introspection_c__MessageMembers * request_members_;
   const rosidl_typesupport_introspection_c__MessageMembers * response_members_;

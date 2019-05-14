@@ -172,7 +172,7 @@ for index, member in enumerate(message.structure.members):
     # void *(void *, size_t) get_function
     print('    %s,  // get(index) function pointer' % ('get_function__%s' % function_suffix if function_suffix else 'nullptr'))
     # void(void *, size_t) resize_function
-    print('    %s  // resize(index) function pointer' % ('resize_function__%s' % function_suffix if function_suffix and isinstance(member.type.value_type, AbstractSequence) else 'NULL'))
+    print('    %s  // resize(index) function pointer' % ('resize_function__%s' % function_suffix if function_suffix and isinstance(member.type, AbstractSequence) else 'NULL'))
 
     if index < len(message.structure.members) - 1:
         print('  },')

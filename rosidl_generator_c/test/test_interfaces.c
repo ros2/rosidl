@@ -378,6 +378,8 @@ int test_string_arrays(void)
   bool res = false;
   rosidl_generator_c__msg__StringArrays * strings = rosidl_generator_c__msg__StringArrays__create();
 
+  EXPECT_NE(strings, NULL);
+
   rosidl_generator_c__String__Sequence__init(&strings->string_dynamic_array_value, 3);
   res = rosidl_generator_c__String__assign(
     &strings->string_dynamic_array_value.data[0], TEST_STRING);

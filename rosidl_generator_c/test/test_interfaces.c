@@ -378,8 +378,7 @@ int test_string_arrays(void)
   bool res = false;
   rosidl_generator_c__msg__StringArrays * strings = rosidl_generator_c__msg__StringArrays__create();
 
-  res = rosidl_generator_c__msg__StringArrays__init(strings);
-  EXPECT_EQ(res, true);
+  EXPECT_NE(strings, NULL);
 
   rosidl_generator_c__String__Sequence__init(&strings->string_dynamic_array_value, 3);
   res = rosidl_generator_c__String__assign(
@@ -448,9 +447,6 @@ int test_string_arrays_default_value(void)
   string_arrays = rosidl_generator_c__msg__StringArrays__create();
 
   EXPECT_NE(string_arrays, NULL);
-
-  bool res = rosidl_generator_c__msg__StringArrays__init(string_arrays);
-  EXPECT_EQ(true, res);
 
   EXPECT_EQ(0, strcmp(string_arrays->def_string_static_array_value[0].data, "Hello"));
   EXPECT_EQ(0, strcmp(string_arrays->def_string_static_array_value[1].data, "World"));

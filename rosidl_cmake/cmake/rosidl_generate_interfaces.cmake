@@ -138,7 +138,12 @@ macro(rosidl_generate_interfaces target)
     string(REGEX REPLACE ".*:([^:]*)$" "\\1" _tuple_file "${_tuple}")
     get_filename_component(_parent_dir "${_tuple_file}" DIRECTORY)
     if("${_parent_dir}" STREQUAL "action")
-      find_package(action_msgs REQUIRED)
+      find_package(action_msgs QUIET)
+      if(NOT ${action_msgs_FOUND})
+        message(FATAL_ERROR "Unable to generate action interface for '${_tuple_file}'. "
+          "In order to generate action interfaces, you must add a build dependency to 'action_msgs' "
+          "in your package.xml.")
+      endif()
       list_append_unique(_ARG_DEPENDENCIES "action_msgs")
       ament_export_dependencies(action_msgs)
       break()

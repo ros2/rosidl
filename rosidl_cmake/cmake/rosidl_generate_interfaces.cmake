@@ -21,10 +21,14 @@
 #   specific generators might use the _name as a prefix for their own
 #   generation step
 # :type target: string
-# :param ARGN: the interface file containing message and service definitions
-#   where each value might be either a path relative to the
+# :param ARGN: the interface file containing message, service, and action
+#   definitions where each value might be either a path relative to the
 #   CMAKE_CURRENT_SOURCE_DIR or a tuple separated by a colon with an absolute
 #   base path and a path relative to that base path.
+#   If the interface file's parent directory is 'action', is is assumed to be
+#   an action definition.
+#   If an action interface is passed then you must add a depend tag for
+#   'action_msgs' to your package.xml, otherwise this macro will error.
 #   For backward compatibility if an interface file doesn't end in ``.idl`` it
 #   is being passed to ``rosidl_adapter`` (if available) to be transformed into
 #   an ``.idl`` file.
@@ -141,7 +145,7 @@ macro(rosidl_generate_interfaces target)
       find_package(action_msgs QUIET)
       if(NOT ${action_msgs_FOUND})
         message(FATAL_ERROR "Unable to generate action interface for '${_tuple_file}'. "
-          "In order to generate action interfaces, you must add a build dependency to 'action_msgs' "
+          "In order to generate action interfaces you must add a depend tag for 'action_msgs' "
           "in your package.xml.")
       endif()
       list_append_unique(_ARG_DEPENDENCIES "action_msgs")

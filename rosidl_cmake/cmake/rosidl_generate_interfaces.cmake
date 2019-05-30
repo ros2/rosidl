@@ -144,9 +144,10 @@ macro(rosidl_generate_interfaces target)
     if("${_parent_dir}" STREQUAL "action")
       find_package(action_msgs QUIET)
       if(NOT ${action_msgs_FOUND})
-        message(FATAL_ERROR "Unable to generate action interface for '${_tuple_file}'. "
-          "In order to generate action interfaces you must add a depend tag for 'action_msgs' "
-          "in your package.xml.")
+        message(FATAL_ERROR
+          "Unable to generate action interface for '${_tuple_file}'. "
+          "In order to generate action interfaces you must add a depend tag "
+          "for 'action_msgs' in your package.xml.")
       endif()
       list_append_unique(_ARG_DEPENDENCIES "action_msgs")
       ament_export_dependencies(action_msgs)

@@ -181,7 +181,7 @@ for index, member in enumerate(message.structure.members):
     print('    "%s",  // name' % member.name)
     if isinstance(type_, BasicType):
         # uint8_t type_id_
-        print('    rosidl_typesupport_introspection_c__ROS_TYPE_%s,  // type' % type_.typename.upper())
+        print('    rosidl_typesupport_introspection_c__ROS_TYPE_%s,  // type' % type_.typename.replace(' ', '_').upper())
         # size_t string_upper_bound
         print('    0,  // upper bound of string')
         # const rosidl_generator_c::MessageTypeSupportHandle * members_

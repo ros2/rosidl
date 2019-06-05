@@ -181,7 +181,7 @@ def primitive_value_to_cpp(type_, value):
     if type_.typename in [
         'short', 'unsigned short',
         'char', 'wchar',
-        'double',
+        'double', 'long double',
         'octet',
         'int8', 'uint8',
         'int16', 'uint16',

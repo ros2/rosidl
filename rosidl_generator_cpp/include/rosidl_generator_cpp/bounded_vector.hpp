@@ -207,8 +207,18 @@ public:
   BoundedVector &
   operator=(const BoundedVector & __x)
   {
-    reinterpret_cast<std::vector<_Tp, _Alloc> *>(this)->operator=(
-      *reinterpret_cast<const std::vector<_Tp, _Alloc> *>(&__x));
+    (void)_Base::operator=(__x);
+    return *this;
+  }
+
+  /// %BoundedVector move assignment operator
+  /**
+   * \param __x A %BoundedVector of identical element and allocator types.
+   */
+  BoundedVector &
+  operator=(BoundedVector && __x)
+  {
+    (void)_Base::operator=(std::forward<_Base &&>(__x));
     return *this;
   }
 
@@ -454,6 +464,27 @@ public:
     _Base::push_back(__x);
   }
 
+  /// Add data to the end of the %BoundedVector.
+  /**
+   * This is a typical stack operation.
+   * The function creates an element at the end of the %BoundedVector
+   * and assigns the given data to it.
+   * Due to the nature of a %BoundedVector this operation can be done in
+   * constant time if the %BoundedVector has preallocated space
+   * available.
+   *
+   * \param args Arguments to be forwarded to the constructor of _Tp
+   */
+  template<typename ... Args>
+  auto
+  emplace_back(Args && ... args)
+  {
+    if (size() >= _UpperBound) {
+      throw std::length_error("Exceeded upper bound");
+    }
+    return _Base::emplace_back(std::forward<Args>(args)...);
+  }
+
   /// Insert an object in %BoundedVector before specified iterator.
   /**
    * This function will insert an object of type T constructed with
@@ -607,6 +638,13 @@ public:
   using _Base::erase;
   using _Base::pop_back;
   using _Base::clear;
+
+private:
+  /// Cast to base type, to make it easier to dispatch to base implementations
+  operator _Base &()
+  {
+    return *this;
+  }
 };
 
 /// Vector equality comparison.

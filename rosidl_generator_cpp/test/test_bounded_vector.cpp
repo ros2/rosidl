@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <gtest/gtest.h>
+#include <utility>
 
 #include "rosidl_generator_cpp/bounded_vector.hpp"
 
@@ -31,4 +32,21 @@ TEST(rosidl_generator_cpp, bounded_vector) {
   ASSERT_EQ(v.size(), 2u);
   auto l = {1, 2, 3};
   ASSERT_THROW(v = l, std::length_error);
+}
+
+TEST(rosidl_generator_cpp, bounded_vector_rvalue) {
+  rosidl_generator_cpp::BoundedVector<int, 2> v;
+  // emplace back
+  ASSERT_EQ(v.size(), 0u);
+  ASSERT_EQ(v.max_size(), 2u);
+  v.emplace_back(1);
+  v.emplace_back(2);
+  ASSERT_THROW(v.emplace_back(3), std::length_error);
+  ASSERT_EQ(v.size(), 2u);
+  // move assignment
+  decltype(v) vv;
+  vv = std::move(v);
+  ASSERT_EQ(vv.size(), 2u);
+  ASSERT_EQ(vv[0], 1);
+  ASSERT_EQ(vv[1], 2);
 }

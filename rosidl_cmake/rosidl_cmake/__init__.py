@@ -160,7 +160,7 @@ def expand_template(
     if os.path.exists(output_file):
         timestamp = os.path.getmtime(output_file)
         if minimum_timestamp is None or timestamp > minimum_timestamp:
-            with open(output_file, 'r') as h:
+            with open(output_file, 'r', encoding='utf-8') as h:
                 if h.read() == content:
                     return
     else:
@@ -170,7 +170,7 @@ def expand_template(
         except FileExistsError:
             pass
 
-    with open(output_file, 'w') as h:
+    with open(output_file, 'w', encoding='utf-8') as h:
         h.write(content)
 
 

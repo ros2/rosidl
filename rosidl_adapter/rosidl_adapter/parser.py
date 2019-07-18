@@ -427,7 +427,7 @@ class MessageSpecification:
 def parse_message_file(pkg_name, interface_filename):
     basename = os.path.basename(interface_filename)
     msg_name = os.path.splitext(basename)[0]
-    with open(interface_filename, 'r') as h:
+    with open(interface_filename, 'r', encoding='utf-8') as h:
         return parse_message_string(
             pkg_name, msg_name, h.read())
 
@@ -803,7 +803,7 @@ class ServiceSpecification:
 def parse_service_file(pkg_name, interface_filename):
     basename = os.path.basename(interface_filename)
     srv_name = os.path.splitext(basename)[0]
-    with open(interface_filename, 'r') as h:
+    with open(interface_filename, 'r', encoding='utf-8') as h:
         return parse_service_string(
             pkg_name, srv_name, h.read())
 
@@ -848,7 +848,7 @@ class ActionSpecification:
 def parse_action_file(pkg_name, interface_filename):
     basename = os.path.basename(interface_filename)
     action_name = os.path.splitext(basename)[0]
-    with open(interface_filename, 'r') as h:
+    with open(interface_filename, 'r', encoding='utf-8') as h:
         return parse_action_string(pkg_name, action_name, h.read())
 
 

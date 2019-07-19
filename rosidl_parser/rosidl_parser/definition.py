@@ -85,6 +85,8 @@ BASIC_TYPES = (
     OCTET_TYPE,
 )
 
+EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME = 'structure_needs_at_least_one_member'
+
 CONSTANT_MODULE_SUFFIX = '_Constants'
 
 SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'

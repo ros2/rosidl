@@ -55,7 +55,7 @@ def test_parse_message_string():
         parse_message_string('pkg', 'Foo', 'bool[max]] foo')
     with pytest.raises(ValueError) as e:
         parse_message_string('pkg', 'Foo', 'bool foo\nbool foo')
-    assert 'foo' in str(e)
+    assert 'foo' in str(e.value)
 
     msg_spec = parse_message_string('pkg', 'Foo', 'bool FOO=1')
     assert len(msg_spec.fields) == 0
@@ -70,4 +70,4 @@ def test_parse_message_string():
         parse_message_string('pkg', 'Foo', 'bool foo=1')
     with pytest.raises(ValueError) as e:
         parse_message_string('pkg', 'Foo', 'bool FOO=1\nbool FOO=1')
-    assert 'FOO' in str(e)
+    assert 'FOO' in str(e.value)

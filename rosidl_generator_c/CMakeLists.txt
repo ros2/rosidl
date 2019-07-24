@@ -94,6 +94,7 @@ if(BUILD_TESTING)
   )
 
   include(cmake/register_c.cmake)
+  set(rosidl_generator_c_FOUND "1")
   set(rosidl_generator_c_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
   set(rosidl_generator_c_LIBRARIES "${PROJECT_NAME}")
 

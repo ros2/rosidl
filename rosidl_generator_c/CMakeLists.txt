@@ -94,6 +94,8 @@ if(BUILD_TESTING)
   )
 
   include(cmake/register_c.cmake)
+  # Trick ament_target_dependencies() into thinking this package has been found
+  set(rosidl_generator_c_FOUND "1")
   set(rosidl_generator_c_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
   set(rosidl_generator_c_LIBRARIES "${PROJECT_NAME}")
 

@@ -34,7 +34,20 @@ def generate_c(generator_arguments_file):
         'idl__struct.h.em': '%s__struct.h',
         'idl__type_support.h.em': '%s__type_support.h',
     }
-    generate_files(generator_arguments_file, mapping)
+    generate_files(
+        generator_arguments_file, mapping,
+        post_process_callback=prefix_with_bom_if_necessary)
+
+
+def prefix_with_bom_if_necessary(content):
+    try:
+        content.encode('ASCII')
+    except UnicodeError:
+        prefix = '\ufeff' + \
+            '// NOLINT: This file starts with a BOM ' + \
+            'since it contain non-ASCII characters\n'
+        content = prefix + content
+    return content
 
 
 BASIC_IDL_TYPES_TO_C = {

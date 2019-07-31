@@ -14,13 +14,13 @@
 
 #include <gtest/gtest.h>
 #include "rosidl_generator_cpp/msg/empty.hpp"
-#include "rosidl_generator_cpp/msg/string.hpp"
+#include "rosidl_generator_cpp/msg/strings.hpp"
 
 
 TEST(Test_rosidl_generator_traits, check_data_type) {
   ASSERT_STREQ(
-    "rosidl_generator_cpp::msg::String",
-    rosidl_generator_traits::data_type<rosidl_generator_cpp::msg::String>());
+    "rosidl_generator_cpp::msg::Strings",
+    rosidl_generator_traits::data_type<rosidl_generator_cpp::msg::Strings>());
   ASSERT_STREQ(
     "rosidl_generator_cpp::msg::Empty",
     rosidl_generator_traits::data_type<rosidl_generator_cpp::msg::Empty>());

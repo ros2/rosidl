@@ -36,5 +36,5 @@ def convert_action_to_idl(package_dir, package_name, input_file, output_dir):
         'action': action,
     }
 
-    expand_template('action.idl.em', data, output_file)
+    expand_template('action.idl.em', data, output_file, encoding='iso-8859-1')
     return output_file

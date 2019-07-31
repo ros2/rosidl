@@ -17,46 +17,8 @@ ament_python_install_package(${PROJECT_NAME})
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   find_package(rosidl_generator_c REQUIRED)
+  find_package(test_interface_files REQUIRED)
   ament_lint_auto_find_test_dependencies()
-
-  set(message_files
-    "msg/BoundedArrayBounded.msg"
-    "msg/BoundedArrayStatic.msg"
-    "msg/BoundedArrayUnbounded.msg"
-
-    "msg/Empty.msg"
-
-    "msg/FieldsWithSameTypeSomeDefaults.msg"
-
-    "msg/PrimitiveStaticArrays.msg"
-
-    "msg/PrimitivesBounded.msg"
-    "msg/PrimitivesConstants.msg"
-    "msg/PrimitivesDefault.msg"
-    "msg/PrimitivesStatic.msg"
-    "msg/PrimitivesUnbounded.msg"
-
-    "msg/StaticArrayBounded.msg"
-    "msg/StaticArrayStatic.msg"
-    "msg/StaticArrayUnbounded.msg"
-
-    "msg/String.msg"
-    "msg/StringBounded.msg"
-    "msg/StringArrayStatic.msg"
-    "msg/StringArrays.msg"
-
-    "msg/UnboundedArrayBounded.msg"
-    "msg/UnboundedArrayStatic.msg"
-    "msg/UnboundedArrayUnbounded.msg"
-
-    "msg/Various.msg"
-
-    "msg/WString.msg"
-  )
-
-  set(srv_files
-    "srv/ComplexTypeZeroFill.srv"
-  )
 
   include(cmake/register_cpp.cmake)
   set(rosidl_generator_cpp_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -68,8 +30,8 @@ if(BUILD_TESTING)
   )
 
   rosidl_generate_interfaces(${PROJECT_NAME}
-    ${message_files}
-    ${srv_files}
+    ${test_interface_files_MSG_FILES}
+    ${test_interface_files_SRV_FILES}
     ADD_LINTER_TESTS
     SKIP_INSTALL
   )

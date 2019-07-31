@@ -36,5 +36,5 @@ def convert_srv_to_idl(package_dir, package_name, input_file, output_dir):
         'srv': srv,
     }
 
-    expand_template('srv.idl.em', data, output_file)
+    expand_template('srv.idl.em', data, output_file, encoding='iso-8859-1')
     return output_file

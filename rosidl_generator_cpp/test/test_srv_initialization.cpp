@@ -1,4 +1,4 @@
-// Copyright 2019 Open Source Robotics Foundation, Inc.
+// Copyright 2017 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
 
 #include <gtest/gtest.h>
 
-#include "rosidl_generator_cpp/srv/arrays.hpp"
 #include "rosidl_generator_cpp/srv/basic_types.hpp"
 #include "rosidl_generator_cpp/srv/empty.hpp"
 
@@ -59,6 +58,6 @@ TEST(Test_srv_initialization, no_arg_response_constructor) {
 }
 
 // Note that we very specifically don't add tests for some of the other
-// possibilities here (more primitive types, unbounded arrays, other
+// possibilities here (bounded strings, bounded / unbounded arrays, other
 // initialization parameters, etc).  That's because that is all tested in
 // test_msg_initialization.cpp, so we don't need to repeat it here.

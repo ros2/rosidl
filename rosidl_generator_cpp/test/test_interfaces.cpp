@@ -34,9 +34,10 @@
 #include "rosidl_generator_cpp/msg/unbounded_sequences.hpp"
 #include "rosidl_generator_cpp/msg/w_strings.hpp"
 
-#define PRIMITIVES_ARRAY_SIZE 3
+#define SEQUENCE_SIZE 3
+#define ARRAY_SIZE 3
 #define BOUNDED_STRING_LENGTH 22
-#define SUBMESSAGE_ARRAY_SIZE 3
+#define SUBMESSAGE_SEQUENCE_SIZE 3
 
 TEST(Test_rosidl_generator_traits, has_fixed_size) {
   static_assert(
@@ -147,7 +148,7 @@ TEST(Test_rosidl_generator_traits, has_bounded_size) {
   Message.FieldName = InitialValue; \
   Message.FieldName = FinalValue;
 
-void test_message_primitives_static(rosidl_generator_cpp::msg::BasicTypes message)
+void test_message_basic_types(rosidl_generator_cpp::msg::BasicTypes message)
 {
 // workaround for https://github.com/google/googletest/issues/322
 #ifdef __linux__
@@ -192,35 +193,35 @@ void test_message_primitives_static(rosidl_generator_cpp::msg::BasicTypes messag
   std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName);
 
-void test_message_primitives_bounded(rosidl_generator_cpp::msg::BoundedSequences message)
+void test_message_bounded(rosidl_generator_cpp::msg::BoundedSequences message)
 {
-  TEST_BOUNDED_SEQUENCE_TYPES(message, bool_values, bool, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(message, bool_values, bool, SEQUENCE_SIZE, \
     false, true)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, char_values, unsigned char, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(message, char_values, unsigned char, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, byte_values, uint8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(message, byte_values, uint8_t, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, float32_values, float, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(message, float32_values, float, SEQUENCE_SIZE, \
     FLT_MIN, FLT_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, float64_values, double, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(message, float64_values, double, SEQUENCE_SIZE, \
     DBL_MIN, DBL_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, int8_values, int8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(message, int8_values, int8_t, SEQUENCE_SIZE, \
     INT8_MIN, INT8_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, uint8_values, uint8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(message, uint8_values, uint8_t, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, int16_values, int16_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(message, int16_values, int16_t, SEQUENCE_SIZE, \
     INT16_MIN, INT16_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, uint16_values, uint16_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(message, uint16_values, uint16_t, SEQUENCE_SIZE, \
     0, UINT16_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, int32_values, int32_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(message, int32_values, int32_t, SEQUENCE_SIZE, \
     INT32_MIN, INT32_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, uint32_values, uint32_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(message, uint32_values, uint32_t, SEQUENCE_SIZE, \
     0, UINT32_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, int64_values, int64_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(message, int64_values, int64_t, SEQUENCE_SIZE, \
     INT64_MIN, INT64_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, uint64_values, uint64_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(message, uint64_values, uint64_t, SEQUENCE_SIZE, \
     0, UINT64_MAX)
-  TEST_BOUNDED_SEQUENCE_STRING(message, string_values, std::string, PRIMITIVES_ARRAY_SIZE, \
+  TEST_BOUNDED_SEQUENCE_STRING(message, string_values, std::string, SEQUENCE_SIZE, \
     0, UINT32_MAX, 0, BOUNDED_STRING_LENGTH)
 }
 
@@ -244,35 +245,35 @@ void test_message_primitives_bounded(rosidl_generator_cpp::msg::BoundedSequences
   std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
-void test_message_primitives_unbounded(rosidl_generator_cpp::msg::UnboundedSequences message)
+void test_message_unbounded(rosidl_generator_cpp::msg::UnboundedSequences message)
 {
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, bool_values, bool, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(message, bool_values, bool, SEQUENCE_SIZE, \
     false, true)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, char_values, unsigned char, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(message, char_values, unsigned char, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, byte_values, uint8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(message, byte_values, uint8_t, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, float32_values, float, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(message, float32_values, float, SEQUENCE_SIZE, \
     FLT_MIN, FLT_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, float64_values, double, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(message, float64_values, double, SEQUENCE_SIZE, \
     DBL_MIN, DBL_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, int8_values, int8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(message, int8_values, int8_t, SEQUENCE_SIZE, \
     INT8_MIN, INT8_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, uint8_values, uint8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(message, uint8_values, uint8_t, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, int16_values, int16_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(message, int16_values, int16_t, SEQUENCE_SIZE, \
     INT16_MIN, INT16_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, uint16_values, uint16_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(message, uint16_values, uint16_t, SEQUENCE_SIZE, \
     0, UINT16_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, int32_values, int32_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(message, int32_values, int32_t, SEQUENCE_SIZE, \
     INT32_MIN, INT32_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, uint32_values, uint32_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(message, uint32_values, uint32_t, SEQUENCE_SIZE, \
     0, UINT32_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, int64_values, int64_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(message, int64_values, int64_t, SEQUENCE_SIZE, \
     INT64_MIN, INT64_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, uint64_values, uint64_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(message, uint64_values, uint64_t, SEQUENCE_SIZE, \
     0, UINT64_MAX)
-  TEST_UNBOUNDED_SEQUENCE_STRING(message, string_values, std::string, PRIMITIVES_ARRAY_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_STRING(message, string_values, std::string, SEQUENCE_SIZE, \
     0, UINT32_MAX, 0, UINT16_MAX)
 }
 
@@ -284,127 +285,127 @@ void test_message_primitives_unbounded(rosidl_generator_cpp::msg::UnboundedSeque
   std::copy_n(pattern_ ## FieldName.begin(), ArraySize, Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
-void test_message_primitives_static_arrays(rosidl_generator_cpp::msg::Arrays message)
+void test_message_arrays(rosidl_generator_cpp::msg::Arrays message)
 {
-  TEST_ARRAY_TYPES(message, bool_values, bool, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(message, bool_values, bool, ARRAY_SIZE, \
     false, true)
-  TEST_ARRAY_TYPES(message, char_values, unsigned char, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(message, char_values, unsigned char, ARRAY_SIZE, \
     0, UINT8_MAX)
-  TEST_ARRAY_TYPES(message, byte_values, uint8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(message, byte_values, uint8_t, ARRAY_SIZE, \
     0, UINT8_MAX)
-  TEST_ARRAY_TYPES(message, float32_values, float, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(message, float32_values, float, ARRAY_SIZE, \
     FLT_MIN, FLT_MAX)
-  TEST_ARRAY_TYPES(message, float64_values, double, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(message, float64_values, double, ARRAY_SIZE, \
     DBL_MIN, DBL_MAX)
-  TEST_ARRAY_TYPES(message, int8_values, int8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(message, int8_values, int8_t, ARRAY_SIZE, \
     INT8_MIN, INT8_MAX)
-  TEST_ARRAY_TYPES(message, uint8_values, uint8_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(message, uint8_values, uint8_t, ARRAY_SIZE, \
     0, UINT8_MAX)
-  TEST_ARRAY_TYPES(message, int16_values, int16_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(message, int16_values, int16_t, ARRAY_SIZE, \
     INT16_MIN, INT16_MAX)
-  TEST_ARRAY_TYPES(message, uint16_values, uint16_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(message, uint16_values, uint16_t, ARRAY_SIZE, \
     0, UINT16_MAX)
-  TEST_ARRAY_TYPES(message, int32_values, int32_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(message, int32_values, int32_t, ARRAY_SIZE, \
     INT32_MIN, INT32_MAX)
-  TEST_ARRAY_TYPES(message, uint32_values, uint32_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(message, uint32_values, uint32_t, ARRAY_SIZE, \
     0, UINT32_MAX)
-  TEST_ARRAY_TYPES(message, int64_values, int64_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(message, int64_values, int64_t, ARRAY_SIZE, \
     INT64_MIN, INT64_MAX)
-  TEST_ARRAY_TYPES(message, uint64_values, uint64_t, PRIMITIVES_ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(message, uint64_values, uint64_t, ARRAY_SIZE, \
     0, UINT64_MAX)
 }
 
 // Basic types
 TEST(Test_messages, basic_types) {
   rosidl_generator_cpp::msg::BasicTypes message;
-  test_message_primitives_static(message);
+  test_message_basic_types(message);
 }
 
 // Arrays
 TEST(Test_messages, arrays) {
   rosidl_generator_cpp::msg::Arrays message;
-  test_message_primitives_static_arrays(message);
+  test_message_arrays(message);
 }
 
 // Bounded sequences
 TEST(Test_messages, bounded_sequences) {
   rosidl_generator_cpp::msg::BoundedSequences message;
-  test_message_primitives_bounded(message);
+  test_message_bounded(message);
 }
 
 // Unbounded sequences
 TEST(Test_messages, unbounded_sequences) {
   rosidl_generator_cpp::msg::UnboundedSequences message;
-  test_message_primitives_unbounded(message);
+  test_message_unbounded(message);
 }
 
 // Array of bounded sequences
-TEST(Test_messages, static_array_bounded) {
+TEST(Test_messages, array_bounded) {
   rosidl_generator_cpp::msg::MultiNested message;
-  for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_bounded(message.array_of_bounded_sequences[i]);
+  for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
+    test_message_bounded(message.array_of_bounded_sequences[i]);
   }
 }
 
 // Array of unbounded sequences
-TEST(Test_messages, static_array_unbounded) {
+TEST(Test_messages, array_unbounded) {
   rosidl_generator_cpp::msg::MultiNested message;
-  for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_unbounded(message.array_of_unbounded_sequences[i]);
+  for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
+    test_message_unbounded(message.array_of_unbounded_sequences[i]);
   }
 }
 
-// Bounded sequences of basic types
-TEST(Test_messages, bounded_array_static) {
+// Bounded sequence of basic types
+TEST(Test_messages, bounded_sequence_basic_types) {
   rosidl_generator_cpp::msg::BoundedSequences message;
-  message.basic_types_values.resize(SUBMESSAGE_ARRAY_SIZE);
-  for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_static(message.basic_types_values[i]);
+  message.basic_types_values.resize(SUBMESSAGE_SEQUENCE_SIZE);
+  for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
+    test_message_basic_types(message.basic_types_values[i]);
   }
 }
 
-// Bounded sequences of bounded sequences
-TEST(Test_messages, bounded_array_bounded) {
+// Bounded sequence of bounded sequences
+TEST(Test_messages, bounded_sequence_bounded) {
   rosidl_generator_cpp::msg::MultiNested message;
-  message.bounded_sequence_of_bounded_sequences.resize(SUBMESSAGE_ARRAY_SIZE);
-  for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_bounded(message.bounded_sequence_of_bounded_sequences[i]);
+  message.bounded_sequence_of_bounded_sequences.resize(SUBMESSAGE_SEQUENCE_SIZE);
+  for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
+    test_message_bounded(message.bounded_sequence_of_bounded_sequences[i]);
   }
 }
 
-// Bounded sequences of unbounded sequences
-TEST(Test_messages, bounded_array_unbounded) {
+// Bounded sequence of unbounded sequences
+TEST(Test_messages, bounded_sequence_unbounded) {
   rosidl_generator_cpp::msg::MultiNested message;
-  message.bounded_sequence_of_unbounded_sequences.resize(SUBMESSAGE_ARRAY_SIZE);
-  for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_unbounded(message.bounded_sequence_of_unbounded_sequences[i]);
+  message.bounded_sequence_of_unbounded_sequences.resize(SUBMESSAGE_SEQUENCE_SIZE);
+  for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
+    test_message_unbounded(message.bounded_sequence_of_unbounded_sequences[i]);
   }
 }
 
 // Unbounded sequence of basic types
-TEST(Test_messages, unbounded_array_static) {
+TEST(Test_messages, unbounded_sequence_basic_types) {
   rosidl_generator_cpp::msg::UnboundedSequences message;
-  message.basic_types_values.resize(SUBMESSAGE_ARRAY_SIZE);
-  for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_static(message.basic_types_values[i]);
+  message.basic_types_values.resize(SUBMESSAGE_SEQUENCE_SIZE);
+  for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
+    test_message_basic_types(message.basic_types_values[i]);
   }
 }
 
 // Unbounded sequence of bounded sequences
-TEST(Test_messages, unbounded_array_bounded) {
+TEST(Test_messages, unbounded_sequence_bounded) {
   rosidl_generator_cpp::msg::MultiNested message;
-  message.unbounded_sequence_of_bounded_sequences.resize(SUBMESSAGE_ARRAY_SIZE);
-  for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_bounded(message.unbounded_sequence_of_bounded_sequences[i]);
+  message.unbounded_sequence_of_bounded_sequences.resize(SUBMESSAGE_SEQUENCE_SIZE);
+  for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
+    test_message_bounded(message.unbounded_sequence_of_bounded_sequences[i]);
   }
 }
 
 // Unbounded sequence of unbounded sequences
-TEST(Test_messages, unbounded_array_unbounded) {
+TEST(Test_messages, unbounded_sequence_unbounded) {
   rosidl_generator_cpp::msg::MultiNested message;
-  message.unbounded_sequence_of_unbounded_sequences.resize(SUBMESSAGE_ARRAY_SIZE);
-  for (int i = 0; i < SUBMESSAGE_ARRAY_SIZE; i++) {
-    test_message_primitives_unbounded(message.unbounded_sequence_of_unbounded_sequences[i]);
+  message.unbounded_sequence_of_unbounded_sequences.resize(SUBMESSAGE_SEQUENCE_SIZE);
+  for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
+    test_message_unbounded(message.unbounded_sequence_of_unbounded_sequences[i]);
   }
 }
 
@@ -464,7 +465,7 @@ TEST(Test_messages, string_arrays_default) {
 // TODO(mikaelarguedas) reenable this test when bounded strings enforce length
 TEST(Test_messages, DISABLED_Test_bounded_strings) {
   rosidl_generator_cpp::msg::Strings message;
-  TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "", "Deep into")
+  TEST_STRING_FIELD_ASSIGNMENT(message, bounded_string_value, "", "Deep into")
   std::string tooLongString = std::string("Too long string");
   message.bounded_string_value = tooLongString;
   tooLongString.resize(BOUNDED_STRING_LENGTH);
@@ -491,6 +492,6 @@ TEST(Test_messages, Test_wstring) {
 
 TEST(Test_messages, Test_string_array_static) {
   rosidl_generator_cpp::msg::Arrays message;
-  TEST_STATIC_ARRAY_STRING(message, string_values_default, std::string, PRIMITIVES_ARRAY_SIZE, \
+  TEST_STATIC_ARRAY_STRING(message, string_values_default, std::string, ARRAY_SIZE, \
     0, UINT32_MAX, 0, UINT16_MAX)
 }

@@ -59,6 +59,20 @@ TEST(Test_msg_initialization, no_arg_constructor) {
   ASSERT_EQ(60000UL, def.uint32_value);
   ASSERT_EQ(-40000000LL, def.int64_value);
   ASSERT_EQ(50000000ULL, def.uint64_value);
+
+  rosidl_generator_cpp::msg::BasicTypes basic;
+  ASSERT_FALSE(basic.bool_value);
+  ASSERT_EQ(0, basic.byte_value);
+  ASSERT_EQ(0, basic.char_value);
+  ASSERT_EQ(0.0f, basic.float32_value);
+  ASSERT_EQ(0.0, basic.float64_value);
+  ASSERT_EQ(0, basic.int8_value);
+  ASSERT_EQ(0, basic.uint8_value);
+  ASSERT_EQ(0, basic.int16_value);
+  ASSERT_EQ(0, basic.uint16_value);
+  ASSERT_EQ(0L, basic.int32_value);
+  ASSERT_EQ(0UL, basic.uint32_value);
+  ASSERT_EQ(0LL, basic.int64_value);
 }
 
 TEST(Test_msg_initialization, all_constructor) {
@@ -77,6 +91,20 @@ TEST(Test_msg_initialization, all_constructor) {
   ASSERT_EQ(60000UL, def.uint32_value);
   ASSERT_EQ(-40000000LL, def.int64_value);
   ASSERT_EQ(50000000ULL, def.uint64_value);
+
+  rosidl_generator_cpp::msg::BasicTypes basic;
+  ASSERT_FALSE(basic.bool_value);
+  ASSERT_EQ(0, basic.byte_value);
+  ASSERT_EQ(0, basic.char_value);
+  ASSERT_EQ(0.0f, basic.float32_value);
+  ASSERT_EQ(0.0, basic.float64_value);
+  ASSERT_EQ(0, basic.int8_value);
+  ASSERT_EQ(0, basic.uint8_value);
+  ASSERT_EQ(0, basic.int16_value);
+  ASSERT_EQ(0, basic.uint16_value);
+  ASSERT_EQ(0L, basic.int32_value);
+  ASSERT_EQ(0UL, basic.uint32_value);
+  ASSERT_EQ(0LL, basic.int64_value);
 }
 
 TEST(Test_msg_initialization, zero_constructor) {
@@ -95,6 +123,20 @@ TEST(Test_msg_initialization, zero_constructor) {
   ASSERT_EQ(0UL, def.uint32_value);
   ASSERT_EQ(0LL, def.int64_value);
   ASSERT_EQ(0ULL, def.uint64_value);
+
+  rosidl_generator_cpp::msg::BasicTypes basic;
+  ASSERT_FALSE(basic.bool_value);
+  ASSERT_EQ(0, basic.byte_value);
+  ASSERT_EQ(0, basic.char_value);
+  ASSERT_EQ(0.0f, basic.float32_value);
+  ASSERT_EQ(0.0, basic.float64_value);
+  ASSERT_EQ(0, basic.int8_value);
+  ASSERT_EQ(0, basic.uint8_value);
+  ASSERT_EQ(0, basic.int16_value);
+  ASSERT_EQ(0, basic.uint16_value);
+  ASSERT_EQ(0L, basic.int32_value);
+  ASSERT_EQ(0UL, basic.uint32_value);
+  ASSERT_EQ(0LL, basic.int64_value);
 }
 
 TEST(Test_msg_initialization, defaults_only_constructor) {
@@ -113,6 +155,20 @@ TEST(Test_msg_initialization, defaults_only_constructor) {
   ASSERT_EQ(60000UL, def.uint32_value);
   ASSERT_EQ(-40000000LL, def.int64_value);
   ASSERT_EQ(50000000ULL, def.uint64_value);
+
+  rosidl_generator_cpp::msg::BasicTypes basic;
+  ASSERT_FALSE(basic.bool_value);
+  ASSERT_EQ(0, basic.byte_value);
+  ASSERT_EQ(0, basic.char_value);
+  ASSERT_EQ(0.0f, basic.float32_value);
+  ASSERT_EQ(0.0, basic.float64_value);
+  ASSERT_EQ(0, basic.int8_value);
+  ASSERT_EQ(0, basic.uint8_value);
+  ASSERT_EQ(0, basic.int16_value);
+  ASSERT_EQ(0, basic.uint16_value);
+  ASSERT_EQ(0L, basic.int32_value);
+  ASSERT_EQ(0UL, basic.uint32_value);
+  ASSERT_EQ(0LL, basic.int64_value);
 }
 
 // This is a test to ensure that when the user passes SKIP to the constructor,
@@ -121,38 +177,24 @@ TEST(Test_msg_initialization, skip_constructor) {
   char * memory = new char[sizeof(rosidl_generator_cpp::msg::BoundedSequences)];
   ASSERT_NE(memory, nullptr);
   std::memset(memory, 0xfe, sizeof(rosidl_generator_cpp::msg::BoundedSequences));
-  rosidl_generator_cpp::msg::BoundedSequences * def =
+  rosidl_generator_cpp::msg::BoundedSequences * bounded =
     new(memory) rosidl_generator_cpp::msg::BoundedSequences(
     rosidl_generator_cpp::MessageInitialization::SKIP);
 
-  char * memory2 = new char[sizeof(rosidl_generator_cpp::msg::Defaults)];
-  ASSERT_NE(memory2, nullptr);
-  std::memset(memory2, 0xfe, sizeof(rosidl_generator_cpp::msg::Defaults));
-  rosidl_generator_cpp::msg::Defaults * def2 =
-    new(memory2) rosidl_generator_cpp::msg::Defaults(
-    rosidl_generator_cpp::MessageInitialization::SKIP);
-
   // ensures that the memory gets freed even if an ASSERT is raised
-  SCOPE_EXIT(def->~BoundedSequences_(); delete[] memory);
-  SCOPE_EXIT(def2->~Defaults_(); delete[] memory2);
+  SCOPE_EXIT(bounded->~BoundedSequences_(); delete[] memory);
 
   #ifndef _WIN32
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
   #endif
-  uint32_t float32_bit_pattern =
-    *reinterpret_cast<uint32_t *>(&def2->float32_value);
-  ASSERT_EQ(0xfefefefe, float32_bit_pattern);
-  uint64_t float64_bit_pattern =
-    *reinterpret_cast<uint64_t *>(&def2->float64_value);
-  ASSERT_EQ(0xfefefefefefefefeULL, float64_bit_pattern);
-  ASSERT_TRUE(std::all_of(def->float32_values_default.begin(),
-    def->float32_values_default.end(), [](float i) {
+  ASSERT_TRUE(std::all_of(bounded->float32_values_default.begin(),
+    bounded->float32_values_default.end(), [](float i) {
       uint32_t float32_bit_pattern = *reinterpret_cast<uint32_t *>(&i);
       return 0xfefefefe == float32_bit_pattern;
     }));
-  ASSERT_TRUE(std::all_of(def->float64_values_default.begin(),
-    def->float64_values_default.end(), [](double i) {
+  ASSERT_TRUE(std::all_of(bounded->float64_values_default.begin(),
+    bounded->float64_values_default.end(), [](double i) {
       uint64_t float64_bit_pattern = *reinterpret_cast<uint64_t *>(&i);
       return 0xfefefefefefefefe == float64_bit_pattern;
     }));
@@ -160,11 +202,11 @@ TEST(Test_msg_initialization, skip_constructor) {
   #ifndef _WIN32
   #pragma GCC diagnostic pop
   #endif
-  ASSERT_EQ(0UL, def->float64_values_default.size());
-  ASSERT_EQ(0UL, def->float32_values_default.size());
-  ASSERT_EQ(0UL, def->float32_values.size());
-  ASSERT_TRUE(std::all_of(def->string_values_default.begin(),
-    def->string_values_default.end(), [](std::string i) {
+  ASSERT_EQ(0UL, bounded->float64_values_default.size());
+  ASSERT_EQ(0UL, bounded->float32_values_default.size());
+  ASSERT_EQ(0UL, bounded->float32_values.size());
+  ASSERT_TRUE(std::all_of(bounded->string_values_default.begin(),
+    bounded->string_values_default.end(), [](std::string i) {
       return "" == i;
     }));
 }

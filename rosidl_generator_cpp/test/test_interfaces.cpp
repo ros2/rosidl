@@ -36,7 +36,7 @@
 
 #define SEQUENCE_SIZE 3
 #define ARRAY_SIZE 3
-#define BOUNDED_STRING_LENGTH 22
+#define BOUNDED_STRING_LENGTH 10
 #define SUBMESSAGE_SEQUENCE_SIZE 3
 
 TEST(Test_rosidl_generator_traits, has_fixed_size) {

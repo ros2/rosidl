@@ -22,7 +22,7 @@
 #include <string.h>
 
 #include "rosidl_generator_c/string_functions.h"
-#include "rosidl_generator_c/msg/primitives.h"
+#include "rosidl_generator_c/msg/strings.h"
 
 #define EXPECT_EQ(arg1, arg2) if ((arg1) != (arg2)) return 1
 #define EXPECT_NE(arg1, arg2) if ((arg1) == (arg2)) return 1
@@ -38,12 +38,12 @@ int main(void)
   printf("Testing rosidl_generator_c invalid initialization...\n");
   printf("Testing call to init with NULL...\n");
   if (test_init_null()) {
-    fprintf(stderr, "test_init_null FAILED\n");
+    fprintf(stderr, "test_init_null() FAILED\n");
     rc++;
   }
   printf("Testing rosidl_generator_c destroy called on partial message...\n");
   if (test_partial_fini_cleanup()) {
-    fprintf(stderr, "test_partial_fini_cleanup FAILED\n");
+    fprintf(stderr, "test_partial_fini_cleanup() FAILED\n");
     rc++;
   }
   return rc;
@@ -54,8 +54,8 @@ int main(void)
  */
 int test_init_null(void)
 {
-  rosidl_generator_c__msg__Primitives * msg = NULL;
-  EXPECT_EQ(false, rosidl_generator_c__msg__Primitives__init(msg));
+  rosidl_generator_c__msg__Strings * msg = NULL;
+  EXPECT_EQ(false, rosidl_generator_c__msg__Strings__init(msg));
   return 0;
 }
 
@@ -65,12 +65,12 @@ int test_init_null(void)
 int test_partial_fini_cleanup(void)
 {
   /* create a message, properly initialized. */
-  rosidl_generator_c__msg__Primitives * msg = rosidl_generator_c__msg__Primitives__create();
+  rosidl_generator_c__msg__Strings * msg = rosidl_generator_c__msg__Strings__create();
   EXPECT_NE(msg, NULL);
   /* call fini on a few fields */
   rosidl_generator_c__String__fini(&msg->string_value);
-  rosidl_generator_c__String__fini(&msg->string_value_with_default);
+  rosidl_generator_c__String__fini(&msg->string_value_default1);
   /* destroy the message */
-  rosidl_generator_c__msg__Primitives__destroy(msg);
+  rosidl_generator_c__msg__Strings__destroy(msg);
   return 0;
 }

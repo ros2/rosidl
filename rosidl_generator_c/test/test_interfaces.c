@@ -226,7 +226,168 @@ int test_bounded_sequences()
   rosidl_generator_c__msg__BoundedSequences * seq = NULL;
   seq = rosidl_generator_c__msg__BoundedSequences__create();
   EXPECT_NE(seq, NULL);
+  bool res = false;
+  res = rosidl_generator_c__boolean__Sequence__init(&seq->bool_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  int i = 0;
+  for (i = 0; i < ARR_SIZE; i++) {
+    if (0 == (i % 2)) {
+      seq->bool_values.data[i] = true;
+    } else {
+      seq->bool_values.data[i] = false;
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    if (0 == (i % 2)) {
+      EXPECT_EQ(true, seq->bool_values.data[i]);
+    } else {
+      EXPECT_EQ(false, seq->bool_values.data[i]);
+    }
+  }
 
+  // byte_values
+  res = rosidl_generator_c__byte__Sequence__init(&seq->byte_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  uint8_t test_values_byte[ARR_SIZE] = {0, 57, 110};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->byte_values.data[i] = test_values_byte[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_byte[i], seq->byte_values.data[i]);
+  }
+
+  // char_values
+  res = rosidl_generator_c__uint8__Sequence__init(&seq->char_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  char test_values_char[ARR_SIZE] = {'a', '5', '#'};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->char_values.data[i] = test_values_char[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_char[i], seq->char_values.data[i]);
+  }
+
+  // float32_values
+  res = rosidl_generator_c__float32__Sequence__init(&seq->float32_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  float test_values_float32[ARR_SIZE] = {-3.000001f, 22143.541325f, 6331.00432f};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->float32_values.data[i] = test_values_float32[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_float32[i], seq->float32_values.data[i]);
+  }
+  // float64_values
+  res = rosidl_generator_c__float64__Sequence__init(&seq->float64_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  float test_values_float64[ARR_SIZE] = {-120310.00843921001, 22143.54483214125, 6331.00483104432};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->float64_values.data[i] = test_values_float64[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_float64[i], seq->float64_values.data[i]);
+  }
+
+  // int8_values
+  res = rosidl_generator_c__int8__Sequence__init(&seq->int8_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  int8_t test_values_int8[ARR_SIZE] = {-50, 13, 110};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->int8_values.data[i] = test_values_int8[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_int8[i], seq->int8_values.data[i]);
+  }
+
+  // uint8_values
+  res = rosidl_generator_c__uint8__Sequence__init(&seq->uint8_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  uint8_t test_values_uint8[ARR_SIZE] = {0, 125, 250};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->uint8_values.data[i] = test_values_uint8[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_uint8[i], seq->uint8_values.data[i]);
+  }
+
+  // int16_values
+  res = rosidl_generator_c__int16__Sequence__init(&seq->int16_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  int16_t test_values_int16[ARR_SIZE] = {-22222, 0, 32767};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->int16_values.data[i] = test_values_int16[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_int16[i], seq->int16_values.data[i]);
+  }
+
+  // uint16_values
+  res = rosidl_generator_c__uint16__Sequence__init(&seq->uint16_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  uint16_t test_values_uint16[ARR_SIZE] = {0U, 33333U, 65535U};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->uint16_values.data[i] = test_values_uint16[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_uint16[i], seq->uint16_values.data[i]);
+  }
+
+  // int32_values
+  res = rosidl_generator_c__int32__Sequence__init(&seq->int32_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  int32_t test_values_int32[ARR_SIZE] = {INT32_MIN / 2, 0L, INT32_MAX / 2};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->int32_values.data[i] = test_values_int32[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_int32[i], seq->int32_values.data[i]);
+  }
+
+  // uint32_values
+  res = rosidl_generator_c__uint32__Sequence__init(&seq->uint32_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  uint32_t test_values_uint32[ARR_SIZE] = {0UL, 444444UL, 4294967295UL};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->uint32_values.data[i] = test_values_uint32[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_uint32[i], seq->uint32_values.data[i]);
+  }
+
+  // int64_values
+  res = rosidl_generator_c__int64__Sequence__init(&seq->int64_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  int64_t test_values_int64[ARR_SIZE] = {-9223372036854775807LL, 0, 9223372036854775807ULL};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->int64_values.data[i] = test_values_int64[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_int64[i], seq->int64_values.data[i]);
+  }
+
+  // uint64_values
+  res = rosidl_generator_c__uint64__Sequence__init(&seq->uint64_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  uint64_t test_values_uint64[ARR_SIZE] = {0ULL, 567890123456789ULL, 18446744073709551615ULL};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->uint64_values.data[i] = test_values_uint64[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_uint64[i], seq->uint64_values.data[i]);
+  }
+
+  // string_values
+  res = rosidl_generator_c__String__Sequence__init(&seq->string_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  char * test_values_string[ARR_SIZE] = {"", "max value", "min value"};
+  for (i = 0; i < ARR_SIZE; i++) {
+    rosidl_generator_c__String__assign(&seq->string_values.data[i], test_values_string[i]);
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(0, strcmp(seq->string_values.data[i].data, test_values_string[i]));
+  }
+
+  // *_values_default
   EXPECT_EQ(false, seq->bool_values_default.data[0]);
   EXPECT_EQ(true, seq->bool_values_default.data[1]);
   EXPECT_EQ(false, seq->bool_values_default.data[2]);
@@ -293,7 +454,170 @@ int test_unbounded_sequences()
   rosidl_generator_c__msg__UnboundedSequences * seq = NULL;
   seq = rosidl_generator_c__msg__UnboundedSequences__create();
   EXPECT_NE(seq, NULL);
+  bool res = false;
 
+  // bool_values
+  res = rosidl_generator_c__boolean__Sequence__init(&seq->bool_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  int i = 0;
+  for (i = 0; i < ARR_SIZE; i++) {
+    if (0 == (i % 2)) {
+      seq->bool_values.data[i] = true;
+    } else {
+      seq->bool_values.data[i] = false;
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    if (0 == (i % 2)) {
+      EXPECT_EQ(true, seq->bool_values.data[i]);
+    } else {
+      EXPECT_EQ(false, seq->bool_values.data[i]);
+    }
+  }
+
+  // byte_values
+  res = rosidl_generator_c__byte__Sequence__init(&seq->byte_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  uint8_t test_values_byte[ARR_SIZE] = {0, 57, 110};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->byte_values.data[i] = test_values_byte[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_byte[i], seq->byte_values.data[i]);
+  }
+
+  // char_values
+  res = rosidl_generator_c__uint8__Sequence__init(&seq->char_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  char test_values_char[ARR_SIZE] = {'a', '5', '#'};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->char_values.data[i] = test_values_char[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_char[i], seq->char_values.data[i]);
+  }
+
+  // float32_values
+  res = rosidl_generator_c__float32__Sequence__init(&seq->float32_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  float test_values_float32[ARR_SIZE] = {-3.000001f, 22143.541325f, 6331.00432f};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->float32_values.data[i] = test_values_float32[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_float32[i], seq->float32_values.data[i]);
+  }
+  // float64_values
+  res = rosidl_generator_c__float64__Sequence__init(&seq->float64_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  float test_values_float64[ARR_SIZE] = {-120310.00843921001, 22143.54483214125, 6331.00483104432};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->float64_values.data[i] = test_values_float64[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_float64[i], seq->float64_values.data[i]);
+  }
+
+  // int8_values
+  res = rosidl_generator_c__int8__Sequence__init(&seq->int8_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  int8_t test_values_int8[ARR_SIZE] = {-50, 13, 110};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->int8_values.data[i] = test_values_int8[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_int8[i], seq->int8_values.data[i]);
+  }
+
+  // uint8_values
+  res = rosidl_generator_c__uint8__Sequence__init(&seq->uint8_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  uint8_t test_values_uint8[ARR_SIZE] = {0, 125, 250};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->uint8_values.data[i] = test_values_uint8[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_uint8[i], seq->uint8_values.data[i]);
+  }
+
+  // int16_values
+  res = rosidl_generator_c__int16__Sequence__init(&seq->int16_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  int16_t test_values_int16[ARR_SIZE] = {-22222, 0, 32767};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->int16_values.data[i] = test_values_int16[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_int16[i], seq->int16_values.data[i]);
+  }
+
+  // uint16_values
+  res = rosidl_generator_c__uint16__Sequence__init(&seq->uint16_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  uint16_t test_values_uint16[ARR_SIZE] = {0U, 33333U, 65535U};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->uint16_values.data[i] = test_values_uint16[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_uint16[i], seq->uint16_values.data[i]);
+  }
+
+  // int32_values
+  res = rosidl_generator_c__int32__Sequence__init(&seq->int32_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  int32_t test_values_int32[ARR_SIZE] = {INT32_MIN / 2, 0L, INT32_MAX / 2};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->int32_values.data[i] = test_values_int32[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_int32[i], seq->int32_values.data[i]);
+  }
+
+  // uint32_values
+  res = rosidl_generator_c__uint32__Sequence__init(&seq->uint32_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  uint32_t test_values_uint32[ARR_SIZE] = {0UL, 444444UL, 4294967295UL};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->uint32_values.data[i] = test_values_uint32[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_uint32[i], seq->uint32_values.data[i]);
+  }
+
+  // int64_values
+  res = rosidl_generator_c__int64__Sequence__init(&seq->int64_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  int64_t test_values_int64[ARR_SIZE] = {-9223372036854775807LL, 0, 9223372036854775807ULL};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->int64_values.data[i] = test_values_int64[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_int64[i], seq->int64_values.data[i]);
+  }
+
+  // uint64_values
+  res = rosidl_generator_c__uint64__Sequence__init(&seq->uint64_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  uint64_t test_values_uint64[ARR_SIZE] = {0ULL, 567890123456789ULL, 18446744073709551615ULL};
+  for (i = 0; i < ARR_SIZE; i++) {
+    seq->uint64_values.data[i] = test_values_uint64[i];
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(test_values_uint64[i], seq->uint64_values.data[i]);
+  }
+
+  // string_values
+  res = rosidl_generator_c__String__Sequence__init(&seq->string_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  char * test_values_string[ARR_SIZE] = {"", "max value", "min value"};
+  for (i = 0; i < ARR_SIZE; i++) {
+    rosidl_generator_c__String__assign(&seq->string_values.data[i], test_values_string[i]);
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(0, strcmp(seq->string_values.data[i].data, test_values_string[i]));
+  }
+
+  // *_values_default
   EXPECT_EQ(false, seq->bool_values_default.data[0]);
   EXPECT_EQ(true, seq->bool_values_default.data[1]);
   EXPECT_EQ(false, seq->bool_values_default.data[2]);
@@ -614,7 +938,7 @@ int test_multi_nested()
       EXPECT_EQ(test_values_uint64[j], msg->array_of_arrays[i].uint64_values[j]);
     }
   }
-  
+
   for (i = 0; i < ARR_SIZE; i++) {
     EXPECT_EQ(false, msg->array_of_arrays[i].bool_values_default[0]);
     EXPECT_EQ(true, msg->array_of_arrays[i].bool_values_default[1]);

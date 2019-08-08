@@ -44,7 +44,6 @@
   "PACK MY BOX WITH FIVE DOZEN LIQUOR JUGS."
 #define TEST_WSTRING \
   u"Deep into that darkness peering, long I stood there wondering, fearing \u2122"
-#define ARRAY_SIZE 7
 #define ARR_SIZE 3
 
 #define STRINGIFY(x) _STRINGIFY(x)
@@ -1151,6 +1150,15 @@ int test_arrays()
     EXPECT_EQ(test_values_uint64[i], arr->uint64_values[i]);
   }
 
+  // string_values
+  char * test_values_string[ARR_SIZE] = {"", "max value", "min value"};
+  for (i = 0; i < ARR_SIZE; i++) {
+    rosidl_generator_c__String__assign(&arr->string_values[i], test_values_string[i]);
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(0, strcmp(arr->string_values[i].data, test_values_string[i]));
+  }
+
   EXPECT_EQ(false, arr->bool_values_default[0]);
   EXPECT_EQ(true, arr->bool_values_default[1]);
   EXPECT_EQ(false, arr->bool_values_default[2]);
@@ -1203,10 +1211,9 @@ int test_arrays()
   EXPECT_EQ(1, arr->uint64_values_default[1]);
   EXPECT_EQ(UINT64_MAX, arr->uint64_values_default[2]);
 
-  // TODO(skucheria): tests for string_values_default
-  // EXPECT_EQ(3, arr->string_values_default->capacity);
-  // EXPECT_EQ(0, strcmp(arr->string_values_default->data, "max value"));
-  // EXPECT_EQ(0, strcmp(arr->string_values_default->data, "min value"));
+  EXPECT_EQ(0, strcmp(arr->string_values_default[0].data, ""));
+  EXPECT_EQ(0, strcmp(arr->string_values_default[1].data, "max value"));
+  EXPECT_EQ(0, strcmp(arr->string_values_default[2].data, "min value"));
 
   rosidl_generator_c__msg__Arrays__destroy(arr);
   return 0;

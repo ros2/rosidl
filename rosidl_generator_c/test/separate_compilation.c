@@ -30,62 +30,62 @@ int func()
   }
 
   if (msg->bool_value != true) {
-    fprintf(stderr, "wront default value!\n");
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
   if (msg->byte_value != 50) {
-    fprintf(stderr, "wront default value!\n");
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
   if (msg->float32_value != 1.125) {
-    fprintf(stderr, "wront default value!\n");
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
   if (msg->float64_value != 1.125) {
-    fprintf(stderr, "wront default value!\n");
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
   if (msg->int8_value != -50) {
-    fprintf(stderr, "wront default value!\n");
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
   if (msg->uint8_value != 200) {
-    fprintf(stderr, "wront default value!\n");
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
   if (msg->int16_value != -1000) {
-    fprintf(stderr, "wront default value!\n");
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
   if (msg->uint16_value != 2000) {
-    fprintf(stderr, "wront default value!\n");
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
   if (msg->int32_value != -30000) {
-    fprintf(stderr, "wront default value!\n");
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
   if (msg->uint32_value != 60000) {
-    fprintf(stderr, "wront default value!\n");
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
   if (msg->int64_value != -40000000) {
-    fprintf(stderr, "wront default value!\n");
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
   if (msg->uint64_value != 50000000) {
-    fprintf(stderr, "wront default value!\n");
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 

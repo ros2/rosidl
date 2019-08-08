@@ -390,16 +390,286 @@ int test_nested()
   rosidl_generator_c__msg__Nested * nested = NULL;
   nested = rosidl_generator_c__msg__Nested__create();
   EXPECT_NE(nested, NULL);
+
+  nested->basic_types_value.bool_value = true;
+  nested->basic_types_value.byte_value = 50;
+  nested->basic_types_value.char_value = 100;
+  nested->basic_types_value.float32_value = 1.125;
+  nested->basic_types_value.float64_value = 1.125;
+  nested->basic_types_value.int8_value = -50;
+  nested->basic_types_value.uint8_value = 200;
+  nested->basic_types_value.int16_value = -1000;
+  nested->basic_types_value.uint16_value = 2000;
+  nested->basic_types_value.int32_value = -30000;
+  nested->basic_types_value.uint32_value = 60000;
+  nested->basic_types_value.int64_value = -40000000;
+  nested->basic_types_value.uint64_value = 50000000;
+
+  EXPECT_EQ(true, nested->basic_types_value.bool_value);
+  EXPECT_EQ(50, nested->basic_types_value.byte_value);
+  EXPECT_EQ(100, nested->basic_types_value.char_value);
+  EXPECT_EQ(1.125, nested->basic_types_value.float32_value);
+  EXPECT_EQ(1.125, nested->basic_types_value.float64_value);
+  EXPECT_EQ(-50, nested->basic_types_value.int8_value);
+  EXPECT_EQ(200, nested->basic_types_value.uint8_value);
+  EXPECT_EQ(-1000, nested->basic_types_value.int16_value);
+  EXPECT_EQ(2000, nested->basic_types_value.uint16_value);
+  EXPECT_EQ(-30000, nested->basic_types_value.int32_value);
+  EXPECT_EQ(60000, nested->basic_types_value.uint32_value);
+  EXPECT_EQ(-40000000, nested->basic_types_value.int64_value);
+  EXPECT_EQ(50000000, nested->basic_types_value.uint64_value);
+
   rosidl_generator_c__msg__Nested__destroy(nested);
   return 0;
 }
 
 int test_multi_nested()
 {
-  rosidl_generator_c__msg__MultiNested * multi_nested = NULL;
-  multi_nested = rosidl_generator_c__msg__MultiNested__create();
-  EXPECT_NE(multi_nested, NULL);
-  rosidl_generator_c__msg__MultiNested__destroy(multi_nested);
+  rosidl_generator_c__msg__MultiNested * msg = NULL;
+  msg = rosidl_generator_c__msg__MultiNested__create();
+  EXPECT_NE(msg, NULL);
+  /* multi_nested fields tests todo:
+  BoundedSequences[3] array_of_bounded_sequences
+  UnboundedSequences[3] array_of_unbounded_sequences
+  Arrays[<=3] bounded_sequence_of_arrays
+  BoundedSequences[<=3] bounded_sequence_of_bounded_sequences
+  UnboundedSequences[<=3] bounded_sequence_of_unbounded_sequences
+  Arrays[] unbounded_sequence_of_arrays
+  BoundedSequences[] unbounded_sequence_of_bounded_sequences
+  UnboundedSequences[] unbounded_sequence_of_unbounded_sequences
+  */
+  int i = 0;
+  int j = 0;
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      if (0 == (j % 2)) {
+        msg->array_of_arrays[i].bool_values[j] = true;
+      } else {
+        msg->array_of_arrays[i].bool_values[j] = false;
+      }
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      if (0 == (j % 2)) {
+        EXPECT_EQ(true, msg->array_of_arrays[i].bool_values[j]);
+      } else {
+        EXPECT_EQ(false, msg->array_of_arrays[i].bool_values[j]);
+      }
+    }
+  }
+
+  // byte_values
+  uint8_t test_values_byte[ARR_SIZE] = {0, 57, 110};
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      msg->array_of_arrays[i].byte_values[j] = test_values_byte[j];
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      EXPECT_EQ(test_values_byte[j], msg->array_of_arrays[i].byte_values[j]);
+    }
+  }
+
+  // char_values
+  char test_values_char[ARR_SIZE] = {'a', '5', '#'};
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      msg->array_of_arrays[i].char_values[j] = test_values_char[j];
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      EXPECT_EQ(test_values_char[j], msg->array_of_arrays[i].char_values[j]);
+    }
+  }
+
+  // float32_values
+  float test_values_float32[ARR_SIZE] = {-3.000001f, 22143.541325f, 6331.00432f};
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      msg->array_of_arrays[i].float32_values[j] = test_values_float32[j];
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      EXPECT_EQ(test_values_float32[j], msg->array_of_arrays[i].float32_values[j]);
+    }
+  }
+
+  // float64_values
+  float test_values_float64[ARR_SIZE] = {-120310.00843921001, 22143.54483214125, 6331.00483104432};
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      msg->array_of_arrays[i].float64_values[j] = test_values_float64[j];
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      EXPECT_EQ(test_values_float64[j], msg->array_of_arrays[i].float64_values[j]);
+    }
+  }
+
+  // int8_values
+  int8_t test_values_int8[ARR_SIZE] = {-50, 13, 110};
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      msg->array_of_arrays[i].int8_values[j] = test_values_int8[j];
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      EXPECT_EQ(test_values_int8[j], msg->array_of_arrays[i].int8_values[j]);
+    }
+  }
+
+  // uint8_values
+  uint8_t test_values_uint8[ARR_SIZE] = {0, 125, 250};
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      msg->array_of_arrays[i].uint8_values[j] = test_values_uint8[j];
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      EXPECT_EQ(test_values_uint8[j], msg->array_of_arrays[i].uint8_values[j]);
+    }
+  }
+
+  // int16_values
+  int16_t test_values_int16[ARR_SIZE] = {-22222, 0, 32767};
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      msg->array_of_arrays[i].int16_values[j] = test_values_int16[j];
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      EXPECT_EQ(test_values_int16[j], msg->array_of_arrays[i].int16_values[j]);
+    }
+  }
+
+  // uint16_values
+  uint16_t test_values_uint16[ARR_SIZE] = {0U, 33333U, 65535U};
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      msg->array_of_arrays[i].uint16_values[j] = test_values_uint16[j];
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      EXPECT_EQ(test_values_uint16[j], msg->array_of_arrays[i].uint16_values[j]);
+    }
+  }
+
+  // int32_values
+  int32_t test_values_int32[ARR_SIZE] = {INT32_MIN / 2, 0L, INT32_MAX / 2};
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      msg->array_of_arrays[i].int32_values[j] = test_values_int32[j];
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      EXPECT_EQ(test_values_int32[j], msg->array_of_arrays[i].int32_values[j]);
+    }
+  }
+
+  // uint32_values
+  uint32_t test_values_uint32[ARR_SIZE] = {0UL, 444444UL, 4294967295UL};
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      msg->array_of_arrays[i].uint32_values[j] = test_values_uint32[j];
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      EXPECT_EQ(test_values_uint32[j], msg->array_of_arrays[i].uint32_values[j]);
+    }
+  }
+
+  // int64_values
+  int64_t test_values_int64[ARR_SIZE] = {-9223372036854775807LL, 0, 9223372036854775807ULL};
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      msg->array_of_arrays[i].int64_values[j] = test_values_int64[j];
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      EXPECT_EQ(test_values_int64[j], msg->array_of_arrays[i].int64_values[j]);
+    }
+  }
+
+  // uint64_values
+  uint64_t test_values_uint64[ARR_SIZE] = {0ULL, 567890123456789ULL, 18446744073709551615ULL};
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      msg->array_of_arrays[i].uint64_values[j] = test_values_uint64[j];
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    for (j = 0; j < ARR_SIZE; j++) {
+      EXPECT_EQ(test_values_uint64[j], msg->array_of_arrays[i].uint64_values[j]);
+    }
+  }
+  
+  for (i = 0; i < ARR_SIZE; i++) {
+    EXPECT_EQ(false, msg->array_of_arrays[i].bool_values_default[0]);
+    EXPECT_EQ(true, msg->array_of_arrays[i].bool_values_default[1]);
+    EXPECT_EQ(false, msg->array_of_arrays[i].bool_values_default[2]);
+
+    EXPECT_EQ(0, msg->array_of_arrays[i].byte_values_default[0]);
+    EXPECT_EQ(1, msg->array_of_arrays[i].byte_values_default[1]);
+    EXPECT_EQ(255, msg->array_of_arrays[i].byte_values_default[2]);
+
+    EXPECT_EQ(0, msg->array_of_arrays[i].char_values_default[0]);
+    EXPECT_EQ(1, msg->array_of_arrays[i].char_values_default[1]);
+    EXPECT_EQ(127, msg->array_of_arrays[i].char_values_default[2]);
+
+    EXPECT_EQ(1.125, msg->array_of_arrays[i].float32_values_default[0]);
+    EXPECT_EQ(0.0, msg->array_of_arrays[i].float32_values_default[1]);
+    EXPECT_EQ(-1.125, msg->array_of_arrays[i].float32_values_default[2]);
+
+    EXPECT_EQ(3.1415, msg->array_of_arrays[i].float64_values_default[0]);
+    EXPECT_EQ(0.0, msg->array_of_arrays[i].float64_values_default[1]);
+    EXPECT_EQ(-3.1415, msg->array_of_arrays[i].float64_values_default[2]);
+
+    EXPECT_EQ(0, msg->array_of_arrays[i].int8_values_default[0]);
+    EXPECT_EQ(INT8_MAX, msg->array_of_arrays[i].int8_values_default[1]);
+    EXPECT_EQ(INT8_MIN, msg->array_of_arrays[i].int8_values_default[2]);
+
+    EXPECT_EQ(0, msg->array_of_arrays[i].uint8_values_default[0]);
+    EXPECT_EQ(1, msg->array_of_arrays[i].uint8_values_default[1]);
+    EXPECT_EQ(UINT8_MAX, msg->array_of_arrays[i].uint8_values_default[2]);
+
+    EXPECT_EQ(0, msg->array_of_arrays[i].int16_values_default[0]);
+    EXPECT_EQ(INT16_MAX, msg->array_of_arrays[i].int16_values_default[1]);
+    EXPECT_EQ(INT16_MIN, msg->array_of_arrays[i].int16_values_default[2]);
+
+    EXPECT_EQ(0, msg->array_of_arrays[i].uint16_values_default[0]);
+    EXPECT_EQ(1, msg->array_of_arrays[i].uint16_values_default[1]);
+    EXPECT_EQ(UINT16_MAX, msg->array_of_arrays[i].uint16_values_default[2]);
+
+    EXPECT_EQ(0, msg->array_of_arrays[i].int32_values_default[0]);
+    EXPECT_EQ(INT32_MAX, msg->array_of_arrays[i].int32_values_default[1]);
+    EXPECT_EQ(INT32_MIN, msg->array_of_arrays[i].int32_values_default[2]);
+
+    EXPECT_EQ(0, msg->array_of_arrays[i].uint32_values_default[0]);
+    EXPECT_EQ(1, msg->array_of_arrays[i].uint32_values_default[1]);
+    EXPECT_EQ(UINT32_MAX, msg->array_of_arrays[i].uint32_values_default[2]);
+
+    EXPECT_EQ(0, msg->array_of_arrays[i].int64_values_default[0]);
+    EXPECT_EQ(INT64_MAX, msg->array_of_arrays[i].int64_values_default[1]);
+    EXPECT_EQ(INT64_MIN, msg->array_of_arrays[i].int64_values_default[2]);
+
+    EXPECT_EQ(0, msg->array_of_arrays[i].uint64_values_default[0]);
+    EXPECT_EQ(1, msg->array_of_arrays[i].uint64_values_default[1]);
+    EXPECT_EQ(UINT64_MAX, msg->array_of_arrays[0].uint64_values_default[2]);
+  }
+
+  rosidl_generator_c__msg__MultiNested__destroy(msg);
   return 0;
 }
 
@@ -422,7 +692,6 @@ int test_wstrings()
   // EXPECT_EQ(0, strcmp(wstrings->def_wstring4.data, "Hello'world!"));
   // EXPECT_EQ(0, strcmp(wstrings->def_wstring5.data, "Hello\"world!"));
   // since upper-bound checking is not implemented yet, we restrict the string copying
-
 
   rosidl_generator_c__msg__WStrings__destroy(wstr);
   return 0;
@@ -525,10 +794,10 @@ int test_arrays()
   // int32_values
   int32_t test_values_int32[ARR_SIZE] = {INT32_MIN / 2, 0L, INT32_MAX / 2};
   for (i = 0; i < ARR_SIZE; i++) {
-    arr->float32_values[i] = test_values_int32[i];
+    arr->int32_values[i] = test_values_int32[i];
   }
   for (i = 0; i < ARR_SIZE; i++) {
-    EXPECT_EQ(test_values_int32[i], arr->float32_values[i]);
+    EXPECT_EQ(test_values_int32[i], arr->int32_values[i]);
   }
 
   // uint32_values

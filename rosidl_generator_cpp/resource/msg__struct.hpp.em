@@ -1,12 +1,15 @@
 @# Included from rosidl_generator_cpp/resource/idl__struct.hpp.em
-// Protect against ERROR being predefined on Windows, in case somebody defines a
-// constant by that name.
+// Protect against common names being predefined on Windows, in case somebody defines
+// constants by these names.
 #if defined(_WIN32)
   #if defined(ERROR)
     #undef ERROR
   #endif
   #if defined(NO_ERROR)
     #undef NO_ERROR
+  #endif
+  #if defined(DELETE)
+    #undef DELETE
   #endif
 #endif
 @

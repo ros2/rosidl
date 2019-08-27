@@ -52,46 +52,8 @@ endif()
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
+  find_package(test_interface_files REQUIRED)
   ament_lint_auto_find_test_dependencies()
-
-  set(message_files
-    "msg/Bool.msg"
-    "msg/BoundedArrayNested.msg"
-    "msg/BoundedArrayPrimitives.msg"
-    "msg/Byte.msg"
-    "msg/Char.msg"
-    "msg/Constants.msg"
-    "msg/DynamicArrayNested.msg"
-    "msg/DynamicArrayPrimitives.msg"
-    "msg/DynamicArrayPrimitivesNested.msg"
-    "msg/Empty.msg"
-    "msg/Float32.msg"
-    "msg/Float64.msg"
-    "msg/Int16.msg"
-    "msg/Int32.msg"
-    "msg/Int64.msg"
-    "msg/Int8.msg"
-    "msg/Nested.msg"
-    "msg/PrimitivesBoundedArrays.msg"
-    "msg/Primitives.msg"
-    "msg/PrimitivesStaticArrays.msg"
-    "msg/PrimitivesUnboundedArrays.msg"
-    "msg/PrimitiveValues.msg"
-    "msg/StaticArrayNested.msg"
-    "msg/StaticArrayPrimitives.msg"
-    "msg/Strings.msg"
-    "msg/StringArrays.msg"
-    "msg/Telegram1.msg"
-    "msg/Telegram2.msg"
-    "msg/Uint16.msg"
-    "msg/Uint32.msg"
-    "msg/Uint64.msg"
-    "msg/Uint8.msg"
-    "msg/Various.msg"
-    "msg/Wire.msg"
-    "msg/WStrings.msg"
-    "srv/AddTwoInts.srv"
-  )
 
   include(cmake/register_c.cmake)
   # Trick ament_target_dependencies() into thinking this package has been found
@@ -105,7 +67,8 @@ if(BUILD_TESTING)
     "${CMAKE_CURRENT_SOURCE_DIR}/resource"
   )
 
-  rosidl_generate_interfaces(${PROJECT_NAME}_interfaces ${message_files}
+  rosidl_generate_interfaces(${PROJECT_NAME}_interfaces
+    ${test_interface_files_MSG_FILES}
     ADD_LINTER_TESTS
     SKIP_INSTALL
   )

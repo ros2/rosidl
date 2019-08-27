@@ -18,91 +18,78 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "rosidl_generator_c/msg/nested__struct.h"
-#include "rosidl_generator_c/msg/nested__functions.h"
-#include "rosidl_generator_c/msg/various__struct.h"
-#include "rosidl_generator_c/msg/various__functions.h"
-#include "rosidl_generator_c/primitives_sequence_functions.h"
-#include "rosidl_generator_c/string_functions.h"
+#include "rosidl_generator_c/msg/defaults__struct.h"
+#include "rosidl_generator_c/msg/defaults__functions.h"
 
 int func()
 {
-  rosidl_generator_c__msg__Various * msg = rosidl_generator_c__msg__Various__create();
+  rosidl_generator_c__msg__Defaults * msg = rosidl_generator_c__msg__Defaults__create();
   if (!msg) {
     fprintf(stderr, "failed to allocate message\n");
     return 1;
   }
 
-  if (msg->int8_value != -5) {
-    fprintf(stderr, "wrong default value\n");
+  if (msg->bool_value != true) {
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
-  if (msg->up_to_three_int32_values.data) {
-    fprintf(stderr, "wrong bounded array initialization\n");
-    return 1;
-  }
-  if (msg->up_to_three_int32_values.capacity) {
-    fprintf(stderr, "wrong bounded array initialization\n");
+  if (msg->byte_value != 50) {
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
-  if (!msg->up_to_three_int32_values_with_default_values.data) {
-    fprintf(stderr, "wrong bounded array with default values initialization\n");
-    return 1;
-  }
-  if (msg->up_to_three_int32_values_with_default_values.capacity != 2) {
-    fprintf(stderr, "wrong bounded array with default values initialization\n");
-    return 1;
-  }
-  if (msg->up_to_three_int32_values_with_default_values.data[0] != 5) {
-    fprintf(stderr, "wrong default value of bounded array\n");
-    return 1;
-  }
-  if (msg->up_to_three_int32_values_with_default_values.data[1] != 23) {
-    fprintf(stderr, "wrong default value of bounded array\n");
+  if (msg->float32_value != 1.125) {
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
-  bool success = rosidl_generator_c__uint64__Sequence__init(&msg->unbounded_uint64_values, 5);
-  if (!success) {
-    fprintf(stderr, "failed to allocate primitive array\n");
+  if (msg->float64_value != 1.125) {
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
-  success = rosidl_generator_c__msg__Nested__Sequence__init(&msg->unbounded_nested, 10);
-  if (!success) {
-    fprintf(stderr, "failed to allocate sub message array\n");
+  if (msg->int8_value != -50) {
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
-  if (msg->unbounded_nested.data[9].two_primitives[1].uint8_value != 23) {
-    fprintf(stderr, "wrong nested default value\n");
+  if (msg->uint8_value != 200) {
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
-  int cmp = strcmp(
-    msg->unbounded_nested.data[9].two_primitives[1].string_value_with_default.data, "default");
-  if (cmp != 0) {
-    fprintf(stderr, "wrong nested default string value\n");
+  if (msg->int16_value != -1000) {
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
-  success = rosidl_generator_c__String__assign(
-    &msg->unbounded_nested.data[9].two_primitives[0].string_value_with_default, "foo");
-  if (!success) {
-    fprintf(stderr, "failed to assign string\n");
+  if (msg->uint16_value != 2000) {
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
-  cmp = strcmp(
-    msg->unbounded_nested.data[9].two_primitives[0].string_value_with_default.data, "foo");
-  if (cmp != 0) {
-    fprintf(stderr, "assigned string has wrong value\n");
+  if (msg->int32_value != -30000) {
+    fprintf(stderr, "wrong default value!\n");
     return 1;
   }
 
-  rosidl_generator_c__msg__Various__destroy(msg);
+  if (msg->uint32_value != 60000) {
+    fprintf(stderr, "wrong default value!\n");
+    return 1;
+  }
+
+  if (msg->int64_value != -40000000) {
+    fprintf(stderr, "wrong default value!\n");
+    return 1;
+  }
+
+  if (msg->uint64_value != 50000000) {
+    fprintf(stderr, "wrong default value!\n");
+    return 1;
+  }
+
+  rosidl_generator_c__msg__Defaults__destroy(msg);
 
   return 0;
 }

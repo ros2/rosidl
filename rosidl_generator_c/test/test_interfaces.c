@@ -58,7 +58,7 @@
 const uint8_t test_values_byte[ARR_SIZE] = {0, 57, 110};
 const char test_values_char[ARR_SIZE] = {'a', '5', '#'};
 const float test_values_float32[ARR_SIZE] = {-3.000001f, 22143.541325f, 6331.00432f};
-const float test_values_float64[ARR_SIZE] = {
+const double test_values_float64[ARR_SIZE] = {
   -120310.00843902140001, 22143.54483920141325, 6331.0048392104432
 };
 const int8_t test_values_int8[ARR_SIZE] = {-50, 13, 110};

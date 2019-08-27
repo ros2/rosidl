@@ -18,7 +18,7 @@
 #include "rosidl_generator_cpp/srv/empty.hpp"
 
 TEST(Test_srv_initialization, no_arg_request_constructor) {
-  rosidl_generator_cpp::srv::Empty::Request empty;
+  rosidl_generator_cpp::srv::Empty::Response empty;
 
   rosidl_generator_cpp::srv::BasicTypes::Request basic_types;
   EXPECT_EQ(false, basic_types.bool_value);

@@ -185,8 +185,8 @@ TEST(Test_msg_initialization, skip_constructor) {
   SCOPE_EXIT(bounded->~BoundedSequences_(); delete[] memory);
 
   #ifndef _WIN32
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wstrict-aliasing"
+  #  pragma GCC diagnostic push
+  #  pragma GCC diagnostic ignored "-Wstrict-aliasing"
   #endif
   ASSERT_TRUE(std::all_of(bounded->float32_values_default.begin(),
     bounded->float32_values_default.end(), [](float i) {
@@ -200,7 +200,7 @@ TEST(Test_msg_initialization, skip_constructor) {
     }));
 
   #ifndef _WIN32
-  #pragma GCC diagnostic pop
+  #  pragma GCC diagnostic pop
   #endif
   ASSERT_EQ(0UL, bounded->float64_values_default.size());
   ASSERT_EQ(0UL, bounded->float32_values_default.size());

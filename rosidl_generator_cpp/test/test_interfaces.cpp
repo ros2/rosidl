@@ -23,8 +23,8 @@
 #include "test_array_generator.hpp"
 
 #include "rosidl_generator_cpp/msg/arrays.hpp"
-#include "rosidl_generator_cpp/msg/bounded_sequences.hpp"
 #include "rosidl_generator_cpp/msg/basic_types.hpp"
+#include "rosidl_generator_cpp/msg/bounded_sequences.hpp"
 #include "rosidl_generator_cpp/msg/constants.hpp"
 #include "rosidl_generator_cpp/msg/defaults.hpp"
 #include "rosidl_generator_cpp/msg/empty.hpp"

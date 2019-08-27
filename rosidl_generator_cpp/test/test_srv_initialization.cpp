@@ -14,33 +14,50 @@
 
 #include <gtest/gtest.h>
 
-#include "rosidl_generator_cpp/srv/complex_type_zero_fill.hpp"
+#include "rosidl_generator_cpp/srv/basic_types.hpp"
+#include "rosidl_generator_cpp/srv/empty.hpp"
 
 TEST(Test_srv_initialization, no_arg_request_constructor) {
-  rosidl_generator_cpp::srv::ComplexTypeZeroFill::Request def;
+  rosidl_generator_cpp::srv::Empty::Response empty;
 
-  ASSERT_EQ(2UL, def.req.size());
-  ASSERT_EQ(0UL, def.req[0].x);
-  ASSERT_EQ(0UL, def.req[1].x);
-  ASSERT_EQ(45UL, def.req[0].y);
-  ASSERT_EQ(45UL, def.req[1].y);
-  ASSERT_EQ(0UL, def.req[0].z);
-  ASSERT_EQ(0UL, def.req[1].z);
+  rosidl_generator_cpp::srv::BasicTypes::Request basic_types;
+  EXPECT_EQ(false, basic_types.bool_value);
+  EXPECT_EQ(0, basic_types.byte_value);
+  EXPECT_EQ(0, basic_types.char_value);
+  EXPECT_EQ(0.0f, basic_types.float32_value);
+  EXPECT_EQ(0.0, basic_types.float64_value);
+  EXPECT_EQ(0, basic_types.int8_value);
+  EXPECT_EQ(0u, basic_types.uint8_value);
+  EXPECT_EQ(0, basic_types.int16_value);
+  EXPECT_EQ(0u, basic_types.uint16_value);
+  EXPECT_EQ(0, basic_types.int32_value);
+  EXPECT_EQ(0u, basic_types.uint32_value);
+  EXPECT_EQ(0, basic_types.int64_value);
+  EXPECT_EQ(0u, basic_types.uint64_value);
+  EXPECT_EQ("", basic_types.string_value);
 }
 
 TEST(Test_srv_initialization, no_arg_response_constructor) {
-  rosidl_generator_cpp::srv::ComplexTypeZeroFill::Response def;
+  rosidl_generator_cpp::srv::Empty::Request empty;
 
-  ASSERT_EQ(2UL, def.reply.size());
-  ASSERT_EQ(0UL, def.reply[0].x);
-  ASSERT_EQ(0UL, def.reply[1].x);
-  ASSERT_EQ(45UL, def.reply[0].y);
-  ASSERT_EQ(45UL, def.reply[1].y);
-  ASSERT_EQ(0UL, def.reply[0].z);
-  ASSERT_EQ(0UL, def.reply[1].z);
+  rosidl_generator_cpp::srv::BasicTypes::Response basic_types;
+  EXPECT_EQ(false, basic_types.bool_value);
+  EXPECT_EQ(0, basic_types.byte_value);
+  EXPECT_EQ(0, basic_types.char_value);
+  EXPECT_EQ(0.0f, basic_types.float32_value);
+  EXPECT_EQ(0.0, basic_types.float64_value);
+  EXPECT_EQ(0, basic_types.int8_value);
+  EXPECT_EQ(0u, basic_types.uint8_value);
+  EXPECT_EQ(0, basic_types.int16_value);
+  EXPECT_EQ(0u, basic_types.uint16_value);
+  EXPECT_EQ(0, basic_types.int32_value);
+  EXPECT_EQ(0u, basic_types.uint32_value);
+  EXPECT_EQ(0, basic_types.int64_value);
+  EXPECT_EQ(0u, basic_types.uint64_value);
+  EXPECT_EQ("", basic_types.string_value);
 }
 
 // Note that we very specifically don't add tests for some of the other
-// possibilities here (more primitive types, unbounded arrays, other
+// possibilities here (bounded strings, bounded / unbounded arrays, other
 // initialization parameters, etc).  That's because that is all tested in
 // test_msg_initialization.cpp, so we don't need to repeat it here.

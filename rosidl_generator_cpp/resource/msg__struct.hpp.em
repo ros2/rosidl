@@ -22,7 +22,7 @@ from rosidl_parser.definition import UNSIGNED_INTEGER_TYPES
 message_typename = '::'.join(message.structure.namespaced_type.namespaced_name())
 
 # Common Windows macros that may interfere with user defined constants
-msvc_common_macros = ('ERROR', 'NO_ERROR', 'DELETE')
+msvc_common_macros = ('DELETE', 'ERROR', 'NO_ERROR')
 }@
 @
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

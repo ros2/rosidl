@@ -1,15 +1,4 @@
 @# Included from rosidl_generator_cpp/resource/idl__struct.hpp.em
-// Protect against ERROR being predefined on Windows, in case somebody defines a
-// constant by that name.
-#if defined(_WIN32)
-  #if defined(ERROR)
-    #undef ERROR
-  #endif
-  #if defined(NO_ERROR)
-    #undef NO_ERROR
-  #endif
-#endif
-@
 @{
 from rosidl_generator_cpp import create_init_alloc_and_member_lists
 from rosidl_generator_cpp import escape_string
@@ -31,6 +20,9 @@ from rosidl_parser.definition import OCTET_TYPE
 from rosidl_parser.definition import UNSIGNED_INTEGER_TYPES
 
 message_typename = '::'.join(message.structure.namespaced_type.namespaced_name())
+
+# Common Windows macros that may interfere with user defined constants
+msvc_common_macros = ('DELETE', 'ERROR', 'NO_ERROR')
 }@
 @
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -260,6 +252,15 @@ non_defaulted_zero_initialized_members = [
 
   // constant declarations
 @[for constant in message.constants]@
+@[ if constant.name in msvc_common_macros]@
+  // guard against '@(constant.name)' being predefined by MSVC by temporarily undefining it
+#if defined(_WIN32)
+#  if defined(@(constant.name))
+#    pragma push_macro("@(constant.name)")
+#    undef @(constant.name)
+#  endif
+#endif
+@[ end if]@
 @[ if isinstance(constant.type, AbstractString)]@
   static const @(MSG_TYPE_TO_CPP['string']) @(constant.name);
 @[ elif isinstance(constant.type, AbstractWString)]@
@@ -274,6 +275,12 @@ u@
 @[  else]@
     @(constant.value);
 @[  end if]@
+@[ end if]@
+@[ if constant.name in msvc_common_macros]@
+#if defined(_WIN32)
+#  pragma warning(suppress : 4602)
+#  pragma pop_macro("@(constant.name)")
+#endif
 @[ end if]@
 @[end for]@
 
@@ -339,6 +346,15 @@ using @(message.structure.namespaced_type.name) =
 
 // constant definitions
 @[for c in message.constants]@
+@[ if c.name in msvc_common_macros]@
+// guard against '@(c.name)' being predefined by MSVC by temporarily undefining it
+#if defined(_WIN32)
+#  if defined(@(c.name))
+#    pragma push_macro("@(c.name)")
+#    undef @(c.name)
+#  endif
+#endif
+@[ end if]@
 @[ if isinstance(c.type, AbstractString)]@
 template<typename ContainerAllocator>
 const @(MSG_TYPE_TO_CPP['string'])
@@ -350,6 +366,12 @@ const @(MSG_TYPE_TO_CPP['wstring'])
 @[ else ]@
 template<typename ContainerAllocator>
 constexpr @(MSG_TYPE_TO_CPP[c.type.typename]) @(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name);
+@[ end if]@
+@[ if c.name in msvc_common_macros]@
+#if defined(_WIN32)
+#  pragma warning(suppress : 4602)
+#  pragma pop_macro("@(c.name)")
+#endif
 @[ end if]@
 @[end for]@
 @

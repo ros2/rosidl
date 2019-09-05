@@ -46,7 +46,9 @@ else:
 @[end if]@
 @#
 @[if msg.annotations.get('comment', [])]@
-    @@verbatim (language="comment", text=@(string_to_idl_string_literal('\n'.join(msg.annotations['comment']))))
+@[    for comment in msg.annotations['comment']]@
+    @@verbatim (language="comment", text=@(string_to_idl_string_literal(comment)))
+@[    end for]@
 @[end if]@
     struct @(msg.msg_name) {
 @[if msg.fields]@
@@ -55,7 +57,9 @@ else:
 
 @[end if]@
 @[    if field.annotations.get('comment', [])]@
-      @@verbatim (language="comment", text=@(string_to_idl_string_literal('\n'.join(field.annotations['comment']))))
+@[        for comment in field.annotations['comment']]@
+      @@verbatim (language="comment", text=@(string_to_idl_string_literal(comment)))
+@[        end for]@
 @[    end if]@
 @[    if field.default_value is not None]@
       @@default (value=@(to_idl_literal(get_idl_type(field.type), field.default_value)))

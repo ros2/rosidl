@@ -39,6 +39,6 @@ def test_parse_message_file():
             handle.write('\nbool foo')
         with pytest.raises(ValueError) as e:
             parse_message_file('pkg', filename)
-        assert 'foo' in str(e)
+        assert 'foo' in str(e.value)
     finally:
         shutil.rmtree(path)

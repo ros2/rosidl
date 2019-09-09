@@ -20,6 +20,7 @@ module rosidl_parser {
       @key
       @range ( min=-10, max=10 )
       long long_value;
+      @verbatim (language="comment", text="")
       unsigned long unsigned_long_value;
       long long long_long_value;
       unsigned long long unsigned_long_long_value;

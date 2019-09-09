@@ -589,6 +589,8 @@ def get_floating_pt_literal_value(floating_pt_literal):
 
 
 def get_string_literal_value(string_literal, *, allow_unicode=False):
+    if len(string_literal.children) == 0:
+        return ''
     assert len(string_literal.children) == 1
     child = string_literal.children[0]
     assert isinstance(child, Token)

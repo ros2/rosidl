@@ -535,6 +535,18 @@ def parse_message_string(pkg_name, msg_name, message_string):
 def process_comments(instance):
     if 'comment' in instance.annotations:
         lines = instance.annotations['comment']
+
+        # look for a unit in brackets
+        # the unit should not contains a comma since it might be a range
+        comment = '\n'.join(lines)
+        pattern = r'(\s*\[([^,\]]+)\])'
+        matches = re.findall(pattern, comment)
+        if len(matches) == 1:
+            instance.annotations['unit'] = matches[0][1]
+            # remove the unit from the comment
+            for i, line in enumerate(lines):
+                lines[i] = line.replace(matches[0][0], '')
+
         # remove empty leading lines
         while lines and lines[0] == '':
             del lines[0]
@@ -550,16 +562,6 @@ def process_comments(instance):
                 length -= 1
                 continue
             i += 1
-        # look for a unit in brackets
-        # the unit should not contains a comma since it might be a range
-        comment = '\n'.join(lines)
-        pattern = r'(\s*\[([^,\]]+)\])'
-        matches = re.findall(pattern, comment)
-        if len(matches) == 1:
-            instance.annotations['unit'] = matches[0][1]
-            # remove the unit from the comment
-            for i, line in enumerate(lines):
-                lines[i] = line.replace(matches[0][0], '')
 
 
 def parse_value_string(type_, value_string):

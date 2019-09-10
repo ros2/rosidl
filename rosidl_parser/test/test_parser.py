@@ -159,7 +159,7 @@ def test_message_parser_annotations(message_idl_file):
     assert structure.annotations[0].value['language'] == 'comment'
     assert 'text' in structure.annotations[0].value
     assert structure.annotations[0].value['text'] == \
-        'Documentation of MyMessage.'
+        'Documentation of MyMessage.Adjacent string literal.'
 
     assert len(structure.members[2].annotations) == 1
 

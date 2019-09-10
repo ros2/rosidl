@@ -556,13 +556,13 @@ def get_const_expr_value(const_expr):
         assert child.data in ('boolean_literal_true', 'boolean_literal_false')
         return child.data == 'boolean_literal_true'
 
-    if child.data == 'string_literal':
+    if child.data == 'string_literals':
         assert not negate_value
-        return get_string_literal_value(child, allow_unicode=False)
+        return get_string_literals_value(child, allow_unicode=False)
 
-    if child.data == 'wide_string_literal':
+    if child.data == 'wide_string_literals':
         assert not negate_value
-        return get_string_literal_value(child, allow_unicode=True)
+        return get_string_literals_value(child, allow_unicode=True)
 
     assert False, 'Unsupported tree: ' + str(const_expr)
 
@@ -586,6 +586,15 @@ def get_floating_pt_literal_value(floating_pt_literal):
         else:
             assert False, 'Unsupported tree: ' + str(floating_pt_literal)
     return float(value)
+
+
+def get_string_literals_value(string_literals, *, allow_unicode=False):
+    assert len(string_literals.children) > 0
+    value = ''
+    for string_literal in string_literals.children:
+        value += get_string_literal_value(
+            string_literal, allow_unicode=allow_unicode)
+    return value
 
 
 def get_string_literal_value(string_literal, *, allow_unicode=False):

@@ -65,6 +65,9 @@ _FORMATTING_CHARACTERS: "\t" | "\n" | "\r"
 _ESCAPE_SEQUENCES: "\\n" | "\\t" | "\\v" | "\\b" | "\\r" | "\\f" | "\\a" | "\\\\" | "\\?" | "\\'" | "\\\"" | "\\" "0".."7" "0".."7" | "\\x" HEXDIGIT HEXDIGIT | "\\" HEXDIGIT HEXDIGIT HEXDIGIT HEXDIGIT
 
 // 7.2.6.3 String Literals
+// adjacent string literals are concatenated
+string_literals: string_literal+
+wide_string_literals: wide_string_literal+
 // string_literal: "\"" CHAR* "\""
 // wide_string_literal:  "L\"" CHAR* "\""
 // replace precise rules based on the spec with regex for parsing performance
@@ -186,8 +189,8 @@ literal.2: integer_literal
   | character_literal
   | wide_character_literal
   | boolean_literal
-  | string_literal
-  | wide_string_literal
+  | string_literals
+  | wide_string_literals
 
 // (18)
 boolean_literal: boolean_literal_true

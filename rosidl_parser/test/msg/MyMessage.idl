@@ -12,7 +12,7 @@ module rosidl_parser {
       const wstring WSTRING_CONSTANT = "wstring_value_\u2122";
     };
 
-    @verbatim ( language="comment", text="Documentation of MyMessage." )
+    @verbatim ( language="comment", text="Documentation of MyMessage." "Adjacent string literal." )
     struct MyMessage {
       short short_value, short_value2;
       @default ( value=123 )

@@ -30,6 +30,9 @@ struct has_fixed_size : std::false_type {};
 template<typename T>
 struct has_bounded_size : std::false_type {};
 
+template<typename T>
+struct is_message: std::false_type {};
+
 }  // namespace rosidl_generator_traits
 
 #endif  // ROSIDL_GENERATOR_CPP__TRAITS_HPP_

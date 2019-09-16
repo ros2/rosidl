@@ -77,6 +77,14 @@ TEMPLATE(
 @{
 from rosidl_parser.definition import Action
 }@
+@[if len(content.get_elements_of_type(Action)) > 0]@
+@{
+include_directives.add("unique_identifier_msgs/msg/uuid__struct.h")
+}@
+
+typedef struct unique_identifier_msgs__msg__UUID unique_identifier_msgs__msg__UUID;
+
+@[end if]@
 @[for action in content.get_elements_of_type(Action)]@
 @{
 TEMPLATE(

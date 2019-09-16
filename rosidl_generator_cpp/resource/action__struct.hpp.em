@@ -6,14 +6,36 @@ from rosidl_parser.definition import ACTION_GOAL_SERVICE_SUFFIX
 from rosidl_parser.definition import ACTION_GOAL_SUFFIX
 from rosidl_parser.definition import ACTION_RESULT_SERVICE_SUFFIX
 from rosidl_parser.definition import ACTION_RESULT_SUFFIX
-action_includes = (
-    'action_msgs/srv/cancel_goal.hpp',
-    'action_msgs/msg/goal_info.hpp',
-    'action_msgs/msg/goal_status_array.hpp',
-)
+
 action_name = '::'.join(action.namespaced_type.namespaced_name())
 }@
+// forward declare action type dependencies
+namespace action_msgs
+{
+namespace msg
+{
+struct GoalStatusArray;
+}
+namespace srv
+{
+struct CancelGoal;
+}
+}
+namespace unique_identifier_msgs
+{
+namespace msg
+{
+template<typename AllocatorType>
+struct UUID_;
+
+struct UUID;
+}
+}
 @{
+# add forward declared dependencies so they are not included
+include_directives.add("action_msgs/msg/goal_status_array.hpp")
+include_directives.add("action_msgs/srv/cancel_goal.hpp")
+include_directives.add("unique_identifier_msgs/msg/uuid__struct.hpp")
 TEMPLATE(
     'msg__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
@@ -54,16 +76,6 @@ TEMPLATE(
     package_name=package_name, interface_path=interface_path,
     message=action.feedback_message, include_directives=include_directives)
 }@
-
-@[for header_file in action_includes]@
-@[    if header_file in include_directives]@
-// already included above
-// @
-@[    else]@
-@{include_directives.add(header_file)}@
-@[    end if]@
-#include "@(header_file)"
-@[end for]@
 
 @[for ns in action.namespaced_type.namespaces]@
 namespace @(ns)

@@ -15,7 +15,7 @@
 #include <gtest/gtest.h>
 #include "rosidl_generator_cpp/msg/empty.hpp"
 #include "rosidl_generator_cpp/msg/string.hpp"
-#include "rosidl_generator_cpp/srv/string.hpp"
+#include "rosidl_generator_cpp/srv/complex_type_zero_fill.hpp"
 
 using rosidl_generator_traits::is_message;
 using rosidl_generator_traits::is_service;
@@ -53,24 +53,24 @@ TEST(Test_rosidl_generator_traits, is_message) {
 }
 
 TEST(Test_rosidl_generator_traits, is_service) {
-  using String = rosidl_generator_cpp::srv::String;
-  using StringReq = String::Request;
-  using StringResp = String::Response;
+  using Service = rosidl_generator_cpp::srv::ComplexTypeZeroFill;
+  using ServiceReq = Service::Request;
+  using ServiceResp = Service::Response;
 
-  ASSERT_TRUE(is_service<String>());
-  ASSERT_FALSE(is_message<String>());
-  ASSERT_FALSE(is_service_request<String>());
-  ASSERT_FALSE(is_service_response<String>());
+  ASSERT_TRUE(is_service<Service>());
+  ASSERT_FALSE(is_message<Service>());
+  ASSERT_FALSE(is_service_request<Service>());
+  ASSERT_FALSE(is_service_response<Service>());
 
   // Requests are additionally messages
-  ASSERT_FALSE(is_service<StringReq>());
-  ASSERT_TRUE(is_message<StringReq>());
-  ASSERT_TRUE(is_service_request<StringReq>());
-  ASSERT_FALSE(is_service_response<StringReq>());
+  ASSERT_FALSE(is_service<ServiceReq>());
+  ASSERT_TRUE(is_message<ServiceReq>());
+  ASSERT_TRUE(is_service_request<ServiceReq>());
+  ASSERT_FALSE(is_service_response<ServiceReq>());
 
   // Responses are additionally messages
-  ASSERT_FALSE(is_service<StringResp>());
-  ASSERT_TRUE(is_message<StringResp>());
-  ASSERT_FALSE(is_service_request<StringResp>());
-  ASSERT_TRUE(is_service_response<StringResp>());
+  ASSERT_FALSE(is_service<ServiceResp>());
+  ASSERT_TRUE(is_message<ServiceResp>());
+  ASSERT_FALSE(is_service_request<ServiceResp>());
+  ASSERT_TRUE(is_service_response<ServiceResp>());
 }

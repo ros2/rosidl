@@ -70,44 +70,9 @@ from rosidl_parser.definition import Action
 @[for action in content.get_elements_of_type(Action)]@
 @{
 TEMPLATE(
-    'msg__traits.hpp.em',
+    'action__traits.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.goal, include_directives=include_directives)
-}@
-
-@{
-TEMPLATE(
-    'msg__traits.hpp.em',
-    package_name=package_name, interface_path=interface_path,
-    message=action.result, include_directives=include_directives)
-}@
-
-@{
-TEMPLATE(
-    'msg__traits.hpp.em',
-    package_name=package_name, interface_path=interface_path,
-    message=action.feedback, include_directives=include_directives)
-}@
-
-@{
-TEMPLATE(
-    'srv__traits.hpp.em',
-    package_name=package_name, interface_path=interface_path,
-    service=action.send_goal_service, include_directives=include_directives)
-}@
-
-@{
-TEMPLATE(
-    'srv__traits.hpp.em',
-    package_name=package_name, interface_path=interface_path,
-    service=action.get_result_service, include_directives=include_directives)
-}@
-
-@{
-TEMPLATE(
-    'msg__traits.hpp.em',
-    package_name=package_name, interface_path=interface_path,
-    message=action.feedback_message, include_directives=include_directives)
+    action=action, include_directives=include_directives)
 }@
 
 @[end for]@

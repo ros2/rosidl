@@ -191,9 +191,14 @@ class BaseType:
                 self.pkg_name = context_package_name
                 self.type = type_string
             if not is_valid_package_name(self.pkg_name):
-                raise InvalidResourceName(self.pkg_name)
+                raise InvalidResourceName(
+                    "'{}' is an invalid package name. It should have the pattern '{}'".format(
+                        self.pkg_name, VALID_PACKAGE_NAME_PATTERN.pattern))
             if not is_valid_message_name(self.type):
-                raise InvalidResourceName(self.type)
+                raise InvalidResourceName(
+                    "'{}' is an invalid message name. It should have the pattern '{}'".format(
+                        self.type, VALID_MESSAGE_NAME_PATTERN.pattern))
+
             self.string_upper_bound = None
 
     def is_primitive_type(self):
@@ -305,7 +310,9 @@ class Constant:
                             primitive_type)
         self.type = primitive_type
         if not is_valid_constant_name(name):
-            raise NameError("the constant name '%s' is not valid" % name)
+            raise NameError(
+                "'{}' is an invalid constant name. It should have the pattern '{}'".format(
+                    name, VALID_CONSTANT_NAME_PATTERN.pattern))
         self.name = name
         if value_string is None:
             raise ValueError("the constant value must not be 'None'")
@@ -337,7 +344,9 @@ class Field:
                 "the field type '%s' must be a 'Type' instance" % type_)
         self.type = type_
         if not is_valid_field_name(name):
-            raise NameError("the field name '%s' is not valid" % name)
+            raise NameError(
+                "'{}' is an invalid field name. It should have the pattern '{}'".format(
+                    name, VALID_FIELD_NAME_PATTERN.pattern))
         self.name = name
         if default_value_string is None:
             self.default_value = None

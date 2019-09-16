@@ -31,7 +31,28 @@ template<typename T>
 struct has_bounded_size : std::false_type {};
 
 template<typename T>
-struct is_message: std::false_type {};
+struct is_message : std::false_type {};
+
+template<typename T>
+struct is_service : std::false_type {};
+
+template<typename T>
+struct is_service_request : std::false_type {};
+
+template<typename T>
+struct is_service_response : std::false_type {};
+
+template<typename T>
+struct is_action : std::false_type {};
+
+template<typename T>
+struct is_action_goal : std::false_type {};
+
+template<typename T>
+struct is_action_result : std::false_type {};
+
+template<typename T>
+struct is_action_feedback : std::false_type {};
 
 }  // namespace rosidl_generator_traits
 

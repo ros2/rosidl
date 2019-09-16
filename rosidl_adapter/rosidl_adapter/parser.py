@@ -192,11 +192,11 @@ class BaseType:
                 self.type = type_string
             if not is_valid_package_name(self.pkg_name):
                 raise InvalidResourceName(
-                    "'{}' is an invalid package name. It should have the pattern {}".format(
+                    "'{}' is an invalid package name. It should have the pattern '{}'".format(
                         self.pkg_name, VALID_PACKAGE_NAME_PATTERN.pattern))
             if not is_valid_message_name(self.type):
                 raise InvalidResourceName(
-                    "'{}' is an invalid message name. It should have the pattern {}".format(
+                    "'{}' is an invalid message name. It should have the pattern '{}'".format(
                         self.type, VALID_MESSAGE_NAME_PATTERN.pattern))
 
             self.string_upper_bound = None
@@ -311,7 +311,7 @@ class Constant:
         self.type = primitive_type
         if not is_valid_constant_name(name):
             raise NameError(
-                "'{}' is an invalid constant name. It should have the pattern {}".format(
+                "'{}' is an invalid constant name. It should have the pattern '{}'".format(
                     name, VALID_CONSTANT_NAME_PATTERN.pattern))
         self.name = name
         if value_string is None:
@@ -345,7 +345,7 @@ class Field:
         self.type = type_
         if not is_valid_field_name(name):
             raise NameError(
-                "'{}' is an invalid field name. It should have the pattern {}".format(
+                "'{}' is an invalid field name. It should have the pattern '{}'".format(
                     name, VALID_FIELD_NAME_PATTERN.pattern))
         self.name = name
         if default_value_string is None:

@@ -1,0 +1,9 @@
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package rosidl_cmake
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+0.8.0 (2019-09-24)
+------------------
+* use latin-1 encoding when reading/writing .idl files, prepend BOM to generated C/C++ files when necessary (`#391 <https://github.com/ros2/rosidl/issues/391>`_)
+* fix CMake linter warning (`#382 <https://github.com/ros2/rosidl/issues/382>`_)
+* Contributors: Dirk Thomas

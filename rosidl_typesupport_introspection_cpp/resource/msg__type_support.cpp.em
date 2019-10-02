@@ -49,12 +49,12 @@ namespace @(ns)
 namespace rosidl_typesupport_introspection_cpp
 {
 
-void init_function__@(message.structure.namespaced_type.name)(void * message_memory, bool default_initialize)
+void @(message.structure.namespaced_type.name)_init_function(void * message_memory, bool default_initialize)
 {
   new (message_memory) @('::'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]));
 }
 
-void fini_function__@(message.structure.namespaced_type.name)(void * message_memory)
+void @(message.structure.namespaced_type.name)_fini_function(void * message_memory)
 {
   auto typed_message = static_cast<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name])) *>(message_memory);
   typed_message->~@(message.structure.namespaced_type.name)();
@@ -198,8 +198,8 @@ static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(message.st
   @(len(message.structure.members)),  // number of fields
   sizeof(@('::'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))),
   @(message.structure.namespaced_type.name)_message_member_array,  // message members
-  init_function__@(message.structure.namespaced_type.name),  // function to initialize message memory (memory has to be allocated)
-  fini_function__@(message.structure.namespaced_type.name)  // function to terminate message instance (will not free memory)
+  @(message.structure.namespaced_type.name)_init_function,  // function to initialize message memory (memory has to be allocated)
+  @(message.structure.namespaced_type.name)_fini_function  // function to terminate message instance (will not free memory)
 };
 
 static const rosidl_message_type_support_t @(message.structure.namespaced_type.name)_message_type_support_handle = {

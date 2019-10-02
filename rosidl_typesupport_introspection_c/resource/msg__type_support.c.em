@@ -42,6 +42,7 @@ function_prefix = message.structure.namespaced_type.name + '__rosidl_typesupport
 #include "@(header_file)"
 @[    end if]@
 @[end for]@
+
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 @# Collect necessary include directives for all members
 @{
@@ -112,12 +113,12 @@ extern "C"
 @#######################################################################
 @# define callback functions
 @#######################################################################
-void @(function_prefix)__init_function(void * message_memory, bool default_initialize)
+void @(function_prefix)__@(message.structure.namespaced_type.name)_init_function(void * message_memory, bool default_initialize)
 {
   @('__'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))__init(message_memory);
 }
 
-void @(function_prefix)__fini_function(void * message_memory)
+void @(function_prefix)__@(message.structure.namespaced_type.name)_fini_function(void * message_memory)
 {
   @('__'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))__fini(message_memory);
 }
@@ -250,8 +251,8 @@ static const rosidl_typesupport_introspection_c__MessageMembers @(function_prefi
   @(len(message.structure.members)),  // number of fields
   sizeof(@('__'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))),
   @(function_prefix)__@(message.structure.namespaced_type.name)_message_member_array,  // message members
-  @(function_prefix)__init_function,  // function to initialize message memory (memory has to be allocated)
-  @(function_prefix)__fini_function  // function to terminate message instance (will not free memory)
+  @(function_prefix)__@(message.structure.namespaced_type.name)_init_function,  // function to initialize message memory (memory has to be allocated)
+  @(function_prefix)__@(message.structure.namespaced_type.name)_fini_function  // function to terminate message instance (will not free memory)
 };
 
 // this is not const since it must be initialized on first access

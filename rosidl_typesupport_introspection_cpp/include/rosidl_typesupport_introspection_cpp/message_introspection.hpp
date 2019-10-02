@@ -49,6 +49,8 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMembers
   uint32_t member_count_;
   size_t size_of_;
   const MessageMember * members_;
+  void (* init_function)(void *, bool);
+  void (* fini_function)(void *);
 } MessageMembers;
 
 }  // namespace rosidl_typesupport_introspection_cpp

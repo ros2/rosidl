@@ -116,7 +116,7 @@ extern "C"
 void @(function_prefix)__@(message.structure.namespaced_type.name)_init_function(
   void * message_memory, enum rosidl_runtime_c_message_initialization _init)
 {
-  // initializers are not yet implemented for typesupport c
+  // TODO(karsten1987): initializers are not yet implemented for typesupport c
   // see https://github.com/ros2/ros2/issues/397
   (void) _init;
   @('__'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))__init(message_memory);

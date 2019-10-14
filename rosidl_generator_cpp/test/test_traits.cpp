@@ -33,23 +33,23 @@ struct rosidl_generator_traits::is_message<Message2>: std::true_type {};
 
 TEST(Test_rosidl_generator_traits, is_message) {
   // A message is not a service
-  ASSERT_TRUE(is_message<rosidl_generator_cpp::msg::Empty>());
-  ASSERT_FALSE(is_service<rosidl_generator_cpp::msg::Empty>());
-  ASSERT_FALSE(is_service_request<rosidl_generator_cpp::msg::Empty>());
-  ASSERT_FALSE(is_service_response<rosidl_generator_cpp::msg::Empty>());
+  EXPECT_TRUE(is_message<rosidl_generator_cpp::msg::Empty>());
+  EXPECT_FALSE(is_service<rosidl_generator_cpp::msg::Empty>());
+  EXPECT_FALSE(is_service_request<rosidl_generator_cpp::msg::Empty>());
+  EXPECT_FALSE(is_service_response<rosidl_generator_cpp::msg::Empty>());
 
   // A message is not a service
-  ASSERT_TRUE(is_message<rosidl_generator_cpp::msg::String>());
-  ASSERT_FALSE(is_service<rosidl_generator_cpp::msg::String>());
-  ASSERT_FALSE(is_service_request<rosidl_generator_cpp::msg::String>());
-  ASSERT_FALSE(is_service_response<rosidl_generator_cpp::msg::String>());
+  EXPECT_TRUE(is_message<rosidl_generator_cpp::msg::String>());
+  EXPECT_FALSE(is_service<rosidl_generator_cpp::msg::String>());
+  EXPECT_FALSE(is_service_request<rosidl_generator_cpp::msg::String>());
+  EXPECT_FALSE(is_service_response<rosidl_generator_cpp::msg::String>());
 
   // Other datatypes should have is_message == false
-  ASSERT_FALSE(is_message<double>());
-  ASSERT_FALSE(is_message<Message>());
+  EXPECT_FALSE(is_message<double>());
+  EXPECT_FALSE(is_message<Message>());
 
   // Unless the template has been specifically instantiated for the type
-  ASSERT_TRUE(is_message<Message2>());
+  EXPECT_TRUE(is_message<Message2>());
 }
 
 TEST(Test_rosidl_generator_traits, is_service) {
@@ -57,20 +57,20 @@ TEST(Test_rosidl_generator_traits, is_service) {
   using ServiceReq = Service::Request;
   using ServiceResp = Service::Response;
 
-  ASSERT_TRUE(is_service<Service>());
-  ASSERT_FALSE(is_message<Service>());
-  ASSERT_FALSE(is_service_request<Service>());
-  ASSERT_FALSE(is_service_response<Service>());
+  EXPECT_TRUE(is_service<Service>());
+  EXPECT_FALSE(is_message<Service>());
+  EXPECT_FALSE(is_service_request<Service>());
+  EXPECT_FALSE(is_service_response<Service>());
 
   // Requests are additionally messages
-  ASSERT_FALSE(is_service<ServiceReq>());
-  ASSERT_TRUE(is_message<ServiceReq>());
-  ASSERT_TRUE(is_service_request<ServiceReq>());
-  ASSERT_FALSE(is_service_response<ServiceReq>());
+  EXPECT_FALSE(is_service<ServiceReq>());
+  EXPECT_TRUE(is_message<ServiceReq>());
+  EXPECT_TRUE(is_service_request<ServiceReq>());
+  EXPECT_FALSE(is_service_response<ServiceReq>());
 
   // Responses are additionally messages
-  ASSERT_FALSE(is_service<ServiceResp>());
-  ASSERT_TRUE(is_message<ServiceResp>());
-  ASSERT_FALSE(is_service_request<ServiceResp>());
-  ASSERT_TRUE(is_service_response<ServiceResp>());
+  EXPECT_FALSE(is_service<ServiceResp>());
+  EXPECT_TRUE(is_message<ServiceResp>());
+  EXPECT_FALSE(is_service_request<ServiceResp>());
+  EXPECT_TRUE(is_service_response<ServiceResp>());
 }

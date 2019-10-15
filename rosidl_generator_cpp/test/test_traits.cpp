@@ -14,8 +14,8 @@
 
 #include <gtest/gtest.h>
 #include "rosidl_generator_cpp/msg/empty.hpp"
-#include "rosidl_generator_cpp/msg/string.hpp"
-#include "rosidl_generator_cpp/srv/complex_type_zero_fill.hpp"
+#include "rosidl_generator_cpp/msg/strings.hpp"
+#include "rosidl_generator_cpp/srv/empty.hpp"
 
 using rosidl_generator_traits::is_message;
 using rosidl_generator_traits::is_service;
@@ -33,16 +33,18 @@ struct rosidl_generator_traits::is_message<Message2>: std::true_type {};
 
 TEST(Test_rosidl_generator_traits, is_message) {
   // A message is not a service
-  EXPECT_TRUE(is_message<rosidl_generator_cpp::msg::Empty>());
-  EXPECT_FALSE(is_service<rosidl_generator_cpp::msg::Empty>());
-  EXPECT_FALSE(is_service_request<rosidl_generator_cpp::msg::Empty>());
-  EXPECT_FALSE(is_service_response<rosidl_generator_cpp::msg::Empty>());
+  using Empty = rosidl_generator_cpp::msg::Empty;
+  EXPECT_TRUE(is_message<Empty>());
+  EXPECT_FALSE(is_service<Empty>());
+  EXPECT_FALSE(is_service_request<Empty>());
+  EXPECT_FALSE(is_service_response<Empty>());
 
   // A message is not a service
-  EXPECT_TRUE(is_message<rosidl_generator_cpp::msg::String>());
-  EXPECT_FALSE(is_service<rosidl_generator_cpp::msg::String>());
-  EXPECT_FALSE(is_service_request<rosidl_generator_cpp::msg::String>());
-  EXPECT_FALSE(is_service_response<rosidl_generator_cpp::msg::String>());
+  using Strings = rosidl_generator_cpp::msg::Strings;
+  EXPECT_TRUE(is_message<Strings>());
+  EXPECT_FALSE(is_service<Strings>());
+  EXPECT_FALSE(is_service_request<Strings>());
+  EXPECT_FALSE(is_service_response<Strings>());
 
   // Other datatypes should have is_message == false
   EXPECT_FALSE(is_message<double>());
@@ -53,7 +55,7 @@ TEST(Test_rosidl_generator_traits, is_message) {
 }
 
 TEST(Test_rosidl_generator_traits, is_service) {
-  using Service = rosidl_generator_cpp::srv::ComplexTypeZeroFill;
+  using Service = rosidl_generator_cpp::srv::Empty;
   using ServiceReq = Service::Request;
   using ServiceResp = Service::Response;
 

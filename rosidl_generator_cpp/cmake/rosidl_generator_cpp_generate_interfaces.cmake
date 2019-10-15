@@ -42,6 +42,7 @@ set(target_dependencies
   "${rosidl_generator_cpp_BIN}"
   ${rosidl_generator_cpp_GENERATOR_FILES}
   "${rosidl_generator_cpp_TEMPLATE_DIR}/action__struct.hpp.em"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/action__traits.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/idl.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/idl__struct.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/idl__traits.hpp.em"

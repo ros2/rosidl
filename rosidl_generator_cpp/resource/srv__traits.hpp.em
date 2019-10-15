@@ -46,4 +46,22 @@ struct has_bounded_size<@(service_typename)>
 {
 };
 
+template<>
+struct is_service<@(service_typename)>
+  : std::true_type
+{
+};
+
+template<>
+struct is_service_request<@(service_typename)_Request>
+  : std::true_type
+{
+};
+
+template<>
+struct is_service_response<@(service_typename)_Response>
+  : std::true_type
+{
+};
+
 }  // namespace rosidl_generator_traits

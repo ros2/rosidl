@@ -114,4 +114,8 @@ template<>
 struct has_bounded_size<@(message_typename)>
   : std::integral_constant<bool, @(bounded_template_string)> {};
 
+template<>
+struct is_message<@(message_typename)>
+  : std::true_type {};
+
 }  // namespace rosidl_generator_traits

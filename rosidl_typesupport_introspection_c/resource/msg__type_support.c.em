@@ -23,6 +23,7 @@ header_files = [
     'rosidl_typesupport_introspection_c/field_types.h',
     'rosidl_typesupport_introspection_c/identifier.h',
     'rosidl_typesupport_introspection_c/message_introspection.h',
+    include_base + '__functions.h',
     include_base + '__struct.h',
 ]
 
@@ -112,6 +113,20 @@ extern "C"
 @#######################################################################
 @# define callback functions
 @#######################################################################
+void @(function_prefix)__@(message.structure.namespaced_type.name)_init_function(
+  void * message_memory, enum rosidl_runtime_c_message_initialization _init)
+{
+  // TODO(karsten1987): initializers are not yet implemented for typesupport c
+  // see https://github.com/ros2/ros2/issues/397
+  (void) _init;
+  @('__'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))__init(message_memory);
+}
+
+void @(function_prefix)__@(message.structure.namespaced_type.name)_fini_function(void * message_memory)
+{
+  @('__'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))__fini(message_memory);
+}
+
 @[for member in message.structure.members]@
 @[  if isinstance(member.type, AbstractNestedType) and isinstance(member.type.value_type, NamespacedType)]@
 size_t @(function_prefix)__size_function__@(member.type.value_type.name)__@(member.name)(
@@ -239,7 +254,9 @@ static const rosidl_typesupport_introspection_c__MessageMembers @(function_prefi
   "@(message.structure.namespaced_type.name)",  // message name
   @(len(message.structure.members)),  // number of fields
   sizeof(@('__'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))),
-  @(function_prefix)__@(message.structure.namespaced_type.name)_message_member_array  // message members
+  @(function_prefix)__@(message.structure.namespaced_type.name)_message_member_array,  // message members
+  @(function_prefix)__@(message.structure.namespaced_type.name)_init_function,  // function to initialize message memory (memory has to be allocated)
+  @(function_prefix)__@(message.structure.namespaced_type.name)_fini_function  // function to terminate message instance (will not free memory)
 };
 
 // this is not const since it must be initialized on first access

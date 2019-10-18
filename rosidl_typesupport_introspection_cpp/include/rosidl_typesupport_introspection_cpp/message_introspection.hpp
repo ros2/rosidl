@@ -20,6 +20,8 @@
 
 #include "rosidl_generator_c/message_type_support_struct.h"
 
+#include "rosidl_generator_cpp/message_initialization.hpp"
+
 #include "rosidl_typesupport_introspection_cpp/visibility_control.h"
 
 namespace rosidl_typesupport_introspection_cpp
@@ -49,6 +51,8 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMembers
   uint32_t member_count_;
   size_t size_of_;
   const MessageMember * members_;
+  void (* init_function)(void *, rosidl_generator_cpp::MessageInitialization);
+  void (* fini_function)(void *);
 } MessageMembers;
 
 }  // namespace rosidl_typesupport_introspection_cpp

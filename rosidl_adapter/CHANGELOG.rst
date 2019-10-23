@@ -2,6 +2,9 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.1 (2019-10-23)
+------------------
+
 0.8.0 (2019-09-24)
 ------------------
 * Improve parser error messages (`#415 <https://github.com/ros2/rosidl/issues/415>`_)

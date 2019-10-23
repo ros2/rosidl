@@ -2,6 +2,11 @@
 Changelog for package rosidl_typesupport_introspection_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.1 (2019-10-23)
+------------------
+* Add init and fini function for creating introspection messages (`#416 <https://github.com/ros2/rosidl/issues/416>`_)
+* Contributors: Karsten Knese
+
 0.8.0 (2019-09-24)
 ------------------
 * [rosidl_typesupport_introspection_c] Use message namespaced type name as function prefix (`#387 <https://github.com/ros2/rosidl/issues/387>`_)

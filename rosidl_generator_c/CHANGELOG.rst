@@ -2,6 +2,9 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.1 (2019-10-23)
+------------------
+
 0.8.0 (2019-09-24)
 ------------------
 * [rosidl_generator_c] Updated tests for new msg types from test_interface_files (`#398 <https://github.com/ros2/rosidl/issues/398>`_)

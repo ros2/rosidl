@@ -176,7 +176,6 @@ bool @(function_prefix)__resize_function__@(member.type.value_type.name)__@(memb
 {
   @('__'.join(member.type.value_type.namespaced_name()))__Sequence * member =
     (@('__'.join(member.type.value_type.namespaced_name()))__Sequence *)(untyped_member);
-  @('__'.join(member.type.value_type.namespaced_name()))__Sequence__fini(member);
   return @('__'.join(member.type.value_type.namespaced_name()))__Sequence__init(member, size);
 }
 

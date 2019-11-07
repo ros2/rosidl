@@ -25,12 +25,9 @@
     if (!sequence) { \
       return false; \
     } \
-    TYPE_NAME * data = NULL; \
-    if (size) { \
-      data = malloc(sizeof(TYPE_NAME) * size); \
-      if (!data) { \
-        return false; \
-      } \
+    TYPE_NAME * data = realloc(sequence->data, sizeof(TYPE_NAME) * size); \
+    if (size && !data) { \
+      return false; \
     } \
     sequence->data = data; \
     sequence->size = size; \

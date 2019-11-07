@@ -41,18 +41,10 @@
     if (!sequence) { \
       return; \
     } \
-    if (sequence->data) { \
-      /* ensure that data and capacity values are consistent */ \
-      assert(sequence->capacity > 0); \
-      free(sequence->data); \
-      sequence->data = NULL; \
-      sequence->size = 0; \
-      sequence->capacity = 0; \
-    } else { \
-      /* ensure that data, size, and capacity values are consistent */ \
-      assert(0 == sequence->size); \
-      assert(0 == sequence->capacity); \
-    } \
+    free(sequence->data); \
+    sequence->data = NULL; \
+    sequence->size = 0; \
+    sequence->capacity = 0; \
   }
 
 // array functions for all basic types

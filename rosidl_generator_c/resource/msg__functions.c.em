@@ -105,7 +105,7 @@ for member in message.structure.members:
             # initialize each array element
             lines.append('for (size_t i = 0; i < %d; ++i) {' % member.type.size)
             lines.append('  if (!%s__init(&msg->%s[i])) {' % (basetype_to_c(member.type.value_type), member.name))
-            lines.append('    %s__destroy(msg);' % message_typename)
+            lines.append('    %s__fini(msg);' % message_typename)
             lines.append('    return false;')
             lines.append('  }')
             lines.append('}')
@@ -131,7 +131,7 @@ for member in message.structure.members:
         if not member.has_annotation('default'):
             # initialize the dynamic array with a capacity of zero
             lines.append('if (!%s__init(&msg->%s, 0)) {' % (idl_type_to_c(member.type), member.name))
-            lines.append('  %s__destroy(msg);' % message_typename)
+            lines.append('  %s__fini(msg);' % message_typename)
             lines.append('  return false;')
             lines.append('}')
         else:
@@ -169,14 +169,14 @@ for member in message.structure.members:
     elif isinstance(member.type, NamespacedType):
             # initialize the sub message
             lines.append('if (!%s__init(&msg->%s)) {' % (basetype_to_c(member.type), member.name))
-            lines.append('  %s__destroy(msg);' % message_typename)
+            lines.append('  %s__fini(msg);' % message_typename)
             lines.append('  return false;')
             lines.append('}')
         # no default value for nested messages yet
 
     elif isinstance(member.type, AbstractGenericString):
         lines.append('if (!%s__init(&msg->%s)) {' % (basetype_to_c(member.type), member.name))
-        lines.append('  %s__destroy(msg);' % message_typename)
+        lines.append('  %s__fini(msg);' % message_typename)
         lines.append('  return false;')
         lines.append('}')
         if member.has_annotation('default'):

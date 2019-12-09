@@ -157,7 +157,7 @@ class NamedType(AbstractNestableType):
 
     def __init__(self, name: str):
         """
-        Create an AbstractNestableType.
+        Create a NamedType.
 
         :param name: the name
         """

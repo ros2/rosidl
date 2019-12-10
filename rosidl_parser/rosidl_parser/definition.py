@@ -138,7 +138,7 @@ class BasicType(AbstractNestableType):
 
     def __init__(self, typename: str):
         """
-        Constructor.
+        Create a BasicType.
 
         :param typename: the name of the basic type
         """
@@ -157,7 +157,7 @@ class NamedType(AbstractNestableType):
 
     def __init__(self, name: str):
         """
-        Constructor.
+        Create a NamedType.
 
         :param name: the name
         """
@@ -175,7 +175,7 @@ class NamespacedType(AbstractNestableType):
 
     def __init__(self, namespaces: Iterable[str], name: str):
         """
-        Constructor.
+        Create a NamespacedType.
 
         :param namespaces: the names of nested namespaces identifying a
           specific scope
@@ -215,7 +215,7 @@ class BoundedString(AbstractString):
 
     def __init__(self, maximum_size: int):
         """
-        Constructor.
+        Create a BoundedString.
 
         :param maximum_size: the maximum length of the string in characters
           (must be greater than zero)
@@ -254,7 +254,7 @@ class BoundedWString(AbstractWString):
 
     def __init__(self, maximum_size: int):
         """
-        Constructor.
+        Create a BoundedWString.
 
         :param maximum_size: the maximum length of the string in characters
           (must be greater than zero)
@@ -296,7 +296,7 @@ class AbstractNestedType(AbstractType):
 
     def __init__(self, value_type: AbstractNestableType):
         """
-        Constructor.
+        Create an AbstractNestedType.
 
         :param value_type: the type of the nested elements
         """
@@ -318,7 +318,7 @@ class Array(AbstractNestedType):
 
     def __init__(self, value_type: AbstractNestableType, size: int):
         """
-        Constructor.
+        Create an Array.
 
         :param value_type: the type of each element in the array
         :param size: the number of elements in the array (must be greater than
@@ -351,7 +351,7 @@ class BoundedSequence(AbstractSequence):
 
     def __init__(self, value_type: AbstractNestableType, maximum_size: int):
         """
-        Constructor.
+        Create a BoundedSequence.
 
         :param basetype: the type of each element in the sequence
         :param maximum_size: the maximum number of elements in the sequence
@@ -375,7 +375,7 @@ class UnboundedSequence(AbstractSequence):
 
     def __init__(self, value_type: AbstractNestableType):
         """
-        Constructor.
+        Create an UnboundedSequence.
 
         :param value_type: the type of each element in the sequence
         """
@@ -392,7 +392,7 @@ class Annotation:
 
     def __init__(self, name: str, value):
         """
-        Constructor.
+        Create an Annotation.
 
         :param name: the type of the annotation as defined in the IDL spec
         :param value: the type of the value is defined by the annotation, it
@@ -466,7 +466,7 @@ class Member(Annotatable):
 
     def __init__(self, type_: AbstractType, name: str):
         """
-        Constructor.
+        Create a Member.
 
         :param type_: the type of the member
         :param name: the name of the member
@@ -484,7 +484,7 @@ class Structure(Annotatable):
 
     def __init__(self, namespaced_type: NamespacedType, members=None):
         """
-        Constructor.
+        Create a Structure.
 
         :param namespaced_type: the namespaced type identifying the structure
         :param list members: the members of the structure
@@ -502,7 +502,7 @@ class Include:
 
     def __init__(self, locator):
         """
-        Constructor.
+        Create an Include.
 
         :param str locator: a URI identifying the included file
         """
@@ -516,7 +516,7 @@ class Constant(Annotatable):
 
     def __init__(self, name: str, type_: AbstractType, value):
         """
-        Constructor.
+        Create a Constant.
 
         :param name: the name of the constant
         :param type_: the type of the constant
@@ -536,7 +536,7 @@ class Message:
 
     def __init__(self, structure: Structure):
         """
-        Constructor.
+        Create a Message.
 
         :param structure: the structure of the message
         """
@@ -556,7 +556,7 @@ class Service:
         response: Message
     ):
         """
-        Constructor.
+        Create a Service.
 
         :param namespaced_type: the namespaced type identifying the
           service
@@ -596,7 +596,7 @@ class Action:
         feedback: Message
     ):
         """
-        Constructor.
+        Create an Action.
 
         From the provided types the actually used services and messages are
         derived.
@@ -706,7 +706,7 @@ class IdlLocator:
 
     def __init__(self, basepath, relative_path):
         """
-        Constructor.
+        Create an IdlLocator.
 
         :param str basepath: the basepath of file
         :param str relative_path: the path relative to the basepath of the file
@@ -739,7 +739,7 @@ class IdlFile:
 
     def __init__(self, locator, content):
         """
-        Constructor.
+        Create an IdlFile.
 
         :param IdlLocator locator: the locator of the IDL file
         :param IdlContent content: the content of the IDL file

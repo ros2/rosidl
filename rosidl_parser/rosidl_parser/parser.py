@@ -522,7 +522,6 @@ def get_annotations(tree):
 
 
 def get_const_expr_value(const_expr):
-    # the const_expr could either be a literal or a name
     # TODO support arbitrary expressions
     expr = list(const_expr.find_data('primary_expr'))
     assert len(expr) == 1, str(expr)
@@ -573,7 +572,7 @@ def get_const_expr_value(const_expr):
 
         assert False, 'Unsupported tree: ' + str(const_expr)
     else:
-        assert False, 'Unknown type: ' + str(child.data)
+        assert False, 'Unsupported tree: ' + str(const_expr)
 
 
 def get_decimal_literal_value(decimal_literal):

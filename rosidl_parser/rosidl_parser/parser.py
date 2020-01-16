@@ -528,9 +528,9 @@ def get_const_expr_value(const_expr):
     primary_expr = expr[0]
     assert len(primary_expr.children) == 1
     child = primary_expr.children[0]
-    if child.data == 'scoped_name':
+    if 'scoped_name' == child.data:
         return str(child.children[0])
-    elif child.data == 'literal':
+    elif 'literal' == child.data:
         literals = list(const_expr.find_data('literal'))
         # TODO support arbitrary expressions
         assert len(literals) == 1, str(const_expr)

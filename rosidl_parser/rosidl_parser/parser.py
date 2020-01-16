@@ -525,7 +525,9 @@ def get_const_expr_value(const_expr):
     # the const_expr could either be a literal or a name
     expr = list(const_expr.find_data('primary_expr'))
     assert len(expr) == 1, str(expr)
-    child = expr[0].children[0]
+    primary_expr = expr[0]
+    assert len(primary_expr.children) == 1
+    child = primary_expr.children[0]
     if child.data == 'scoped_name':
         return str(child.children[0])
     elif child.data == 'literal':

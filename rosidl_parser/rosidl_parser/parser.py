@@ -523,6 +523,7 @@ def get_annotations(tree):
 
 def get_const_expr_value(const_expr):
     # the const_expr could either be a literal or a name
+    # TODO support arbitrary expressions
     expr = list(const_expr.find_data('primary_expr'))
     assert len(expr) == 1, str(expr)
     primary_expr = expr[0]
@@ -531,15 +532,12 @@ def get_const_expr_value(const_expr):
     if 'scoped_name' == child.data:
         return str(child.children[0])
     elif 'literal' == child.data:
-        literals = list(const_expr.find_data('literal'))
-        # TODO support arbitrary expressions
-        assert len(literals) == 1, str(const_expr)
-
+        literal = child
         unary_operator_minuses = list(const_expr.find_data('unary_operator_minus'))
         negate_value = len(unary_operator_minuses) % 2
 
-        assert len(literals[0].children) == 1
-        child = literals[0].children[0]
+        assert len(literal.children) == 1
+        child = literal.children[0]
 
         if child.data == 'integer_literal':
             assert len(child.children) == 1

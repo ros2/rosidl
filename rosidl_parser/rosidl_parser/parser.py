@@ -522,49 +522,57 @@ def get_annotations(tree):
 
 
 def get_const_expr_value(const_expr):
-    literals = list(const_expr.find_data('literal'))
     # TODO support arbitrary expressions
-    assert len(literals) == 1, str(const_expr)
+    expr = list(const_expr.find_data('primary_expr'))
+    assert len(expr) == 1, str(expr)
+    primary_expr = expr[0]
+    assert len(primary_expr.children) == 1
+    child = primary_expr.children[0]
+    if 'scoped_name' == child.data:
+        return str(child.children[0])
+    elif 'literal' == child.data:
+        literal = child
+        unary_operator_minuses = list(const_expr.find_data('unary_operator_minus'))
+        negate_value = len(unary_operator_minuses) % 2
 
-    unary_operator_minuses = list(const_expr.find_data('unary_operator_minus'))
-    negate_value = len(unary_operator_minuses) % 2
+        assert len(literal.children) == 1
+        child = literal.children[0]
 
-    assert len(literals[0].children) == 1
-    child = literals[0].children[0]
+        if child.data == 'integer_literal':
+            assert len(child.children) == 1
+            child = child.children[0]
 
-    if child.data == 'integer_literal':
-        assert len(child.children) == 1
-        child = child.children[0]
+            if child.data == 'decimal_literal':
+                value = get_decimal_literal_value(child)
+                if negate_value:
+                    value = -value
+                return value
 
-        if child.data == 'decimal_literal':
-            value = get_decimal_literal_value(child)
+            assert False, 'Unsupported tree: ' + str(child)
+
+        if child.data == 'floating_pt_literal':
+            value = get_floating_pt_literal_value(child)
             if negate_value:
                 value = -value
             return value
 
-        assert False, 'Unsupported tree: ' + str(child)
+        if child.data == 'boolean_literal':
+            assert len(child.children) == 1
+            child = child.children[0]
+            assert child.data in ('boolean_literal_true', 'boolean_literal_false')
+            return child.data == 'boolean_literal_true'
 
-    if child.data == 'floating_pt_literal':
-        value = get_floating_pt_literal_value(child)
-        if negate_value:
-            value = -value
-        return value
+        if child.data == 'string_literals':
+            assert not negate_value
+            return get_string_literals_value(child, allow_unicode=False)
 
-    if child.data == 'boolean_literal':
-        assert len(child.children) == 1
-        child = child.children[0]
-        assert child.data in ('boolean_literal_true', 'boolean_literal_false')
-        return child.data == 'boolean_literal_true'
+        if child.data == 'wide_string_literals':
+            assert not negate_value
+            return get_string_literals_value(child, allow_unicode=True)
 
-    if child.data == 'string_literals':
-        assert not negate_value
-        return get_string_literals_value(child, allow_unicode=False)
-
-    if child.data == 'wide_string_literals':
-        assert not negate_value
-        return get_string_literals_value(child, allow_unicode=True)
-
-    assert False, 'Unsupported tree: ' + str(const_expr)
+        assert False, 'Unsupported tree: ' + str(const_expr)
+    else:
+        assert False, 'Unsupported tree: ' + str(const_expr)
 
 
 def get_decimal_literal_value(decimal_literal):

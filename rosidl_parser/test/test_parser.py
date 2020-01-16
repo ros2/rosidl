@@ -152,7 +152,7 @@ def test_message_parser_annotations(message_idl_file):
     assert len(messages) == 1
     structure = messages[0].structure
 
-    assert len(structure.annotations) == 1
+    assert len(structure.annotations) == 2
     assert structure.annotations[0].name == 'verbatim'
     assert len(structure.annotations[0].value) == 2
     assert 'language' in structure.annotations[0].value
@@ -160,6 +160,9 @@ def test_message_parser_annotations(message_idl_file):
     assert 'text' in structure.annotations[0].value
     assert structure.annotations[0].value['text'] == \
         'Documentation of MyMessage.Adjacent string literal.'
+
+    assert structure.annotations[1].name == 'transfer_mode'
+    assert structure.annotations[1].value == 'SHMEM_REF'
 
     assert len(structure.members[2].annotations) == 1
 

@@ -160,7 +160,7 @@ def test_message_parser_annotations(message_idl_file):
     assert 'text' in structure.annotations[0].value
     assert structure.annotations[0].value['text'] == \
         'Documentation of MyMessage.Adjacent string literal.'
-        
+
     assert structure.annotations[1].name == 'transfer_mode'
     assert structure.annotations[1].value == 'SHMEM_REF'
 

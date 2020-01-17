@@ -2,6 +2,12 @@
 Changelog for package rosidl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.2 (2020-01-17)
+------------------
+* Allow 'get_const_expr_value' to parse either literals or scoped_names… (`#430 <https://github.com/ros2/rosidl/issues/430>`_)
+* Use imperative mood in constructor docstring. (`#425 <https://github.com/ros2/rosidl/issues/425>`_)
+* Contributors: Steven! Ragnarök, kylemarcey
+
 0.8.1 (2019-10-23)
 ------------------
 

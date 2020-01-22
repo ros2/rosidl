@@ -70,9 +70,21 @@ BASIC_IDL_TYPES_TO_C = {
 
 
 def idl_structure_type_to_c_include_prefix(namespaced_type):
-    return '/'.join(
+    include_prefix = '/'.join(
         convert_camel_case_to_lower_case_underscore(x)
         for x in (namespaced_type.namespaced_name()))
+    # Strip service or action suffixes
+    if include_prefix.endswith('__request'):
+        include_prefix = include_prefix[:-9]
+    elif include_prefix.endswith('__response'):
+        include_prefix = include_prefix[:-10]
+    if include_prefix.endswith('__goal'):
+        include_prefix = include_prefix[:-6]
+    elif include_prefix.endswith('__result'):
+        include_prefix = include_prefix[:-8]
+    elif include_prefix.endswith('__feedback'):
+        include_prefix = include_prefix[:-10]
+    return include_prefix
 
 
 def idl_structure_type_to_c_typename(namespaced_type):

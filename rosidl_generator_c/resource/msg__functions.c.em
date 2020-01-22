@@ -44,16 +44,6 @@ for member in message.structure.members:
         member_names.append(member.name)
     elif isinstance(type_, NamespacedType):
         include_prefix = idl_structure_type_to_c_include_prefix(type_)
-        if include_prefix.endswith('__request'):
-            include_prefix = include_prefix[:-9]
-        elif include_prefix.endswith('__response'):
-            include_prefix = include_prefix[:-10]
-        if include_prefix.endswith('__goal'):
-            include_prefix = include_prefix[:-6]
-        elif include_prefix.endswith('__result'):
-            include_prefix = include_prefix[:-8]
-        elif include_prefix.endswith('__feedback'):
-            include_prefix = include_prefix[:-10]
         member_names = includes.setdefault(
             include_prefix + '__functions.h', [])
         member_names.append(member.name)

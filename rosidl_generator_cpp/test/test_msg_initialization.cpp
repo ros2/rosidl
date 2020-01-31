@@ -188,16 +188,20 @@ TEST(Test_msg_initialization, skip_constructor) {
   #  pragma GCC diagnostic push
   #  pragma GCC diagnostic ignored "-Wstrict-aliasing"
   #endif
-  ASSERT_TRUE(std::all_of(bounded->float32_values_default.begin(),
-    bounded->float32_values_default.end(), [](float i) {
-      uint32_t float32_bit_pattern = *reinterpret_cast<uint32_t *>(&i);
-      return 0xfefefefe == float32_bit_pattern;
-    }));
-  ASSERT_TRUE(std::all_of(bounded->float64_values_default.begin(),
-    bounded->float64_values_default.end(), [](double i) {
-      uint64_t float64_bit_pattern = *reinterpret_cast<uint64_t *>(&i);
-      return 0xfefefefefefefefe == float64_bit_pattern;
-    }));
+  ASSERT_TRUE(
+    std::all_of(
+      bounded->float32_values_default.begin(),
+      bounded->float32_values_default.end(), [](float i) {
+        uint32_t float32_bit_pattern = *reinterpret_cast<uint32_t *>(&i);
+        return 0xfefefefe == float32_bit_pattern;
+      }));
+  ASSERT_TRUE(
+    std::all_of(
+      bounded->float64_values_default.begin(),
+      bounded->float64_values_default.end(), [](double i) {
+        uint64_t float64_bit_pattern = *reinterpret_cast<uint64_t *>(&i);
+        return 0xfefefefefefefefe == float64_bit_pattern;
+      }));
 
   #ifndef _WIN32
   #  pragma GCC diagnostic pop
@@ -205,8 +209,10 @@ TEST(Test_msg_initialization, skip_constructor) {
   ASSERT_EQ(0UL, bounded->float64_values_default.size());
   ASSERT_EQ(0UL, bounded->float32_values_default.size());
   ASSERT_EQ(0UL, bounded->float32_values.size());
-  ASSERT_TRUE(std::all_of(bounded->string_values_default.begin(),
-    bounded->string_values_default.end(), [](std::string i) {
-      return "" == i;
-    }));
+  ASSERT_TRUE(
+    std::all_of(
+      bounded->string_values_default.begin(),
+      bounded->string_values_default.end(), [](std::string i) {
+        return "" == i;
+      }));
 }

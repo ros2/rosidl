@@ -22,7 +22,7 @@ from catkin_pkg.package import parse_package
 
 def convert_files_to_idl(extension, conversion_function, argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(
-        description='Convert {extension} files to .idl'.format_map(locals()))
+        description=f'Convert {extension} files to .idl')
     parser.add_argument(
         'interface_files', nargs='+',
         help='The interface files to convert')
@@ -38,8 +38,8 @@ def convert_files_to_idl(extension, conversion_function, argv=sys.argv[1:]):
             package_dir = package_dir.parent
         if not package_dir.parents:
             print(
-                "Could not find package for '{interface_file}'"
-                .format_map(locals()), file=sys.stderr)
+                f"Could not find package for '{interface_file}'",
+                file=sys.stderr)
             continue
         warnings = []
         pkg = parse_package(package_dir, warnings=warnings)

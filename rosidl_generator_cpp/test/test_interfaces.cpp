@@ -195,33 +195,47 @@ void test_message_basic_types(rosidl_generator_cpp::msg::BasicTypes message)
 
 void test_message_bounded(rosidl_generator_cpp::msg::BoundedSequences message)
 {
-  TEST_BOUNDED_SEQUENCE_TYPES(message, bool_values, bool, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(
+    message, bool_values, bool, SEQUENCE_SIZE, \
     false, true)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, char_values, unsigned char, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(
+    message, char_values, unsigned char, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, byte_values, uint8_t, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(
+    message, byte_values, uint8_t, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, float32_values, float, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(
+    message, float32_values, float, SEQUENCE_SIZE, \
     FLT_MIN, FLT_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, float64_values, double, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(
+    message, float64_values, double, SEQUENCE_SIZE, \
     DBL_MIN, DBL_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, int8_values, int8_t, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(
+    message, int8_values, int8_t, SEQUENCE_SIZE, \
     INT8_MIN, INT8_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, uint8_values, uint8_t, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(
+    message, uint8_values, uint8_t, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, int16_values, int16_t, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(
+    message, int16_values, int16_t, SEQUENCE_SIZE, \
     INT16_MIN, INT16_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, uint16_values, uint16_t, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(
+    message, uint16_values, uint16_t, SEQUENCE_SIZE, \
     0, UINT16_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, int32_values, int32_t, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(
+    message, int32_values, int32_t, SEQUENCE_SIZE, \
     INT32_MIN, INT32_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, uint32_values, uint32_t, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(
+    message, uint32_values, uint32_t, SEQUENCE_SIZE, \
     0, UINT32_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, int64_values, int64_t, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(
+    message, int64_values, int64_t, SEQUENCE_SIZE, \
     INT64_MIN, INT64_MAX)
-  TEST_BOUNDED_SEQUENCE_TYPES(message, uint64_values, uint64_t, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_TYPES(
+    message, uint64_values, uint64_t, SEQUENCE_SIZE, \
     0, UINT64_MAX)
-  TEST_BOUNDED_SEQUENCE_STRING(message, string_values, std::string, SEQUENCE_SIZE, \
+  TEST_BOUNDED_SEQUENCE_STRING(
+    message, string_values, std::string, SEQUENCE_SIZE, \
     0, UINT32_MAX, 0, BOUNDED_STRING_LENGTH)
 }
 
@@ -247,33 +261,47 @@ void test_message_bounded(rosidl_generator_cpp::msg::BoundedSequences message)
 
 void test_message_unbounded(rosidl_generator_cpp::msg::UnboundedSequences message)
 {
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, bool_values, bool, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(
+    message, bool_values, bool, SEQUENCE_SIZE, \
     false, true)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, char_values, unsigned char, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(
+    message, char_values, unsigned char, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, byte_values, uint8_t, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(
+    message, byte_values, uint8_t, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, float32_values, float, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(
+    message, float32_values, float, SEQUENCE_SIZE, \
     FLT_MIN, FLT_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, float64_values, double, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(
+    message, float64_values, double, SEQUENCE_SIZE, \
     DBL_MIN, DBL_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, int8_values, int8_t, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(
+    message, int8_values, int8_t, SEQUENCE_SIZE, \
     INT8_MIN, INT8_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, uint8_values, uint8_t, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(
+    message, uint8_values, uint8_t, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, int16_values, int16_t, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(
+    message, int16_values, int16_t, SEQUENCE_SIZE, \
     INT16_MIN, INT16_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, uint16_values, uint16_t, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(
+    message, uint16_values, uint16_t, SEQUENCE_SIZE, \
     0, UINT16_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, int32_values, int32_t, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(
+    message, int32_values, int32_t, SEQUENCE_SIZE, \
     INT32_MIN, INT32_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, uint32_values, uint32_t, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(
+    message, uint32_values, uint32_t, SEQUENCE_SIZE, \
     0, UINT32_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, int64_values, int64_t, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(
+    message, int64_values, int64_t, SEQUENCE_SIZE, \
     INT64_MIN, INT64_MAX)
-  TEST_UNBOUNDED_SEQUENCE_TYPES(message, uint64_values, uint64_t, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_TYPES(
+    message, uint64_values, uint64_t, SEQUENCE_SIZE, \
     0, UINT64_MAX)
-  TEST_UNBOUNDED_SEQUENCE_STRING(message, string_values, std::string, SEQUENCE_SIZE, \
+  TEST_UNBOUNDED_SEQUENCE_STRING(
+    message, string_values, std::string, SEQUENCE_SIZE, \
     0, UINT32_MAX, 0, UINT16_MAX)
 }
 
@@ -287,31 +315,44 @@ void test_message_unbounded(rosidl_generator_cpp::msg::UnboundedSequences messag
 
 void test_message_arrays(rosidl_generator_cpp::msg::Arrays message)
 {
-  TEST_ARRAY_TYPES(message, bool_values, bool, ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(
+    message, bool_values, bool, ARRAY_SIZE, \
     false, true)
-  TEST_ARRAY_TYPES(message, char_values, unsigned char, ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(
+    message, char_values, unsigned char, ARRAY_SIZE, \
     0, UINT8_MAX)
-  TEST_ARRAY_TYPES(message, byte_values, uint8_t, ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(
+    message, byte_values, uint8_t, ARRAY_SIZE, \
     0, UINT8_MAX)
-  TEST_ARRAY_TYPES(message, float32_values, float, ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(
+    message, float32_values, float, ARRAY_SIZE, \
     FLT_MIN, FLT_MAX)
-  TEST_ARRAY_TYPES(message, float64_values, double, ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(
+    message, float64_values, double, ARRAY_SIZE, \
     DBL_MIN, DBL_MAX)
-  TEST_ARRAY_TYPES(message, int8_values, int8_t, ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(
+    message, int8_values, int8_t, ARRAY_SIZE, \
     INT8_MIN, INT8_MAX)
-  TEST_ARRAY_TYPES(message, uint8_values, uint8_t, ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(
+    message, uint8_values, uint8_t, ARRAY_SIZE, \
     0, UINT8_MAX)
-  TEST_ARRAY_TYPES(message, int16_values, int16_t, ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(
+    message, int16_values, int16_t, ARRAY_SIZE, \
     INT16_MIN, INT16_MAX)
-  TEST_ARRAY_TYPES(message, uint16_values, uint16_t, ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(
+    message, uint16_values, uint16_t, ARRAY_SIZE, \
     0, UINT16_MAX)
-  TEST_ARRAY_TYPES(message, int32_values, int32_t, ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(
+    message, int32_values, int32_t, ARRAY_SIZE, \
     INT32_MIN, INT32_MAX)
-  TEST_ARRAY_TYPES(message, uint32_values, uint32_t, ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(
+    message, uint32_values, uint32_t, ARRAY_SIZE, \
     0, UINT32_MAX)
-  TEST_ARRAY_TYPES(message, int64_values, int64_t, ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(
+    message, int64_values, int64_t, ARRAY_SIZE, \
     INT64_MIN, INT64_MAX)
-  TEST_ARRAY_TYPES(message, uint64_values, uint64_t, ARRAY_SIZE, \
+  TEST_ARRAY_TYPES(
+    message, uint64_values, uint64_t, ARRAY_SIZE, \
     0, UINT64_MAX)
 }
 
@@ -492,6 +533,7 @@ TEST(Test_messages, Test_wstring) {
 
 TEST(Test_messages, Test_string_array_static) {
   rosidl_generator_cpp::msg::Arrays message;
-  TEST_STATIC_ARRAY_STRING(message, string_values_default, std::string, ARRAY_SIZE, \
+  TEST_STATIC_ARRAY_STRING(
+    message, string_values_default, std::string, ARRAY_SIZE, \
     0, UINT32_MAX, 0, UINT16_MAX)
 }

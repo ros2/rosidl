@@ -44,7 +44,8 @@ rosidl_generator_c__U16String__fini(rosidl_generator_c__U16String * str)
   if (str->data) {
     /* ensure that data and capacity values are consistent */
     if (str->capacity <= 0) {
-      fprintf(stderr, "Unexpected condition: string capacity was zero for allocated data! "
+      fprintf(
+        stderr, "Unexpected condition: string capacity was zero for allocated data! "
         "Exiting.\n");
       exit(-1);
     }
@@ -55,12 +56,14 @@ rosidl_generator_c__U16String__fini(rosidl_generator_c__U16String * str)
   } else {
     /* ensure that data, size, and capacity values are consistent */
     if (0 != str->size) {
-      fprintf(stderr, "Unexpected condition: string size was non-zero for deallocated data! "
+      fprintf(
+        stderr, "Unexpected condition: string size was non-zero for deallocated data! "
         "Exiting.\n");
       exit(-1);
     }
     if (0 != str->capacity) {
-      fprintf(stderr, "Unexpected behavior: string capacity was non-zero for deallocated data! "
+      fprintf(
+        stderr, "Unexpected behavior: string capacity was non-zero for deallocated data! "
         "Exiting.\n");
       exit(-1);
     }

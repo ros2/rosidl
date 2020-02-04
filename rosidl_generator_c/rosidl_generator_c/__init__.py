@@ -179,26 +179,26 @@ def basic_value_to_c(type_, value):
         # Specifically, MSVC is not happy in this case
         if -2147483648 == value:
             return '({0}l - 1)'.format(value + 1)
-        return '{value}l'.format_map(locals())
+        return f'{value}l'
 
     if type_.typename == 'uint32':
-        return '{value}ul'.format_map(locals())
+        return f'{value}ul'
 
     if type_.typename == 'int64':
         # Handle edge case for INT64_MIN
         # See https://en.cppreference.com/w/cpp/language/integer_literal
         if -9223372036854775808 == value:
             return '({0}ll - 1)'.format(value + 1)
-        return '{value}ll'.format_map(locals())
+        return f'{value}ll'
 
     if type_.typename == 'uint64':
-        return '{value}ull'.format_map(locals())
+        return f'{value}ull'
 
     if 'float' == type_.typename:
-        return '{value}f'.format_map(locals())
+        return f'{value}f'
 
     if 'double' == type_.typename:
-        return '{value}l'.format_map(locals())
+        return f'{value}l'
 
     assert False, "unknown basic type '%s'" % type_
 

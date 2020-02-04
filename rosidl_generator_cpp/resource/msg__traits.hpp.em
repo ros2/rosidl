@@ -81,7 +81,7 @@ for member in message.structure.members:
         break
     if isinstance(type_, NamespacedType):
         typename = '::'.join(type_.namespaced_name())
-        fixed_template_strings.add('has_fixed_size<{typename}>::value'.format_map(locals()))
+        fixed_template_strings.add(f'has_fixed_size<{typename}>::value')
 else:
     if fixed_template_strings:
         fixed_template_string = ' && '.join(sorted(fixed_template_strings))
@@ -105,7 +105,7 @@ for member in message.structure.members:
         break
     if isinstance(type_, NamespacedType):
         typename = '::'.join(type_.namespaced_name())
-        bounded_template_strings.add('has_bounded_size<{typename}>::value'.format_map(locals()))
+        bounded_template_strings.add(f'has_bounded_size<{typename}>::value')
 else:
     if bounded_template_strings:
         bounded_template_string = ' && '.join(sorted(bounded_template_strings))

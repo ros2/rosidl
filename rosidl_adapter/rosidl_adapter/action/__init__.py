@@ -22,14 +22,14 @@ def convert_action_to_idl(package_dir, package_name, input_file, output_dir):
     assert input_file.suffix == '.action'
 
     abs_input_file = package_dir / input_file
-    print('Reading input file: {abs_input_file}'.format_map(locals()))
+    print(f'Reading input file: {abs_input_file}')
     abs_input_file = package_dir / input_file
     content = abs_input_file.read_text(encoding='utf-8')
     action = parse_action_string(package_name, input_file.stem, content)
 
     output_file = output_dir / input_file.with_suffix('.idl').name
     abs_output_file = output_file.absolute()
-    print('Writing output file: {abs_output_file}'.format_map(locals()))
+    print(f'Writing output file: {abs_output_file}')
     data = {
         'pkg_name': package_name,
         'relative_input_file': input_file,

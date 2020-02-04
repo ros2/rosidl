@@ -22,14 +22,14 @@ def convert_msg_to_idl(package_dir, package_name, input_file, output_dir):
     assert input_file.suffix == '.msg'
 
     abs_input_file = package_dir / input_file
-    print('Reading input file: {abs_input_file}'.format_map(locals()))
+    print(f'Reading input file: {abs_input_file}')
     abs_input_file = package_dir / input_file
     content = abs_input_file.read_text(encoding='utf-8')
     msg = parse_message_string(package_name, input_file.stem, content)
 
     output_file = output_dir / input_file.with_suffix('.idl').name
     abs_output_file = output_file.absolute()
-    print('Writing output file: {abs_output_file}'.format_map(locals()))
+    print(f'Writing output file: {abs_output_file}')
     data = {
         'pkg_name': package_name,
         'relative_input_file': input_file,
@@ -89,7 +89,7 @@ def string_to_idl_wstring_literal(string):
 def get_include_file(base_type):
     if base_type.is_primitive_type():
         return None
-    return '{base_type.pkg_name}/msg/{base_type.type}.idl'.format_map(locals())
+    return f'{base_type.pkg_name}/msg/{base_type.type}.idl'
 
 
 def get_idl_type(type_):
@@ -101,18 +101,17 @@ def get_idl_type(type_):
             identifier in ('string', 'wstring') and
             type_.string_upper_bound is not None
         ):
-            identifier += '<{type_.string_upper_bound}>'.format_map(locals())
+            identifier += f'<{type_.string_upper_bound}>'
     else:
-        identifier = '{type_.pkg_name}::msg::{type_.type}' \
-            .format_map(locals())
+        identifier = f'{type_.pkg_name}::msg::{type_.type}'
 
     if isinstance(type_, str) or not type_.is_array:
         return identifier
 
     if type_.is_fixed_size_array():
-        return '{identifier}[{type_.array_size}]'.format_map(locals())
+        return f'{identifier}[{type_.array_size}]'
 
     if not type_.is_upper_bound:
-        return 'sequence<{identifier}>'.format_map(locals())
+        return f'sequence<{identifier}>'
 
-    return 'sequence<{identifier}, {type_.array_size}>'.format_map(locals())
+    return f'sequence<{identifier}, {type_.array_size}>'

@@ -423,10 +423,9 @@ class Annotatable:
         """
         values = self.get_annotation_values(name)
         if not values:
-            raise ValueError("No '{name}' annotation".format_map(locals()))
+            raise ValueError(f"No '{name}' annotation")
         if len(values) > 1:
-            raise ValueError(
-                "Multiple '{name}' annotations".format_map(locals()))
+            raise ValueError(f"Multiple '{name}' annotations")
         return values[0]
 
     def get_annotation_values(self, name):

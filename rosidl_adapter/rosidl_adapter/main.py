@@ -58,7 +58,7 @@ def main(argv=sys.argv[1:]):
     output_file.parent.mkdir(exist_ok=True)
     with output_file.open('w') as h:
         for basepath, relative_path in idl_tuples:
-            line = '{basepath}:{relative_path}\n'.format_map(locals())
+            line = f'{basepath}:{relative_path}\n'
             # use CMake friendly separator
             line = line.replace(os.sep, '/')
             h.write(line)

@@ -2,6 +2,15 @@ cmake_minimum_required(VERSION 3.5)
 
 project(rosidl_generator_cpp)
 
+# Default to C11
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 11)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 
@@ -10,13 +19,13 @@ ament_export_dependencies(rosidl_generator_c)
 ament_export_include_directories(include)
 
 ament_index_register_resource("rosidl_generator_packages")
-ament_index_register_resource("rosidl_runtime_packages")
 
 ament_python_install_package(${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   find_package(rosidl_generator_c REQUIRED)
+  find_package(rosidl_runtime_cpp REQUIRED)
   find_package(test_interface_files REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
@@ -51,23 +60,23 @@ if(BUILD_TESTING)
   ament_add_gtest(test_bounded_vector test/test_bounded_vector.cpp)
   ament_add_gtest(test_msg_initialization test/test_msg_initialization.cpp)
   if(TARGET test_msg_initialization)
-    add_dependencies(test_msg_initialization ${PROJECT_NAME})
+    target_link_libraries(test_msg_initialization ${rosidl_runtime_cpp_LIBRARIES})
   endif()
   ament_add_gtest(test_srv_initialization test/test_srv_initialization.cpp)
   if(TARGET test_srv_initialization)
-    add_dependencies(test_srv_initialization ${PROJECT_NAME})
+    target_link_libraries(test_srv_initialization ${rosidl_runtime_cpp_LIBRARIES})
   endif()
   ament_add_gtest(test_interfaces_cpp test/test_interfaces.cpp)
   if(TARGET test_interfaces_cpp)
-    add_dependencies(test_interfaces_cpp ${PROJECT_NAME})
+    target_link_libraries(test_interfaces_cpp ${rosidl_runtime_cpp_LIBRARIES})
   endif()
   ament_add_gtest(test_msg_datatype test/test_msg_datatype.cpp)
   if(TARGET test_msg_datatype)
-    add_dependencies(test_msg_datatype ${PROJECT_NAME})
+    target_link_libraries(test_msg_datatype ${rosidl_runtime_cpp_LIBRARIES})
   endif()
   ament_add_gtest(test_traits test/test_traits.cpp)
   if(TARGET test_traits)
-    add_dependencies(test_traits ${PROJECT_NAME})
+    target_link_libraries(test_traits ${rosidl_runtime_cpp_LIBRARIES})
   endif()
   # include the built files directly, instead of their install location
   include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
@@ -84,8 +93,4 @@ install(
 install(
   DIRECTORY cmake resource
   DESTINATION share/${PROJECT_NAME}
-)
-install(
-  DIRECTORY include/
-  DESTINATION include
 )

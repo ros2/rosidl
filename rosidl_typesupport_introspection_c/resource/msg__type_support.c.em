@@ -62,7 +62,7 @@ for member in message.structure.members:
         member_names.append(member.name)
     elif isinstance(type_, AbstractWString):
         member_names = includes.setdefault(
-            'rosidl_generator_c/string_functions.h', [])
+            'rosidl_generator_c/u16string_functions.h', [])
         member_names.append(member.name)
     elif isinstance(type_, NamespacedType):
         include_prefix = idl_structure_type_to_c_include_prefix(type_)

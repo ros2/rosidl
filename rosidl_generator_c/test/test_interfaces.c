@@ -23,7 +23,7 @@
 
 #include "rosidl_generator_c/primitives_sequence_functions.h"
 #include "rosidl_generator_c/string_functions.h"
-#include "rosidl_generator_c/string_functions.h"
+#include "rosidl_generator_c/u16string_functions.h"
 
 #include "rosidl_generator_c/msg/arrays.h"
 #include "rosidl_generator_c/msg/defaults.h"

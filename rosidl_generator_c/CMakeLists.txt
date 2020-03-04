@@ -61,7 +61,7 @@ if(BUILD_TESTING)
   )
 
   # include the built files directly, instead of their install location
-  include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
+  include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" ${rosidl_runtime_c_INCLUDE_DIRS})
   target_link_libraries(test_compilation_c
     ${PROJECT_NAME}_interfaces__${PROJECT_NAME}
     ${rosidl_runtime_c_LIBRARIES}

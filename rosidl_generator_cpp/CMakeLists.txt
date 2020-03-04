@@ -6,8 +6,6 @@ find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 
 ament_export_dependencies(rosidl_cmake)
-ament_export_dependencies(rosidl_generator_c)
-ament_export_include_directories(include)
 
 ament_index_register_resource("rosidl_generator_packages")
 
@@ -15,7 +13,7 @@ ament_python_install_package(${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  find_package(rosidl_generator_c REQUIRED)
+  find_package(rosidl_runtime_c REQUIRED)
   find_package(rosidl_runtime_cpp REQUIRED)
   find_package(test_interface_files REQUIRED)
   ament_lint_auto_find_test_dependencies()
@@ -46,7 +44,8 @@ if(BUILD_TESTING)
   endif()
 
   include_directories(include
-    ${rosidl_generator_c_INCLUDE_DIRS})
+    ${rosidl_runtime_c_INCLUDE_DIRS}
+    ${rosidl_runtime_cpp_INCLUDE_DIRS})
 
   ament_add_gtest(test_bounded_vector test/test_bounded_vector.cpp)
   ament_add_gtest(test_msg_initialization test/test_msg_initialization.cpp)

@@ -43,33 +43,60 @@ if(BUILD_TESTING)
     add_compile_options(-Wall -Wextra -Wpedantic)
   endif()
 
-  include_directories(include
-    ${rosidl_runtime_c_INCLUDE_DIRS}
-    ${rosidl_runtime_cpp_INCLUDE_DIRS})
-
   ament_add_gtest(test_bounded_vector test/test_bounded_vector.cpp)
+  if(TARGET test_bounded_vector)
+    target_link_libraries(test_bounded_vector ${rosidl_runtime_cpp_LIBRARIES})
+    target_include_directories(test_bounded_vector PUBLIC
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+      ${rosidl_runtime_c_INCLUDE_DIRS}
+      ${rosidl_runtime_cpp_INCLUDE_DIRS}
+    )
+  endif()
   ament_add_gtest(test_msg_initialization test/test_msg_initialization.cpp)
   if(TARGET test_msg_initialization)
     target_link_libraries(test_msg_initialization ${rosidl_runtime_cpp_LIBRARIES})
+    target_include_directories(test_msg_initialization PUBLIC
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+      ${rosidl_runtime_c_INCLUDE_DIRS}
+      ${rosidl_runtime_cpp_INCLUDE_DIRS}
+    )
   endif()
   ament_add_gtest(test_srv_initialization test/test_srv_initialization.cpp)
   if(TARGET test_srv_initialization)
     target_link_libraries(test_srv_initialization ${rosidl_runtime_cpp_LIBRARIES})
+    target_include_directories(test_srv_initialization PUBLIC
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+      ${rosidl_runtime_c_INCLUDE_DIRS}
+      ${rosidl_runtime_cpp_INCLUDE_DIRS}
+    )
   endif()
   ament_add_gtest(test_interfaces_cpp test/test_interfaces.cpp)
   if(TARGET test_interfaces_cpp)
     target_link_libraries(test_interfaces_cpp ${rosidl_runtime_cpp_LIBRARIES})
+    target_include_directories(test_interfaces_cpp PUBLIC
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+      ${rosidl_runtime_c_INCLUDE_DIRS}
+      ${rosidl_runtime_cpp_INCLUDE_DIRS}
+    )
   endif()
   ament_add_gtest(test_msg_datatype test/test_msg_datatype.cpp)
   if(TARGET test_msg_datatype)
     target_link_libraries(test_msg_datatype ${rosidl_runtime_cpp_LIBRARIES})
+    target_include_directories(test_msg_datatype PUBLIC
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+      ${rosidl_runtime_c_INCLUDE_DIRS}
+      ${rosidl_runtime_cpp_INCLUDE_DIRS}
+    )
   endif()
   ament_add_gtest(test_traits test/test_traits.cpp)
   if(TARGET test_traits)
     target_link_libraries(test_traits ${rosidl_runtime_cpp_LIBRARIES})
+    target_include_directories(test_traits PUBLIC
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+      ${rosidl_runtime_c_INCLUDE_DIRS}
+      ${rosidl_runtime_cpp_INCLUDE_DIRS}
+    )
   endif()
-  # include the built files directly, instead of their install location
-  include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
 endif()
 
 ament_package(

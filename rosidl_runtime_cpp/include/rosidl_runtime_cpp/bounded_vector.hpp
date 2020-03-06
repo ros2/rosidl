@@ -629,7 +629,8 @@ public:
     InputIterator first,
     InputIterator last)
   {
-    if (size() + std::distance(first, last) > UpperBound) {
+    auto dist = std::distance(first, last);
+    if ((dist < 0) || (size() + static_cast<size_t>(dist) > UpperBound)) {
       throw std::length_error("Exceeded upper bound");
     }
     return Base::insert(position, first, last);

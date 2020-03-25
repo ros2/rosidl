@@ -47,13 +47,15 @@
 # :param ADD_LINTER_TESTS: if set lint the interface files using
 #   the ``ament_lint`` package
 # :type ADD_LINTER_TESTS: option
+# :param EXCLUDE: List of packages that should be skipped
+# :type EXCLUDE: list of strings
 #
 # @public
 #
 macro(rosidl_generate_interfaces target)
   cmake_parse_arguments(_ARG
     "ADD_LINTER_TESTS;SKIP_INSTALL;SKIP_GROUP_MEMBERSHIP_CHECK"
-    "LIBRARY_NAME" "DEPENDENCIES"
+    "LIBRARY_NAME" "DEPENDENCIES;EXCLUDE"
     ${ARGN})
   if(NOT _ARG_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "rosidl_generate_interfaces() called without any "
@@ -283,7 +285,7 @@ macro(rosidl_generate_interfaces target)
     list(APPEND rosidl_generate_interfaces_ABS_IDL_FILES "${_abs_idl_file}")
   endforeach()
 
-  ament_execute_extensions("rosidl_generate_idl_interfaces")
+  ament_execute_extensions("rosidl_generate_idl_interfaces" EXCLUDE ${_ARG_EXCLUDE})
 
   # check for extensions registered with the previous extension point
   set(obsolete_extension_point "rosidl_generate_interfaces")

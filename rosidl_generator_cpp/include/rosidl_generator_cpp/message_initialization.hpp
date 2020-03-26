@@ -32,4 +32,65 @@ enum class MessageInitialization
 
 }  // namespace rosidl_generator_cpp
 
+// Macros for implementing the rigorous builder pattern
+#define ROSIDL_GENERATOR_CPP__INIT_FIRST_FIELD( \
+  MessageName, field_name, next_field_name) \
+  struct Init__ ## field_name \
+  { \
+    Init__ ## field_name () : _msg(rosidl_generator_cpp::MessageInitialization::SKIP) { } \
+    \
+    Init__ ## next_field_name field_name(_ ## field_name ## _type _arg) \
+    { \
+      _msg. field_name = std::move(_arg); \
+      return Init__ ## next_field_name (_msg); \
+    } \
+  \
+  private: \
+    MessageName _msg; \
+  }
+
+#define ROSIDL_GENERATOR_CPP__INIT_MID_FIELD( \
+  MessageName, field_name, next_field_name) \
+  struct Init__ ## field_name \
+  { \
+    Init__ ## field_name ( MessageName & msg ) : _msg(msg) { } \
+    \
+    Init__ ## next_field_name field_name(_ ## field_name ## _type _arg) \
+    { \
+      _msg. field_name = std::move(_arg); \
+      return Init__ ## next_field_name (_msg); \
+    } \
+  \
+  private: \
+    MessageName & _msg; \
+  }
+
+#define ROSIDL_GENERATOR_CPP__INIT_LAST_FIELD( \
+  MessageName, field_name) \
+  struct Init__ ## field_name \
+  { \
+    Init__ ## field_name ( MessageName & msg ) : _msg(msg) { } \
+    \
+    MessageName field_name(_ ## field_name ## _type _arg) \
+    { \
+      _msg. field_name = std::move(_arg); \
+      return std::move(_msg); \
+    } \
+    \
+  private: \
+    MessageName & _msg; \
+  }
+
+#define ROSIDL_GENERATOR_CPP__INIT_ONLY_FIELD( \
+  MessageName, field_name) \
+  struct Init__ ## field_name \
+  { \
+    MessageName field_name(_ ## field_name ## _type _arg) \
+    { \
+       MessageName _msg(rosidl_generator_cpp::MessageInitialization::SKIP); \
+      _msg. field_name = std::move(_arg); \
+      return std::move(_msg); \
+    } \
+  }
+
 #endif  // ROSIDL_GENERATOR_CPP__MESSAGE_INITIALIZATION_HPP_

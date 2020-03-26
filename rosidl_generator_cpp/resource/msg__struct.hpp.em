@@ -343,43 +343,22 @@ u@
 @{ num_members = len(message.structure.members) }@
 @[for index in range(num_members-1, -1, -1)]@
 @{
-current_member = message.structure.members[index]
-message_type_name = message.structure.namespaced_type.name + '_'
+field_name = message.structure.members[index].name
+simple_message_typename = message.structure.namespaced_type.name + '_'
+if index < num_members-1:
+  next_field_name = message.structure.members[index+1].name
 }@
-  struct Init__@(current_member.name)
-  {
-@[ if index == 0]@
-    Init__@(current_member.name)() : _msg(rosidl_generator_cpp::MessageInitialization::SKIP) { }
-@[ else]@
-    Init__@(current_member.name)(@(message_type_name)& msg) : _msg(msg) { }
+@[ if index == 0 and index == num_members-1 ]@
+  ROSIDL_GENERATOR_CPP__INIT_ONLY_FIELD(@(simple_message_typename), @(field_name));
+@[ elif index == num_members-1 ]@
+  ROSIDL_GENERATOR_CPP__INIT_LAST_FIELD(@(simple_message_typename), @(field_name));
+@[ elif index == 0 ]@
+  ROSIDL_GENERATOR_CPP__INIT_FIRST_FIELD(@(simple_message_typename), @(field_name), @(next_field_name));
+@[ else ]@
+  ROSIDL_GENERATOR_CPP__INIT_MID_FIELD(@(simple_message_typename), @(field_name), @(next_field_name));
 @[ end if]@
-
-@{
-if index == num_members-1:
-  return_type = message_type_name
-else:
-  next_member = message.structure.members[index+1]
-  return_type = 'Init__' + next_member.name
-}@
-    @(return_type) @(current_member.name)(_@(current_member.name)_type _arg)
-    {
-      _msg.@(current_member.name) = std::move(_arg);
-@[ if index == num_members-1]@
-      return std::move(_msg);
-@[ else]@
-      return Init__@(next_member.name)(_msg);
-@[ end if]@
-    }
-
-  private:
-@[ if index == 0]@
-    @(message_type_name) _msg;
-@[ else]@
-    @(message_type_name)& _msg;
-@[end if]@
-  };
-
 @[end for]@
+
 @[if message.structure.members]@
   // Build an instance of this message in a way that requires you to explicitly
   // specify a value for every field. The compiler will help you guarantee that

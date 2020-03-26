@@ -22,6 +22,7 @@
 #include "rosidl_generator_cpp/msg/bounded_sequences.hpp"
 #include "rosidl_generator_cpp/msg/multi_nested.hpp"
 #include "rosidl_generator_cpp/msg/nested.hpp"
+#include "rosidl_generator_cpp/msg/empty.hpp"
 
 template<typename Callable>
 struct ScopeExit
@@ -358,27 +359,32 @@ TEST(Test_msg_initialization, build) {
   for (const auto& u : multi_nested.array_of_unbounded_sequences)
     ASSERT_EQ(unbounded_sequences, u);
 
-  ASSERT_EQ(2, multi_nested.bounded_sequence_of_arrays.size());
+  ASSERT_EQ(2u, multi_nested.bounded_sequence_of_arrays.size());
   for (const auto& a : multi_nested.bounded_sequence_of_arrays)
     ASSERT_EQ(arrays, a);
 
-  ASSERT_EQ(2, multi_nested.bounded_sequence_of_bounded_sequences.size());
+  ASSERT_EQ(2u, multi_nested.bounded_sequence_of_bounded_sequences.size());
   for (const auto& b : multi_nested.bounded_sequence_of_bounded_sequences)
     ASSERT_EQ(bounded_sequences, b);
 
-  ASSERT_EQ(2, multi_nested.bounded_sequence_of_unbounded_sequences.size());
+  ASSERT_EQ(2u, multi_nested.bounded_sequence_of_unbounded_sequences.size());
   for (const auto& u : multi_nested.bounded_sequence_of_unbounded_sequences)
     ASSERT_EQ(unbounded_sequences, u);
 
-  ASSERT_EQ(1, multi_nested.unbounded_sequence_of_arrays.size());
+  ASSERT_EQ(1u, multi_nested.unbounded_sequence_of_arrays.size());
   for (const auto& a : multi_nested.unbounded_sequence_of_arrays)
     ASSERT_EQ(arrays, a);
 
-  ASSERT_EQ(1, multi_nested.unbounded_sequence_of_bounded_sequences.size());
+  ASSERT_EQ(1u, multi_nested.unbounded_sequence_of_bounded_sequences.size());
   for (const auto& b : multi_nested.unbounded_sequence_of_bounded_sequences)
     ASSERT_EQ(bounded_sequences, b);
 
-  ASSERT_EQ(1, multi_nested.unbounded_sequence_of_unbounded_sequences.size());
+  ASSERT_EQ(1u, multi_nested.unbounded_sequence_of_unbounded_sequences.size());
   for (const auto& u : multi_nested.unbounded_sequence_of_unbounded_sequences)
     ASSERT_EQ(unbounded_sequences, u);
+
+  rosidl_generator_cpp::msg::Empty empty =
+      rosidl_generator_cpp::msg::Empty::build()
+      .structure_needs_at_least_one_member(5);
+  ASSERT_EQ(5, empty.structure_needs_at_least_one_member);
 }

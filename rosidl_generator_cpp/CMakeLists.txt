@@ -45,6 +45,7 @@ if(BUILD_TESTING)
 
   ament_add_gtest(test_bounded_vector test/test_bounded_vector.cpp)
   if(TARGET test_bounded_vector)
+    add_dependencies(test_bounded_vector ${PROJECT_NAME})
     target_include_directories(test_bounded_vector PUBLIC
       ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME})
     ament_target_dependencies(test_bounded_vector
@@ -53,6 +54,7 @@ if(BUILD_TESTING)
   endif()
   ament_add_gtest(test_msg_initialization test/test_msg_initialization.cpp)
   if(TARGET test_msg_initialization)
+    add_dependencies(test_msg_initialization ${PROJECT_NAME})
     ament_target_dependencies(test_msg_initialization
       rosidl_runtime_cpp
       rosidl_runtime_c)
@@ -62,6 +64,7 @@ if(BUILD_TESTING)
   endif()
   ament_add_gtest(test_srv_initialization test/test_srv_initialization.cpp)
   if(TARGET test_srv_initialization)
+    add_dependencies(test_srv_initialization ${PROJECT_NAME})
     ament_target_dependencies(test_srv_initialization
       rosidl_runtime_cpp
       rosidl_runtime_c)
@@ -71,6 +74,7 @@ if(BUILD_TESTING)
   endif()
   ament_add_gtest(test_interfaces_cpp test/test_interfaces.cpp)
   if(TARGET test_interfaces_cpp)
+    add_dependencies(test_interfaces_cpp ${PROJECT_NAME})
     ament_target_dependencies(test_interfaces_cpp
       rosidl_runtime_cpp
       rosidl_runtime_c)
@@ -80,6 +84,7 @@ if(BUILD_TESTING)
   endif()
   ament_add_gtest(test_msg_datatype test/test_msg_datatype.cpp)
   if(TARGET test_msg_datatype)
+    add_dependencies(test_msg_datatype ${PROJECT_NAME})
     ament_target_dependencies(test_msg_datatype
       rosidl_runtime_cpp
       rosidl_runtime_c)
@@ -89,6 +94,7 @@ if(BUILD_TESTING)
   endif()
   ament_add_gtest(test_traits test/test_traits.cpp)
   if(TARGET test_traits)
+    add_dependencies(test_traits ${PROJECT_NAME})
     ament_target_dependencies(test_traits
       rosidl_runtime_cpp
       rosidl_runtime_c)

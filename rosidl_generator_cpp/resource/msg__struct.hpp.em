@@ -338,37 +338,6 @@ u@
   {
     return !this->operator==(other);
   }
-
-  // Initializers
-@{ num_members = len(message.structure.members) }@
-@[for index in range(num_members-1, -1, -1)]@
-@{
-field_name = message.structure.members[index].name
-simple_message_typename = message.structure.namespaced_type.name + '_'
-if index < num_members-1:
-  next_field_name = message.structure.members[index+1].name
-}@
-@[ if index == 0 and index == num_members-1 ]@
-  ROSIDL_GENERATOR_CPP__INIT_ONLY_FIELD(@(simple_message_typename), @(field_name));
-@[ elif index == num_members-1 ]@
-  ROSIDL_GENERATOR_CPP__INIT_LAST_FIELD(@(simple_message_typename), @(field_name));
-@[ elif index == 0 ]@
-  ROSIDL_GENERATOR_CPP__INIT_FIRST_FIELD(@(simple_message_typename), @(field_name), @(next_field_name));
-@[ else ]@
-  ROSIDL_GENERATOR_CPP__INIT_MID_FIELD(@(simple_message_typename), @(field_name), @(next_field_name));
-@[ end if]@
-@[end for]@
-
-@[if message.structure.members]@
-  // Build an instance of this message in a way that requires you to explicitly
-  // specify a value for every field. The compiler will help you guarantee that
-  // every field is initialized.
-  static Init__@(message.structure.members[0].name) build()
-  {
-    return Init__@(message.structure.members[0].name)();
-  }
-@[end if]@
-
 };  // struct @(message.structure.namespaced_type.name)_
 
 // alias to use template instance with default allocator

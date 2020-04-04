@@ -1,4 +1,4 @@
-// Copyright 2017 Open Source Robotics Foundation, Inc.
+// Copyright 2020 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_CPP__MESSAGE_INITIALIZATION_HPP_
-#define ROSIDL_GENERATOR_CPP__MESSAGE_INITIALIZATION_HPP_
-
-// TODO(clalancette): this should be moved out into a separate runtime package
-
-#include <rosidl_generator_c/message_initialization.h>
+#ifndef ROSIDL_GENERATOR_CPP__BUILDER_HPP_
+#define ROSIDL_GENERATOR_CPP__BUILDER_HPP_
 
 namespace rosidl_generator_cpp
 {
 
-enum class MessageInitialization
-{
-  ALL = ROSIDL_RUNTIME_C_MSG_INIT_ALL,
-  SKIP = ROSIDL_RUNTIME_C_MSG_INIT_SKIP,
-  ZERO = ROSIDL_RUNTIME_C_MSG_INIT_ZERO,
-  DEFAULTS_ONLY = ROSIDL_RUNTIME_C_MSG_INIT_DEFAULTS_ONLY,
-};
+template<typename MessageType, typename ReturnType>
+ReturnType build();
 
 }  // namespace rosidl_generator_cpp
 
-#endif  // ROSIDL_GENERATOR_CPP__MESSAGE_INITIALIZATION_HPP_
+#endif  // ROSIDL_GENERATOR_CPP__BUILDER_HPP_

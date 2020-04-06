@@ -44,6 +44,8 @@
 # :param SKIP_GROUP_MEMBERSHIP_CHECK: if set, skip enforcing the appartenance
 #   to the rosidl_interface_packages group
 # :type SKIP_GROUP_MEMBERSHIP_CHECK: option
+# :param SKIP_RESOURCE_REGISTER: if set skip registering the `rosidl_interfaces` resource.
+# :type SKIP_RESOURCE_REGISTER: option
 # :param ADD_LINTER_TESTS: if set lint the interface files using
 #   the ``ament_lint`` package
 # :type ADD_LINTER_TESTS: option
@@ -52,7 +54,7 @@
 #
 macro(rosidl_generate_interfaces target)
   cmake_parse_arguments(_ARG
-    "ADD_LINTER_TESTS;SKIP_INSTALL;SKIP_GROUP_MEMBERSHIP_CHECK"
+    "ADD_LINTER_TESTS;SKIP_INSTALL;SKIP_GROUP_MEMBERSHIP_CHECK;SKIP_RESOURCE_REGISTER"
     "LIBRARY_NAME" "DEPENDENCIES"
     ${ARGN})
   if(NOT _ARG_UNPARSED_ARGUMENTS)
@@ -219,7 +221,7 @@ macro(rosidl_generate_interfaces target)
     ${_non_idl_files}
   )
 
-  if(NOT _ARG_SKIP_INSTALL)
+  if(NOT _ARG_SKIP_INSTALL AND NOT _ARG_SKIP_RESOURCE_REGISTER)
     if(NOT _ARG_SKIP_GROUP_MEMBERSHIP_CHECK)
       set(_group_name "rosidl_interface_packages")
       if(NOT _AMENT_PACKAGE_NAME)

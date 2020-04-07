@@ -31,7 +31,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 if(WIN32)
   target_compile_definitions(${PROJECT_NAME}
-    PRIVATE "ROSIDL_RUNTIME_C_BUILDING_DLL")
+  PRIVATE "ROSIDL_GENERATOR_C_BUILDING_DLL")
 endif()
 
 ament_export_dependencies(rosidl_typesupport_interface)

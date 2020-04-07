@@ -90,37 +90,37 @@ TEST(Test_msg_initialization, build) {
 
   rosidl_generator_cpp::msg::Arrays arrays =
     rosidl_generator_cpp::build<rosidl_generator_cpp::msg::Arrays>()
-    .bool_values({true, false, true})
-    .byte_values({5, 10, 5})
-    .char_values({10, 20, 10})
-    .float32_values({0.1125f, 0.225f, 0.1125f})
-    .float64_values({0.01125, 0.0225, 0.01125})
-    .int8_values({-5, -10, -5})
-    .uint8_values({20, 40, 20})
-    .int16_values({-100, -200, -100})
-    .uint16_values({200, 400, 200})
-    .int32_values({-3000L, -6000L, -3000L})
-    .uint32_values({60000UL, 120000UL, 60000UL})
-    .int64_values({-4000000LL, -8000000LL, -4000000LL})
-    .uint64_values({5000000ULL, 10000000ULL, 5000000ULL})
-    .string_values({"test", "test test", "test"})
-    .basic_types_values({basic, basic, basic})
-    .constants_values({constants, constants, constants})
-    .defaults_values({defaults, defaults, defaults})
-    .bool_values_default({false, true, false})
-    .byte_values_default({10, 5, 10})
-    .char_values_default({20, 10, 20})
-    .float32_values_default({0.225f, 0.1125f, 0.225f})
-    .float64_values_default({0.0225, 0.01125, 0.0225})
-    .int8_values_default({-10, -5, -10})
-    .uint8_values_default({40, 20, 40})
-    .int16_values_default({-200, -100, -200})
-    .uint16_values_default({40, 20, 40})
-    .int32_values_default({-6000L, -3000L, -6000L})
-    .uint32_values_default({120000UL, 60000UL, 120000UL})
-    .int64_values_default({-8000000LL, -4000000LL, -8000000LL})
-    .uint64_values_default({10000000ULL, 5000000ULL, 10000000ULL})
-    .string_values_default({"test test", "test", "test test"})
+    .bool_values({{true, false, true}})
+    .byte_values({{5, 10, 5}})
+    .char_values({{10, 20, 10}})
+    .float32_values({{0.1125f, 0.225f, 0.1125f}})
+    .float64_values({{0.01125, 0.0225, 0.01125}})
+    .int8_values({{-5, -10, -5}})
+    .uint8_values({{20, 40, 20}})
+    .int16_values({{-100, -200, -100}})
+    .uint16_values({{200, 400, 200}})
+    .int32_values({{-3000L, -6000L, -3000L}})
+    .uint32_values({{60000UL, 120000UL, 60000UL}})
+    .int64_values({{-4000000LL, -8000000LL, -4000000LL}})
+    .uint64_values({{5000000ULL, 10000000ULL, 5000000ULL}})
+    .string_values({{"test", "test test", "test"}})
+    .basic_types_values({{basic, basic, basic}})
+    .constants_values({{constants, constants, constants}})
+    .defaults_values({{defaults, defaults, defaults}})
+    .bool_values_default({{false, true, false}})
+    .byte_values_default({{10, 5, 10}})
+    .char_values_default({{20, 10, 20}})
+    .float32_values_default({{0.225f, 0.1125f, 0.225f}})
+    .float64_values_default({{0.0225, 0.01125, 0.0225}})
+    .int8_values_default({{-10, -5, -10}})
+    .uint8_values_default({{40, 20, 40}})
+    .int16_values_default({{-200, -100, -200}})
+    .uint16_values_default({{40, 20, 40}})
+    .int32_values_default({{-6000L, -3000L, -6000L}})
+    .uint32_values_default({{120000UL, 60000UL, 120000UL}})
+    .int64_values_default({{-8000000LL, -4000000LL, -8000000LL}})
+    .uint64_values_default({{10000000ULL, 5000000ULL, 10000000ULL}})
+    .string_values_default({{"test test", "test", "test test"}})
     .alignment_check(0l);
 
   rosidl_generator_cpp::msg::BoundedSequences bounded_sequences;
@@ -128,19 +128,19 @@ TEST(Test_msg_initialization, build) {
 
   rosidl_generator_cpp::msg::MultiNested multi_nested =
     rosidl_generator_cpp::build<rosidl_generator_cpp::msg::MultiNested>()
-    .array_of_arrays({arrays, arrays, arrays})
+    .array_of_arrays({{arrays, arrays, arrays}})
     .array_of_bounded_sequences(
-  {
+  {{
     bounded_sequences,
     bounded_sequences,
     bounded_sequences
-  })
+  }})
     .array_of_unbounded_sequences(
-  {
+  {{
     unbounded_sequences,
     unbounded_sequences,
     unbounded_sequences
-  })
+  }})
     .bounded_sequence_of_arrays({arrays, arrays})
     .bounded_sequence_of_bounded_sequences(
   {

@@ -241,17 +241,17 @@ non_defaulted_zero_initialized_members = [
   _@(member.name)_type @(member.name);
 @[end for]@
 
+@[if len(message.structure.members) != 1 or message.structure.members[0].name != EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME]@
   // setters for named parameter idiom
-@[for member in message.structure.members]@
-@[  if len(message.structure.members) != 1 or member.name != EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME]@
+@[  for member in message.structure.members]@
   Type & set__@(member.name)(
     const @(msg_type_to_cpp(member.type)) & _arg)
   {
     this->@(member.name) = _arg;
     return *this;
   }
-@[  end if]@
-@[end for]@
+@[  end for]@
+@[end if]@
 
   // constant declarations
 @[for constant in message.constants]@

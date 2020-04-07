@@ -14,6 +14,7 @@ from rosidl_parser.definition import ACTION_RESULT_SUFFIX
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BOOLEAN_TYPE
 from rosidl_parser.definition import CHARACTER_TYPES
+from rosidl_parser.definition import EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME
 from rosidl_parser.definition import INTEGER_TYPES
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import OCTET_TYPE
@@ -240,15 +241,17 @@ non_defaulted_zero_initialized_members = [
   _@(member.name)_type @(member.name);
 @[end for]@
 
+@[if len(message.structure.members) != 1 or message.structure.members[0].name != EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME]@
   // setters for named parameter idiom
-@[for member in message.structure.members]@
+@[  for member in message.structure.members]@
   Type & set__@(member.name)(
     const @(msg_type_to_cpp(member.type)) & _arg)
   {
     this->@(member.name) = _arg;
     return *this;
   }
-@[end for]@
+@[  end for]@
+@[end if]@
 
   // constant declarations
 @[for constant in message.constants]@

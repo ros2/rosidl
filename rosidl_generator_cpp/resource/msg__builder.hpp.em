@@ -69,6 +69,7 @@ template<typename MessageType>
 auto build();
 
 template<>
+inline
 auto build<::@(message_typename)>()
 {
   return @('::'.join(message.structure.namespaced_type.namespaces))::builder::Init_@(message.structure.namespaced_type.name)_@(message.structure.members[0].name)();

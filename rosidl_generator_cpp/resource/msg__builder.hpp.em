@@ -60,26 +60,20 @@ private:
 
 @[  end for]@
 }  // namespace builder
-
-builder::Init_@(message.structure.namespaced_type.name)_@(message.structure.members[0].name) build_@(message.structure.namespaced_type.name)()
-{
-  return builder::Init_@(message.structure.namespaced_type.name)_@(message.structure.members[0].name)();
-}
 @[end if]@
 @
-@[for ns in reversed(message.structure.namespaced_type.namespaces)]@
+@[for i, ns in reversed(list(enumerate(message.structure.namespaced_type.namespaces)))]@
 
-}  // namespace @(ns)
-@[end for]@
-
-namespace rosidl_generator_cpp
-{
+@[  if i == 0]@
+template<typename MessageType>
+auto build();
 
 template<>
-::@('::'.join(message.structure.namespaced_type.namespaces))::builder::Init_@(message.structure.namespaced_type.name)_@(message.structure.members[0].name)
-build<::@(message_typename)>()
+auto build<::@(message_typename)>()
 {
   return @('::'.join(message.structure.namespaced_type.namespaces))::builder::Init_@(message.structure.namespaced_type.name)_@(message.structure.members[0].name)();
 }
 
-}  // namespace rosidl_generator_cpp
+@[  end if]@
+}  // namespace @(ns)
+@[end for]@

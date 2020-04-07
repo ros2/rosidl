@@ -25,7 +25,6 @@ include_directives = set()
 #define @(header_guard_variable)
 
 #include "@(include_base)__struct.hpp"
-#include <rosidl_generator_cpp/builder.hpp>
 #include <rosidl_generator_cpp/message_initialization.hpp>
 #include <algorithm>
 #include <utility>

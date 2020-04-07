@@ -22,8 +22,8 @@
 #include "rosidl_generator_cpp/msg/empty.hpp"
 
 TEST(Test_msg_initialization, build) {
-  rosidl_generator_cpp::msg::BasicTypes basic =
-    rosidl_generator_cpp::msg::build_BasicTypes()
+  ::rosidl_generator_cpp::msg::BasicTypes basic =
+    ::rosidl_generator_cpp::build<::rosidl_generator_cpp::msg::BasicTypes>()
     .bool_value(true)
     .byte_value(5)
     .char_value(10)
@@ -53,10 +53,10 @@ TEST(Test_msg_initialization, build) {
   ASSERT_EQ(5000000ULL, basic.uint64_value);
 
   rosidl_generator_cpp::msg::Nested nested =
-    rosidl_generator_cpp::msg::build_Nested()
+    rosidl_generator_cpp::build<rosidl_generator_cpp::msg::Nested>()
     .basic_types_value(
   {
-    rosidl_generator_cpp::msg::build_BasicTypes()
+    rosidl_generator_cpp::build<rosidl_generator_cpp::msg::BasicTypes>()
     .bool_value(false)
     .byte_value(10)
     .char_value(20)
@@ -89,7 +89,7 @@ TEST(Test_msg_initialization, build) {
   rosidl_generator_cpp::msg::Defaults defaults;
 
   rosidl_generator_cpp::msg::Arrays arrays =
-    rosidl_generator_cpp::msg::build_Arrays()
+    rosidl_generator_cpp::build<rosidl_generator_cpp::msg::Arrays>()
     .bool_values({true, false, true})
     .byte_values({5, 10, 5})
     .char_values({10, 20, 10})
@@ -127,7 +127,7 @@ TEST(Test_msg_initialization, build) {
   rosidl_generator_cpp::msg::UnboundedSequences unbounded_sequences;
 
   rosidl_generator_cpp::msg::MultiNested multi_nested =
-    rosidl_generator_cpp::msg::build_MultiNested()
+    rosidl_generator_cpp::build<rosidl_generator_cpp::msg::MultiNested>()
     .array_of_arrays({arrays, arrays, arrays})
     .array_of_bounded_sequences(
   {
@@ -199,7 +199,7 @@ TEST(Test_msg_initialization, build) {
   }
 
   rosidl_generator_cpp::msg::Empty empty =
-    rosidl_generator_cpp::msg::build_Empty()
+    rosidl_generator_cpp::build<rosidl_generator_cpp::msg::Empty>()
     .structure_needs_at_least_one_member(5);
   ASSERT_EQ(5, empty.structure_needs_at_least_one_member);
 }

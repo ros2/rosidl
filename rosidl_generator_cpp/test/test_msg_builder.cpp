@@ -130,17 +130,17 @@ TEST(Test_msg_initialization, build) {
     rosidl_generator_cpp::build<rosidl_generator_cpp::msg::MultiNested>()
     .array_of_arrays({{arrays, arrays, arrays}})
     .array_of_bounded_sequences(
-  {{
-    bounded_sequences,
-    bounded_sequences,
-    bounded_sequences
-  }})
+    {{
+      bounded_sequences,
+      bounded_sequences,
+      bounded_sequences
+    }})
     .array_of_unbounded_sequences(
-  {{
-    unbounded_sequences,
-    unbounded_sequences,
-    unbounded_sequences
-  }})
+    {{
+      unbounded_sequences,
+      unbounded_sequences,
+      unbounded_sequences
+    }})
     .bounded_sequence_of_arrays({arrays, arrays})
     .bounded_sequence_of_bounded_sequences(
   {

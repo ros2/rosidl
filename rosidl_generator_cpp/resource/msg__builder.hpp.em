@@ -1,5 +1,7 @@
 @# Included from rosidl_generator_cpp/resource/idl__builder.hpp.em
 @{
+from rosidl_parser.definition import EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME
+
 message_typename = '::'.join(message.structure.namespaced_type.namespaced_name())
 }@
 
@@ -8,12 +10,7 @@ namespace @(ns)
 {
 
 @[end for]@
-@[if not message.structure.members]@
-::@(message_typename) build_@(message.structure.namespaced_type.name)()
-{
-return ::@(message_typename)(rosidl_generator_cpp::MessageInitialization::ZERO);
-}
-@[else]@
+@[if len(message.structure.members) != 1 or message.structure.members[0].name != EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME]@
 namespace builder
 {
 
@@ -72,7 +69,11 @@ template<>
 inline
 auto build<::@(message_typename)>()
 {
+@[    if len(message.structure.members) == 1 and message.structure.members[0].name == EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME]@
+  return ::@(message_typename)(rosidl_generator_cpp::MessageInitialization::ZERO);
+@[    else]@
   return @('::'.join(message.structure.namespaced_type.namespaces))::builder::Init_@(message.structure.namespaced_type.name)_@(message.structure.members[0].name)();
+@[    end if]@
 }
 
 @[  end if]@

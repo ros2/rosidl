@@ -199,7 +199,6 @@ TEST(Test_msg_initialization, build) {
   }
 
   rosidl_generator_cpp::msg::Empty empty =
-    rosidl_generator_cpp::build<rosidl_generator_cpp::msg::Empty>()
-    .structure_needs_at_least_one_member(5);
-  ASSERT_EQ(5, empty.structure_needs_at_least_one_member);
+    rosidl_generator_cpp::build<rosidl_generator_cpp::msg::Empty>();
+  ASSERT_EQ(0, empty.structure_needs_at_least_one_member);
 }

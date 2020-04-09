@@ -55,6 +55,8 @@ if(BUILD_TESTING)
   ament_add_gtest(test_msg_builder test/test_msg_builder.cpp)
   if(TARGET test_msg_builder)
     add_dependencies(test_msg_builder ${PROJECT_NAME})
+    target_include_directories(test_msg_builder PUBLIC
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME})
     ament_target_dependencies(test_msg_builder
       rosidl_runtime_cpp
       rosidl_runtime_c)

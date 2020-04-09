@@ -31,6 +31,7 @@ from rosidl_parser.definition import UnboundedSequence
 def generate_cpp(generator_arguments_file):
     mapping = {
         'idl.hpp.em': '%s.hpp',
+        'idl__builder.hpp.em': '%s__builder.hpp',
         'idl__struct.hpp.em': '%s__struct.hpp',
         'idl__traits.hpp.em': '%s__traits.hpp',
     }

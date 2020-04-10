@@ -30,7 +30,7 @@ explicit @
 Init_@(message.structure.namespaced_type.name)_@(field_name)@
 @[    if index == 0]@
 ()
-  : msg_(::rosidl_generator_cpp::MessageInitialization::SKIP)
+  : msg_(::rosidl_runtime_cpp::MessageInitialization::SKIP)
 @[    else]@
 (::@(message_typename) & msg)
   : msg_(msg)
@@ -70,7 +70,7 @@ inline
 auto build<::@(message_typename)>()
 {
 @[    if len(message.structure.members) == 1 and message.structure.members[0].name == EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME]@
-  return ::@(message_typename)(rosidl_generator_cpp::MessageInitialization::ZERO);
+  return ::@(message_typename)(rosidl_runtime_cpp::MessageInitialization::ZERO);
 @[    else]@
   return @('::'.join(message.structure.namespaced_type.namespaces))::builder::Init_@(message.structure.namespaced_type.name)_@(message.structure.members[0].name)();
 @[    end if]@

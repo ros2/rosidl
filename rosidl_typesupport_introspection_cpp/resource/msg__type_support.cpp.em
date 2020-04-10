@@ -50,7 +50,7 @@ namespace rosidl_typesupport_introspection_cpp
 {
 
 void @(message.structure.namespaced_type.name)_init_function(
-  void * message_memory, rosidl_generator_cpp::MessageInitialization _init)
+  void * message_memory, rosidl_runtime_cpp::MessageInitialization _init)
 {
   new (message_memory) @('::'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))(_init);
 }

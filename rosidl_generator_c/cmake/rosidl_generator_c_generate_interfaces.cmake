@@ -125,7 +125,7 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
     ${_pkg_name})
 endforeach()
 ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-  "rosidl_generator_c"
+  "rosidl_runtime_c"
   "rosidl_typesupport_interface")
 
 add_dependencies(

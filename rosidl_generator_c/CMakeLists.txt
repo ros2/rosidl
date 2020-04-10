@@ -13,33 +13,10 @@ endif()
 
 find_package(ament_cmake_python REQUIRED)
 find_package(ament_cmake_ros REQUIRED)
-find_package(rosidl_typesupport_interface REQUIRED)
-
-include_directories(include)
-add_library(${PROJECT_NAME}
-  "src/message_bounds.c"
-  "src/message_type_support.c"
-  "src/primitives_sequence_functions.c"
-  "src/service_type_support.c"
-  "src/string_functions.c"
-  "src/u16string_functions.c"
-)
-ament_target_dependencies(${PROJECT_NAME}
-  "rosidl_typesupport_interface")
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set_target_properties(${PROJECT_NAME} PROPERTIES
-    COMPILE_OPTIONS -Wall -Wextra -Wpedantic)
-endif()
-if(WIN32)
-  target_compile_definitions(${PROJECT_NAME}
-    PRIVATE "ROSIDL_GENERATOR_C_BUILDING_DLL")
-endif()
+find_package(rosidl_runtime_c REQUIRED)
 
 ament_export_dependencies(rosidl_cmake)
 ament_export_dependencies(rosidl_typesupport_interface)
-ament_export_include_directories(include)
-ament_export_libraries(${PROJECT_NAME})
-
 ament_index_register_resource("rosidl_generator_packages")
 
 ament_python_install_package(${PROJECT_NAME})
@@ -59,7 +36,6 @@ if(BUILD_TESTING)
   # Trick ament_target_dependencies() into thinking this package has been found
   set(rosidl_generator_c_FOUND "1")
   set(rosidl_generator_c_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-  set(rosidl_generator_c_LIBRARIES "${PROJECT_NAME}")
 
   rosidl_generator_c_extras(
     "${CMAKE_CURRENT_SOURCE_DIR}/bin/rosidl_generator_c"
@@ -76,8 +52,7 @@ if(BUILD_TESTING)
   add_executable(test_compilation_c test/test_compilation.c test/separate_compilation.c)
   add_executable(test_interfaces_c test/test_interfaces.c)
   add_executable(test_invalid_initialization_c test/test_invalid_initialization.c)
-  add_dependencies(test_interfaces_c ${PROJECT_NAME})
-  add_dependencies(test_invalid_initialization_c ${PROJECT_NAME})
+
   ament_add_test(
     test_compilation_c
     COMMAND "$<TARGET_FILE:test_compilation_c>"
@@ -95,10 +70,30 @@ if(BUILD_TESTING)
   )
 
   # include the built files directly, instead of their install location
-  include_directories("${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}")
-  target_link_libraries(test_compilation_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
-  target_link_libraries(test_interfaces_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
-  target_link_libraries(test_invalid_initialization_c ${PROJECT_NAME} ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
+  target_link_libraries(test_compilation_c
+    ${PROJECT_NAME}_interfaces__${PROJECT_NAME}
+    ${rosidl_runtime_c_LIBRARIES}
+  )
+  target_include_directories(test_compilation_c PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+    ${rosidl_runtime_c_INCLUDE_DIRS}
+  )
+  target_link_libraries(test_interfaces_c
+    ${PROJECT_NAME}_interfaces__${PROJECT_NAME}
+    ${rosidl_runtime_c_LIBRARIES}
+  )
+  target_include_directories(test_interfaces_c PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+    ${rosidl_runtime_c_INCLUDE_DIRS}
+  )
+  target_link_libraries(test_invalid_initialization_c
+    ${PROJECT_NAME}_interfaces__${PROJECT_NAME}
+    ${rosidl_runtime_c_LIBRARIES}
+  )
+  target_include_directories(test_invalid_initialization_c PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+    ${rosidl_runtime_c_INCLUDE_DIRS}
+  )
 endif()
 
 ament_package(
@@ -112,14 +107,4 @@ install(
 install(
   DIRECTORY cmake resource
   DESTINATION share/${PROJECT_NAME}
-)
-install(
-  DIRECTORY include/
-  DESTINATION include
-)
-install(
-  TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
 )

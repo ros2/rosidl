@@ -175,7 +175,7 @@ void test_message_basic_types(rosidl_generator_cpp::msg::BasicTypes message)
 
 #define TEST_BOUNDED_SEQUENCE_TYPES( \
     Message, FieldName, BasicType, ArraySize, MinVal, MaxVal) \
-  rosidl_generator_cpp::BoundedVector<BasicType, ArraySize> pattern_ ## FieldName; \
+  rosidl_runtime_cpp::BoundedVector<BasicType, ArraySize> pattern_ ## FieldName; \
   Message.FieldName.resize(ArraySize); \
   pattern_ ## FieldName.resize(ArraySize); \
   test_vector_fill<decltype(pattern_ ## FieldName)>( \
@@ -185,7 +185,7 @@ void test_message_basic_types(rosidl_generator_cpp::msg::BasicTypes message)
 
 #define TEST_BOUNDED_SEQUENCE_STRING( \
     Message, FieldName, BasicType, ArraySize, MinVal, MaxVal, MinLength, MaxLength) \
-  rosidl_generator_cpp::BoundedVector<BasicType, ArraySize> pattern_ ## FieldName; \
+  rosidl_runtime_cpp::BoundedVector<BasicType, ArraySize> pattern_ ## FieldName; \
   Message.FieldName.resize(ArraySize); \
   pattern_ ## FieldName.resize(ArraySize); \
   test_vector_fill<decltype(pattern_ ## FieldName)>( \

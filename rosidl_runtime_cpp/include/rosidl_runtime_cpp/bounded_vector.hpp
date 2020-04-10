@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_CPP__BOUNDED_VECTOR_HPP_
-#define ROSIDL_GENERATOR_CPP__BOUNDED_VECTOR_HPP_
+#ifndef ROSIDL_RUNTIME_CPP__BOUNDED_VECTOR_HPP_
+#define ROSIDL_RUNTIME_CPP__BOUNDED_VECTOR_HPP_
 
 #include <algorithm>
 #include <memory>
@@ -21,7 +21,7 @@
 #include <utility>
 #include <vector>
 
-namespace rosidl_generator_cpp
+namespace rosidl_runtime_cpp
 {
 
 /// A container based on std::vector but with an upper bound.
@@ -740,7 +740,7 @@ operator>=(
     *reinterpret_cast<const std::vector<_Tp, _Alloc> *>(&__y));
 }
 
-/// See rosidl_generator_cpp::BoundedVector::swap().
+/// See rosidl_runtime_cpp::BoundedVector::swap().
 template<typename _Tp, std::size_t _UpperBound, typename _Alloc>
 inline void
 swap(BoundedVector<_Tp, _UpperBound, _Alloc> & __x, BoundedVector<_Tp, _UpperBound, _Alloc> & __y)
@@ -748,6 +748,6 @@ swap(BoundedVector<_Tp, _UpperBound, _Alloc> & __x, BoundedVector<_Tp, _UpperBou
   __x.swap(__y);
 }
 
-}  // namespace rosidl_generator_cpp
+}  // namespace rosidl_runtime_cpp
 
-#endif  // ROSIDL_GENERATOR_CPP__BOUNDED_VECTOR_HPP_
+#endif  // ROSIDL_RUNTIME_CPP__BOUNDED_VECTOR_HPP_

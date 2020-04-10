@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_CPP__ACTION_TYPE_SUPPORT_DECL_HPP_
-#define ROSIDL_GENERATOR_CPP__ACTION_TYPE_SUPPORT_DECL_HPP_
+#ifndef ROSIDL_RUNTIME_CPP__ACTION_TYPE_SUPPORT_DECL_HPP_
+#define ROSIDL_RUNTIME_CPP__ACTION_TYPE_SUPPORT_DECL_HPP_
 
 #include <rosidl_generator_c/action_type_support_struct.h>
 #include <rosidl_generator_c/visibility_control.h>
 
-namespace rosidl_generator_cpp
+namespace rosidl_runtime_cpp
 {
 
 template<typename T>
 const rosidl_action_type_support_t * get_action_type_support_handle();
 
-}  // namespace rosidl_generator_cpp
+}  // namespace rosidl_runtime_cpp
 
-#endif  // ROSIDL_GENERATOR_CPP__ACTION_TYPE_SUPPORT_DECL_HPP_
+#endif  // ROSIDL_RUNTIME_CPP__ACTION_TYPE_SUPPORT_DECL_HPP_

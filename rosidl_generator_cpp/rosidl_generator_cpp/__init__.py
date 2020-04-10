@@ -121,7 +121,7 @@ def msg_type_to_cpp(type_):
                  'rebind<%s>::other>') % (cpp_type, cpp_type)
         elif isinstance(type_, BoundedSequence):
             return \
-                ('rosidl_generator_cpp::BoundedVector<%s, %u, typename ContainerAllocator::' +
+                ('rosidl_runtime_cpp::BoundedVector<%s, %u, typename ContainerAllocator::' +
                  'template rebind<%s>::other>') % (cpp_type, type_.maximum_size, cpp_type)
         else:
             assert isinstance(type_, Array)

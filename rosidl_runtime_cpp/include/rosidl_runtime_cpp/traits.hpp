@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_CPP__TRAITS_HPP_
-#define ROSIDL_GENERATOR_CPP__TRAITS_HPP_
+#ifndef ROSIDL_RUNTIME_CPP__TRAITS_HPP_
+#define ROSIDL_RUNTIME_CPP__TRAITS_HPP_
 
 #include <type_traits>
 
-// TODO(dirk-thomas) this should be in the rosidl_generator_cpp namespace
 namespace rosidl_generator_traits
 {
 
@@ -56,4 +55,4 @@ struct is_action_feedback : std::false_type {};
 
 }  // namespace rosidl_generator_traits
 
-#endif  // ROSIDL_GENERATOR_CPP__TRAITS_HPP_
+#endif  // ROSIDL_RUNTIME_CPP__TRAITS_HPP_

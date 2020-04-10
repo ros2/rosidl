@@ -23,8 +23,8 @@ include_directives = set()
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
-#include <rosidl_generator_cpp/bounded_vector.hpp>
-#include <rosidl_generator_cpp/message_initialization.hpp>
+#include <rosidl_runtime_cpp/bounded_vector.hpp>
+#include <rosidl_runtime_cpp/message_initialization.hpp>
 #include <algorithm>
 #include <array>
 #include <memory>

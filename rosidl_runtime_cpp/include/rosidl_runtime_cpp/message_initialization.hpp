@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_CPP__MESSAGE_INITIALIZATION_HPP_
-#define ROSIDL_GENERATOR_CPP__MESSAGE_INITIALIZATION_HPP_
+#ifndef ROSIDL_RUNTIME_CPP__MESSAGE_INITIALIZATION_HPP_
+#define ROSIDL_RUNTIME_CPP__MESSAGE_INITIALIZATION_HPP_
 
 // TODO(clalancette): this should be moved out into a separate runtime package
 
 #include <rosidl_generator_c/message_initialization.h>
 
-namespace rosidl_generator_cpp
+namespace rosidl_runtime_cpp
 {
 
 enum class MessageInitialization
@@ -30,6 +30,6 @@ enum class MessageInitialization
   DEFAULTS_ONLY = ROSIDL_RUNTIME_C_MSG_INIT_DEFAULTS_ONLY,
 };
 
-}  // namespace rosidl_generator_cpp
+}  // namespace rosidl_runtime_cpp
 
-#endif  // ROSIDL_GENERATOR_CPP__MESSAGE_INITIALIZATION_HPP_
+#endif  // ROSIDL_RUNTIME_CPP__MESSAGE_INITIALIZATION_HPP_

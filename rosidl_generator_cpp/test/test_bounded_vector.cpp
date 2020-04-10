@@ -15,11 +15,11 @@
 #include <gtest/gtest.h>
 #include <utility>
 
-#include "rosidl_generator_cpp/bounded_vector.hpp"
+#include "rosidl_runtime_cpp/bounded_vector.hpp"
 
 
 TEST(rosidl_generator_cpp, bounded_vector) {
-  rosidl_generator_cpp::BoundedVector<int, 2> v;
+  rosidl_runtime_cpp::BoundedVector<int, 2> v;
   ASSERT_EQ(v.size(), 0u);
   ASSERT_EQ(v.max_size(), 2u);
   v.push_back(1);
@@ -35,7 +35,7 @@ TEST(rosidl_generator_cpp, bounded_vector) {
 }
 
 TEST(rosidl_generator_cpp, bounded_vector_rvalue) {
-  rosidl_generator_cpp::BoundedVector<int, 2> v;
+  rosidl_runtime_cpp::BoundedVector<int, 2> v;
   // emplace back
   ASSERT_EQ(v.size(), 0u);
   ASSERT_EQ(v.max_size(), 2u);

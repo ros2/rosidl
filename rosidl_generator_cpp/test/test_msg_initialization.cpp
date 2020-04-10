@@ -77,7 +77,7 @@ TEST(Test_msg_initialization, no_arg_constructor) {
 
 TEST(Test_msg_initialization, all_constructor) {
   rosidl_generator_cpp::msg::Defaults def(
-    rosidl_generator_cpp::MessageInitialization::ALL);
+    rosidl_runtime_cpp::MessageInitialization::ALL);
   ASSERT_TRUE(def.bool_value);
   ASSERT_EQ(50, def.byte_value);
   ASSERT_EQ(100, def.char_value);
@@ -109,7 +109,7 @@ TEST(Test_msg_initialization, all_constructor) {
 
 TEST(Test_msg_initialization, zero_constructor) {
   rosidl_generator_cpp::msg::Defaults def(
-    rosidl_generator_cpp::MessageInitialization::ZERO);
+    rosidl_runtime_cpp::MessageInitialization::ZERO);
   ASSERT_FALSE(def.bool_value);
   ASSERT_EQ(0, def.byte_value);
   ASSERT_EQ(0, def.char_value);
@@ -141,7 +141,7 @@ TEST(Test_msg_initialization, zero_constructor) {
 
 TEST(Test_msg_initialization, defaults_only_constructor) {
   rosidl_generator_cpp::msg::Defaults def(
-    rosidl_generator_cpp::MessageInitialization::DEFAULTS_ONLY);
+    rosidl_runtime_cpp::MessageInitialization::DEFAULTS_ONLY);
   ASSERT_TRUE(def.bool_value);
   ASSERT_EQ(50, def.byte_value);
   ASSERT_EQ(100, def.char_value);
@@ -179,7 +179,7 @@ TEST(Test_msg_initialization, skip_constructor) {
   std::memset(memory, 0xfe, sizeof(rosidl_generator_cpp::msg::BoundedSequences));
   rosidl_generator_cpp::msg::BoundedSequences * bounded =
     new(memory) rosidl_generator_cpp::msg::BoundedSequences(
-    rosidl_generator_cpp::MessageInitialization::SKIP);
+    rosidl_runtime_cpp::MessageInitialization::SKIP);
 
   // ensures that the memory gets freed even if an ASSERT is raised
   SCOPE_EXIT(bounded->~BoundedSequences_(); delete[] memory);

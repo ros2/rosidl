@@ -527,7 +527,7 @@ int test_unbounded_sequences()
   }
 
   // uint8_values
-  res = rosidl_runtime_c__int8__Sequence__init(&seq->uint8_values, ARR_SIZE);
+  res = rosidl_runtime_c__uint8__Sequence__init(&seq->uint8_values, ARR_SIZE);
   EXPECT_EQ(true, res);
   for (i = 0; i < ARR_SIZE; i++) {
     seq->uint8_values.data[i] = test_values_uint8[i];

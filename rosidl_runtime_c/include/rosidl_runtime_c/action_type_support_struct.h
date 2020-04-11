@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_C__ACTION_TYPE_SUPPORT_STRUCT_H_
-#define ROSIDL_GENERATOR_C__ACTION_TYPE_SUPPORT_STRUCT_H_
+#ifndef ROSIDL_RUNTIME_C__ACTION_TYPE_SUPPORT_STRUCT_H_
+#define ROSIDL_RUNTIME_C__ACTION_TYPE_SUPPORT_STRUCT_H_
 
-#include "rosidl_generator_c/message_type_support_struct.h"
-#include "rosidl_generator_c/service_type_support_struct.h"
-#include "rosidl_generator_c/visibility_control.h"
+#include "rosidl_runtime_c/message_type_support_struct.h"
+#include "rosidl_runtime_c/service_type_support_struct.h"
+#include "rosidl_runtime_c/visibility_control.h"
 #include "rosidl_typesupport_interface/macros.h"
 
 #ifdef __cplusplus
@@ -44,4 +44,4 @@ struct rosidl_action_type_support_t
 }
 #endif
 
-#endif  // ROSIDL_GENERATOR_C__ACTION_TYPE_SUPPORT_STRUCT_H_
+#endif  // ROSIDL_RUNTIME_C__ACTION_TYPE_SUPPORT_STRUCT_H_

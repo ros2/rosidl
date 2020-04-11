@@ -1,4 +1,4 @@
-// Copyright 2018 Open Source Robotics Foundation, Inc.
+// Copyright 2015 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,16 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_C__STRING_BOUNDS_H_
-#define ROSIDL_GENERATOR_C__STRING_BOUNDS_H_
+#ifndef ROSIDL_RUNTIME_C__STRING_H_
+#define ROSIDL_RUNTIME_C__STRING_H_
 
 #include <stddef.h>
 
-/// String struct
-typedef struct rosidl_generator_c__String__bounds
-{
-  /// The length of the string (excluding the null byte).
-  size_t bounds;
-} rosidl_generator_c__String__bounds;
+#include "rosidl_runtime_c/primitives_sequence.h"
 
-#endif  // ROSIDL_GENERATOR_C__STRING_BOUNDS_H_
+/// String struct
+typedef struct rosidl_runtime_c__String
+{
+  char * data;
+  /// The length of the string (excluding the null byte).
+  size_t size;
+  /// The capacity represents the number of allocated bytes (including the null byte).
+  size_t capacity;
+} rosidl_runtime_c__String;
+
+ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(String, rosidl_runtime_c__String)
+
+#endif  // ROSIDL_RUNTIME_C__STRING_H_

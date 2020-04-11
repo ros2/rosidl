@@ -15,7 +15,7 @@ TEMPLATE(
 
 @{
 header_files = [
-    'rosidl_generator_c/service_type_support_struct.h',
+    'rosidl_runtime_c/service_type_support_struct.h',
     'rosidl_typesupport_interface/macros.h',
     'rosidl_typesupport_introspection_cpp/visibility_control.h',
 ]

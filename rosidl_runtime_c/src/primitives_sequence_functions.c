@@ -16,11 +16,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "rosidl_generator_c/primitives_sequence_functions.h"
+#include "rosidl_runtime_c/primitives_sequence_functions.h"
 
 #define ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(STRUCT_NAME, TYPE_NAME) \
-  bool rosidl_generator_c__ ## STRUCT_NAME ## __Sequence__init( \
-    rosidl_generator_c__ ## STRUCT_NAME ## __Sequence * sequence, size_t size) \
+  bool rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init( \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence * sequence, size_t size) \
   { \
     if (!sequence) { \
       return false; \
@@ -38,8 +38,8 @@
     return true; \
   } \
  \
-  void rosidl_generator_c__ ## STRUCT_NAME ## __Sequence__fini( \
-    rosidl_generator_c__ ## STRUCT_NAME ## __Sequence * sequence) \
+  void rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini( \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence * sequence) \
   { \
     if (!sequence) { \
       return; \
@@ -76,54 +76,54 @@ ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint64, uint64_t)
 ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int64, int64_t)
 
 // emulate legacy API
-bool rosidl_generator_c__bool__Sequence__init(
-  rosidl_generator_c__boolean__Sequence * sequence, size_t size)
+bool rosidl_runtime_c__bool__Sequence__init(
+  rosidl_runtime_c__boolean__Sequence * sequence, size_t size)
 {
-  return rosidl_generator_c__boolean__Sequence__init(
+  return rosidl_runtime_c__boolean__Sequence__init(
     sequence, size);
 }
-void rosidl_generator_c__bool__Sequence__fini(
-  rosidl_generator_c__boolean__Sequence * sequence)
+void rosidl_runtime_c__bool__Sequence__fini(
+  rosidl_runtime_c__boolean__Sequence * sequence)
 {
-  rosidl_generator_c__boolean__Sequence__fini(
+  rosidl_runtime_c__boolean__Sequence__fini(
     sequence);
 }
 
-bool rosidl_generator_c__byte__Sequence__init(
-  rosidl_generator_c__octet__Sequence * sequence, size_t size)
+bool rosidl_runtime_c__byte__Sequence__init(
+  rosidl_runtime_c__octet__Sequence * sequence, size_t size)
 {
-  return rosidl_generator_c__octet__Sequence__init(
+  return rosidl_runtime_c__octet__Sequence__init(
     sequence, size);
 }
-void rosidl_generator_c__byte__Sequence__fini(
-  rosidl_generator_c__octet__Sequence * sequence)
+void rosidl_runtime_c__byte__Sequence__fini(
+  rosidl_runtime_c__octet__Sequence * sequence)
 {
-  rosidl_generator_c__octet__Sequence__fini(
+  rosidl_runtime_c__octet__Sequence__fini(
     sequence);
 }
 
-bool rosidl_generator_c__float32__Sequence__init(
-  rosidl_generator_c__float__Sequence * sequence, size_t size)
+bool rosidl_runtime_c__float32__Sequence__init(
+  rosidl_runtime_c__float__Sequence * sequence, size_t size)
 {
-  return rosidl_generator_c__float__Sequence__init(
+  return rosidl_runtime_c__float__Sequence__init(
     sequence, size);
 }
-void rosidl_generator_c__float32__Sequence__fini(
-  rosidl_generator_c__float__Sequence * sequence)
+void rosidl_runtime_c__float32__Sequence__fini(
+  rosidl_runtime_c__float__Sequence * sequence)
 {
-  rosidl_generator_c__float__Sequence__fini(
+  rosidl_runtime_c__float__Sequence__fini(
     sequence);
 }
 
-bool rosidl_generator_c__float64__Sequence__init(
-  rosidl_generator_c__double__Sequence * sequence, size_t size)
+bool rosidl_runtime_c__float64__Sequence__init(
+  rosidl_runtime_c__double__Sequence * sequence, size_t size)
 {
-  return rosidl_generator_c__double__Sequence__init(
+  return rosidl_runtime_c__double__Sequence__init(
     sequence, size);
 }
-void rosidl_generator_c__float64__Sequence__fini(
-  rosidl_generator_c__double__Sequence * sequence)
+void rosidl_runtime_c__float64__Sequence__fini(
+  rosidl_runtime_c__double__Sequence * sequence)
 {
-  rosidl_generator_c__double__Sequence__fini(
+  rosidl_runtime_c__double__Sequence__fini(
     sequence);
 }

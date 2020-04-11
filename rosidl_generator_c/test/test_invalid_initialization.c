@@ -21,7 +21,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "rosidl_generator_c/string_functions.h"
+#include "rosidl_runtime_c/string_functions.h"
 #include "rosidl_generator_c/msg/strings.h"
 
 #define EXPECT_EQ(arg1, arg2) if ((arg1) != (arg2)) return 1
@@ -68,8 +68,8 @@ int test_partial_fini_cleanup(void)
   rosidl_generator_c__msg__Strings * msg = rosidl_generator_c__msg__Strings__create();
   EXPECT_NE(msg, NULL);
   /* call fini on a few fields */
-  rosidl_generator_c__String__fini(&msg->string_value);
-  rosidl_generator_c__String__fini(&msg->string_value_default1);
+  rosidl_runtime_c__String__fini(&msg->string_value);
+  rosidl_runtime_c__String__fini(&msg->string_value_default1);
   /* destroy the message */
   rosidl_generator_c__msg__Strings__destroy(msg);
   return 0;

@@ -124,7 +124,7 @@ def idl_type_to_c(type_):
         assert False, 'The array size is part of the variable'
     if isinstance(type_, AbstractSequence):
         if isinstance(type_.value_type, BasicType):
-            c_type = 'rosidl_generator_c__' + type_.value_type.typename.replace(' ', '_')
+            c_type = 'rosidl_runtime_c__' + type_.value_type.typename.replace(' ', '_')
         else:
             c_type = basetype_to_c(type_.value_type)
         c_type += '__Sequence'
@@ -136,9 +136,9 @@ def basetype_to_c(basetype):
     if isinstance(basetype, BasicType):
         return BASIC_IDL_TYPES_TO_C[basetype.typename]
     if isinstance(basetype, AbstractString):
-        return 'rosidl_generator_c__String'
+        return 'rosidl_runtime_c__String'
     if isinstance(basetype, AbstractWString):
-        return 'rosidl_generator_c__U16String'
+        return 'rosidl_runtime_c__U16String'
     if isinstance(basetype, NamespacedType):
         return idl_structure_type_to_c_typename(basetype)
     assert False, str(basetype)

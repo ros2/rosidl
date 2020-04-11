@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rosidl_generator_c/string_functions.h"
+#include "rosidl_runtime_c/string_functions.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 bool
-rosidl_generator_c__String__init(rosidl_generator_c__String * str)
+rosidl_runtime_c__String__init(rosidl_runtime_c__String * str)
 {
   if (!str) {
     return false;
@@ -36,7 +36,7 @@ rosidl_generator_c__String__init(rosidl_generator_c__String * str)
 }
 
 void
-rosidl_generator_c__String__fini(rosidl_generator_c__String * str)
+rosidl_runtime_c__String__fini(rosidl_runtime_c__String * str)
 {
   if (!str) {
     return;
@@ -71,8 +71,8 @@ rosidl_generator_c__String__fini(rosidl_generator_c__String * str)
 }
 
 bool
-rosidl_generator_c__String__assignn(
-  rosidl_generator_c__String * str, const char * value, size_t n)
+rosidl_runtime_c__String__assignn(
+  rosidl_runtime_c__String * str, const char * value, size_t n)
 {
   if (!str) {
     return false;
@@ -98,32 +98,32 @@ rosidl_generator_c__String__assignn(
 }
 
 bool
-rosidl_generator_c__String__assign(
-  rosidl_generator_c__String * str, const char * value)
+rosidl_runtime_c__String__assign(
+  rosidl_runtime_c__String * str, const char * value)
 {
-  return rosidl_generator_c__String__assignn(
+  return rosidl_runtime_c__String__assignn(
     str, value, strlen(value));
 }
 
 bool
-rosidl_generator_c__String__Sequence__init(
-  rosidl_generator_c__String__Sequence * sequence, size_t size)
+rosidl_runtime_c__String__Sequence__init(
+  rosidl_runtime_c__String__Sequence * sequence, size_t size)
 {
   if (!sequence) {
     return false;
   }
-  rosidl_generator_c__String * data = NULL;
+  rosidl_runtime_c__String * data = NULL;
   if (size) {
-    data = (rosidl_generator_c__String *)calloc(size, sizeof(rosidl_generator_c__String));
+    data = (rosidl_runtime_c__String *)calloc(size, sizeof(rosidl_runtime_c__String));
     if (!data) {
       return false;
     }
     // initialize all sequence elements
     for (size_t i = 0; i < size; ++i) {
-      if (!rosidl_generator_c__String__init(&data[i])) {
+      if (!rosidl_runtime_c__String__init(&data[i])) {
         /* free currently allocated and return false */
         for (; i-- > 0; ) {
-          rosidl_generator_c__String__fini(&data[i]);
+          rosidl_runtime_c__String__fini(&data[i]);
         }
         free(data);
         return false;
@@ -137,8 +137,8 @@ rosidl_generator_c__String__Sequence__init(
 }
 
 void
-rosidl_generator_c__String__Sequence__fini(
-  rosidl_generator_c__String__Sequence * sequence)
+rosidl_runtime_c__String__Sequence__fini(
+  rosidl_runtime_c__String__Sequence * sequence)
 {
   if (!sequence) {
     return;
@@ -148,7 +148,7 @@ rosidl_generator_c__String__Sequence__fini(
     assert(sequence->capacity > 0);
     // finalize all sequence elements
     for (size_t i = 0; i < sequence->capacity; ++i) {
-      rosidl_generator_c__String__fini(&sequence->data[i]);
+      rosidl_runtime_c__String__fini(&sequence->data[i]);
     }
     free(sequence->data);
     sequence->data = NULL;
@@ -161,15 +161,15 @@ rosidl_generator_c__String__Sequence__fini(
   }
 }
 
-rosidl_generator_c__String__Sequence *
-rosidl_generator_c__String__Sequence__create(size_t size)
+rosidl_runtime_c__String__Sequence *
+rosidl_runtime_c__String__Sequence__create(size_t size)
 {
-  rosidl_generator_c__String__Sequence * sequence =
-    (rosidl_generator_c__String__Sequence *)malloc(sizeof(rosidl_generator_c__String__Sequence));
+  rosidl_runtime_c__String__Sequence * sequence =
+    (rosidl_runtime_c__String__Sequence *)malloc(sizeof(rosidl_runtime_c__String__Sequence));
   if (!sequence) {
     return NULL;
   }
-  bool success = rosidl_generator_c__String__Sequence__init(sequence, size);
+  bool success = rosidl_runtime_c__String__Sequence__init(sequence, size);
   if (!success) {
     free(sequence);
     return NULL;
@@ -178,11 +178,11 @@ rosidl_generator_c__String__Sequence__create(size_t size)
 }
 
 void
-rosidl_generator_c__String__Sequence__destroy(
-  rosidl_generator_c__String__Sequence * sequence)
+rosidl_runtime_c__String__Sequence__destroy(
+  rosidl_runtime_c__String__Sequence * sequence)
 {
   if (sequence) {
-    rosidl_generator_c__String__Sequence__fini(sequence);
+    rosidl_runtime_c__String__Sequence__fini(sequence);
   }
   free(sequence);
 }

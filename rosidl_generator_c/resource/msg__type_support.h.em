@@ -1,5 +1,5 @@
 @# Included from rosidl_generator_c/resource/idl__type_support.h.em
-@{header_file = 'rosidl_generator_c/message_type_support_struct.h'}@
+@{header_file = 'rosidl_runtime_c/message_type_support_struct.h'}@
 @[if header_file in include_directives]@
 // already included above
 // @

@@ -20,7 +20,7 @@ header_files = [
     'cstddef',  # providing offsetof()
     'string',
     'vector',
-    'rosidl_generator_c/message_type_support_struct.h',
+    'rosidl_runtime_c/message_type_support_struct.h',
     'rosidl_typesupport_cpp/message_type_support.hpp',
     'rosidl_typesupport_interface/macros.h',
     include_base + '__struct.hpp',

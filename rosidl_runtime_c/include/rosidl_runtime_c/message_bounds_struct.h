@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_C__MESSAGE_BOUNDS_STRUCT_H_
-#define ROSIDL_GENERATOR_C__MESSAGE_BOUNDS_STRUCT_H_
+#ifndef ROSIDL_RUNTIME_C__MESSAGE_BOUNDS_STRUCT_H_
+#define ROSIDL_RUNTIME_C__MESSAGE_BOUNDS_STRUCT_H_
 
-#include "rosidl_generator_c/visibility_control.h"
+#include "rosidl_runtime_c/visibility_control.h"
 #include "rosidl_typesupport_interface/macros.h"
 
 #ifdef __cplusplus
@@ -51,4 +51,4 @@ const rosidl_message_bounds_t * get_message_bounds_handle_function(
 }
 #endif
 
-#endif  // ROSIDL_GENERATOR_C__MESSAGE_BOUNDS_STRUCT_H_
+#endif  // ROSIDL_RUNTIME_C__MESSAGE_BOUNDS_STRUCT_H_

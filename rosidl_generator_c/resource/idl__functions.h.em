@@ -30,7 +30,7 @@ extern "C"
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "rosidl_generator_c/visibility_control.h"
+#include "rosidl_runtime_c/visibility_control.h"
 #include "@(package_name)/msg/rosidl_generator_c__visibility_control.h"
 
 #include "@(include_base)__struct.h"

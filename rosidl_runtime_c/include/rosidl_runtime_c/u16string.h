@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_C__U16STRING_H_
-#define ROSIDL_GENERATOR_C__U16STRING_H_
+#ifndef ROSIDL_RUNTIME_C__U16STRING_H_
+#define ROSIDL_RUNTIME_C__U16STRING_H_
 
 #include <stddef.h>
 
-#include "rosidl_generator_c/primitives_sequence.h"
+#include "rosidl_runtime_c/primitives_sequence.h"
 
 /// U16String struct
-typedef struct rosidl_generator_c__U16String
+typedef struct rosidl_runtime_c__U16String
 {
   /// The pointer to the first character.
   uint_least16_t * data;  // using uint_least16_t to match a C++ std::u16string
@@ -28,8 +28,8 @@ typedef struct rosidl_generator_c__U16String
   size_t size;
   /// The capacity represents the number of allocated characters (including the null byte).
   size_t capacity;
-} rosidl_generator_c__U16String;
+} rosidl_runtime_c__U16String;
 
-ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(U16String, rosidl_generator_c__U16String)
+ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(U16String, rosidl_runtime_c__U16String)
 
-#endif  // ROSIDL_GENERATOR_C__U16STRING_H_
+#endif  // ROSIDL_RUNTIME_C__U16STRING_H_

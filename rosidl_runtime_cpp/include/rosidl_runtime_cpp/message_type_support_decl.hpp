@@ -1,4 +1,4 @@
-// Copyright 2018 Open Source Robotics Foundation, Inc.
+// Copyright 2014-2015 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_RUNTIME_CPP__ACTION_TYPE_SUPPORT_DECL_HPP_
-#define ROSIDL_RUNTIME_CPP__ACTION_TYPE_SUPPORT_DECL_HPP_
+#ifndef ROSIDL_RUNTIME_CPP__MESSAGE_TYPE_SUPPORT_DECL_HPP_
+#define ROSIDL_RUNTIME_CPP__MESSAGE_TYPE_SUPPORT_DECL_HPP_
 
-#include <rosidl_generator_c/action_type_support_struct.h>
-#include <rosidl_generator_c/visibility_control.h>
+#include <rosidl_runtime_c/message_type_support_struct.h>
+#include <rosidl_runtime_c/visibility_control.h>
 
 namespace rosidl_runtime_cpp
 {
 
 template<typename T>
-const rosidl_action_type_support_t * get_action_type_support_handle();
+const rosidl_message_type_support_t * get_message_type_support_handle();
 
 }  // namespace rosidl_runtime_cpp
 
-#endif  // ROSIDL_RUNTIME_CPP__ACTION_TYPE_SUPPORT_DECL_HPP_
+#endif  // ROSIDL_RUNTIME_CPP__MESSAGE_TYPE_SUPPORT_DECL_HPP_

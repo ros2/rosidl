@@ -1,4 +1,4 @@
-// Copyright 2017 Open Source Robotics Foundation, Inc.
+// Copyright 2014-2015 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_RUNTIME_CPP__MESSAGE_INITIALIZATION_HPP_
-#define ROSIDL_RUNTIME_CPP__MESSAGE_INITIALIZATION_HPP_
+#ifndef ROSIDL_RUNTIME_CPP__SERVICE_TYPE_SUPPORT_DECL_HPP_
+#define ROSIDL_RUNTIME_CPP__SERVICE_TYPE_SUPPORT_DECL_HPP_
 
-// TODO(clalancette): this should be moved out into a separate runtime package
-
-#include <rosidl_generator_c/message_initialization.h>
+#include <rosidl_runtime_c/service_type_support_struct.h>
+#include <rosidl_runtime_c/visibility_control.h>
 
 namespace rosidl_runtime_cpp
 {
 
-enum class MessageInitialization
-{
-  ALL = ROSIDL_RUNTIME_C_MSG_INIT_ALL,
-  SKIP = ROSIDL_RUNTIME_C_MSG_INIT_SKIP,
-  ZERO = ROSIDL_RUNTIME_C_MSG_INIT_ZERO,
-  DEFAULTS_ONLY = ROSIDL_RUNTIME_C_MSG_INIT_DEFAULTS_ONLY,
-};
+template<typename T>
+const rosidl_service_type_support_t * get_service_type_support_handle();
 
 }  // namespace rosidl_runtime_cpp
 
-#endif  // ROSIDL_RUNTIME_CPP__MESSAGE_INITIALIZATION_HPP_
+#endif  // ROSIDL_RUNTIME_CPP__SERVICE_TYPE_SUPPORT_DECL_HPP_

@@ -18,7 +18,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "rosidl_generator_c/message_type_support_struct.h"
+#include "rosidl_runtime_c/message_type_support_struct.h"
 
 #include "rosidl_runtime_cpp/message_initialization.hpp"
 

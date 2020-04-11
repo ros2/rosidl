@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_C__STRING_H_
-#define ROSIDL_GENERATOR_C__STRING_H_
+#ifndef ROSIDL_RUNTIME_C__STRING_H_
+#define ROSIDL_RUNTIME_C__STRING_H_
 
 #include <stddef.h>
 
-#include "rosidl_generator_c/primitives_sequence.h"
+#include "rosidl_runtime_c/primitives_sequence.h"
 
 /// String struct
-typedef struct rosidl_generator_c__String
+typedef struct rosidl_runtime_c__String
 {
   char * data;
   /// The length of the string (excluding the null byte).
   size_t size;
   /// The capacity represents the number of allocated bytes (including the null byte).
   size_t capacity;
-} rosidl_generator_c__String;
+} rosidl_runtime_c__String;
 
-ROSIDL_GENERATOR_C__PRIMITIVE_SEQUENCE(String, rosidl_generator_c__String)
+ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(String, rosidl_runtime_c__String)
 
-#endif  // ROSIDL_GENERATOR_C__STRING_H_
+#endif  // ROSIDL_RUNTIME_C__STRING_H_

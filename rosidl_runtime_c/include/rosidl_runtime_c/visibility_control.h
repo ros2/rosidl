@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_C__VISIBILITY_CONTROL_H_
-#define ROSIDL_GENERATOR_C__VISIBILITY_CONTROL_H_
+#ifndef ROSIDL_RUNTIME_C__VISIBILITY_CONTROL_H_
+#define ROSIDL_RUNTIME_C__VISIBILITY_CONTROL_H_
 
 #ifdef __cplusplus
 extern "C"
@@ -55,4 +55,4 @@ extern "C"
 }
 #endif
 
-#endif  // ROSIDL_GENERATOR_C__VISIBILITY_CONTROL_H_
+#endif  // ROSIDL_RUNTIME_C__VISIBILITY_CONTROL_H_

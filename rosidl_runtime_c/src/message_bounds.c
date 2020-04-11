@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rosidl_generator_c/message_bounds_struct.h"
+#include "rosidl_runtime_c/message_bounds_struct.h"
 
 #include <assert.h>
 #include <string.h>

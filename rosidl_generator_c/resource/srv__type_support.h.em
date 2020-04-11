@@ -13,7 +13,7 @@ TEMPLATE(
     include_directives=include_directives)
 }@
 
-@{header_file = 'rosidl_generator_c/service_type_support_struct.h'}@
+@{header_file = 'rosidl_runtime_c/service_type_support_struct.h'}@
 @[if header_file in include_directives]@
 // already included above
 // @

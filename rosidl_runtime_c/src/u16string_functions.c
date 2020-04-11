@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rosidl_generator_c/u16string_functions.h"
+#include "rosidl_runtime_c/u16string_functions.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 bool
-rosidl_generator_c__U16String__init(rosidl_generator_c__U16String * str)
+rosidl_runtime_c__U16String__init(rosidl_runtime_c__U16String * str)
 {
   if (!str) {
     return false;
@@ -36,7 +36,7 @@ rosidl_generator_c__U16String__init(rosidl_generator_c__U16String * str)
 }
 
 void
-rosidl_generator_c__U16String__fini(rosidl_generator_c__U16String * str)
+rosidl_runtime_c__U16String__fini(rosidl_runtime_c__U16String * str)
 {
   if (!str) {
     return;
@@ -71,8 +71,8 @@ rosidl_generator_c__U16String__fini(rosidl_generator_c__U16String * str)
 }
 
 bool
-rosidl_generator_c__U16String__assignn(
-  rosidl_generator_c__U16String * str, const uint16_t * value, size_t n)
+rosidl_runtime_c__U16String__assignn(
+  rosidl_runtime_c__U16String * str, const uint16_t * value, size_t n)
 {
   if (!str) {
     return false;
@@ -98,27 +98,27 @@ rosidl_generator_c__U16String__assignn(
 }
 
 bool
-rosidl_generator_c__U16String__assignn_from_char(
-  rosidl_generator_c__U16String * str, const char * value, size_t n)
+rosidl_runtime_c__U16String__assignn_from_char(
+  rosidl_runtime_c__U16String * str, const char * value, size_t n)
 {
   // since n represents the number of 8-bit characters it must be an even number
   if (n % 2 != 0) {
     return false;
   }
-  return rosidl_generator_c__U16String__assignn(
+  return rosidl_runtime_c__U16String__assignn(
     str, (const uint16_t *)value, n / 2);
 }
 
 bool
-rosidl_generator_c__U16String__assign(
-  rosidl_generator_c__U16String * str, const uint16_t * value)
+rosidl_runtime_c__U16String__assign(
+  rosidl_runtime_c__U16String * str, const uint16_t * value)
 {
-  return rosidl_generator_c__U16String__assignn(
-    str, value, rosidl_generator_c__U16String__len(value));
+  return rosidl_runtime_c__U16String__assignn(
+    str, value, rosidl_runtime_c__U16String__len(value));
 }
 
 size_t
-rosidl_generator_c__U16String__len(const uint16_t * value)
+rosidl_runtime_c__U16String__len(const uint16_t * value)
 {
   if (!value) {
     return 0;
@@ -131,8 +131,8 @@ rosidl_generator_c__U16String__len(const uint16_t * value)
 }
 
 bool
-rosidl_generator_c__U16String__resize(
-  rosidl_generator_c__U16String * str, size_t n)
+rosidl_runtime_c__U16String__resize(
+  rosidl_runtime_c__U16String * str, size_t n)
 {
   if (!str) {
     return false;
@@ -153,24 +153,24 @@ rosidl_generator_c__U16String__resize(
 }
 
 bool
-rosidl_generator_c__U16String__Sequence__init(
-  rosidl_generator_c__U16String__Sequence * sequence, size_t size)
+rosidl_runtime_c__U16String__Sequence__init(
+  rosidl_runtime_c__U16String__Sequence * sequence, size_t size)
 {
   if (!sequence) {
     return false;
   }
-  rosidl_generator_c__U16String * data = NULL;
+  rosidl_runtime_c__U16String * data = NULL;
   if (size) {
-    data = (rosidl_generator_c__U16String *)malloc(size * sizeof(rosidl_generator_c__U16String));
+    data = (rosidl_runtime_c__U16String *)malloc(size * sizeof(rosidl_runtime_c__U16String));
     if (!data) {
       return false;
     }
     // initialize all sequence elements
     for (size_t i = 0; i < size; ++i) {
-      if (!rosidl_generator_c__U16String__init(&data[i])) {
+      if (!rosidl_runtime_c__U16String__init(&data[i])) {
         /* free currently allocated and return false */
         for (; i-- > 0; ) {
-          rosidl_generator_c__U16String__fini(&data[i]);
+          rosidl_runtime_c__U16String__fini(&data[i]);
         }
         free(data);
         return false;
@@ -184,8 +184,8 @@ rosidl_generator_c__U16String__Sequence__init(
 }
 
 void
-rosidl_generator_c__U16String__Sequence__fini(
-  rosidl_generator_c__U16String__Sequence * sequence)
+rosidl_runtime_c__U16String__Sequence__fini(
+  rosidl_runtime_c__U16String__Sequence * sequence)
 {
   if (!sequence) {
     return;
@@ -195,7 +195,7 @@ rosidl_generator_c__U16String__Sequence__fini(
     assert(sequence->capacity > 0);
     // finalize all sequence elements
     for (size_t i = 0; i < sequence->capacity; ++i) {
-      rosidl_generator_c__U16String__fini(&sequence->data[i]);
+      rosidl_runtime_c__U16String__fini(&sequence->data[i]);
     }
     free(sequence->data);
     sequence->data = NULL;
@@ -208,16 +208,16 @@ rosidl_generator_c__U16String__Sequence__fini(
   }
 }
 
-rosidl_generator_c__U16String__Sequence *
-rosidl_generator_c__U16String__Sequence__create(size_t size)
+rosidl_runtime_c__U16String__Sequence *
+rosidl_runtime_c__U16String__Sequence__create(size_t size)
 {
-  rosidl_generator_c__U16String__Sequence * sequence =
-    (rosidl_generator_c__U16String__Sequence *)malloc(
-    sizeof(rosidl_generator_c__U16String__Sequence));
+  rosidl_runtime_c__U16String__Sequence * sequence =
+    (rosidl_runtime_c__U16String__Sequence *)malloc(
+    sizeof(rosidl_runtime_c__U16String__Sequence));
   if (!sequence) {
     return NULL;
   }
-  bool success = rosidl_generator_c__U16String__Sequence__init(sequence, size);
+  bool success = rosidl_runtime_c__U16String__Sequence__init(sequence, size);
   if (!success) {
     free(sequence);
     return NULL;
@@ -226,11 +226,11 @@ rosidl_generator_c__U16String__Sequence__create(size_t size)
 }
 
 void
-rosidl_generator_c__U16String__Sequence__destroy(
-  rosidl_generator_c__U16String__Sequence * sequence)
+rosidl_runtime_c__U16String__Sequence__destroy(
+  rosidl_runtime_c__U16String__Sequence * sequence)
 {
   if (sequence) {
-    rosidl_generator_c__U16String__Sequence__fini(sequence);
+    rosidl_runtime_c__U16String__Sequence__fini(sequence);
   }
   free(sequence);
 }

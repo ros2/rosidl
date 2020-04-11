@@ -17,7 +17,7 @@
 
 // TODO(clalancette): this should be moved out into a separate runtime package
 
-#include <rosidl_generator_c/message_initialization.h>
+#include <rosidl_runtime_c/message_initialization.h>
 
 namespace rosidl_runtime_cpp
 {

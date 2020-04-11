@@ -15,8 +15,8 @@
 #ifndef ROSIDL_TYPESUPPORT_CPP__SERVICE_TYPE_SUPPORT_HPP_
 #define ROSIDL_TYPESUPPORT_CPP__SERVICE_TYPE_SUPPORT_HPP_
 
-#include <rosidl_generator_c/service_type_support_struct.h>
-#include <rosidl_generator_c/visibility_control.h>
+#include <rosidl_runtime_c/service_type_support_struct.h>
+#include <rosidl_runtime_c/visibility_control.h>
 
 namespace rosidl_typesupport_cpp
 {

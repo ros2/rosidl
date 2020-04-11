@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_C__MESSAGE_INITIALIZATION_H_
-#define ROSIDL_GENERATOR_C__MESSAGE_INITIALIZATION_H_
+#ifndef ROSIDL_RUNTIME_C__MESSAGE_INITIALIZATION_H_
+#define ROSIDL_RUNTIME_C__MESSAGE_INITIALIZATION_H_
 
 // TODO(clalancette): this should be moved out into a separate runtime package
 
@@ -34,4 +34,4 @@ enum rosidl_runtime_c_message_initialization
   ROSIDL_RUNTIME_C_MSG_INIT_DEFAULTS_ONLY,
 };
 
-#endif  // ROSIDL_GENERATOR_C__MESSAGE_INITIALIZATION_H_
+#endif  // ROSIDL_RUNTIME_C__MESSAGE_INITIALIZATION_H_

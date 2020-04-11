@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_GENERATOR_C__STRING_BOUNDS_H_
-#define ROSIDL_GENERATOR_C__STRING_BOUNDS_H_
+#ifndef ROSIDL_RUNTIME_C__STRING_BOUNDS_H_
+#define ROSIDL_RUNTIME_C__STRING_BOUNDS_H_
 
 #include <stddef.h>
 
 /// String struct
-typedef struct rosidl_generator_c__String__bounds
+typedef struct rosidl_runtime_c__String__bounds
 {
   /// The length of the string (excluding the null byte).
   size_t bounds;
-} rosidl_generator_c__String__bounds;
+} rosidl_runtime_c__String__bounds;
 
-#endif  // ROSIDL_GENERATOR_C__STRING_BOUNDS_H_
+#endif  // ROSIDL_RUNTIME_C__STRING_BOUNDS_H_

@@ -21,10 +21,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "rosidl_generator_c/primitives_sequence_functions.h"
-#include "rosidl_generator_c/string_functions.h"
-#include "rosidl_generator_c/u16string_functions.h"
-
 #include "rosidl_generator_c/msg/arrays.h"
 #include "rosidl_generator_c/msg/defaults.h"
 #include "rosidl_generator_c/msg/constants.h"
@@ -35,6 +31,10 @@
 #include "rosidl_generator_c/msg/strings.h"
 #include "rosidl_generator_c/msg/unbounded_sequences.h"
 #include "rosidl_generator_c/msg/w_strings.h"
+
+#include "rosidl_runtime_c/primitives_sequence_functions.h"
+#include "rosidl_runtime_c/string_functions.h"
+#include "rosidl_runtime_c/u16string_functions.h"
 
 #define TEST_STRING \
   "Deep into that darkness peering, long I stood there wondering, fearing"

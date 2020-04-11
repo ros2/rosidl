@@ -21,7 +21,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "rosidl_generator_c/string_functions.h"
+#include "rosidl_runtime_c/string_functions.h"
 #include "rosidl_generator_c/msg/strings.h"
 
 #define EXPECT_EQ(arg1, arg2) if ((arg1) != (arg2)) return 1

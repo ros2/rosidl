@@ -18,8 +18,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "rosidl_generator_c/primitives_sequence.h"
-#include "rosidl_generator_c/visibility_control.h"
+#include "rosidl_runtime_c/primitives_sequence.h"
+#include "rosidl_runtime_c/visibility_control.h"
 
 #ifdef __cplusplus
 extern "C"

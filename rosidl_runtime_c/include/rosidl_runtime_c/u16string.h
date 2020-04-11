@@ -17,7 +17,7 @@
 
 #include <stddef.h>
 
-#include "rosidl_generator_c/primitives_sequence.h"
+#include "rosidl_runtime_c/primitives_sequence.h"
 
 /// U16String struct
 typedef struct rosidl_generator_c__U16String

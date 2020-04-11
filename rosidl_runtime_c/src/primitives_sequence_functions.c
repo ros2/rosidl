@@ -16,7 +16,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "rosidl_generator_c/primitives_sequence_functions.h"
+#include "rosidl_runtime_c/primitives_sequence_functions.h"
 
 #define ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(STRUCT_NAME, TYPE_NAME) \
   bool rosidl_generator_c__ ## STRUCT_NAME ## __Sequence__init( \

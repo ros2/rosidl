@@ -15,7 +15,7 @@
 #ifndef ROSIDL_GENERATOR_C__SERVICE_TYPE_SUPPORT_STRUCT_H_
 #define ROSIDL_GENERATOR_C__SERVICE_TYPE_SUPPORT_STRUCT_H_
 
-#include "rosidl_generator_c/visibility_control.h"
+#include "rosidl_runtime_c/visibility_control.h"
 
 #include "rosidl_typesupport_interface/macros.h"
 

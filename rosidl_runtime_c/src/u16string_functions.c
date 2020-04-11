@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rosidl_generator_c/u16string_functions.h"
+#include "rosidl_runtime_c/u16string_functions.h"
 
 #include <assert.h>
 #include <stdlib.h>

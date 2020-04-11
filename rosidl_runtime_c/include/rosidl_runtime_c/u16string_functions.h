@@ -17,8 +17,8 @@
 
 #include <stddef.h>
 
-#include "rosidl_generator_c/u16string.h"
-#include "rosidl_generator_c/visibility_control.h"
+#include "rosidl_runtime_c/u16string.h"
+#include "rosidl_runtime_c/visibility_control.h"
 
 #ifdef __cplusplus
 extern "C"

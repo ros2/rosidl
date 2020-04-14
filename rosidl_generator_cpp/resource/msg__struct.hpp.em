@@ -46,7 +46,7 @@ for member in message.structure.members:
         else:
             typename = type_.name
         member_names = includes.setdefault(
-            '/'.join((type_.namespaces + [convert_camel_case_to_lower_case_underscore(typename)])) + '__struct.hpp', [])
+            '/'.join((type_.namespaces + ['detail', convert_camel_case_to_lower_case_underscore(typename)])) + '__struct.hpp', [])
         member_names.append(member.name)
 }@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

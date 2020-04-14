@@ -15,8 +15,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "rosidl_generator_c/msg/constants__struct.h"
-#include "rosidl_generator_c/msg/constants__functions.h"
+#include "rosidl_generator_c/msg/detail/constants__struct.h"
+#include "rosidl_generator_c/msg/detail/constants__functions.h"
 
 #include "./separate_compilation.h"
 

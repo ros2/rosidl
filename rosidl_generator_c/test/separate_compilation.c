@@ -18,8 +18,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "rosidl_generator_c/msg/defaults__struct.h"
-#include "rosidl_generator_c/msg/defaults__functions.h"
+#include "rosidl_generator_c/msg/detail/defaults__struct.h"
+#include "rosidl_generator_c/msg/detail/defaults__functions.h"
 
 int func()
 {

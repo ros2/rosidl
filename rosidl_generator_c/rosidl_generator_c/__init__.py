@@ -29,10 +29,10 @@ from rosidl_parser.definition import OCTET_TYPE
 def generate_c(generator_arguments_file):
     mapping = {
         'idl.h.em': '%s.h',
-        'idl__functions.c.em': '%s__functions.c',
-        'idl__functions.h.em': '%s__functions.h',
-        'idl__struct.h.em': '%s__struct.h',
-        'idl__type_support.h.em': '%s__type_support.h',
+        'idl__functions.c.em': 'detail/%s__functions.c',
+        'idl__functions.h.em': 'detail/%s__functions.h',
+        'idl__struct.h.em': 'detail/%s__struct.h',
+        'idl__type_support.h.em': 'detail/%s__type_support.h',
     }
     generate_files(
         generator_arguments_file, mapping,
@@ -69,10 +69,13 @@ BASIC_IDL_TYPES_TO_C = {
 }
 
 
-def idl_structure_type_to_c_include_prefix(namespaced_type):
-    include_prefix = '/'.join(
+def idl_structure_type_to_c_include_prefix(namespaced_type, subdirectory=None):
+    parts = [
         convert_camel_case_to_lower_case_underscore(x)
-        for x in (namespaced_type.namespaced_name()))
+        for x in (namespaced_type.namespaced_name())]
+    if subdirectory is not None:
+        parts[-1:-1] = [subdirectory]
+    include_prefix = '/'.join(parts)
     # Strip service or action suffixes
     if include_prefix.endswith('__request'):
         include_prefix = include_prefix[:-9]

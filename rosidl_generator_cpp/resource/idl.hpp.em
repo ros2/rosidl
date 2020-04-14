@@ -14,8 +14,10 @@
 from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 include_parts = [package_name] + list(interface_path.parents[0].parts) + \
     [convert_camel_case_to_lower_case_underscore(interface_path.stem)]
+include_parts_detail = [package_name] + list(interface_path.parents[0].parts) + [
+    'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 header_guard_variable = '__'.join([x.upper() for x in include_parts]) + '_HPP_'
-include_base = '/'.join(include_parts)
+include_base = '/'.join(include_parts_detail)
 }@
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)

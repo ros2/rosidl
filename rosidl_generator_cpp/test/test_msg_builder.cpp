@@ -14,12 +14,11 @@
 
 #include <gtest/gtest.h>
 
-#include "rosidl_generator_cpp/msg/arrays__builder.hpp"
-#include "rosidl_generator_cpp/msg/basic_types__builder.hpp"
-#include "rosidl_generator_cpp/msg/empty__builder.hpp"
-#include "rosidl_generator_cpp/msg/multi_nested__builder.hpp"
-#include "rosidl_generator_cpp/msg/nested__builder.hpp"
-#include "rosidl_generator_cpp/msg/empty.hpp"
+#include "rosidl_generator_cpp/msg/detail/arrays__builder.hpp"
+#include "rosidl_generator_cpp/msg/detail/basic_types__builder.hpp"
+#include "rosidl_generator_cpp/msg/detail/empty__builder.hpp"
+#include "rosidl_generator_cpp/msg/detail/multi_nested__builder.hpp"
+#include "rosidl_generator_cpp/msg/detail/nested__builder.hpp"
 
 TEST(Test_msg_initialization, build) {
   ::rosidl_generator_cpp::msg::BasicTypes basic =

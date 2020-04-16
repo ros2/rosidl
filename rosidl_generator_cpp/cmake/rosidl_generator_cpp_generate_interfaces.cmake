@@ -22,9 +22,9 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
 
   list(APPEND _generated_headers
     "${_output_path}/${_parent_folder}/${_header_name}.hpp"
-    "${_output_path}/${_parent_folder}/${_header_name}__builder.hpp"
-    "${_output_path}/${_parent_folder}/${_header_name}__struct.hpp"
-    "${_output_path}/${_parent_folder}/${_header_name}__traits.hpp"
+    "${_output_path}/${_parent_folder}/detail/${_header_name}__builder.hpp"
+    "${_output_path}/${_parent_folder}/detail/${_header_name}__struct.hpp"
+    "${_output_path}/${_parent_folder}/detail/${_header_name}__traits.hpp"
   )
 endforeach()
 

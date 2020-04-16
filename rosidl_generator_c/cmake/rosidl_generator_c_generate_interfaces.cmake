@@ -24,12 +24,12 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   string_camel_case_to_lower_case_underscore("${_idl_name}" _header_name)
   list(APPEND _generated_headers
     "${_output_path}/${_parent_folder}/${_header_name}.h"
-    "${_output_path}/${_parent_folder}/${_header_name}__functions.h"
-    "${_output_path}/${_parent_folder}/${_header_name}__struct.h"
-    "${_output_path}/${_parent_folder}/${_header_name}__type_support.h"
+    "${_output_path}/${_parent_folder}/detail/${_header_name}__functions.h"
+    "${_output_path}/${_parent_folder}/detail/${_header_name}__struct.h"
+    "${_output_path}/${_parent_folder}/detail/${_header_name}__type_support.h"
   )
   list(APPEND _generated_sources
-    "${_output_path}/${_parent_folder}/${_header_name}__functions.c"
+    "${_output_path}/${_parent_folder}/detail/${_header_name}__functions.c"
   )
 endforeach()
 

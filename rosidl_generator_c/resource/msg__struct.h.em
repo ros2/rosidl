@@ -43,7 +43,8 @@ for member in message.structure.members:
             'rosidl_runtime_c/u16string.h', [])
         member_names.append(member.name)
     elif isinstance(type_, NamespacedType):
-        include_prefix = idl_structure_type_to_c_include_prefix(type_)
+        include_prefix = idl_structure_type_to_c_include_prefix(
+            type_, 'detail')
         member_names = includes.setdefault(
             include_prefix + '__struct.h', [])
         member_names.append(member.name)

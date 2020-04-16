@@ -15,8 +15,6 @@
 #ifndef ROSIDL_RUNTIME_CPP__MESSAGE_INITIALIZATION_HPP_
 #define ROSIDL_RUNTIME_CPP__MESSAGE_INITIALIZATION_HPP_
 
-// TODO(clalancette): this should be moved out into a separate runtime package
-
 #include <rosidl_runtime_c/message_initialization.h>
 
 namespace rosidl_runtime_cpp

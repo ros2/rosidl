@@ -15,9 +15,7 @@
 #ifndef ROSIDL_RUNTIME_C__MESSAGE_INITIALIZATION_H_
 #define ROSIDL_RUNTIME_C__MESSAGE_INITIALIZATION_H_
 
-// TODO(clalancette): this should be moved out into a separate runtime package
-
-enum rosidl_runtime_c_message_initialization
+enum rosidl_runtime_c__message_initialization
 {
   // Initialize all fields of the message, either with the default value
   // (if the field has one), or with an empty value (generally 0 or an

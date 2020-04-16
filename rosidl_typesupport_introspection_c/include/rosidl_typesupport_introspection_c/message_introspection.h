@@ -48,7 +48,7 @@ typedef struct rosidl_typesupport_introspection_c__MessageMembers
   uint32_t member_count_;
   size_t size_of_;
   const rosidl_typesupport_introspection_c__MessageMember * members_;
-  void (* init_function)(void *, enum rosidl_runtime_c_message_initialization);
+  void (* init_function)(void *, enum rosidl_runtime_c__message_initialization);
   void (* fini_function)(void *);
 } rosidl_typesupport_introspection_c__MessageMembers;
 

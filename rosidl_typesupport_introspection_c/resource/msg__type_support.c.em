@@ -107,7 +107,7 @@ extern "C"
 @# define callback functions
 @#######################################################################
 void @(function_prefix)__@(message.structure.namespaced_type.name)_init_function(
-  void * message_memory, enum rosidl_runtime_c_message_initialization _init)
+  void * message_memory, enum rosidl_runtime_c__message_initialization _init)
 {
   // TODO(karsten1987): initializers are not yet implemented for typesupport c
   // see https://github.com/ros2/ros2/issues/397

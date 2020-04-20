@@ -100,7 +100,7 @@ ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int64)
 ROSIDL_GENERATOR_C_PUBLIC
 bool rosidl_runtime_c__bool__Sequence__init(
   rosidl_runtime_c__boolean__Sequence * sequence, size_t size);
-/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(bool) */ \
+/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(bool) */
 ROSIDL_GENERATOR_C_PUBLIC
 void rosidl_runtime_c__bool__Sequence__fini(
   rosidl_runtime_c__boolean__Sequence * sequence);
@@ -109,7 +109,7 @@ void rosidl_runtime_c__bool__Sequence__fini(
 ROSIDL_GENERATOR_C_PUBLIC
 bool rosidl_runtime_c__byte__Sequence__init(
   rosidl_runtime_c__octet__Sequence * sequence, size_t size);
-/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(byte) */ \
+/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(byte) */
 ROSIDL_GENERATOR_C_PUBLIC
 void rosidl_runtime_c__byte__Sequence__fini(
   rosidl_runtime_c__octet__Sequence * sequence);
@@ -118,7 +118,7 @@ void rosidl_runtime_c__byte__Sequence__fini(
 ROSIDL_GENERATOR_C_PUBLIC
 bool rosidl_runtime_c__float32__Sequence__init(
   rosidl_runtime_c__float__Sequence * sequence, size_t size);
-/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(float32) */ \
+/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(float32) */
 ROSIDL_GENERATOR_C_PUBLIC
 void rosidl_runtime_c__float32__Sequence__fini(
   rosidl_runtime_c__float__Sequence * sequence);
@@ -127,7 +127,7 @@ void rosidl_runtime_c__float32__Sequence__fini(
 ROSIDL_GENERATOR_C_PUBLIC
 bool rosidl_runtime_c__float64__Sequence__init(
   rosidl_runtime_c__double__Sequence * sequence, size_t size);
-/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(float64) */ \
+/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(float64) */
 ROSIDL_GENERATOR_C_PUBLIC
 void rosidl_runtime_c__float64__Sequence__fini(
   rosidl_runtime_c__double__Sequence * sequence);

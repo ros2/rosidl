@@ -14,7 +14,6 @@ endif()
 find_package(ament_cmake_ros REQUIRED)
 find_package(rosidl_typesupport_interface REQUIRED)
 
-include_directories(include)
 add_library(${PROJECT_NAME}
   "src/message_bounds.c"
   "src/message_type_support.c"
@@ -23,6 +22,9 @@ add_library(${PROJECT_NAME}
   "src/string_functions.c"
   "src/u16string_functions.c"
 )
+target_include_directories(${PROJECT_NAME} PUBLIC
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:include>")
 ament_target_dependencies(${PROJECT_NAME}
   "rosidl_typesupport_interface")
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -37,6 +39,7 @@ endif()
 ament_export_dependencies(rosidl_typesupport_interface)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
+ament_export_targets(${PROJECT_NAME})
 
 ament_index_register_resource("rosidl_runtime_packages")
 
@@ -50,7 +53,7 @@ install(
   DESTINATION include
 )
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin

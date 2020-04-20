@@ -19,9 +19,10 @@
 
 #include "rosidl_runtime_c/primitives_sequence.h"
 
-/// String struct
+/// An array of 8-bit characters terminated by a null byte.
 typedef struct rosidl_runtime_c__String
 {
+  /// The pointer to the first character, the sequence ends with a null byte.
   char * data;
   /// The length of the string (excluding the null byte).
   size_t size;

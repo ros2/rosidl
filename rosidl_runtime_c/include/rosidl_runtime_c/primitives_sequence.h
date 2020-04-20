@@ -22,7 +22,7 @@
 #define ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(STRUCT_NAME, TYPE_NAME) \
   typedef struct rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence \
   { \
-    TYPE_NAME * data; \
+    TYPE_NAME * data; /*!< The pointer to an array of STRUCT_NAME */ \
     size_t size; /*!< The number of valid items in data */ \
     size_t capacity; /*!< The number of allocated items in data */ \
   } rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence;

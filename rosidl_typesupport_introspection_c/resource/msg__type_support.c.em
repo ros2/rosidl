@@ -12,12 +12,9 @@ from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
 from rosidl_parser.definition import NamespacedType
 
-include_parts = [package_name] + list(interface_path.parents[0].parts) + \
-    [convert_camel_case_to_lower_case_underscore(interface_path.stem)]
-include_base = '/'.join(include_parts)
-include_parts_detail = [package_name] + list(interface_path.parents[0].parts) + [
+include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
-include_base_detail = '/'.join(include_parts_detail)
+include_base = '/'.join(include_parts)
 
 header_files = [
     'stddef.h',  # providing offsetof()
@@ -26,8 +23,8 @@ header_files = [
     'rosidl_typesupport_introspection_c/field_types.h',
     'rosidl_typesupport_introspection_c/identifier.h',
     'rosidl_typesupport_introspection_c/message_introspection.h',
-    include_base_detail + '__functions.h',
-    include_base_detail + '__struct.h',
+    include_base + '__functions.h',
+    include_base + '__struct.h',
 ]
 
 function_prefix = message.structure.namespaced_type.name + '__rosidl_typesupport_introspection_c'
@@ -72,8 +69,9 @@ for member in message.structure.members:
         member_names = includes.setdefault(
             include_prefix + '.h', [])
         member_names.append(member.name)
+        include_prefix_detail = idl_structure_type_to_c_include_prefix(type_, 'detail')
         member_names = includes.setdefault(
-            include_prefix + '__rosidl_typesupport_introspection_c.h', [])
+            include_prefix_detail + '__rosidl_typesupport_introspection_c.h', [])
         member_names.append(member.name)
 }@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

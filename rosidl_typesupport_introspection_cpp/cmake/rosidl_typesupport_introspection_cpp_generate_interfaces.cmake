@@ -22,9 +22,9 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   get_filename_component(_idl_name "${_abs_idl_file}" NAME_WE)
   string_camel_case_to_lower_case_underscore("${_idl_name}" _header_name)
   list(APPEND _generated_header_files
-    "${_output_path}/${_parent_folder}/${_header_name}__rosidl_typesupport_introspection_cpp.hpp")
+    "${_output_path}/${_parent_folder}/detail/${_header_name}__rosidl_typesupport_introspection_cpp.hpp")
   list(APPEND _generated_source_files
-    "${_output_path}/${_parent_folder}/${_header_name}__type_support.cpp")
+    "${_output_path}/${_parent_folder}/detail/${_header_name}__type_support.cpp")
 endforeach()
 
 set(_dependency_files "")

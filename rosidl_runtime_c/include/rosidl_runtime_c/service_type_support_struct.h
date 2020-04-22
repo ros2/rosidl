@@ -29,21 +29,50 @@ typedef struct rosidl_service_type_support_t rosidl_service_type_support_t;
 typedef const rosidl_service_type_support_t * (* rosidl_service_typesupport_handle_function)(
   const rosidl_service_type_support_t *, const char *);
 
+/// Contains rosidl service type support data
 struct rosidl_service_type_support_t
 {
+  /// String identifier for the type_support.
   const char * typesupport_identifier;
+  /// pointer to type support handle function
   const void * data;
+  /// pointer to type support handle function
   rosidl_service_typesupport_handle_function func;
 };
 
+/// Get the service type support handle specific to this identifier.
+/**
+ * If the identifier is the same as this handle's typesupport_identifier, then the handle is
+ * simply returned, otherwise it returns zero.
+ *
+ * \param handle Handle to service type support
+ * \param identifier The typesupport identifier to get the handle function for
+ * \return The associated message typesupport handle if found, otherwise NULL
+ */
 ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_service_type_support_t * get_service_typesupport_handle(
   const rosidl_service_type_support_t * handle, const char * identifier);
 
+/// Get the service type support handle function specific to this identifier.
+/**
+ * If the identifier is the same as this handle's typesupport_identifier, then the handle is
+ * simply returned, otherwise it returns zero.
+ *
+ * \param handle Handle to service type support
+ * \param identifier The typesupport identifier to get the handle function for
+ * \return The associated message typesupport handle if found, otherwise NULL
+ */
 ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_service_type_support_t * get_service_typesupport_handle_function(
   const rosidl_service_type_support_t * handle, const char * identifier);
 
+/// Macro to get the service typesupport
+/*
+ * \param PkgName Name of the package that contains the service
+ * \param SrvSubfolder name of the subfolder (for example: srv)
+ * \param SrvName service name
+ * \return a rosidl_service_type_support_t struct if founded, otherwise NULL.
+ */
 #define ROSIDL_GET_SRV_TYPE_SUPPORT(PkgName, SrvSubfolder, SrvName) \
   ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME( \
     rosidl_typesupport_c, PkgName, SrvSubfolder, SrvName)()

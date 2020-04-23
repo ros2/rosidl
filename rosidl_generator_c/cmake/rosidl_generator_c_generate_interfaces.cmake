@@ -117,14 +117,21 @@ if(WIN32)
 endif()
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PUBLIC
-  ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c>"
+  "$<INSTALL_INTERFACE:include>"
 )
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   ament_target_dependencies(
     ${rosidl_generate_interfaces_TARGET}${_target_suffix}
     ${_pkg_name})
+  if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
+    ament_export_dependencies(${_pkg_name})
+  endif()
 endforeach()
 ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  "rosidl_runtime_c"
+  "rosidl_typesupport_interface")
+ament_export_dependencies(
   "rosidl_runtime_c"
   "rosidl_typesupport_interface")
 
@@ -142,8 +149,10 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
     )
   endif()
   ament_export_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix})
+  ament_export_targets(${rosidl_generate_interfaces_TARGET}${_target_suffix})
   install(
     TARGETS ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    EXPORT ${rosidl_generate_interfaces_TARGET}${_target_suffix}
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin

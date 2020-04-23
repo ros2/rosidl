@@ -98,6 +98,22 @@ add_dependencies(
   ${rosidl_generate_interfaces_TARGET}__cpp
 )
 
+set(_target_suffix "__rosidl_generator_cpp")
+add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE)
+target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  INTERFACE
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp>"
+  "$<INSTALL_INTERFACE:include>"
+)
+foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
+  target_link_libraries(
+    ${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE
+    ${${_pkg_name}_TARGETS})
+endforeach()
+target_link_libraries(
+  ${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE
+  ${rosidl_runtime_cpp_TARGETS})
+
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   if(NOT _generated_headers STREQUAL "")
     install(
@@ -107,6 +123,12 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
     )
   endif()
   ament_export_include_directories(include)
+
+  install(
+    TARGETS ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    EXPORT ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  )
+  ament_export_targets(${rosidl_generate_interfaces_TARGET}${_target_suffix})
 endif()
 
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)

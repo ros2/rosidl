@@ -35,7 +35,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include>")
 ament_target_dependencies(${PROJECT_NAME}
-  rosidl_runtime_cpp)
+  rosidl_runtime_cpp
+  rosidl_typesupport_introspection_c)
 ament_export_libraries(${PROJECT_NAME})
 ament_export_targets(${PROJECT_NAME})
 

@@ -18,10 +18,10 @@
 #include <stddef.h>
 
 /// Upper boundary for #rosidl_runtime_c__String or #rosidl_runtime_c__U16String.
-typedef struct rosidl_runtime_c__String__bounds
+typedef struct rosidl_runtime_c__String__bound
 {
   /// The number of characters in the string (excluding the null character).
-  size_t bounds;
-} rosidl_runtime_c__String__bounds;
+  size_t bound;
+} rosidl_runtime_c__String__bound;
 
 #endif  // ROSIDL_RUNTIME_C__STRING_BOUNDS_H_

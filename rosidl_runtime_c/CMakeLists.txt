@@ -15,9 +15,9 @@ find_package(ament_cmake_ros REQUIRED)
 find_package(rosidl_typesupport_interface REQUIRED)
 
 add_library(${PROJECT_NAME}
-  "src/message_bounds.c"
   "src/message_type_support.c"
   "src/primitives_sequence_functions.c"
+  "src/sequence_bound.c"
   "src/service_type_support.c"
   "src/string_functions.c"
   "src/u16string_functions.c"

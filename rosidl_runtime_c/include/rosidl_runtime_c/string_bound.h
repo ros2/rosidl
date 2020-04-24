@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_RUNTIME_C__STRING_BOUNDS_H_
-#define ROSIDL_RUNTIME_C__STRING_BOUNDS_H_
+#ifndef ROSIDL_RUNTIME_C__STRING_BOUND_H_
+#define ROSIDL_RUNTIME_C__STRING_BOUND_H_
 
 #include <stddef.h>
 
@@ -24,4 +24,4 @@ typedef struct rosidl_runtime_c__String__bound
   size_t bound;
 } rosidl_runtime_c__String__bound;
 
-#endif  // ROSIDL_RUNTIME_C__STRING_BOUNDS_H_
+#endif  // ROSIDL_RUNTIME_C__STRING_BOUND_H_

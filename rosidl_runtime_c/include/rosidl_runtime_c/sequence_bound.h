@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_RUNTIME_C__MESSAGE_BOUNDS_STRUCT_H_
-#define ROSIDL_RUNTIME_C__MESSAGE_BOUNDS_STRUCT_H_
+#ifndef ROSIDL_RUNTIME_C__SEQUENCE_BOUND_H_
+#define ROSIDL_RUNTIME_C__SEQUENCE_BOUND_H_
 
 #include "rosidl_runtime_c/visibility_control.h"
 #include "rosidl_typesupport_interface/macros.h"
@@ -23,20 +23,18 @@ extern "C"
 {
 #endif
 
-typedef struct rosidl_message_bounds_t rosidl_message_bounds_t;
+typedef struct rosidl_runtime_c__Sequence__bound rosidl_runtime_c__Sequence__bound;
 
-typedef const rosidl_message_bounds_t * (* rosidl_message_bounds_handle_function)(
-  const rosidl_message_bounds_t *, const char *);
+typedef const rosidl_runtime_c__Sequence__bound * (* rosidl_runtime_c__bound_handle_function)(
+  const rosidl_runtime_c__Sequence__bound *, const char *);
 
-/// Contains rosidl message bounds data
-struct rosidl_message_bounds_t
+struct rosidl_runtime_c__Sequence__bound
 {
   /// String identifier for the type_support.
   const char * typesupport_identifier;
   /// pointer to type support handle function
   const void * data;
-  /// pointer to type support handle function.
-  rosidl_message_bounds_handle_function func;
+  rosidl_runtime_c__bound_handle_function func;
 };
 
 /// Get the message bounds handle specific to this identifier.
@@ -49,8 +47,8 @@ struct rosidl_message_bounds_t
  * \return The associated message bounds handle if found, otherwise NULL
  */
 ROSIDL_GENERATOR_C_PUBLIC
-const rosidl_message_bounds_t * get_message_bounds_handle(
-  const rosidl_message_bounds_t * handle, const char * identifier);
+const rosidl_runtime_c__Sequence__bound * get_sequence_bound_handle(
+  const rosidl_runtime_c__Sequence__bound * handle, const char * identifier);
 
 /// Get the message bounds handle function specific to this identifier.
 /**
@@ -62,8 +60,8 @@ const rosidl_message_bounds_t * get_message_bounds_handle(
  * \return The associated message bounds handle function if found, otherwise NULL
  */
 ROSIDL_GENERATOR_C_PUBLIC
-const rosidl_message_bounds_t * get_message_bounds_handle_function(
-  const rosidl_message_bounds_t * handle, const char * identifier);
+const rosidl_runtime_c__Sequence__bound * get_sequence_bound_handle_function(
+  const rosidl_runtime_c__Sequence__bound * handle, const char * identifier);
 
 /// Macro to get the message bounds.
 /*
@@ -72,7 +70,7 @@ const rosidl_message_bounds_t * get_message_bounds_handle_function(
  * \param MsgName message name
  * \return a rosidl_message_bounds_t struct if founded, otherwise NULL.
  */
-#define ROSIDL_GET_MSG_BOUNDS(PkgName, MsgSubfolder, MsgName) \
+#define ROSIDL_GET_SEQUENCE_BOUNDS(PkgName, MsgSubfolder, MsgName) \
   ROSIDL_BOUNDS_INTERFACE__MESSAGE_SYMBOL_NAME( \
     rosidl_typesupport_c, PkgName, MsgSubfolder, MsgName)()
 
@@ -80,4 +78,4 @@ const rosidl_message_bounds_t * get_message_bounds_handle_function(
 }
 #endif
 
-#endif  // ROSIDL_RUNTIME_C__MESSAGE_BOUNDS_STRUCT_H_
+#endif  // ROSIDL_RUNTIME_C__SEQUENCE_BOUND_H_

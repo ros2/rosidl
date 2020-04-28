@@ -18,7 +18,7 @@ from rosidl_cmake import generate_files
 def generate_c(generator_arguments_file):
     mapping = {
         'idl__rosidl_typesupport_introspection_c.h.em':
-        '%s__rosidl_typesupport_introspection_c.h',
-        'idl__type_support.c.em': '%s__type_support.c',
+        'detail/%s__rosidl_typesupport_introspection_c.h',
+        'idl__type_support.c.em': 'detail/%s__type_support.c',
     }
     generate_files(generator_arguments_file, mapping)

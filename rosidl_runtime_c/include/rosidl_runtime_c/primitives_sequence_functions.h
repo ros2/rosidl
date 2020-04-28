@@ -26,60 +26,112 @@ extern "C"
 {
 #endif
 
-#define ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(STRUCT_NAME, TYPE_NAME) \
+/**
+ * \def ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_INIT(STRUCT_NAME)
+ *
+ * \brief Allocate the memory for the sequence.
+ *
+ * Calling the function with an already allocated sequence will leak the
+ * previously allocated memory.
+ *
+ * param sequence a pointer to a sequence struct
+ * param size the number of items to allocate in the sequence, both sequence
+ *   fields `size` and `capacity` are set to this parameter
+ * return true if successful, false if the passed sequence pointer is null
+ *   or the memory allocation failed
+ */
+#define ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_INIT(STRUCT_NAME) \
+  /** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_INIT(STRUCT_NAME) */ \
   ROSIDL_GENERATOR_C_PUBLIC \
   bool rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init( \
-    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence * sequence, size_t size); \
- \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence * sequence, size_t size);
+
+/**
+ * \def ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(STRUCT_NAME)
+ *
+ * \brief Deallocate the memory of the sequence.
+ *
+ * Calling the function with an already deallocated sequence is a no-op.
+ *
+ * param sequence a pointer to a sequence struct
+ */
+#define ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(STRUCT_NAME) \
+  /** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(STRUCT_NAME) */ \
   ROSIDL_GENERATOR_C_PUBLIC \
   void rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini( \
     rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence * sequence);
 
-// array functions for all basic types
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(float, float)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(double, double)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(long_double, long double)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(char, signed char)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(wchar, uint16_t)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(boolean, bool)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(octet, uint8_t)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint8, uint8_t)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int8, int8_t)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint16, uint16_t)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int16, int16_t)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint32, uint32_t)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int32, int32_t)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint64, uint64_t)
-ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int64, int64_t)
+/**
+ * \def ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(STRUCT_NAME)
+ *
+ * \brief See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_INIT(STRUCT_NAME) and
+ * #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(STRUCT_NAME)
+ */
+#define ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(STRUCT_NAME) \
+  ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_INIT(STRUCT_NAME) \
+  ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(STRUCT_NAME)
 
-// emulate legacy API
+/**
+ * \defgroup primitives_sequence_functions__basic_types Sequence functions for all basic types.
+ */
+/**@{*/
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(float)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(double)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(long_double)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(char)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(wchar)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(boolean)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(octet)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint8)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int8)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint16)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int16)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint32)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int32)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint64)
+ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FUNCTIONS(int64)
+/**@}*/
+
+/**
+ * \defgroup primitives_sequence_functions__legacy Sequence functions for legacy types for backward compatibility.
+ */
+/**@{*/
+/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_INIT(bool) */
 ROSIDL_GENERATOR_C_PUBLIC
 bool rosidl_runtime_c__bool__Sequence__init(
   rosidl_runtime_c__boolean__Sequence * sequence, size_t size);
+/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(bool) */
 ROSIDL_GENERATOR_C_PUBLIC
 void rosidl_runtime_c__bool__Sequence__fini(
   rosidl_runtime_c__boolean__Sequence * sequence);
 
+/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_INIT(byte) */
 ROSIDL_GENERATOR_C_PUBLIC
 bool rosidl_runtime_c__byte__Sequence__init(
   rosidl_runtime_c__octet__Sequence * sequence, size_t size);
+/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(byte) */
 ROSIDL_GENERATOR_C_PUBLIC
 void rosidl_runtime_c__byte__Sequence__fini(
   rosidl_runtime_c__octet__Sequence * sequence);
 
+/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_INIT(float32) */
 ROSIDL_GENERATOR_C_PUBLIC
 bool rosidl_runtime_c__float32__Sequence__init(
   rosidl_runtime_c__float__Sequence * sequence, size_t size);
+/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(float32) */
 ROSIDL_GENERATOR_C_PUBLIC
 void rosidl_runtime_c__float32__Sequence__fini(
   rosidl_runtime_c__float__Sequence * sequence);
 
+/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_INIT(float64) */
 ROSIDL_GENERATOR_C_PUBLIC
 bool rosidl_runtime_c__float64__Sequence__init(
   rosidl_runtime_c__double__Sequence * sequence, size_t size);
+/** See #ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_FINI(float64) */
 ROSIDL_GENERATOR_C_PUBLIC
 void rosidl_runtime_c__float64__Sequence__fini(
   rosidl_runtime_c__double__Sequence * sequence);
+/**@}*/
 
 #ifdef __cplusplus
 }

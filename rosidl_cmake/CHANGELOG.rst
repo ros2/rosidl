@@ -2,6 +2,11 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.9.0 (2020-04-24)
+------------------
+* Use f-string (`#436 <https://github.com/ros2/rosidl/issues/436>`_)
+* Contributors: Dirk Thomas
+
 0.8.2 (2020-01-17)
 ------------------
 

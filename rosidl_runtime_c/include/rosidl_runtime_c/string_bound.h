@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_RUNTIME_C__STRING_BOUNDS_H_
-#define ROSIDL_RUNTIME_C__STRING_BOUNDS_H_
+#ifndef ROSIDL_RUNTIME_C__STRING_BOUND_H_
+#define ROSIDL_RUNTIME_C__STRING_BOUND_H_
 
 #include <stddef.h>
 
-/// String struct
-typedef struct rosidl_runtime_c__String__bounds
+/// Upper boundary for #rosidl_runtime_c__String or #rosidl_runtime_c__U16String.
+typedef struct rosidl_runtime_c__String__bound
 {
-  /// The length of the string (excluding the null byte).
-  size_t bounds;
-} rosidl_runtime_c__String__bounds;
+  /// The number of characters in the string (excluding the null character).
+  size_t bound;
+} rosidl_runtime_c__String__bound;
 
-#endif  // ROSIDL_RUNTIME_C__STRING_BOUNDS_H_
+#endif  // ROSIDL_RUNTIME_C__STRING_BOUND_H_

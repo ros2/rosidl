@@ -33,20 +33,19 @@ struct rosidl_message_type_support_t
 {
   /// String identifier for the type_support.
   const char * typesupport_identifier;
-  /// pointer to type support handle function
+  /// Pointer to type support handle function
   const void * data;
-  /// pointer to type support handle function
   rosidl_message_typesupport_handle_function func;
 };
 
 /// Get the message type support handle specific to this identifier.
 /**
- * If the identifier is the same as this handle's typesupport_identifier, then the handle is
- * simply returned, otherwise it returns zero.
+ * The handle's message typesupport identifier function is returned or if the parameters are NULL
+ * then an assert will happen.
  *
  * \param handle Handle to message type support
  * \param identifier The typesupport identifier to get the handle function for
- * \return The associated message typesupport handle if found, otherwise NULL
+ * \return The associated message typesupport handle function.
  */
 ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_message_type_support_t * get_message_typesupport_handle(
@@ -54,21 +53,22 @@ const rosidl_message_type_support_t * get_message_typesupport_handle(
 
 // Get the message type support handle function specific to this identifier.
 /**
- * If the identifier is the same as this handle's typesupport_identifier, then the handle is
- * simply returned, otherwise it returns NULL.
+ * If the identifier is the same as this handle's typesupport_identifier the handle is simply
+ * returned or if the parameters are NULL then an assert will happen.
  *
  * \param handle Handle to message type support
  * \param identifier The typesupport identifier to get the handle function for
- * \return The associated message typesupport handle if found, otherwise NULL
+ * \return if the identifier match's the handle's identifier then the handle's function
+ *   is returned.
  */
 ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_message_type_support_t * get_message_typesupport_handle_function(
   const rosidl_message_type_support_t * handle, const char * identifier);
 
-/// Macro to get the message typesupport
+/// Get the message type support given a provided action and package.
 /*
  * \param PkgName Name of the package that contains the message
- * \param MsgSubfolder name of the subfolder (foe example: msg)
+ * \param MsgSubfolder name of the subfolder (for example: msg)
  * \param MsgName message name
  * \return a rosidl_message_type_support_t struct if founded, otherwise NULL.
  */

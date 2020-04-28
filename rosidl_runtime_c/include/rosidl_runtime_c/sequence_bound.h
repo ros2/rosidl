@@ -32,19 +32,19 @@ struct rosidl_runtime_c__Sequence__bound
 {
   /// String identifier for the type_support.
   const char * typesupport_identifier;
-  /// pointer to type support handle function
+  /// Pointer to type support handle function
   const void * data;
   rosidl_runtime_c__bound_handle_function func;
 };
 
 /// Get the message bounds handle specific to this identifier.
 /**
- * If the identifier is the same as this handle's identifier, then the handle is
- * simply returned, otherwise it returns zero.
+ * The handle's sequence bound is simply returned or if the parameters are NULL then an assert
+ * will happen.
  *
  * \param handle Handle to service type support
  * \param identifier The identifier to get the handle for
- * \return The associated message bounds handle if found, otherwise NULL
+ * \return The associated sequence bound handle function.
  */
 ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_runtime_c__Sequence__bound * get_sequence_bound_handle(
@@ -52,18 +52,19 @@ const rosidl_runtime_c__Sequence__bound * get_sequence_bound_handle(
 
 /// Get the message bounds handle function specific to this identifier.
 /**
- * If the identifier is the same as this handle funtion's identifier, then the handle is
- * simply returned, otherwise it returns zero.
+ * If the identifier is the same as this handle function's identifier the handle is simply returned
+ * or if the parameters are NULL then an assert will happen.
  *
  * \param handle Handle to service type support
  * \param identifier The identifier to get the handle function for
- * \return The associated message bounds handle function if found, otherwise NULL
+ * \return if the identifier match's the handle's identifier then the handle's function
+ *   is returned.
  */
 ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_runtime_c__Sequence__bound * get_sequence_bound_handle_function(
   const rosidl_runtime_c__Sequence__bound * handle, const char * identifier);
 
-/// Macro to get the message bounds.
+/// Get the sequence bounds given a provided action and package.
 /*
  * \param PkgName Name of the package that contains the message
  * \param MsgSubfolder name of the subfolder (foe example: msg)

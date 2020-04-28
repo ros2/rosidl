@@ -34,20 +34,19 @@ struct rosidl_service_type_support_t
 {
   /// String identifier for the type_support.
   const char * typesupport_identifier;
-  /// pointer to type support handle function
+  /// Pointer to type support handle function
   const void * data;
-  /// pointer to type support handle function
   rosidl_service_typesupport_handle_function func;
 };
 
 /// Get the service type support handle specific to this identifier.
 /**
- * If the identifier is the same as this handle's typesupport_identifier, then the handle is
- * simply returned, otherwise it returns zero.
+ * The handle's message typesupport identifier function is returned or if the parameters are NULL
+ * then an assert will happen.
  *
  * \param handle Handle to service type support
  * \param identifier The typesupport identifier to get the handle function for
- * \return The associated message typesupport handle if found, otherwise NULL
+ * \return The associated service typesupport handle function.
  */
 ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_service_type_support_t * get_service_typesupport_handle(
@@ -55,18 +54,19 @@ const rosidl_service_type_support_t * get_service_typesupport_handle(
 
 /// Get the service type support handle function specific to this identifier.
 /**
- * If the identifier is the same as this handle's typesupport_identifier, then the handle is
- * simply returned, otherwise it returns zero.
+* If the identifier is the same as this handle's typesupport_identifier the handle is simply
+* returned or if the parameters are NULL then an assert will happen.
  *
  * \param handle Handle to service type support
  * \param identifier The typesupport identifier to get the handle function for
- * \return The associated message typesupport handle if found, otherwise NULL
+ * \return if the identifier match's the handle's identifier then the handle's function
+ *   is returned.
  */
 ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_service_type_support_t * get_service_typesupport_handle_function(
   const rosidl_service_type_support_t * handle, const char * identifier);
 
-/// Macro to get the service typesupport
+/// Get the service type support given a provided action and package.
 /*
  * \param PkgName Name of the package that contains the service
  * \param SrvSubfolder name of the subfolder (for example: srv)

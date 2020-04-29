@@ -33,8 +33,9 @@ struct rosidl_message_type_support_t
 {
   /// String identifier for the type_support.
   const char * typesupport_identifier;
-  /// Pointer to type support handle function
+  /// Pointer to the message type support library
   const void * data;
+  /// Pointer to the message type support handler function
   rosidl_message_typesupport_handle_function func;
 };
 

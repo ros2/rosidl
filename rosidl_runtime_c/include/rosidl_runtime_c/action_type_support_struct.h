@@ -29,7 +29,7 @@ typedef struct rosidl_action_type_support_t rosidl_action_type_support_t;
 
 /// Contains rosidl action type support data.
 /*
- * Actions are build based on services(goal, result and cancel) and message (feedback and status).
+ * Actions are built based on services(goal, result and cancel) and message (feedback and status).
  */
 struct rosidl_action_type_support_t
 {

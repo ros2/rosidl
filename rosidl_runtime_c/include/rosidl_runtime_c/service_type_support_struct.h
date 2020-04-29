@@ -34,8 +34,9 @@ struct rosidl_service_type_support_t
 {
   /// String identifier for the type_support.
   const char * typesupport_identifier;
-  /// Pointer to type support handle function
+  /// Pointer to the service type support library
   const void * data;
+  /// Pointer to the service type support handler function
   rosidl_service_typesupport_handle_function func;
 };
 

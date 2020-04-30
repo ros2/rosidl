@@ -44,5 +44,16 @@ macro(_rosidl_cmake_export_typesupport_libraries_register_package_hook)
       "rosidl_cmake_export_typesupport_libraries_package_hook.cmake")
   endif()
 endmacro()
+# register ament_package() hook for typesupport targets once
+macro(_rosidl_cmake_export_typesupport_targets_register_package_hook)
+  if(NOT DEFINED _ROSIDL_CMAKE_EXPORT_TYPESUPPORT_TARGETS_PACKAGE_HOOK_REGISTERED)
+    set(_ROSIDL_CMAKE_EXPORT_TYPESUPPORT_TARGETS_PACKAGE_HOOK_REGISTERED TRUE)
+
+    find_package(ament_cmake_core QUIET REQUIRED)
+    ament_register_extension("ament_package" "rosidl_cmake"
+      "rosidl_cmake_export_typesupport_targets_package_hook.cmake")
+  endif()
+endmacro()
 
 include("${rosidl_cmake_DIR}/rosidl_export_typesupport_libraries.cmake")
+include("${rosidl_cmake_DIR}/rosidl_export_typesupport_targets.cmake")

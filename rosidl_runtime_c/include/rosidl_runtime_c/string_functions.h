@@ -34,7 +34,8 @@ extern "C"
  * All strings must be null-terminated.
  * The rosidl_runtime_c__String structure should be deallocated using the given function
  * rosidl_runtime_c__String__fini() when it is no longer needed.
- * Call this function with an already initialized string will leak memory.
+ * Calling this function with an already initialized U16 string sequence structure will leak
+ * memory.
  *
  * \param[inout] str a pointer to a rosidl_runtime_c__String structure
  * \return true if successful, false if the passed string pointer is null
@@ -92,7 +93,8 @@ rosidl_runtime_c__String__assign(
  * The rosidl_runtime_c__String__Sequence is initialized with the size passed to the function.
  * The rosidl_runtime_c__String__Sequence structure should be deallocated using the given function
  * rosidl_runtime_c__String__Sequence__fini() when it is no longer needed.
- * Call this function with an already initialized string sequence will leak memory.
+ * Calling this function with an already initialized U16 string sequence structure will leak
+ * memory.
  *
  * \param[inout] sequence a pointer to a string sequence
  * \param[in] size represents the size of the string sequence

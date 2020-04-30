@@ -1,0 +1,18 @@
+# generated from
+# rosidl_cmake/cmake/template/rosidl_cmake_export_typesupport_targets.cmake.in
+
+set(_exported_typesupport_targets
+  "@_ROSIDL_CMAKE_EXPORT_TYPESUPPORT_TARGETS@")
+
+# populate @PROJECT_NAME@_TARGETS_<suffix>
+if(NOT _exported_typesupport_targets STREQUAL "")
+  # loop over typesupport targets
+  foreach(_target ${_exported_typesupport_targets})
+    if(NOT TARGET "${_target}")
+      # the exported target must exist
+      message(WARNING "Package '@PROJECT_NAME@' exports the typesupport target '${_target}' which doesn't exist")
+    else()
+      list(APPEND @PROJECT_NAME@_TARGETS${_suffix} "${_target}")
+    endif()
+  endforeach()
+endif()

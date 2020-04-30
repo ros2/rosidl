@@ -33,6 +33,7 @@ extern "C"
  * All strings must be null-terminated.
  * The rosidl_runtime_c__U16String structure should be deallocated using the given function
  * rosidl_runtime_c__U16String__fini() when it is no longer needed.
+ * Call this function with an already initialized U16 string will leak memory.
  *
  * \param[inout] str a pointer to a U16 string structure
  * \return true if successful, false if the passed string pointer is null
@@ -54,13 +55,12 @@ rosidl_runtime_c__U16String__fini(rosidl_runtime_c__U16String * str);
 
 /// Assign the uint16_t value of n characters to the rosidl_runtime_c__U16String structure.
 /*
- *
  * This function returns `false` if memory cannot be allocated,
  * if the input uint16_t pointer is null or if the size is higher than SIZE_MAX.
  * In both cases no error message is set.
  *
  * \param[inout] str a pointer to a U16 string structure
- * \param[in] value uint16_t pointer to be assigned
+ * \param[in] value points to a sequence of 16 bit chars
  * \param[in] n size of the value string
  * \return true if successful, false if the passed string pointer is null
  *   or if the passed value pointer is null or if the size is higher than SIZE_MAX
@@ -73,14 +73,13 @@ rosidl_runtime_c__U16String__assignn(
 
 /// Assign the c string pointer value of n characters to the rosidl_runtime_c__U16String structure.
 /*
- *
  * This function is identical to rosidl_runtime_c__U16String__assignn() except the type of the
  * value is c string pointer
  *
  * \see rosidl_runtime_c__U16String__assignn()
  *
  * \param[inout] str a pointer to a U16 string structure
- * \param[in] value c string pointer to be assigned
+ * \param[in] value points to a sequence of 16 bit chars
  * \param[in] n size of the value string
  * \return true if successful, false if the passed string pointer is null
  *   or if the passed value pointer is null or if the size is higher than SIZE_MAX
@@ -93,14 +92,14 @@ rosidl_runtime_c__U16String__assignn_from_char(
 
 /// Assign the uint16_t pointer to the rosidl_runtime_c__U16String structure.
 /*
- *
  * This function is identical to rosidl_runtime_c__U16String__assignn() except the length of the
  * uint16_t does not have to be given.
+ * rosidl_runtime_c__U16String__len() is being used to determine the length of the passed string.
  *
  * \see rosidl_runtime_c__U16String__assignn()
  *
  * \param[inout] str a pointer to a rosidl_runtime_c__U16String structure
- * \param[in] value to be assigned
+ * \param[in] value points to a sequence of 16 bit chars
  * \return true if successful, false if the passed string pointer is null
  *   or if the passed value pointer is null or if the size is higher than SIZE_MAX
  *   or if the memory reallocation failed.
@@ -114,7 +113,8 @@ rosidl_runtime_c__U16String__assign(
 /*
  * This function returns the length of the input value pointer.
  *
- * \param[in] value to calculate the length
+ * \param[in] value points to a sequence of 16 bit chars for which the first null char is
+ *   determined
  * \return the size of the input value pointer or zero if the pointer is NULL
  */
 ROSIDL_GENERATOR_C_PUBLIC
@@ -125,7 +125,7 @@ rosidl_runtime_c__U16String__len(const uint16_t * value);
 /*
  * This function resize the input value pointer.
  *
- * \param[in] value to calculate the length
+ * \param[in] n the new size of the internal buffer
  * \return true if successful, false if the passed string pointer is null
  *   or if the size is higher than SIZE_MAX or if the memory reallocation failed.
  */
@@ -139,6 +139,7 @@ rosidl_runtime_c__U16String__resize(
  * The rosidl_runtime_c__U16String__Sequence is initialized to the size passed to the function.
  * The U16 string sequence structure should be deallocated using the given
  * function rosidl_runtime_c__U16String__Sequence__fini() when it is no longer needed.
+ * Call this function with an already initialized U16 string sequence structure will leak memory.
  *
  * \param[inout] sequence a pointer to a U16 string sequence structure
  * \param[in] size represents the size of the U16 string

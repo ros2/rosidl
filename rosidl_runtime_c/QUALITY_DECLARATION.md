@@ -111,12 +111,18 @@ Results of the linting tests can be found [here](https://ci.ros2.org/job/nightly
 
 ## Dependencies [5]
 
-### Direct Runtime ROS Dependencies [5.i/5.ii]
-`rosidl_runtime_c` has the following runtime ROS dependencies:
-* `rosidl_typesupport_interface`
+Below are evaluations of each of `rosidl_runtime_c`'s run-time and build-time dependencies that have been determined to influence the quality.
 
 It has "buildtool" dependencies, which do not affect the resulting quality of the package, because they do not contribute to the public library API.
 It also has several test dependencies, which do not affect the resulting quality of the package, because they are only used to build and run the test code.
+
+### Direct Runtime ROS Dependencies [5.i/5.ii]
+
+#### `rosidl_typesupport_interface`
+
+The `rosidl_typesupport_interface` package provides several macros to define the rosidl C typesupport interface.
+
+It is **Quality Level 4**, see its [Quality Declaration document](../rosidl_typesupport_interface/QUALITY_DECLARATION.md).
 
 ### Direct Runtime Non-ROS Dependencies [5.iii]
 

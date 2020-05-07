@@ -16,6 +16,22 @@ ament_index_register_resource("rosidl_runtime_packages")
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_gtest REQUIRED)
+
+  # Default to C++14
+  if(NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 14)
+  endif()
+
+  if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(-Wall -Wextra -Wpedantic)
+  endif()
+
+  ament_add_gtest(test_bounded_vector test/test_bounded_vector.cpp)
+  if(TARGET test_bounded_vector)
+    target_include_directories(test_bounded_vector PUBLIC include)
+  endif()
 endif()
 
 install(

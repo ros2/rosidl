@@ -43,15 +43,6 @@ if(BUILD_TESTING)
     add_compile_options(-Wall -Wextra -Wpedantic)
   endif()
 
-  ament_add_gtest(test_bounded_vector test/test_bounded_vector.cpp)
-  if(TARGET test_bounded_vector)
-    add_dependencies(test_bounded_vector ${PROJECT_NAME})
-    target_include_directories(test_bounded_vector PUBLIC
-      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME})
-    ament_target_dependencies(test_bounded_vector
-      rosidl_runtime_cpp
-      rosidl_runtime_c)
-  endif()
   ament_add_gtest(test_msg_builder test/test_msg_builder.cpp)
   if(TARGET test_msg_builder)
     add_dependencies(test_msg_builder ${PROJECT_NAME})

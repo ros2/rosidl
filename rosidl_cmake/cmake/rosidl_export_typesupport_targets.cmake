@@ -15,13 +15,15 @@
 #
 # Export typesupport targets to downstream packages.
 #
+# :param library_suffix: the suffix of the library
+# :type library_suffix: string
 # :param ARGN: a list of targets.
 #   Each element must be an exported CMake library target.
 # :type ARGN: list of strings
 #
 # @public
 #
-macro(rosidl_export_typesupport_targets)
+macro(rosidl_export_typesupport_targets library_suffix)
   if(_${PROJECT_NAME}_AMENT_PACKAGE)
     message(FATAL_ERROR
       "rosidl_export_typesupport_targets() must be called before "
@@ -44,7 +46,10 @@ macro(rosidl_export_typesupport_targets)
           "not-imported targets")
       endif()
 
-      list(APPEND _ROSIDL_CMAKE_EXPORT_TYPESUPPORT_TARGETS "${PROJECT_NAME}::${_target}")
+      list(APPEND
+        _ROSIDL_CMAKE_EXPORT_TYPESUPPORT_TARGETS
+        "${library_suffix}:${_target}"
+      )
     endforeach()
   endif()
 endmacro()

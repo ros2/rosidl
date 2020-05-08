@@ -5,7 +5,7 @@
 ## Features
 
 `rosidl_typesupport_interface` provides an interface of C/C++ macros for rosidl typesupport packages.
-They are available in the [macros.h header](../include/rosidl_typesupport_interface/macros.h).
+They are available in the `macros.h` header.
 
 ## Quality Declaration
 

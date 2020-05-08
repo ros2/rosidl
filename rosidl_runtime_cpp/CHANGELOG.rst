@@ -2,6 +2,13 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* move test which only uses rosidl_runtime_cpp into that package (`#481 <https://github.com/ros2/rosidl/issues/481>`_)
+* Package READMEs and QUALITY_DECLARATIONS for runtime packages (`#480 <https://github.com/ros2/rosidl/issues/480>`_)
+* Added doxyfile in rosidl_runtime_c and rosidl_runtime_cpp (`#474 <https://github.com/ros2/rosidl/issues/474>`_)
+* Contributors: Alejandro Hernández Cordero, Dirk Thomas, brawner
+
 0.9.0 (2020-04-24)
 ------------------
 * Export targets in a addition to include directories / libraries (`#471 <https://github.com/ros2/rosidl/issues/471>`_)

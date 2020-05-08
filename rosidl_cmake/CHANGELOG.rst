@@ -2,6 +2,11 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* use typesuport targets instead of libraries (`#478 <https://github.com/ros2/rosidl/issues/478>`_)
+* Contributors: Dirk Thomas
+
 0.9.0 (2020-04-24)
 ------------------
 * Use f-string (`#436 <https://github.com/ros2/rosidl/issues/436>`_)

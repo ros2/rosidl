@@ -2,6 +2,11 @@
 Changelog for package rosidl_typesupport_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Package READMEs and QUALITY_DECLARATIONS for runtime packages (`#480 <https://github.com/ros2/rosidl/issues/480>`_)
+* Contributors: brawner
+
 0.9.0 (2020-04-24)
 ------------------
 * Export targets in addition to include directories / libraries (`#471 <https://github.com/ros2/rosidl/issues/471>`_)

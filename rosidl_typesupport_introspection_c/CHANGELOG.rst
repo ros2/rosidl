@@ -2,6 +2,11 @@
 Changelog for package rosidl_typesupport_introspection_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* use typesuport targets instead of libraries (`#478 <https://github.com/ros2/rosidl/issues/478>`_)
+* Contributors: Dirk Thomas
+
 0.9.0 (2020-04-24)
 ------------------
 * Export missing targets for single typesupport build, avoid exposing build directories in include dirs (`#477 <https://github.com/ros2/rosidl/issues/477>`_)

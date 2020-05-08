@@ -2,6 +2,13 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Package READMEs and QUALITY_DECLARATIONS for runtime packages (`#480 <https://github.com/ros2/rosidl/issues/480>`_)
+* Documentation: action, message, service typesupport and message bounds (`#472 <https://github.com/ros2/rosidl/issues/472>`_)
+* Added doxyfile in rosidl_runtime_c and rosidl_runtime_cpp (`#474 <https://github.com/ros2/rosidl/issues/474>`_)
+* Contributors: Alejandro Hernández Cordero, brawner
+
 0.9.0 (2020-04-24)
 ------------------
 * Rename message_bounds structure for consistency (`#475 <https://github.com/ros2/rosidl/issues/475>`_)

@@ -2,8 +2,8 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.9.1 (2020-05-08)
+------------------
 * move test which only uses rosidl_runtime_cpp into that package (`#481 <https://github.com/ros2/rosidl/issues/481>`_)
 * Package READMEs and QUALITY_DECLARATIONS for runtime packages (`#480 <https://github.com/ros2/rosidl/issues/480>`_)
 * Added doxyfile in rosidl_runtime_c and rosidl_runtime_cpp (`#474 <https://github.com/ros2/rosidl/issues/474>`_)

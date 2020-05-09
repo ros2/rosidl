@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(rosidl_runtime_c C)
+project(rosidl_runtime_c)
 
 # Default to C11
 if(NOT CMAKE_C_STANDARD)
@@ -46,6 +46,46 @@ ament_index_register_resource("rosidl_runtime_packages")
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_gtest REQUIRED)
+
+  ament_add_gtest(test_message_type_support test/test_message_type_support.cpp)
+  if(TARGET test_message_type_support)
+    target_include_directories(test_message_type_support PUBLIC include)
+    target_link_libraries(test_message_type_support ${PROJECT_NAME})
+  endif()
+
+  ament_add_gtest(test_primitives_sequence_functions test/test_primitives_sequence_functions.cpp)
+  if(TARGET test_primitives_sequence_functions)
+    target_include_directories(test_primitives_sequence_functions PUBLIC include)
+    target_link_libraries(test_primitives_sequence_functions ${PROJECT_NAME})
+  endif()
+
+  ament_add_gtest(test_sequence_bound test/test_sequence_bound.cpp)
+  if(TARGET test_sequence_bound)
+    ament_target_dependencies(test_sequence_bound
+      "rosidl_typesupport_interface")
+    target_include_directories(test_sequence_bound PUBLIC include)
+    target_link_libraries(test_sequence_bound ${PROJECT_NAME})
+  endif()
+
+  ament_add_gtest(test_service_type_support test/test_service_type_support.cpp)
+  if(TARGET test_service_type_support)
+    target_include_directories(test_service_type_support PUBLIC include)
+    target_link_libraries(test_service_type_support ${PROJECT_NAME})
+  endif()
+
+  ament_add_gtest(test_string_functions test/test_string_functions.cpp)
+  if(TARGET test_string_functions)
+    target_include_directories(test_string_functions PUBLIC include)
+    target_link_libraries(test_string_functions ${PROJECT_NAME})
+  endif()
+
+  ament_add_gtest(test_u16string_functions test/test_u16string_functions.cpp)
+  if(TARGET test_u16string_functions)
+    target_include_directories(test_u16string_functions PUBLIC include)
+    target_link_libraries(test_u16string_functions ${PROJECT_NAME})
+  endif()
 endif()
 
 install(

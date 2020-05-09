@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(rosidl_typesupport_interface NONE)
+project(rosidl_typesupport_interface)
 
 find_package(ament_cmake REQUIRED)
 
@@ -14,6 +14,18 @@ ament_export_targets(${PROJECT_NAME})
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_gtest REQUIRED)
+
+  if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(-Wall -Wextra -Wpedantic)
+  endif()
+
+  ament_add_gtest(test_macros test/test_macros.cpp)
+  if(TARGET test_macros)
+    target_include_directories(test_macros PUBLIC include)
+  endif()
+
 endif()
 
 ament_package()

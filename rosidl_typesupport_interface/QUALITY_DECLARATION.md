@@ -89,7 +89,9 @@ Most recent test results can be found [here](https://ci.ros2.org/job/nightly_lin
 
 ### Feature Testing [4.i]
 
-There are currently no public features undergoing tests.
+The features of `rosidl_typesupport_interface` are tested, and their tests are located in the test directory.
+
+Most recent test results can be found [here](https://ci.ros2.org/job/nightly_linux_release/lastBuild/testReport/rosidl_typesupport_interface).
 
 ### Public API Testing [4.ii]
 

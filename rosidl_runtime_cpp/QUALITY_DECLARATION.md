@@ -89,7 +89,8 @@ Most recent test results can be found [here](https://ci.ros2.org/job/nightly_lin
 
 ### Feature Testing [4.i]
 
-There are currently no public features undergoing tests.
+Most of the features provided by this package are declarations of types and functions, and therefore do not require testing.
+The BoundedVector class is tested and the most recent test results can be found [here](https://ci.ros2.org/job/nightly_linux_release/lastBuild/testReport/rosidl_runtime_cpp).
 
 ### Public API Testing [4.ii]
 

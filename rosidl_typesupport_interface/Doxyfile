@@ -1,10 +1,10 @@
 # All settings not listed here will use the Doxygen default values.
 
-PROJECT_NAME           = "rosidl_runtime_cpp"
+PROJECT_NAME           = "rosidl_typesupport_interface"
 PROJECT_NUMBER         = master
-PROJECT_BRIEF          = "Generate the rosidl interfaces in C++."
+PROJECT_BRIEF          = "The C/C++ interface for rosidl typesupport packages."
 
-INPUT                  = README.md ./include ./docs ./QUALITY_DECLARATION.md
+INPUT                  = README.md ./include ./QUALITY_DECLARATION.md
 USE_MDFILE_AS_MAINPAGE = README.md
 RECURSIVE              = YES
 OUTPUT_DIRECTORY       = doc_output

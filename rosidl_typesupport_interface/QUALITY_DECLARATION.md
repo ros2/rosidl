@@ -1,6 +1,6 @@
 This document is a declaration of software quality for the `rosidl_typesupport_interface` package, based on the guidelines in [REP-2004](https://www.ros.org/reps/rep-2004.html).
 
-# `rosidl_typesupport_interface` Quality Declaration
+# rosidl_typesupport_interface Quality Declaration
 
 The package `rosidl_typesupport_interface` claims to be in the **Quality Level 4** category.
 
@@ -65,7 +65,7 @@ All pull requests must resolve related documentation changes before merging.
 
 ### Feature Documentation [3.i]
 
-`rosidl_typesupport_interface` does not have any feature documentation and it will need to be added for higher quality levels.
+`rosidl_typesupport_interface` has feature documentation and it is publicly [hosted](README.md).
 
 ### Public API Documentation [3.ii]
 

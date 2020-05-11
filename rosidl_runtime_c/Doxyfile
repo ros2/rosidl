@@ -4,7 +4,8 @@ PROJECT_NAME           = "rosidl_runtime_c"
 PROJECT_NUMBER         = master
 PROJECT_BRIEF          = "Generate the rosidl interfaces in C."
 
-INPUT                  = ./include
+INPUT                  = README.md ./include ./docs ./QUALITY_DECLARATION.md
+USE_MDFILE_AS_MAINPAGE = README.md
 RECURSIVE              = YES
 OUTPUT_DIRECTORY       = doc_output
 

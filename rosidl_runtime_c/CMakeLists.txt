@@ -47,6 +47,11 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
+  # Default to C++14
+  if(NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 14)
+  endif()
+
   find_package(ament_cmake_gtest REQUIRED)
 
   ament_add_gtest(test_message_type_support test/test_message_type_support.cpp)

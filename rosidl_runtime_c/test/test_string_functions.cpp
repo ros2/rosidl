@@ -117,7 +117,9 @@ TEST(string_functions, init_fini_sequence) {
   EXPECT_EQ(sequence.size, 0u);
   EXPECT_EQ(sequence.capacity, 0u);
   EXPECT_EQ(sequence.data, nullptr);
-  // Checking this returns without issue
+
+  // Checking these return without issue
+  rosidl_runtime_c__String__Sequence__fini(nullptr);
   rosidl_runtime_c__String__Sequence__fini(&sequence);
 
   constexpr size_t seq_size = 3u;

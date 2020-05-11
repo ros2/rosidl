@@ -28,7 +28,7 @@
     typesupport_name, get_message_type_support_handle, \
     package_name, interface_type, message_name)
 
-  /// Declare a typesupport symbol name for a rosidl service definition.
+/// Declare a typesupport symbol name for a rosidl service definition.
 #define ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME( \
     typesupport_name, package_name, interface_type, service_name) \
   ROSIDL_TYPESUPPORT_INTERFACE__SYMBOL_NAME( \

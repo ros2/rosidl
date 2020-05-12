@@ -101,6 +101,10 @@ bool
 rosidl_runtime_c__String__assign(
   rosidl_runtime_c__String * str, const char * value)
 {
+  if (!value) {
+    // strlen is not defined for nullptr, let assignn take care of other bad values
+    return false;
+  }
   return rosidl_runtime_c__String__assignn(
     str, value, strlen(value));
 }

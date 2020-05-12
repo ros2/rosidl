@@ -20,5 +20,6 @@ EXPAND_ONLY_PREDEF     = YES
 
 # Tag files that do not exist will produce a warning and cross-project linking will not work.
 TAGFILES += "../../../../doxygen_tag_files/cppreference-doxygen-web.tag.xml=http://en.cppreference.com/w/"
+TAGFILES += "../../../../doxygen_tag_files/rosidl_runtime_c.tag"
 # Uncomment to generate tag files for cross-project linking.
 GENERATE_TAGFILE = "../../../../doxygen_tag_files/rosidl_runtime_cpp.tag"

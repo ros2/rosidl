@@ -21,6 +21,11 @@
 namespace rosidl_runtime_cpp
 {
 
+/// Get the service type support handle.
+/**
+ * Note: this is implemented by generated sources of rosidl packages.
+ * \return Function handler for the service's typesupport.
+ */
 template<typename T>
 const rosidl_service_type_support_t * get_service_type_support_handle();
 

@@ -69,7 +69,7 @@ All pull requests must resolve related documentation changes before merging.
 
 ### Public API Documentation [3.ii]
 
-`rosidl_runtime_c` has some public API documentation.
+`rosidl_runtime_c` has documentation of its public API, but it is not yet hosted.
 
 ### License [3.iii]
 
@@ -95,7 +95,9 @@ Most recent test results can be found [here](https://ci.ros2.org/job/nightly_lin
 
 ### Public API Testing [4.ii]
 
-There are currently no tests for the public API.
+Most of the public API of `rosidl_runtime_c` is tested, and the tests are located in the test directory.
+
+Most recent test results can be found [here](https://ci.ros2.org/job/nightly_linux_release/lastBuild/testReport/rosidl_runtime_c).
 
 ### Coverage [4.iv]
 

@@ -69,7 +69,7 @@ All pull requests must resolve related documentation changes before merging.
 
 ### Public API Documentation [3.ii]
 
-`rosidl_runtime_cpp` has some public API documentation.
+`rosidl_runtime_cpp` has documentation of its public API, but it is not yet hosted.
 
 ### License [3.iii]
 
@@ -94,7 +94,8 @@ The BoundedVector class is tested and the most recent test results can be found 
 
 ### Public API Testing [4.ii]
 
-There are currently no tests for the public API.
+Most of the API provided by this package are declarations of types and functions, and therefore do not require testing.
+The BoundedVector class is tested and the most recent test results can be found [here](https://ci.ros2.org/job/nightly_linux_release/lastBuild/testReport/rosidl_runtime_cpp).
 
 ### Coverage [4.iv]
 

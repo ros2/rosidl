@@ -21,6 +21,11 @@
 namespace rosidl_runtime_cpp
 {
 
+/// Get the action type support handle.
+/**
+ * Note: this is implemented by generated sources of rosidl packages.
+ * \return Function handler for the action's typesupport.
+ */
 template<typename T>
 const rosidl_action_type_support_t * get_action_type_support_handle();
 

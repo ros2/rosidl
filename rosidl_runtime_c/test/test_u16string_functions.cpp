@@ -70,11 +70,11 @@ TEST(u16string_functions, init_fini_bad_data) {
 
 TEST(u16string_functions, resize_assignn) {
   rosidl_runtime_c__U16String s, t;
-  EXPECT_TRUE(rosidl_runtime_c__U16String__init(&s));
-  EXPECT_TRUE(rosidl_runtime_c__U16String__init(&t));
-
   constexpr size_t s_size = 3u;
   constexpr uint16_t data[s_size + 1] = {3u, 2u, 1u, 0u};
+
+  EXPECT_TRUE(rosidl_runtime_c__U16String__init(&s));
+  EXPECT_TRUE(rosidl_runtime_c__U16String__init(&t));
 
   EXPECT_FALSE(rosidl_runtime_c__U16String__resize(nullptr, s_size));
 
@@ -135,6 +135,12 @@ TEST(u16string_functions, resize_assignn) {
   EXPECT_EQ(s.data[1], 514u);
   EXPECT_EQ(s.data[2], 257u);
   EXPECT_EQ(s.data[3], 0u);
+
+  rosidl_runtime_c__U16String__fini(&s);
+  rosidl_runtime_c__U16String__fini(&t);
+
+  // Check assign after fini without init
+  EXPECT_TRUE(rosidl_runtime_c__U16String__assign(&s, &data[0]));
   rosidl_runtime_c__U16String__fini(&s);
 }
 

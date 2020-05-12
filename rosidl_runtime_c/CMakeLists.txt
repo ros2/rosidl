@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(rosidl_runtime_c)
+project(rosidl_runtime_c C)
 
 # Default to C11
 if(NOT CMAKE_C_STANDARD)
@@ -47,6 +47,8 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
+  # For gtest
+  enable_language(CXX)
   # Default to C++14
   if(NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 14)

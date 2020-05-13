@@ -12,6 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if(NOT rosidl_generator_c_FOUND)
+  message(FATAL_ERROR
+    "Executing rosidl_typesupport_introspection_c extension point when rosidl_generator_c wasn't found."
+    "Make sure rosidl_generator_c is installed.")
+endif()
+
 set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_introspection_c/${PROJECT_NAME}")
 set(_generated_header_files "")

@@ -8,7 +8,8 @@ set(rosidl_typesupport_introspection_c_LIBRARY_TYPE
 
 find_package(ament_cmake_core QUIET REQUIRED)
 # Make sure rosidl_generator_c extension point is registered first
-find_package(rosidl_generator_c QUIET REQUIRED)
+find_package(rosidl_generator_c QUIET)
+
 ament_register_extension(
   "rosidl_generate_idl_interfaces"
   "rosidl_typesupport_introspection_c"

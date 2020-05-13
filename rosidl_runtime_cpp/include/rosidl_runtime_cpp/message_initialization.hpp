@@ -20,6 +20,10 @@
 namespace rosidl_runtime_cpp
 {
 
+/// Enum utilized in rosidl generated sources for describing how members are initialized.
+/**
+ * See the documentation for the `rosidl_runtime_c__message_initialization` enum for more information.
+ */
 enum class MessageInitialization
 {
   ALL = ROSIDL_RUNTIME_C_MSG_INIT_ALL,

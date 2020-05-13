@@ -21,6 +21,11 @@
 namespace rosidl_runtime_cpp
 {
 
+/// Get the message type support handle.
+/**
+ * Note: this is implemented by generated sources of rosidl packages.
+ * \return Function handler for the message's typesupport.
+ */
 template<typename T>
 const rosidl_message_type_support_t * get_message_type_support_handle();
 

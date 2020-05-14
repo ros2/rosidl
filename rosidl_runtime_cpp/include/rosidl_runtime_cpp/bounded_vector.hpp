@@ -645,100 +645,82 @@ private:
   {
     return *this;
   }
+
+  /// Vector equality comparison.
+  /**
+   * This is an equivalence relation.
+   * It is linear in the size of the vectors.
+   * Vectors are considered equivalent if their sizes are equal, and if
+   * corresponding elements compare equal.
+   *
+   * \param x A %BoundedVector
+   * \param y A %BoundedVector of the same type as @a x
+   * \return True if the size and elements of the vectors are equal
+  */
+  friend bool
+  operator==(
+    const BoundedVector & x,
+    const BoundedVector & y)
+  {
+    return static_cast<const Base &>(x) == static_cast<const Base &>(y);
+  }
+
+  /// Vector ordering relation.
+  /**
+   * This is a total ordering relation.
+   * It is linear in the size of the vectors.
+   * The elements must be comparable with @c <.
+   *
+   * See std::lexicographical_compare() for how the determination is made.
+   *
+   * \param x A %BoundedVector
+   * \param y A %BoundedVector of the same type as @a x
+   * @return True if @a x is lexicographically less than @a y
+  */
+  friend bool
+  operator<(
+    const BoundedVector & x,
+    const BoundedVector & y)
+  {
+    return static_cast<const Base &>(x) < static_cast<const Base &>(y);
+  }
+
+  /// Based on operator==
+  friend bool
+  operator!=(
+    const BoundedVector & x,
+    const BoundedVector & y)
+  {
+    return static_cast<const Base &>(x) != static_cast<const Base &>(y);
+  }
+
+  /// Based on operator<
+  friend bool
+  operator>(
+    const BoundedVector & x,
+    const BoundedVector & y)
+  {
+    return static_cast<const Base &>(x) > static_cast<const Base &>(y);
+  }
+
+  /// Based on operator<
+  friend bool
+  operator<=(
+    const BoundedVector & x,
+    const BoundedVector & y)
+  {
+    return static_cast<const Base &>(x) <= static_cast<const Base &>(y);
+  }
+
+  /// Based on operator<
+  friend bool
+  operator>=(
+    const BoundedVector & x,
+    const BoundedVector & y)
+  {
+    return static_cast<const Base &>(x) >= static_cast<const Base &>(y);
+  }
 };
-
-/// Vector equality comparison.
-/**
- * This is an equivalence relation.
- * It is linear in the size of the vectors.
- * Vectors are considered equivalent if their sizes are equal, and if
- * corresponding elements compare equal.
- *
- * \param x A %BoundedVector
- * \param y A %BoundedVector of the same type as @a x
- * \return True if the size and elements of the vectors are equal
-*/
-template<typename Tp, std::size_t UpperBound, typename Alloc>
-inline bool
-operator==(
-  const BoundedVector<Tp, UpperBound, Alloc> & x,
-  const BoundedVector<Tp, UpperBound, Alloc> & y)
-{
-  return operator==(
-    *reinterpret_cast<const std::vector<Tp, Alloc> *>(&x),
-    *reinterpret_cast<const std::vector<Tp, Alloc> *>(&y));
-}
-
-/// Vector ordering relation.
-/**
- * This is a total ordering relation.
- * It is linear in the size of the vectors.
- * The elements must be comparable with @c <.
- *
- * See std::lexicographical_compare() for how the determination is made.
- *
- * \param x A %BoundedVector
- * \param y A %BoundedVector of the same type as @a x
- * @return True if @a x is lexicographically less than @a y
-*/
-template<typename Tp, std::size_t UpperBound, typename Alloc>
-inline bool
-operator<(
-  const BoundedVector<Tp, UpperBound, Alloc> & x,
-  const BoundedVector<Tp, UpperBound, Alloc> & y)
-{
-  return operator<(
-    *reinterpret_cast<const std::vector<Tp, Alloc> *>(&x),
-    *reinterpret_cast<const std::vector<Tp, Alloc> *>(&y));
-}
-
-/// Based on operator==
-template<typename Tp, std::size_t UpperBound, typename Alloc>
-inline bool
-operator!=(
-  const BoundedVector<Tp, UpperBound, Alloc> & x,
-  const BoundedVector<Tp, UpperBound, Alloc> & y)
-{
-  return operator!=(
-    *reinterpret_cast<const std::vector<Tp, Alloc> *>(&x),
-    *reinterpret_cast<const std::vector<Tp, Alloc> *>(&y));
-}
-
-/// Based on operator<
-template<typename Tp, std::size_t UpperBound, typename Alloc>
-inline bool
-operator>(
-  const BoundedVector<Tp, UpperBound, Alloc> & x,
-  const BoundedVector<Tp, UpperBound, Alloc> & y)
-{
-  return operator>(
-    *reinterpret_cast<const std::vector<Tp, Alloc> *>(&x),
-    *reinterpret_cast<const std::vector<Tp, Alloc> *>(&y));
-}
-
-/// Based on operator<
-template<typename Tp, std::size_t UpperBound, typename Alloc>
-inline bool
-operator<=(
-  const BoundedVector<Tp, UpperBound, Alloc> & x,
-  const BoundedVector<Tp, UpperBound, Alloc> & y)
-{
-  return operator<=(
-    *reinterpret_cast<const std::vector<Tp, Alloc> *>(&x),
-    *reinterpret_cast<const std::vector<Tp, Alloc> *>(&y));
-}
-
-/// Based on operator<
-template<typename Tp, std::size_t UpperBound, typename Alloc>
-inline bool
-operator>=(
-  const BoundedVector<Tp, UpperBound, Alloc> & x,
-  const BoundedVector<Tp, UpperBound, Alloc> & y)
-{
-  return operator>=(
-    *reinterpret_cast<const std::vector<Tp, Alloc> *>(&x),
-    *reinterpret_cast<const std::vector<Tp, Alloc> *>(&y));
-}
 
 /// See rosidl_runtime_cpp::BoundedVector::swap().
 template<typename Tp, std::size_t UpperBound, typename Alloc>

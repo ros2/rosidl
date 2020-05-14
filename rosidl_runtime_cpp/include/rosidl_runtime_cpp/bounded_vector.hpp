@@ -640,12 +640,6 @@ public:
   using Base::clear;
 
 private:
-  /// Cast to base type, to make it easier to dispatch to base implementations
-  operator Base &()
-  {
-    return *this;
-  }
-
   /// Vector equality comparison.
   /**
    * This is an equivalence relation.

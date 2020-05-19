@@ -2,6 +2,13 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update API documentation (`#488 <https://github.com/ros2/rosidl/issues/488>`_)
+* Add tests (`#484 <https://github.com/ros2/rosidl/issues/484>`_)
+* Add feature documentation (`#482 <https://github.com/ros2/rosidl/issues/482>`_)
+* Contributors: brawner
+
 0.9.1 (2020-05-08)
 ------------------
 * move test which only uses rosidl_runtime_cpp into that package (`#481 <https://github.com/ros2/rosidl/issues/481>`_)

@@ -2,6 +2,13 @@
 Changelog for package rosidl_typesupport_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update API documentation (`#488 <https://github.com/ros2/rosidl/issues/488>`_)
+* Add tests (`#484 <https://github.com/ros2/rosidl/issues/484>`_)
+* Add feature documentation (`#482 <https://github.com/ros2/rosidl/issues/482>`_)
+* Contributors: brawner
+
 0.9.1 (2020-05-08)
 ------------------
 * Package READMEs and QUALITY_DECLARATIONS for runtime packages (`#480 <https://github.com/ros2/rosidl/issues/480>`_)

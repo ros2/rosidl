@@ -2,6 +2,11 @@
 Changelog for package rosidl_typesupport_introspection_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Force extension points to be registered in order (`#485 <https://github.com/ros2/rosidl/issues/485>`_)
+* Contributors: Ivan Santiago Paunovic
+
 0.9.1 (2020-05-08)
 ------------------
 * use typesuport targets instead of libraries (`#478 <https://github.com/ros2/rosidl/issues/478>`_)

@@ -2,6 +2,9 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.9.1 (2020-05-08)
 ------------------
 * use typesuport targets instead of libraries (`#478 <https://github.com/ros2/rosidl/issues/478>`_)

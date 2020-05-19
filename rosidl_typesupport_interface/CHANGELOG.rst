@@ -2,8 +2,8 @@
 Changelog for package rosidl_typesupport_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.9.2 (2020-05-19)
+------------------
 * Update API documentation (`#488 <https://github.com/ros2/rosidl/issues/488>`_)
 * Add tests (`#484 <https://github.com/ros2/rosidl/issues/484>`_)
 * Add feature documentation (`#482 <https://github.com/ros2/rosidl/issues/482>`_)

@@ -286,10 +286,8 @@ public:
   void
   assign(InputIterator first, InputIterator last)
   {
-    if (std::distance(first, last) > UpperBound) {
-      throw std::length_error("Exceeded upper bound");
-    }
-    Base::assign(first, last);
+    using cat = typename std::iterator_traits<InputIterator>::iterator_category;
+    do_assign(first, last, cat());
   }
 
   /// Assign an initializer list to a %BoundedVector.
@@ -629,11 +627,8 @@ public:
     InputIterator first,
     InputIterator last)
   {
-    auto dist = std::distance(first, last);
-    if ((dist < 0) || (size() + static_cast<size_t>(dist) > UpperBound)) {
-      throw std::length_error("Exceeded upper bound");
-    }
-    return Base::insert(position, first, last);
+    using cat = typename std::iterator_traits<InputIterator>::iterator_category;
+    return do_insert(position, first, last, cat());
   }
 
   using Base::erase;
@@ -641,6 +636,73 @@ public:
   using Base::clear;
 
 private:
+  /// Assign elements from an input range.
+  template<
+    typename InputIterator
+  >
+  void
+  do_assign(InputIterator first, InputIterator last, std::input_iterator_tag)
+  {
+    BoundedVector(first, last).swap(*this);
+  }
+
+  /// Assign elements from a forward range.
+  template<
+    typename FwdIterator
+  >
+  void
+  do_assign(FwdIterator first, FwdIterator last, std::forward_iterator_tag)
+  {
+    if (static_cast<std::size_t>(std::distance(first, last)) > UpperBound) {
+      throw std::length_error("Exceeded upper bound");
+    }
+    Base::assign(first, last);
+  }
+
+  // Insert each value at the end and then rotate them to the desired position.
+  // If the bound is exceeded, the inserted elements are removed again.
+  template<
+    typename InputIterator
+  >
+  typename Base::iterator
+  do_insert(
+    typename Base::const_iterator position,
+    InputIterator first,
+    InputIterator last,
+    std::input_iterator_tag)
+  {
+    const auto orig_size = size();
+    const auto idx = position - cbegin();
+    try {
+      while (first != last) {
+        push_back(*first++);
+      }
+    } catch (const std::length_error &) {
+      Base::resize(orig_size);
+      throw;
+    }
+    auto pos = begin() + idx;
+    std::rotate(pos, begin() + orig_size, end());
+    return begin() + idx;
+  }
+
+  template<
+    typename FwdIterator
+  >
+  typename Base::iterator
+  do_insert(
+    typename Base::const_iterator position,
+    FwdIterator first,
+    FwdIterator last,
+    std::forward_iterator_tag)
+  {
+    auto dist = std::distance(first, last);
+    if ((dist < 0) || (size() + static_cast<size_t>(dist) > UpperBound)) {
+      throw std::length_error("Exceeded upper bound");
+    }
+    return Base::insert(position, first, last);
+  }
+
   /// Vector equality comparison.
   /**
    * This is an equivalence relation.

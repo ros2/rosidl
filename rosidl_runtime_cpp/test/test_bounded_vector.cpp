@@ -14,6 +14,8 @@
 
 #include <gtest/gtest.h>
 #include <utility>
+#include <sstream>
+#include <iterator>
 
 #include "rosidl_runtime_cpp/bounded_vector.hpp"
 
@@ -65,4 +67,39 @@ TEST(rosidl_generator_cpp, bounded_vector_insert) {
   ASSERT_NO_THROW(v1.insert(it + 1, v2.begin(), v2.end()));
   // insert v2 after the 4th position
   ASSERT_THROW(v1.insert(it + 4, v2.begin(), v2.end()), std::length_error);
+}
+
+TEST(rosidl_generator_cpp, bounded_vector_comparisons) {
+  rosidl_runtime_cpp::BoundedVector<int, 2> v, vv;
+  ASSERT_EQ(v, vv);
+  v.push_back(1);
+  ASSERT_NE(v, vv);
+  ASSERT_GT(v, vv);
+  ASSERT_LT(vv, v);
+}
+
+TEST(rosidl_generator_cpp, bounded_vector_input_iterators) {
+  rosidl_runtime_cpp::BoundedVector<int, 4> v, vv{1, 2, 3};
+  std::istringstream ss("1 2 3");
+  std::istream_iterator<int> ii(ss), end;
+  v.assign(ii, end);
+  ASSERT_EQ(v, vv);
+  ss.clear();
+  ss.str("10 11 12 13 14 15");
+  ii = ss;
+  ASSERT_THROW(v.assign(ii, end), std::length_error);
+  ASSERT_EQ(v, vv);
+  ss.clear();
+  ss.str("0");
+  ii = ss;
+  v.insert(v.begin(), ii, end);
+  vv.insert(vv.begin(), 0);
+  ASSERT_EQ(v, vv);
+  ss.clear();
+  ss.str("10 11 12 13");
+  ii = ss;
+  v.pop_back();
+  vv.pop_back();
+  ASSERT_THROW(v.insert(v.begin() + 1, ii, end), std::length_error);
+  ASSERT_EQ(v, vv);
 }

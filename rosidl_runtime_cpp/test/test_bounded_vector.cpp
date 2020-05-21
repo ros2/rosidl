@@ -16,6 +16,7 @@
 #include <utility>
 #include <sstream>
 #include <iterator>
+#include <forward_list>
 
 #include "rosidl_runtime_cpp/bounded_vector.hpp"
 
@@ -37,7 +38,7 @@ TEST(rosidl_generator_cpp, bounded_vector) {
 }
 
 TEST(rosidl_generator_cpp, bounded_vector_rvalue) {
-  rosidl_runtime_cpp::BoundedVector<int, 2> v;
+  rosidl_runtime_cpp::BoundedVector<int, 2> v, vv;
   // emplace back
   ASSERT_EQ(v.size(), 0u);
   ASSERT_EQ(v.max_size(), 2u);
@@ -46,7 +47,6 @@ TEST(rosidl_generator_cpp, bounded_vector_rvalue) {
   ASSERT_THROW(v.emplace_back(3), std::length_error);
   ASSERT_EQ(v.size(), 2u);
   // move assignment
-  decltype(v) vv;
   vv = std::move(v);
   ASSERT_EQ(vv.size(), 2u);
   ASSERT_EQ(vv[0], 1);
@@ -101,5 +101,24 @@ TEST(rosidl_generator_cpp, bounded_vector_input_iterators) {
   v.pop_back();
   vv.pop_back();
   ASSERT_THROW(v.insert(v.begin() + 1, ii, end), std::length_error);
+  ASSERT_EQ(v, vv);
+}
+
+TEST(rosidl_generator_cpp, bounded_vector_forward_iterators) {
+  rosidl_runtime_cpp::BoundedVector<int, 4> v, vv{1, 2, 3};
+  std::forward_list<int> l{1, 2, 3};
+  v.assign(l.begin(), l.end());
+  ASSERT_EQ(v, vv);
+  l = {10, 11, 12, 13, 14, 15};
+  ASSERT_THROW(v.assign(l.begin(), l.end()), std::length_error);
+  ASSERT_EQ(v, vv);
+  l = {0};
+  v.insert(v.begin(), l.begin(), l.end());
+  vv.insert(vv.begin(), 0);
+  ASSERT_EQ(v, vv);
+  l = {10, 11, 12, 13};
+  v.pop_back();
+  vv.pop_back();
+  ASSERT_THROW(v.insert(v.begin() + 1, l.begin(), l.end()), std::length_error);
   ASSERT_EQ(v, vv);
 }

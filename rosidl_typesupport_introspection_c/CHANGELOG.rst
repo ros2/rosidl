@@ -2,6 +2,11 @@
 Changelog for package rosidl_typesupport_introspection_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix variable suffix in rosidl_export_typesupport_targets (`#483 <https://github.com/ros2/rosidl/issues/483>`_)
+* Contributors: Ivan Santiago Paunovic
+
 0.9.2 (2020-05-19)
 ------------------
 * Force extension points to be registered in order (`#485 <https://github.com/ros2/rosidl/issues/485>`_)

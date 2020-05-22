@@ -2,6 +2,9 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.9.2 (2020-05-19)
 ------------------
 * Update API documentation (`#488 <https://github.com/ros2/rosidl/issues/488>`_)

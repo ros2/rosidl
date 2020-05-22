@@ -2,8 +2,8 @@
 Changelog for package rosidl_typesupport_introspection_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.0 (2020-05-22)
+------------------
 * Fix variable suffix in rosidl_export_typesupport_targets (`#483 <https://github.com/ros2/rosidl/issues/483>`_)
 * Contributors: Ivan Santiago Paunovic
 

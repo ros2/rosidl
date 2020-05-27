@@ -14,7 +14,7 @@ Below are the rationales, notes, and caveats for this claim, organized by each r
 
 ### Version Stability [1.ii]
 
-`rosidl_runtime_c` is not yet at a stable version, i.e. `>= 1.0.0`.
+`rosidl_runtime_c` is at a stable version, i.e. >= 1.0.0. The current version can be found in its [package.xml](./package.xml), and its change history can be found in its [CHANGELOG](./CHANGELOG.xml).
 
 ### Public API Declaration [1.iii]
 

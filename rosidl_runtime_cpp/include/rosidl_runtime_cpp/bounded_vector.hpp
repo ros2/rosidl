@@ -218,7 +218,7 @@ public:
   BoundedVector &
   operator=(BoundedVector && x)
   {
-    (void)Base::operator=(std::forward<Base &&>(x));
+    (void)Base::operator=(std::move(x));
     return *this;
   }
 

@@ -50,3 +50,19 @@ TEST(rosidl_generator_cpp, bounded_vector_rvalue) {
   ASSERT_EQ(vv[0], 1);
   ASSERT_EQ(vv[1], 2);
 }
+
+TEST(rosidl_generator_cpp, bounded_vector_insert) {
+  rosidl_runtime_cpp::BoundedVector<int, 6> v1;
+  v1.push_back(1);
+  auto it = v1.begin();
+  rosidl_runtime_cpp::BoundedVector<int, 3> v2;
+  v2.push_back(2);
+  v2.push_back(3);
+  v2.push_back(4);
+  // insert v2 after the first position in reverse order
+  ASSERT_THROW(v1.insert(it + 1, v2.end(), v2.begin()), std::length_error);
+  // insert v2 after the 1st position
+  ASSERT_NO_THROW(v1.insert(it + 1, v2.begin(), v2.end()));
+  // insert v2 after the 4th position
+  ASSERT_THROW(v1.insert(it + 4, v2.begin(), v2.end()), std::length_error);
+}

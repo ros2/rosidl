@@ -2,6 +2,12 @@
 Changelog for package rosidl_typesupport_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.1 (2020-06-03)
+------------------
+* Add Security Vulnerability Policy pointing to REP-2006 (`#494 <https://github.com/ros2/rosidl/issues/494>`_)
+* QD Update Version Stability to stable version (`#495 <https://github.com/ros2/rosidl/issues/495>`_)
+* Contributors: Alejandro Hernández Cordero, Chris Lalancette
+
 1.0.0 (2020-05-22)
 ------------------
 

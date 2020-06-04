@@ -2,6 +2,14 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.1 (2020-06-03)
+------------------
+* Fix move assignment of bounded vector (`#496 <https://github.com/ros2/rosidl/issues/496>`_)
+* Fix bug inserting bounded_vector in reverse order (`#444 <https://github.com/ros2/rosidl/issues/444>`_)
+* Add Security Vulnerability Policy pointing to REP-2006 (`#494 <https://github.com/ros2/rosidl/issues/494>`_)
+* QD Update Version Stability to stable version (`#495 <https://github.com/ros2/rosidl/issues/495>`_)
+* Contributors: Alejandro Hernández Cordero, Chris Lalancette, Jacob Perron, Carlos San Vicente
+
 1.0.0 (2020-05-22)
 ------------------
 * Clean up BoundedVector (`#487 <https://github.com/ros2/rosidl/issues/487>`_)

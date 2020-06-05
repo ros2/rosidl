@@ -109,7 +109,7 @@ This includes:
 
 Changes are required to make a best effort to keep or increase coverage before being accepted, but decreases are allowed if properly justified and accepted by reviewers.
 
-Current coverage statistics can be viewed [here](https://ci.ros2.org/job/ci_linux_coverage/lastBuild/cobertura/src_rosidl_rosidl_runtime_cpp_include_rosidl_runtime_cpp/).
+Current coverage statistics can be viewed [here](https://ci.ros2.org/job/ci_linux_coverage/lastSuccessfulBuild/cobertura/src_rosidl_rosidl_runtime_cpp_include_rosidl_runtime_cpp/).
 
 ### Performance [4.iv]
 

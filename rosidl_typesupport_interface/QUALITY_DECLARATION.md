@@ -2,7 +2,7 @@ This document is a declaration of software quality for the `rosidl_typesupport_i
 
 # rosidl_typesupport_interface Quality Declaration
 
-The package `rosidl_typesupport_interface` claims to be in the **Quality Level 4** category.
+The package `rosidl_typesupport_interface` claims to be in the **Quality Level 2** category.
 
 Below are the rationales, notes, and caveats for this claim, organized by each requirement listed in the [Package Requirements for Quality Level 4 in REP-2004](https://www.ros.org/reps/rep-2004.html).
 
@@ -101,7 +101,18 @@ Most recent test results can be found [here](https://ci.ros2.org/job/nightly_lin
 
 ### Coverage [4.iv]
 
-`rosidl_typesupport_interface` does not currently track test coverage.
+`rosidl_typesupport_interface` follows the recommendations for ROS Core packages in the [ROS 2 Developer Guide](https://index.ros.org/doc/ros2/Contributing/Developer-Guide/#code-coverage), and opts to use line coverage instead of branch coverage.
+
+This includes:
+
+- tracking and reporting line coverage statistics
+- achieving and maintaining a reasonable branch line coverage (90-100%)
+- no lines are manually skipped in coverage calculations
+
+Changes are required to make a best effort to keep or increase coverage before being accepted, but decreases are allowed if properly justified and accepted by reviewers.
+
+Because this package is a header only library with just C macro definitions, its coverage is not able to be reported.
+The unit test of all its macros can be found in the test directory.
 
 ### Performance [4.iv]
 

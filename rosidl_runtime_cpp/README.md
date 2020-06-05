@@ -8,4 +8,4 @@ The features provided by `rosidl_runtime_cpp` are documented in its [feature doc
 
 ## Quality Declaration
 
-This package claims to be in the **Quality Level 4** category, see the [Quality Declaration](QUALITY_DECLARATION.md) for more details.
+This package claims to be in the **Quality Level 2** category, see the [Quality Declaration](QUALITY_DECLARATION.md) for more details.

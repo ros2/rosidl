@@ -65,8 +65,8 @@ TEST(rosidl_generator_cpp, bounded_vector_insert) {
   ASSERT_THROW(v1.insert(it + 1, v2.end(), v2.begin()), std::length_error);
   // insert v2 after the 1st position
   ASSERT_NO_THROW(v1.insert(it + 1, v2.begin(), v2.end()));
-  // insert v2 after the 4th position
-  ASSERT_THROW(v1.insert(it + 4, v2.begin(), v2.end()), std::length_error);
+  rosidl_runtime_cpp::BoundedVector<int, 6> vv1{1, 2, 3, 4};
+  ASSERT_EQ(v1, vv1);
 }
 
 TEST(rosidl_generator_cpp, bounded_vector_comparisons) {

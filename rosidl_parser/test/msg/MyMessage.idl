@@ -10,6 +10,7 @@ module rosidl_parser {
       const boolean BOOLEAN_CONSTANT = TRUE;
       const string STRING_CONSTANT = "string_value";
       const wstring WSTRING_CONSTANT = "wstring_value_\u2122";
+      const string EMPTY_STRING_CONSTANT = "";
     };
 
     @verbatim ( language="comment", text="Documentation of MyMessage." "Adjacent string literal." )

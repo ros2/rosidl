@@ -62,7 +62,7 @@ def test_message_parser_structure(message_idl_file):
     assert len(messages) == 1
 
     constants = messages[0].constants
-    assert len(constants) == 6
+    assert len(constants) == 7
 
     assert constants[0].name == 'SHORT_CONSTANT'
     assert isinstance(constants[0].type, BasicType)
@@ -91,6 +91,10 @@ def test_message_parser_structure(message_idl_file):
     assert constants[5].name == 'WSTRING_CONSTANT'
     assert isinstance(constants[5].type, BoundedWString)
     assert constants[5].value == 'wstring_value_\\u2122'
+
+    assert constants[6].name == 'EMPTY_STRING_CONSTANT'
+    assert isinstance(constants[6].type, BoundedString)
+    assert constants[6].value == ''
 
     structure = messages[0].structure
     assert structure.namespaced_type.namespaces == ['rosidl_parser', 'msg']

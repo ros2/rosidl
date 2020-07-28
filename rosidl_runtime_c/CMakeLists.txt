@@ -12,6 +12,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake_ros REQUIRED)
+find_package(rcutils REQUIRED)
 find_package(rosidl_typesupport_interface REQUIRED)
 
 add_library(${PROJECT_NAME}
@@ -26,6 +27,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include>")
 ament_target_dependencies(${PROJECT_NAME}
+  "rcutils"
   "rosidl_typesupport_interface")
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -36,7 +38,7 @@ if(WIN32)
     PRIVATE "ROSIDL_GENERATOR_C_BUILDING_DLL")
 endif()
 
-ament_export_dependencies(rosidl_typesupport_interface)
+ament_export_dependencies(rcutils rosidl_typesupport_interface)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 ament_export_targets(${PROJECT_NAME})

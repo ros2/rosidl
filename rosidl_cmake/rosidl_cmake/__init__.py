@@ -60,6 +60,7 @@ def generate_files(
             'Could not find template: ' + template_filename
 
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
+    generated_files = []
 
     for idl_tuple in args.get('idl_tuples', []):
         idl_parts = idl_tuple.rsplit(':', 1)
@@ -75,6 +76,7 @@ def generate_files(
                 generated_file = os.path.join(
                     args['output_dir'], str(idl_rel_path.parent),
                     generated_filename % idl_stem)
+                generated_files.append(generated_file)
                 data = {
                     'package_name': args['package_name'],
                     'interface_path': idl_rel_path,
@@ -93,7 +95,7 @@ def generate_files(
                 str(locator.get_absolute_path()), file=sys.stderr)
             raise(e)
 
-    return 0
+    return generated_files
 
 
 template_prefix_path = []

@@ -3,11 +3,12 @@ name: ROS 2 CI
 on:
   pull_request:
     branches:
+      - 'master'
+      - 'ros2'
+      - 'ros2/*'
       - 'dashing'
       - 'eloquent'
       - 'foxy'
-      - 'ros2'
-      - 'ros2/*'
 
 jobs:
   test_environment: # Docker is not supported on OS X, and Windows.

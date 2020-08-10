@@ -27,7 +27,7 @@ jobs:
       - name: build and test
         uses: ros-tooling/action-ros-ci@0.0.17
         with:
-          package-name: rosidl_adaptor  # TODO: auto-set from repo name?
+          package-name: rosidl_adapter  # TODO: auto-set from repo name?
 
   test_environment_linux:
     runs-on: ubuntu-latest
@@ -67,6 +67,6 @@ jobs:
       - name: build and test
         uses: ros-tooling/action-ros-ci@0.0.17
         with:
-          package-name: rosidl_adaptor  # TODO: auto-set from repo name?
+          package-name: rosidl_adapter  # TODO: auto-set from repo name?
           source-ros-binary-installation: ${{ matrix.ros_distribution }}
                                                                                 

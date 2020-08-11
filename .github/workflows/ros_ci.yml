@@ -35,6 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        package: [rosidl_adapter, rosidl_cmake, rosidl_generator_c, rosidl_generator_cpp, rosidl_parser, rosidl_runtime_c, rosidl_runtime_cpp, rosidl_typesupport_interface, rosidl_typesupport_interface_c, rosidl_typesupport_cpp]
         ros_distribution:
           - dashing
           - eloquent

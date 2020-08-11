@@ -15,6 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        package: [rosidl_adapter, rosidl_cmake, rosidl_generator_c, rosidl_generator_cpp, rosidl_parser, rosidl_runtime_c, rosidl_runtime_cpp, rosidl_typesupport_interface, rosidl_typesupport_interface_c, rosidl_typesupport_cpp]
         os: [macOS-latest, windows-latest]
         ros_distribution: # Only include ROS 2 distributions for OS X, Windows
           - dashing
@@ -27,7 +28,7 @@ jobs:
       - name: build and test
         uses: ros-tooling/action-ros-ci@0.0.17
         with:
-          package-name: rosidl_adapter  # TODO: auto-set from repo name?
+          package-name: ${{ matrix.package }}
 
   test_environment_linux:
     runs-on: ubuntu-latest
@@ -67,6 +68,6 @@ jobs:
       - name: build and test
         uses: ros-tooling/action-ros-ci@0.0.17
         with:
-          package-name: rosidl_adapter  # TODO: auto-set from repo name?
+          package-name: ${{ matrix.package }} 
           source-ros-binary-installation: ${{ matrix.ros_distribution }}
                                                                                 

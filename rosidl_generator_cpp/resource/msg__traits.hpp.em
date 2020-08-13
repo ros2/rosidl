@@ -11,6 +11,7 @@ from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import UnboundedSequence
 
 message_typename = '::'.join(message.structure.namespaced_type.namespaced_name())
+message_fully_qualified_name = '/'.join(message.structure.namespaced_type.namespaced_name())
 }@
 @
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -64,6 +65,12 @@ template<>
 inline const char * data_type<@(message_typename)>()
 {
   return "@(message_typename)";
+}
+
+template<>
+inline const char * fully_qualified_name<@(message_typename)>()
+{
+  return "@(message_fully_qualified_name)";
 }
 
 @{

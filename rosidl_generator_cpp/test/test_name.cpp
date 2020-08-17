@@ -18,20 +18,20 @@
 #include "rosidl_generator_cpp/srv/basic_types.hpp"
 #include "rosidl_generator_cpp/srv/empty.hpp"
 
-TEST(Test_rosidl_generator_traits, check_msg_fully_qualified_name) {
+TEST(Test_rosidl_generator_traits, check_msg_name) {
   ASSERT_STREQ(
     "rosidl_generator_cpp/msg/Strings",
-    rosidl_generator_traits::fully_qualified_name<rosidl_generator_cpp::msg::Strings>());
+    rosidl_generator_traits::name<rosidl_generator_cpp::msg::Strings>());
   ASSERT_STREQ(
     "rosidl_generator_cpp/msg/Empty",
-    rosidl_generator_traits::fully_qualified_name<rosidl_generator_cpp::msg::Empty>());
+    rosidl_generator_traits::name<rosidl_generator_cpp::msg::Empty>());
 }
 
-TEST(Test_rosidl_generator_traits, check_srv_fully_qualified_name) {
+TEST(Test_rosidl_generator_traits, check_srv_name) {
   ASSERT_STREQ(
     "rosidl_generator_cpp/srv/BasicTypes",
-    rosidl_generator_traits::fully_qualified_name<rosidl_generator_cpp::srv::BasicTypes>());
+    rosidl_generator_traits::name<rosidl_generator_cpp::srv::BasicTypes>());
   ASSERT_STREQ(
     "rosidl_generator_cpp/srv/Empty",
-    rosidl_generator_traits::fully_qualified_name<rosidl_generator_cpp::srv::Empty>());
+    rosidl_generator_traits::name<rosidl_generator_cpp::srv::Empty>());
 }

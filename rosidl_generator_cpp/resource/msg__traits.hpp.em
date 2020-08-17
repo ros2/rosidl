@@ -68,7 +68,7 @@ inline const char * data_type<@(message_typename)>()
 }
 
 template<>
-inline const char * fully_qualified_name<@(message_typename)>()
+inline const char * name<@(message_typename)>()
 {
   return "@(message_fully_qualified_name)";
 }

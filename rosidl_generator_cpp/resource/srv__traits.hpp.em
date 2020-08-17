@@ -28,7 +28,7 @@ inline const char * data_type<@(service_typename)>()
 }
 
 template<>
-inline const char * fully_qualified_name<@(service_typename)>()
+inline const char * name<@(service_typename)>()
 {
   return "@(service_fully_qualified_name)";
 }

@@ -2,6 +2,11 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2020-08-17)
+------------------
+* Modifications to python generator lib to return generated files (`#511 <https://github.com/ros2/rosidl/issues/511>`_)
+* Contributors: Alex Tyshka
+
 1.0.1 (2020-06-03)
 ------------------
 

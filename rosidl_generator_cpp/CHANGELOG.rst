@@ -2,6 +2,12 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2020-08-17)
+------------------
+* Add function for getting a types fully qualified name (`#514 <https://github.com/ros2/rosidl/issues/514>`_)
+* Declaring is_message in namespace rosidl_generator_traits (`#512 <https://github.com/ros2/rosidl/issues/512>`_)
+* Contributors: Jacob Perron, Sebastian Höffner
+
 1.0.1 (2020-06-03)
 ------------------
 

@@ -13,6 +13,7 @@
 
   <buildtool_export_depend>ament_cmake</buildtool_export_depend>
 
+  <build_export_depend>rcutils</build_export_depend>
   <build_export_depend>rosidl_typesupport_interface</build_export_depend>
 
   <test_depend>ament_lint_auto</test_depend>

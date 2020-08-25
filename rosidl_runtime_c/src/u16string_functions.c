@@ -19,9 +19,13 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "rcutils/macros.h"
+
 bool
 rosidl_runtime_c__U16String__init(rosidl_runtime_c__U16String * str)
 {
+  RCUTILS_CAN_RETURN_WITH_ERROR_OF(false);
+
   if (!str) {
     return false;
   }
@@ -156,6 +160,8 @@ bool
 rosidl_runtime_c__U16String__Sequence__init(
   rosidl_runtime_c__U16String__Sequence * sequence, size_t size)
 {
+  RCUTILS_CAN_RETURN_WITH_ERROR_OF(false);
+
   if (!sequence) {
     return false;
   }

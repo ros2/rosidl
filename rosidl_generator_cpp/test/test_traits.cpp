@@ -126,7 +126,11 @@ long_double_value: 1.12500
     rosidl_generator_cpp::msg::Nested msg;
     std::string yaml = to_yaml(msg);
 #ifdef _WIN32
-    std::replace(yaml.begin(), yaml.end(), "0.000000", "0.00000");
+    // update yaml to handle variance of floating point decimals on Windows
+    size_t index = 0;
+    while ((index = yaml.find("0.000000", index)) != std::string::npos) {
+      yaml = yaml.replace(index, 8, "0.00000");
+    }
 #endif
     EXPECT_STREQ(
       R"(basic_types_value:
@@ -152,7 +156,11 @@ long_double_value: 1.12500
     msg.defaults_values.push_back(rosidl_generator_cpp::msg::Defaults());
     std::string yaml = to_yaml(msg);
 #ifdef _WIN32
-    std::replace(yaml.begin(), yaml.end(), "0.000000", "0.00000");
+    // update yaml to handle variance of floating point decimals on Windows
+    size_t index = 0;
+    while ((index = yaml.find("0.000000", index)) != std::string::npos) {
+      yaml = yaml.replace(index, 8, "0.00000");
+    }
 #endif
     EXPECT_STREQ(
       R"(bool_values: []

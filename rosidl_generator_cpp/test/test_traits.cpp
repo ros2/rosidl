@@ -14,6 +14,8 @@
 // limitations under the License.
 
 #include <gtest/gtest.h>
+#include <string>
+
 // #include "rosidl_generator_cpp/idl/idl_only_types.hpp"
 #include "rosidl_generator_cpp/msg/defaults.hpp"
 #include "rosidl_generator_cpp/msg/empty.hpp"
@@ -121,6 +123,10 @@ long_double_value: 1.12500
 
   {
     rosidl_generator_cpp::msg::Nested msg;
+    std::string yaml = to_yaml(msg);
+#ifdef _WIN32
+    yaml.replace("0.000000", "0.00000");
+#endif
     EXPECT_STREQ(
       R"(basic_types_value:
   bool_value: false
@@ -137,13 +143,16 @@ long_double_value: 1.12500
   int64_value: 0
   uint64_value: 0
 )",
-      to_yaml(
-        msg).c_str());
+      yaml.c_str());
   }
 
   {
     rosidl_generator_cpp::msg::BoundedSequences msg;
     msg.defaults_values.push_back(rosidl_generator_cpp::msg::Defaults());
+    std::string yaml = to_yaml(msg);
+#ifdef _WIN32
+    yaml.replace("0.000000", "0.00000");
+#endif
     EXPECT_STREQ(
       R"(bool_values: []
 byte_values: []
@@ -234,8 +243,7 @@ string_values_default:
 - "min value"
 alignment_check: 0
 )",
-      to_yaml(
-        msg).c_str());
+      yaml.c_str());
   }
 }
 

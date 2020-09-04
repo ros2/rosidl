@@ -30,7 +30,8 @@ void value_to_yaml(bool value, std::ostream & out)
 void character_value_to_yaml(unsigned char value, std::ostream & out)
 {
   auto flags = out.flags();
-  out << "0x" << std::hex << std::setw(2) << std::setfill('0') << +value;
+  out << "0x" << std::hex << std::setw(2) << std::setfill('0') << \
+    static_cast<uint16_t>(value);
   out.flags(flags);
 }
 

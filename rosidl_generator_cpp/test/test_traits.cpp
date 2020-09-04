@@ -16,6 +16,7 @@
 #include <gtest/gtest.h>
 #include <string>
 
+// the idl file is commented out in the test_interface_files package
 // #include "rosidl_generator_cpp/idl/idl_only_types.hpp"
 #include "rosidl_generator_cpp/msg/defaults.hpp"
 #include "rosidl_generator_cpp/msg/empty.hpp"

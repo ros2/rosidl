@@ -63,7 +63,7 @@ for member in message.structure.members:
 namespace rosidl_generator_traits
 {
 
-void to_yaml(
+inline void to_yaml(
   const @(message_typename) & msg,
   std::ostream & out, size_t indentation = 0)
 {
@@ -129,7 +129,7 @@ void to_yaml(
 @[end if]@
 }  // NOLINT(readability/fn_size)
 
-std::string to_yaml(const @(message_typename) & msg)
+inline std::string to_yaml(const @(message_typename) & msg)
 {
   std::ostringstream out;
   to_yaml(msg, out);

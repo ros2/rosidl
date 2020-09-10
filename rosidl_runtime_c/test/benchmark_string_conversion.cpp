@@ -45,7 +45,7 @@ BENCHMARK_DEFINE_F(PerformanceTest, string_assign_complexity)(benchmark::State &
 }
 
 BENCHMARK_REGISTER_F(PerformanceTest, string_assign_complexity)
-->RangeMultiplier(2)->Range(2 << 11, 2 << 20)->Complexity();
+->RangeMultiplier(2)->Range(2 << 11, 2 << 22)->Complexity();
 
 BENCHMARK_DEFINE_F(PerformanceTest, string_resize_assign_complexity)(benchmark::State & st)
 {
@@ -72,7 +72,7 @@ BENCHMARK_DEFINE_F(PerformanceTest, string_resize_assign_complexity)(benchmark::
 }
 
 BENCHMARK_REGISTER_F(PerformanceTest, string_resize_assign_complexity)
-->RangeMultiplier(2)->Range(2 << 11, 2 << 20)->Complexity();
+->RangeMultiplier(2)->Range(2 << 11, 2 << 22)->Complexity();
 
 BENCHMARK_DEFINE_F(PerformanceTest, u16string_assign_complexity)(benchmark::State & st)
 {
@@ -97,7 +97,7 @@ BENCHMARK_DEFINE_F(PerformanceTest, u16string_assign_complexity)(benchmark::Stat
 }
 
 BENCHMARK_REGISTER_F(PerformanceTest, u16string_assign_complexity)
-->RangeMultiplier(2)->Range(2 << 11, 2 << 20)->Complexity();
+->RangeMultiplier(2)->Range(2 << 11, 2 << 22)->Complexity();
 
 BENCHMARK_DEFINE_F(PerformanceTest, u16string_resize_assign_complexity)(benchmark::State & st)
 {
@@ -123,4 +123,4 @@ BENCHMARK_DEFINE_F(PerformanceTest, u16string_resize_assign_complexity)(benchmar
 }
 
 BENCHMARK_REGISTER_F(PerformanceTest, u16string_resize_assign_complexity)
-->RangeMultiplier(2)->Range(2 << 11, 2 << 20)->Complexity();
+->RangeMultiplier(2)->Range(2 << 11, 2 << 22)->Complexity();

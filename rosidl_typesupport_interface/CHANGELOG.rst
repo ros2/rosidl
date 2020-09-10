@@ -2,6 +2,11 @@
 Changelog for package rosidl_typesupport_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2020-08-17)
+------------------
+* Update QD to reflect QL 2 statuses (`#499 <https://github.com/ros2/rosidl/issues/499>`_)
+* Contributors: Stephen Brawner
+
 1.0.1 (2020-06-03)
 ------------------
 * Add Security Vulnerability Policy pointing to REP-2006 (`#494 <https://github.com/ros2/rosidl/issues/494>`_)

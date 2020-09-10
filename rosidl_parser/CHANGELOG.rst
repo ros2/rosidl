@@ -2,6 +2,12 @@
 Changelog for package rosidl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2020-08-17)
+------------------
+* Allow zero length string constants (`#507 <https://github.com/ros2/rosidl/issues/507>`_)
+* Add pytest.ini so tests succeed locally (`#502 <https://github.com/ros2/rosidl/issues/502>`_)
+* Contributors: Chris Lalancette, Dirk Thomas
+
 1.0.1 (2020-06-03)
 ------------------
 

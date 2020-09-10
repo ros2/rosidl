@@ -2,6 +2,13 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2020-08-17)
+------------------
+* Add function for getting a types fully qualified name (`#514 <https://github.com/ros2/rosidl/issues/514>`_)
+* Fix misuses of input iterators in BoundedVector (`#493 <https://github.com/ros2/rosidl/issues/493>`_)
+* Update QD to reflect QL 2 statuses (`#499 <https://github.com/ros2/rosidl/issues/499>`_)
+* Contributors: Jacob Perron, Jonathan Wakely, Stephen Brawner
+
 1.0.1 (2020-06-03)
 ------------------
 * Fix move assignment of bounded vector (`#496 <https://github.com/ros2/rosidl/issues/496>`_)

@@ -16,6 +16,8 @@
 #include "rosidl_runtime_c/string.h"
 #include "rosidl_runtime_c/string_functions.h"
 
+#include "rcutils/testing/fault_injection.h"
+
 TEST(string_functions, init_fini_empty_string) {
   rosidl_runtime_c__String empty_string;
   EXPECT_TRUE(rosidl_runtime_c__String__init(&empty_string));
@@ -151,4 +153,18 @@ TEST(string_functions, create_destroy_sequence) {
   EXPECT_EQ(sequence->size, seq_size);
   EXPECT_EQ(sequence->capacity, seq_size);
   rosidl_runtime_c__String__Sequence__destroy(sequence);
+}
+
+TEST(string_functions, create_destroy_sequence_maybe_fail) {
+  rosidl_runtime_c__String__Sequence * sequence = nullptr;
+  constexpr size_t seq_size = 10u;
+
+  RCUTILS_FAULT_INJECTION_TEST(
+  {
+    sequence = rosidl_runtime_c__String__Sequence__create(seq_size);
+    if (nullptr != sequence) {
+      rosidl_runtime_c__String__Sequence__destroy(sequence);
+      sequence = nullptr;
+    }
+  });
 }

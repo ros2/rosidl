@@ -453,6 +453,7 @@ def get_abstract_type(tree):
                 assert child.children[0].data == 'positive_int_const'
                 maximum_size = get_positive_int_const(child.children[0])
                 if 'string_type' == child.data:
+                    assert maximum_size > 0
                     return BoundedString(maximum_size=maximum_size)
                 if 'wide_string_type' == child.data:
                     return BoundedWString(maximum_size=maximum_size)

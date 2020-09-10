@@ -32,7 +32,7 @@ BENCHMARK_DEFINE_F(PerformanceTest, string_assign_complexity)(benchmark::State &
     return;
   }
 
-  // No resize function - just do a copy
+  // No explicit resize function - just do a copy
   rosidl_runtime_c__String__assignn(&s, data.c_str(), len);
 
   for (auto _ : st) {
@@ -45,7 +45,34 @@ BENCHMARK_DEFINE_F(PerformanceTest, string_assign_complexity)(benchmark::State &
 }
 
 BENCHMARK_REGISTER_F(PerformanceTest, string_assign_complexity)
-->RangeMultiplier(2)->Range(2 << 11, 2 << 19)->Complexity();
+->RangeMultiplier(2)->Range(2 << 11, 2 << 20)->Complexity();
+
+BENCHMARK_DEFINE_F(PerformanceTest, string_resize_assign_complexity)(benchmark::State & st)
+{
+  size_t len = st.range(0);
+  std::string data(len, '*');
+
+  rosidl_runtime_c__String s;
+  if (!rosidl_runtime_c__String__init(&s)) {
+    st.SkipWithError("String initialization failed");
+    return;
+  }
+
+  // No explicit resize function - just do a copy
+  rosidl_runtime_c__String__assignn(&s, data.c_str(), 0);
+
+  for (auto _ : st) {
+    rosidl_runtime_c__String__assignn(&s, data.c_str(), len);
+    rosidl_runtime_c__String__assignn(&s, data.c_str(), 0);
+  }
+
+  st.SetComplexityN(len);
+
+  rosidl_runtime_c__String__fini(&s);
+}
+
+BENCHMARK_REGISTER_F(PerformanceTest, string_resize_assign_complexity)
+->RangeMultiplier(2)->Range(2 << 11, 2 << 20)->Complexity();
 
 BENCHMARK_DEFINE_F(PerformanceTest, u16string_assign_complexity)(benchmark::State & st)
 {
@@ -70,4 +97,30 @@ BENCHMARK_DEFINE_F(PerformanceTest, u16string_assign_complexity)(benchmark::Stat
 }
 
 BENCHMARK_REGISTER_F(PerformanceTest, u16string_assign_complexity)
-->RangeMultiplier(2)->Range(2 << 11, 2 << 19)->Complexity();
+->RangeMultiplier(2)->Range(2 << 11, 2 << 20)->Complexity();
+
+BENCHMARK_DEFINE_F(PerformanceTest, u16string_resize_assign_complexity)(benchmark::State & st)
+{
+  size_t len = st.range(0);
+  std::string data(len, '*');
+
+  rosidl_runtime_c__U16String s;
+  if (!rosidl_runtime_c__U16String__init(&s)) {
+    st.SkipWithError("U16String initialization failed");
+    return;
+  }
+
+  rosidl_runtime_c__U16String__resize(&s, 0);
+
+  for (auto _ : st) {
+    rosidl_runtime_c__U16String__assignn_from_char(&s, data.c_str(), len);
+    rosidl_runtime_c__U16String__resize(&s, 0);
+  }
+
+  st.SetComplexityN(len);
+
+  rosidl_runtime_c__U16String__fini(&s);
+}
+
+BENCHMARK_REGISTER_F(PerformanceTest, u16string_resize_assign_complexity)
+->RangeMultiplier(2)->Range(2 << 11, 2 << 20)->Complexity();

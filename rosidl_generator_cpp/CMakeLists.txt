@@ -92,6 +92,16 @@ if(BUILD_TESTING)
       ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
     )
   endif()
+  ament_add_gtest(test_name test/test_name.cpp)
+  if(TARGET test_name)
+    add_dependencies(test_name ${PROJECT_NAME})
+    ament_target_dependencies(test_name
+      rosidl_runtime_cpp
+      rosidl_runtime_c)
+    target_include_directories(test_name PUBLIC
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+    )
+  endif()
   ament_add_gtest(test_traits test/test_traits.cpp)
   if(TARGET test_traits)
     add_dependencies(test_traits ${PROJECT_NAME})

@@ -24,6 +24,9 @@ template<typename T>
 inline const char * data_type();
 
 template<typename T>
+inline const char * name();
+
+template<typename T>
 struct has_fixed_size : std::false_type {};
 
 template<typename T>

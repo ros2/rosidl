@@ -2,6 +2,11 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2020-08-17)
+------------------
+* Do not depend on rosidl_runtime_c when tests are disabled (`#503 <https://github.com/ros2/rosidl/issues/503>`_)
+* Contributors: Ben Wolsieffer
+
 1.0.1 (2020-06-03)
 ------------------
 

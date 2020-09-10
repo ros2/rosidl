@@ -130,7 +130,7 @@ void value_to_yaml(const std::u16string & value, std::ostream & out)
   auto flags = out.flags();
   size_t index = 0;
   while (index < value.size()) {
-    int16_t character = *reinterpret_cast<const int16_t *>(&value[index]);
+    int16_t character = static_cast<int16_t>(value[index]);
     if (!(character & 0xff80)) {  // ASCII
       std::string character_as_string = convert.to_bytes(character);
       out << std::hex << character_as_string.c_str();

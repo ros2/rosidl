@@ -39,7 +39,7 @@ void character_value_to_yaml(char16_t value, std::ostream & out)
 {
   auto flags = out.flags();
   out << "\"\\u" << std::hex << std::setw(4) << std::setfill('0') << \
-    *reinterpret_cast<const int16_t *>(&value) << "\"";
+    static_cast<uint_least16_t>(value) << "\"";
   out.flags(flags);
 }
 

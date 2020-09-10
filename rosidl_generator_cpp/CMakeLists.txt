@@ -102,11 +102,6 @@ if(BUILD_TESTING)
       ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
     )
   endif()
-  if(MSVC)
-    # https://developercommunity.visualstudio.com/content/problem/919371/c2017-illegal-escape-sequence-when-using-in-a-raw.html
-    set_source_files_properties(
-      test/test_traits.cpp PROPERTIES COMPILE_FLAGS "/Zc:preprocessor")
-  endif()
   ament_add_gtest(test_traits test/test_traits.cpp)
   if(TARGET test_traits)
     add_dependencies(test_traits ${PROJECT_NAME})

@@ -24,7 +24,7 @@ from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 includes = OrderedDict()
 for member in message.structure.members:
     type_ = member.type
-    if isinstance(type_, (Array, BoundedSequence)):
+    if isinstance(type_, (AbstractSequence, Array)):
         type_ = type_.value_type
     if isinstance(type_, NamespacedType):
         if (

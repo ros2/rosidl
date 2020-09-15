@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(rosidl_generator_c C)
+project(rosidl_generator_c C CXX)
 
 # Default to C11
 if(NOT CMAKE_C_STANDARD)
@@ -28,8 +28,12 @@ endif()
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
+  find_package(performance_test_fixture REQUIRED)
   find_package(test_interface_files REQUIRED)
   find_package(rosidl_runtime_c REQUIRED)
+  # Give cppcheck hints about macro definitions coming from outside this package
+  get_target_property(ament_cmake_cppcheck_ADDITIONAL_INCLUDE_DIRS
+    performance_test_fixture::performance_test_fixture INTERFACE_INCLUDE_DIRECTORIES)
   ament_lint_auto_find_test_dependencies()
 
   include(cmake/register_c.cmake)
@@ -94,6 +98,16 @@ if(BUILD_TESTING)
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
     ${rosidl_runtime_c_INCLUDE_DIRS}
   )
+
+  add_performance_test(benchmark_interfaces benchmark/benchmark_interfaces.cpp)
+  set_target_properties(benchmark_interfaces PROPERTIES LINKER_LANGUAGE CXX)
+  if(TARGET benchmark_interfaces)
+    target_include_directories(benchmark_interfaces PUBLIC
+      include
+      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME})
+    target_link_libraries(benchmark_interfaces
+      ${PROJECT_NAME}_interfaces__${PROJECT_NAME})
+  endif()
 endif()
 
 ament_package(

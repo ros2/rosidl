@@ -5,7 +5,9 @@ from rosidl_parser.definition import ACTION_GOAL_SUFFIX
 from rosidl_parser.definition import ACTION_RESULT_SUFFIX
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import AbstractGenericString
+from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import UnboundedSequence
@@ -22,7 +24,7 @@ from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 includes = OrderedDict()
 for member in message.structure.members:
     type_ = member.type
-    if isinstance(type_, (Array, BoundedSequence)):
+    if isinstance(type_, (AbstractSequence, Array)):
         type_ = type_.value_type
     if isinstance(type_, NamespacedType):
         if (
@@ -60,6 +62,79 @@ for member in message.structure.members:
 @
 namespace rosidl_generator_traits
 {
+
+inline void to_yaml(
+  const @(message_typename) & msg,
+  std::ostream & out, size_t indentation = 0)
+{
+@[if len(message.structure.members) == 1 and message.structure.members[0].name == EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME]@
+  (void)msg;
+  (void)indentation;
+  out << "null\n";
+@[else]@
+@[  for i, member in enumerate(message.structure.members)]@
+@[    if i]@
+
+@[    end if]@
+  // member: @(member.name)
+  {
+    if (indentation > 0) {
+      out << std::string(indentation, ' ');
+    }
+@[    if isinstance(member.type, BasicType)]@
+    out << "@(member.name): ";
+@[      if member.type.typename in ('octet', 'char', 'wchar')]@
+    character_value_to_yaml(msg.@(member.name), out);
+@[      else]@
+    value_to_yaml(msg.@(member.name), out);
+@[      end if]@
+    out << "\n";
+@[    elif isinstance(member.type, AbstractGenericString)]@
+    out << "@(member.name): ";
+    value_to_yaml(msg.@(member.name), out);
+    out << "\n";
+@[    elif isinstance(member.type, NamespacedType)]@
+    out << "@(member.name):\n";
+    to_yaml(msg.@(member.name), out, indentation + 2);
+@[    elif isinstance(member.type, (AbstractSequence, Array))]@
+    if (msg.@(member.name).size() == 0) {
+      out << "@(member.name): []\n";
+    } else {
+      out << "@(member.name):\n";
+      for (auto item : msg.@(member.name)) {
+        if (indentation > 0) {
+          out << std::string(indentation, ' ');
+        }
+@[      if isinstance(member.type.value_type, BasicType)]@
+        out << "- ";
+@[        if member.type.value_type.typename in ('octet', 'char', 'wchar')]@
+        character_value_to_yaml(item, out);
+@[        else]@
+        value_to_yaml(item, out);
+@[        end if]@
+        out << "\n";
+@[      elif isinstance(member.type.value_type, AbstractGenericString)]@
+        out << "- ";
+        value_to_yaml(item, out);
+        out << "\n";
+@[      elif isinstance(member.type.value_type, NamespacedType)]@
+        out << "-\n";
+        to_yaml(item, out, indentation + 2);
+@[      end if]@
+      }
+    }
+@[    end if]@
+  }
+@[  end for]@
+@[end if]@
+}  // NOLINT(readability/fn_size)
+
+inline std::string to_yaml(const @(message_typename) & msg)
+{
+  std::ostringstream out;
+  to_yaml(msg, out);
+  return out.str();
+}
 
 template<>
 inline const char * data_type<@(message_typename)>()

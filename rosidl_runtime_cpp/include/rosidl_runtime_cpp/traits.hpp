@@ -15,10 +15,138 @@
 #ifndef ROSIDL_RUNTIME_CPP__TRAITS_HPP_
 #define ROSIDL_RUNTIME_CPP__TRAITS_HPP_
 
+#include <codecvt>
+#include <iomanip>
+#include <string>
 #include <type_traits>
 
 namespace rosidl_generator_traits
 {
+
+inline void value_to_yaml(bool value, std::ostream & out)
+{
+  out << (value ? "true" : "false");
+}
+
+inline void character_value_to_yaml(unsigned char value, std::ostream & out)
+{
+  auto flags = out.flags();
+  out << "0x" << std::hex << std::setw(2) << std::setfill('0') << \
+    static_cast<uint16_t>(value);
+  out.flags(flags);
+}
+
+inline void character_value_to_yaml(char16_t value, std::ostream & out)
+{
+  auto flags = out.flags();
+  out << "\"\\u" << std::hex << std::setw(4) << std::setfill('0') << \
+    static_cast<uint_least16_t>(value) << "\"";
+  out.flags(flags);
+}
+
+inline void value_to_yaml(float value, std::ostream & out)
+{
+  auto flags = out.flags();
+  out << std::showpoint << value;
+  out.flags(flags);
+}
+
+inline void value_to_yaml(double value, std::ostream & out)
+{
+  auto flags = out.flags();
+  out << std::showpoint << value;
+  out.flags(flags);
+}
+
+inline void value_to_yaml(long double value, std::ostream & out)
+{
+  auto flags = out.flags();
+  out << std::showpoint << value;
+  out.flags(flags);
+}
+
+inline void value_to_yaml(uint8_t value, std::ostream & out)
+{
+  out << +value;
+}
+
+inline void value_to_yaml(int8_t value, std::ostream & out)
+{
+  out << +value;
+}
+
+inline void value_to_yaml(uint16_t value, std::ostream & out)
+{
+  out << value;
+}
+
+inline void value_to_yaml(int16_t value, std::ostream & out)
+{
+  out << value;
+}
+
+inline void value_to_yaml(uint32_t value, std::ostream & out)
+{
+  out << value;
+}
+
+inline void value_to_yaml(int32_t value, std::ostream & out)
+{
+  out << value;
+}
+
+inline void value_to_yaml(uint64_t value, std::ostream & out)
+{
+  out << value;
+}
+
+inline void value_to_yaml(int64_t value, std::ostream & out)
+{
+  out << value;
+}
+
+inline void value_to_yaml(const std::string & value, std::ostream & out)
+{
+  out << "\"";
+  size_t index = 0;
+  while (index < value.size()) {
+    size_t pos = value.find_first_of("\\\"", index);
+    if (pos == std::string::npos) {
+      pos = value.size();
+    }
+    out.write(&value[index], pos - index);
+    if (pos >= value.size()) {
+      break;
+    }
+    out << "\\" << value[pos];
+    index = pos + 1;
+  }
+  out << "\"";
+}
+
+inline void value_to_yaml(const std::u16string & value, std::ostream & out)
+{
+  out << "\"";
+  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> convert;
+  auto flags = out.flags();
+  size_t index = 0;
+  while (index < value.size()) {
+    uint_least16_t character = static_cast<uint_least16_t>(value[index]);
+    if (!(character & 0xff80)) {  // ASCII
+      std::string character_as_string = convert.to_bytes(character);
+      out << std::hex << character_as_string.c_str();
+    } else if (!(character & 0xff00)) {  // only 1 byte set
+      out << "\\x" << std::hex << std::setw(2) << std::setfill('0') << \
+        character;
+    } else {
+      out << "\\u" << std::hex << std::setw(4) << std::setfill('0') << \
+        character;
+    }
+    index += 1;
+  }
+  out.flags(flags);
+  out << "\"";
+}
 
 template<typename T>
 inline const char * data_type();

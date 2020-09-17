@@ -21,7 +21,7 @@
 
 using performance_test_fixture::PerformanceTest;
 
-BENCHMARK_DEFINE_F(PerformanceTest, string_assign_complexity)(benchmark::State & st)
+BENCHMARK_DEFINE_F(PerformanceTest, string_assign)(benchmark::State & st)
 {
   size_t len = st.range(0);
   std::string data(len, '*');
@@ -35,19 +35,19 @@ BENCHMARK_DEFINE_F(PerformanceTest, string_assign_complexity)(benchmark::State &
   // No explicit resize function - just do a copy
   rosidl_runtime_c__String__assignn(&s, data.c_str(), len);
 
+  reset_heap_counters();
+
   for (auto _ : st) {
     rosidl_runtime_c__String__assignn(&s, data.c_str(), len);
   }
 
-  st.SetComplexityN(len);
-
   rosidl_runtime_c__String__fini(&s);
 }
 
-BENCHMARK_REGISTER_F(PerformanceTest, string_assign_complexity)
+BENCHMARK_REGISTER_F(PerformanceTest, string_assign)
 ->RangeMultiplier(2)->Range(1 << 3, 1 << 12);
 
-BENCHMARK_DEFINE_F(PerformanceTest, string_resize_assign_complexity)(benchmark::State & st)
+BENCHMARK_DEFINE_F(PerformanceTest, string_resize_assign)(benchmark::State & st)
 {
   size_t len = st.range(0);
   std::string data(len, '*');
@@ -61,20 +61,20 @@ BENCHMARK_DEFINE_F(PerformanceTest, string_resize_assign_complexity)(benchmark::
   // No explicit resize function - just do a copy
   rosidl_runtime_c__String__assignn(&s, data.c_str(), 0);
 
+  reset_heap_counters();
+
   for (auto _ : st) {
     rosidl_runtime_c__String__assignn(&s, data.c_str(), len);
     rosidl_runtime_c__String__assignn(&s, data.c_str(), 0);
   }
 
-  st.SetComplexityN(len);
-
   rosidl_runtime_c__String__fini(&s);
 }
 
-BENCHMARK_REGISTER_F(PerformanceTest, string_resize_assign_complexity)
+BENCHMARK_REGISTER_F(PerformanceTest, string_resize_assign)
 ->RangeMultiplier(2)->Range(1 << 3, 1 << 12);
 
-BENCHMARK_DEFINE_F(PerformanceTest, u16string_assign_complexity)(benchmark::State & st)
+BENCHMARK_DEFINE_F(PerformanceTest, u16string_assign)(benchmark::State & st)
 {
   size_t len = st.range(0);
   std::string data(len, '*');
@@ -87,19 +87,19 @@ BENCHMARK_DEFINE_F(PerformanceTest, u16string_assign_complexity)(benchmark::Stat
 
   rosidl_runtime_c__U16String__resize(&s, len);
 
+  reset_heap_counters();
+
   for (auto _ : st) {
     rosidl_runtime_c__U16String__assignn_from_char(&s, data.c_str(), len);
   }
 
-  st.SetComplexityN(len);
-
   rosidl_runtime_c__U16String__fini(&s);
 }
 
-BENCHMARK_REGISTER_F(PerformanceTest, u16string_assign_complexity)
+BENCHMARK_REGISTER_F(PerformanceTest, u16string_assign)
 ->RangeMultiplier(2)->Range(1 << 3, 1 << 12);
 
-BENCHMARK_DEFINE_F(PerformanceTest, u16string_resize_assign_complexity)(benchmark::State & st)
+BENCHMARK_DEFINE_F(PerformanceTest, u16string_resize_assign)(benchmark::State & st)
 {
   size_t len = st.range(0);
   std::string data(len, '*');
@@ -112,15 +112,15 @@ BENCHMARK_DEFINE_F(PerformanceTest, u16string_resize_assign_complexity)(benchmar
 
   rosidl_runtime_c__U16String__resize(&s, 0);
 
+  reset_heap_counters();
+
   for (auto _ : st) {
     rosidl_runtime_c__U16String__assignn_from_char(&s, data.c_str(), len);
     rosidl_runtime_c__U16String__resize(&s, 0);
   }
 
-  st.SetComplexityN(len);
-
   rosidl_runtime_c__U16String__fini(&s);
 }
 
-BENCHMARK_REGISTER_F(PerformanceTest, u16string_resize_assign_complexity)
+BENCHMARK_REGISTER_F(PerformanceTest, u16string_resize_assign)
 ->RangeMultiplier(2)->Range(1 << 3, 1 << 12);

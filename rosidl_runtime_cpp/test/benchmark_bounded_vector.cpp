@@ -26,107 +26,71 @@ using performance_test_fixture::PerformanceTest;
 
 BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector)(benchmark::State & st)
 {
-  const size_t len = st.range(0);
-
-  // Defined the biggest benchmark test size 4096
-  rosidl_runtime_cpp::BoundedVector<int, 4096> v;
+  rosidl_runtime_cpp::BoundedVector<int, 1> v;
 
   for (auto _ : st) {
-    for (unsigned int i = 0; i < len; i++) {
-      v.push_back(i);
-    }
-    v.clear();
+    v.push_back(0);
+    v.erase(v.begin());
   }
-
-  st.SetComplexityN(len);
 }
-BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector)
-->RangeMultiplier(2)->Range(1 << 3, 1 << 12);
+BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector);
 
 BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_rvalue)(benchmark::State & st)
 {
-  const size_t len = st.range(0);
-
-  // Defined the biggest benchmark test size 4096
-  rosidl_runtime_cpp::BoundedVector<int, 4096> v;
+  rosidl_runtime_cpp::BoundedVector<int, 1> v;
 
   for (auto _ : st) {
-    for (unsigned int i = 0; i < len; i++) {
-      v.emplace_back(i);
-    }
-    v.clear();
+    v.emplace_back(0);
+    v.erase(v.begin());
   }
-
-  st.SetComplexityN(len);
 }
-BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector_rvalue)
-->RangeMultiplier(2)->Range(1 << 3, 1 << 12);
+BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector_rvalue);
 
 BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_insert)(benchmark::State & st)
 {
-  const size_t len = st.range(0);
+  rosidl_runtime_cpp::BoundedVector<int, 1> v;
+  rosidl_runtime_cpp::BoundedVector<int, 1> v2;
 
-  // Defined the biggest benchmark test size 4096
-  rosidl_runtime_cpp::BoundedVector<int, 4096> v;
-  rosidl_runtime_cpp::BoundedVector<int, 4096> v2;
+  v2.push_back(0);
 
-  for (unsigned int i = 0; i < len; i++) {
-    v2.push_back(i);
-  }
+  reset_heap_counters();
 
   for (auto _ : st) {
-    v.insert(v.begin(), v2.begin(), v2.begin() + len);
-    v.clear();
+    v.insert(v.begin(), v2.begin(), v2.end());
+    v.erase(v.begin());
   }
-
-  st.SetComplexityN(len);
 }
-BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector_insert)
-->RangeMultiplier(2)->Range(1 << 3, 1 << 12);
+BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector_insert);
 
 BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_input_iterators)(benchmark::State & st)
 {
-  const size_t len = st.range(0);
-
-  // Defined the biggest benchmark test size 4096
-  rosidl_runtime_cpp::BoundedVector<int, 4096> v;
+  rosidl_runtime_cpp::BoundedVector<int, 1> v;
 
   std::string vector_string;
-  for (unsigned int i = 0; i < len; i++) {
-    vector_string += std::to_string(i) + " ";
-  }
+  vector_string += std::to_string(0);
   std::istringstream ss;
   ss.str(vector_string);
   std::istream_iterator<int> ii(ss), end;
 
+  reset_heap_counters();
+
   for (auto _ : st) {
     v.assign(ii, end);
-    v.clear();
+    v.erase(v.begin());
   }
-
-  st.SetComplexityN(len);
 }
-BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector_input_iterators)
-->RangeMultiplier(2)->Range(1 << 3, 1 << 12);
+BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector_input_iterators);
 
 BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_forward_iterators)(benchmark::State & st)
 {
-  const size_t len = st.range(0);
-
-  // Defined the biggest benchmark test size 4096
-  rosidl_runtime_cpp::BoundedVector<int, 4096> v;
+  rosidl_runtime_cpp::BoundedVector<int, 1> v;
 
   std::forward_list<int> l;
-  for (unsigned int i = 0; i < len; i++) {
-    l.push_front(i);
-  }
+  l.push_front(0);
 
   for (auto _ : st) {
     v.assign(l.begin(), l.end());
-    v.clear();
+    v.erase(v.begin());
   }
-
-  st.SetComplexityN(len);
 }
-BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector_forward_iterators)
-->RangeMultiplier(2)->Range(1 << 3, 1 << 12);
+BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector_forward_iterators);

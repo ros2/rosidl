@@ -99,7 +99,7 @@ if(BUILD_TESTING)
     ${rosidl_runtime_c_INCLUDE_DIRS}
   )
 
-  add_performance_test(benchmark_interfaces benchmark/benchmark_interfaces.cpp)
+  add_performance_test(benchmark_interfaces test/benchmark/benchmark_interfaces.cpp)
   set_target_properties(benchmark_interfaces PROPERTIES LINKER_LANGUAGE CXX)
   if(TARGET benchmark_interfaces)
     target_include_directories(benchmark_interfaces PUBLIC

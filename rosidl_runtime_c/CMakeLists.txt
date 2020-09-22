@@ -105,7 +105,7 @@ if(BUILD_TESTING)
     target_compile_definitions(test_u16string_functions PUBLIC RCUTILS_ENABLE_FAULT_INJECTION)
   endif()
 
-  add_performance_test(benchmark_string_conversion test/benchmark_string_conversion.cpp)
+  add_performance_test(benchmark_string_conversion test/benchmark/benchmark_string_conversion.cpp)
   if(TARGET benchmark_string_conversion)
     target_include_directories(benchmark_string_conversion PUBLIC include)
     target_link_libraries(benchmark_string_conversion ${PROJECT_NAME})

@@ -28,6 +28,10 @@ BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector)(benchmark::State & st)
 {
   rosidl_runtime_cpp::BoundedVector<int, 1> v;
 
+  v.reserve(1);
+
+  reset_heap_counters();
+
   for (auto _ : st) {
     v.push_back(0);
     v.erase(v.begin());
@@ -39,6 +43,10 @@ BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_rvalue)(benchmark::State & st
 {
   rosidl_runtime_cpp::BoundedVector<int, 1> v;
 
+  v.reserve(1);
+
+  reset_heap_counters();
+
   for (auto _ : st) {
     v.emplace_back(0);
     v.erase(v.begin());
@@ -49,9 +57,10 @@ BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector_rvalue);
 BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_insert)(benchmark::State & st)
 {
   rosidl_runtime_cpp::BoundedVector<int, 1> v;
-  rosidl_runtime_cpp::BoundedVector<int, 1> v2;
 
+  rosidl_runtime_cpp::BoundedVector<int, 1> v2;
   v2.push_back(0);
+  v.reserve(1);
 
   reset_heap_counters();
 
@@ -71,6 +80,7 @@ BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_input_iterators)(benchmark::S
   std::istringstream ss;
   ss.str(vector_string);
   std::istream_iterator<int> ii(ss), end;
+  v.reserve(1);
 
   reset_heap_counters();
 
@@ -87,6 +97,10 @@ BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_forward_iterators)(benchmark:
 
   std::forward_list<int> l;
   l.push_front(0);
+
+  v.reserve(1);
+
+  reset_heap_counters();
 
   for (auto _ : st) {
     v.assign(l.begin(), l.end());

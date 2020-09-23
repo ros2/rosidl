@@ -24,7 +24,7 @@
 
 using performance_test_fixture::PerformanceTest;
 
-BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector)(benchmark::State & st)
+BENCHMARK_F(PerformanceTest, bounded_vector)(benchmark::State & st)
 {
   rosidl_runtime_cpp::BoundedVector<int, 1> v;
 
@@ -37,9 +37,8 @@ BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector)(benchmark::State & st)
     v.erase(v.begin());
   }
 }
-BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector);
 
-BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_rvalue)(benchmark::State & st)
+BENCHMARK_F(PerformanceTest, bounded_vector_rvalue)(benchmark::State & st)
 {
   rosidl_runtime_cpp::BoundedVector<int, 1> v;
 
@@ -52,9 +51,8 @@ BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_rvalue)(benchmark::State & st
     v.erase(v.begin());
   }
 }
-BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector_rvalue);
 
-BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_insert)(benchmark::State & st)
+BENCHMARK_F(PerformanceTest, bounded_vector_insert)(benchmark::State & st)
 {
   rosidl_runtime_cpp::BoundedVector<int, 1> v;
 
@@ -69,9 +67,8 @@ BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_insert)(benchmark::State & st
     v.erase(v.begin());
   }
 }
-BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector_insert);
 
-BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_input_iterators)(benchmark::State & st)
+BENCHMARK_F(PerformanceTest, bounded_vector_input_iterators)(benchmark::State & st)
 {
   rosidl_runtime_cpp::BoundedVector<int, 1> v;
 
@@ -89,9 +86,8 @@ BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_input_iterators)(benchmark::S
     v.erase(v.begin());
   }
 }
-BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector_input_iterators);
 
-BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_forward_iterators)(benchmark::State & st)
+BENCHMARK_F(PerformanceTest, bounded_vector_forward_iterators)(benchmark::State & st)
 {
   rosidl_runtime_cpp::BoundedVector<int, 1> v;
 
@@ -107,4 +103,3 @@ BENCHMARK_DEFINE_F(PerformanceTest, bounded_vector_forward_iterators)(benchmark:
     v.erase(v.begin());
   }
 }
-BENCHMARK_REGISTER_F(PerformanceTest, bounded_vector_forward_iterators);

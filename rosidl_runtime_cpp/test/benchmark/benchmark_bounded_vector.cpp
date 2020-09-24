@@ -93,7 +93,6 @@ BENCHMARK_F(PerformanceTest, bounded_vector_forward_iterators)(benchmark::State 
 
   std::forward_list<int> l;
   l.push_front(0);
-
   v.reserve(1);
 
   reset_heap_counters();

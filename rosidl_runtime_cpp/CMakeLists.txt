@@ -6,6 +6,7 @@ find_package(ament_cmake REQUIRED)
 
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include>")
 
 ament_export_include_directories(include)
@@ -40,7 +41,6 @@ if(BUILD_TESTING)
 
   add_performance_test(benchmark_bounded_vector test/benchmark/benchmark_bounded_vector.cpp)
   if(TARGET benchmark_bounded_vector)
-    target_include_directories(benchmark_bounded_vector PUBLIC include)
     target_link_libraries(benchmark_bounded_vector ${PROJECT_NAME})
   endif()
 endif()

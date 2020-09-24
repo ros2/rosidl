@@ -45,6 +45,9 @@ ament_index_register_resource("rosidl_runtime_packages")
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
+  find_package(performance_test_fixture REQUIRED)
+  # Give cppcheck hints about macro definitions coming from outside this package
+  get_target_property(ament_cmake_cppcheck_ADDITIONAL_INCLUDE_DIRS performance_test_fixture::performance_test_fixture INTERFACE_INCLUDE_DIRECTORIES)
   ament_lint_auto_find_test_dependencies()
 
   # For gtest
@@ -92,6 +95,12 @@ if(BUILD_TESTING)
   if(TARGET test_u16string_functions)
     target_include_directories(test_u16string_functions PUBLIC include)
     target_link_libraries(test_u16string_functions ${PROJECT_NAME})
+  endif()
+
+  add_performance_test(benchmark_string_conversion test/benchmark/benchmark_string_conversion.cpp)
+  if(TARGET benchmark_string_conversion)
+    target_include_directories(benchmark_string_conversion PUBLIC include)
+    target_link_libraries(benchmark_string_conversion ${PROJECT_NAME})
   endif()
 endif()
 

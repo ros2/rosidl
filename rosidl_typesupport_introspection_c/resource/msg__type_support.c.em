@@ -137,9 +137,9 @@ const void * @(function_prefix)__get_const_function__@(member.type.value_type.na
   const void * untyped_member, size_t index)
 {
 @[    if isinstance(member.type, Array)]@
-  const @('__'.join(member.type.value_type.namespaced_name())) ** member =
-    (const @('__'.join(member.type.value_type.namespaced_name())) **)(untyped_member);
-  return &(*member)[index];
+  const @('__'.join(member.type.value_type.namespaced_name())) * member =
+    (const @('__'.join(member.type.value_type.namespaced_name())) *)(untyped_member);
+  return &member[index];
 @[    else]@
   const @('__'.join(member.type.value_type.namespaced_name()))__Sequence * member =
     (const @('__'.join(member.type.value_type.namespaced_name()))__Sequence *)(untyped_member);
@@ -151,9 +151,9 @@ void * @(function_prefix)__get_function__@(member.type.value_type.name)__@(membe
   void * untyped_member, size_t index)
 {
 @[    if isinstance(member.type, Array)]@
-  @('__'.join(member.type.value_type.namespaced_name())) ** member =
-    (@('__'.join(member.type.value_type.namespaced_name())) **)(untyped_member);
-  return &(*member)[index];
+  @('__'.join(member.type.value_type.namespaced_name())) * member =
+    (@('__'.join(member.type.value_type.namespaced_name())) *)(untyped_member);
+  return &member[index];
 @[    else]@
   @('__'.join(member.type.value_type.namespaced_name()))__Sequence * member =
     (@('__'.join(member.type.value_type.namespaced_name()))__Sequence *)(untyped_member);

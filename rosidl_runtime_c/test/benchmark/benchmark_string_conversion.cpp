@@ -45,7 +45,7 @@ BENCHMARK_DEFINE_F(PerformanceTest, string_assign)(benchmark::State & st)
 }
 
 BENCHMARK_REGISTER_F(PerformanceTest, string_assign)
-->RangeMultiplier(2)->Range(1 << 3, 1 << 12);
+->Arg(4096);
 
 BENCHMARK_DEFINE_F(PerformanceTest, string_resize_assign)(benchmark::State & st)
 {
@@ -72,7 +72,7 @@ BENCHMARK_DEFINE_F(PerformanceTest, string_resize_assign)(benchmark::State & st)
 }
 
 BENCHMARK_REGISTER_F(PerformanceTest, string_resize_assign)
-->RangeMultiplier(2)->Range(1 << 3, 1 << 12);
+->Arg(4096);
 
 BENCHMARK_DEFINE_F(PerformanceTest, u16string_assign)(benchmark::State & st)
 {
@@ -97,7 +97,7 @@ BENCHMARK_DEFINE_F(PerformanceTest, u16string_assign)(benchmark::State & st)
 }
 
 BENCHMARK_REGISTER_F(PerformanceTest, u16string_assign)
-->RangeMultiplier(2)->Range(1 << 3, 1 << 12);
+->Arg(4096);
 
 BENCHMARK_DEFINE_F(PerformanceTest, u16string_resize_assign)(benchmark::State & st)
 {
@@ -123,4 +123,4 @@ BENCHMARK_DEFINE_F(PerformanceTest, u16string_resize_assign)(benchmark::State & 
 }
 
 BENCHMARK_REGISTER_F(PerformanceTest, u16string_resize_assign)
-->RangeMultiplier(2)->Range(1 << 3, 1 << 12);
+->Arg(4096);

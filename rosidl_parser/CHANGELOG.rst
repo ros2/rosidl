@@ -2,6 +2,9 @@
 Changelog for package rosidl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.1.0 (2020-08-17)
 ------------------
 * Allow zero length string constants (`#507 <https://github.com/ros2/rosidl/issues/507>`_)

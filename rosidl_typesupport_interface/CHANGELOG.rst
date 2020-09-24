@@ -2,6 +2,11 @@
 Changelog for package rosidl_typesupport_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update Quality Declaration to QL 1 for rosidl_typesupport_interface (`#519 <https://github.com/ros2/rosidl/issues/519>`_)
+* Contributors: brawner
+
 1.1.0 (2020-08-17)
 ------------------
 * Update QD to reflect QL 2 statuses (`#499 <https://github.com/ros2/rosidl/issues/499>`_)

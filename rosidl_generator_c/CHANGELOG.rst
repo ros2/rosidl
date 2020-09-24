@@ -2,6 +2,11 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix the declared language for a few packages (`#530 <https://github.com/ros2/rosidl/issues/530>`_)
+* Contributors: Scott K Logan
+
 1.1.0 (2020-08-17)
 ------------------
 * Do not depend on rosidl_runtime_c when tests are disabled (`#503 <https://github.com/ros2/rosidl/issues/503>`_)

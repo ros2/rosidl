@@ -2,6 +2,12 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix the declared language for a few packages (`#530 <https://github.com/ros2/rosidl/issues/530>`_)
+* Add fault injection macros and test (`#509 <https://github.com/ros2/rosidl/issues/509>`_)
+* Contributors: Scott K Logan, brawner
+
 1.1.0 (2020-08-17)
 ------------------
 * Update rosidl_runtime_c QD to QL 2 (`#500 <https://github.com/ros2/rosidl/issues/500>`_)

@@ -2,6 +2,11 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add to_yaml() function for C++ messages (`#527 <https://github.com/ros2/rosidl/issues/527>`_)
+* Contributors: Devin Bonnie, Dirk Thomas
+
 1.1.0 (2020-08-17)
 ------------------
 * Add function for getting a types fully qualified name (`#514 <https://github.com/ros2/rosidl/issues/514>`_)

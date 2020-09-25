@@ -138,7 +138,7 @@ It also has several test dependencies, which do not affect the resulting quality
 
 The `rosidl_typesupport_interface` package provides several macros to define the rosidl C typesupport interface.
 
-It is **Quality Level 2**, see its [Quality Declaration document](../rosidl_typesupport_interface/QUALITY_DECLARATION.md).
+It is **Quality Level 1**, see its [Quality Declaration document](../rosidl_typesupport_interface/QUALITY_DECLARATION.md).
 
 ### Direct Runtime Non-ROS Dependencies [5.iii]
 

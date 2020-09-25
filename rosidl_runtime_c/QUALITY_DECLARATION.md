@@ -2,7 +2,7 @@ This document is a declaration of software quality for the `rosidl_runtime_c` pa
 
 # rosidl_runtime_c Quality Declaration
 
-The package `rosidl_runtime_c` claims to be in the **Quality Level 2** category.
+The package `rosidl_runtime_c` claims to be in the **Quality Level 1** category.
 
 Below are the rationales, notes, and caveats for this claim, organized by each requirement listed in the [Package Requirements for Quality Level 2 in REP-2004](https://www.ros.org/reps/rep-2004.html).
 
@@ -116,7 +116,8 @@ A description of how coverage statistics are summarized from this page, can be f
 
 ### Performance [4.iv]
 
-`rosidl_runtime_c` does not currently have performance tests.
+Most of the features provided by this package are declarations of types and functions, and therefore do not require testing.
+The BoundedVector class is benchmarked and the most recent test results can be found [here](http://build.ros2.org/view/Rci/job/Rci__benchmark_ubuntu_focal_amd64/BenchmarkTable/).
 
 ### Linters and Static Analysis [4.v]
 

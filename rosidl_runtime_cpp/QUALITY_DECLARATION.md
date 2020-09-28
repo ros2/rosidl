@@ -69,7 +69,7 @@ All pull requests must resolve related documentation changes before merging.
 
 ### Public API Documentation [3.ii]
 
-`rosidl_runtime_cpp` has documentation of its public API, but it is not yet hosted.
+`rosidl_runtime_cpp` has documentation of its public API, hosted [here](http://docs.ros2.org/foxy/api/rosidl_runtime_cpp/index.html).
 
 ### License [3.iii]
 

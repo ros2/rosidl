@@ -2,6 +2,14 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add rcutils dependency. (`#534 <https://github.com/ros2/rosidl/issues/534>`_)
+* QD: Add links to hosted API docs (`#533 <https://github.com/ros2/rosidl/issues/533>`_)
+* Updated Quality Level to 1 (`#532 <https://github.com/ros2/rosidl/issues/532>`_)
+* Add benchmarks for rosidl_runtime\_* packages (`#521 <https://github.com/ros2/rosidl/issues/521>`_)
+* Contributors: Alejandro Hernández Cordero, Chris Lalancette, Louise Poubel, Scott K Logan
+
 2.0.0 (2020-09-24)
 ------------------
 * Fix the declared language for a few packages (`#530 <https://github.com/ros2/rosidl/issues/530>`_)

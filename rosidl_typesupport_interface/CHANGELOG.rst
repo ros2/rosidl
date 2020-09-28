@@ -2,6 +2,11 @@
 Changelog for package rosidl_typesupport_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* QD: Add links to hosted API docs (`#533 <https://github.com/ros2/rosidl/issues/533>`_)
+* Contributors: Louise Poubel
+
 2.0.0 (2020-09-24)
 ------------------
 * Update Quality Declaration to QL 1 for rosidl_typesupport_interface (`#519 <https://github.com/ros2/rosidl/issues/519>`_)

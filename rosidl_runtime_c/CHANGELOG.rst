@@ -2,8 +2,8 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.1 (2020-09-28)
+------------------
 * Add rcutils dependency. (`#534 <https://github.com/ros2/rosidl/issues/534>`_)
 * QD: Add links to hosted API docs (`#533 <https://github.com/ros2/rosidl/issues/533>`_)
 * Updated Quality Level to 1 (`#532 <https://github.com/ros2/rosidl/issues/532>`_)

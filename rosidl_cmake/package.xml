@@ -5,7 +5,7 @@
   <version>2.0.1</version>
   <description>The CMake functionality to invoke code generation for ROS interface files.</description>
   <maintainer email="clalancette@openrobotics.org">Chris Lalancette</maintainer>
-  <maintainer email="sloretz@openrobotics.org">Share Loretz</maintainer>
+  <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>
   <license>Apache License 2.0</license>
   <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
 

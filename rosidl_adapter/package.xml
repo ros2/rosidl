@@ -6,8 +6,10 @@
   <description>
     API and scripts to parse .msg/.srv/.action files and convert them to .idl.
   </description>
-  <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
+  <maintainer email="clalancette@openrobotics.org">Chris Lalancette</maintainer>
+  <maintainer email="sloretz@openrobotics.org">Share Loretz</maintainer>
   <license>Apache License 2.0</license>
+  <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
 
   <build_depend>ament_cmake</build_depend>
 

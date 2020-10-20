@@ -87,6 +87,10 @@ def idl_structure_type_to_c_include_prefix(namespaced_type, subdirectory=None):
         include_prefix = include_prefix[:-8]
     elif include_prefix.endswith('__feedback'):
         include_prefix = include_prefix[:-10]
+    elif include_prefix.endswith('__send_goal'):
+        include_prefix = include_prefix[:-11]
+    elif include_prefix.endswith('__get_result'):
+        include_prefix = include_prefix[:-12]
     return include_prefix
 
 

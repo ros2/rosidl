@@ -117,7 +117,7 @@ A description of how coverage statistics are summarized from this page, can be f
 ### Performance [4.iv]
 
 Most of the features provided by this package are declarations of types and functions, and therefore do not require testing.
-The BoundedVector class is benchmarked and the most recent test results can be found [here](http://build.ros2.org/view/Rci/job/Rci__benchmark_ubuntu_focal_amd64/BenchmarkTable/).
+The BoundedVector class is benchmarked and the most recent test results can be found [here](http://build.ros2.org/view/Fci/job/Fci__benchmark_ubuntu_focal_amd64/BenchmarkTable/).
 
 ### Linters and Static Analysis [4.v]
 

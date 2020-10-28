@@ -588,10 +588,6 @@ def get_floating_pt_literal_value(floating_pt_literal):
     for child in floating_pt_literal.children:
         if isinstance(child, Token):
             value += child.value
-        elif child.data == 'floating_pt_literal_dot':
-            value += '.'
-        elif child.data == 'floating_pt_literal_e':
-            value += 'e'
         else:
             assert False, 'Unsupported tree: ' + str(floating_pt_literal)
     return float(value)

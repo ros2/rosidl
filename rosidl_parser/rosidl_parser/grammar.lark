@@ -9,6 +9,7 @@
 //   Only supported on modules, structs, members, enums and enum identifiers
 
 %import common.DIGIT
+%import common.FLOAT
 %import common.HEXDIGIT
 %import common.LETTER
 %import common.WS
@@ -75,13 +76,7 @@ string_literal: "\"\"" | "\"" /(\\\"|[^"])+/ "\""
 wide_string_literal: "L\"\"" | "L\"" /(\\\"|[^"])+/ "\""
 
 // 7.2.6.4 Floating-point Literals
-floating_pt_literal: DIGIT+ floating_pt_literal_dot DIGIT+ floating_pt_literal_e DIGIT*
-  | floating_pt_literal_dot DIGIT+ (floating_pt_literal_e DIGIT*)?
-  | DIGIT+ floating_pt_literal_dot DIGIT* (floating_pt_literal_e DIGIT*)?
-  | DIGIT+ floating_pt_literal_e DIGIT*
-// separate rules to identify the components
-floating_pt_literal_dot: "."
-floating_pt_literal_e: "e"i
+floating_pt_literal: FLOAT
 
 // 7.2.6.5 Fixed-Point Literals
 fixed_pt_literal: DIGIT+ "." DIGIT+ "d"i

@@ -99,7 +99,7 @@ def test_message_parser_structure(message_idl_file):
     structure = messages[0].structure
     assert structure.namespaced_type.namespaces == ['rosidl_parser', 'msg']
     assert structure.namespaced_type.name == 'MyMessage'
-    assert len(structure.members) == 32
+    assert len(structure.members) == 41
 
     assert isinstance(structure.members[0].type, BasicType)
     assert structure.members[0].type.typename == 'int16'
@@ -186,6 +186,60 @@ def test_message_parser_annotations(message_idl_file):
     assert structure.members[3].annotations[1].value['min'] == -10
     assert 'max' in structure.members[3].annotations[1].value
     assert structure.members[3].annotations[1].value['max'] == 10
+
+    assert isinstance(structure.members[32].type, BasicType)
+    assert structure.members[32].type.typename == 'float'
+    assert structure.members[32].name == 'int_and_frac_with_positive_scientific'
+    assert len(structure.members[32].annotations) == 1
+    assert structure.members[32].annotations[0].name == 'default'
+
+    assert isinstance(structure.members[33].type, BasicType)
+    assert structure.members[33].type.typename == 'float'
+    assert structure.members[33].name == 'int_and_frac_with_explicit_positive_scientific'
+    assert len(structure.members[33].annotations) == 1
+    assert structure.members[33].annotations[0].name == 'default'
+
+    assert isinstance(structure.members[34].type, BasicType)
+    assert structure.members[34].type.typename == 'float'
+    assert structure.members[34].name == 'int_and_frac_with_negative_scientific'
+    assert len(structure.members[34].annotations) == 1
+    assert structure.members[34].annotations[0].name == 'default'
+
+    assert isinstance(structure.members[35].type, BasicType)
+    assert structure.members[35].type.typename == 'float'
+    assert structure.members[35].name == 'int_and_frac'
+    assert len(structure.members[35].annotations) == 1
+    assert structure.members[35].annotations[0].name == 'default'
+
+    assert isinstance(structure.members[36].type, BasicType)
+    assert structure.members[36].type.typename == 'float'
+    assert structure.members[36].name == 'int_with_empty_frac'
+    assert len(structure.members[36].annotations) == 1
+    assert structure.members[36].annotations[0].name == 'default'
+
+    assert isinstance(structure.members[37].type, BasicType)
+    assert structure.members[37].type.typename == 'float'
+    assert structure.members[37].name == 'frac_only'
+    assert len(structure.members[37].annotations) == 1
+    assert structure.members[37].annotations[0].name == 'default'
+
+    assert isinstance(structure.members[38].type, BasicType)
+    assert structure.members[38].type.typename == 'float'
+    assert structure.members[38].name == 'int_with_positive_scientific'
+    assert len(structure.members[38].annotations) == 1
+    assert structure.members[38].annotations[0].name == 'default'
+
+    assert isinstance(structure.members[39].type, BasicType)
+    assert structure.members[39].type.typename == 'float'
+    assert structure.members[39].name == 'int_with_explicit_positive_scientific'
+    assert len(structure.members[39].annotations) == 1
+    assert structure.members[39].annotations[0].name == 'default'
+
+    assert isinstance(structure.members[40].type, BasicType)
+    assert structure.members[40].type.typename == 'float'
+    assert structure.members[40].name == 'int_with_negative_scientific'
+    assert len(structure.members[40].annotations) == 1
+    assert structure.members[40].annotations[0].name == 'default'
 
 
 @pytest.fixture(scope='module')

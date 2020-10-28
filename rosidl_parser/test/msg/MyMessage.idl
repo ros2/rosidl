@@ -51,6 +51,26 @@ module rosidl_parser {
       sequence<string<3>> unbounded_values_of_bounded_strings;
       sequence<string<3>, 4> bounded_values_of_bounded_strings;
       short array_short_values[23];
+
+      // Tests of the floating point parser (7.2.6.4)
+      @default ( value=1.9e10 )
+      float int_and_frac_with_positive_scientific;
+      @default ( value=1.9e+10 )
+      float int_and_frac_with_explicit_positive_scientific;
+      @default ( value=1.1e-10)
+      float int_and_frac_with_negative_scientific;
+      @default ( value=0.00009 )
+      float int_and_frac;
+      @default ( value = 1. )
+      float int_with_empty_frac;
+      @default ( value = .1 )
+      float frac_only;
+      @default ( value=9e05 )
+      float int_with_positive_scientific;
+      @default ( value=9e+05 )
+      float int_with_explicit_positive_scientific;
+      @default ( value=9e-05 )
+      float int_with_negative_scientific;
     };
   };
 };

@@ -99,7 +99,7 @@ def test_message_parser_structure(message_idl_file):
     structure = messages[0].structure
     assert structure.namespaced_type.namespaces == ['rosidl_parser', 'msg']
     assert structure.namespaced_type.name == 'MyMessage'
-    assert len(structure.members) == 41
+    assert len(structure.members) == 45
 
     assert isinstance(structure.members[0].type, BasicType)
     assert structure.members[0].type.typename == 'int16'
@@ -240,6 +240,30 @@ def test_message_parser_annotations(message_idl_file):
     assert structure.members[40].name == 'int_with_negative_scientific'
     assert len(structure.members[40].annotations) == 1
     assert structure.members[40].annotations[0].name == 'default'
+
+    assert isinstance(structure.members[41].type, BasicType)
+    assert structure.members[41].type.typename == 'float'
+    assert structure.members[41].name == 'fixed_int_and_frac'
+    assert len(structure.members[41].annotations) == 1
+    assert structure.members[41].annotations[0].name == 'default'
+
+    assert isinstance(structure.members[42].type, BasicType)
+    assert structure.members[42].type.typename == 'float'
+    assert structure.members[42].name == 'fixed_int_with_dot_only'
+    assert len(structure.members[42].annotations) == 1
+    assert structure.members[42].annotations[0].name == 'default'
+
+    assert isinstance(structure.members[43].type, BasicType)
+    assert structure.members[43].type.typename == 'float'
+    assert structure.members[43].name == 'fixed_frac_only'
+    assert len(structure.members[43].annotations) == 1
+    assert structure.members[43].annotations[0].name == 'default'
+
+    assert isinstance(structure.members[44].type, BasicType)
+    assert structure.members[44].type.typename == 'float'
+    assert structure.members[44].name == 'fixed_int_only'
+    assert len(structure.members[44].annotations) == 1
+    assert structure.members[44].annotations[0].name == 'default'
 
 
 @pytest.fixture(scope='module')

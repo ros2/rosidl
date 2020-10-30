@@ -557,6 +557,12 @@ def get_const_expr_value(const_expr):
                 value = -value
             return value
 
+        if child.data == 'fixed_pt_literal':
+            value = get_fixed_pt_literal_value(child)
+            if negate_value:
+                value = -value
+            return value
+
         if child.data == 'boolean_literal':
             assert len(child.children) == 1
             child = child.children[0]
@@ -590,6 +596,16 @@ def get_floating_pt_literal_value(floating_pt_literal):
             value += child.value
         else:
             assert False, 'Unsupported tree: ' + str(floating_pt_literal)
+    return float(value)
+
+
+def get_fixed_pt_literal_value(fixed_pt_literal):
+    value = ''
+    for child in fixed_pt_literal.children:
+        if isinstance(child, Token):
+            value += child.value
+        else:
+            assert False, 'Unsupported tree: ' + str(fixed_pt_literal)
     return float(value)
 
 

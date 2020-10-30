@@ -71,6 +71,16 @@ module rosidl_parser {
       float int_with_explicit_positive_scientific;
       @default ( value=9e-05 )
       float int_with_negative_scientific;
+
+      // Tests of the fixed point parser (7.2.6.5)
+      @default ( value=8.7d )
+      float fixed_int_and_frac;
+      @default ( value=4.d )
+      float fixed_int_with_dot_only;
+      @default ( value=.3d )
+      float fixed_frac_only;
+      @default ( value=7d )
+      float fixed_int_only;
     };
   };
 };

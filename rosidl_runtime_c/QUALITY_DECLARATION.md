@@ -99,7 +99,7 @@ Most of the public API of `rosidl_runtime_c` is tested, and the tests are locate
 
 Most recent test results can be found [here](https://ci.ros2.org/job/nightly_linux_release/lastBuild/testReport/rosidl_runtime_c).
 
-### Coverage [4.iv]
+### Coverage [4.iii]
 
 `rosidl_runtime_c` follows the recommendations for ROS Core packages in the [ROS 2 Developer Guide](https://index.ros.org/doc/ros2/Contributing/Developer-Guide/#code-coverage), and opts to use line coverage instead of branch coverage.
 

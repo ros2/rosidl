@@ -97,7 +97,7 @@ The BoundedVector class is tested and the most recent test results can be found 
 Most of the API provided by this package are declarations of types and functions, and therefore do not require testing.
 The BoundedVector class is tested and the most recent test results can be found [here](https://ci.ros2.org/job/nightly_linux_release/lastBuild/testReport/rosidl_runtime_cpp).
 
-### Coverage [4.iv]
+### Coverage [4.iii]
 
 `rosidl_runtime_cpp` follows the recommendations for ROS Core packages in the [ROS 2 Developer Guide](https://index.ros.org/doc/ros2/Contributing/Developer-Guide/#code-coverage), and opts to use line coverage instead of branch coverage.
 

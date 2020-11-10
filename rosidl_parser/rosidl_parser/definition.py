@@ -218,10 +218,9 @@ class BoundedString(AbstractString):
         Create a BoundedString.
 
         :param maximum_size: the maximum length of the string in characters
-          (must be greater than zero)
         """
         super().__init__()
-        assert maximum_size > 0
+        assert maximum_size >= 0
         self.maximum_size = maximum_size
 
     def has_maximum_size(self):

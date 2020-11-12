@@ -3,7 +3,7 @@
 <package format="3">
   <name>rosidl_runtime_cpp</name>
   <version>2.0.1</version>
-  <description>Generate the ROS interfaces in C++.</description>
+  <description>Provides definitions and templated functions for getting and working with rosidl typesupport types in C++.</description>
   <maintainer email="clalancette@openrobotics.org">Chris Lalancette</maintainer>
   <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>
   <license>Apache License 2.0</license>

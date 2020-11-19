@@ -175,7 +175,7 @@ TEST(Test_msg_initialization, defaults_only_constructor) {
 // it does no initialization.
 TEST(Test_msg_initialization, skip_constructor) {
   char * memory = new char[sizeof(rosidl_generator_cpp::msg::BoundedSequences)];
-  ASSERT_TRUE(nullptr != memory);
+
   std::memset(memory, 0xfe, sizeof(rosidl_generator_cpp::msg::BoundedSequences));
   rosidl_generator_cpp::msg::BoundedSequences * bounded =
     new(memory) rosidl_generator_cpp::msg::BoundedSequences(

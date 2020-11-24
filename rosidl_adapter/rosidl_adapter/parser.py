@@ -57,8 +57,14 @@ PRIMITIVE_TYPES = [
     'time',  # for compatibility only
 ]
 
-VALID_PACKAGE_NAME_PATTERN = re.compile('^[a-z]([a-z0-9_]?[a-z0-9]+)*$')
-VALID_FIELD_NAME_PATTERN = re.compile('^[a-z]([a-z0-9_]?[a-z0-9]+)*$')
+VALID_PACKAGE_NAME_PATTERN = re.compile(
+    '^'
+    '(?!.*__)'  # no consecutive underscores
+    '(?!.*_$)'  # no underscore at the end
+    '[a-z]'  # first character must be alpha
+    '[a-z0-9_]*'  # followed by alpha, numeric, and underscore
+    '$')
+VALID_FIELD_NAME_PATTERN = VALID_PACKAGE_NAME_PATTERN
 # relaxed patterns used for compatibility with ROS 1 messages
 # VALID_FIELD_NAME_PATTERN = re.compile('^[A-Za-z][A-Za-z0-9_]*$')
 VALID_MESSAGE_NAME_PATTERN = re.compile('^[A-Z][A-Za-z0-9]*$')

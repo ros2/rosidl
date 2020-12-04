@@ -2,6 +2,9 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.3 (2020-12-04)
+------------------
+
 0.8.2 (2020-01-17)
 ------------------
 * Fix double free issue when initialization is failed (`#423 <https://github.com/ros2/rosidl/issues/423>`_)

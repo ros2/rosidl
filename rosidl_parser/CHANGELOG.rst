@@ -2,6 +2,11 @@
 Changelog for package rosidl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.8.3 (2020-12-04)
+------------------
+* allow zero length string constants (`#507 <https://github.com/ros2/rosidl/issues/507>`_) (`#550 <https://github.com/ros2/rosidl/issues/550>`_)
+* Contributors: Jacob Perron
+
 0.8.2 (2020-01-17)
 ------------------
 * Allow 'get_const_expr_value' to parse either literals or scoped_names… (`#430 <https://github.com/ros2/rosidl/issues/430>`_)

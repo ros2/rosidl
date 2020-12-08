@@ -2,6 +2,9 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.0 (2020-12-08)
+------------------
+
 1.1.0 (2020-08-17)
 ------------------
 * Add function for getting a types fully qualified name (`#514 <https://github.com/ros2/rosidl/issues/514>`_)

@@ -2,6 +2,11 @@
 Changelog for package rosidl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.0 (2020-12-08)
+------------------
+* Fix parsing of small floats (`#554 <https://github.com/ros2/rosidl/issues/554>`_)
+* Contributors: Chris Lalancette
+
 1.1.0 (2020-08-17)
 ------------------
 * Allow zero length string constants (`#507 <https://github.com/ros2/rosidl/issues/507>`_)

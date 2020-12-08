@@ -2,6 +2,9 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.0 (2020-12-08)
+------------------
+
 1.1.0 (2020-08-17)
 ------------------
 * Refactor regex for valid package/field names (`#508 <https://github.com/ros2/rosidl/issues/508>`_)

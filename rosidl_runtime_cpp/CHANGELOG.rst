@@ -2,6 +2,15 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.0 (2020-12-08)
+------------------
+* Fix item number in QD (`#546 <https://github.com/ros2/rosidl/issues/546>`_) (`#547 <https://github.com/ros2/rosidl/issues/547>`_)
+* Update QD links for Foxy
+* QD: Add links to hosted API docs (`#533 <https://github.com/ros2/rosidl/issues/533>`_)
+* Updated Quality Level to 1 (`#532 <https://github.com/ros2/rosidl/issues/532>`_)
+* Add benchmarks for rosidl_runtime\_* packages (`#521 <https://github.com/ros2/rosidl/issues/521>`_)
+* Contributors: Alejandro Hernández Cordero, Louise Poubel, Scott K Logan
+
 1.1.0 (2020-08-17)
 ------------------
 * Add function for getting a types fully qualified name (`#514 <https://github.com/ros2/rosidl/issues/514>`_)

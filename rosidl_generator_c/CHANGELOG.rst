@@ -2,6 +2,11 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.0 (2020-12-08)
+------------------
+* Strip action service suffixes from C include prefix (`#538 <https://github.com/ros2/rosidl/issues/538>`_) (`#539 <https://github.com/ros2/rosidl/issues/539>`_)
+* Contributors: Jacob Perron
+
 1.1.0 (2020-08-17)
 ------------------
 * Do not depend on rosidl_runtime_c when tests are disabled (`#503 <https://github.com/ros2/rosidl/issues/503>`_)

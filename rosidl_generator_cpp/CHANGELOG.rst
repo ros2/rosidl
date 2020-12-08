@@ -2,8 +2,8 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.2 (2020-12-08)
+------------------
 * Remove unnecessary assert on pointer created with new (`#555 <https://github.com/ros2/rosidl/issues/555>`_)
 * Use ASSERT_TRUE to check for nullptr. (`#543 <https://github.com/ros2/rosidl/issues/543>`_)
 * Update the maintainers of this repository. (`#536 <https://github.com/ros2/rosidl/issues/536>`_)

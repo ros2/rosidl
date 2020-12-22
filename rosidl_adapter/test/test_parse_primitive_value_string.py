@@ -85,6 +85,120 @@ def test_parse_primitive_value_string_integer():
                 Type(integer_type), str(upper_bound + 1))
 
 
+def test_parse_primitive_value_string_hex():
+    integer_types = {
+        'byte': [8, True],
+        'char': [8, True],
+        'int8': [8, False],
+        'uint8': [8, True],
+        'int16': [16, False],
+        'uint16': [16, True],
+        'int32': [32, False],
+        'uint32': [32, True],
+        'int64': [64, False],
+        'uint64': [64, True],
+    }
+    for integer_type, (bits, is_unsigned) in integer_types.items():
+        lower_bound = 0 if is_unsigned else -(2 ** (bits - 1))
+        upper_bound = (2 ** (bits if is_unsigned else (bits - 1))) - 1
+
+        value = parse_primitive_value_string(
+            Type(integer_type), hex(lower_bound))
+        assert value == lower_bound
+        value = parse_primitive_value_string(
+            Type(integer_type), hex(0))
+        assert value == 0
+        value = parse_primitive_value_string(
+            Type(integer_type), hex(upper_bound))
+        assert value == upper_bound
+
+        with pytest.raises(InvalidValue):
+            parse_primitive_value_string(
+                Type(integer_type), 'value')
+        with pytest.raises(InvalidValue):
+            parse_primitive_value_string(
+                Type(integer_type), hex(lower_bound - 1))
+        with pytest.raises(InvalidValue):
+            parse_primitive_value_string(
+                Type(integer_type), hex(upper_bound + 1))
+
+
+def test_parse_primitive_value_string_oct():
+    integer_types = {
+        'byte': [8, True],
+        'char': [8, True],
+        'int8': [8, False],
+        'uint8': [8, True],
+        'int16': [16, False],
+        'uint16': [16, True],
+        'int32': [32, False],
+        'uint32': [32, True],
+        'int64': [64, False],
+        'uint64': [64, True],
+    }
+    for integer_type, (bits, is_unsigned) in integer_types.items():
+        lower_bound = 0 if is_unsigned else -(2 ** (bits - 1))
+        upper_bound = (2 ** (bits if is_unsigned else (bits - 1))) - 1
+
+        value = parse_primitive_value_string(
+            Type(integer_type), oct(lower_bound))
+        assert value == lower_bound
+        value = parse_primitive_value_string(
+            Type(integer_type), oct(0))
+        assert value == 0
+        value = parse_primitive_value_string(
+            Type(integer_type), oct(upper_bound))
+        assert value == upper_bound
+
+        with pytest.raises(InvalidValue):
+            parse_primitive_value_string(
+                Type(integer_type), 'value')
+        with pytest.raises(InvalidValue):
+            parse_primitive_value_string(
+                Type(integer_type), oct(lower_bound - 1))
+        with pytest.raises(InvalidValue):
+            parse_primitive_value_string(
+                Type(integer_type), oct(upper_bound + 1))
+
+
+def test_parse_primitive_value_string_bin():
+    integer_types = {
+        'byte': [8, True],
+        'char': [8, True],
+        'int8': [8, False],
+        'uint8': [8, True],
+        'int16': [16, False],
+        'uint16': [16, True],
+        'int32': [32, False],
+        'uint32': [32, True],
+        'int64': [64, False],
+        'uint64': [64, True],
+    }
+    for integer_type, (bits, is_unsigned) in integer_types.items():
+        lower_bound = 0 if is_unsigned else -(2 ** (bits - 1))
+        upper_bound = (2 ** (bits if is_unsigned else (bits - 1))) - 1
+
+        value = parse_primitive_value_string(
+            Type(integer_type), bin(lower_bound))
+        assert value == lower_bound
+        value = parse_primitive_value_string(
+            Type(integer_type), bin(0))
+        assert value == 0
+        value = parse_primitive_value_string(
+            Type(integer_type), bin(upper_bound))
+        assert value == upper_bound
+
+        with pytest.raises(InvalidValue):
+            parse_primitive_value_string(
+                Type(integer_type), 'value')
+        with pytest.raises(InvalidValue):
+            parse_primitive_value_string(
+                Type(integer_type), bin(lower_bound - 1))
+        with pytest.raises(InvalidValue):
+            parse_primitive_value_string(
+                Type(integer_type), bin(upper_bound + 1))
+
+
 def test_parse_primitive_value_string_float():
     for float_type in ['float32', 'float64']:
         value = parse_primitive_value_string(

@@ -1,4 +1,4 @@
-# rosidl_generator_cpp
+# rosidl_runtime_cpp
 
 `rosidl_runtime_cpp` is a package generates and provides runtime ROSIDL interfaces files in C++.
 

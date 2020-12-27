@@ -193,7 +193,6 @@ def primitive_value_to_cpp(type_, value):
         return 'true' if value else 'false'
 
     if type_.typename in [
-        'short', 'unsigned short',
         'char', 'wchar',
         'double', 'long double',
         'octet',

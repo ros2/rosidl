@@ -459,6 +459,9 @@ def parse_message_string(pkg_name, msg_name, message_string):
     for line in lines:
         line = line.rstrip()
 
+        # replace tabs with spaces
+        line = line.replace('\t', ' ')
+
         # ignore empty lines
         if not line:
             # file-level comments stop at the first empty line

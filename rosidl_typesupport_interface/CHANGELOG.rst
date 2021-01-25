@@ -2,6 +2,9 @@
 Changelog for package rosidl_typesupport_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.0.2 (2020-12-08)
 ------------------
 * Fix item number in QD (`#546 <https://github.com/ros2/rosidl/issues/546>`_)

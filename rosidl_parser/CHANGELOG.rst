@@ -2,6 +2,9 @@
 Changelog for package rosidl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.0.2 (2020-12-08)
 ------------------
 * Update and add package.xml descriptions to README (`#553 <https://github.com/ros2/rosidl/issues/553>`_)

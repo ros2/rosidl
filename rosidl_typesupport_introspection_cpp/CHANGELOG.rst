@@ -2,6 +2,9 @@
 Changelog for package rosidl_typesupport_introspection_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.0.2 (2020-12-08)
 ------------------
 * Update the maintainers of this repository. (`#536 <https://github.com/ros2/rosidl/issues/536>`_)

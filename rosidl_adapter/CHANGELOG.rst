@@ -2,8 +2,8 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.3 (2021-01-25)
+------------------
 * Treat \t as whitespace (`#557 <https://github.com/ros2/rosidl/issues/557>`_)
 * Contributors: Dereck Wonnacott
 

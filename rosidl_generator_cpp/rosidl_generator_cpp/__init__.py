@@ -68,9 +68,9 @@ MSG_TYPE_TO_CPP = {
     'uint64': 'uint64_t',
     'int64': 'int64_t',
     'string': 'std::basic_string<char, std::char_traits<char>, ' +
-              'typename ContainerAllocator::template rebind<char>::other>',
-    'wstring': 'std::basic_string<char16_t, std::char_traits<char16_t>, ' +
-               'typename ContainerAllocator::template rebind<char16_t>::other>',
+              'typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>',
+    'wstring': 'std::basic_string<char16_t, std::char_traits<char16_t>, typename ' +
+               'std::allocator_traits<ContainerAllocator>::template rebind_alloc<char16_t>>',
 }
 
 
@@ -117,12 +117,14 @@ def msg_type_to_cpp(type_):
     if isinstance(type_, AbstractNestedType):
         if isinstance(type_, UnboundedSequence):
             return \
-                ('std::vector<%s, typename ContainerAllocator::template ' +
-                 'rebind<%s>::other>') % (cpp_type, cpp_type)
+                ('std::vector<%s, typename std::allocator_traits<ContainerAllocator>::template ' +
+                 'rebind_alloc<%s>>') % (cpp_type, cpp_type)
         elif isinstance(type_, BoundedSequence):
             return \
-                ('rosidl_runtime_cpp::BoundedVector<%s, %u, typename ContainerAllocator::' +
-                 'template rebind<%s>::other>') % (cpp_type, type_.maximum_size, cpp_type)
+                ('rosidl_runtime_cpp::BoundedVector<%s, %u, typename std::allocator_traits' +
+                 '<ContainerAllocator>::template rebind_alloc<%s>>') % (cpp_type,
+                                                                        type_.maximum_size,
+                                                                        cpp_type)
         else:
             assert isinstance(type_, Array)
             return 'std::array<%s, %u>' % (cpp_type, type_.size)

@@ -20,14 +20,6 @@
 #include <string>
 #include <type_traits>
 
-// In C++17 mode, MSVC 2019 warns that
-// std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> is deprecated.
-// However, it appears that there is no cross-platform replacement for it at present.
-// Thus, we follow the warning advice and disable this warning for Windows.
-#ifdef _WIN32
-#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
-#endif
-
 namespace rosidl_generator_traits
 {
 

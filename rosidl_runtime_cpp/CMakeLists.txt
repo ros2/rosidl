@@ -53,4 +53,8 @@ install(
   TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}
 )
 
+if(MSVC)
+  ament_export_definitions(_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
+endif()
+
 ament_package()

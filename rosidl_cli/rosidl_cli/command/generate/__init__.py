@@ -49,10 +49,10 @@ class GenerateCommand(Command):
         parser.add_argument(
             'package_name', help='Name of the package to generate code for')
         parser.add_argument(
-            'interface-files', metavar='interface_file', nargs='+',
-            help=('Relative paths to ROS interface definition files. If a path is '
-                  "prefixed by an absolute path followed by a colon ':', "
-                  'path resolution is performed against that absolute path.'))
+            'interface_files', metavar='interface_file', nargs='+',
+            help=('Normalized relative path to a ROS interface definition file. '
+                  "If prefixed by another path followed by a colon ':', "
+                  'path resolution is performed against such path.'))
 
     def main(self, *, parser, args):
         extensions = []

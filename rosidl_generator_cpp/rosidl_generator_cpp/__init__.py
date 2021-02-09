@@ -35,7 +35,7 @@ def generate_cpp(generator_arguments_file):
         'idl__struct.hpp.em': 'detail/%s__struct.hpp',
         'idl__traits.hpp.em': 'detail/%s__traits.hpp',
     }
-    generate_files(
+    return generate_files(
         generator_arguments_file, mapping,
         post_process_callback=prefix_with_bom_if_necessary)
 

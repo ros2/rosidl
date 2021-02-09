@@ -34,7 +34,7 @@ def generate_c(generator_arguments_file):
         'idl__struct.h.em': 'detail/%s__struct.h',
         'idl__type_support.h.em': 'detail/%s__type_support.h',
     }
-    generate_files(
+    return generate_files(
         generator_arguments_file, mapping,
         post_process_callback=prefix_with_bom_if_necessary)
 

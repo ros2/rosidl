@@ -84,28 +84,32 @@ def get_entry_points(group_name, *, specs=None, strict=False):
         specs = normalize_entry_point_specs(specs)
 
     entry_points = {}
-    entry_points_per_group = importlib_metadata.entry_points()
-    for entry_point in entry_points_per_group.get(group_name, []):
-        name = entry_point.name
-        if name in entry_points:
-            msg = (f"Found duplicate entry point '{name}': "
-                   'got {entry_point} and {entry_points[name]}')
-            if strict:
-                raise RuntimeError(msg)
-            logger.warning(msg)
-            continue
-        if specs:
-            if name not in specs:
+    # NOTE(hidmic): importlib.metadata.EntryPoint instances
+    # only expose their Distribution in version 3.3.0 onwards
+    for dist in importlib_metadata.distributions():
+        for entry_point in dist.entry_points:
+            if entry_point.group != group_name:
                 continue
-            version = Version(entry_point.distro.version)
-            if version not in specs[name]:
-                msg = (f"Spec '{name}{specs[name]}'"
-                       f' cannot be met: found {version}')
+            name = entry_point.name
+            if name in entry_points:
+                msg = (f"Found duplicate entry point '{name}': "
+                       'got {entry_point} and {entry_points[name]}')
                 if strict:
                     raise RuntimeError(msg)
                 logger.warning(msg)
                 continue
-        entry_points[name] = entry_point
+            if specs:
+                if name not in specs:
+                    continue
+                version = Version(dist.version)
+                if version not in specs[name]:
+                    msg = (f"Spec '{name}{specs[name]}'"
+                           f' cannot be met: found {version}')
+                    if strict:
+                        raise RuntimeError(msg)
+                    logger.warning(msg)
+                    continue
+            entry_points[name] = entry_point
     if specs:
         pending = set(specs) - set(entry_points)
         if pending:

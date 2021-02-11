@@ -13,52 +13,97 @@
 # limitations under the License.
 
 import contextlib
-import glob
 import json
-import os
+import pathlib
 import tempfile
 
 
 def package_name_from_include_path(path):
-    return os.path.basename(os.path.dirname(os.path.dirname(path)))
+    """
+    Derive ROS package name from a ROS interface dependency include path.
+
+    This function assumes ROS interface definition files follow the typical
+    ``rosidl`` install space layout i.e. 'package_name/subfolder/interface.idl'.
+    """
+    return pathlib.Path(path).parents[1].name
 
 
 def dependencies_from_include_paths(include_paths):
+    """
+    Collect dependencies' ROS interface definition files from include paths.
+
+    Interface definition file paths from dependencies are absolute paths
+    prefixed by the name of package they belong to followed by a colon ':'.
+    """
     return list({
         f'{package_name_from_include_path(path)}:{path}'
-        for include_path in include_paths
-        for path in glob.iglob(f'{include_path}/**/*.idl', recursive=True)
+        for include_path in map(pathlib.Path, include_paths)
+        for path in include_path.resolve().glob('**/*.idl')
     })
 
 
 def idl_tuples_from_interface_files(interface_files):
+    """
+    Express ROS interface definition file paths as IDL tuples.
+
+    An IDL tuple is a relative path prefixed by by an absolute path against
+    which to resolve it followed by a colon ':'. This function then applies
+    the following logic:
+    - If a given path follows this pattern, it is passed through.
+    - If a given path is prefixed by a relative path, it is resolved
+      relative to the current working directory.
+    - If a given path has no prefixes, the current working directory is
+      used as prefix.
+    """
     idl_tuples = []
     for path in interface_files:
-        if ':' not in path:
-            prefix = os.getcwd()
+        path_as_string = str(path)
+        if ':' not in path_as_string:
+            prefix = pathlib.Path.cwd()
             stem = path
         else:
-            prefix, _, stem = path.partition(':')
-            prefix = os.path.realpath(prefix)
-        if os.path.isabs(stem):
-            raise ValueError()
-        idl_tuples.append(f'{prefix}:{stem}')
+            prefix, _, stem = path_as_string.rpartition(':')
+            prefix = pathlib.Path(prefix).resolve()
+        stem = pathlib.Path(stem)
+        if stem.is_absolute():
+            raise ValueError('Interface definition file path '
+                             f'{stem} cannot be absolute')
+        idl_tuples.append(f'{prefix}:{stem.as_posix()}')
     return idl_tuples
 
 
 @contextlib.contextmanager
 def legacy_generator_arguments_file(
-    package_name, interface_files,
-    include_paths, templates_path,
+    *,
+    package_name,
+    interface_files,
+    include_paths,
+    templates_path,
     output_path
 ):
+    """
+    Generate a temporary rosidl generator arguments file.
+
+    :param package_name: Name of the ROS package for which to generate code
+    :param interface_files: Relative paths to ROS interface definition files,
+      optionally prefixed by another absolute or relative path followed by
+      a colon ':'. The former relative paths will be used as a prototype to
+      namespace generated code (if applicable).
+    :param include_paths: Paths where ROS package dependencies' interface
+      definition files may be found
+    :param templates_path: Path to the templates directory for the
+      generator script this arguments are for
+    :param output_path: Path to the output directory for generated code
+    """
     idl_tuples = idl_tuples_from_interface_files(interface_files)
     interface_dependencies = dependencies_from_include_paths(include_paths)
+    output_path = pathlib.Path(output_path).resolve()
+    templates_path = pathlib.Path(templates_path).resolve()
     with tempfile.NamedTemporaryFile(mode='w') as tmp:
         tmp.write(json.dumps({
             'package_name': package_name,
-            'output_dir': output_path,
-            'template_dir': templates_path,
+            'output_dir': str(output_path),
+            'template_dir': str(templates_path),
             'idl_tuples': idl_tuples,
             'ros_interface_dependencies': interface_dependencies,
             'target_dependencies': []

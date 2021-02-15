@@ -16,7 +16,7 @@ def main(argv=sys.argv[1:]):
         help='The location of the file containing the generator arguments')
     args = parser.parse_args(argv)
 
-    return generate_cpp(args.generator_arguments_file)
+    generate_cpp(args.generator_arguments_file)
 
 
 if __name__ == '__main__':

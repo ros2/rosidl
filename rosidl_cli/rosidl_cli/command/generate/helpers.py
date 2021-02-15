@@ -14,6 +14,7 @@
 
 import contextlib
 import json
+import os
 import pathlib
 import tempfile
 
@@ -110,3 +111,31 @@ def legacy_generator_arguments_file(
         }))
         tmp.flush()
         yield tmp.name
+
+
+def generate_visibility_control_file(
+    *,
+    package_name,
+    template_path,
+    output_path
+):
+    """
+    Generate a visibility control file from a template.
+
+    :param package_name: Name of the ROS package for which
+      to generate the file.
+    :param template_path: Path to template visibility control file.
+      May contain @PROJECT_NAME@ and @PROJECT_NAME_UPPER@ placeholders,
+      to be substituted by the package name, accordingly.
+    :param output_path: Path to visibility control file after interpolation.
+    """
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    with open(template_path, 'r') as fd:
+        content = fd.read()
+
+    content = content.replace('@PROJECT_NAME@', package_name)
+    content = content.replace('@PROJECT_NAME_UPPER@', package_name.upper())
+
+    with open(output_path, 'w') as fd:
+        fd.write(content)

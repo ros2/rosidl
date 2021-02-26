@@ -26,7 +26,7 @@ def test_parse_message_file():
     try:
         filename = os.path.join(path, 'Foo.msg')
         with open(filename, 'w') as handle:
-            handle.write('bool foo')
+            handle.write('bool \tfoo')
         msg_spec = parse_message_file('pkg', filename)
 
         assert len(msg_spec.fields) == 1

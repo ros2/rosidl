@@ -459,6 +459,9 @@ def parse_message_string(pkg_name, msg_name, message_string):
     for line in lines:
         line = line.rstrip()
 
+        # replace tabs with spaces
+        line = line.replace('\t', ' ')
+
         # ignore empty lines
         if not line:
             # file-level comments stop at the first empty line
@@ -705,7 +708,11 @@ def parse_primitive_value_string(type_, value_string):
         try:
             value = int(value_string)
         except ValueError:
-            raise ex
+            try:
+                value = int(value_string, 0)
+            except ValueError:
+                raise ex
+
         if value < 0 or value > 255:
             raise ex
         return value
@@ -737,7 +744,10 @@ def parse_primitive_value_string(type_, value_string):
         try:
             value = int(value_string)
         except ValueError:
-            raise ex
+            try:
+                value = int(value_string, 0)
+            except ValueError:
+                raise ex
 
         # check that value is in valid range
         if value < lower_bound or value > upper_bound:

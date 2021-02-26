@@ -19,7 +19,7 @@ from rosidl_cli.command.generate import GenerateCommand
 from rosidl_cli.common import get_first_line_doc
 
 
-def add_subparsers(parser, cli_name, commands, dest='_command'):
+def add_subparsers(parser, cli_name, commands):
     """
     Create argparse subparser for each command.
 
@@ -34,8 +34,6 @@ def add_subparsers(parser, cli_name, commands, dest='_command'):
       subparsers are being added
     :param commands: each of the commands contributing specific arguments
     :type commands: :py:class:`List[Command]`
-    :param str dest: name of the attribute under which the selected
-      command will be stored
     """
     # add subparser with description of available subparsers
     description = ''
@@ -49,9 +47,7 @@ def add_subparsers(parser, cli_name, commands, dest='_command'):
     subparser = parser.add_subparsers(
         title='Commands', description=description,
         metavar=f'Call `{cli_name} <command> -h` for more detailed usage.')
-    # use a name which doesn't collide with any argument
-    # but is readable when shown as part of the the usage information
-    subparser.dest = ' ' + dest.lstrip('_')
+    subparser.dest = '_command'
     subparser.required = True
 
     # add extension specific sub-sub-parser with its arguments
@@ -60,7 +56,7 @@ def add_subparsers(parser, cli_name, commands, dest='_command'):
             command.name,
             description=get_first_line_doc(command),
             formatter_class=argparse.RawDescriptionHelpFormatter)
-        command_parser.set_defaults(**{dest: command})
+        command_parser.set_defaults(_command=command)
         command.add_arguments(command_parser)
 
     return subparser

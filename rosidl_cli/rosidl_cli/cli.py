@@ -27,7 +27,6 @@ def add_subparsers(parser, cli_name, commands, dest='_command'):
     ``add_subparsers`` function call.
 
     For each command a subparser is created.
-    If the command has an ``add_arguments`` method it is being called.
 
     :param parser: the parent argument parser
     :type parser: :py:class:`argparse.ArgumentParser`
@@ -55,7 +54,7 @@ def add_subparsers(parser, cli_name, commands, dest='_command'):
     subparser.dest = ' ' + dest.lstrip('_')
     subparser.required = True
 
-    # add extension specific sub-parser with its arguments
+    # add extension specific sub-sub-parser with its arguments
     for command in commands:
         command_parser = subparser.add_parser(
             command.name,

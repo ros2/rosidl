@@ -14,8 +14,9 @@
 
 
 def get_first_line_doc(any_type):
-    for line in any_type.__doc__.splitlines():
-        line = line.strip()
-        if line:
-            return line.rstrip('.')
+    if any_type.__doc__:
+        for line in any_type.__doc__.splitlines():
+            line = line.strip()
+            if line:
+                return line.rstrip('.')
     return ''

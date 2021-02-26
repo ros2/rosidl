@@ -14,10 +14,14 @@
 
 
 def get_first_line_doc(any_type):
-    if not any_type.__doc__:
+    docstring = any_type.__doc__
+    if not docstring:
         return ''
-    lines = any_type.__doc__.splitlines()
-    if not lines:
+    lines = [
+        line.strip() for line in
+        docstring.splitlines()
+    ]
+    if not any(lines):
         return ''
     if lines[0]:
         line = lines[0]

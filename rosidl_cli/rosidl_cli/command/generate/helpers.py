@@ -26,7 +26,7 @@ def package_name_from_include_path(path):
     This function assumes ROS interface definition files follow the typical
     ``rosidl`` install space layout i.e. 'package_name/subfolder/interface.idl'.
     """
-    return pathlib.Path(path).parents[1].name
+    return pathlib.Path(path).resolve().parents[1].name
 
 
 def dependencies_from_include_paths(include_paths):

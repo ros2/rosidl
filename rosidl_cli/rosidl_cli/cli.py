@@ -62,7 +62,7 @@ def add_subparsers(parser, cli_name, commands, dest='_command'):
             description=get_first_line_doc(command),
             formatter_class=argparse.RawDescriptionHelpFormatter)
         command_parser.set_defaults(**{dest: command})
-        command.add_arguments(command_parser, f'{cli_name} {command.name}')
+        command.add_arguments(command_parser)
 
     return subparser
 

@@ -22,7 +22,7 @@ class Command:
     * `add_arguments`
     """
 
-    def add_arguments(self, parser, cli_name, *, argv=None):
+    def add_arguments(self, parser):
         pass
 
     def main(self, *, parser, args):

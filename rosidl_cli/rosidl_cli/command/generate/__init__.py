@@ -25,7 +25,7 @@ class GenerateCommand(Command):
 
     name = 'generate'
 
-    def add_arguments(self, parser, cli_name):
+    def add_arguments(self, parser):
         parser.add_argument(
             '-o', '--output-path', metavar='PATH', default=os.getcwd(),
             help=('Path to directory to hold generated source code files. '

@@ -19,8 +19,6 @@ class Command:
 
     The following methods must be defined:
     * `main`
-
-    The following methods can be defined:
     * `add_arguments`
     """
 

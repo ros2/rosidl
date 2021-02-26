@@ -43,6 +43,7 @@ class GenerateCommandExtension(Extension):
         :param include_paths: list of paths to include dependency interface
           definition files from.
         :param output_path: path to directory to hold generated source code files
+        :returns: list of paths to generated source files
         """
         raise NotImplementedError()
 

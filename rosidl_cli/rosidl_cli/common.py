@@ -14,17 +14,8 @@
 
 
 def get_first_line_doc(any_type):
-    docstring = any_type.__doc__
-    if not docstring:
-        return ''
-    lines = [
-        line.strip() for line in
-        docstring.splitlines()
-    ]
-    if not any(lines):
-        return ''
-    if lines[0]:
-        line = lines[0]
-    elif len(lines) > 1:
-        line = lines[1]
-    return line.strip().rstrip('.')
+    for line in any_type.__doc__.splitlines():
+        line = line.strip()
+        if line:
+            return line.rstrip('.')
+    return ''

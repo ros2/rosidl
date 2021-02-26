@@ -45,33 +45,45 @@ def dependencies_from_include_paths(include_paths):
     })
 
 
+def interface_path_as_tuple(path):
+    """
+    Express interface definition file path as an
+    (absolute prefix, relative path) tuple.
+
+    An interface definition file path is a relative path, optionally prefixed
+    by a path against which to resolve the former followed by a colon ':'.
+    Thus, this function applies following logic:
+    - If a given path follows this pattern, it is split at the colon ':'
+    - If a given path is prefixed by a relative path, it is resolved
+      relative to the current working directory.
+    - If a given path has no prefix, the current working directory is
+      used as prefix.
+    """
+    path_as_string = str(path)
+    if ':' not in path_as_string:
+        prefix = pathlib.Path.cwd()
+    else:
+        prefix, _, path = path_as_string.rpartition(':')
+        prefix = os.path.abspath(prefix)
+    path = pathlib.Path(path)
+    if path.is_absolute():
+        raise ValueError('Interface definition file path '
+                         f"'{path}' cannot be absolute")
+    return prefix, path
+
+
 def idl_tuples_from_interface_files(interface_files):
     """
     Express ROS interface definition file paths as IDL tuples.
 
-    An IDL tuple is a relative path prefixed by by an absolute path against
+    An IDL tuple is a relative path prefixed by an absolute path against
     which to resolve it followed by a colon ':'. This function then applies
-    the following logic:
-    - If a given path follows this pattern, it is passed through.
-    - If a given path is prefixed by a relative path, it is resolved
-      relative to the current working directory.
-    - If a given path has no prefixes, the current working directory is
-      used as prefix.
+    the same logic as `interface_path_as_tuple`.
     """
     idl_tuples = []
     for path in interface_files:
-        path_as_string = str(path)
-        if ':' not in path_as_string:
-            prefix = pathlib.Path.cwd()
-            stem = path
-        else:
-            prefix, _, stem = path_as_string.rpartition(':')
-            prefix = os.path.abspath(prefix)
-        stem = pathlib.Path(stem)
-        if stem.is_absolute():
-            raise ValueError('Interface definition file path '
-                             f'{stem} cannot be absolute')
-        idl_tuples.append(f'{prefix}:{stem.as_posix()}')
+        prefix, path = interface_path_as_tuple(path)
+        idl_tuples.append(f'{prefix}:{path.as_posix()}')
     return idl_tuples
 
 

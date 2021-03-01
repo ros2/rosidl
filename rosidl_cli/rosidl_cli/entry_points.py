@@ -33,6 +33,8 @@ def get_entry_points(group_name, *, specs=None, strict=False):
     :returns: mapping from entry point names to ``EntryPoint`` instances
     :rtype: dict
     """
+    if specs is not None:
+        specs = set(specs)
     entry_points = {}
     for entry_point in importlib_metadata.entry_points().get(group_name, []):
         name = entry_point.name
@@ -47,11 +49,10 @@ def get_entry_points(group_name, *, specs=None, strict=False):
             continue
         entry_points[name] = entry_point
     if specs:
-        pending = set(specs) - set(entry_points)
+        pending = specs - set(entry_points)
         if pending:
-            msg = 'Some specs could not be met: ' + ', '.join([
-                f'{name}{specs[name]}' for name in pending
-            ])
+            msg = 'Some specs could not be met: '
+            msg += ', '.join(map(str, pending))
             if strict:
                 raise RuntimeError(msg)
             logger.warning(msg)

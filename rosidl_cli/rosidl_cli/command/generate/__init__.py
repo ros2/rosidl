@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+import pathlib
 
 from rosidl_cli.command import Command
 
@@ -21,13 +21,14 @@ from .extensions import load_typesupport_extensions
 
 
 class GenerateCommand(Command):
-    """Generate source code from ROS interface files."""
+    """Generate source code from interface definition files."""
 
     name = 'generate'
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-o', '--output-path', metavar='PATH', default=os.getcwd(),
+            '-o', '--output-path', type=pathlib.Path,
+            metavar='PATH', default=pathlib.Path.cwd(),
             help=('Path to directory to hold generated source code files. '
                   "Defaults to '.'."))
         parser.add_argument(
@@ -39,14 +40,14 @@ class GenerateCommand(Command):
             dest='typesupport_specs', action='append', default=[],
             help='Target type supports for generation.')
         parser.add_argument(
-            '-I', '--include-path', metavar='PATH',
+            '-I', '--include-path', type=pathlib.Path, metavar='PATH',
             dest='include_paths', action='append', default=[],
             help='Paths to include dependency interface definition files from.')
         parser.add_argument(
             'package_name', help='Name of the package to generate code for')
         parser.add_argument(
             'interface_files', metavar='interface_file', nargs='+',
-            help=('Normalized relative path to a ROS interface definition file. '
+            help=('Normalized relative path to interface definition file. '
                   "If prefixed by another path followed by a colon ':', "
                   'path resolution is performed against such path.'))
 
@@ -73,7 +74,7 @@ class GenerateCommand(Command):
             for extension in extensions:
                 extension.generate(
                     args.package_name, args.interface_files, args.include_paths,
-                    output_path=os.path.join(args.output_path, extension.name))
+                    output_path=args.output_path / extension.name)
         else:
             extensions[0].generate(
                 args.package_name, args.interface_files,

@@ -67,10 +67,10 @@ def add_subparsers(parser, cli_name, commands, dest='_command'):
     return subparser
 
 
-def main(*, script_name='rosidl', argv=None, description=None, commands=None):
-    if description is None:
-        description = f'{script_name} is an extensible command-line tool ' \
-            'for ROS interface generation.'
+def main():
+    script_name = 'rosidl'
+    description = f'{script_name} is an extensible command-line tool ' \
+        'for ROS interface generation.'
 
     # top level parser
     parser = argparse.ArgumentParser(
@@ -78,8 +78,7 @@ def main(*, script_name='rosidl', argv=None, description=None, commands=None):
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
 
-    if commands is None:
-        commands = [GenerateCommand()]
+    commands = [GenerateCommand()]
 
     # add arguments for command extension(s)
     add_subparsers(
@@ -97,7 +96,7 @@ def main(*, script_name='rosidl', argv=None, description=None, commands=None):
         autocomplete(parser, exclude=['-h', '--help'])
 
     # parse the command line arguments
-    args = parser.parse_args(args=argv)
+    args = parser.parse_args()
 
     # call the main method of the command
     try:

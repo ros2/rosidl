@@ -107,6 +107,7 @@ def legacy_generator_arguments_file(
             'template_dir': str(templates_path),
             'idl_tuples': idl_tuples,
             'ros_interface_dependencies': interface_dependencies,
+            # TODO(hidmic): re-enable output file caching
             'target_dependencies': []
         }))
         tmp.flush()

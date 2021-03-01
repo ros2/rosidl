@@ -33,15 +33,11 @@ class GenerateCommand(Command):
         parser.add_argument(
             '-t', '--type', metavar='TYPE_SPEC',
             dest='type_specs', action='append', default=[],
-            help=('Target type representations for generation, backed by a '
-                  'tool extension. Specified by name plus an optional PEP440 '
-                  'version specifier set may be provided.'))
+            help='Target type representations for generation.')
         parser.add_argument(
             '-ts', '--type-support', metavar='TYPESUPPORT_SPEC',
             dest='typesupport_specs', action='append', default=[],
-            help=('Target type supports for generation, backed by a tool '
-                  'extension. Specified by name plus an optional PEP440 '
-                  'version specifier set may be provided.'))
+            help='Target type supports for generation.')
         parser.add_argument(
             '-I', '--include-path', metavar='PATH',
             dest='include_paths', action='append', default=[],

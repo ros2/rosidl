@@ -50,7 +50,7 @@ def load_extensions(group_name, *, strict=False, **kwargs):
         try:
             extensions.append(factory(name))
         except Exception as e:
-            msg = f"Failed to build extension '{name}': {e}"
+            msg = f"Failed to instantiate extension '{name}': {e}"
             if strict:
                 raise RuntimeError(msg)
             logger.warning(msg)

@@ -19,9 +19,9 @@ import pathlib
 import tempfile
 
 
-def package_name_from_include_path(path):
+def package_name_from_interface_file_path(path):
     """
-    Derive ROS package name from a ROS interface dependency include path.
+    Derive ROS package name from a ROS interface definition file path.
 
     This function assumes ROS interface definition files follow the typical
     ``rosidl`` install space layout i.e. 'package_name/subfolder/interface.idl'.
@@ -37,7 +37,7 @@ def dependencies_from_include_paths(include_paths):
     prefixed by the name of package they belong to followed by a colon ':'.
     """
     return list({
-        f'{package_name_from_include_path(path)}:{path}'
+        f'{package_name_from_interface_file_path(path)}:{path}'
         for include_path in map(pathlib.Path, include_paths)
         for path in include_path.resolve().glob('**/*.idl')
     })

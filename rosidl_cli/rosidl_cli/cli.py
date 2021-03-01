@@ -95,7 +95,7 @@ def main():
 
     # call the main method of the command
     try:
-        rc = args._command.main(parser=parser, args=args)
+        rc = args._command.main(args=args)
     except KeyboardInterrupt:
         rc = signal.SIGINT
     except (ValueError, RuntimeError) as e:

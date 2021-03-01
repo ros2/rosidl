@@ -51,7 +51,7 @@ class GenerateCommand(Command):
                   "If prefixed by another path followed by a colon ':', "
                   'path resolution is performed against such path.'))
 
-    def main(self, *, parser, args):
+    def main(self, *, args):
         extensions = []
 
         unspecific_generation = \

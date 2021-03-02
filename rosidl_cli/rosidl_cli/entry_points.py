@@ -38,14 +38,14 @@ def get_entry_points(group_name, *, specs=None, strict=False):
     entry_points = {}
     for entry_point in importlib_metadata.entry_points().get(group_name, []):
         name = entry_point.name
+        if specs and name not in specs:
+            continue
         if name in entry_points:
             msg = (f"Found duplicate entry point '{name}': "
                    'got {entry_point} and {entry_points[name]}')
             if strict:
                 raise RuntimeError(msg)
             logger.warning(msg)
-            continue
-        if specs and name not in specs:
             continue
         entry_points[name] = entry_point
     if specs:

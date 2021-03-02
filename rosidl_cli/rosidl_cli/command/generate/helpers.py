@@ -26,7 +26,7 @@ def package_name_from_interface_file_path(path):
     This function assumes ROS interface definition files follow the typical
     ``rosidl`` install space layout i.e. 'package_name/subfolder/interface.idl'.
     """
-    return pathlib.Path(path).resolve().parents[1].name
+    return pathlib.Path(os.path.abspath(path)).parents[1].name
 
 
 def dependencies_from_include_paths(include_paths):
@@ -38,8 +38,10 @@ def dependencies_from_include_paths(include_paths):
     """
     return list({
         f'{package_name_from_interface_file_path(path)}:{path}'
-        for include_path in map(pathlib.Path, include_paths)
-        for path in include_path.resolve().glob('**/*.idl')
+        for include_path in include_paths
+        for path in pathlib.Path(
+            os.path.abspath(include_path)
+        ).glob('**/*.idl')
     })
 
 
@@ -64,7 +66,7 @@ def idl_tuples_from_interface_files(interface_files):
             stem = path
         else:
             prefix, _, stem = path_as_string.rpartition(':')
-            prefix = pathlib.Path(prefix).resolve()
+            prefix = os.path.abspath(prefix)
         stem = pathlib.Path(stem)
         if stem.is_absolute():
             raise ValueError('Interface definition file path '
@@ -98,22 +100,21 @@ def legacy_generator_arguments_file(
     """
     idl_tuples = idl_tuples_from_interface_files(interface_files)
     interface_dependencies = dependencies_from_include_paths(include_paths)
-    output_path = pathlib.Path(output_path).resolve()
-    templates_path = pathlib.Path(templates_path).resolve()
+    output_path = os.path.abspath(output_path)
+    templates_path = os.path.abspath(templates_path)
     # NOTE(hidmic): named temporary files cannot be opened twice on Windows,
     # so close it and manually remove it when leaving the context
     with tempfile.NamedTemporaryFile(mode='w', delete=False) as tmp:
         tmp.write(json.dumps({
             'package_name': package_name,
-            'output_dir': str(output_path),
-            'template_dir': str(templates_path),
+            'output_dir': output_path,
+            'template_dir': templates_path,
             'idl_tuples': idl_tuples,
             'ros_interface_dependencies': interface_dependencies,
             # TODO(hidmic): re-enable output file caching
             'target_dependencies': []
         }))
-    path_to_file = pathlib.Path(tmp.name)
-    path_to_file = path_to_file.resolve()
+    path_to_file = os.path.abspath(tmp.name)
     try:
         yield path_to_file
     finally:

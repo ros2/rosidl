@@ -100,7 +100,9 @@ def legacy_generator_arguments_file(
     interface_dependencies = dependencies_from_include_paths(include_paths)
     output_path = pathlib.Path(output_path).resolve()
     templates_path = pathlib.Path(templates_path).resolve()
-    with tempfile.NamedTemporaryFile(mode='w') as tmp:
+    # NOTE(hidmic): named temporary files cannot be opened twice on Windows,
+    # so close it and manually remove it when leaving the context
+    with tempfile.NamedTemporaryFile(mode='w', delete=False) as tmp:
         tmp.write(json.dumps({
             'package_name': package_name,
             'output_dir': str(output_path),
@@ -110,8 +112,15 @@ def legacy_generator_arguments_file(
             # TODO(hidmic): re-enable output file caching
             'target_dependencies': []
         }))
-        tmp.flush()
-        yield tmp.name
+    path_to_file = pathlib.Path(tmp.name)
+    path_to_file = path_to_file.resolve()
+    try:
+        yield path_to_file
+    finally:
+        try:
+            os.unlink(path_to_file)
+        except FileNotFoundError:
+            pass
 
 
 def generate_visibility_control_file(

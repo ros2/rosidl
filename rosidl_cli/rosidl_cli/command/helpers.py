@@ -47,8 +47,7 @@ def dependencies_from_include_paths(include_paths):
 
 def interface_path_as_tuple(path):
     """
-    Express interface definition file path as an
-    (absolute prefix, relative path) tuple.
+    Express interface definition file path as an (absolute prefix, relative path) tuple.
 
     An interface definition file path is a relative path, optionally prefixed
     by a path against which to resolve the former followed by a colon ':'.
@@ -64,7 +63,7 @@ def interface_path_as_tuple(path):
         prefix = pathlib.Path.cwd()
     else:
         prefix, _, path = path_as_string.rpartition(':')
-        prefix = os.path.abspath(prefix)
+        prefix = pathlib.Path(os.path.abspath(prefix))
     path = pathlib.Path(path)
     if path.is_absolute():
         raise ValueError('Interface definition file path '

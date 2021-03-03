@@ -85,7 +85,7 @@ class TranslateCommand(Command):
         for input_format, interface_files in interface_files_per_format.items():
             extension = next((
                 extension for extension in extensions
-                if extension.input_format == input_format and \
+                if extension.input_format == input_format and
                 extension.output_format == args.output_format
             ), None)
 

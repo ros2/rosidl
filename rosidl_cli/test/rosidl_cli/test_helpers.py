@@ -18,7 +18,22 @@ import pathlib
 
 import pytest
 
-from rosidl_cli.command.generate.helpers import legacy_generator_arguments_file
+from rosidl_cli.command.helpers import interface_path_as_tuple
+from rosidl_cli.command.helpers import legacy_generator_arguments_file
+
+
+def test_interface_path_as_tuple():
+    prefix, path = interface_path_as_tuple('/tmp:msg/Empty.idl')
+    assert pathlib.Path('msg/Empty.idl') == path
+    assert pathlib.Path(os.path.abspath('/tmp')) == prefix
+
+    prefix, path = interface_path_as_tuple('tmp:msg/Empty.idl')
+    assert pathlib.Path('msg/Empty.idl') == path
+    assert pathlib.Path.cwd() / 'tmp' == prefix
+
+    prefix, path = interface_path_as_tuple('msg/Empty.idl')
+    assert pathlib.Path('msg/Empty.idl') == path
+    assert pathlib.Path.cwd() == prefix
 
 
 @pytest.fixture

@@ -76,6 +76,8 @@ def translate(
 
     if output_path is None:
         output_path = pathlib.Path.cwd()
+    else:
+        os.makedirs(output_path, exist_ok=True)
 
     translated_interface_files = []
     for input_format, interface_files in interface_files_per_format.items():

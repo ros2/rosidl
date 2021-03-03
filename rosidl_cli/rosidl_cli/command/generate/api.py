@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import pathlib
 
 from .extensions import load_type_extensions
@@ -81,6 +82,8 @@ def generate(
 
     if output_path is None:
         output_path = pathlib.Path.cwd()
+    else:
+        os.makedirs(output_path, exist_ok=True)
 
     if len(extensions) > 1:
         return [

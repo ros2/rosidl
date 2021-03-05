@@ -88,8 +88,11 @@ def translate(
         ), None)
 
         if not extension:
-            raise RuntimeError(f"Translation from '{input_format}' to "
-                               f"'{output_format}' is not supported")
+            raise RuntimeError('\n'.join([
+                f"Cannot translate the following files to '{output_format}' format:",
+                *[f'- {path}' for path in interface_files],
+                'No translator found'
+            ]))
 
         translated_interface_files.extend(extension.translate(
             package_name, interface_files, include_paths, output_path))

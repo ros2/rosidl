@@ -52,6 +52,7 @@ class TranslateCommandExtension(Extension):
           definition files from
         :param output_path: path to directory to hold translated interface
           definition files
+        :returns: list of paths to translated interface definition files
         """
         raise NotImplementedError()
 

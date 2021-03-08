@@ -12,13 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import collections
-import os
 import pathlib
 
 from rosidl_cli.command import Command
 
-from .extensions import load_translate_extensions
+from .api import translate
 
 
 class TranslateCommand(Command):
@@ -29,14 +27,15 @@ class TranslateCommand(Command):
     def add_arguments(self, parser):
         parser.add_argument(
             '-o', '--output-path', metavar='PATH',
-            type=pathlib.Path, default=pathlib.Path.cwd(),
-            help=('Path to directory to hold translated interface definition'
-                  "files. Defaults to '.'."))
+            type=pathlib.Path, default=None,
+            help=('Path to directory to hold translated interface '
+                  "definition files. Defaults to '.'.")
+        )
         parser.add_argument(
-            '--use', '--translator', metavar='TRANSLATOR_SPEC',
-            dest='translator_specs', action='append', default=[],
-            help=('Translators to be used. If none is given, '
-                  'suitable available ones will be used.')
+            '--use', '--translator', metavar='TRANSLATOR',
+            dest='translators', action='append', default=[],
+            help=('Translator to be used. If none is specified, '
+                  'all available ones will be considered.')
         )
         parser.add_argument(
             '--to', '--output-format', required=True,
@@ -60,39 +59,18 @@ class TranslateCommand(Command):
             help='Name of the package all interface files belong to')
         parser.add_argument(
             'interface_files', metavar='interface_file', nargs='+',
-            help=('Normalized relative path to an interface definition file. '
+            help=('Relative path to an interface definition file. '
                   "If prefixed by another path followed by a colon ':', "
                   'path resolution is performed against such path.')
         )
 
     def main(self, *, args):
-        extensions = load_translate_extensions(
-            specs=args.translator_specs,
-            strict=any(args.translator_specs)
+        translate(
+            package_name=args.package_name,
+            interface_files=args.interface_files,
+            output_format=args.output_format,
+            input_format=args.input_format,
+            include_paths=args.include_paths,
+            output_path=args.output_path,
+            translators=args.translators
         )
-        if not extensions:
-            return 'No translate extensions found'
-
-        if not args.input_format:
-            interface_files_per_format = collections.defaultdict(list)
-            for interface_file in args.interface_files:
-                input_format = os.path.splitext(interface_file)[-1][1:]
-                interface_files_per_format[input_format].append(interface_file)
-        else:
-            interface_files_per_format = {
-                args.input_format: args.interface_files}
-
-        for input_format, interface_files in interface_files_per_format.items():
-            extension = next((
-                extension for extension in extensions
-                if extension.input_format == input_format and
-                extension.output_format == args.output_format
-            ), None)
-
-            if not extension:
-                return (f"Translation from '{input_format}' to "
-                        f"'{args.output_format}' is not supported")
-
-            extension.translate(
-                args.package_name, interface_files,
-                args.include_paths, args.output_path)

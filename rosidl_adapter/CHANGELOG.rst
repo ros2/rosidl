@@ -2,6 +2,11 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Support hex constants in msg files (`#559 <https://github.com/ros2/rosidl/issues/559>`_)
+* Contributors: Dereck Wonnacott
+
 2.0.3 (2021-01-25)
 ------------------
 * Treat \t as whitespace (`#557 <https://github.com/ros2/rosidl/issues/557>`_)

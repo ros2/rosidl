@@ -2,6 +2,11 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Shorten some excessively long lines of CMake (`#571 <https://github.com/ros2/rosidl/issues/571>`_)
+* Contributors: Scott K Logan
+
 2.0.3 (2021-01-25)
 ------------------
 

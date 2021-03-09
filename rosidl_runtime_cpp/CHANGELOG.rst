@@ -2,6 +2,9 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.0.3 (2021-01-25)
 ------------------
 * Fix typo of package name in README heading (`#561 <https://github.com/ros2/rosidl/issues/561>`_)

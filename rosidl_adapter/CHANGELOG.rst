@@ -2,8 +2,8 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.1.0 (2021-03-09)
+------------------
 * Support hex constants in msg files (`#559 <https://github.com/ros2/rosidl/issues/559>`_)
 * Contributors: Dereck Wonnacott
 

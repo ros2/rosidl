@@ -1,4 +1,4 @@
-# Copyright 2018-2021 Open Source Robotics Foundation, Inc.
+# Copyright 2018 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,6 +18,10 @@ import sys
 
 from catkin_pkg.package import package_exists_at
 from catkin_pkg.package import parse_package
+
+from rosidl_adapter.action import convert_action_to_idl
+from rosidl_adapter.msg import convert_msg_to_idl
+from rosidl_adapter.srv import convert_srv_to_idl
 
 from rosidl_cli.command.helpers import interface_path_as_tuple
 from rosidl_cli.command.translate.extensions import TranslateCommandExtension
@@ -84,7 +88,6 @@ class TranslateMsgToIDL(TranslateToIDL):
 
     @property
     def conversion_function(self):
-        from rosidl_adapter.msg import convert_msg_to_idl
         return convert_msg_to_idl
 
 
@@ -94,7 +97,6 @@ class TranslateSrvToIDL(TranslateToIDL):
 
     @property
     def conversion_function(self):
-        from rosidl_adapter.srv import convert_srv_to_idl
         return convert_srv_to_idl
 
 
@@ -103,5 +105,4 @@ class TranslateActionToIDL(TranslateToIDL):
 
     @property
     def conversion_function(self):
-        from rosidl_adapter.action import convert_action_to_idl
         return convert_action_to_idl

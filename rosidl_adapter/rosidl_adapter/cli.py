@@ -19,6 +19,13 @@ import sys
 from catkin_pkg.package import package_exists_at
 from catkin_pkg.package import parse_package
 
+from rosidl_adapter.action import convert_action_to_idl
+from rosidl_adapter.msg import convert_msg_to_idl
+from rosidl_adapter.srv import convert_srv_to_idl
+
+from rosidl_cli.command.helpers import interface_path_as_tuple
+from rosidl_cli.command.translate.extensions import TranslateCommandExtension
+
 
 def convert_files_to_idl(extension, conversion_function, argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(
@@ -48,3 +55,54 @@ def convert_files_to_idl(extension, conversion_function, argv=sys.argv[1:]):
             package_dir, pkg.name,
             interface_file.absolute().relative_to(package_dir),
             interface_file.parent)
+
+
+class TranslateToIDL(TranslateCommandExtension):
+
+    output_format = 'idl'
+
+    def translate(
+        self,
+        package_name,
+        interface_files,
+        include_paths,
+        output_path
+    ):
+        translated_interface_files = []
+        for interface_file in interface_files:
+            prefix, interface_file = interface_path_as_tuple(interface_file)
+            output_dir = output_path / interface_file.parent
+            translated_interface_file = self.conversion_function(
+                prefix, package_name, interface_file, output_dir)
+            translated_interface_file = \
+                translated_interface_file.relative_to(output_path)
+            translated_interface_files.append(
+                f'{output_path}:{translated_interface_file.as_posix()}'
+            )
+        return translated_interface_files
+
+
+class TranslateMsgToIDL(TranslateToIDL):
+
+    input_format = 'msg'
+
+    @property
+    def conversion_function(self):
+        return convert_msg_to_idl
+
+
+class TranslateSrvToIDL(TranslateToIDL):
+
+    input_format = 'srv'
+
+    @property
+    def conversion_function(self):
+        return convert_srv_to_idl
+
+
+class TranslateActionToIDL(TranslateToIDL):
+    input_format = 'action'
+
+    @property
+    def conversion_function(self):
+        return convert_action_to_idl

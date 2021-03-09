@@ -77,7 +77,7 @@ class TranslateToIDL(TranslateCommandExtension):
             translated_interface_file = \
                 translated_interface_file.relative_to(output_path)
             translated_interface_files.append(
-                f'{output_path}:{translated_interface_file}'
+                f'{output_path}:{translated_interface_file.as_posix()}'
             )
         return translated_interface_files
 

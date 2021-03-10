@@ -22,6 +22,8 @@
   <build_depend>rosidl_runtime_cpp</build_depend>
   <build_depend>rosidl_typesupport_introspection_c</build_depend>
 
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>rosidl_cli</exec_depend>
   <exec_depend>rosidl_cmake</exec_depend>
   <exec_depend>rosidl_parser</exec_depend>
   <exec_depend>rosidl_typesupport_interface</exec_depend>

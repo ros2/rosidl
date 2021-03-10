@@ -21,4 +21,4 @@ def generate_c(generator_arguments_file):
         'detail/%s__rosidl_typesupport_introspection_c.h',
         'idl__type_support.c.em': 'detail/%s__type_support.c',
     }
-    generate_files(generator_arguments_file, mapping)
+    return generate_files(generator_arguments_file, mapping)

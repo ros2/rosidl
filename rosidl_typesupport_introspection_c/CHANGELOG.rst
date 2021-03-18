@@ -2,6 +2,11 @@
 Changelog for package rosidl_typesupport_introspection_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Expose C introspection typesupport generation via rosidl generate CLI (`#572 <https://github.com/ros2/rosidl/issues/572>`_)
+* Contributors: Michel Hidalgo
+
 2.1.0 (2021-03-09)
 ------------------
 

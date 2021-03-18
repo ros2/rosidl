@@ -2,6 +2,9 @@
 Changelog for package rosidl_typesupport_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.1.0 (2021-03-09)
 ------------------
 

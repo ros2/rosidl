@@ -2,6 +2,11 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Expose .msg/.srv/.action to .idl conversion via rosidl translate CLI (`#576 <https://github.com/ros2/rosidl/issues/576>`_)
+* Contributors: Michel Hidalgo
+
 2.1.0 (2021-03-09)
 ------------------
 * Support hex constants in msg files (`#559 <https://github.com/ros2/rosidl/issues/559>`_)

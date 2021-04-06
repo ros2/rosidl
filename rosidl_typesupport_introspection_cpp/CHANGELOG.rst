@@ -2,6 +2,9 @@
 Changelog for package rosidl_typesupport_introspection_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 2.2.0 (2021-03-18)
 ------------------
 * Expose C++ introspection typesupport generation via rosidl generate CLI  (`#573 <https://github.com/ros2/rosidl/issues/573>`_)

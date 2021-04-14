@@ -2,6 +2,9 @@
 Changelog for package rosidl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.1 (2021-04-14)
+------------------
+
 1.2.0 (2020-12-08)
 ------------------
 * Fix parsing of small floats (`#554 <https://github.com/ros2/rosidl/issues/554>`_)

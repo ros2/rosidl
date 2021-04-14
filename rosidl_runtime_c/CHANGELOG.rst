@@ -2,6 +2,11 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.2.1 (2021-04-14)
+------------------
+* Update quality declaration links (re: `ros2/docs.ros2.org#52 <https://github.com/ros2/docs.ros2.org/issues/52>`_) (`#582 <https://github.com/ros2/rosidl/issues/582>`_)
+* Contributors: Simon Honigmann
+
 1.2.0 (2020-12-08)
 ------------------
 * Fix item number in QD (`#546 <https://github.com/ros2/rosidl/issues/546>`_) (`#547 <https://github.com/ros2/rosidl/issues/547>`_)

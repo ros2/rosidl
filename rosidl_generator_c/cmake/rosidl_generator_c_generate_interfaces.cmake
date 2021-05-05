@@ -33,6 +33,8 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   )
 endforeach()
 
+find_package(rcutils REQUIRED)
+
 set(_dependency_files "")
 set(_dependencies "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
@@ -130,7 +132,8 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
 endforeach()
 ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   "rosidl_runtime_c"
-  "rosidl_typesupport_interface")
+  "rosidl_typesupport_interface"
+  "rcutils")
 ament_export_dependencies(
   "rosidl_runtime_c"
   "rosidl_typesupport_interface")

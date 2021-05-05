@@ -52,6 +52,8 @@ for member in message.structure.members:
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 @
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+#include <rcutils/allocator.h>
+
 @[if includes]@
 
 // Include directives for member types
@@ -319,14 +321,15 @@ bool
 @(message_typename) *
 @(message_typename)__create()
 {
-  @(message_typename) * msg = (@(message_typename) *)malloc(sizeof(@(message_typename)));
+  rcutils_allocator_t allocator = rcutils_get_default_allocator();
+  @(message_typename) * msg = (@(message_typename) *)allocator.allocate(sizeof(@(message_typename)), allocator.state);
   if (!msg) {
     return NULL;
   }
   memset(msg, 0, sizeof(@(message_typename)));
   bool success = @(message_typename)__init(msg);
   if (!success) {
-    free(msg);
+    allocator.deallocate(msg, allocator.state);
     return NULL;
   }
   return msg;
@@ -335,10 +338,11 @@ bool
 void
 @(message_typename)__destroy(@(message_typename) * msg)
 {
+  rcutils_allocator_t allocator = rcutils_get_default_allocator();
   if (msg) {
     @(message_typename)__fini(msg);
   }
-  free(msg);
+  allocator.deallocate(msg, allocator.state);
 }
 
 
@@ -351,9 +355,11 @@ bool
   if (!array) {
     return false;
   }
+  rcutils_allocator_t allocator = rcutils_get_default_allocator();
   @(message_typename) * data = NULL;
+
   if (size) {
-    data = (@(message_typename) *)calloc(size, sizeof(@(message_typename)));
+    data = (@(message_typename) *)allocator.zero_allocate(size, sizeof(@(message_typename)), allocator.state);
     if (!data) {
       return false;
     }
@@ -370,7 +376,7 @@ bool
       for (; i > 0; --i) {
         @(message_typename)__fini(&data[i - 1]);
       }
-      free(data);
+      allocator.deallocate(data, allocator.state);
       return false;
     }
   }
@@ -386,6 +392,8 @@ void
   if (!array) {
     return;
   }
+  rcutils_allocator_t allocator = rcutils_get_default_allocator();
+
   if (array->data) {
     // ensure that data and capacity values are consistent
     assert(array->capacity > 0);
@@ -393,7 +401,7 @@ void
     for (size_t i = 0; i < array->capacity; ++i) {
       @(message_typename)__fini(&array->data[i]);
     }
-    free(array->data);
+    allocator.deallocate(array->data, allocator.state);
     array->data = NULL;
     array->size = 0;
     array->capacity = 0;
@@ -407,13 +415,14 @@ void
 @(array_typename) *
 @(array_typename)__create(size_t size)
 {
-  @(array_typename) * array = (@(array_typename) *)malloc(sizeof(@(array_typename)));
+  rcutils_allocator_t allocator = rcutils_get_default_allocator();
+  @(array_typename) * array = (@(array_typename) *)allocator.allocate(sizeof(@(array_typename)), allocator.state);
   if (!array) {
     return NULL;
   }
   bool success = @(array_typename)__init(array, size);
   if (!success) {
-    free(array);
+    allocator.deallocate(array, allocator.state);
     return NULL;
   }
   return array;
@@ -422,10 +431,11 @@ void
 void
 @(array_typename)__destroy(@(array_typename) * array)
 {
+  rcutils_allocator_t allocator = rcutils_get_default_allocator();
   if (array) {
     @(array_typename)__fini(array);
   }
-  free(array);
+  allocator.deallocate(array, allocator.state);
 }
 
 bool

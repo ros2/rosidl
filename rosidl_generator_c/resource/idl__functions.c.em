@@ -16,7 +16,7 @@ include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 include_base = '/'.join(include_parts)
 
-include_directives = {include_base + '__functions.h'}
+include_directives = {include_base + '__functions.h', 'rcutils/allocator.h'}
 }@
 #include "@(include_base)__functions.h"
 
@@ -24,6 +24,8 @@ include_directives = {include_base + '__functions.h'}
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "rcutils/allocator.h"
 @
 @#######################################################################
 @# Handle message

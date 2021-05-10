@@ -56,6 +56,15 @@ for member in message.structure.members:
 @[for constant in message.constants]@
 
 /// Constant '@(constant.name)'.
+@[if constant.annotations]@
+/**
+@[  for x in constant.get_annotation_values('verbatim')]@
+@[    if x['language'] == 'comment']@
+  * @(x['text'])
+@[    end if]@
+@[  end for]@
+ */
+@[end if]@
 @[    if isinstance(constant.type, BasicType)]@
 @[        if constant.type.typename in (
                 *INTEGER_TYPES, *CHARACTER_TYPES, OCTET_TYPE
@@ -129,10 +138,24 @@ enum
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-// Struct defined in @(interface_path_to_string(interface_path)) in the package @(package_name).
+/// Struct defined in @(interface_path_to_string(interface_path)) in the package @(package_name).
+@[if message.structure.annotations]@
+/**
+@[  for x in message.structure.get_annotation_values('verbatim')]@
+@[    if x['language'] == 'comment']@
+  * @(x['text'])
+@[    end if]@
+@[  end for]@
+ */
+@[end if]@
 typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_type))
 {
 @[for member in message.structure.members]@
+@[  for x in member.get_annotation_values('verbatim')]@
+@[    if x['language'] == 'comment']@
+  /// @(x['text'])
+@[    end if]@
+@[  end for]@
   @(idl_declaration_to_c(member.type, member.name));
 @[end for]@
 } @(idl_structure_type_to_c_typename(message.structure.namespaced_type));

@@ -15,6 +15,7 @@
 import os
 import re
 import sys
+import textwrap
 
 PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR = '/'
 COMMENT_DELIMITER = '#'
@@ -472,7 +473,7 @@ def parse_message_string(pkg_name, msg_name, message_string):
 
         # file-level comment line
         if index == 0 and not file_level_ended:
-            message_comments.append(line[len(COMMENT_DELIMITER):])
+            message_comments.append(line.lstrip(COMMENT_DELIMITER))
             continue
 
         file_level_ended = True
@@ -480,7 +481,7 @@ def parse_message_string(pkg_name, msg_name, message_string):
         # comment
         comment = None
         if index >= 0:
-            comment = line[index + len(COMMENT_DELIMITER):]
+            comment = line[index:].lstrip(COMMENT_DELIMITER)
             line = line[:index]
 
         if comment is not None:
@@ -580,6 +581,8 @@ def process_comments(instance):
                 length -= 1
                 continue
             i += 1
+        text = '\n'.join(lines)
+        instance.annotations['comment'] = textwrap.dedent(text).split('\n')
 
 
 def parse_value_string(type_, value_string):

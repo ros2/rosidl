@@ -60,7 +60,11 @@ for member in message.structure.members:
 @[if comments]@
 /**
 @[  for line in comments]@
+@[    if line]@
   * @(line)
+@[    else]@
+  *
+@[    end if]@
 @[  end for]@
  */
 @[end if]@
@@ -142,7 +146,11 @@ enum
 @[if comments]@
 /**
 @[  for line in comments]@
+@[    if line]@
   * @(line)
+@[    else]@
+  *
+@[    end if]@
 @[  end for]@
  */
 @[end if]@
@@ -150,7 +158,11 @@ typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_t
 {
 @[for member in message.structure.members]@
 @[  for line in member.get_comment_lines()]@
+@[    if line]@
   /// @(line)
+@[    else]@
+  ///
+@[    end if]@
 @[  end for]@
   @(idl_declaration_to_c(member.type, member.name));
 @[end for]@

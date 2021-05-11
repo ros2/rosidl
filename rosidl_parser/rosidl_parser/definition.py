@@ -436,6 +436,22 @@ class Annotatable:
         """
         return [a.value for a in self.annotations if a.name == name]
 
+    def get_comment_lines(self):
+        """
+        Get the comment lines of the annotatable.
+
+        :param str name: the name of the annotation type
+        :returns: a list of comment lines
+        """
+        comments = [
+            x['text'] for x in self.get_annotation_values('verbatim') if
+            'language' in x and 'text' in x and x['language'] == 'comment'
+        ]
+        lines = []
+        for comment in comments:
+            lines.extend(comment.split('\n'))
+        return lines
+
     def has_annotation(self, name):
         """
         Check if there is exactly one annotation of a specific type.

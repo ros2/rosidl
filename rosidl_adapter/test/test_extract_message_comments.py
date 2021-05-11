@@ -21,9 +21,9 @@ def test_extract_message_comments():
     assert len(msg_spec.annotations) == 1
     assert 'comment' in msg_spec.annotations
     assert len(msg_spec.annotations['comment']) == 3
-    assert msg_spec.annotations['comment'][0] == ' comment 1'
+    assert msg_spec.annotations['comment'][0] == 'comment 1'
     assert msg_spec.annotations['comment'][1] == ''
-    assert msg_spec.annotations['comment'][2] == ' comment 2'
+    assert msg_spec.annotations['comment'][2] == 'comment 2'
 
     assert len(msg_spec.fields) == 1
     assert len(msg_spec.fields[0].annotations) == 1
@@ -35,13 +35,13 @@ def test_extract_message_comments():
     assert len(msg_spec.annotations) == 1
     assert 'comment' in msg_spec.annotations
     assert len(msg_spec.annotations['comment']) == 1
-    assert msg_spec.annotations['comment'] == [' comment 1']
+    assert msg_spec.annotations['comment'] == ['comment 1']
 
     assert len(msg_spec.fields) == 1
     assert len(msg_spec.fields[0].annotations) == 1
     assert 'comment' in msg_spec.fields[0].annotations
     assert len(msg_spec.fields[0].annotations['comment']) == 1
-    assert msg_spec.fields[0].annotations['comment'][0] == ' comment 2'
+    assert msg_spec.fields[0].annotations['comment'][0] == 'comment 2'
 
     # file-level comment, trailing and indented field-level comment
     msg_spec = parse_message_string(
@@ -49,14 +49,14 @@ def test_extract_message_comments():
     assert len(msg_spec.annotations) == 1
     assert 'comment' in msg_spec.annotations
     assert len(msg_spec.annotations['comment']) == 1
-    assert msg_spec.annotations['comment'] == [' comment 1']
+    assert msg_spec.annotations['comment'] == ['comment 1']
 
     assert len(msg_spec.fields) == 2
     assert len(msg_spec.fields[0].annotations) == 1
     assert 'comment' in msg_spec.fields[0].annotations
     assert len(msg_spec.fields[0].annotations['comment']) == 2
-    assert msg_spec.fields[0].annotations['comment'][0] == ' comment 2'
-    assert msg_spec.fields[0].annotations['comment'][1] == ' comment 3'
+    assert msg_spec.fields[0].annotations['comment'][0] == 'comment 2'
+    assert msg_spec.fields[0].annotations['comment'][1] == 'comment 3'
 
     assert len(msg_spec.fields[1].annotations) == 1
     assert 'comment' in msg_spec.fields[1].annotations
@@ -73,12 +73,12 @@ def test_extract_message_comments():
     assert len(msg_spec.fields[0].annotations) == 1
     assert 'comment' in msg_spec.fields[0].annotations
     assert len(msg_spec.fields[0].annotations['comment']) == 1
-    assert msg_spec.fields[0].annotations['comment'][0] == ' comment 2'
+    assert msg_spec.fields[0].annotations['comment'][0] == 'comment 2'
 
     assert len(msg_spec.fields[1].annotations) == 1
     assert 'comment' in msg_spec.fields[1].annotations
     assert len(msg_spec.fields[1].annotations['comment']) == 1
-    assert msg_spec.fields[1].annotations['comment'][0] == ' comment 3'
+    assert msg_spec.fields[1].annotations['comment'][0] == 'comment 3'
 
     # field-level comment with a unit
     msg_spec = parse_message_string(
@@ -88,7 +88,7 @@ def test_extract_message_comments():
     assert len(msg_spec.fields[0].annotations) == 2
     assert 'comment' in msg_spec.fields[0].annotations
     assert len(msg_spec.fields[0].annotations['comment']) == 1
-    assert msg_spec.fields[0].annotations['comment'][0] == ' comment'
+    assert msg_spec.fields[0].annotations['comment'][0] == 'comment'
 
     assert 'unit' in msg_spec.fields[0].annotations
     assert msg_spec.fields[0].annotations['unit'] == 'unit'

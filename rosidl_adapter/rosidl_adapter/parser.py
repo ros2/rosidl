@@ -581,8 +581,9 @@ def process_comments(instance):
                 length -= 1
                 continue
             i += 1
-        text = '\n'.join(lines)
-        instance.annotations['comment'] = textwrap.dedent(text).split('\n')
+        if lines:
+            text = '\n'.join(lines)
+            instance.annotations['comment'] = textwrap.dedent(text).split('\n')
 
 
 def parse_value_string(type_, value_string):

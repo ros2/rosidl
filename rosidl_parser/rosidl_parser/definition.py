@@ -440,7 +440,6 @@ class Annotatable:
         """
         Get the comment lines of the annotatable.
 
-        :param str name: the name of the annotation type
         :returns: a list of comment lines
         """
         comments = [

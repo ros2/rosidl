@@ -6,7 +6,7 @@
 module test_msgs {
   module action {
     @verbatim (language="comment", text=
-      " goal definition")
+      "goal definition")
     struct Test_Goal {
       boolean bool_value;
 
@@ -38,12 +38,12 @@ module test_msgs {
     };
     struct Test_Result {
       @verbatim (language="comment", text=
-        " result definition")
+        "result definition")
       boolean ok;
     };
     struct Test_Feedback {
       @verbatim (language="comment", text=
-        " feedback definition")
+        "feedback definition")
       sequence<int32> sequence;
     };
   };

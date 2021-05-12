@@ -105,11 +105,10 @@ def extract_content_from_ast(tree):
     for const_dcl in const_dcls:
         annotations = get_annotations(const_dcl)
         const_type = next(const_dcl.find_data('const_type'))
-        *_, const_expr_value = const_dcl.find_data('const_expr')
         module_identifiers = get_module_identifier_values(tree, const_dcl)
         module_comments = constants.setdefault(
             module_identifiers[-1], [])
-        value = get_const_expr_value(const_expr_value)
+        value = get_const_expr_value(const_dcl.children[-1])
         constant = Constant(
             get_child_identifier_value(const_dcl),
             get_abstract_type_from_const_expr(const_type, value),

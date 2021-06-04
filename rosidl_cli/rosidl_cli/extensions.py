@@ -15,9 +15,9 @@
 import logging
 import re
 
-import yaml
-
 from rosidl_cli.entry_points import load_entry_points
+
+import yaml
 
 
 logger = logging.getLogger(__name__)

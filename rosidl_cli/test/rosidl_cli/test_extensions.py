@@ -12,25 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from rosidl_cli.extensions import parse_extension_specification
-
 import pytest
+
+from rosidl_cli.extensions import parse_extension_specification
 
 
 def test_extension_specification_parsing():
     with pytest.raises(ValueError):
-        parse_extension_specification("bad[")
+        parse_extension_specification('bad[')
 
     with pytest.raises(ValueError):
-        parse_extension_specification("bad[]")
+        parse_extension_specification('bad[]')
 
     with pytest.raises(ValueError):
-        parse_extension_specification("bad[:]")
+        parse_extension_specification('bad[:]')
 
-    name, kwargs = parse_extension_specification("no_args")
+    name, kwargs = parse_extension_specification('no_args')
     assert name == 'no_args'
     assert kwargs == {}
 
-    name, kwargs = parse_extension_specification("with_args[key: value]")
+    name, kwargs = parse_extension_specification('with_args[key: value]')
     assert name == 'with_args'
     assert kwargs == {'key': 'value'}

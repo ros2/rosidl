@@ -2,6 +2,12 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.3.0 (2021-06-11)
+------------------
+* Fix a cpplint allocator regression. (`#590 <https://github.com/ros2/rosidl/issues/590>`_)
+* Use RCUtils allocators in rosidl_generator_c (`#584 <https://github.com/ros2/rosidl/issues/584>`_)
+* Contributors: Chris Lalancette, Pablo Garrido
+
 2.2.1 (2021-04-06)
 ------------------
 

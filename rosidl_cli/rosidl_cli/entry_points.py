@@ -42,7 +42,7 @@ def get_entry_points(group_name, *, specs=None, strict=False):
             continue
         if name in entry_points:
             msg = (f"Found duplicate entry point '{name}': "
-                   'got {entry_point} and {entry_points[name]}')
+                   f'got {entry_point} and {entry_points[name]}')
             if strict:
                 raise RuntimeError(msg)
             logger.warning(msg)

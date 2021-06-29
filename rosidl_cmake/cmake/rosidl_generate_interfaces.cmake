@@ -220,6 +220,11 @@ macro(rosidl_generate_interfaces target)
   )
 
   if(NOT _ARG_SKIP_INSTALL)
+    # Ensure exported targets are imported before first use in downstream packages.
+    # This hook registers the ament_export_targets() extension, which populates
+    # ${PROJECT_NAME}_CONFIG_EXTRAS upon ament_package() invocation. It is crucial
+    # that ament_export_targets() configuration extras are found and included before
+    # any other configuration extras that make use of imported targets.
     _ament_cmake_export_targets_register_package_hook()
     if(NOT _ARG_SKIP_GROUP_MEMBERSHIP_CHECK)
       set(_group_name "rosidl_interface_packages")

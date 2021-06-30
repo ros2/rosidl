@@ -99,10 +99,9 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     COMPILE_OPTIONS -Wall -Wextra -Wpedantic
   )
 endif()
-target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-  PUBLIC
-  "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp>"
-)
+target_link_libraries(
+  ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  ${rosidl_generate_interfaces_TARGET}__rosidl_generator_cpp)
 ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   "rosidl_runtime_c"
   "rosidl_typesupport_interface"
@@ -135,14 +134,13 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   endif()
   install(
     TARGETS ${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    EXPORT ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    EXPORT ${rosidl_generate_interfaces_TARGET}
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin
   )
   rosidl_export_typesupport_targets(${_target_suffix}
     ${rosidl_generate_interfaces_TARGET}${_target_suffix})
-  ament_export_targets(${rosidl_generate_interfaces_TARGET}${_target_suffix})
 endif()
 
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)

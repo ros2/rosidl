@@ -2,6 +2,12 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Support passing keyword arguments to rosidl CLI extensions (`#597 <https://github.com/ros2/rosidl/issues/597>`_)
+* Add missing f for format string (`#600 <https://github.com/ros2/rosidl/issues/600>`_)
+* Contributors: Michel Hidalgo, Shane Loretz
+
 2.3.0 (2021-06-11)
 ------------------
 

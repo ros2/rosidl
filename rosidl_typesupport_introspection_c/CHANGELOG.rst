@@ -2,6 +2,12 @@
 Changelog for package rosidl_typesupport_introspection_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Bundle and ensure the exportation of rosidl generated targets (`#601 <https://github.com/ros2/rosidl/issues/601>`_)
+* Update function prefix (`#596 <https://github.com/ros2/rosidl/issues/596>`_)
+* Contributors: Michel Hidalgo, Pablo Garrido
+
 2.3.0 (2021-06-11)
 ------------------
 

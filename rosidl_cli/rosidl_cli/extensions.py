@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 class Extension:
     """A generic extension point."""
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name):
         self.__name = name
 
     @property

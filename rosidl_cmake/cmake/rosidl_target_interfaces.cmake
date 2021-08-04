@@ -29,6 +29,7 @@
 # @public
 #
 function(rosidl_target_interfaces target interface_target typesupport_name)
+  message(DEPRECATION "Use rosidl_get_typesupport_target() and target_link_libraries() instead of rosidl_target_interfaces()")
   if(ARGN)
     message(FATAL_ERROR
       "rosidl_target_interfaces() called with unused arguments: ${ARGN}")

@@ -38,4 +38,3 @@ function(rosidl_get_typesupport_target var generate_interfaces_target typesuppor
 
   set("${var}" "${output_target}" PARENT_SCOPE)
 endfunction()
-

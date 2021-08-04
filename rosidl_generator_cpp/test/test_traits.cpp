@@ -30,7 +30,7 @@ using rosidl_generator_traits::is_message;
 using rosidl_generator_traits::is_service;
 using rosidl_generator_traits::is_service_request;
 using rosidl_generator_traits::is_service_response;
-using rosidl_generator_traits::to_yaml;
+using rosidl_generator_cpp::msg::to_yaml;
 
 TEST(Test_rosidl_generator_traits, to_yaml) {
   {

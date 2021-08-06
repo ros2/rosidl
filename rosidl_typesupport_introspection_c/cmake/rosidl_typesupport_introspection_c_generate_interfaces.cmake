@@ -72,9 +72,12 @@ rosidl_write_generator_arguments(
   TARGET_DEPENDENCIES ${target_dependencies}
 )
 
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+
 add_custom_command(
   OUTPUT ${_generated_header_files} ${_generated_source_files}
-  COMMAND ${PYTHON_EXECUTABLE} ${rosidl_typesupport_introspection_c_BIN}
+  COMMAND Python3::Interpreter
+  ARGS ${rosidl_typesupport_introspection_c_BIN}
   --generator-arguments-file "${generator_arguments_file}"
   DEPENDS ${target_dependencies}
   COMMENT "Generating C introspection for ROS interfaces"

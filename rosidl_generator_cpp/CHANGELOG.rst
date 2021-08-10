@@ -2,6 +2,13 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Support flow style YAML printing (`#613 <https://github.com/ros2/rosidl/issues/613>`_)
+* Revert "Bundle and ensure the exportation of rosidl generated targets" (`#611 <https://github.com/ros2/rosidl/issues/611>`_)
+* Relocate to_yaml() under message namespace (`#609 <https://github.com/ros2/rosidl/issues/609>`_)
+* Contributors: Michel Hidalgo
+
 2.4.0 (2021-07-12)
 ------------------
 * Bundle and ensure the exportation of rosidl generated targets (`#601 <https://github.com/ros2/rosidl/issues/601>`_)

@@ -2,6 +2,12 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Revert "Bundle and ensure the exportation of rosidl generated targets" (`#611 <https://github.com/ros2/rosidl/issues/611>`_)
+* Add rosidl_get_typesupport_target and deprecate rosidl_target_interfaces (`#606 <https://github.com/ros2/rosidl/issues/606>`_)
+* Contributors: Michel Hidalgo, Shane Loretz
+
 2.4.0 (2021-07-12)
 ------------------
 * Bundle and ensure the exportation of rosidl generated targets (`#601 <https://github.com/ros2/rosidl/issues/601>`_)

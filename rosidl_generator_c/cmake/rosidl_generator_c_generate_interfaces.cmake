@@ -79,9 +79,12 @@ rosidl_write_generator_arguments(
   TARGET_DEPENDENCIES ${target_dependencies}
 )
 
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+
 add_custom_command(
   OUTPUT ${_generated_headers} ${_generated_sources}
-  COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_c_BIN}
+  COMMAND Python3::Interpreter
+  ARGS ${rosidl_generator_c_BIN}
   --generator-arguments-file "${generator_arguments_file}"
   DEPENDS ${target_dependencies}
   COMMENT "Generating C code for ROS interfaces"

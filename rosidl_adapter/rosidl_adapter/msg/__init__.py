@@ -61,8 +61,12 @@ MSG_TYPE_TO_IDL = {
 
 def to_idl_literal(idl_type, value):
     if idl_type[-1] == ']' or idl_type.startswith('sequence<'):
-        content = repr(tuple(value)).replace('\\', r'\\').replace('"', r'\"')
-        return f'"{content}"'
+        value = repr(tuple(value))
+        if idl_type.startswith('sequence<string'):
+            return string_to_idl_string_literal(value)
+        elif idl_type.startswith('sequence<wstring'):
+            return string_to_idl_wstring_literal(value)
+        return f'"{value}"'
 
     if 'boolean' == idl_type:
         return 'TRUE' if value else 'FALSE'
@@ -73,15 +77,54 @@ def to_idl_literal(idl_type, value):
     return value
 
 
+def idl_escape_char(char, to_wchar=False):
+    """Given a single character, escape it as described in IDL section 7.2.6.2.2 ."""
+    if len(char) != 1:
+        raise ValueError('Expected a single character to escape')
+    if ord(char) == 0:
+        raise ValueError('Cannot escape NUL character')
+
+    escapes = {
+        '\n': r'\n',
+        '\t': r'\t',
+        '\v': r'\v',
+        '\b': r'\b',
+        '\r': r'\r',
+        '\f': r'\f',
+        '\a': r'\a',
+        '\\': r'\\',
+        '?': r'\?',
+        '\'': r'\'',
+        '"': r'\"',
+    }
+    if char in escapes:
+        return escapes[char]
+    elif ord(char) > 31 and ord(char) < 127:
+        # It's a printable ascii character, return as is
+        return char
+
+    if to_wchar:
+        # This must be a multibyte character - escape as \uhhhh
+        return '\\u' + hex(ord(char))[2:].zfill(4)
+
+    # Encode as utf-8 and escaped as \xhh
+    return ''.join(['\\' + hex(b)[1:] for b in char.encode('utf-8')])
+
+
 def string_to_idl_string_literal(string):
-    """Convert string to character literal as described in IDL 4.2 section  7.2.6.3 ."""
-    estr = string.encode().decode('unicode_escape')
-    estr = estr.replace('"', r'\"')
-    return '"{0}"'.format(estr)
+    """Convert string to string literal as described in IDL 4.2 section  7.2.6.3 ."""
+    literal = ['"']
+    literal.extend(map(idl_escape_char, string))
+    literal.append('"')
+    return ''.join(literal)
 
 
 def string_to_idl_wstring_literal(string):
-    return string_to_idl_string_literal(string)
+    """Convert string to a wide string literal as described in IDL 4.2 section  7.2.6.3 ."""
+    literal = ['L"']
+    literal.extend(map(lambda c: idl_escape_char(c, to_wchar=True), string))
+    literal.append('"')
+    return ''.join(literal)
 
 
 def get_include_file(base_type):

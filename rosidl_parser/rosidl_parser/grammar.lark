@@ -65,7 +65,7 @@ _GRAPHIC_CHAR: "!" | "\"" | "#" | "$" | "%" | "&" | "'" | "(" | ")" | "*" | "+" 
 _FORMATTING_CHARACTERS: "\t" | "\n" | "\r"
 
 // Table 7-9: Escape sequences
-_ESCAPE_SEQUENCES: "\\n" | "\\t" | "\\v" | "\\b" | "\\r" | "\\f" | "\\a" | "\\\\" | "\\?" | "\\'" | "\\\"" | "\\" "0".."7" "0".."7" | "\\x" HEXDIGIT HEXDIGIT | "\\" HEXDIGIT HEXDIGIT HEXDIGIT HEXDIGIT
+_ESCAPE_SEQUENCES: "\\n" | "\\t" | "\\v" | "\\b" | "\\r" | "\\f" | "\\a" | "\\\\" | "\\?" | "\\'" | "\\\"" | "\\" "0".."7" "0".."7" | "\\x" HEXDIGIT HEXDIGIT | "\\u" HEXDIGIT HEXDIGIT HEXDIGIT HEXDIGIT
 
 // 7.2.6.3 String Literals
 // adjacent string literals are concatenated

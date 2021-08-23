@@ -50,6 +50,7 @@ def evaluate_template(template_name, data):
             options={
                 em.BUFFERED_OPT: True,
                 em.RAW_OPT: True,
+                em.OVERRIDE_OPT: False,
             })
 
         with open(template_path, 'r') as h:
@@ -60,11 +61,6 @@ def evaluate_template(template_name, data):
         _interpreter.invoke('afterFile')
 
         return output.getvalue()
-    except Exception as e:  # noqa: F841
-        print(
-            f"{e.__class__.__name__} processing template '{template_name}'",
-            file=sys.stderr)
-        raise
     finally:
         _interpreter.shutdown()
         _interpreter = None
@@ -79,9 +75,5 @@ def _evaluate_template(template_name, **kwargs):
         content = h.read()
     try:
         _interpreter.string(content, template_path, kwargs)
-    except Exception as e:  # noqa: F841
-        print(
-            f"{e.__class__.__name__} processing template '{template_name}': "
-            f'{e}', file=sys.stderr)
-        sys.exit(1)
-    _interpreter.invoke('afterInclude')
+    finally:
+        _interpreter.invoke('afterInclude')

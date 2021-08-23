@@ -59,7 +59,8 @@ _parser = None
 
 
 def parse_idl_file(locator, png_file=None):
-    string = locator.get_absolute_path().read_text(encoding='utf-8')
+    # OMG IDL 7.2 IDL Uses a mix of Latin-1 and ASCII
+    string = locator.get_absolute_path().read_text(encoding='iso-8859-1')
     try:
         content = parse_idl_string(string, png_file=png_file)
     except Exception as e:
@@ -628,33 +629,61 @@ def get_string_literal_value(string_literal, *, allow_unicode=False):
 
     regex = _get_escape_sequences_regex(allow_unicode=allow_unicode)
     value = regex.sub(_decode_escape_sequence, value)
-    # unescape double quote and backslash if preceeded by a backslash
-    i = 0
-    while i < len(value):
-        if value[i] == '\\':
-            if i + 1 < len(value) and value[i + 1] in ('"', '\\'):
-                value = value[:i] + value[i + 1:]
-        i += 1
-    return value
+
+    # `value` was decoded from Latin-1 to Python's default encoding when the idl file was read
+    # encode back to the original bytes
+    original_bytes = value.encode('iso-8859-1')
+    # Pretend the string literal was UTF-8 instead
+    return original_bytes.decode('utf-8')
 
 
 def _get_escape_sequences_regex(*, allow_unicode):
     # IDL Table 7-9: Escape sequences
-    pattern = '('
     # newline, horizontal tab, vertical tab, backspace, carriage return,
     # form feed, alert, backslash, question mark, single quote, double quote
-    pattern += r'\\[ntvbrfa\\?\'"]'
+    pattern = r'(?P<char>\\[ntvbrfa\\?\'"])'
     # octal number
-    pattern += '|' + r'\\[0-7]{1,3}'
+    pattern += '|' + r'(?P<octal>\\[0-7]{1,3})'
     # hexadecimal number
-    pattern += '|' + r'\\x[0-9a-fA-F]{1,2}'
+    pattern += '|' + r'(?P<hex>\\x[0-9a-fA-F]{1,2})'
     if allow_unicode:
         # unicode character
-        pattern += '|' + r'\\u[0-9a-fA-F]{1,4}'
-    pattern += ')'
+        pattern += '|' + r'(?P<unicode>\\u[0-9a-fA-F]{1,4})'
 
     return re.compile(pattern)
 
 
 def _decode_escape_sequence(match):
-    return codecs.decode(match.group(0), 'unicode-escape')
+    if match.group('char'):
+        # Mapping works because Python source code is UTF-8
+        # These bytes work because all of them are the same as if they were encoded in Latin-1
+        escapes = {
+            r'\n': b'\n',
+            r'\t': b'\t',
+            r'\v': b'\v',
+            r'\b': b'\b',
+            r'\r': b'\r',
+            r'\f': b'\f',
+            r'\a': b'\a',
+            r'\\': b'\\',
+            r'\?': b'?',
+            r'\'': b'\'',
+            r'\"': b'"',
+        }
+        value = escapes[match.group('char')]
+    elif match.group('octal'):
+        # Interpret the octal escape as an integer
+        value = bytes(int(match.group('octal')[1:], 8))
+    elif match.group('hex'):
+        # Interpret the hex escape as an integer
+        value = bytes(int(match.group('hex')[2:], 16))
+    elif 'unicode' in match.groupdict() and match.group('unicode'):
+        character = codecs.decode(match.group('unicode'), 'unicode_escape')
+        # encode into UTF-8 as if those bytes were what was givien in the file
+        value = character.encode('utf-8')
+    else:
+        raise RuntimeError(f'"{match.group(0)}" is not a valid escape sequence')
+
+    # Decode from latin-1 since that happened to all non-escaped bytes in the idl file
+    return value.decode('iso-8859-1')
+

@@ -45,7 +45,7 @@ More information can be found in [CONTRIBUTING](../CONTRIBUTING.md).
 
 ### Peer Review Policy [2.iii]
 
-Following the recommended guidelines for ROS Core packages, all pull request have at least 1 peer review.
+Following the recommended guidelines for ROS Core packages, all pull requests must have at least 1 peer review.
 
 ### Continuous Integration [2.iv]
 
@@ -89,11 +89,11 @@ Most recent test results can be found [here](https://ci.ros2.org/job/nightly_lin
 
 ### Feature Testing [4.i]
 
-The `rosidl_typesupport_introspection_cpp` package does not have tests.
+The `rosidl_typesupport_introspection_cpp` package does not have feature tests.
 
 ### Public API Testing [4.ii]
 
-The `rosidl_typesupport_introspection_cpp` package does not have tests. Indirect tests do exist in the form of tests that exercise message passing and service invocation using an RMW layer that depends on it such as `rmw_cyclonedds_cpp`.
+The `rosidl_typesupport_introspection_cpp` package does not have API tests. Indirect tests do exist in the form of tests that exercise message passing and service invocation using an RMW layer that depends on it such as `rmw_cyclonedds_cpp`.
 
 ### Coverage [4.iii]
 

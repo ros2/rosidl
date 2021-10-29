@@ -1,6 +1,6 @@
 # rosidl_typesupport_introspection_cpp
 
-`rosidl_typesupport_introspection_cpp` provides functionality for getting the associated message or service c typesupport handler functions and dynamically accessing or manipulating messages.
+`rosidl_typesupport_introspection_cpp` provides functionality for getting the associated message or service C++ typesupport handler functions and dynamically accessing or manipulating messages.
 
 ## Features
 

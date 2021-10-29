@@ -1,6 +1,6 @@
 # rosidl_typesupport_introspection_c
 
-`rosidl_typesupport_introspection_c` provides functionality for getting the associated message or service c typesupport handler functions and dynamically accessing or manipulating messages.
+`rosidl_typesupport_introspection_c` provides functionality for getting the associated message or service C typesupport handler functions and dynamically accessing or manipulating messages.
 
 ## Features
 

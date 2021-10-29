@@ -4,7 +4,7 @@
   <name>rosidl_runtime_cpp</name>
   <version>2.5.0</version>
   <description>Provides definitions and templated functions for getting and working with rosidl typesupport types in C++.</description>
-  <maintainer email="clalancette@openrobotics.org">Chris Lalancette</maintainer>
+  <maintainer email="michel@ekumenlabs.com">Michel Hidalgo</maintainer>
   <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>
   <license>Apache License 2.0</license>
   <author email="dthomas@osrfoundation.org">Dirk Thomas</author>

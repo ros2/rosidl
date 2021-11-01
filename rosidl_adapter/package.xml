@@ -10,6 +10,7 @@
   <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>
   <license>Apache License 2.0</license>
   <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
+  <author email="clalancette@openrobotics.org">Chris Lalancette</author>
 
   <buildtool_export_depend>ament_cmake_core</buildtool_export_depend>
   <buildtool_export_depend>python3</buildtool_export_depend>

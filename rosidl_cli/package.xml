@@ -9,7 +9,7 @@
   <maintainer email="michel@ekumenlabs.com">Michel Hidalgo</maintainer>
   <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>
   <license>Apache License 2.0</license>
-
+  <author email="clalancette@openrobotics.org">Chris Lalancette</author>
   <author email="michel@ekumenlabs.com">Michel Hidalgo</author>
 
   <exec_depend>python3-argcomplete</exec_depend>

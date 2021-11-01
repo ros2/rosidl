@@ -4,10 +4,11 @@
   <name>rosidl_parser</name>
   <version>2.5.0</version>
   <description>The parser for `.idl` ROS interface files.</description>
-  <maintainer email="clalancette@openrobotics.org">Chris Lalancette</maintainer>
+  <maintainer email="michel@ekumenlabs.com">Michel Hidalgo</maintainer>
   <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>
   <license>Apache License 2.0</license>
   <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
+  <author email="clalancette@openrobotics.org">Chris Lalancette</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

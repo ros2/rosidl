@@ -26,7 +26,7 @@
 namespace rosidl_typesupport_introspection_cpp
 {
 
-typedef struct ServiceMembers
+typedef struct ServiceMembers_s
 {
   const char * service_namespace_;
   const char * service_name_;

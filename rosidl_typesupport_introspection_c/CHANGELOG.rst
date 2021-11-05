@@ -2,6 +2,14 @@
 Changelog for package rosidl_typesupport_introspection_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix up the documentation for rosidl_typesupport_introspection_c (`#628 <https://github.com/ros2/rosidl/issues/628>`_)
+* Update package maintainers (`#624 <https://github.com/ros2/rosidl/issues/624>`_)
+* Quality Declaration for typesupport_introspection (`#621 <https://github.com/ros2/rosidl/issues/621>`_)
+* Make rosidl packages use FindPython3 instead of FindPythonInterp (`#612 <https://github.com/ros2/rosidl/issues/612>`_)
+* Contributors: Chris Lalancette, Michel Hidalgo, Shane Loretz, eboasson
+
 2.5.0 (2021-08-10)
 ------------------
 * Revert "Bundle and ensure the exportation of rosidl generated targets" (`#611 <https://github.com/ros2/rosidl/issues/611>`_)

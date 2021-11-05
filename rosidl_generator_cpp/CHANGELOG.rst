@@ -2,6 +2,12 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update package maintainers (`#624 <https://github.com/ros2/rosidl/issues/624>`_)
+* Make rosidl packages use FindPython3 instead of FindPythonInterp (`#612 <https://github.com/ros2/rosidl/issues/612>`_)
+* Contributors: Michel Hidalgo, Shane Loretz
+
 2.5.0 (2021-08-10)
 ------------------
 * Support flow style YAML printing (`#613 <https://github.com/ros2/rosidl/issues/613>`_)

@@ -2,6 +2,11 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update package maintainers (`#624 <https://github.com/ros2/rosidl/issues/624>`_)
+* Contributors: Michel Hidalgo
+
 2.5.0 (2021-08-10)
 ------------------
 * Revert "Bundle and ensure the exportation of rosidl generated targets" (`#611 <https://github.com/ros2/rosidl/issues/611>`_)

@@ -2,8 +2,8 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.0 (2021-11-05)
+------------------
 * Update package maintainers (`#624 <https://github.com/ros2/rosidl/issues/624>`_)
 * Contributors: Michel Hidalgo
 

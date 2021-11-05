@@ -2,8 +2,8 @@
 Changelog for package rosidl_typesupport_introspection_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.0 (2021-11-05)
+------------------
 * Fix up the documentation for rosidl_typesupport_introspection_c (`#628 <https://github.com/ros2/rosidl/issues/628>`_)
 * Update package maintainers (`#624 <https://github.com/ros2/rosidl/issues/624>`_)
 * Quality Declaration for typesupport_introspection (`#621 <https://github.com/ros2/rosidl/issues/621>`_)

@@ -27,7 +27,7 @@
 namespace rosidl_typesupport_introspection_cpp
 {
 
-typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember
+typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember_s
 {
   const char * name_;
   uint8_t type_id_;
@@ -44,7 +44,7 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember
   void (* resize_function)(void *, size_t size);
 } MessageMember;
 
-typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMembers
+typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMembers_s
 {
   const char * message_namespace_;
   const char * message_name_;

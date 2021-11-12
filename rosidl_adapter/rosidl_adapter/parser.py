@@ -884,14 +884,17 @@ def parse_action_file(pkg_name, interface_filename):
 
 
 def parse_action_string(pkg_name, action_name, action_string):
-    action_blocks = re.split(
-        '^' + ACTION_REQUEST_RESPONSE_SEPARATOR + '$', action_string, flags=re.MULTILINE)
-    if len(action_blocks) != 3:
+    lines = action_string.splitlines()
+    separator_indices = [
+        index for index, line in enumerate(lines) if line == ACTION_REQUEST_RESPONSE_SEPARATOR]
+    if len(separator_indices) != 2:
         raise InvalidActionSpecification(
             "Number of '%s' separators nonconformant with action definition" %
             ACTION_REQUEST_RESPONSE_SEPARATOR)
 
-    goal_string, result_string, feedback_string = action_blocks
+    goal_string = '\n'.join(lines[:separator_indices[0]])
+    result_string = '\n'.join(lines[separator_indices[0] + 1:separator_indices[1]])
+    feedback_string = '\n'.join(lines[separator_indices[1] + 1:])
 
     goal_message = parse_message_string(
         pkg_name, action_name + ACTION_GOAL_SUFFIX, goal_string)

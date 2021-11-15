@@ -448,35 +448,39 @@ def parse_message_file(pkg_name, interface_filename):
             pkg_name, msg_name, h.read())
 
 
+def extract_file_level_comments(message_string):
+    lines = message_string.splitlines()
+    index = next(
+        (i for i, v in enumerate(lines) if not v.startswith(COMMENT_DELIMITER)), -1)
+    if index != -1:
+        file_level_comments = lines[0:index]
+        other = lines[index:]
+    else:
+        file_level_comments = []
+        other = lines[:]
+    file_level_comments = [line.lstrip(COMMENT_DELIMITER) for line in file_level_comments]
+    return file_level_comments, other
+
+
 def parse_message_string(pkg_name, msg_name, message_string):
-    file_level_ended = False
     message_comments = []
     fields = []
     constants = []
     last_element = None  # either a field or a constant
+    # replace tabs with spaces
+    message_string.replace('\t', ' ')
 
     current_comments = []
-    lines = message_string.splitlines()
+    message_comments, lines = extract_file_level_comments(message_string)
     for line in lines:
         line = line.rstrip()
-
-        # replace tabs with spaces
-        line = line.replace('\t', ' ')
 
         # ignore empty lines
         if not line:
             # file-level comments stop at the first empty line
-            file_level_ended = True
             continue
 
         index = line.find(COMMENT_DELIMITER)
-
-        # file-level comment line
-        if index == 0 and not file_level_ended:
-            message_comments.append(line.lstrip(COMMENT_DELIMITER))
-            continue
-
-        file_level_ended = True
 
         # comment
         comment = None

@@ -113,8 +113,8 @@ scoped_name.1: IDENTIFIER
 // separate rule to identify the separator
 scoped_name_separator: "::"
 
-// (5)
-const_dcl: "const" const_type IDENTIFIER "=" const_expr
+// (5), 7.4.15.2
+const_dcl: annotation_appl* "const" const_type IDENTIFIER "=" const_expr
 
 // (6)
 const_type: integer_type

@@ -40,6 +40,16 @@ else:
 @[if msg.constants]@
     module @(msg.msg_name)_Constants {
 @[  for constant in msg.constants]@
+@[    if constant.annotations.get('comment', [])]@
+      @@verbatim (language="comment", text=
+@[      for i, line in enumerate(constant.annotations['comment'])]@
+        @(string_to_idl_string_literal(line))@
+@[        if i < len(constant.annotations.get('comment')) - 1]@
+ "\n"@
+@[        end if]@
+@[      end for]@
+)
+@[    end if]@
       const @(get_idl_type(constant.type)) @(constant.name) = @(to_idl_literal(get_idl_type(constant.type), constant.value));
 @[  end for]@
     };

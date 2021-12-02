@@ -52,7 +52,8 @@ module test_msgs {
       boolean ok;
     };
     @verbatim (language="comment", text=
-      "feedback definition")
+      "feedback definition" "\n"
+      "more")
     struct Test_Feedback {
       @verbatim (language="comment", text=
         "sequence docs")

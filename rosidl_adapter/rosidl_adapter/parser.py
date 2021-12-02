@@ -463,7 +463,6 @@ def extract_file_level_comments(message_string):
 
 
 def parse_message_string(pkg_name, msg_name, message_string):
-    message_comments = []
     fields = []
     constants = []
     last_element = None  # either a field or a constant

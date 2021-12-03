@@ -456,8 +456,8 @@ def extract_file_level_comments(message_string):
         file_level_comments = lines[0:index]
         other = lines[index:]
     else:
-        file_level_comments = []
-        other = lines[:]
+        file_level_comments = lines[:]
+        other = []
     file_level_comments = [line.lstrip(COMMENT_DELIMITER) for line in file_level_comments]
     return file_level_comments, other
 

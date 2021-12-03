@@ -9,7 +9,7 @@ target_include_directories(${PROJECT_NAME} INTERFACE
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include>")
 
-if (MSVC)
+if(MSVC)
   target_compile_definitions(${PROJECT_NAME} INTERFACE
   _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 endif()

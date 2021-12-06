@@ -45,7 +45,13 @@ macro(rosidl_export_typesupport_libraries library_suffix)
           "not-imported targets")
       endif()
 
-      list(APPEND _ROSIDL_CMAKE_EXPORT_TYPESUPPORT_LIBRARIES "${library_suffix}:${_lib}")
+      get_target_property(_lib_name "${_lib}" OUTPUT_NAME)
+
+      if(NOT _lib_name)
+        set(_lib_name ${_lib})
+      endif()
+
+      list(APPEND _ROSIDL_CMAKE_EXPORT_TYPESUPPORT_LIBRARIES "${library_suffix}:${_lib_name}")
     endforeach()
   endif()
 endmacro()

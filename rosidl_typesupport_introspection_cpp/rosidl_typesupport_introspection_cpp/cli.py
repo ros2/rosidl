@@ -24,6 +24,10 @@ from rosidl_typesupport_introspection_cpp import generate_cpp
 
 
 class GenerateIntrospectionCppTypesupport(GenerateCommandExtension):
+    """
+    Generator class for generating the C++ implementation of the type support.
+
+    """
 
     def generate(
         self,

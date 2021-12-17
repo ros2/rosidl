@@ -20,6 +20,7 @@
 namespace rosidl_typesupport_introspection_cpp
 {
 
+/// String identifying the typesupport introspection implementation in use.
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_IMPORT
 extern const char * typesupport_identifier;
 

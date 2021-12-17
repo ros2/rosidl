@@ -7,6 +7,16 @@ from rosidl_typesupport_introspection_cpp import generate_cpp
 
 
 def main(argv=sys.argv[1:]):
+    """
+    Main function for the command-line tool to generate the C++-language
+    introspection type support for an interface.
+
+    Parameters
+    ----------
+    argv : List[str]
+        The command-line arguments to be parsed. Defaults to sys.argv[1:].
+
+    """
     parser = argparse.ArgumentParser(
         description='Generate the C++ type support to dynamically handle ROS messages.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)

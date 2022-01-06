@@ -5,29 +5,28 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rcutils REQUIRED)
+find_package(rcpputils REQUIRED)
 find_package(rosidl_typesupport_introspection_c REQUIRED)
 find_package(rosidl_typesupport_introspection_cpp REQUIRED)
 find_package(rosidl_typesupport_interface REQUIRED)
+
+add_library(${PROJECT_NAME} INTERFACE)
+target_include_directories(${PROJECT_NAME} INTERFACE include/)
+target_link_libraries(${PROJECT_NAME} INTERFACE
+  rcutils::rcutils
+  rcpputils::rcpputils
+  rosidl_typesupport_interface::rosidl_typesupport_interface
+  rosidl_typesupport_introspection_c::rosidl_typesupport_introspection_c
+  rosidl_typesupport_introspection_cpp::rosidl_typesupport_introspection_cpp)
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
-  find_package(ament_cmake_gtest REQUIRED)
-  find_package(ament_cmake_gtest REQUIRED)
-  find_package(test_msgs REQUIRED)
-  ament_add_gtest(
-    test_typesupport_c
-    test/test_typesupport_c.cpp
-  )
-  if(TARGET test_typesupport_c)
-    target_compile_features(test_typesupport_c PRIVATE cxx_std_17)
-    ament_target_dependencies(test_typesupport_c
-      "test_msgs"
-    )
-  endif()
+  add_subdirectory(test/test_msgs_introspection)
 endif()
 
 ament_package()

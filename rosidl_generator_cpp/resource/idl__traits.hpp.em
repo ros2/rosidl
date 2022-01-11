@@ -31,7 +31,7 @@ include_directives = set()
 #include <type_traits>
 
 #include "@(include_base)__struct.hpp"
-#include <rosidl_runtime_cpp/traits.hpp>
+#include "rosidl_runtime_cpp/traits.hpp"
 
 @#######################################################################
 @# Handle message

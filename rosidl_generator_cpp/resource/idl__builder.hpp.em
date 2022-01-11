@@ -24,10 +24,11 @@ include_directives = set()
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
-#include "@(include_base)__struct.hpp"
-#include <rosidl_runtime_cpp/message_initialization.hpp>
 #include <algorithm>
 #include <utility>
+
+#include "@(include_base)__struct.hpp"
+#include <rosidl_runtime_cpp/message_initialization.hpp>
 
 @#######################################################################
 @# Handle message

@@ -467,7 +467,7 @@ def parse_message_string(pkg_name, msg_name, message_string):
     constants = []
     last_element = None  # either a field or a constant
     # replace tabs with spaces
-    message_string.replace('\t', ' ')
+    message_string = message_string.replace('\t', ' ')
 
     current_comments = []
     message_comments, lines = extract_file_level_comments(message_string)

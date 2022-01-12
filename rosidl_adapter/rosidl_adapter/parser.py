@@ -453,7 +453,7 @@ def extract_file_level_comments(message_string):
     index = next(
         (i for i, v in enumerate(lines) if not v.startswith(COMMENT_DELIMITER)), -1)
     if index != -1:
-        file_level_comments = lines[0:index]
+        file_level_comments = lines[:index]
         other = lines[index:]
     else:
         file_level_comments = lines[:]

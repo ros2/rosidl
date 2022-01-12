@@ -454,12 +454,12 @@ def extract_file_level_comments(message_string):
         (i for i, v in enumerate(lines) if not v.startswith(COMMENT_DELIMITER)), -1)
     if index != -1:
         file_level_comments = lines[:index]
-        other = lines[index:]
+        file_content = lines[index:]
     else:
         file_level_comments = lines[:]
-        other = []
+        file_content = []
     file_level_comments = [line.lstrip(COMMENT_DELIMITER) for line in file_level_comments]
-    return file_level_comments, other
+    return file_level_comments, file_content
 
 
 def parse_message_string(pkg_name, msg_name, message_string):

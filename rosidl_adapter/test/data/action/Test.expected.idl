@@ -6,12 +6,20 @@
 module test_msgs {
   module action {
     @verbatim (language="comment", text=
-      "goal definition")
+      "goal definition" "\n"
+      "foo")
     struct Test_Goal {
+      @verbatim (language="comment", text=
+        "bar")
       boolean bool_value;
 
+      @verbatim (language="comment", text=
+        "baz")
       octet byte_value;
 
+      @verbatim (language="comment", text=
+        "asd" "\n"
+        "bsd")
       uint8 char_value;
 
       float float32_value;
@@ -36,14 +44,19 @@ module test_msgs {
 
       string string_value;
     };
+    @verbatim (language="comment", text=
+      "result definition")
     struct Test_Result {
       @verbatim (language="comment", text=
-        "result definition")
+        "ok docs")
       boolean ok;
     };
+    @verbatim (language="comment", text=
+      "feedback definition" "\n"
+      "more")
     struct Test_Feedback {
       @verbatim (language="comment", text=
-        "feedback definition")
+        "sequence docs")
       sequence<int32> sequence;
     };
   };

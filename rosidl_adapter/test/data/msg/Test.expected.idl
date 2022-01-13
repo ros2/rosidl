@@ -5,11 +5,20 @@
 
 module test_msgs {
   module msg {
+    @verbatim (language="comment", text=
+      "msg level doc")
     struct Test {
+      @verbatim (language="comment", text=
+        "field level doc")
       boolean bool_value;
 
+      @verbatim (language="comment", text=
+        "field level doc, style 2")
       octet byte_value;
 
+      @verbatim (language="comment", text=
+        "combined styles" "\n"
+        "combined styles, part 2")
       uint8 char_value;
 
       float float32_value;

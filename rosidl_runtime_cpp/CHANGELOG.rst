@@ -2,6 +2,11 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.0.1 (2022-01-13)
+------------------
+* Set CXX standard to 17 (`#635 <https://github.com/ros2/rosidl/issues/635>`_)
+* Contributors: Øystein Sture
+
 3.0.0 (2021-11-05)
 ------------------
 * Update package maintainers (`#624 <https://github.com/ros2/rosidl/issues/624>`_)

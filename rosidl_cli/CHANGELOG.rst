@@ -2,6 +2,11 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.0.1 (2022-01-13)
+------------------
+* Update maintainers to Michel Hidalgo and Shane Loretz (`#633 <https://github.com/ros2/rosidl/issues/633>`_)
+* Contributors: Audrow Nash
+
 3.0.0 (2021-11-05)
 ------------------
 * Update package maintainers (`#624 <https://github.com/ros2/rosidl/issues/624>`_)

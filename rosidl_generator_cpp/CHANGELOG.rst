@@ -2,6 +2,12 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.0.1 (2022-01-13)
+------------------
+* Fix include order for cpplint (`#644 <https://github.com/ros2/rosidl/issues/644>`_)
+* Set CXX standard to 17 (`#635 <https://github.com/ros2/rosidl/issues/635>`_)
+* Contributors: Jacob Perron, Øystein Sture
+
 3.0.0 (2021-11-05)
 ------------------
 * Update package maintainers (`#624 <https://github.com/ros2/rosidl/issues/624>`_)

@@ -33,7 +33,7 @@ enum
   rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE = 3,
   /// Unsigned char, 8 bits wide.
   rosidl_typesupport_introspection_c__ROS_TYPE_CHAR = 4,
-  /// Wide character, large enough to support Unicode code points.
+  /// Wide character, 16 bits wide.
   rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR = 5,
   /// Boolean value. The size is implementation defined.
   rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN = 6,

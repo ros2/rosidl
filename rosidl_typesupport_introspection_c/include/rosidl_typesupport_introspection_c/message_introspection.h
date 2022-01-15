@@ -29,7 +29,8 @@ typedef struct rosidl_typesupport_introspection_c__MessageMember_s
 {
   /// The name of the field.
   const char * name_;
-  /// The type of the field as a value of the field types enum,
+  /// The type of the field as a value of the field types enum
+  /// rosidl_typesupport_introspection_c_field_types.
   /// e.g. rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT
   uint8_t type_id_;
   /// If the field is a string, the upper bound on the length of the string.

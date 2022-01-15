@@ -4,9 +4,10 @@ import argparse
 import sys
 
 from rosidl_typesupport_introspection_cpp import generate_cpp
+from typing import List
 
 
-def main(argv=sys.argv[1:]):
+def main(argv: List[str] = sys.argv[1:]):
     """
     Main function for the command-line tool to generate the C++-language
     introspection type support for an interface.

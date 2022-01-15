@@ -15,7 +15,7 @@
 from rosidl_cmake import generate_files
 
 
-def generate_cpp(generator_arguments_file):
+def generate_cpp(generator_arguments_file: str):
     """
     Generate the C++ implementation of the type support.
 

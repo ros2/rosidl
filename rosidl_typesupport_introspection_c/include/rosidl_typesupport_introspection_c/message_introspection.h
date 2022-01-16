@@ -38,8 +38,8 @@ typedef struct rosidl_typesupport_introspection_c__MessageMember_s
   /// If the type_id_ value is rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE,
   /// this points to an array describing the fields of the sub-interface.
   const rosidl_message_type_support_t * members_;
-  /// True if this field is an array, false if it is a unary type. An array has the same value for
-  /// type_id_.
+  /// True if this field is an array type, false if it is any other type. An
+  /// array has the same value for / type_id_.
   bool is_array_;
   /// If is_array_ is true, this contains the number of members in the array.
   size_t array_size_;

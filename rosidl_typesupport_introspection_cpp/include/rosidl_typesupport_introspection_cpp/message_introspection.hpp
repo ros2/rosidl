@@ -52,18 +52,22 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember_s
   uint32_t offset_;
   /// If the interface has a default value, this points to it.
   const void * default_value_;
-  /// If is_array_ is true, a pointer to a function that gives the size of one member of the array.
+  /// If is_array_ is true, a pointer to a function that gives the size of array members.
+  /// First argument should be a pointer to the actual memory representation of the member.
   /// Only used for nested interface types.
   size_t (* size_function)(const void *);
   /// If is_array_ is true, a pointer to a function that gives a const pointer to the member of the
   /// array indicated by index.
+  /// First argument should be a pointer to the actual memory representation of the member.
   /// Only used for nested interface types.
   const void * (*get_const_function)(const void *, size_t index);
   /// If is_array_ is true, a pointer to a function that gives a pointer to the member of the
   /// array indicated by index.
+  /// First argument should be a pointer to the actual memory representation of the member.
   /// Only used for nested interface types.
   void * (*get_function)(void *, size_t index);
   /// If is_array_ is true, a pointer to a function that resizes the array.
+  /// First argument should be a pointer to the actual memory representation of the member.
   /// Only used for nested interface types.
   void (* resize_function)(void *, size_t size);
 } MessageMember;

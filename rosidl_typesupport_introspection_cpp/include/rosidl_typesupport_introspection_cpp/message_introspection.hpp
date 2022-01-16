@@ -33,11 +33,11 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember_s
   /// The name of the field.
   const char * name_;
   /// The type of the field as a value of the field types enum,
-  /// e.g. rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT
+  /// e.g.rosidl_typesupport_introspection_cpp::ROS_TYPE_FLOAT
   uint8_t type_id_;
   /// If the field is a string, the upper bound on the length of the string.
   size_t string_upper_bound_;
-  /// If the type_id_ value is rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE,
+  /// If the type_id_ value is rosidl_typesupport_introspection_cpp::ROS_TYPE_MESSAGE
   /// this points to an array describing the fields of the sub-interface.
   const rosidl_message_type_support_t * members_;
   /// True if this field is an array, false if it is a unary type. An array has the same value for

@@ -23,8 +23,9 @@
 namespace rosidl_typesupport_introspection_cpp
 {
 
-/// Returns a pointer to the type support structure provided by this library for introspecting
-/// interfaces.
+/// Returns a pointer to the type support structure provided by the
+/// lib<package_name>__rosidl_typesupport_introspection_cpp.so downstream
+/// libraries for introspecting interfaces.
 /// This is implemented in the shared library provided by this package.
 template<typename T>
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC

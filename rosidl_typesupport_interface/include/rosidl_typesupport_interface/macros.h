@@ -17,7 +17,7 @@
 
 /// Declare the typesupport library name.
 #define ROSIDL_TYPESUPPORT_INTERFACE__LIBRARY_NAME( \
-    typesupport_name, package_name)  \
+    typesupport_name, package_name) \
   package_name ## __ ## typesupport_name
 
 /// Declare the typesupport symbol name. Note: this should not be called directly.

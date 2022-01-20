@@ -232,6 +232,49 @@ for line in lines:
 }@
 }
 
+bool
+@(message_typename)__are_equal(const @(message_typename) * lhs, const @(message_typename) * rhs)
+{
+  if (!lhs || !rhs) {
+    return false;
+  }
+@[for member in message.structure.members]@
+  // @(member.name)
+@[  if isinstance(member.type, Array)]@
+  for (size_t i = 0; i < @(member.type.size); ++i) {
+@[     if isinstance(member.type.value_type, (AbstractGenericString, NamespacedType))]@
+    if (!@(basetype_to_c(member.type.value_type))__are_equal(
+        &(lhs->@(member.name)[i]), &(rhs->@(member.name)[i])))
+    {
+      return false;
+    }
+@[     else]@
+    if (lhs->@(member.name)[i] != rhs->@(member.name)[i]) {
+      return false;
+    }
+@[     end if]@
+  }
+@[  elif isinstance(member.type, AbstractSequence)]@
+  if (!@(idl_type_to_c(member.type))__are_equal(
+      &(lhs->@(member.name)), &(rhs->@(member.name))))
+  {
+    return false;
+  }
+@[  elif isinstance(member.type, (AbstractGenericString, NamespacedType))]@
+  if (!@(basetype_to_c(member.type))__are_equal(
+      &(lhs->@(member.name)), &(rhs->@(member.name))))
+  {
+    return false;
+  }
+@[  else]@
+  if (lhs->@(member.name) != rhs->@(member.name)) {
+    return false;
+  }
+@[  end if]@
+@[end for]@
+  return true;
+}
+
 @(message_typename) *
 @(message_typename)__create()
 {
@@ -350,4 +393,21 @@ void
     @(array_typename)__fini(array);
   }
   allocator.deallocate(array, allocator.state);
+}
+
+bool
+@(array_typename)__are_equal(const @(array_typename) * lhs, const @(array_typename) * rhs)
+{
+  if (!lhs || !rhs) {
+    return false;
+  }
+  if (lhs->size != rhs->size) {
+    return false;
+  }
+  for (size_t i = 0; i < lhs->size; ++i) {
+    if (!@(message_typename)__are_equal(&(lhs->data[i]), &(rhs->data[i]))) {
+      return false;
+    }
+  }
+  return true;
 }

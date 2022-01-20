@@ -78,6 +78,20 @@ rosidl_runtime_c__String__fini(rosidl_runtime_c__String * str)
 }
 
 bool
+rosidl_runtime_c__String__are_equal(
+  const rosidl_runtime_c__String * lhs,
+  const rosidl_runtime_c__String * rhs)
+{
+  if (!lhs || !rhs) {
+    return false;
+  }
+  if (lhs->size != rhs->size) {
+    return false;
+  }
+  return memcmp(lhs->data, rhs->data, lhs->size) == 0;
+}
+
+bool
 rosidl_runtime_c__String__assignn(
   rosidl_runtime_c__String * str, const char * value, size_t n)
 {
@@ -176,6 +190,27 @@ rosidl_runtime_c__String__Sequence__fini(
     assert(0 == sequence->size);
     assert(0 == sequence->capacity);
   }
+}
+
+bool
+rosidl_runtime_c__String__Sequence__are_equal(
+  const rosidl_runtime_c__String__Sequence * lhs,
+  const rosidl_runtime_c__String__Sequence * rhs)
+{
+  if (!lhs || !rhs) {
+    return false;
+  }
+  if (lhs->size != rhs->size) {
+    return false;
+  }
+  for (size_t i = 0; i < lhs->size; ++i) {
+    if (!rosidl_runtime_c__String__are_equal(
+        &(lhs->data[i]), &(rhs->data[i])))
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 rosidl_runtime_c__String__Sequence *

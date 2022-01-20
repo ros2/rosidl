@@ -227,7 +227,7 @@ TEST(string_functions, create_destroy_sequence_maybe_fail) {
 }
 
 
-TEST(u16string_functions, sequence_equality) {
+TEST(u16string_functions, sequence_equality_comparison) {
   rosidl_runtime_c__U16String__Sequence empty_sequence;
   rosidl_runtime_c__U16String__Sequence nonempty_sequence;
   EXPECT_TRUE(rosidl_runtime_c__U16String__Sequence__init(&empty_sequence, 0u));

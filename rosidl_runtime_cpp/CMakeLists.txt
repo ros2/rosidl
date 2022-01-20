@@ -44,6 +44,11 @@ if(BUILD_TESTING)
     target_include_directories(test_bounded_vector PUBLIC include)
   endif()
 
+  ament_add_gtest(test_vector test/test_vector.cpp)
+  if(TARGET test_vector)
+    target_include_directories(test_vector PUBLIC include)
+  endif()
+
   add_performance_test(benchmark_bounded_vector test/benchmark/benchmark_bounded_vector.cpp)
   if(TARGET benchmark_bounded_vector)
     target_link_libraries(benchmark_bounded_vector ${PROJECT_NAME})

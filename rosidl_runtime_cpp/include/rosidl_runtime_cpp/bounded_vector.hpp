@@ -19,7 +19,8 @@
 #include <memory>
 #include <stdexcept>
 #include <utility>
-#include <vector>
+
+#include "rosidl_runtime_cpp/vector.hpp"
 
 namespace rosidl_runtime_cpp
 {
@@ -34,9 +35,9 @@ namespace rosidl_runtime_cpp
  */
 template<typename Tp, std::size_t UpperBound, typename Alloc = std::allocator<Tp>>
 class BoundedVector
-  : protected std::vector<Tp, Alloc>
+  : protected Vector<Tp, Alloc>
 {
-  using Base = std::vector<Tp, Alloc>;
+  using Base = Vector<Tp, Alloc>;
 
 public:
   using typename Base::value_type;

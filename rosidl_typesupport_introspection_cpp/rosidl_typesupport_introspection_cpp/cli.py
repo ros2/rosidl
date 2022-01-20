@@ -24,7 +24,7 @@ from rosidl_typesupport_introspection_cpp import generate_cpp
 
 
 class GenerateIntrospectionCppTypesupport(GenerateCommandExtension):
-    """Make up a CLI for convenient access to the generators of type support"""
+    """Make up a CLI for convenient access to the generators of type support."""
 
     def generate(
         self,

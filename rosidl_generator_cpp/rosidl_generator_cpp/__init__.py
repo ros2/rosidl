@@ -117,8 +117,8 @@ def msg_type_to_cpp(type_):
     if isinstance(type_, AbstractNestedType):
         if isinstance(type_, UnboundedSequence):
             return \
-                ('std::vector<%s, typename std::allocator_traits<ContainerAllocator>::template ' +
-                 'rebind_alloc<%s>>') % (cpp_type, cpp_type)
+                ('rosidl_runtime_cpp::Vector<%s, typename std::allocator_traits' +
+                 '<ContainerAllocator>::template rebind_alloc<%s>>') % (cpp_type, cpp_type)
         elif isinstance(type_, BoundedSequence):
             return \
                 ('rosidl_runtime_cpp::BoundedVector<%s, %u, typename std::allocator_traits' +

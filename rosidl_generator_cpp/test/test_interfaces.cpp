@@ -241,7 +241,7 @@ void test_message_bounded(rosidl_generator_cpp::msg::BoundedSequences message)
 
 #define TEST_UNBOUNDED_SEQUENCE_TYPES( \
     Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal) \
-  std::vector<PrimitiveType> pattern_ ## FieldName(ArraySize); \
+  rosidl_runtime_cpp::Vector<PrimitiveType> pattern_ ## FieldName(ArraySize); \
   pattern_ ## FieldName.resize(ArraySize); \
   test_vector_fill<decltype(pattern_ ## FieldName)>( \
     &pattern_ ## FieldName, ArraySize, MinVal, MaxVal); \
@@ -251,7 +251,7 @@ void test_message_bounded(rosidl_generator_cpp::msg::BoundedSequences message)
 
 #define TEST_UNBOUNDED_SEQUENCE_STRING( \
     Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal, MinLength, MaxLength) \
-  std::vector<PrimitiveType> pattern_ ## FieldName; \
+  rosidl_runtime_cpp::Vector<PrimitiveType> pattern_ ## FieldName; \
   Message.FieldName.resize(ArraySize); \
   pattern_ ## FieldName.resize(ArraySize); \
   test_vector_fill<decltype(pattern_ ## FieldName)>( \

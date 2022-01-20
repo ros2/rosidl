@@ -69,6 +69,23 @@ ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 bool
 @(message_typename)__are_equal(const @(message_typename) * lhs, const @(message_typename) * rhs);
 
+/// Copy a @(interface_path_to_string(interface_path)) message.
+/**
+ * This functions performs a deep copy, as opposed to the shallow copy that
+ * plain assignment yields.
+ *
+ * \param[in] input The source message pointer.
+ * \param[out] output The target message pointer, which must
+ *   have been initialized before calling this function.
+ * \return true if successful, or false if either pointer is null
+ *   or memory allocation fails.
+ */
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
+bool
+@(message_typename)__copy(
+  const @(message_typename) * input,
+  @(message_typename) * output);
+
 @#######################################################################
 @# array functions
 @#######################################################################
@@ -131,3 +148,20 @@ void
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 bool
 @(array_typename)__are_equal(const @(array_typename) * lhs, const @(array_typename) * rhs);
+
+/// Copy an array of @(interface_path_to_string(interface_path)) messages.
+/**
+ * This functions performs a deep copy, as opposed to the shallow copy that
+ * plain assignment yields.
+ *
+ * \param[in] input The source array pointer.
+ * \param[out] output The target array pointer, which must
+ *   have been initialized before calling this function.
+ * \return true if successful, or false if either pointer
+ *   is null or memory allocation fails.
+ */
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
+bool
+@(array_typename)__copy(
+  const @(array_typename) * input,
+  @(array_typename) * output);

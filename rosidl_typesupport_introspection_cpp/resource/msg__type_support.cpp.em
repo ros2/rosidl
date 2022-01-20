@@ -62,14 +62,7 @@ void @(message.structure.namespaced_type.name)_fini_function(void * message_memo
 }
 
 @[for member in message.structure.members]@
-@{
-def is_vector_bool(member):
-    from rosidl_parser.definition import BasicType
-    from rosidl_parser.definition import AbstractSequence
-    return isinstance(member.type, AbstractSequence) and isinstance(member.type.value_type, BasicType) and member.type.value_type.typename == 'boolean'
-}@
-@# exclude std::vector<bool> because of specialization in their API
-@[  if isinstance(member.type, AbstractNestedType) and not is_vector_bool(member)]@
+@[  if isinstance(member.type, AbstractNestedType)]@
 @{
 from rosidl_generator_cpp import  MSG_TYPE_TO_CPP
 if isinstance(member.type.value_type, BasicType):
@@ -87,7 +80,8 @@ size_t size_function__@(message.structure.namespaced_type.name)__@(member.name)(
   (void)untyped_member;
   return @(member.type.size);
 @[    else]@
-  const auto * member = reinterpret_cast<const std::vector<@(type_)> *>(untyped_member);
+  const auto * member =
+    reinterpret_cast<const rosidl_runtime_cpp::Vector<@(type_)> *>(untyped_member);
   return member->size();
 @[    end if]@
 }
@@ -99,7 +93,7 @@ const void * get_const_function__@(message.structure.namespaced_type.name)__@(me
     *reinterpret_cast<const std::array<@(type_), @(member.type.size)> *>(untyped_member);
 @[    else]@
   const auto & member =
-    *reinterpret_cast<const std::vector<@(type_)> *>(untyped_member);
+    *reinterpret_cast<const rosidl_runtime_cpp::Vector<@(type_)> *>(untyped_member);
 @[    end if]@
   return &member[index];
 }
@@ -111,7 +105,7 @@ void * get_function__@(message.structure.namespaced_type.name)__@(member.name)(v
     *reinterpret_cast<std::array<@(type_), @(member.type.size)> *>(untyped_member);
 @[    else]@
   auto & member =
-    *reinterpret_cast<std::vector<@(type_)> *>(untyped_member);
+    *reinterpret_cast<rosidl_runtime_cpp::Vector<@(type_)> *>(untyped_member);
 @[    end if]@
   return &member[index];
 }
@@ -120,7 +114,7 @@ void * get_function__@(message.structure.namespaced_type.name)__@(member.name)(v
 void resize_function__@(message.structure.namespaced_type.name)__@(member.name)(void * untyped_member, size_t size)
 {
   auto * member =
-    reinterpret_cast<std::vector<@(type_)> *>(untyped_member);
+    reinterpret_cast<rosidl_runtime_cpp::Vector<@(type_)> *>(untyped_member);
   member->resize(size);
 }
 
@@ -175,7 +169,7 @@ for index, member in enumerate(message.structure.members):
     # void * default_value_
     print('    nullptr,  // default value')  # TODO default value to be set
 
-    function_suffix = ('%s__%s' % (message.structure.namespaced_type.name, member.name)) if isinstance(member.type, AbstractNestedType) and not is_vector_bool(member) else None
+    function_suffix = ('%s__%s' % (message.structure.namespaced_type.name, member.name)) if isinstance(member.type, AbstractNestedType) else None
 
     # size_t(const void *) size_function
     print('    %s,  // size() function pointer' % ('size_function__%s' % function_suffix if function_suffix else 'nullptr'))

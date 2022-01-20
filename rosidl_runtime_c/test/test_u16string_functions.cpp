@@ -146,24 +146,32 @@ TEST(u16string_functions, resize_assignn) {
   rosidl_runtime_c__U16String__fini(&s);
 }
 
-TEST(u16string_functions, string_equality) {
-  rosidl_runtime_c__U16String empty_string;
-  rosidl_runtime_c__U16String nonempty_string;
+TEST(u16string_functions, equality_comparison) {
+  rosidl_runtime_c__U16String empty_string, foo_string, bar_string;
   EXPECT_TRUE(rosidl_runtime_c__U16String__init(&empty_string));
-  EXPECT_TRUE(rosidl_runtime_c__U16String__init(&nonempty_string));
-  const uint16_t data[] = {123u, 321u};
-  EXPECT_TRUE(rosidl_runtime_c__U16String__assign(&nonempty_string, data));
+  EXPECT_TRUE(rosidl_runtime_c__U16String__init(&foo_string));
+  const uint16_t encoded_foo_string[] = {102u, 111u, 111u, 0u};
+  EXPECT_TRUE(rosidl_runtime_c__U16String__assign(&foo_string, encoded_foo_string));
+  EXPECT_TRUE(rosidl_runtime_c__U16String__init(&bar_string));
+  const uint16_t encoded_bar_string[] = {98u, 97u, 114u, 0u};
+  EXPECT_TRUE(rosidl_runtime_c__U16String__assign(&bar_string, encoded_bar_string));
 
   EXPECT_FALSE(rosidl_runtime_c__U16String__are_equal(nullptr, nullptr));
   EXPECT_FALSE(rosidl_runtime_c__U16String__are_equal(&empty_string, nullptr));
   EXPECT_FALSE(rosidl_runtime_c__U16String__are_equal(nullptr, &empty_string));
   EXPECT_TRUE(rosidl_runtime_c__U16String__are_equal(&empty_string, &empty_string));
-  EXPECT_FALSE(rosidl_runtime_c__U16String__are_equal(&empty_string, &nonempty_string));
-  EXPECT_FALSE(rosidl_runtime_c__U16String__are_equal(&nonempty_string, &empty_string));
-  EXPECT_TRUE(rosidl_runtime_c__U16String__are_equal(&nonempty_string, &nonempty_string));
 
+  EXPECT_FALSE(rosidl_runtime_c__U16String__are_equal(&empty_string, &foo_string));
+  EXPECT_FALSE(rosidl_runtime_c__U16String__are_equal(&foo_string, &empty_string));
+  EXPECT_TRUE(rosidl_runtime_c__U16String__are_equal(&foo_string, &foo_string));
+
+  EXPECT_FALSE(rosidl_runtime_c__U16String__are_equal(&bar_string, &foo_string));
+  EXPECT_FALSE(rosidl_runtime_c__U16String__are_equal(&foo_string, &bar_string));
+  EXPECT_TRUE(rosidl_runtime_c__U16String__are_equal(&bar_string, &bar_string));
+
+  rosidl_runtime_c__U16String__fini(&bar_string);
+  rosidl_runtime_c__U16String__fini(&foo_string);
   rosidl_runtime_c__U16String__fini(&empty_string);
-  rosidl_runtime_c__U16String__fini(&nonempty_string);
 }
 
 TEST(u16string_functions, init_fini_sequence) {

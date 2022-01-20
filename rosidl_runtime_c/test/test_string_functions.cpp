@@ -116,23 +116,30 @@ TEST(string_functions, resize_assignn) {
   rosidl_runtime_c__String__fini(&s);
 }
 
-TEST(string_functions, string_equality) {
-  rosidl_runtime_c__String empty_string;
-  rosidl_runtime_c__String nonempty_string;
+TEST(string_functions, equality_comparison) {
+  rosidl_runtime_c__String empty_string, foo_string, bar_string;
   EXPECT_TRUE(rosidl_runtime_c__String__init(&empty_string));
-  EXPECT_TRUE(rosidl_runtime_c__String__init(&nonempty_string));
-  EXPECT_TRUE(rosidl_runtime_c__String__assign(&nonempty_string, "foo"));
+  EXPECT_TRUE(rosidl_runtime_c__String__init(&foo_string));
+  EXPECT_TRUE(rosidl_runtime_c__String__assign(&foo_string, "foo"));
+  EXPECT_TRUE(rosidl_runtime_c__String__init(&bar_string));
+  EXPECT_TRUE(rosidl_runtime_c__String__assign(&bar_string, "bar"));
 
   EXPECT_FALSE(rosidl_runtime_c__String__are_equal(nullptr, nullptr));
   EXPECT_FALSE(rosidl_runtime_c__String__are_equal(&empty_string, nullptr));
   EXPECT_FALSE(rosidl_runtime_c__String__are_equal(nullptr, &empty_string));
   EXPECT_TRUE(rosidl_runtime_c__String__are_equal(&empty_string, &empty_string));
-  EXPECT_FALSE(rosidl_runtime_c__String__are_equal(&empty_string, &nonempty_string));
-  EXPECT_FALSE(rosidl_runtime_c__String__are_equal(&nonempty_string, &empty_string));
-  EXPECT_TRUE(rosidl_runtime_c__String__are_equal(&nonempty_string, &nonempty_string));
 
+  EXPECT_FALSE(rosidl_runtime_c__String__are_equal(&empty_string, &foo_string));
+  EXPECT_FALSE(rosidl_runtime_c__String__are_equal(&foo_string, &empty_string));
+  EXPECT_TRUE(rosidl_runtime_c__String__are_equal(&foo_string, &foo_string));
+
+  EXPECT_FALSE(rosidl_runtime_c__String__are_equal(&bar_string, &foo_string));
+  EXPECT_FALSE(rosidl_runtime_c__String__are_equal(&foo_string, &bar_string));
+  EXPECT_TRUE(rosidl_runtime_c__String__are_equal(&bar_string, &bar_string));
+
+  rosidl_runtime_c__String__fini(&bar_string);
+  rosidl_runtime_c__String__fini(&foo_string);
   rosidl_runtime_c__String__fini(&empty_string);
-  rosidl_runtime_c__String__fini(&nonempty_string);
 }
 
 TEST(string_functions, init_fini_sequence) {

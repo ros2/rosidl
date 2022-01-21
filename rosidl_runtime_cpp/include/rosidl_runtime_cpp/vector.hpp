@@ -101,6 +101,13 @@ public:
   : Base(other) {}
 };
 
+template<typename T, typename AllocatorT>
+inline void
+swap(Vector<T, AllocatorT> & x, Vector<T, AllocatorT> & y)
+{
+  x.swap(y);
+}
+
 /// Specialization for a boolean vector with no space optimizations.
 /**
  * This container transparently interacts with std::vector<bool>
@@ -167,11 +174,48 @@ public:
   }
 };
 
-template<typename T, typename AllocatorT>
-inline void
-swap(Vector<T, AllocatorT> & x, Vector<T, AllocatorT> & y)
+// Equality operators to compare Vector<bool> and std::vector<bool>
+template<typename AllocatorT>
+inline bool
+operator==(
+  const Vector<bool, AllocatorT> & a,
+  const std::vector<bool, AllocatorT> & b)
 {
-  x.swap(y);
+  if (a.size() != b.size()) {
+    return false;
+  }
+  for (size_t i = 0; i < a.size(); ++i) {
+    if (a[i] != b[i]) {return false;}
+  }
+  return true;
+}
+
+template<typename AllocatorT>
+inline bool
+operator==(
+  const std::vector<bool, AllocatorT> & a,
+  const Vector<bool, AllocatorT> & b)
+{
+  return b == a;
+}
+
+// Inequality operators to compare Vector<bool> and std::vector<bool>
+template<typename AllocatorT>
+inline bool
+operator!=(
+  const Vector<bool, AllocatorT> & a,
+  const std::vector<bool, AllocatorT> & b)
+{
+  return !(a == b);
+}
+
+template<typename AllocatorT>
+inline bool
+operator!=(
+  const std::vector<bool, AllocatorT> & a,
+  const Vector<bool, AllocatorT> & b)
+{
+  return !(b == a);
 }
 
 }  // namespace rosidl_runtime_cpp

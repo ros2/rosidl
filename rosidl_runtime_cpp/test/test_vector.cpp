@@ -56,20 +56,24 @@ TYPED_TEST(VectorTest, CanInteractWithStdVector) {
   rosidl_runtime_cpp::Vector<TypeParam>
   vector_constructed_from_std_vector{std_vector};
   EXPECT_EQ(TypeParam{0}, vector_constructed_from_std_vector[0]);
+  EXPECT_EQ(std_vector, vector_constructed_from_std_vector);
 
   rosidl_runtime_cpp::Vector<TypeParam>
   vector_assigned_to_std_vector;
   vector_assigned_to_std_vector = std_vector;
   EXPECT_EQ(TypeParam{0}, vector_assigned_to_std_vector[0]);
+  EXPECT_EQ(std_vector, vector_assigned_to_std_vector);
 
   rosidl_runtime_cpp::Vector<TypeParam> vector{{TypeParam{1}}};
 
   std::vector<TypeParam> std_vector_constructed_from_vector{vector};
   EXPECT_EQ(TypeParam{1}, std_vector_constructed_from_vector[0]);
+  EXPECT_EQ(vector, std_vector_constructed_from_vector);
 
   std::vector<TypeParam> std_vector_assigned_to_vector;
   std_vector_assigned_to_vector = vector;
   EXPECT_EQ(TypeParam{1}, std_vector_assigned_to_vector[0]);
+  EXPECT_EQ(vector, std_vector_assigned_to_vector);
 }
 
 }  // namespace

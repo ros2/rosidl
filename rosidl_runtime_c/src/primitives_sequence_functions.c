@@ -56,7 +56,26 @@
       assert(0 == sequence->size); \
       assert(0 == sequence->capacity); \
     } \
+  } \
+ \
+  bool rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal( \
+    const rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence * lhs, \
+    const rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence * rhs) \
+  { \
+    if (!lhs || !rhs) { \
+      return false; \
+    } \
+    if (lhs->size != rhs->size) { \
+      return false; \
+    } \
+    for (size_t i = 0; i < lhs->size; ++i) { \
+      if (lhs->data[i] != rhs->data[i]) { \
+        return false; \
+      } \
+    } \
+    return true; \
   }
+
 
 // array functions for all basic types
 ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(float, float)
@@ -88,6 +107,12 @@ void rosidl_runtime_c__bool__Sequence__fini(
   rosidl_runtime_c__boolean__Sequence__fini(
     sequence);
 }
+bool rosidl_runtime_c__bool__Sequence__are_equal(
+  const rosidl_runtime_c__boolean__Sequence * lhs,
+  const rosidl_runtime_c__boolean__Sequence * rhs)
+{
+  return rosidl_runtime_c__boolean__Sequence__are_equal(lhs, rhs);
+}
 
 bool rosidl_runtime_c__byte__Sequence__init(
   rosidl_runtime_c__octet__Sequence * sequence, size_t size)
@@ -100,6 +125,12 @@ void rosidl_runtime_c__byte__Sequence__fini(
 {
   rosidl_runtime_c__octet__Sequence__fini(
     sequence);
+}
+bool rosidl_runtime_c__byte__Sequence__are_equal(
+  const rosidl_runtime_c__octet__Sequence * lhs,
+  const rosidl_runtime_c__octet__Sequence * rhs)
+{
+  return rosidl_runtime_c__octet__Sequence__are_equal(lhs, rhs);
 }
 
 bool rosidl_runtime_c__float32__Sequence__init(
@@ -114,6 +145,12 @@ void rosidl_runtime_c__float32__Sequence__fini(
   rosidl_runtime_c__float__Sequence__fini(
     sequence);
 }
+bool rosidl_runtime_c__float32__Sequence__are_equal(
+  const rosidl_runtime_c__float__Sequence * lhs,
+  const rosidl_runtime_c__float__Sequence * rhs)
+{
+  return rosidl_runtime_c__float__Sequence__are_equal(lhs, rhs);
+}
 
 bool rosidl_runtime_c__float64__Sequence__init(
   rosidl_runtime_c__double__Sequence * sequence, size_t size)
@@ -126,4 +163,10 @@ void rosidl_runtime_c__float64__Sequence__fini(
 {
   rosidl_runtime_c__double__Sequence__fini(
     sequence);
+}
+bool rosidl_runtime_c__float64__Sequence__are_equal(
+  const rosidl_runtime_c__double__Sequence * lhs,
+  const rosidl_runtime_c__double__Sequence * rhs)
+{
+  return rosidl_runtime_c__double__Sequence__are_equal(lhs, rhs);
 }

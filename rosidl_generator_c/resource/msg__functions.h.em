@@ -59,6 +59,15 @@ ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 void
 @(message_typename)__destroy(@(message_typename) * msg);
 
+/// Check for @(interface_path_to_string(interface_path)) message equality.
+/**
+ * \param[in] lhs The message on the left hand size of the equality operator.
+ * \param[in] rhs The message on the right hand size of the equality operator.
+ * \return true if messages are equal, otherwise false.
+ */
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
+bool
+@(message_typename)__are_equal(const @(message_typename) * lhs, const @(message_typename) * rhs);
 
 @#######################################################################
 @# array functions
@@ -112,3 +121,13 @@ ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 void
 @(array_typename)__destroy(@(array_typename) * array);
+
+/// Check for @(interface_path_to_string(interface_path)) message array equality.
+/**
+ * \param[in] lhs The message array on the left hand size of the equality operator.
+ * \param[in] rhs The message array on the right hand size of the equality operator.
+ * \return true if message arrays are equal in size and content, otherwise false.
+ */
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
+bool
+@(array_typename)__are_equal(const @(array_typename) * lhs, const @(array_typename) * rhs);

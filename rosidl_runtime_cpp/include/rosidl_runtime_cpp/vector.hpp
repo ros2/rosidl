@@ -93,6 +93,8 @@ public:
 
   using Base::vector;
 
+  Vector() = default;
+
   // Implicit "copy" and "move" constructors from std::vector<T> instances
   Vector(const std::vector<T, AllocatorT> & other)  // NOLINT(runtime/explicit)
   : Base(other) {}
@@ -139,6 +141,8 @@ public:
   using typename Base::allocator_type;
 
   using Base::vector;
+
+  Vector() = default;
 
   // Implicit "copy" and "move" constructors from std::vector<bool> instances
   Vector(const std::vector<bool, AllocatorT> & other)  // NOLINT(runtime/explicit)

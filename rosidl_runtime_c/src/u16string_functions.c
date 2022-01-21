@@ -75,6 +75,20 @@ rosidl_runtime_c__U16String__fini(rosidl_runtime_c__U16String * str)
 }
 
 bool
+rosidl_runtime_c__U16String__are_equal(
+  const rosidl_runtime_c__U16String * lhs,
+  const rosidl_runtime_c__U16String * rhs)
+{
+  if (!lhs || !rhs) {
+    return false;
+  }
+  if (lhs->size != rhs->size) {
+    return false;
+  }
+  return memcmp(lhs->data, rhs->data, lhs->size * sizeof(uint16_t)) == 0;
+}
+
+bool
 rosidl_runtime_c__U16String__assignn(
   rosidl_runtime_c__U16String * str, const uint16_t * value, size_t n)
 {
@@ -212,6 +226,27 @@ rosidl_runtime_c__U16String__Sequence__fini(
     assert(0 == sequence->size);
     assert(0 == sequence->capacity);
   }
+}
+
+bool
+rosidl_runtime_c__U16String__Sequence__are_equal(
+  const rosidl_runtime_c__U16String__Sequence * lhs,
+  const rosidl_runtime_c__U16String__Sequence * rhs)
+{
+  if (!lhs || !rhs) {
+    return false;
+  }
+  if (lhs->size != rhs->size) {
+    return false;
+  }
+  for (size_t i = 0; i < lhs->size; ++i) {
+    if (!rosidl_runtime_c__U16String__are_equal(
+        &(lhs->data[i]), &(rhs->data[i])))
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 rosidl_runtime_c__U16String__Sequence *

@@ -36,6 +36,8 @@
 #include <test_msgs/msg/defaults.hpp>
 #include <test_msgs/msg/empty.h>
 #include <test_msgs/msg/empty.hpp>
+#include <test_msgs/msg/strings.h>
+#include <test_msgs/msg/strings.hpp>
 
 #include <memory>
 
@@ -78,7 +80,9 @@ struct TestMsgsIntrospectionCTypeSupportLibrary
     MESSAGE_TYPESUPPORT_SYMBOL_RECORD(
       rosidl_typesupport_introspection_c, test_msgs, msg, Defaults),
     MESSAGE_TYPESUPPORT_SYMBOL_RECORD(
-      rosidl_typesupport_introspection_c, test_msgs, msg, Empty)
+      rosidl_typesupport_introspection_c, test_msgs, msg, Empty),
+    MESSAGE_TYPESUPPORT_SYMBOL_RECORD(
+      rosidl_typesupport_introspection_c, test_msgs, msg, Strings)
   };
   static constexpr const ServiceTypeSupportSymbolRecord services[] = {
     SERVICE_TYPESUPPORT_SYMBOL_RECORD(
@@ -136,6 +140,15 @@ struct introspection_traits<test_msgs__msg__Empty>
   using TypeSupportLibraryT = TestMsgsIntrospectionCTypeSupportLibrary;
 };
 
+template<>
+struct introspection_traits<test_msgs__msg__Strings>
+{
+  static constexpr const MessageTypeSupportSymbolRecord typesupport =
+    MESSAGE_TYPESUPPORT_SYMBOL_RECORD(
+    rosidl_typesupport_introspection_c, test_msgs, msg, Strings);
+  using TypeSupportLibraryT = TestMsgsIntrospectionCTypeSupportLibrary;
+};
+
 // Examples of `test_msgs` package interfaces in C, useful in test fixtures
 template<>
 struct Example<test_msgs__msg__Arrays>
@@ -145,16 +158,65 @@ struct Example<test_msgs__msg__Arrays>
     using ReturnT = std::unique_ptr<
       test_msgs__msg__Arrays,
       std::function<void (test_msgs__msg__Arrays *)>>;
-
     auto deleter = [](test_msgs__msg__Arrays * message) {
         test_msgs__msg__Arrays__fini(message);
         delete message;
       };
-    auto * message = new test_msgs__msg__Arrays;
-    test_msgs__msg__Arrays__init(message);
+    ReturnT message{new test_msgs__msg__Arrays, deleter};
+    if (!test_msgs__msg__Arrays__init(message.get())) {
+      throw std::runtime_error(rcutils_get_error_string().str);
+    }
     message->bool_values[2] = true;
+    message->float64_values[1] = 1.234;
     message->uint16_values[0] = 1234u;
-    return ReturnT{message, deleter};
+    return message;
+  }
+};
+
+template<>
+struct Example<test_msgs__msg__BasicTypes>
+{
+  static auto Make()
+  {
+    using ReturnT = std::unique_ptr<
+      test_msgs__msg__BasicTypes,
+      std::function<void (test_msgs__msg__BasicTypes *)>>;
+    auto deleter = [](test_msgs__msg__BasicTypes * message) {
+        test_msgs__msg__BasicTypes__fini(message);
+        delete message;
+      };
+    ReturnT message{new test_msgs__msg__BasicTypes, deleter};
+    if (!test_msgs__msg__BasicTypes__init(message.get())) {
+      throw std::runtime_error(rcutils_get_error_string().str);
+    }
+    message->bool_value = true;
+    message->float32_value = 1.234f;
+    message->uint16_value = 1234u;
+    return message;
+  }
+};
+
+template<>
+struct Example<test_msgs__msg__Strings>
+{
+  static auto Make()
+  {
+    using ReturnT = std::unique_ptr<
+      test_msgs__msg__Strings,
+      std::function<void (test_msgs__msg__Strings *)>>;
+    auto deleter = [](test_msgs__msg__Strings * message) {
+        test_msgs__msg__Strings__fini(message);
+        delete message;
+      };
+    ReturnT message{new test_msgs__msg__Strings, deleter};
+    if (
+      !test_msgs__msg__Strings__init(message.get()) ||
+      !rosidl_runtime_c__String__assign(&message->string_value, "foo") ||
+      !rosidl_runtime_c__String__assign(&message->bounded_string_value, "bar"))
+    {
+      throw std::runtime_error(rcutils_get_error_string().str);
+    }
+    return message;
   }
 };
 
@@ -190,7 +252,9 @@ struct TestMsgsIntrospectionCppTypeSupportLibrary
     MESSAGE_TYPESUPPORT_SYMBOL_RECORD(
       rosidl_typesupport_introspection_cpp, test_msgs, msg, Defaults),
     MESSAGE_TYPESUPPORT_SYMBOL_RECORD(
-      rosidl_typesupport_introspection_cpp, test_msgs, msg, Empty)
+      rosidl_typesupport_introspection_cpp, test_msgs, msg, Empty),
+    MESSAGE_TYPESUPPORT_SYMBOL_RECORD(
+      rosidl_typesupport_introspection_cpp, test_msgs, msg, Strings)
   };
   static constexpr const ServiceTypeSupportSymbolRecord services[] = {
     SERVICE_TYPESUPPORT_SYMBOL_RECORD(
@@ -248,6 +312,15 @@ struct introspection_traits<test_msgs::msg::Empty>
   using TypeSupportLibraryT = TestMsgsIntrospectionCppTypeSupportLibrary;
 };
 
+template<>
+struct introspection_traits<test_msgs::msg::Strings>
+{
+  static constexpr const MessageTypeSupportSymbolRecord typesupport =
+    MESSAGE_TYPESUPPORT_SYMBOL_RECORD(
+    rosidl_typesupport_introspection_cpp, test_msgs, msg, Strings);
+  using TypeSupportLibraryT = TestMsgsIntrospectionCppTypeSupportLibrary;
+};
+
 // Examples of `test_msgs` package interfaces in C++, useful in test fixtures
 template<>
 struct Example<test_msgs::msg::Arrays>
@@ -256,10 +329,37 @@ struct Example<test_msgs::msg::Arrays>
   {
     auto message = std::make_unique<test_msgs::msg::Arrays>();
     message->bool_values[2] = true;
+    message->float64_values[1] = 1.234;
     message->uint16_values[0] = 1234u;
     return message;
   }
 };
+
+template<>
+struct Example<test_msgs::msg::BasicTypes>
+{
+  static std::unique_ptr<test_msgs::msg::BasicTypes> Make()
+  {
+    auto message = std::make_unique<test_msgs::msg::BasicTypes>();
+    message->bool_value = true;
+    message->float32_value = 1.234f;
+    message->uint16_value = 1234u;
+    return message;
+  }
+};
+
+template<>
+struct Example<test_msgs::msg::Strings>
+{
+  static std::unique_ptr<test_msgs::msg::Strings> Make()
+  {
+    auto message = std::make_unique<test_msgs::msg::Strings>();
+    message->string_value = "foo";
+    message->bounded_string_value = "bar";
+    return message;
+  }
+};
+
 
 }  // namespace rosidl_typesupport_introspection_tests
 
@@ -271,5 +371,6 @@ DEFINE_CXX_API_FOR_C_MESSAGE(test_msgs, msg, BasicTypes)
 DEFINE_CXX_API_FOR_C_MESSAGE(test_msgs, msg, Constants)
 DEFINE_CXX_API_FOR_C_MESSAGE(test_msgs, msg, Defaults)
 DEFINE_CXX_API_FOR_C_MESSAGE(test_msgs, msg, Empty)
+DEFINE_CXX_API_FOR_C_MESSAGE(test_msgs, msg, Strings)
 
 #endif  // TEST_MSGS_INTROSPECTION__TEST_MSGS_TYPES_HPP_

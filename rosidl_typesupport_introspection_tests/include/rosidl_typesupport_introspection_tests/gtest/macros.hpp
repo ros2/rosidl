@@ -74,6 +74,27 @@
     } \
   }
 
+/// Asserts that assignment of an array message member on a type erased
+/// message via introspection APIs (may incur memory corruption, make
+/// sure to validate).
+#define ASSERT_SEQUENCE_MEMBER_ASSIGNMENT( \
+    type_erased_message, message, member_name, member_descriptor) \
+  { \
+    ASSERT_STREQ(member_descriptor->name_, #member_name); \
+    using member_base_type = \
+      EXPRESSION_TYPE(getitem(message.member_name, 0)); \
+    ASSERT_TRUE(has_array_structure(member_descriptor)); \
+    void * type_erased_member = \
+      get_member(type_erased_message, member_descriptor); \
+    const size_t size = get_member_size( \
+      type_erased_member, member_descriptor); \
+    for (size_t i = 0u; i < size; ++i) { \
+      auto & item = get_member_item<member_base_type>( \
+        type_erased_member, member_descriptor, i); \
+      item = deepcopy(getitem(message.member_name, i)); \
+    } \
+  }
+
 /// Asserts that assignment of a message member on a type erased message via
 /// introspection APIs (may incur memory corruption, make sure to validate).
 #define ASSERT_MEMBER_ASSIGNMENT( \

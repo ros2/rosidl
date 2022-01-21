@@ -128,11 +128,18 @@ bool has_array_structure(const MemberDescriptorT * member_descriptor)
 
 template<typename MemberDescriptorT>
 bool has_array_structure(
-  const MemberDescriptorT * member_descriptor,
-  const size_t size)
+  const MemberDescriptorT * member_descriptor, const size_t size)
 {
   return has_array_structure(member_descriptor) &&
          member_descriptor->array_size_ == size;
+}
+
+template<typename MemberDescriptorT>
+bool has_sequence_structure(const MemberDescriptorT * member_descriptor)
+{
+  return has_iterable_structure(member_descriptor) &&
+         !member_descriptor->is_upper_bound_ &&
+         member_descriptor->resize_function != nullptr;
 }
 
 template<typename MessageT, typename MemberDescriptorT>
@@ -162,6 +169,14 @@ bool is_base_type_member(const MemberDescriptorT * member_descriptor, int type_i
 {
   return member_descriptor->type_id_ == type_id &&
          member_descriptor->members_ == nullptr;
+}
+
+template<typename MemberDescriptorT>
+bool is_string_member(const MemberDescriptorT * member_descriptor, const size_t upper_bound = 0u)
+{
+  return member_descriptor->type_id_ == ROS_TYPE_STRING &&
+         member_descriptor->members_ == nullptr &&
+         member_descriptor->string_upper_bound_ == upper_bound;
 }
 
 template<typename MemberDescriptorT>

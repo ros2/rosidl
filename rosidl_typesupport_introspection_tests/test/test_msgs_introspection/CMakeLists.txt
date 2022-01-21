@@ -17,6 +17,34 @@ if(TARGET test_typesupport_introspection_libraries)
 endif()
 
 ament_add_gtest(
+  test_arrays_message_introspection
+  test_arrays_message_introspection.cpp
+)
+if(TARGET test_arrays_message_introspection)
+  target_include_directories(
+    test_arrays_message_introspection PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR})
+  target_link_libraries(
+    test_arrays_message_introspection ${PROJECT_NAME})
+  ament_target_dependencies(
+    test_arrays_message_introspection test_msgs)
+endif()
+
+ament_add_gtest(
+  test_basic_types_message_introspection
+  test_basic_types_message_introspection.cpp
+)
+if(TARGET test_basic_types_message_introspection)
+  target_include_directories(
+    test_basic_types_message_introspection PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR})
+  target_link_libraries(
+    test_basic_types_message_introspection ${PROJECT_NAME})
+  ament_target_dependencies(
+    test_basic_types_message_introspection test_msgs)
+endif()
+
+ament_add_gtest(
   test_empty_message_introspection
   test_empty_message_introspection.cpp
 )
@@ -31,15 +59,15 @@ if(TARGET test_empty_message_introspection)
 endif()
 
 ament_add_gtest(
-  test_arrays_message_introspection
-  test_arrays_message_introspection.cpp
+  test_strings_message_introspection
+  test_strings_message_introspection.cpp
 )
-if(TARGET test_arrays_message_introspection)
+if(TARGET test_strings_message_introspection)
   target_include_directories(
-    test_arrays_message_introspection PRIVATE
+    test_strings_message_introspection PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR})
   target_link_libraries(
-    test_arrays_message_introspection ${PROJECT_NAME})
+    test_strings_message_introspection ${PROJECT_NAME})
   ament_target_dependencies(
-    test_arrays_message_introspection test_msgs)
+    test_strings_message_introspection test_msgs)
 endif()

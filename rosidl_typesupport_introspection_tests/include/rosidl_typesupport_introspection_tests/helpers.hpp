@@ -41,6 +41,20 @@ T deepcopy(T value) {return value;}
     return output; \
   }
 
+template<typename ContainerT, typename IndexT>
+const auto & getitem(const ContainerT & container, const IndexT & index)
+{
+  return container[index];
+}
+
+/// Defines a `deepcopy()` overload for `type`, assuming
+/// it is in the set of non-basic C message member types.
+#define DEFINE_C_MESSAGE_SEQUENCE_MEMBER_GETITEM_OVERLOAD(type) \
+  inline const type & \
+  getitem(const RCUTILS_JOIN(type, __Sequence) & seq, const size_t index) { \
+    return seq.data[index]; \
+  }
+
 /// Defines `operator==()` and `operator!=()` overloads for `type`,
 /// assuming it is in the set of non-basic C message member types.
 #define DEFINE_C_MESSAGE_MEMBER_OPERATOR_OVERLOADS(type) \
@@ -63,16 +77,24 @@ T deepcopy(T value) {return value;}
   DEFINE_C_MESSAGE_MEMBER_OPERATOR_OVERLOADS( \
     package_name ## __ ## interface_type ## __ ## message_name)
 
+/// Defines `operator==()` and `operator!=()` overload for a C message.
+#define DEFINE_C_MESSAGE_SEQUENCE_GETITEM_OVERLOAD( \
+    package_name, interface_type, message_name) \
+  DEFINE_C_MESSAGE_SEQUENCE_MEMBER_GETITEM_OVERLOAD( \
+    package_name ## __ ## interface_type ## __ ## message_name)
+
 /// Defines C++ helper API for `type`, assuming it is
 /// in the set of of non-basic C message member types.
 #define DEFINE_CXX_API_FOR_C_MESSAGE_MEMBER(type) \
   DEFINE_C_MESSAGE_MEMBER_OPERATOR_OVERLOADS(type) \
-  DEFINE_C_MESSAGE_MEMBER_DEEPCOPY_OVERLOAD(type)
+  DEFINE_C_MESSAGE_MEMBER_DEEPCOPY_OVERLOAD(type) \
+  DEFINE_C_MESSAGE_SEQUENCE_MEMBER_GETITEM_OVERLOAD(type)
 
 /// Defines C++ helper API for a C message.
 #define DEFINE_CXX_API_FOR_C_MESSAGE(package_name, interface_type, message_name) \
   DEFINE_C_MESSAGE_OPERATOR_OVERLOADS(package_name, interface_type, message_name) \
-  DEFINE_C_MESSAGE_DEEPCOPY_OVERLOAD(package_name, interface_type, message_name)
+  DEFINE_C_MESSAGE_DEEPCOPY_OVERLOAD(package_name, interface_type, message_name) \
+  DEFINE_C_MESSAGE_SEQUENCE_GETITEM_OVERLOAD(package_name, interface_type, message_name)
 
 namespace rosidl_typesupport_introspection_tests
 {

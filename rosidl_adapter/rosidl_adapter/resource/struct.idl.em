@@ -68,14 +68,14 @@ else:
     struct @(msg.msg_name) {
 @[if msg.fields]@
 @[  for i, field in enumerate(msg.fields)]@
-@[if i > 0]@
+@[    if i > 0]@
 
-@[end if]@
+@[    end if]@
 @[    if field.annotations.get('comment', [])]@
       @@verbatim (language="comment", text=@
-@[      for i, line in enumerate(field.annotations['comment'])]
+@[      for j, line in enumerate(field.annotations['comment'])]
         @(string_to_idl_string_literal(line))@
-@[        if i < len(field.annotations.get('comment')) - 1]@
+@[        if j < len(field.annotations.get('comment')) - 1]@
  "\n"@
 @[        end if]@
 @[      end for]@

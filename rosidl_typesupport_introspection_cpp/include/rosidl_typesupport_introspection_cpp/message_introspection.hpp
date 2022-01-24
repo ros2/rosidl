@@ -41,6 +41,8 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember_s
   size_t (* size_function)(const void *);
   const void * (*get_const_function)(const void *, size_t index);
   void * (*get_function)(void *, size_t index);
+  void (* fetch_function)(const void *, size_t index, void *);
+  void (* assign_function)(void *, size_t index, const void *);
   void (* resize_function)(void *, size_t size);
 } MessageMember;
 

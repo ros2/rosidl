@@ -38,6 +38,8 @@ typedef struct rosidl_typesupport_introspection_c__MessageMember_s
   size_t (* size_function)(const void *);
   const void * (*get_const_function)(const void *, size_t index);
   void * (*get_function)(void *, size_t index);
+  void (* fetch_function)(const void *, size_t index, void *);
+  void (* assign_function)(void *, size_t index, const void *);
   bool (* resize_function)(void *, size_t size);
 } rosidl_typesupport_introspection_c__MessageMember;
 

@@ -15,11 +15,11 @@
 #ifndef ROSIDL_TYPESUPPORT_INTROSPECTION_TESTS__API_HPP_
 #define ROSIDL_TYPESUPPORT_INTROSPECTION_TESTS__API_HPP_
 
-#include <rcpputils/shared_library.hpp>
-
 #include <rosidl_runtime_c/message_initialization.h>
-#include <rosidl_runtime_cpp/message_initialization.hpp>
 #include <rosidl_typesupport_introspection_c/message_introspection.h>
+
+#include <rcpputils/shared_library.hpp>
+#include <rosidl_runtime_cpp/message_initialization.hpp>
 #include <rosidl_typesupport_introspection_cpp/message_introspection.hpp>
 
 #include "rosidl_typesupport_introspection_tests/type_traits.hpp"
@@ -209,42 +209,24 @@ int get_member_base_type(const MemberDescriptorT * member_descriptor)
   return member_descriptor->type_id_;
 }
 
-template<typename MemberDescriptorT>
-void * get_member_item(
-  void * member,
-  const MemberDescriptorT * member_descriptor,
-  const size_t index)
-{
-  return member_descriptor->get_function(member, index);
-}
-
 template<typename ItemT, typename MemberDescriptorT>
-ItemT & get_member_item(
-  void * member,
-  const MemberDescriptorT * member_descriptor,
-  const size_t index)
-{
-  return *reinterpret_cast<ItemT *>(get_member_item(member, member_descriptor, index));
-}
-
-template<typename MemberDescriptorT>
-const void * get_const_member_item(
+ItemT fetch_member_item(
   const void * member,
   const MemberDescriptorT * member_descriptor,
   const size_t index)
 {
-  return member_descriptor->get_const_function(member, index);
+  ItemT value;
+  member_descriptor->fetch_function(member, index, &value);
+  return value;
 }
 
 template<typename ItemT, typename MemberDescriptorT>
-const ItemT &
-get_const_member_item(
-  const void * member,
+void assign_member_item(
+  void * member,
   const MemberDescriptorT * member_descriptor,
-  const size_t index)
+  const size_t index, ItemT && value)
 {
-  return *reinterpret_cast<const ItemT *>(
-    get_const_member_item(member, member_descriptor, index));
+  member_descriptor->assign_function(member, index, &value);
 }
 
 template<typename MemberDescriptorT>

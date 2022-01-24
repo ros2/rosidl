@@ -23,23 +23,25 @@
 #include <rosidl_typesupport_interface/macros.h>
 #include <rosidl_typesupport_introspection_c/message_introspection.h>
 #include <rosidl_typesupport_introspection_c/service_introspection.h>
+
+#include <test_msgs/msg/arrays.h>
+#include <test_msgs/msg/basic_types.h>
+#include <test_msgs/msg/constants.h>
+#include <test_msgs/msg/defaults.h>
+#include <test_msgs/msg/empty.h>
+#include <test_msgs/msg/strings.h>
+
+#include <memory>
+
 #include <rosidl_typesupport_introspection_cpp/message_introspection.hpp>
 #include <rosidl_typesupport_introspection_cpp/service_introspection.hpp>
 
-#include <test_msgs/msg/arrays.h>
 #include <test_msgs/msg/arrays.hpp>
-#include <test_msgs/msg/basic_types.h>
 #include <test_msgs/msg/basic_types.hpp>
-#include <test_msgs/msg/constants.h>
 #include <test_msgs/msg/constants.hpp>
-#include <test_msgs/msg/defaults.h>
 #include <test_msgs/msg/defaults.hpp>
-#include <test_msgs/msg/empty.h>
 #include <test_msgs/msg/empty.hpp>
-#include <test_msgs/msg/strings.h>
 #include <test_msgs/msg/strings.hpp>
-
-#include <memory>
 
 #include "rosidl_typesupport_introspection_tests/fixtures.hpp"
 #include "rosidl_typesupport_introspection_tests/helpers.hpp"

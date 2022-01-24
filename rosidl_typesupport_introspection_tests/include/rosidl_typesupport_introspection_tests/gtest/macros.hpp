@@ -36,7 +36,7 @@
     const size_t size = get_member_size( \
       type_erased_member, member_descriptor); \
     for (size_t i = 0u; i < size; ++i) { \
-      const auto & item = get_const_member_item<member_base_type>( \
+      const auto item = fetch_member_item<member_base_type>( \
         type_erased_member, member_descriptor, i); \
       ASSERT_EQ(item, message.member_name[i]); \
     } \
@@ -68,9 +68,9 @@
     const size_t size = get_member_size( \
       type_erased_member, member_descriptor); \
     for (size_t i = 0u; i < size; ++i) { \
-      auto & item = get_member_item<member_base_type>( \
-        type_erased_member, member_descriptor, i); \
-      item = deepcopy(message.member_name[i]); \
+      assign_member_item<member_base_type>( \
+        type_erased_member, member_descriptor, \
+        i, deepcopy(message.member_name[i])); \
     } \
   }
 
@@ -89,9 +89,9 @@
     const size_t size = get_member_size( \
       type_erased_member, member_descriptor); \
     for (size_t i = 0u; i < size; ++i) { \
-      auto & item = get_member_item<member_base_type>( \
-        type_erased_member, member_descriptor, i); \
-      item = deepcopy(getitem(message.member_name, i)); \
+      assign_member_item<member_base_type>( \
+        type_erased_member, member_descriptor, \
+        i, deepcopy(getitem(message.member_name, i))); \
     } \
   }
 

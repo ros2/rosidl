@@ -17,9 +17,9 @@
 
 #include <gtest/gtest.h>
 
-#include <rcpputils/shared_library.hpp>
-
 #include <string>
+
+#include <rcpputils/shared_library.hpp>
 
 namespace rosidl_typesupport_introspection_tests
 {

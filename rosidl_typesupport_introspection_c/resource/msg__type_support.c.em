@@ -167,7 +167,7 @@ void @(function_prefix)__fetch_function__@(message.structure.namespaced_type.nam
 {
   const @(basetype_to_c(member.type.value_type)) * item =
     ((const @(basetype_to_c(member.type.value_type)) *)
-     @(function_prefix)__get_const_function__@(message.structure.namespaced_type.name)__@(member.name)(untyped_member, index));
+    @(function_prefix)__get_const_function__@(message.structure.namespaced_type.name)__@(member.name)(untyped_member, index));
   @(basetype_to_c(member.type.value_type)) * value =
     (@(basetype_to_c(member.type.value_type)) *)(untyped_value);
   *value = *item;
@@ -178,7 +178,7 @@ void @(function_prefix)__assign_function__@(message.structure.namespaced_type.na
 {
   @(basetype_to_c(member.type.value_type)) * item =
     ((@(basetype_to_c(member.type.value_type)) *)
-     @(function_prefix)__get_function__@(message.structure.namespaced_type.name)__@(member.name)(untyped_member, index));
+    @(function_prefix)__get_function__@(message.structure.namespaced_type.name)__@(member.name)(untyped_member, index));
   const @(basetype_to_c(member.type.value_type)) * value =
     (const @(basetype_to_c(member.type.value_type)) *)(untyped_value);
   *item = *value;

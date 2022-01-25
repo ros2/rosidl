@@ -41,6 +41,21 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember_s
   size_t (* size_function)(const void *);
   const void * (*get_const_function)(const void *, size_t index);
   void * (*get_function)(void *, size_t index);
+  /// Pointer to a function that fetches (i.e. copies) an item from
+  /// an array or sequence member. It takes a pointer to the member,
+  /// an index (which is assumed to be valid), and a pointer to a
+  /// pre-allocated value (which is assumed to be of the correct type).
+  ///
+  /// Available for array and sequence members.
+  void (* fetch_function)(const void *, size_t index, void *);
+  /// Pointer to a function that assigns (i.e. copies) a value to an
+  /// item in an array or sequence member. It takes a pointer to the
+  /// member, an index (which is assumed to be valid), and a pointer
+  /// to an initialized value (which is assumed to be of the correct
+  /// type).
+  ///
+  /// Available for array and sequence members.
+  void (* assign_function)(void *, size_t index, const void *);
   void (* resize_function)(void *, size_t size);
 } MessageMember;
 

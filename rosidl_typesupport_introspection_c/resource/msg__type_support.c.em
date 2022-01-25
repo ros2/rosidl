@@ -119,56 +119,79 @@ void @(function_prefix)__@(message.structure.namespaced_type.name)_fini_function
 }
 
 @[for member in message.structure.members]@
-@[  if isinstance(member.type, AbstractNestedType) and isinstance(member.type.value_type, NamespacedType)]@
-size_t @(function_prefix)__size_function__@(member.type.value_type.name)__@(member.name)(
+@[  if isinstance(member.type, AbstractNestedType)]@
+@{from rosidl_generator_c import basetype_to_c, idl_type_to_c}@
+size_t @(function_prefix)__size_function__@(message.structure.namespaced_type.name)__@(member.name)(
   const void * untyped_member)
 {
 @[    if isinstance(member.type, Array)]@
   (void)untyped_member;
   return @(member.type.size);
 @[    else]@
-  const @('__'.join(member.type.value_type.namespaced_name()))__Sequence * member =
-    (const @('__'.join(member.type.value_type.namespaced_name()))__Sequence *)(untyped_member);
+  const @(idl_type_to_c(member.type)) * member =
+    (const @(idl_type_to_c(member.type)) *)(untyped_member);
   return member->size;
 @[    end if]@
 }
 
-const void * @(function_prefix)__get_const_function__@(member.type.value_type.name)__@(member.name)(
+const void * @(function_prefix)__get_const_function__@(message.structure.namespaced_type.name)__@(member.name)(
   const void * untyped_member, size_t index)
 {
 @[    if isinstance(member.type, Array)]@
-  const @('__'.join(member.type.value_type.namespaced_name())) * member =
-    (const @('__'.join(member.type.value_type.namespaced_name())) *)(untyped_member);
+  const @(basetype_to_c(member.type.value_type)) * member =
+    (const @(basetype_to_c(member.type.value_type)) *)(untyped_member);
   return &member[index];
 @[    else]@
-  const @('__'.join(member.type.value_type.namespaced_name()))__Sequence * member =
-    (const @('__'.join(member.type.value_type.namespaced_name()))__Sequence *)(untyped_member);
+  const @(idl_type_to_c(member.type)) * member =
+    (const @(idl_type_to_c(member.type)) *)(untyped_member);
   return &member->data[index];
 @[    end if]@
 }
 
-void * @(function_prefix)__get_function__@(member.type.value_type.name)__@(member.name)(
+void * @(function_prefix)__get_function__@(message.structure.namespaced_type.name)__@(member.name)(
   void * untyped_member, size_t index)
 {
 @[    if isinstance(member.type, Array)]@
-  @('__'.join(member.type.value_type.namespaced_name())) * member =
-    (@('__'.join(member.type.value_type.namespaced_name())) *)(untyped_member);
+  @(basetype_to_c(member.type.value_type)) * member =
+    (@(basetype_to_c(member.type.value_type)) *)(untyped_member);
   return &member[index];
 @[    else]@
-  @('__'.join(member.type.value_type.namespaced_name()))__Sequence * member =
-    (@('__'.join(member.type.value_type.namespaced_name()))__Sequence *)(untyped_member);
+  @(idl_type_to_c(member.type)) * member =
+    (@(idl_type_to_c(member.type)) *)(untyped_member);
   return &member->data[index];
 @[    end if]@
 }
 
+void @(function_prefix)__fetch_function__@(message.structure.namespaced_type.name)__@(member.name)(
+  const void * untyped_member, size_t index, void * untyped_value)
+{
+  const @(basetype_to_c(member.type.value_type)) * item =
+    ((const @(basetype_to_c(member.type.value_type)) *)
+    @(function_prefix)__get_const_function__@(message.structure.namespaced_type.name)__@(member.name)(untyped_member, index));
+  @(basetype_to_c(member.type.value_type)) * value =
+    (@(basetype_to_c(member.type.value_type)) *)(untyped_value);
+  *value = *item;
+}
+
+void @(function_prefix)__assign_function__@(message.structure.namespaced_type.name)__@(member.name)(
+  void * untyped_member, size_t index, const void * untyped_value)
+{
+  @(basetype_to_c(member.type.value_type)) * item =
+    ((@(basetype_to_c(member.type.value_type)) *)
+    @(function_prefix)__get_function__@(message.structure.namespaced_type.name)__@(member.name)(untyped_member, index));
+  const @(basetype_to_c(member.type.value_type)) * value =
+    (const @(basetype_to_c(member.type.value_type)) *)(untyped_value);
+  *item = *value;
+}
+
 @[    if isinstance(member.type, AbstractSequence)]@
-bool @(function_prefix)__resize_function__@(member.type.value_type.name)__@(member.name)(
+bool @(function_prefix)__resize_function__@(message.structure.namespaced_type.name)__@(member.name)(
   void * untyped_member, size_t size)
 {
-  @('__'.join(member.type.value_type.namespaced_name()))__Sequence * member =
-    (@('__'.join(member.type.value_type.namespaced_name()))__Sequence *)(untyped_member);
-  @('__'.join(member.type.value_type.namespaced_name()))__Sequence__fini(member);
-  return @('__'.join(member.type.value_type.namespaced_name()))__Sequence__init(member, size);
+  @(idl_type_to_c(member.type)) * member =
+    (@(idl_type_to_c(member.type)) *)(untyped_member);
+  @(idl_type_to_c(member.type))__fini(member);
+  return @(idl_type_to_c(member.type))__init(member, size);
 }
 
 @[    end if]@
@@ -222,7 +245,7 @@ for index, member in enumerate(message.structure.members):
     # void * default_value_
     print('    NULL,  // default value')  # TODO default value to be set
 
-    function_suffix = ('%s__%s' % (member.type.value_type.name, member.name)) if isinstance(member.type, AbstractNestedType) and isinstance(member.type.value_type, NamespacedType) else None
+    function_suffix = ('%s__%s' % (message.structure.namespaced_type.name, member.name)) if isinstance(member.type, AbstractNestedType) else None
 
     # size_t(const void *) size_function
     print('    %s,  // size() function pointer' % ('%s__size_function__%s' % (function_prefix, function_suffix) if function_suffix else 'NULL'))
@@ -230,6 +253,10 @@ for index, member in enumerate(message.structure.members):
     print('    %s,  // get_const(index) function pointer' % ('%s__get_const_function__%s' % (function_prefix, function_suffix) if function_suffix else 'NULL'))
     # void *(void *, size_t) get_function
     print('    %s,  // get(index) function pointer' % ('%s__get_function__%s' % (function_prefix, function_suffix) if function_suffix else 'NULL'))
+    # void(const void *, size_t, void *) fetch_function
+    print('    %s,  // fetch(index, &value) function pointer' % ('%s__fetch_function__%s' % (function_prefix, function_suffix) if function_suffix else 'NULL'))
+    # void(void *, size_t, const void *) assign_function
+    print('    %s,  // assign(index, value) function pointer' % ('%s__assign_function__%s' % (function_prefix, function_suffix) if function_suffix else 'NULL'))
     # void(void *, size_t) resize_function
     print('    %s  // resize(index) function pointer' % ('%s__resize_function__%s' % (function_prefix, function_suffix) if function_suffix and isinstance(member.type, AbstractSequence) else 'NULL'))
 

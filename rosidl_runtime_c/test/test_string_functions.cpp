@@ -142,6 +142,25 @@ TEST(string_functions, equality_comparison) {
   rosidl_runtime_c__String__fini(&empty_string);
 }
 
+TEST(string_functions, copy) {
+  rosidl_runtime_c__String input, output;
+
+  EXPECT_FALSE(rosidl_runtime_c__String__copy(nullptr, nullptr));
+  EXPECT_FALSE(rosidl_runtime_c__String__copy(&input, nullptr));
+  EXPECT_FALSE(rosidl_runtime_c__String__copy(nullptr, &output));
+
+  EXPECT_TRUE(rosidl_runtime_c__String__init(&input));
+  EXPECT_TRUE(rosidl_runtime_c__String__assign(&input, "foo"));
+  EXPECT_TRUE(rosidl_runtime_c__String__init(&output));
+
+  EXPECT_FALSE(rosidl_runtime_c__String__are_equal(&input, &output));
+  EXPECT_TRUE(rosidl_runtime_c__String__copy(&input, &output));
+  EXPECT_TRUE(rosidl_runtime_c__String__are_equal(&input, &output));
+
+  rosidl_runtime_c__String__fini(&output);
+  rosidl_runtime_c__String__fini(&input);
+}
+
 TEST(string_functions, init_fini_sequence) {
   rosidl_runtime_c__String__Sequence sequence;
   EXPECT_FALSE(rosidl_runtime_c__String__Sequence__init(nullptr, 0u));
@@ -214,4 +233,23 @@ TEST(string_functions, sequence_equality_comparison) {
 
   rosidl_runtime_c__String__Sequence__fini(&empty_sequence);
   rosidl_runtime_c__String__Sequence__fini(&nonempty_sequence);
+}
+
+TEST(string_functions, copy_sequence) {
+  rosidl_runtime_c__String__Sequence input, output;
+
+  EXPECT_FALSE(rosidl_runtime_c__String__Sequence__copy(nullptr, nullptr));
+  EXPECT_FALSE(rosidl_runtime_c__String__Sequence__copy(&input, nullptr));
+  EXPECT_FALSE(rosidl_runtime_c__String__Sequence__copy(nullptr, &output));
+
+  EXPECT_TRUE(rosidl_runtime_c__String__Sequence__init(&input, 1u));
+  EXPECT_TRUE(rosidl_runtime_c__String__assign(&input.data[0], "foo"));
+  EXPECT_TRUE(rosidl_runtime_c__String__Sequence__init(&output, 0u));
+
+  EXPECT_FALSE(rosidl_runtime_c__String__Sequence__are_equal(&input, &output));
+  EXPECT_TRUE(rosidl_runtime_c__String__Sequence__copy(&input, &output));
+  EXPECT_TRUE(rosidl_runtime_c__String__Sequence__are_equal(&input, &output));
+
+  rosidl_runtime_c__String__Sequence__fini(&output);
+  rosidl_runtime_c__String__Sequence__fini(&input);
 }

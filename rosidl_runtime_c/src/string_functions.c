@@ -128,6 +128,18 @@ rosidl_runtime_c__String__assign(
 }
 
 bool
+rosidl_runtime_c__String__copy(
+  const rosidl_runtime_c__String * input,
+  rosidl_runtime_c__String * output)
+{
+  if (!input) {
+    return false;
+  }
+  return rosidl_runtime_c__String__assignn(
+    output, input->data, input->size);
+}
+
+bool
 rosidl_runtime_c__String__Sequence__init(
   rosidl_runtime_c__String__Sequence * sequence, size_t size)
 {
@@ -199,6 +211,48 @@ rosidl_runtime_c__String__Sequence__are_equal(
   for (size_t i = 0; i < lhs->size; ++i) {
     if (!rosidl_runtime_c__String__are_equal(
         &(lhs->data[i]), &(rhs->data[i])))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool
+rosidl_runtime_c__String__Sequence__copy(
+  const rosidl_runtime_c__String__Sequence * input,
+  rosidl_runtime_c__String__Sequence * output)
+{
+  if (!input || !output) {
+    return false;
+  }
+  if (output->capacity < input->size) {
+    const size_t allocation_size =
+      input->size * sizeof(rosidl_runtime_c__String);
+    rcutils_allocator_t allocator = rcutils_get_default_allocator();
+    rosidl_runtime_c__String * data =
+      (rosidl_runtime_c__String *)allocator.reallocate(
+      output->data, allocation_size, allocator.state);
+    if (!data) {
+      return false;
+    }
+    for (size_t i = output->capacity; i < input->size; ++i) {
+      if (!rosidl_runtime_c__String__init(&data[i])) {
+        /* free currently allocated and return false */
+        for (; i-- > output->capacity; ) {
+          rosidl_runtime_c__String__fini(&data[i]);
+        }
+        allocator.deallocate(data, allocator.state);
+        return false;
+      }
+    }
+    output->data = data;
+    output->size = input->size;
+    output->capacity = input->size;
+  }
+  for (size_t i = 0; i < input->size; ++i) {
+    if (!rosidl_runtime_c__String__copy(
+        &(input->data[i]), &(output->data[i])))
     {
       return false;
     }

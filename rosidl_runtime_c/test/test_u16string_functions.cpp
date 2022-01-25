@@ -174,6 +174,26 @@ TEST(u16string_functions, equality_comparison) {
   rosidl_runtime_c__U16String__fini(&empty_string);
 }
 
+TEST(u16string_functions, copy) {
+  rosidl_runtime_c__U16String input, output;
+
+  EXPECT_FALSE(rosidl_runtime_c__U16String__copy(nullptr, nullptr));
+  EXPECT_FALSE(rosidl_runtime_c__U16String__copy(&input, nullptr));
+  EXPECT_FALSE(rosidl_runtime_c__U16String__copy(nullptr, &output));
+
+  EXPECT_TRUE(rosidl_runtime_c__U16String__init(&input));
+  const uint16_t encoded_foo_string[] = {102u, 111u, 111u, 0u};
+  EXPECT_TRUE(rosidl_runtime_c__U16String__assign(&input, encoded_foo_string));
+  EXPECT_TRUE(rosidl_runtime_c__U16String__init(&output));
+
+  EXPECT_FALSE(rosidl_runtime_c__U16String__are_equal(&input, &output));
+  EXPECT_TRUE(rosidl_runtime_c__U16String__copy(&input, &output));
+  EXPECT_TRUE(rosidl_runtime_c__U16String__are_equal(&input, &output));
+
+  rosidl_runtime_c__U16String__fini(&output);
+  rosidl_runtime_c__U16String__fini(&input);
+}
+
 TEST(u16string_functions, init_fini_sequence) {
   rosidl_runtime_c__U16String__Sequence sequence;
   EXPECT_FALSE(rosidl_runtime_c__U16String__Sequence__init(nullptr, 0u));
@@ -252,4 +272,24 @@ TEST(u16string_functions, sequence_equality_comparison) {
 
   rosidl_runtime_c__U16String__Sequence__fini(&empty_sequence);
   rosidl_runtime_c__U16String__Sequence__fini(&nonempty_sequence);
+}
+
+TEST(u16string_functions, copy_sequence) {
+  rosidl_runtime_c__U16String__Sequence input, output;
+
+  EXPECT_FALSE(rosidl_runtime_c__U16String__Sequence__copy(nullptr, nullptr));
+  EXPECT_FALSE(rosidl_runtime_c__U16String__Sequence__copy(&input, nullptr));
+  EXPECT_FALSE(rosidl_runtime_c__U16String__Sequence__copy(nullptr, &output));
+
+  EXPECT_TRUE(rosidl_runtime_c__U16String__Sequence__init(&input, 1u));
+  const uint16_t encoded_foo_string[] = {102u, 111u, 111u, 0u};
+  EXPECT_TRUE(rosidl_runtime_c__U16String__assign(&input.data[0], encoded_foo_string));
+  EXPECT_TRUE(rosidl_runtime_c__U16String__Sequence__init(&output, 0u));
+
+  EXPECT_FALSE(rosidl_runtime_c__U16String__Sequence__are_equal(&input, &output));
+  EXPECT_TRUE(rosidl_runtime_c__U16String__Sequence__copy(&input, &output));
+  EXPECT_TRUE(rosidl_runtime_c__U16String__Sequence__are_equal(&input, &output));
+
+  rosidl_runtime_c__U16String__Sequence__fini(&output);
+  rosidl_runtime_c__U16String__Sequence__fini(&input);
 }

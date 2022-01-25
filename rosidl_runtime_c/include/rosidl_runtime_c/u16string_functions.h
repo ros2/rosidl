@@ -72,7 +72,7 @@ rosidl_runtime_c__U16String__are_equal(
  * This functions performs a deep copy, as opposed to the shallow copy that
  * plain assignment yields.
  *
- * \param[out] input a pointer to a rosidl_runtime_c__U16String structure
+ * \param[in] input a pointer to a rosidl_runtime_c__U16String structure
  *   to copy from.
  * \param[out] output a pointer to an initialized rosidl_runtime_c__U16String
  *   structure to copy into.
@@ -213,7 +213,7 @@ rosidl_runtime_c__U16String__Sequence__are_equal(
  * This functions performs a deep copy, as opposed to the shallow copy
  * that plain assignment yields.
  *
- * \param[out] input a pointer to a rosidl_runtime_c__String__Sequence
+ * \param[in] input a pointer to a rosidl_runtime_c__String__Sequence
  *   structure to copy from.
  * \param[out] output a pointer to an initialized rosidl_runtime_c__String__Sequence
  *   structure to copy into.

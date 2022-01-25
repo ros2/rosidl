@@ -23,9 +23,13 @@
     typename std::remove_reference< \
       decltype(expression)>::type>::type
 
+/// Yields an expression for use in unevaluated context
+#define MEMBER_EXPRESSION(type, expression) \
+  std::declval<type>().expression
+
 /// Yields base type for any `type{}.expression`
 #define MEMBER_EXPRESSION_TYPE(type, expression) \
-  EXPRESSION_TYPE(std::declval<type>().expression)
+  EXPRESSION_TYPE(MEMBER_EXPRESSION(type, expression))
 
 /// Defines has_`member_name`<T> trait to check
 /// for member existence in any type T.

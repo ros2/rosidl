@@ -20,7 +20,7 @@
 #include "rosidl_typesupport_introspection_tests/api.hpp"
 #include "rosidl_typesupport_introspection_tests/type_traits.hpp"
 
-#include "test_msgs_types.hpp"
+#include "introspection_libraries_under_test.hpp"
 
 namespace rosidl_typesupport_introspection_tests
 {
@@ -36,7 +36,8 @@ class BasicTypesMessageIntrospectionTest
 };
 
 using BasicTypesMessageTypes = ::testing::Types<
-  test_msgs__msg__BasicTypes, test_msgs::msg::BasicTypes>;
+  rosidl_typesupport_introspection_tests__msg__BasicTypes,
+  rosidl_typesupport_introspection_tests::msg::BasicTypes>;
 TYPED_TEST_SUITE(BasicTypesMessageIntrospectionTest, BasicTypesMessageTypes);
 
 // NOTE(hidmic): cppcheck complains about gtest macros

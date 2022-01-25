@@ -18,21 +18,41 @@
 #include <rcutils/error_handling.h>
 #include <rcutils/macros.h>
 
+#include <rosidl_runtime_c/primitives_sequence_functions.h>
+#include <rosidl_runtime_c/string_functions.h>
+#include <rosidl_runtime_c/u16string_functions.h>
+
 #include <stdexcept>
+#include <vector>
 
 /// Performs a deep-copy of the given `value`
 /**
  * A best effort base definition, works for most C++ types.
  */
 template<typename T>
-T deepcopy(T value) {return value;}
+inline T deepcopy(T value) {return value;}
 
 /// Defines a `deepcopy()` overload for `type`, assuming
 /// it is in the set of non-basic C message member types.
-#define DEFINE_C_MESSAGE_MEMBER_DEEPCOPY_OVERLOAD(type) \
+#define DEFINE_DEEPCOPY_OVERLOAD_FOR_C_MESSAGE_MEMBER(type) \
   inline type deepcopy(const type & input) { \
     type output; \
     if (!RCUTILS_JOIN(type, __init)(&output)) { \
+      throw std::runtime_error(rcutils_get_error_string().str); \
+    } \
+    if (!RCUTILS_JOIN(type, __copy)(&input, &output)) { \
+      RCUTILS_JOIN(type, __fini)(&output); \
+      throw std::runtime_error(rcutils_get_error_string().str); \
+    } \
+    return output; \
+  }
+
+/// Defines a `deepcopy()` overload for `type`, assuming
+/// it is C message sequence member type.
+#define DEFINE_DEEPCOPY_OVERLOAD_FOR_C_MESSAGE_SEQUENCE_MEMBER(type) \
+  inline type deepcopy(const type & input) { \
+    type output; \
+    if (!RCUTILS_JOIN(type, __init)(&output, 0u)) { \
       throw std::runtime_error(rcutils_get_error_string().str); \
     } \
     if (!RCUTILS_JOIN(type, __copy)(&input, &output)) { \
@@ -41,23 +61,56 @@ T deepcopy(T value) {return value;}
     return output; \
   }
 
-template<typename ContainerT, typename IndexT>
-const auto & getitem(const ContainerT & container, const IndexT & index)
+/// Gets a reference to the item at `index` in `array`.
+template<typename T>
+inline const T & getitem(const T array[], const size_t index)
 {
-  return container[index];
+  return array[index];
 }
 
-/// Defines a `deepcopy()` overload for `type`, assuming
-/// it is in the set of non-basic C message member types.
-#define DEFINE_C_MESSAGE_SEQUENCE_MEMBER_GETITEM_OVERLOAD(type) \
-  inline const type & \
-  getitem(const RCUTILS_JOIN(type, __Sequence) & seq, const size_t index) { \
+template<typename T, size_t N>
+inline size_t length(const T (&)[N]) {return N;}
+
+template<typename T, size_t N>
+inline size_t length(const std::array<T, N> &) {return N;}
+
+template<typename T>
+inline size_t length(const std::vector<T> & vector) {return vector.size();}
+
+/// Gets a reference to the item at `index` in `vector`.
+template<typename T>
+inline const T & getitem(const std::vector<T> & vector, const size_t index)
+{
+  return vector[index];
+}
+
+inline bool getitem(const std::vector<bool> & vector, const size_t index)
+{
+  return vector[index];
+}
+
+/// Gets a reference to the item at `index` in `array`.
+template<typename T, size_t N>
+inline const T & getitem(const std::array<T, N> & array, const size_t index)
+{
+  return array[index];
+}
+
+/// Defines a `getitem()` overload for `type`, assuming
+/// it is a C message sequence member type.
+#define DEFINE_GETITEM_OVERLOAD_FOR_C_MESSAGE_SEQUENCE_MEMBER(type) \
+  inline auto & getitem(const type & seq, const size_t index) { \
     return seq.data[index]; \
   }
 
+/// Defines a `getitem()` overload for `type`, assuming
+/// it is a C message sequence member type.
+#define DEFINE_LENGTH_OVERLOAD_FOR_C_MESSAGE_SEQUENCE_MEMBER(type) \
+  inline size_t length(const type & seq) {return seq.size;}
+
 /// Defines `operator==()` and `operator!=()` overloads for `type`,
 /// assuming it is in the set of non-basic C message member types.
-#define DEFINE_C_MESSAGE_MEMBER_OPERATOR_OVERLOADS(type) \
+#define DEFINE_OPERATOR_OVERLOADS_FOR_C_MESSAGE_MEMBER(type) \
   inline bool operator==(const type & lhs, const type & rhs) { \
     return RCUTILS_JOIN(type, __are_equal)(&lhs, &rhs); \
   } \
@@ -65,36 +118,30 @@ const auto & getitem(const ContainerT & container, const IndexT & index)
     return !RCUTILS_JOIN(type, __are_equal)(&lhs, &rhs); \
   }
 
-/// Defines a `deecopy()` overload for a C message.
-#define DEFINE_C_MESSAGE_DEEPCOPY_OVERLOAD( \
-    package_name, interface_type, message_name) \
-  DEFINE_C_MESSAGE_MEMBER_DEEPCOPY_OVERLOAD( \
-    package_name ## __ ## interface_type ## __ ## message_name)
-
-/// Defines `operator==()` and `operator!=()` overload for a C message.
-#define DEFINE_C_MESSAGE_OPERATOR_OVERLOADS( \
-    package_name, interface_type, message_name) \
-  DEFINE_C_MESSAGE_MEMBER_OPERATOR_OVERLOADS( \
-    package_name ## __ ## interface_type ## __ ## message_name)
-
-/// Defines `operator==()` and `operator!=()` overload for a C message.
-#define DEFINE_C_MESSAGE_SEQUENCE_GETITEM_OVERLOAD( \
-    package_name, interface_type, message_name) \
-  DEFINE_C_MESSAGE_SEQUENCE_MEMBER_GETITEM_OVERLOAD( \
-    package_name ## __ ## interface_type ## __ ## message_name)
-
 /// Defines C++ helper API for `type`, assuming it is
 /// in the set of of non-basic C message member types.
 #define DEFINE_CXX_API_FOR_C_MESSAGE_MEMBER(type) \
-  DEFINE_C_MESSAGE_MEMBER_OPERATOR_OVERLOADS(type) \
-  DEFINE_C_MESSAGE_MEMBER_DEEPCOPY_OVERLOAD(type) \
-  DEFINE_C_MESSAGE_SEQUENCE_MEMBER_GETITEM_OVERLOAD(type)
+  DEFINE_OPERATOR_OVERLOADS_FOR_C_MESSAGE_MEMBER(type) \
+  DEFINE_DEEPCOPY_OVERLOAD_FOR_C_MESSAGE_MEMBER(type)
+
+/// Defines C++ helper API for `type`, assuming it is
+/// a C message sequence member type.
+#define DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(type) \
+  DEFINE_OPERATOR_OVERLOADS_FOR_C_MESSAGE_MEMBER(type) \
+  DEFINE_DEEPCOPY_OVERLOAD_FOR_C_MESSAGE_SEQUENCE_MEMBER(type) \
+  DEFINE_GETITEM_OVERLOAD_FOR_C_MESSAGE_SEQUENCE_MEMBER(type) \
+  DEFINE_LENGTH_OVERLOAD_FOR_C_MESSAGE_SEQUENCE_MEMBER(type)
+
+#define C_MESSAGE_NAME(package_name, interface_type, message_name) \
+  package_name ## __ ## interface_type ## __ ## message_name
 
 /// Defines C++ helper API for a C message.
 #define DEFINE_CXX_API_FOR_C_MESSAGE(package_name, interface_type, message_name) \
-  DEFINE_C_MESSAGE_OPERATOR_OVERLOADS(package_name, interface_type, message_name) \
-  DEFINE_C_MESSAGE_DEEPCOPY_OVERLOAD(package_name, interface_type, message_name) \
-  DEFINE_C_MESSAGE_SEQUENCE_GETITEM_OVERLOAD(package_name, interface_type, message_name)
+  DEFINE_CXX_API_FOR_C_MESSAGE_MEMBER( \
+    C_MESSAGE_NAME(package_name, interface_type, message_name)) \
+  DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER( \
+    RCUTILS_JOIN( \
+      C_MESSAGE_NAME(package_name, interface_type, message_name), __Sequence))
 
 namespace rosidl_typesupport_introspection_tests
 {
@@ -171,5 +218,24 @@ struct ActionTypeSupportSymbolRecord
       interface_type, RCUTILS_JOIN(action_name, _GetResult))}
 
 }  // namespace rosidl_typesupport_introspection_tests
+
+// Extra C++ APIs to homogeneize access to rosidl_runtime_c primitives
+DEFINE_CXX_API_FOR_C_MESSAGE_MEMBER(rosidl_runtime_c__String)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__float__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__double__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__long_double__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__char__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__wchar__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__boolean__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__octet__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__uint8__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__int8__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__uint16__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__int16__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__uint32__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__int32__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__uint64__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__int64__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__String__Sequence)
 
 #endif  // ROSIDL_TYPESUPPORT_INTROSPECTION_TESTS__HELPERS_HPP_

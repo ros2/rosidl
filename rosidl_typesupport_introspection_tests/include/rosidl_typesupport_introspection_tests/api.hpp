@@ -104,9 +104,11 @@ template<typename MemberDescriptorT>
 bool has_simple_structure(const MemberDescriptorT * member_descriptor)
 {
   return !member_descriptor->is_array_ &&
-         (member_descriptor->size_function == nullptr) &&
-         (member_descriptor->get_function == nullptr) &&
+         member_descriptor->size_function == nullptr &&
+         member_descriptor->get_function == nullptr &&
          member_descriptor->get_const_function == nullptr &&
+         member_descriptor->fetch_function == nullptr &&
+         member_descriptor->assign_function == nullptr &&
          member_descriptor->resize_function == nullptr;
 }
 
@@ -115,15 +117,17 @@ bool has_iterable_structure(const MemberDescriptorT * member_descriptor)
 {
   return member_descriptor->is_array_ &&
          member_descriptor->size_function != nullptr &&
-         member_descriptor->get_function != nullptr &&
-         member_descriptor->get_const_function != nullptr;
+         member_descriptor->fetch_function != nullptr &&
+         member_descriptor->assign_function != nullptr;
 }
 
 template<typename MemberDescriptorT>
 bool has_array_structure(const MemberDescriptorT * member_descriptor)
 {
   return has_iterable_structure(member_descriptor) &&
-         (member_descriptor->resize_function == nullptr);
+         member_descriptor->get_function != nullptr &&
+         member_descriptor->get_const_function != nullptr &&
+         member_descriptor->resize_function == nullptr;
 }
 
 template<typename MemberDescriptorT>
@@ -236,6 +240,16 @@ size_t get_member_size(
 {
   return member_descriptor->size_function(member);
 }
+
+template<typename MemberDescriptorT>
+void resize_member(
+  void * member,
+  const MemberDescriptorT * member_descriptor,
+  const size_t size)
+{
+  member_descriptor->resize_function(member, size);
+}
+
 
 }  // namespace rosidl_typesupport_introspection_tests
 

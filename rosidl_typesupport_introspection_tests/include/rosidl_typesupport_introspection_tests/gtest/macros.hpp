@@ -29,7 +29,8 @@
     type_erased_message, message, member_name, member_descriptor) \
   { \
     ASSERT_STREQ(member_descriptor->name_, #member_name); \
-    using member_base_type = EXPRESSION_TYPE(message.member_name[0]); \
+    using member_base_type = \
+      EXPRESSION_TYPE(getitem(message.member_name, 0)); \
     ASSERT_TRUE(has_iterable_structure(member_descriptor)); \
     const void * type_erased_member = \
       get_const_member(type_erased_message, member_descriptor); \
@@ -38,7 +39,7 @@
     for (size_t i = 0u; i < size; ++i) { \
       const auto item = fetch_member_item<member_base_type>( \
         type_erased_member, member_descriptor, i); \
-      ASSERT_EQ(item, message.member_name[i]); \
+      ASSERT_EQ(item, getitem(message.member_name, i)); \
     } \
   }
 
@@ -65,9 +66,7 @@
     ASSERT_TRUE(has_array_structure(member_descriptor)); \
     void * type_erased_member = \
       get_member(type_erased_message, member_descriptor); \
-    const size_t size = get_member_size( \
-      type_erased_member, member_descriptor); \
-    for (size_t i = 0u; i < size; ++i) { \
+    for (size_t i = 0u; i < length(message.member_name); ++i) { \
       assign_member_item<member_base_type>( \
         type_erased_member, member_descriptor, \
         i, deepcopy(message.member_name[i])); \
@@ -83,11 +82,11 @@
     ASSERT_STREQ(member_descriptor->name_, #member_name); \
     using member_base_type = \
       EXPRESSION_TYPE(getitem(message.member_name, 0)); \
-    ASSERT_TRUE(has_array_structure(member_descriptor)); \
+    ASSERT_TRUE(has_sequence_structure(member_descriptor)); \
     void * type_erased_member = \
       get_member(type_erased_message, member_descriptor); \
-    const size_t size = get_member_size( \
-      type_erased_member, member_descriptor); \
+    const size_t size = length(message.member_name); \
+    resize_member(type_erased_member, member_descriptor, size); \
     for (size_t i = 0u; i < size; ++i) { \
       assign_member_item<member_base_type>( \
         type_erased_member, member_descriptor, \

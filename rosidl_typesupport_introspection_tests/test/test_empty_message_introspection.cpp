@@ -18,7 +18,7 @@
 #include "rosidl_typesupport_introspection_tests/api.hpp"
 #include "rosidl_typesupport_introspection_tests/type_traits.hpp"
 
-#include "test_msgs_types.hpp"
+#include "introspection_libraries_under_test.hpp"
 
 namespace rosidl_typesupport_introspection_tests
 {
@@ -34,7 +34,8 @@ class EmptyMessageIntrospectionTest
 };
 
 using EmptyMessageTypes = ::testing::Types<
-  test_msgs__msg__Empty, test_msgs::msg::Empty>;
+  rosidl_typesupport_introspection_tests__msg__Empty,
+  rosidl_typesupport_introspection_tests::msg::Empty>;
 TYPED_TEST_SUITE(EmptyMessageIntrospectionTest, EmptyMessageTypes);
 
 // NOTE(hidmic): cppcheck complains about gtest macros

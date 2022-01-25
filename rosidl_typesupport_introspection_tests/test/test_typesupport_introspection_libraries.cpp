@@ -16,7 +16,7 @@
 
 #include "rosidl_typesupport_introspection_tests/gtest/typesupport_library_test.hpp"
 
-#include "test_msgs_types.hpp"
+#include "introspection_libraries_under_test.hpp"
 
 namespace rosidl_typesupport_introspection_tests
 {
@@ -26,8 +26,8 @@ namespace
 {
 
 using IntrospectionTypeSupportLibraries = ::testing::Types<
-  TestMsgsIntrospectionCTypeSupportLibrary,
-  TestMsgsIntrospectionCppTypeSupportLibrary>;
+  IntrospectionCTypeSupportTestLibrary,
+  IntrospectionCppTypeSupportTestLibrary>;
 
 INSTANTIATE_TYPED_TEST_SUITE_P(
   Introspection, TypeSupportLibraryTest,

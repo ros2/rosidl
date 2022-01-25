@@ -81,6 +81,23 @@
     rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&nonzero_initialized); \
     rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&zero_initialized); \
     rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&empty); \
+  } \
+ \
+  TEST(primitives_sequence_functions, test_ ## STRUCT_NAME ## _copy) \
+  { \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence input, output; \
+    EXPECT_FALSE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__copy(nullptr, nullptr)); \
+    EXPECT_FALSE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__copy(nullptr, &output)); \
+    EXPECT_FALSE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__copy(&input, nullptr)); \
+ \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init(&input, 1u)); \
+    input.data[0] = (TYPE_NAME)1; \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init(&output, 0u)); \
+    EXPECT_FALSE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal(&input, &output)); \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__copy(&input, &output)); \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal(&input, &output)); \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&output); \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&input); \
   }
 
 TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(float, float)

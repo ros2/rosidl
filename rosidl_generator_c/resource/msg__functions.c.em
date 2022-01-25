@@ -275,6 +275,47 @@ bool
   return true;
 }
 
+bool
+@(message_typename)__copy(
+  const @(message_typename) * input,
+  @(message_typename) * output)
+{
+  if (!input || !output) {
+    return false;
+  }
+@[for member in message.structure.members]@
+  // @(member.name)
+@[  if isinstance(member.type, Array)]@
+  for (size_t i = 0; i < @(member.type.size); ++i) {
+@[     if isinstance(member.type.value_type, (AbstractGenericString, NamespacedType))]@
+    if (!@(basetype_to_c(member.type.value_type))__copy(
+        &(input->@(member.name)[i]), &(output->@(member.name)[i])))
+    {
+      return false;
+    }
+@[     else]@
+    output->@(member.name)[i] = input->@(member.name)[i];
+@[     end if]@
+  }
+@[  elif isinstance(member.type, AbstractSequence)]@
+  if (!@(idl_type_to_c(member.type))__copy(
+      &(input->@(member.name)), &(output->@(member.name))))
+  {
+    return false;
+  }
+@[  elif isinstance(member.type, (AbstractGenericString, NamespacedType))]@
+  if (!@(basetype_to_c(member.type))__copy(
+      &(input->@(member.name)), &(output->@(member.name))))
+  {
+    return false;
+  }
+@[  else]@
+  output->@(member.name) = input->@(member.name);
+@[  end if]@
+@[end for]@
+  return true;
+}
+
 @(message_typename) *
 @(message_typename)__create()
 {
@@ -406,6 +447,48 @@ bool
   }
   for (size_t i = 0; i < lhs->size; ++i) {
     if (!@(message_typename)__are_equal(&(lhs->data[i]), &(rhs->data[i]))) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool
+@(array_typename)__copy(
+  const @(array_typename) * input,
+  @(array_typename) * output)
+{
+  if (!input || !output) {
+    return false;
+  }
+  if (output->capacity < input->size) {
+    const size_t allocation_size =
+      input->size * sizeof(@(message_typename));
+    rcutils_allocator_t allocator = rcutils_get_default_allocator();
+    @(message_typename) * data =
+      (@(message_typename) *)allocator.reallocate(
+      output->data, allocation_size, allocator.state);
+    if (!data) {
+      return false;
+    }
+    for (size_t i = output->capacity; i < input->size; ++i) {
+      if (!@(message_typename)__init(&data[i])) {
+        /* free currently allocated and return false */
+        for (; i-- > output->capacity; ) {
+          @(message_typename)__fini(&data[i]);
+        }
+        allocator.deallocate(data, allocator.state);
+        return false;
+      }
+    }
+    output->data = data;
+    output->size = input->size;
+    output->capacity = input->size;
+  }
+  for (size_t i = 0; i < input->size; ++i) {
+    if (!@(message_typename)__copy(
+        &(input->data[i]), &(output->data[i])))
+    {
       return false;
     }
   }

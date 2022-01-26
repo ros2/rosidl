@@ -172,16 +172,34 @@ getitem(const std::array<T, N> & array, const size_t index)
   DEFINE_GETITEM_OVERLOAD_FOR_C_MESSAGE_SEQUENCE_MEMBER(type) \
   DEFINE_LENGTH_OVERLOAD_FOR_C_MESSAGE_SEQUENCE_MEMBER(type)
 
-#define C_MESSAGE_NAME(package_name, interface_type, message_name) \
-  package_name ## __ ## interface_type ## __ ## message_name
+#define C_INTERFACE_NAME(package_name, interface_type, interface_name) \
+  RCUTILS_JOIN( \
+    RCUTILS_JOIN( \
+      RCUTILS_JOIN( \
+        RCUTILS_JOIN( \
+          package_name, __), interface_type), __), interface_name)
 
 /// Defines C++ helper API for a C message.
 #define DEFINE_CXX_API_FOR_C_MESSAGE(package_name, interface_type, message_name) \
   DEFINE_CXX_API_FOR_C_MESSAGE_MEMBER( \
-    C_MESSAGE_NAME(package_name, interface_type, message_name)) \
+    C_INTERFACE_NAME(package_name, interface_type, message_name)) \
   DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER( \
-    RCUTILS_JOIN( \
-      C_MESSAGE_NAME(package_name, interface_type, message_name), __Sequence))
+    RCUTILS_JOIN(C_INTERFACE_NAME(package_name, interface_type, message_name), __Sequence))
+
+/// Defines C++ helper API for a C service.
+#define DEFINE_CXX_API_FOR_C_SERVICE(package_name, interface_type, service_name) \
+  DEFINE_CXX_API_FOR_C_MESSAGE_MEMBER( \
+    C_INTERFACE_NAME(package_name, interface_type, RCUTILS_JOIN(service_name, _Request))) \
+  DEFINE_CXX_API_FOR_C_MESSAGE_MEMBER( \
+    C_INTERFACE_NAME(package_name, interface_type, RCUTILS_JOIN(service_name, _Response))) \
+  struct C_INTERFACE_NAME (package_name, interface_type, service_name) { \
+  using Request = C_INTERFACE_NAME( \
+    package_name, interface_type, RCUTILS_JOIN( \
+      service_name, \
+      _Request)); \
+  using Response = \
+    C_INTERFACE_NAME(package_name, interface_type, RCUTILS_JOIN(service_name, _Response)); \
+};
 
 // Extra C++ APIs to homogeneize access to rosidl_runtime_c primitives
 DEFINE_CXX_API_FOR_C_MESSAGE_MEMBER(rosidl_runtime_c__String)

@@ -72,6 +72,35 @@ const char * get_message_name(const MessageDescriptorT * message_descriptor)
   return message_descriptor->message_name_;
 }
 
+/// Get a service's namespace from its `service_descriptor`.
+template<typename ServiceDescriptorT>
+const char *
+get_service_namespace(const ServiceDescriptorT * service_descriptor)
+{
+  return service_descriptor->service_namespace_;
+}
+
+/// Get a service's name from its `service_descriptor`.
+template<typename ServiceDescriptorT>
+const char * get_service_name(const ServiceDescriptorT * service_descriptor)
+{
+  return service_descriptor->service_name_;
+}
+
+/// Get a service request message descriptor from its `service_descriptor`.
+template<typename ServiceDescriptorT>
+auto get_service_request_descriptor(const ServiceDescriptorT * service_descriptor)
+{
+  return service_descriptor->request_members_;
+}
+
+/// Get a service response message descriptor from its `service_descriptor`.
+template<typename ServiceDescriptorT>
+auto get_service_response_descriptor(const ServiceDescriptorT * service_descriptor)
+{
+  return service_descriptor->response_members_;
+}
+
 /// Get a message's (base) size from its `message_descriptor`.
 template<typename MessageDescriptorT>
 size_t get_message_size(const MessageDescriptorT * message_descriptor)

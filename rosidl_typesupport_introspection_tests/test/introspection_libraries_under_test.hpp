@@ -35,6 +35,9 @@
 #include "rosidl_typesupport_introspection_tests/msg/multi_nested.h"
 #include "rosidl_typesupport_introspection_tests/msg/strings.h"
 #include "rosidl_typesupport_introspection_tests/msg/unbounded_sequences.h"
+#include "rosidl_typesupport_introspection_tests/srv/arrays.h"
+#include "rosidl_typesupport_introspection_tests/srv/basic_types.h"
+#include "rosidl_typesupport_introspection_tests/srv/empty.h"
 
 #include "rosidl_typesupport_introspection_tests/msg/arrays.hpp"
 #include "rosidl_typesupport_introspection_tests/msg/basic_types.hpp"
@@ -45,11 +48,28 @@
 #include "rosidl_typesupport_introspection_tests/msg/multi_nested.hpp"
 #include "rosidl_typesupport_introspection_tests/msg/strings.hpp"
 #include "rosidl_typesupport_introspection_tests/msg/unbounded_sequences.hpp"
+#include "rosidl_typesupport_introspection_tests/srv/arrays.hpp"
+#include "rosidl_typesupport_introspection_tests/srv/basic_types.hpp"
+#include "rosidl_typesupport_introspection_tests/srv/empty.hpp"
 
 #include "rosidl_typesupport_introspection_tests/fixtures.hpp"
 #include "rosidl_typesupport_introspection_tests/helpers.hpp"
 #include "rosidl_typesupport_introspection_tests/libraries.hpp"
 #include "rosidl_typesupport_introspection_tests/type_traits.hpp"
+
+// Extra C++ APIs to homogeneize access to test interfaces in C and C++
+DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, Arrays)
+DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, BasicTypes)
+DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, BoundedSequences)
+DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, Constants)
+DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, Defaults)
+DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, Empty)
+DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, MultiNested)
+DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, Strings)
+DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, UnboundedSequences)
+DEFINE_CXX_API_FOR_C_SERVICE(rosidl_typesupport_introspection_tests, srv, Arrays)
+DEFINE_CXX_API_FOR_C_SERVICE(rosidl_typesupport_introspection_tests, srv, BasicTypes)
+DEFINE_CXX_API_FOR_C_SERVICE(rosidl_typesupport_introspection_tests, srv, Empty)
 
 namespace rosidl_typesupport_introspection_tests
 {
@@ -110,7 +130,13 @@ struct IntrospectionCTypeSupportTestLibrary
   static constexpr const ServiceTypeSupportSymbolRecord services[] = {
     SERVICE_TYPESUPPORT_SYMBOL_RECORD(
       rosidl_typesupport_introspection_c,
-      rosidl_typesupport_introspection_tests, srv, BasicTypes)
+      rosidl_typesupport_introspection_tests, srv, Arrays),
+    SERVICE_TYPESUPPORT_SYMBOL_RECORD(
+      rosidl_typesupport_introspection_c,
+      rosidl_typesupport_introspection_tests, srv, BasicTypes),
+    SERVICE_TYPESUPPORT_SYMBOL_RECORD(
+      rosidl_typesupport_introspection_c,
+      rosidl_typesupport_introspection_tests, srv, Empty)
   };
   // static constexpr const ActionTypeSupportSymbolRecord actions[] = {
   //   ACTION_TYPESUPPORT_SYMBOL_RECORD(
@@ -119,7 +145,7 @@ struct IntrospectionCTypeSupportTestLibrary
   // };
 };
 
-// Traits to aid introspection of `rosidl_typesupport_introspection_tests` package interfaces in C
+// Traits to aid introspection of tests interfaces in C
 template<>
 struct introspection_traits<rosidl_typesupport_introspection_tests__msg__Arrays>
 {
@@ -201,6 +227,36 @@ struct introspection_traits<rosidl_typesupport_introspection_tests__msg__Unbound
     MESSAGE_TYPESUPPORT_SYMBOL_RECORD(
     rosidl_typesupport_introspection_c, rosidl_typesupport_introspection_tests, msg,
     UnboundedSequences);
+  using TypeSupportLibraryT = IntrospectionCTypeSupportTestLibrary;
+};
+
+template<>
+struct introspection_traits<rosidl_typesupport_introspection_tests__srv__Arrays>
+{
+  static constexpr const ServiceTypeSupportSymbolRecord typesupport =
+    SERVICE_TYPESUPPORT_SYMBOL_RECORD(
+    rosidl_typesupport_introspection_c,
+    rosidl_typesupport_introspection_tests, srv, Arrays);
+  using TypeSupportLibraryT = IntrospectionCTypeSupportTestLibrary;
+};
+
+template<>
+struct introspection_traits<rosidl_typesupport_introspection_tests__srv__BasicTypes>
+{
+  static constexpr const ServiceTypeSupportSymbolRecord typesupport =
+    SERVICE_TYPESUPPORT_SYMBOL_RECORD(
+    rosidl_typesupport_introspection_c,
+    rosidl_typesupport_introspection_tests, srv, BasicTypes);
+  using TypeSupportLibraryT = IntrospectionCTypeSupportTestLibrary;
+};
+
+template<>
+struct introspection_traits<rosidl_typesupport_introspection_tests__srv__Empty>
+{
+  static constexpr const ServiceTypeSupportSymbolRecord typesupport =
+    SERVICE_TYPESUPPORT_SYMBOL_RECORD(
+    rosidl_typesupport_introspection_c,
+    rosidl_typesupport_introspection_tests, srv, Empty);
   using TypeSupportLibraryT = IntrospectionCTypeSupportTestLibrary;
 };
 
@@ -358,6 +414,94 @@ struct Example<rosidl_typesupport_introspection_tests__msg__UnboundedSequences>
   }
 };
 
+template<>
+struct Example<rosidl_typesupport_introspection_tests__srv__Arrays>
+{
+  static auto MakeRequest()
+  {
+    using MessageT = rosidl_typesupport_introspection_tests__srv__Arrays_Request;
+    auto deleter = [](MessageT * message) {
+        rosidl_typesupport_introspection_tests__srv__Arrays_Request__fini(message);
+        delete message;
+      };
+    using ReturnT = std::unique_ptr<MessageT, std::function<void (MessageT *)>>;
+    ReturnT message{new MessageT, deleter};
+    if (!rosidl_typesupport_introspection_tests__srv__Arrays_Request__init(message.get())) {
+      throw std::runtime_error(rcutils_get_error_string().str);
+    }
+    message->bool_values[2] = true;
+    message->float64_values[1] = 1.234;
+    message->uint16_values[0] = 1234u;
+    return message;
+  }
+
+  static auto MakeResponse()
+  {
+    using MessageT = rosidl_typesupport_introspection_tests__srv__Arrays_Response;
+    auto deleter = [](MessageT * message) {
+        rosidl_typesupport_introspection_tests__srv__Arrays_Response__fini(message);
+        delete message;
+      };
+    using ReturnT = std::unique_ptr<MessageT, std::function<void (MessageT *)>>;
+    ReturnT message{new MessageT, deleter};
+    if (!rosidl_typesupport_introspection_tests__srv__Arrays_Response__init(message.get())) {
+      throw std::runtime_error(rcutils_get_error_string().str);
+    }
+    message->byte_values[1] = 0xAB;
+    message->char_values[0] = 'b';
+    message->int8_values[2] = 123;
+    return message;
+  }
+};
+
+template<>
+struct Example<rosidl_typesupport_introspection_tests__srv__BasicTypes>
+{
+  static auto MakeRequest()
+  {
+    using MessageT =
+      rosidl_typesupport_introspection_tests__srv__BasicTypes_Request;
+    auto deleter = [](MessageT * message) {
+        rosidl_typesupport_introspection_tests__srv__BasicTypes_Request__fini(message);
+        delete message;
+      };
+    using ReturnT = std::unique_ptr<MessageT, std::function<void (MessageT *)>>;
+    ReturnT message{new MessageT, deleter};
+    if (!rosidl_typesupport_introspection_tests__srv__BasicTypes_Request__init(message.get())) {
+      throw std::runtime_error(rcutils_get_error_string().str);
+    }
+    message->char_value = 'c';
+    message->uint32_value = 1234u;
+    message->float32_value = 1.234f;
+    if (!rosidl_runtime_c__String__assign(&message->string_value, "foo")) {
+      throw std::runtime_error(rcutils_get_error_string().str);
+    }
+    return message;
+  }
+
+  static auto MakeResponse()
+  {
+    using MessageT =
+      rosidl_typesupport_introspection_tests__srv__BasicTypes_Response;
+    auto deleter = [](MessageT * message) {
+        rosidl_typesupport_introspection_tests__srv__BasicTypes_Response__fini(message);
+        delete message;
+      };
+    using ReturnT = std::unique_ptr<MessageT, std::function<void (MessageT *)>>;
+    ReturnT message{new MessageT, deleter};
+    if (!rosidl_typesupport_introspection_tests__srv__BasicTypes_Response__init(message.get())) {
+      throw std::runtime_error(rcutils_get_error_string().str);
+    }
+    message->bool_value = true;
+    message->byte_value = 0xAB;
+    message->float64_value = -1.234;
+    if (!rosidl_runtime_c__String__assign(&message->string_value, "bar")) {
+      throw std::runtime_error(rcutils_get_error_string().str);
+    }
+    return message;
+  }
+};
+
 // Typesupport library definition for introspection of test interfaces in C++
 struct IntrospectionCppTypeSupportTestLibrary
 {
@@ -414,7 +558,13 @@ struct IntrospectionCppTypeSupportTestLibrary
   static constexpr const ServiceTypeSupportSymbolRecord services[] = {
     SERVICE_TYPESUPPORT_SYMBOL_RECORD(
       rosidl_typesupport_introspection_cpp,
-      rosidl_typesupport_introspection_tests, srv, BasicTypes)
+      rosidl_typesupport_introspection_tests, srv, Arrays),
+    SERVICE_TYPESUPPORT_SYMBOL_RECORD(
+      rosidl_typesupport_introspection_cpp,
+      rosidl_typesupport_introspection_tests, srv, BasicTypes),
+    SERVICE_TYPESUPPORT_SYMBOL_RECORD(
+      rosidl_typesupport_introspection_cpp,
+      rosidl_typesupport_introspection_tests, srv, Empty)
   };
   // static constexpr const ActionTypeSupportSymbolRecord actions[] = {
   //   ACTION_TYPESUPPORT_SYMBOL_RECORD(
@@ -514,6 +664,36 @@ struct introspection_traits<rosidl_typesupport_introspection_tests::msg::Unbound
   using TypeSupportLibraryT = IntrospectionCppTypeSupportTestLibrary;
 };
 
+template<>
+struct introspection_traits<rosidl_typesupport_introspection_tests::srv::Arrays>
+{
+  static constexpr const ServiceTypeSupportSymbolRecord typesupport =
+    SERVICE_TYPESUPPORT_SYMBOL_RECORD(
+    rosidl_typesupport_introspection_cpp,
+    rosidl_typesupport_introspection_tests, srv, Arrays);
+  using TypeSupportLibraryT = IntrospectionCppTypeSupportTestLibrary;
+};
+
+template<>
+struct introspection_traits<rosidl_typesupport_introspection_tests::srv::BasicTypes>
+{
+  static constexpr const ServiceTypeSupportSymbolRecord typesupport =
+    SERVICE_TYPESUPPORT_SYMBOL_RECORD(
+    rosidl_typesupport_introspection_cpp,
+    rosidl_typesupport_introspection_tests, srv, BasicTypes);
+  using TypeSupportLibraryT = IntrospectionCppTypeSupportTestLibrary;
+};
+
+template<>
+struct introspection_traits<rosidl_typesupport_introspection_tests::srv::Empty>
+{
+  static constexpr const ServiceTypeSupportSymbolRecord typesupport =
+    SERVICE_TYPESUPPORT_SYMBOL_RECORD(
+    rosidl_typesupport_introspection_cpp,
+    rosidl_typesupport_introspection_tests, srv, Empty);
+  using TypeSupportLibraryT = IntrospectionCppTypeSupportTestLibrary;
+};
+
 // Examples of test interfaces in C++, useful in test fixtures
 template<>
 struct Example<rosidl_typesupport_introspection_tests::msg::Arrays>
@@ -604,17 +784,60 @@ struct Example<rosidl_typesupport_introspection_tests::msg::UnboundedSequences>
   }
 };
 
-}  // namespace rosidl_typesupport_introspection_tests
+template<>
+struct Example<rosidl_typesupport_introspection_tests::srv::Arrays>
+{
+  static auto MakeRequest()
+  {
+    using MessageT =
+      rosidl_typesupport_introspection_tests::srv::Arrays::Request;
+    auto message = std::make_unique<MessageT>();
+    message->bool_values[2] = true;
+    message->float64_values[1] = 1.234;
+    message->uint16_values[0] = 1234u;
+    return message;
+  }
 
-// Extra C++ APIs to homogeneize access to test interfaces in C and C++
-DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, Arrays)
-DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, BasicTypes)
-DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, BoundedSequences)
-DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, Constants)
-DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, Defaults)
-DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, Empty)
-DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, MultiNested)
-DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, Strings)
-DEFINE_CXX_API_FOR_C_MESSAGE(rosidl_typesupport_introspection_tests, msg, UnboundedSequences)
+  static auto MakeResponse()
+  {
+    using MessageT =
+      rosidl_typesupport_introspection_tests::srv::Arrays::Response;
+    auto message = std::make_unique<MessageT>();
+    message->byte_values[1] = 0xAB;
+    message->char_values[0] = 'b';
+    message->int8_values[2] = 123;
+    return message;
+  }
+};
+
+template<>
+struct Example<rosidl_typesupport_introspection_tests::srv::BasicTypes>
+{
+  static auto MakeRequest()
+  {
+    using MessageT =
+      rosidl_typesupport_introspection_tests::srv::BasicTypes::Request;
+    auto message = std::make_unique<MessageT>();
+    message->char_value = 'c';
+    message->uint32_value = 1234u;
+    message->float32_value = 1.234f;
+    message->string_value = "foo";
+    return message;
+  }
+
+  static auto MakeResponse()
+  {
+    using MessageT =
+      rosidl_typesupport_introspection_tests::srv::BasicTypes::Response;
+    auto message = std::make_unique<MessageT>();
+    message->bool_value = true;
+    message->byte_value = 0xAB;
+    message->float64_value = -1.234;
+    message->string_value = "bar";
+    return message;
+  }
+};
+
+}  // namespace rosidl_typesupport_introspection_tests
 
 #endif  // INTROSPECTION_LIBRARIES_UNDER_TEST_HPP_

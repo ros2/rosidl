@@ -22,16 +22,15 @@
 #include "rosidl_typesupport_introspection_tests/helpers.hpp"
 #include "rosidl_typesupport_introspection_tests/type_traits.hpp"
 
-/// Asserts equality of an iterable message member (i.e. an array or
+/// Expects equality of an iterable message member (i.e. an array or
 /// a sequence) between a statically typed message and a type erased
 /// message via introspection APIs
-#define ASSERT_ITERABLE_MEMBER_EQ( \
+#define EXPECT_ITERABLE_MEMBER_EQ( \
     type_erased_message, message, member_name, member_descriptor) \
   { \
-    ASSERT_STREQ(member_descriptor->name_, #member_name); \
+    EXPECT_STREQ(member_descriptor->name_, #member_name); \
     using member_base_type = \
       EXPRESSION_TYPE(getitem(message.member_name, 0)); \
-    ASSERT_TRUE(has_iterable_structure(member_descriptor)); \
     const void * type_erased_member = \
       get_const_member(type_erased_message, member_descriptor); \
     const size_t size = get_member_size( \
@@ -43,27 +42,26 @@
     } \
   }
 
-/// Asserts equality of a message member between a statically typed
+/// Expects equality of a message member between a statically typed
 /// message and a type erased message via introspection APIs
-#define ASSERT_MEMBER_EQ( \
+#define EXPECT_MEMBER_EQ( \
     type_erased_message, message, member_name, member_descriptor) \
   { \
-    ASSERT_STREQ(member_descriptor->name_, #member_name); \
+    EXPECT_STREQ(member_descriptor->name_, #member_name); \
     using member_type = EXPRESSION_TYPE(message.member_name); \
     const auto & member = get_const_member<member_type>( \
       type_erased_message, member_descriptor); \
-    ASSERT_EQ(member, message.member_name); \
+    EXPECT_EQ(member, message.member_name); \
   }
 
-/// Asserts that assignment of an array message member on a type erased
+/// Expects that assignment of an array message member on a type erased
 /// message via introspection APIs (may incur memory corruption, make
 /// sure to validate).
-#define ASSERT_ARRAY_MEMBER_ASSIGNMENT( \
+#define EXPECT_ARRAY_MEMBER_ASSIGNMENT( \
     type_erased_message, message, member_name, member_descriptor) \
   { \
-    ASSERT_STREQ(member_descriptor->name_, #member_name); \
+    EXPECT_STREQ(member_descriptor->name_, #member_name); \
     using member_base_type = EXPRESSION_TYPE(message.member_name[0]); \
-    ASSERT_TRUE(has_array_structure(member_descriptor)); \
     void * type_erased_member = \
       get_member(type_erased_message, member_descriptor); \
     for (size_t i = 0u; i < length(message.member_name); ++i) { \
@@ -73,16 +71,15 @@
     } \
   }
 
-/// Asserts that assignment of an array message member on a type erased
+/// Expects that assignment of an array message member on a type erased
 /// message via introspection APIs (may incur memory corruption, make
 /// sure to validate).
-#define ASSERT_SEQUENCE_MEMBER_ASSIGNMENT( \
+#define EXPECT_SEQUENCE_MEMBER_ASSIGNMENT( \
     type_erased_message, message, member_name, member_descriptor) \
   { \
-    ASSERT_STREQ(member_descriptor->name_, #member_name); \
+    EXPECT_STREQ(member_descriptor->name_, #member_name); \
     using member_base_type = \
       EXPRESSION_TYPE(getitem(message.member_name, 0)); \
-    ASSERT_TRUE(has_sequence_structure(member_descriptor)); \
     void * type_erased_member = \
       get_member(type_erased_message, member_descriptor); \
     const size_t size = length(message.member_name); \
@@ -94,12 +91,12 @@
     } \
   }
 
-/// Asserts that assignment of a message member on a type erased message via
+/// Expects that assignment of a message member on a type erased message via
 /// introspection APIs (may incur memory corruption, make sure to validate).
-#define ASSERT_MEMBER_ASSIGNMENT( \
+#define EXPECT_MEMBER_ASSIGNMENT( \
     type_erased_message, message, member_name, member_descriptor) \
   { \
-    ASSERT_STREQ(member_descriptor->name_, #member_name); \
+    EXPECT_STREQ(member_descriptor->name_, #member_name); \
     using member_type = EXPRESSION_TYPE(message.member_name); \
     auto & member = get_member<member_type>( \
       type_erased_message, member_descriptor); \

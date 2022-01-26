@@ -156,51 +156,51 @@ TYPED_TEST(StringsMessageIntrospectionTest, CanReadTypeErasedMessage)
   const MessageDescriptorT * message_descriptor = this->GetMessageDescriptor();
   ASSERT_EQ(get_member_count(message_descriptor), 12u);
 
-  ASSERT_MEMBER_EQ(
+  EXPECT_MEMBER_EQ(
     type_erased_message, message, string_value,
     get_member_descriptor(message_descriptor, 0u));
 
-  ASSERT_MEMBER_EQ(
+  EXPECT_MEMBER_EQ(
     type_erased_message, message, string_value_default1,
     get_member_descriptor(message_descriptor, 1u));
 
-  ASSERT_MEMBER_EQ(
+  EXPECT_MEMBER_EQ(
     type_erased_message, message, string_value_default2,
     get_member_descriptor(message_descriptor, 2u));
 
-  ASSERT_MEMBER_EQ(
+  EXPECT_MEMBER_EQ(
     type_erased_message, message, string_value_default3,
     get_member_descriptor(message_descriptor, 3u));
 
-  ASSERT_MEMBER_EQ(
+  EXPECT_MEMBER_EQ(
     type_erased_message, message, string_value_default4,
     get_member_descriptor(message_descriptor, 4u));
 
-  ASSERT_MEMBER_EQ(
+  EXPECT_MEMBER_EQ(
     type_erased_message, message, string_value_default5,
     get_member_descriptor(message_descriptor, 5u));
 
-  ASSERT_MEMBER_EQ(
+  EXPECT_MEMBER_EQ(
     type_erased_message, message, bounded_string_value,
     get_member_descriptor(message_descriptor, 6u));
 
-  ASSERT_MEMBER_EQ(
+  EXPECT_MEMBER_EQ(
     type_erased_message, message, bounded_string_value_default1,
     get_member_descriptor(message_descriptor, 7u));
 
-  ASSERT_MEMBER_EQ(
+  EXPECT_MEMBER_EQ(
     type_erased_message, message, bounded_string_value_default2,
     get_member_descriptor(message_descriptor, 8u));
 
-  ASSERT_MEMBER_EQ(
+  EXPECT_MEMBER_EQ(
     type_erased_message, message, bounded_string_value_default3,
     get_member_descriptor(message_descriptor, 9u));
 
-  ASSERT_MEMBER_EQ(
+  EXPECT_MEMBER_EQ(
     type_erased_message, message, bounded_string_value_default4,
     get_member_descriptor(message_descriptor, 10u));
 
-  ASSERT_MEMBER_EQ(
+  EXPECT_MEMBER_EQ(
     type_erased_message, message, bounded_string_value_default5,
     get_member_descriptor(message_descriptor, 11u));
 }
@@ -223,51 +223,51 @@ TYPED_TEST(StringsMessageIntrospectionTest, CanWriteTypeErasedMessage)
   const MessageDescriptorT * message_descriptor = this->GetMessageDescriptor();
   ASSERT_EQ(get_member_count(message_descriptor), 12u);
 
-  ASSERT_MEMBER_ASSIGNMENT(
+  EXPECT_MEMBER_ASSIGNMENT(
     type_erased_message_copy.get(), message, string_value,
     get_member_descriptor(message_descriptor, 0u));
 
-  ASSERT_MEMBER_ASSIGNMENT(
+  EXPECT_MEMBER_ASSIGNMENT(
     type_erased_message_copy.get(), message, string_value_default1,
     get_member_descriptor(message_descriptor, 1u));
 
-  ASSERT_MEMBER_ASSIGNMENT(
+  EXPECT_MEMBER_ASSIGNMENT(
     type_erased_message_copy.get(), message, string_value_default2,
     get_member_descriptor(message_descriptor, 2u));
 
-  ASSERT_MEMBER_ASSIGNMENT(
+  EXPECT_MEMBER_ASSIGNMENT(
     type_erased_message_copy.get(), message, string_value_default3,
     get_member_descriptor(message_descriptor, 3u));
 
-  ASSERT_MEMBER_ASSIGNMENT(
+  EXPECT_MEMBER_ASSIGNMENT(
     type_erased_message_copy.get(), message, string_value_default4,
     get_member_descriptor(message_descriptor, 4u));
 
-  ASSERT_MEMBER_ASSIGNMENT(
+  EXPECT_MEMBER_ASSIGNMENT(
     type_erased_message_copy.get(), message, string_value_default5,
     get_member_descriptor(message_descriptor, 5u));
 
-  ASSERT_MEMBER_ASSIGNMENT(
+  EXPECT_MEMBER_ASSIGNMENT(
     type_erased_message_copy.get(), message, bounded_string_value,
     get_member_descriptor(message_descriptor, 6u));
 
-  ASSERT_MEMBER_ASSIGNMENT(
+  EXPECT_MEMBER_ASSIGNMENT(
     type_erased_message_copy.get(), message, bounded_string_value_default1,
     get_member_descriptor(message_descriptor, 7u));
 
-  ASSERT_MEMBER_ASSIGNMENT(
+  EXPECT_MEMBER_ASSIGNMENT(
     type_erased_message_copy.get(), message, bounded_string_value_default2,
     get_member_descriptor(message_descriptor, 8u));
 
-  ASSERT_MEMBER_ASSIGNMENT(
+  EXPECT_MEMBER_ASSIGNMENT(
     type_erased_message_copy.get(), message, bounded_string_value_default3,
     get_member_descriptor(message_descriptor, 9u));
 
-  ASSERT_MEMBER_ASSIGNMENT(
+  EXPECT_MEMBER_ASSIGNMENT(
     type_erased_message_copy.get(), message, bounded_string_value_default4,
     get_member_descriptor(message_descriptor, 10u));
 
-  ASSERT_MEMBER_ASSIGNMENT(
+  EXPECT_MEMBER_ASSIGNMENT(
     type_erased_message_copy.get(), message, bounded_string_value_default5,
     get_member_descriptor(message_descriptor, 11u));
 

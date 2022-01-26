@@ -25,7 +25,9 @@
 #include <stdexcept>
 #include <vector>
 
-/// Performs a deep-copy of the given `value`
+#include <rosidl_runtime_cpp/bounded_vector.hpp>
+
+/// Performs a deep-copy of the given `value`.
 /**
  * A best effort base definition, works for most C++ types.
  */
@@ -47,8 +49,8 @@ inline T deepcopy(T value) {return value;}
     return output; \
   }
 
-/// Defines a `deepcopy()` overload for `type`, assuming
-/// it is C message sequence member type.
+/// Defines a `deepcopy()` overload for `type`,
+/// assuming it is C message sequence member type.
 #define DEFINE_DEEPCOPY_OVERLOAD_FOR_C_MESSAGE_SEQUENCE_MEMBER(type) \
   inline type deepcopy(const type & input) { \
     type output; \
@@ -61,37 +63,75 @@ inline T deepcopy(T value) {return value;}
     return output; \
   }
 
+/// Returns the size of a plain array.
+template<typename T, size_t N>
+inline constexpr size_t length(const T (&)[N]) {return N;}
+
+/// Returns the size of an std::array.
+template<typename T, size_t N>
+inline constexpr size_t length(const std::array<T, N> &) {return N;}
+
+/// Returns the size of an rosidl_runtime_cpp::BoundedVector.
+template<typename T, size_t N>
+inline size_t
+length(const rosidl_runtime_cpp::BoundedVector<T, N> & vector)
+{
+  return vector.size();
+}
+
+/// Returns the size of an std::vector.
+template<typename T>
+inline size_t
+length(const std::vector<T> & vector)
+{
+  return vector.size();
+}
+
 /// Gets a reference to the item at `index` in `array`.
 template<typename T>
-inline const T & getitem(const T array[], const size_t index)
+inline const T &
+getitem(const T array[], const size_t index)
 {
   return array[index];
 }
 
-template<typename T, size_t N>
-inline size_t length(const T (&)[N]) {return N;}
-
-template<typename T, size_t N>
-inline size_t length(const std::array<T, N> &) {return N;}
-
-template<typename T>
-inline size_t length(const std::vector<T> & vector) {return vector.size();}
-
 /// Gets a reference to the item at `index` in `vector`.
 template<typename T>
-inline const T & getitem(const std::vector<T> & vector, const size_t index)
+inline const T &
+getitem(const std::vector<T> & vector, const size_t index)
 {
   return vector[index];
 }
 
-inline bool getitem(const std::vector<bool> & vector, const size_t index)
+// Deal with std::vector<bool> quirks.
+inline bool
+getitem(const std::vector<bool> & vector, const size_t index)
+{
+  return vector[index];
+}
+
+/// Gets a reference to the item at `index` in `vector`.
+template<typename T, size_t N>
+inline const T & getitem(
+  const rosidl_runtime_cpp::BoundedVector<T, N> & vector,
+  const size_t index)
+{
+  return vector[index];
+}
+
+// Deal with rosidl_runtime_cpp::BoundedVector<bool, N> quirks.
+template<size_t N>
+inline bool getitem(
+  const rosidl_runtime_cpp::BoundedVector<bool, N> & vector,
+  const size_t index)
 {
   return vector[index];
 }
 
 /// Gets a reference to the item at `index` in `array`.
 template<typename T, size_t N>
-inline const T & getitem(const std::array<T, N> & array, const size_t index)
+inline const T &
+getitem(const std::array<T, N> & array, const size_t index)
 {
   return array[index];
 }
@@ -142,82 +182,6 @@ inline const T & getitem(const std::array<T, N> & array, const size_t index)
   DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER( \
     RCUTILS_JOIN( \
       C_MESSAGE_NAME(package_name, interface_type, message_name), __Sequence))
-
-namespace rosidl_typesupport_introspection_tests
-{
-
-/// A literal type to hold message symbols.
-struct MessageTypeSupportSymbolRecord
-{
-  const char * symbol;
-};
-
-/// A literal type to hold service symbols.
-struct ServiceTypeSupportSymbolRecord
-{
-  const char * symbol;
-  const MessageTypeSupportSymbolRecord request;
-  const MessageTypeSupportSymbolRecord response;
-};
-
-/// A literal type to hold action symbols.
-struct ActionTypeSupportSymbolRecord
-{
-  const char * symbol;
-  const MessageTypeSupportSymbolRecord feedback;
-  const MessageTypeSupportSymbolRecord feedback_message;
-  const MessageTypeSupportSymbolRecord result;
-  const MessageTypeSupportSymbolRecord goal;
-  const ServiceTypeSupportSymbolRecord send_goal;
-  const ServiceTypeSupportSymbolRecord get_result;
-};
-
-/// Makes a MessageTypeSupportSymbolRecord literal for a message.
-#define MESSAGE_TYPESUPPORT_SYMBOL_RECORD( \
-    typesupport_name, package_name, interface_type, message_name) \
-  {RCUTILS_STRINGIFY( \
-      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME( \
-        typesupport_name, package_name, interface_type, message_name))}
-
-/// Makes a MessageTypeSupportSymbolRecord literal for a service.
-#define SERVICE_TYPESUPPORT_SYMBOL_RECORD( \
-    typesupport_name, package_name, interface_type, service_name) \
-  {RCUTILS_STRINGIFY( \
-      ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME( \
-        typesupport_name, package_name, interface_type, service_name)), \
-    MESSAGE_TYPESUPPORT_SYMBOL_RECORD( \
-      typesupport_name, package_name, \
-      interface_type, RCUTILS_JOIN(service_name, _Request)), \
-    MESSAGE_TYPESUPPORT_SYMBOL_RECORD( \
-      typesupport_name, package_name, \
-      interface_type, RCUTILS_JOIN(service_name, _Response))}
-
-/// Makes a MessageTypeSupportSymbolRecord literal for an action.
-#define ACTION_TYPESUPPORT_SYMBOL_RECORD( \
-    typesupport_name, package_name, interface_type, action_name) \
-  {RCUTILS_STRINGIFY( \
-      ROSIDL_TYPESUPPORT_INTERFACE__ACTION_SYMBOL_NAME( \
-        typesupport_name, package_name, interface_type, action_name)), \
-    MESSAGE_TYPESUPPORT_SYMBOL_RECORD( \
-      typesupport_name, package_name, \
-      interface_type, RCUTILS_JOIN(action_name, _Feedback)), \
-    MESSAGE_TYPESUPPORT_SYMBOL_RECORD( \
-      typesupport_name, package_name, \
-      interface_type, RCUTILS_JOIN(action_name, _FeedbackMessage)), \
-    MESSAGE_TYPESUPPORT_SYMBOL_RECORD( \
-      typesupport_name, package_name, \
-      interface_type, RCUTILS_JOIN(action_name, _Result)), \
-    MESSAGE_TYPESUPPORT_SYMBOL_RECORD( \
-      typesupport_name, package_name, \
-      interface_type, RCUTILS_JOIN(action_name, _Goal)), \
-    SERVICE_TYPESUPPORT_SYMBOL_RECORD( \
-      typesupport_name, package_name, \
-      interface_type, RCUTILS_JOIN(action_name, _SendGoal)), \
-    SERVICE_TYPESUPPORT_SYMBOL_RECORD( \
-      typesupport_name, package_name, \
-      interface_type, RCUTILS_JOIN(action_name, _GetResult))}
-
-}  // namespace rosidl_typesupport_introspection_tests
 
 // Extra C++ APIs to homogeneize access to rosidl_runtime_c primitives
 DEFINE_CXX_API_FOR_C_MESSAGE_MEMBER(rosidl_runtime_c__String)

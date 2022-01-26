@@ -31,6 +31,10 @@
 #define MEMBER_EXPRESSION_TYPE(type, expression) \
   EXPRESSION_TYPE(MEMBER_EXPRESSION(type, expression))
 
+/// Yields base type for a `getitem(type{}.member, 0)` expression
+#define MEMBER_ITEM_TYPE(type, member) \
+  EXPRESSION_TYPE(getitem(MEMBER_EXPRESSION(type, member), 0));
+
 /// Defines has_`member_name`<T> trait to check
 /// for member existence in any type T.
 #define DEFINE_HAS_MEMBER_TRAIT(member_name) \

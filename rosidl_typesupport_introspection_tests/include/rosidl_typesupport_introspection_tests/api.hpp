@@ -143,8 +143,20 @@ bool has_sequence_structure(const MemberDescriptorT * member_descriptor)
 {
   return has_iterable_structure(member_descriptor) &&
          !member_descriptor->is_upper_bound_ &&
+         member_descriptor->array_size_ == 0u &&
          member_descriptor->resize_function != nullptr;
 }
+
+template<typename MemberDescriptorT>
+bool has_bounded_sequence_structure(
+  const MemberDescriptorT * member_descriptor, const size_t size)
+{
+  return has_iterable_structure(member_descriptor) &&
+         member_descriptor->is_upper_bound_ &&
+         member_descriptor->array_size_ == size &&
+         member_descriptor->resize_function != nullptr;
+}
+
 
 template<typename MessageT, typename MemberDescriptorT>
 bool is_message_type_member(const MemberDescriptorT * member_descriptor)
@@ -249,7 +261,6 @@ void resize_member(
 {
   member_descriptor->resize_function(member, size);
 }
-
 
 }  // namespace rosidl_typesupport_introspection_tests
 

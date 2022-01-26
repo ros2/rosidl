@@ -39,6 +39,7 @@ if(BUILD_TESTING)
     rosidl_typesupport_introspection_cpp::rosidl_typesupport_introspection_cpp)
   target_compile_features(${PROJECT_NAME}_library INTERFACE cxx_std_17)
 
+  find_package(ament_cmake_gtest REQUIRED)
   file(GLOB test_files test/test_*.cpp)
   foreach(test_file ${test_files})
     get_filename_component(target ${test_file} NAME_WE)

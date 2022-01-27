@@ -51,7 +51,6 @@ typedef struct rosidl_typesupport_introspection_c__MessageMember_s
   /// If the interface has a default value, this points to it.
   const void * default_value_;
   /// If is_array_ is true, a pointer to a function that gives the size of one member of the array.
-  /// Only used for nested interface types.
   size_t (* size_function)(const void *);
   /// If is_array_ is true, a pointer to a function that gives a const pointer to the member of the
   /// array indicated by index.

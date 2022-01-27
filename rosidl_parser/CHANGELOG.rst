@@ -2,6 +2,11 @@
 Changelog for package rosidl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.0.1 (2022-01-13)
+------------------
+* Pass comments in ros interface constants to the .idl generated files (`#630 <https://github.com/ros2/rosidl/issues/630>`_)
+* Contributors: Ivan Santiago Paunovic
+
 3.0.0 (2021-11-05)
 ------------------
 * Update package maintainers (`#624 <https://github.com/ros2/rosidl/issues/624>`_)

@@ -61,6 +61,21 @@ typedef struct rosidl_typesupport_introspection_c__MessageMember_s
   /// array indicated by index.
   /// Only used for nested interface types.
   void * (*get_function)(void *, size_t index);
+  /// Pointer to a function that fetches (i.e. copies) an item from
+  /// an array or sequence member. It takes a pointer to the member,
+  /// an index (which is assumed to be valid), and a pointer to a
+  /// pre-allocated value (which is assumed to be of the correct type).
+  ///
+  /// Available for array and sequence members.
+  void (* fetch_function)(const void *, size_t index, void *);
+  /// Pointer to a function that assigns (i.e. copies) a value to an
+  /// item in an array or sequence member. It takes a pointer to the
+  /// member, an index (which is assumed to be valid), and a pointer
+  /// to an initialized value (which is assumed to be of the correct
+  /// type).
+  ///
+  /// Available for array and sequence members.
+  void (* assign_function)(void *, size_t index, const void *);
   /// If is_array_ is true, a pointer to a function that resizes the array.
   /// Only used for nested interface types.
   bool (* resize_function)(void *, size_t size);

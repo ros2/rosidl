@@ -2,6 +2,11 @@
 Changelog for package rosidl_typesupport_introspection_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.0.1 (2022-01-13)
+------------------
+* Set CXX standard to 17 (`#635 <https://github.com/ros2/rosidl/issues/635>`_)
+* Contributors: Øystein Sture
+
 3.0.0 (2021-11-05)
 ------------------
 * Fix up the documentation for rosidl_typesupport_introspection_cpp (`#627 <https://github.com/ros2/rosidl/issues/627>`_)

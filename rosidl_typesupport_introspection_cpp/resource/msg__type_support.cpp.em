@@ -61,15 +61,14 @@ void @(message.structure.namespaced_type.name)_fini_function(void * message_memo
   typed_message->~@(message.structure.namespaced_type.name)();
 }
 
-@[for member in message.structure.members]@
 @{
 def is_vector_bool(member):
     from rosidl_parser.definition import BasicType
     from rosidl_parser.definition import AbstractSequence
     return isinstance(member.type, AbstractSequence) and isinstance(member.type.value_type, BasicType) and member.type.value_type.typename == 'boolean'
 }@
-@# exclude std::vector<bool> because of specialization in their API
-@[  if isinstance(member.type, AbstractNestedType) and not is_vector_bool(member)]@
+@[for member in message.structure.members]@
+@[  if isinstance(member.type, AbstractNestedType)]@
 @{
 from rosidl_generator_cpp import  MSG_TYPE_TO_CPP
 if isinstance(member.type.value_type, BasicType):
@@ -92,29 +91,65 @@ size_t size_function__@(message.structure.namespaced_type.name)__@(member.name)(
 @[    end if]@
 }
 
+@[    if not is_vector_bool(member)]@
 const void * get_const_function__@(message.structure.namespaced_type.name)__@(member.name)(const void * untyped_member, size_t index)
 {
-@[    if isinstance(member.type, Array)]@
+@[      if isinstance(member.type, Array)]@
   const auto & member =
     *reinterpret_cast<const std::array<@(type_), @(member.type.size)> *>(untyped_member);
-@[    else]@
+@[      else]@
   const auto & member =
     *reinterpret_cast<const std::vector<@(type_)> *>(untyped_member);
-@[    end if]@
+@[      end if]@
   return &member[index];
 }
 
 void * get_function__@(message.structure.namespaced_type.name)__@(member.name)(void * untyped_member, size_t index)
 {
-@[    if isinstance(member.type, Array)]@
+@[      if isinstance(member.type, Array)]@
   auto & member =
     *reinterpret_cast<std::array<@(type_), @(member.type.size)> *>(untyped_member);
-@[    else]@
+@[      else]@
   auto & member =
     *reinterpret_cast<std::vector<@(type_)> *>(untyped_member);
-@[    end if]@
+@[      end if]@
   return &member[index];
 }
+
+void fetch_function__@(message.structure.namespaced_type.name)__@(member.name)(
+  const void * untyped_member, size_t index, void * untyped_value)
+{
+  const auto & item = *reinterpret_cast<const @(type_) *>(
+    get_const_function__@(message.structure.namespaced_type.name)__@(member.name)(untyped_member, index));
+  auto & value = *reinterpret_cast<@(type_) *>(untyped_value);
+  value = item;
+}
+
+void assign_function__@(message.structure.namespaced_type.name)__@(member.name)(
+  void * untyped_member, size_t index, const void * untyped_value)
+{
+  auto & item = *reinterpret_cast<@(type_) *>(
+    get_function__@(message.structure.namespaced_type.name)__@(member.name)(untyped_member, index));
+  const auto & value = *reinterpret_cast<const @(type_) *>(untyped_value);
+  item = value;
+}
+@[    else]@
+void fetch_function__@(message.structure.namespaced_type.name)__@(member.name)(
+  const void * untyped_member, size_t index, void * untyped_value)
+{
+  const auto & member = *reinterpret_cast<const std::vector<@(type_)> *>(untyped_member);
+  auto & value = *reinterpret_cast<@(type_) *>(untyped_value);
+  value = member[index];
+}
+
+void assign_function__@(message.structure.namespaced_type.name)__@(member.name)(
+  void * untyped_member, size_t index, const void * untyped_value)
+{
+  auto & member = *reinterpret_cast<std::vector<@(type_)> *>(untyped_member);
+  const auto & value = *reinterpret_cast<const @(type_) *>(untyped_value);
+  member[index] = value;
+}
+@[    end if]@
 
 @[    if isinstance(member.type, AbstractSequence)]@
 void resize_function__@(message.structure.namespaced_type.name)__@(member.name)(void * untyped_member, size_t size)
@@ -175,16 +210,20 @@ for index, member in enumerate(message.structure.members):
     # void * default_value_
     print('    nullptr,  // default value')  # TODO default value to be set
 
-    function_suffix = ('%s__%s' % (message.structure.namespaced_type.name, member.name)) if isinstance(member.type, AbstractNestedType) and not is_vector_bool(member) else None
+    function_suffix = ('%s__%s' % (message.structure.namespaced_type.name, member.name)) if isinstance(member.type, AbstractNestedType) else None
 
     # size_t(const void *) size_function
-    print('    %s,  // size() function pointer' % ('size_function__%s' % function_suffix if function_suffix else 'nullptr'))
+    print('    %s,  // size() function pointer' % ('size_function__%s' % function_suffix if isinstance(member.type, AbstractNestedType) else 'nullptr'))
     # const void *(const void *, size_t) get_const_function
-    print('    %s,  // get_const(index) function pointer' % ('get_const_function__%s' % function_suffix if function_suffix else 'nullptr'))
+    print('    %s,  // get_const(index) function pointer' % ('get_const_function__%s' % function_suffix if isinstance(member.type, AbstractNestedType) and not is_vector_bool(member) else 'nullptr'))
     # void *(void *, size_t) get_function
-    print('    %s,  // get(index) function pointer' % ('get_function__%s' % function_suffix if function_suffix else 'nullptr'))
+    print('    %s,  // get(index) function pointer' % ('get_function__%s' % function_suffix if isinstance(member.type, AbstractNestedType) and not is_vector_bool(member) else 'nullptr'))
+    # void(const void *, size_t, void *) fetch_function
+    print('    %s,  // fetch(index, &value) function pointer' % ('fetch_function__%s' % function_suffix if isinstance(member.type, AbstractNestedType) else 'nullptr'))
+    # void(void *, size_t, const void *) assign_function
+    print('    %s,  // assign(index, value) function pointer' % ('assign_function__%s' % function_suffix if isinstance(member.type, AbstractNestedType) else 'nullptr'))
     # void(void *, size_t) resize_function
-    print('    %s  // resize(index) function pointer' % ('resize_function__%s' % function_suffix if function_suffix and isinstance(member.type, AbstractSequence) else 'nullptr'))
+    print('    %s  // resize(index) function pointer' % ('resize_function__%s' % function_suffix if isinstance(member.type, AbstractSequence) else 'nullptr'))
 
     if index < len(message.structure.members) - 1:
         print('  },')

@@ -23,6 +23,8 @@ extern "C"
 #endif
 
 /// Possible types for message fields on a ROS message
+/// The equivalent OMG IDL and C types of the different fields can be found
+/// at http://design.ros2.org/articles/idl_interface_definition.html#type-mapping
 enum rosidl_typesupport_introspection_c_field_types
 {
   /// IEEE-754 binary32 format floating point number.
@@ -31,7 +33,7 @@ enum rosidl_typesupport_introspection_c_field_types
   rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE = 2,
   /// IEEE-754 binary128 format floating point number.
   rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE = 3,
-  /// Unsigned char, 8 bits wide.
+  /// Unsigned char
   rosidl_typesupport_introspection_c__ROS_TYPE_CHAR = 4,
   /// Wide character, 16 bits wide.
   rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR = 5,

@@ -89,8 +89,9 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember_s
 /// Structure used to describe all fields of a single interface type.
 typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMembers_s
 {
-  /// The namespace in which the interface resides, e.g. "example_messages__msg" for
-  /// example_messages/msg
+  /// The namespace in which the interface resides, e.g. for
+  /// example_messages/msg the namespaces generated would be
+  /// "example_messages__msg" in C and "example_message::msg" in C++.
   const char * message_namespace_;
   /// The name of the interface, e.g. "Int16"
   const char * message_name_;

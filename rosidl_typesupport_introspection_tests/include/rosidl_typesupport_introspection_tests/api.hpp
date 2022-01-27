@@ -28,7 +28,9 @@
 namespace rosidl_typesupport_introspection_tests
 {
 
-void * initialize_message(
+
+/// Initialize a type erased C++ `message` based on its `message_descriptor`.
+inline void * initialize_message(
   void * message,
   const rosidl_typesupport_introspection_cpp::MessageMembers * message_descriptor)
 {
@@ -37,7 +39,8 @@ void * initialize_message(
   return message;
 }
 
-void * initialize_message(
+/// Initialize a type erased C `message` based on its `message_descriptor`.
+inline void * initialize_message(
   void * message,
   const rosidl_typesupport_introspection_c__MessageMembers * message_descriptor)
 {
@@ -45,6 +48,7 @@ void * initialize_message(
   return message;
 }
 
+/// Finalize a type erased `message` based on its `message_descriptor`.
 template<typename MessageDescriptorT>
 void finalize_message(
   void * message,
@@ -53,6 +57,7 @@ void finalize_message(
   message_descriptor->fini_function(message);
 }
 
+/// Get a message's namespace from its `message_descriptor`.
 template<typename MessageDescriptorT>
 const char *
 get_message_namespace(const MessageDescriptorT * message_descriptor)
@@ -60,24 +65,29 @@ get_message_namespace(const MessageDescriptorT * message_descriptor)
   return message_descriptor->message_namespace_;
 }
 
+/// Get a message's name from its `message_descriptor`.
 template<typename MessageDescriptorT>
 const char * get_message_name(const MessageDescriptorT * message_descriptor)
 {
   return message_descriptor->message_name_;
 }
 
+/// Get a message's (base) size from its `message_descriptor`.
 template<typename MessageDescriptorT>
 size_t get_message_size(const MessageDescriptorT * message_descriptor)
 {
   return message_descriptor->size_of_;
 }
 
+/// Get a message's member count from its `message_descriptor`.
 template<typename MessageDescriptorT>
 size_t get_member_count(const MessageDescriptorT * message_descriptor)
 {
   return message_descriptor->member_count_;
 }
 
+/// Get a mutable type erased reference to a member
+/// from a type erased `message` given its `member_descriptor`.
 template<typename MemberDescriptorT>
 void * get_member(void * message, const MemberDescriptorT * member_descriptor)
 {
@@ -85,6 +95,8 @@ void * get_member(void * message, const MemberDescriptorT * member_descriptor)
          member_descriptor->offset_;
 }
 
+/// Get a mutable reference to a member from a
+/// type erased `message` given its `member_descriptor`.
 template<typename MemberT, typename MemberDescriptorT>
 MemberT &
 get_member(void * message, const MemberDescriptorT * member_descriptor)
@@ -92,14 +104,19 @@ get_member(void * message, const MemberDescriptorT * member_descriptor)
   return *reinterpret_cast<MemberT *>(get_member(message, member_descriptor));
 }
 
+/// Get the member descriptor for the `i`th member
+/// of a message given its `message_descriptor`.
 template<typename MessageDescriptorT>
 auto get_member_descriptor(
   const MessageDescriptorT * message_descriptor,
-  const size_t index)
+  const size_t i)
 {
-  return &(message_descriptor->members_[index]);
+  return &(message_descriptor->members_[i]);
 }
 
+/// Check if a member has a simple structure
+/// (i.e not an array nor a sequence) given its
+/// `member_descriptor`.
 template<typename MemberDescriptorT>
 bool has_simple_structure(const MemberDescriptorT * member_descriptor)
 {
@@ -112,6 +129,8 @@ bool has_simple_structure(const MemberDescriptorT * member_descriptor)
          member_descriptor->resize_function == nullptr;
 }
 
+/// Check if a member has an iterable structure (i.e either an array or a
+/// sequence) given its `member_descriptor`.
 template<typename MemberDescriptorT>
 bool has_iterable_structure(const MemberDescriptorT * member_descriptor)
 {
@@ -121,6 +140,7 @@ bool has_iterable_structure(const MemberDescriptorT * member_descriptor)
          member_descriptor->assign_function != nullptr;
 }
 
+/// Check if a member has an array structure given its `member_descriptor`.
 template<typename MemberDescriptorT>
 bool has_array_structure(const MemberDescriptorT * member_descriptor)
 {
@@ -130,6 +150,8 @@ bool has_array_structure(const MemberDescriptorT * member_descriptor)
          member_descriptor->resize_function == nullptr;
 }
 
+/// Check if a member has an array structure of `size` elements given its
+/// `member_descriptor`.
 template<typename MemberDescriptorT>
 bool has_array_structure(
   const MemberDescriptorT * member_descriptor, const size_t size)
@@ -138,6 +160,8 @@ bool has_array_structure(
          member_descriptor->array_size_ == size;
 }
 
+/// Check if a member has an unbounded sequence structure given its
+/// `member_descriptor`.
 template<typename MemberDescriptorT>
 bool has_sequence_structure(const MemberDescriptorT * member_descriptor)
 {
@@ -147,6 +171,8 @@ bool has_sequence_structure(const MemberDescriptorT * member_descriptor)
          member_descriptor->resize_function != nullptr;
 }
 
+/// Check if a member has a sequence structure bounded to `size`
+/// elements given its `member_descriptor`.
 template<typename MemberDescriptorT>
 bool has_bounded_sequence_structure(
   const MemberDescriptorT * member_descriptor, const size_t size)
@@ -157,7 +183,7 @@ bool has_bounded_sequence_structure(
          member_descriptor->resize_function != nullptr;
 }
 
-
+/// Check if a member is of `MessageT` type given its `member_descriptor`.
 template<typename MessageT, typename MemberDescriptorT>
 bool is_message_type_member(const MemberDescriptorT * member_descriptor)
 {
@@ -180,6 +206,7 @@ bool is_message_type_member(const MemberDescriptorT * member_descriptor)
          member_descriptor->members_ == message_typesupport;
 }
 
+/// Check if a member is of `type_id` type given its `member_descriptor`.
 template<typename MemberDescriptorT>
 bool is_base_type_member(const MemberDescriptorT * member_descriptor, int type_id)
 {
@@ -187,14 +214,20 @@ bool is_base_type_member(const MemberDescriptorT * member_descriptor, int type_i
          member_descriptor->members_ == nullptr;
 }
 
+/// Check if a member is of string type, optionally bounded to `upper_bound`
+/// characters, given its `member_descriptor`.
 template<typename MemberDescriptorT>
-bool is_string_member(const MemberDescriptorT * member_descriptor, const size_t upper_bound = 0u)
+bool is_string_member(
+  const MemberDescriptorT * member_descriptor,
+  const size_t upper_bound = 0u)
 {
   return member_descriptor->type_id_ == ROS_TYPE_STRING &&
          member_descriptor->members_ == nullptr &&
          member_descriptor->string_upper_bound_ == upper_bound;
 }
 
+/// Get an immutable type erased reference to a member
+/// from a type erased message given its `member_descriptor`.
 template<typename MemberDescriptorT>
 const void * get_const_member(
   const void * message,
@@ -204,6 +237,8 @@ const void * get_const_member(
          member_descriptor->offset_;
 }
 
+/// Get an immutable reference to a member from a type
+/// erased message given its `member_descriptor`.
 template<typename MemberT, typename MemberDescriptorT>
 const MemberT & get_const_member(
   const void * message,
@@ -213,38 +248,46 @@ const MemberT & get_const_member(
     get_const_member(message, member_descriptor));
 }
 
+/// Get a member's name from its `member_descriptor`.
 template<typename MemberDescriptorT>
 const char * get_member_name(const MemberDescriptorT * member_descriptor)
 {
   return member_descriptor->name_;
 }
 
+/// Get a member's type id from its `member_descriptor`.
 template<typename MemberDescriptorT>
 int get_member_base_type(const MemberDescriptorT * member_descriptor)
 {
   return member_descriptor->type_id_;
 }
 
+/// Fetch the `ith` item value of a type erased, iterable
+/// `member` given its `member_descriptor`.
 template<typename ItemT, typename MemberDescriptorT>
 ItemT fetch_member_item(
   const void * member,
   const MemberDescriptorT * member_descriptor,
-  const size_t index)
+  const size_t i)
 {
   ItemT value;
-  member_descriptor->fetch_function(member, index, &value);
+  member_descriptor->fetch_function(member, i, &value);
   return value;
 }
 
+/// Assign a `value` to the `ith` item of a type erased,
+/// iterable `member` given its `member_descriptor`.
 template<typename ItemT, typename MemberDescriptorT>
 void assign_member_item(
   void * member,
   const MemberDescriptorT * member_descriptor,
-  const size_t index, ItemT && value)
+  const size_t i, ItemT && value)
 {
   member_descriptor->assign_function(member, index, &value);
 }
 
+/// Get the size of an iterable, type erased `member`
+/// given its `member_descriptor`.
 template<typename MemberDescriptorT>
 size_t get_member_size(
   const void * member,
@@ -253,6 +296,8 @@ size_t get_member_size(
   return member_descriptor->size_function(member);
 }
 
+/// Resize a sequence, type erased `member`
+/// to `size` given its `member_descriptor`.
 template<typename MemberDescriptorT>
 void resize_member(
   void * member,

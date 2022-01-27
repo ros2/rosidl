@@ -22,7 +22,7 @@ extern "C"
 {
 #endif
 
-/// Primitive (plain-old data) types supported by the ROS type system.
+/// Possible types for message fields on a ROS message
 enum rosidl_typesupport_introspection_c_field_types
 {
   /// IEEE-754 binary32 format floating point number.

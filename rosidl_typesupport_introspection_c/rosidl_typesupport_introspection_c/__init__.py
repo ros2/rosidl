@@ -19,11 +19,9 @@ def generate_c(generator_arguments_file: str):
     """
     Generate the C implementation of the type support.
 
-    Parameters
-    ----------
-    generator_arguments_file : str
-        The path to the file containing the arguments for the generator.
-
+    :param generator_arguments_file: The path to the file containing the
+        arguments for the generator.
+    :type generator_arguments_file: str
     """
     mapping = {
         'idl__rosidl_typesupport_introspection_c.h.em':

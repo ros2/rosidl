@@ -25,7 +25,7 @@ from rosidl_typesupport_introspection_c import generate_c
 
 
 class GenerateIntrospectionCTypesupport(GenerateCommandExtension):
-    """Generator class for generating the C implementation of the type support."""
+    """Generate the C type support implementation."""
 
     def generate(
         self,

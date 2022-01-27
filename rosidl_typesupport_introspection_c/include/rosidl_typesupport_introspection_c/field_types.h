@@ -27,39 +27,39 @@ extern "C"
 /// at http://design.ros2.org/articles/idl_interface_definition.html#type-mapping
 enum rosidl_typesupport_introspection_c_field_types
 {
-  /// IEEE-754 binary32 format floating point number.
+  /// Equivalent to float in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT = 1,
-  /// IEEE-754 binary64 format floating point number.
+  /// Equivalent to double in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE = 2,
-  /// IEEE-754 binary128 format floating point number.
+  /// Equivalent to long double in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE = 3,
-  /// Unsigned char
+  /// Equivalent to unsigned char in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_CHAR = 4,
-  /// Wide character, 16 bits wide.
+  /// Equivalent to char16_t in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR = 5,
-  /// Boolean value. The size is implementation defined.
+  /// Equivalent to _Bool in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN = 6,
-  /// A single unsigned byte in raw form.
+  /// Equivalent to unsigned char in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_OCTET = 7,
-  /// Unsigned 8-bit integer.
+  /// Equivalent to uint8_t in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_UINT8 = 8,
-  /// Signed 8-bit integer.
+  /// Equivalent to int8_t in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_INT8 = 9,
-  /// Unsigned 16-bit integer.
+  /// Equivalent to uint16_t in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_UINT16 = 10,
-  /// Signed 16-bit integer.
+  /// Equivalent to int16_t in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_INT16 = 11,
-  /// Unsigned 32-bit integer.
+  /// Equivalent to uint32_t in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_UINT32 = 12,
-  /// Signed 32-bit integer.
+  /// Equivalent to int32_t in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_INT32 = 13,
-  /// Unsigned 64-bit integer.
+  /// Equivalent to uint64_t in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_UINT64 = 14,
-  /// Signed 64-bit integer.
+  /// Equivalent to int64_t in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_INT64 = 15,
-  /// String, represented as an array of char's.
+  /// Equivalent to char * in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_STRING = 16,
-  /// Wide string, represented as an array of elements at least 16-bits wide each.
+  /// Equivalent to char16_t * in C types
   rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING = 17,
 
   /// An embedded message type.

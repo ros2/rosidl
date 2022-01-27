@@ -9,14 +9,11 @@ from typing import List
 
 def main(argv: List[str] = sys.argv[1:]):
     """
-    Main function for the command-line tool to generate the C++-language
-    introspection type support for an interface.
+    Generate the C++ introspection type support for ROS interfaces.
 
-    Parameters
-    ----------
-    argv : List[str]
-        The command-line arguments to be parsed. Defaults to sys.argv[1:].
-
+    :param argv: The command-line arguments to be parsed. Defaults to
+        sys.argv[1:].
+    :type argv: List[str]
     """
     parser = argparse.ArgumentParser(
         description='Generate the C++ type support to dynamically handle ROS messages.',

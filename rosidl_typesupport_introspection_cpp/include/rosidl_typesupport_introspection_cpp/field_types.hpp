@@ -24,39 +24,39 @@ namespace rosidl_typesupport_introspection_cpp
 /// The equivalent OMG IDL and C++ types of the different fields can be found
 /// at http://design.ros2.org/articles/idl_interface_definition.html#type-mapping
 
-/// IEEE-754 binary32 format floating point number.
+/// Equivalent to float in C++ types.
 const uint8_t ROS_TYPE_FLOAT = rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT;
-/// IEEE-754 binary64 format floating point number.
+/// Equivalent to double in C++ types.
 const uint8_t ROS_TYPE_DOUBLE = rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE;
-/// IEEE-754 binary128 format floating point number.
+/// Equivalent to long double in C++ types.
 const uint8_t ROS_TYPE_LONG_DOUBLE = rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE;
-/// Unsigned char, 8 bits wide.
+/// Equivalent to unsigned char in C++ types.
 const uint8_t ROS_TYPE_CHAR = rosidl_typesupport_introspection_c__ROS_TYPE_CHAR;
-/// Wide character, large enough to support Unicode code points.
+/// Equivalent to char16_t in C++ types.
 const uint8_t ROS_TYPE_WCHAR = rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR;
-/// Boolean value. The size is implementation defined.
+/// Equivalent to bool in C++ types.
 const uint8_t ROS_TYPE_BOOLEAN = rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN;
-/// A single unsigned byte in raw form.
+/// Equivalent to std::byte in C++ types.
 const uint8_t ROS_TYPE_OCTET = rosidl_typesupport_introspection_c__ROS_TYPE_OCTET;
-/// Unsigned 8-bit integer.
+/// Equivalent to uint8_t in C++ types.
 const uint8_t ROS_TYPE_UINT8 = rosidl_typesupport_introspection_c__ROS_TYPE_UINT8;
-/// Signed 8-bit integer.
+/// Equivalent to int8_t in C++ types.
 const uint8_t ROS_TYPE_INT8 = rosidl_typesupport_introspection_c__ROS_TYPE_INT8;
-/// Unsigned 16-bit integer.
+/// Equivalent to uint16_t in C++ types.
 const uint8_t ROS_TYPE_UINT16 = rosidl_typesupport_introspection_c__ROS_TYPE_UINT16;
-/// Signed 16-bit integer.
+/// Equivalent to int16_t in C++ types.
 const uint8_t ROS_TYPE_INT16 = rosidl_typesupport_introspection_c__ROS_TYPE_INT16;
-/// Unsigned 32-bit integer.
+/// Equivalent to uint32_t in C++ types.
 const uint8_t ROS_TYPE_UINT32 = rosidl_typesupport_introspection_c__ROS_TYPE_UINT32;
-/// Signed 32-bit integer.
+/// Equivalent to int32_t in C++ types.
 const uint8_t ROS_TYPE_INT32 = rosidl_typesupport_introspection_c__ROS_TYPE_INT32;
-/// Unsigned 64-bit integer.
+/// Equivalent to uint64_t in C++ types.
 const uint8_t ROS_TYPE_UINT64 = rosidl_typesupport_introspection_c__ROS_TYPE_UINT64;
-/// Signed 64-bit integer.
+/// Equivalent to int64_t in C++ types.
 const uint8_t ROS_TYPE_INT64 = rosidl_typesupport_introspection_c__ROS_TYPE_INT64;
-/// String, represented as an array of char's.
+/// Equivalent to std::string in C++ types.
 const uint8_t ROS_TYPE_STRING = rosidl_typesupport_introspection_c__ROS_TYPE_STRING;
-/// Wide string, represented as an array of elements at least 16-bits wide each.
+/// Equivalent to std::u16string in C++ types.
 const uint8_t ROS_TYPE_WSTRING = rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING;
 
 /// An embedded message type.

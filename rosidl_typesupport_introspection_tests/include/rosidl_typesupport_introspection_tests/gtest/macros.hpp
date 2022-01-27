@@ -71,7 +71,7 @@
     } \
   }
 
-/// Expects that assignment of an array message member on a type erased
+/// Expects that assignment of a sequence message member on a type erased
 /// message via introspection APIs (may incur memory corruption, make
 /// sure to validate).
 #define EXPECT_SEQUENCE_MEMBER_ASSIGNMENT( \

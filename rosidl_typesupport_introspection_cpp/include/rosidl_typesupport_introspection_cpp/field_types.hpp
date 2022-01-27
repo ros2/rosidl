@@ -20,8 +20,9 @@
 
 namespace rosidl_typesupport_introspection_cpp
 {
-
-/// Primitive (plain-old data) types supported by the ROS type system.
+/// Possible types for message fields on a ROS message
+/// The equivalent OMG IDL and C++ types of the different fields can be found
+/// at http://design.ros2.org/articles/idl_interface_definition.html#type-mapping
 
 /// IEEE-754 binary32 format floating point number.
 const uint8_t ROS_TYPE_FLOAT = rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT;

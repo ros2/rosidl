@@ -27,39 +27,39 @@ extern "C"
 /// at http://design.ros2.org/articles/idl_interface_definition.html#type-mapping
 enum rosidl_typesupport_introspection_c_field_types
 {
-  /// Equivalent to float in C types
+  /// Equivalent to float in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT = 1,
-  /// Equivalent to double in C types
+  /// Equivalent to double in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE = 2,
-  /// Equivalent to long double in C types
+  /// Equivalent to long double in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE = 3,
-  /// Equivalent to unsigned char in C types
+  /// Equivalent to unsigned char in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_CHAR = 4,
-  /// Equivalent to char16_t in C types
+  /// Equivalent to char16_t in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_WCHAR = 5,
-  /// Equivalent to _Bool in C types
+  /// Equivalent to _Bool in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_BOOLEAN = 6,
-  /// Equivalent to unsigned char in C types
+  /// Equivalent to unsigned char in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_OCTET = 7,
-  /// Equivalent to uint8_t in C types
+  /// Equivalent to uint8_t in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_UINT8 = 8,
-  /// Equivalent to int8_t in C types
+  /// Equivalent to int8_t in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_INT8 = 9,
-  /// Equivalent to uint16_t in C types
+  /// Equivalent to uint16_t in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_UINT16 = 10,
-  /// Equivalent to int16_t in C types
+  /// Equivalent to int16_t in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_INT16 = 11,
-  /// Equivalent to uint32_t in C types
+  /// Equivalent to uint32_t in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_UINT32 = 12,
-  /// Equivalent to int32_t in C types
+  /// Equivalent to int32_t in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_INT32 = 13,
-  /// Equivalent to uint64_t in C types
+  /// Equivalent to uint64_t in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_UINT64 = 14,
-  /// Equivalent to int64_t in C types
+  /// Equivalent to int64_t in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_INT64 = 15,
-  /// Equivalent to char * in C types
+  /// Equivalent to char * in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_STRING = 16,
-  /// Equivalent to char16_t * in C types
+  /// Equivalent to char16_t * in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_WSTRING = 17,
 
   /// An embedded message type.

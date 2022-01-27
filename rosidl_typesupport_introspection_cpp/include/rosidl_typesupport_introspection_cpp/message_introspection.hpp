@@ -54,7 +54,6 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember_s
   const void * default_value_;
   /// If is_array_ is true, a pointer to a function that gives the size of array members.
   /// First argument should be a pointer to the actual memory representation of the member.
-  /// Only used for nested interface types.
   size_t (* size_function)(const void *);
   /// If is_array_ is true, a pointer to a function that gives a const pointer to the member of the
   /// array indicated by index.

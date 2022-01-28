@@ -21,7 +21,7 @@ if(BUILD_TESTING)
   rosidl_generate_interfaces(${PROJECT_NAME}
     ${test_interface_files_MSG_FILES}
     ${test_interface_files_SRV_FILES}
-    ${test_interface_files_ACTION_FILES}
+    # ${test_interface_files_ACTION_FILES}
     SKIP_INSTALL
   )
 

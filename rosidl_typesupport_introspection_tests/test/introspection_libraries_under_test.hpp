@@ -112,11 +112,11 @@ struct IntrospectionCTypeSupportTestLibrary
       rosidl_typesupport_introspection_c,
       rosidl_typesupport_introspection_tests, srv, BasicTypes)
   };
-  static constexpr const ActionTypeSupportSymbolRecord actions[] = {
-    ACTION_TYPESUPPORT_SYMBOL_RECORD(
-      rosidl_typesupport_introspection_c,
-      rosidl_typesupport_introspection_tests, action, Fibonacci)
-  };
+  // static constexpr const ActionTypeSupportSymbolRecord actions[] = {
+  //   ACTION_TYPESUPPORT_SYMBOL_RECORD(
+  //     rosidl_typesupport_introspection_c,
+  //     rosidl_typesupport_introspection_tests, action, Fibonacci)
+  // };
 };
 
 // Traits to aid introspection of `rosidl_typesupport_introspection_tests` package interfaces in C
@@ -416,11 +416,11 @@ struct IntrospectionCppTypeSupportTestLibrary
       rosidl_typesupport_introspection_cpp,
       rosidl_typesupport_introspection_tests, srv, BasicTypes)
   };
-  static constexpr const ActionTypeSupportSymbolRecord actions[] = {
-    ACTION_TYPESUPPORT_SYMBOL_RECORD(
-      rosidl_typesupport_introspection_cpp,
-      rosidl_typesupport_introspection_tests, action, Fibonacci)
-  };
+  // static constexpr const ActionTypeSupportSymbolRecord actions[] = {
+  //   ACTION_TYPESUPPORT_SYMBOL_RECORD(
+  //     rosidl_typesupport_introspection_cpp,
+  //     rosidl_typesupport_introspection_tests, action, Fibonacci)
+  // };
 };
 
 // Traits to aid introspection of `rosidl_typesupport_introspection_tests` package interfaces in C++

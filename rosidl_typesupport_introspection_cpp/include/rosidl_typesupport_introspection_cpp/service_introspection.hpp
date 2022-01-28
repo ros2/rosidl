@@ -30,8 +30,8 @@ namespace rosidl_typesupport_introspection_cpp
 /// A service is comprised of two interfaces: the request and the response.
 typedef struct ServiceMembers_s
 {
-  /// The namespace in which the service resides, e.g. "example_messages__srv" for
-  /// example_messages/srv
+  /// The namespace in which the service resides, e.g. "example_messages::srv"
+  /// for example_messages/srv
   const char * service_namespace_;
   /// The name of the service, e.g. "AddTwoInts"
   const char * service_name_;

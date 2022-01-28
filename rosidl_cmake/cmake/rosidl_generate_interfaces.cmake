@@ -25,7 +25,7 @@
 #   definitions where each value might be either a path relative to the
 #   CMAKE_CURRENT_SOURCE_DIR or a tuple separated by a colon with an absolute
 #   base path and a path relative to that base path.
-#   If the interface file's parent directory is 'action', is is assumed to be
+#   If the interface file's parent directory is 'action', it is assumed to be
 #   an action definition.
 #   If an action interface is passed then you must add a depend tag for
 #   'action_msgs' to your package.xml, otherwise this macro will error.

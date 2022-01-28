@@ -283,7 +283,7 @@ void assign_member_item(
   const MemberDescriptorT * member_descriptor,
   const size_t i, ItemT && value)
 {
-  member_descriptor->assign_function(member, index, &value);
+  member_descriptor->assign_function(member, i, &value);
 }
 
 /// Get the size of an iterable, type erased `member`

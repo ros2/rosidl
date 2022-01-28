@@ -50,6 +50,10 @@ namespace rosidl_typesupport_introspection_tests
 
 // Base definition, to be specialized
 template<typename InterfaceT>
+struct interface_traits;
+
+// Base definition, to be specialized
+template<typename InterfaceT>
 struct introspection_traits;
 
 }  // namespace rosidl_typesupport_introspection_tests

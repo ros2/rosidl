@@ -255,6 +255,18 @@ bool is_string_member(
          member_descriptor->string_upper_bound_ == upper_bound;
 }
 
+/// Check if a member is of wstring type, optionally bounded to `upper_bound`
+/// characters, given its `member_descriptor`.
+template<typename MemberDescriptorT>
+bool is_wstring_member(
+  const MemberDescriptorT * member_descriptor,
+  const size_t upper_bound = 0u)
+{
+  return member_descriptor->type_id_ == ROS_TYPE_WSTRING &&
+         member_descriptor->members_ == nullptr &&
+         member_descriptor->string_upper_bound_ == upper_bound;
+}
+
 /// Get an immutable type erased reference to a member
 /// from a type erased message given its `member_descriptor`.
 template<typename MemberDescriptorT>

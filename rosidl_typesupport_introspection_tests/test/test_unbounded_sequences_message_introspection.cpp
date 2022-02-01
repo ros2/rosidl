@@ -55,6 +55,9 @@ TYPED_TEST(UnboundedSequencesMessageIntrospectionTest, MessageDescriptorIsCorrec
     get_message_namespace(message_descriptor),
     TypeSupportLibraryT::messages_namespace);
   EXPECT_STREQ(get_message_name(message_descriptor), "UnboundedSequences");
+  EXPECT_EQ(
+    get_message_size(message_descriptor),
+    sizeof(UnboundedSequencesMessageT));
   ASSERT_EQ(get_member_count(message_descriptor), 32u);
 
   {

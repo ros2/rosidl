@@ -55,6 +55,7 @@ TYPED_TEST(BoundedSequencesMessageIntrospectionTest, MessageDescriptorIsCorrect)
     get_message_namespace(message_descriptor),
     TypeSupportLibraryT::messages_namespace);
   EXPECT_STREQ(get_message_name(message_descriptor), "BoundedSequences");
+  EXPECT_EQ(get_message_size(message_descriptor), sizeof(BoundedSequencesMessageT));
   ASSERT_EQ(get_member_count(message_descriptor), 32u);
 
   {

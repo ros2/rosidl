@@ -255,6 +255,18 @@ bool is_string_member(
          member_descriptor->string_upper_bound_ == upper_bound;
 }
 
+/// Check if a member is of wstring type, optionally bounded to `upper_bound`
+/// characters, given its `member_descriptor`.
+template<typename MemberDescriptorT>
+bool is_wstring_member(
+  const MemberDescriptorT * member_descriptor,
+  const size_t upper_bound = 0u)
+{
+  return member_descriptor->type_id_ == ROS_TYPE_WSTRING &&
+         member_descriptor->members_ == nullptr &&
+         member_descriptor->string_upper_bound_ == upper_bound;
+}
+
 /// Get an immutable type erased reference to a member
 /// from a type erased message given its `member_descriptor`.
 template<typename MemberDescriptorT>
@@ -291,7 +303,41 @@ int get_member_base_type(const MemberDescriptorT * member_descriptor)
   return member_descriptor->type_id_;
 }
 
-/// Fetch the `ith` item value of a type erased, iterable
+/// Check if a member supports direct memory access
+/// (ie. get operations) given its `member_descriptor`.
+template<typename MemberDescriptorT>
+bool has_support_for_direct_memory_access(
+  const MemberDescriptorT * member_descriptor)
+{
+  return member_descriptor->get_const_function != nullptr &&
+         member_descriptor->get_function != nullptr;
+}
+
+/// Get a reference to the `i`th item of a type erased,
+/// constant, iterable `member` given its `member_descriptor`.
+template<typename ItemT, typename MemberDescriptorT>
+const ItemT & get_member_item(
+  const void * member,
+  const MemberDescriptorT * member_descriptor,
+  const size_t i)
+{
+  return *reinterpret_cast<const ItemT *>(
+    member_descriptor->get_const_function(member, i));
+}
+
+/// Get a reference to the `i`th item of a type erased,
+/// iterable `member` given its `member_descriptor`.
+template<typename ItemT, typename MemberDescriptorT>
+ItemT & get_member_item(
+  void * member,
+  const MemberDescriptorT * member_descriptor,
+  const size_t i)
+{
+  return *reinterpret_cast<ItemT *>(
+    member_descriptor->get_function(member, i));
+}
+
+/// Fetch the `i`th item value of a type erased, iterable
 /// `member` given its `member_descriptor`.
 template<typename ItemT, typename MemberDescriptorT>
 ItemT fetch_member_item(
@@ -304,7 +350,7 @@ ItemT fetch_member_item(
   return value;
 }
 
-/// Assign a `value` to the `ith` item of a type erased,
+/// Assign a `value` to the `i`th item of a type erased,
 /// iterable `member` given its `member_descriptor`.
 template<typename ItemT, typename MemberDescriptorT>
 void assign_member_item(

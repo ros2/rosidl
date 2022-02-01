@@ -38,7 +38,12 @@
     for (size_t i = 0u; i < size; ++i) { \
       const auto item = fetch_member_item<member_base_type>( \
         type_erased_member, member_descriptor, i); \
-      ASSERT_EQ(item, getitem(message.member_name, i)); \
+      EXPECT_EQ(item, getitem(message.member_name, i)); \
+      if (has_support_for_direct_memory_access(member_descriptor)) { \
+        const auto & item_reference = get_member_item<member_base_type>( \
+          type_erased_member, member_descriptor, i); \
+        EXPECT_EQ(item_reference, getitem(message.member_name, i)); \
+      } \
     } \
   }
 
@@ -68,6 +73,11 @@
       assign_member_item<member_base_type>( \
         type_erased_member, member_descriptor, \
         i, deepcopy(message.member_name[i])); \
+      if (has_support_for_direct_memory_access(member_descriptor)) { \
+        auto & item_reference = get_member_item<member_base_type>( \
+          type_erased_member, member_descriptor, i); \
+        EXPECT_EQ(item_reference, message.member_name[i]); \
+      } \
     } \
   }
 
@@ -88,6 +98,11 @@
       assign_member_item<member_base_type>( \
         type_erased_member, member_descriptor, \
         i, deepcopy(getitem(message.member_name, i))); \
+      if (has_support_for_direct_memory_access(member_descriptor)) { \
+        auto & item_reference = get_member_item<member_base_type>( \
+          type_erased_member, member_descriptor, i); \
+        EXPECT_EQ(item_reference, getitem(message.member_name, i)); \
+      } \
     } \
   }
 

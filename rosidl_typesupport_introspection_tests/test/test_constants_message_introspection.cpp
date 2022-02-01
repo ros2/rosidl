@@ -27,41 +27,41 @@ namespace testing
 namespace
 {
 
-template<typename EmptyMessageT>
-class EmptyMessageIntrospectionTest
-  : public MessageIntrospectionTest<EmptyMessageT>
+template<typename ConstantsMessageT>
+class ConstantsMessageIntrospectionTest
+  : public MessageIntrospectionTest<ConstantsMessageT>
 {
 };
 
-using EmptyMessageTypes = ::testing::Types<
-  rosidl_typesupport_introspection_tests__msg__Empty,
-  rosidl_typesupport_introspection_tests::msg::Empty>;
-TYPED_TEST_SUITE(EmptyMessageIntrospectionTest, EmptyMessageTypes);
+using ConstantsMessageTypes = ::testing::Types<
+  rosidl_typesupport_introspection_tests__msg__Constants,
+  rosidl_typesupport_introspection_tests::msg::Constants>;
+TYPED_TEST_SUITE(ConstantsMessageIntrospectionTest, ConstantsMessageTypes);
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError
-TYPED_TEST(EmptyMessageIntrospectionTest, MessageDescriptorIsCorrect)
+TYPED_TEST(ConstantsMessageIntrospectionTest, MessageDescriptorIsCorrect)
 {
-  using EmptyMessageT = TypeParam;
+  using ConstantsMessageT = TypeParam;
   using TypeSupportLibraryT =
-    typename introspection_traits<EmptyMessageT>::TypeSupportLibraryT;
+    typename introspection_traits<ConstantsMessageT>::TypeSupportLibraryT;
   using MessageDescriptorT = typename TypeSupportLibraryT::MessageDescriptorT;
 
   const MessageDescriptorT * message_descriptor = this->GetMessageDescriptor();
   EXPECT_STREQ(
     get_message_namespace(message_descriptor),
     TypeSupportLibraryT::messages_namespace);
-  EXPECT_STREQ(get_message_name(message_descriptor), "Empty");
-  EXPECT_EQ(get_message_size(message_descriptor), sizeof(EmptyMessageT));
+  EXPECT_STREQ(get_message_name(message_descriptor), "Constants");
+  EXPECT_EQ(get_message_size(message_descriptor), sizeof(ConstantsMessageT));
   EXPECT_EQ(get_member_count(message_descriptor), 1u);
 }
 
-TYPED_TEST(EmptyMessageIntrospectionTest, CanConstructTypeErasedMessage)
+TYPED_TEST(ConstantsMessageIntrospectionTest, CanConstructTypeErasedMessage)
 {
-  using EmptyMessageT = TypeParam;
+  using ConstantsMessageT = TypeParam;
   auto type_erased_message = this->MakeTypeErasedMessage();
-  const EmptyMessageT & message =
-    *reinterpret_cast<EmptyMessageT *>(type_erased_message.get());
+  const ConstantsMessageT & message =
+    *reinterpret_cast<ConstantsMessageT *>(type_erased_message.get());
   EXPECT_EQ(message, message);
 }
 

@@ -352,15 +352,39 @@ struct Example<rosidl_typesupport_introspection_tests__msg__BoundedSequences>
     ReturnT message{new rosidl_typesupport_introspection_tests__msg__BoundedSequences, deleter};
     if (
       !rosidl_typesupport_introspection_tests__msg__BoundedSequences__init(message.get()) ||
-      !rosidl_runtime_c__boolean__Sequence__init(&message->bool_values, 1) ||
-      !rosidl_runtime_c__double__Sequence__init(&message->float64_values, 1) ||
-      !rosidl_runtime_c__int64__Sequence__init(&message->int64_values, 1))
+      !rosidl_runtime_c__boolean__Sequence__init(&message->bool_values, 1u) ||
+      !rosidl_runtime_c__byte__Sequence__init(&message->byte_values, 1u) ||
+      !rosidl_runtime_c__uint8__Sequence__init(&message->char_values, 1u) ||
+      !rosidl_runtime_c__float__Sequence__init(&message->float32_values, 1u) ||
+      !rosidl_runtime_c__double__Sequence__init(&message->float64_values, 1u) ||
+      !rosidl_runtime_c__int8__Sequence__init(&message->int8_values, 1u) ||
+      !rosidl_runtime_c__uint8__Sequence__init(&message->uint8_values, 1u) ||
+      !rosidl_runtime_c__int16__Sequence__init(&message->int16_values, 1u) ||
+      !rosidl_runtime_c__uint16__Sequence__init(&message->uint16_values, 1u) ||
+      !rosidl_runtime_c__int32__Sequence__init(&message->int32_values, 1u) ||
+      !rosidl_runtime_c__uint32__Sequence__init(&message->uint32_values, 1u) ||
+      !rosidl_runtime_c__int64__Sequence__init(&message->int64_values, 1u) ||
+      !rosidl_runtime_c__uint64__Sequence__init(&message->uint64_values, 1u) ||
+      !rosidl_runtime_c__String__Sequence__init(&message->string_values, 1u))
     {
       throw std::runtime_error(rcutils_get_error_string().str);
     }
     message->bool_values.data[0] = true;
+    message->byte_values.data[0] = 0x1B;
+    message->char_values.data[0] = 'z';
+    message->float32_values.data[0] = 12.34f;
     message->float64_values.data[0] = 1.234;
-    message->int64_values.data[0] = 12341234ul;
+    message->int8_values.data[0] = -64;
+    message->uint8_values.data[0] = 64u;
+    message->int16_values.data[0] = -512;
+    message->uint16_values.data[0] = 512u;
+    message->int32_values.data[0] = -262144;
+    message->uint32_values.data[0] = 262144u;
+    message->int64_values.data[0] = -12341234l;
+    message->uint64_values.data[0] = 12341234ul;
+    if (!rosidl_runtime_c__String__assign(&message->string_values.data[0], "foo")) {
+      throw std::runtime_error(rcutils_get_error_string().str);
+    }
     return message;
   }
 };
@@ -405,12 +429,22 @@ struct Example<rosidl_typesupport_introspection_tests__msg__MultiNested>
       throw std::runtime_error(rcutils_get_error_string().str);
     }
     message->array_of_arrays[1].int32_values[0] = -1234;
-    if (!rosidl_typesupport_introspection_tests__msg__Arrays__Sequence__init(
-        &message->unbounded_sequence_of_arrays, 1u))
+    if (
+      !rosidl_typesupport_introspection_tests__msg__Arrays__Sequence__init(
+        &message->bounded_sequence_of_arrays, 1u) ||
+      !rosidl_typesupport_introspection_tests__msg__BoundedSequences__Sequence__init(
+        &message->bounded_sequence_of_bounded_sequences, 1u) ||
+      !rosidl_typesupport_introspection_tests__msg__UnboundedSequences__Sequence__init(
+        &message->bounded_sequence_of_unbounded_sequences, 1u) ||
+      !rosidl_typesupport_introspection_tests__msg__Arrays__Sequence__init(
+        &message->unbounded_sequence_of_arrays, 1u) ||
+      !rosidl_typesupport_introspection_tests__msg__BoundedSequences__Sequence__init(
+        &message->unbounded_sequence_of_bounded_sequences, 1u) ||
+      !rosidl_typesupport_introspection_tests__msg__UnboundedSequences__Sequence__init(
+        &message->unbounded_sequence_of_unbounded_sequences, 1u))
     {
       throw std::runtime_error(rcutils_get_error_string().str);
     }
-    message->unbounded_sequence_of_arrays.data[0].char_values[2] = 'a';
     return message;
   }
 };
@@ -477,15 +511,39 @@ struct Example<rosidl_typesupport_introspection_tests__msg__UnboundedSequences>
     ReturnT message{new rosidl_typesupport_introspection_tests__msg__UnboundedSequences, deleter};
     if (
       !rosidl_typesupport_introspection_tests__msg__UnboundedSequences__init(message.get()) ||
-      !rosidl_runtime_c__boolean__Sequence__init(&message->bool_values, 1) ||
-      !rosidl_runtime_c__double__Sequence__init(&message->float64_values, 1) ||
-      !rosidl_runtime_c__int64__Sequence__init(&message->int64_values, 1))
+      !rosidl_runtime_c__boolean__Sequence__init(&message->bool_values, 1u) ||
+      !rosidl_runtime_c__byte__Sequence__init(&message->byte_values, 1u) ||
+      !rosidl_runtime_c__uint8__Sequence__init(&message->char_values, 1u) ||
+      !rosidl_runtime_c__float__Sequence__init(&message->float32_values, 1u) ||
+      !rosidl_runtime_c__double__Sequence__init(&message->float64_values, 1u) ||
+      !rosidl_runtime_c__int8__Sequence__init(&message->int8_values, 1u) ||
+      !rosidl_runtime_c__uint8__Sequence__init(&message->uint8_values, 1u) ||
+      !rosidl_runtime_c__int16__Sequence__init(&message->int16_values, 1u) ||
+      !rosidl_runtime_c__uint16__Sequence__init(&message->uint16_values, 1u) ||
+      !rosidl_runtime_c__int32__Sequence__init(&message->int32_values, 1u) ||
+      !rosidl_runtime_c__uint32__Sequence__init(&message->uint32_values, 1u) ||
+      !rosidl_runtime_c__int64__Sequence__init(&message->int64_values, 1u) ||
+      !rosidl_runtime_c__uint64__Sequence__init(&message->uint64_values, 1u) ||
+      !rosidl_runtime_c__String__Sequence__init(&message->string_values, 1u))
     {
       throw std::runtime_error(rcutils_get_error_string().str);
     }
     message->bool_values.data[0] = true;
+    message->byte_values.data[0] = 0x1B;
+    message->char_values.data[0] = 'z';
+    message->float32_values.data[0] = 12.34f;
     message->float64_values.data[0] = 1.234;
-    message->int64_values.data[0] = 12341234ul;
+    message->int8_values.data[0] = -64;
+    message->uint8_values.data[0] = 64u;
+    message->int16_values.data[0] = -512;
+    message->uint16_values.data[0] = 512u;
+    message->int32_values.data[0] = -262144;
+    message->uint32_values.data[0] = 262144u;
+    message->int64_values.data[0] = -12341234l;
+    message->uint64_values.data[0] = 12341234ul;
+    if (!rosidl_runtime_c__String__assign(&message->string_values.data[0], "foo")) {
+      throw std::runtime_error(rcutils_get_error_string().str);
+    }
     return message;
   }
 };
@@ -861,8 +919,22 @@ struct Example<rosidl_typesupport_introspection_tests::msg::BoundedSequences>
     auto message =
       std::make_unique<rosidl_typesupport_introspection_tests::msg::BoundedSequences>();
     message->bool_values.push_back(true);
+    message->byte_values.push_back(0x1B);
+    message->char_values.push_back('z');
+    message->float32_values.push_back(12.34f);
     message->float64_values.push_back(1.234);
-    message->int64_values.push_back(12341234ul);
+    message->int8_values.push_back(-64);
+    message->uint8_values.push_back(64u);
+    message->int16_values.push_back(-512);
+    message->uint16_values.push_back(512u);
+    message->int32_values.push_back(-262144);
+    message->uint32_values.push_back(262144u);
+    message->int64_values.push_back(-12341234l);
+    message->uint64_values.push_back(12341234ul);
+    message->string_values.push_back("foo");
+    message->basic_types_values.emplace_back();
+    message->constants_values.emplace_back();
+    message->defaults_values.emplace_back();
     return message;
   }
 };
@@ -893,6 +965,12 @@ struct Example<rosidl_typesupport_introspection_tests::msg::MultiNested>
     message->array_of_arrays[1].int32_values[0] = -1234;
     message->unbounded_sequence_of_arrays.emplace_back();
     message->unbounded_sequence_of_arrays[0].char_values[2] = 'a';
+    message->bounded_sequence_of_arrays.emplace_back();
+    message->bounded_sequence_of_bounded_sequences.emplace_back();
+    message->bounded_sequence_of_unbounded_sequences.emplace_back();
+    message->unbounded_sequence_of_arrays.emplace_back();
+    message->unbounded_sequence_of_bounded_sequences.emplace_back();
+    message->unbounded_sequence_of_unbounded_sequences.emplace_back();
     return message;
   }
 };
@@ -935,8 +1013,22 @@ struct Example<rosidl_typesupport_introspection_tests::msg::UnboundedSequences>
     auto message =
       std::make_unique<rosidl_typesupport_introspection_tests::msg::UnboundedSequences>();
     message->bool_values.push_back(true);
+    message->byte_values.push_back(0x1B);
+    message->char_values.push_back('z');
+    message->float32_values.push_back(12.34f);
     message->float64_values.push_back(1.234);
-    message->int64_values.push_back(12341234ul);
+    message->int8_values.push_back(-64);
+    message->uint8_values.push_back(64u);
+    message->int16_values.push_back(-512);
+    message->uint16_values.push_back(512u);
+    message->int32_values.push_back(-262144);
+    message->uint32_values.push_back(262144u);
+    message->int64_values.push_back(-12341234l);
+    message->uint64_values.push_back(12341234ul);
+    message->string_values.push_back("foo");
+    message->basic_types_values.emplace_back();
+    message->constants_values.emplace_back();
+    message->defaults_values.emplace_back();
     return message;
   }
 };

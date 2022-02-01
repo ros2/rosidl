@@ -56,6 +56,15 @@ TYPED_TEST(ConstantsMessageIntrospectionTest, MessageDescriptorIsCorrect)
   EXPECT_EQ(get_member_count(message_descriptor), 1u);
 }
 
+TYPED_TEST(ConstantsMessageIntrospectionTest, CanConstructTypeErasedMessage)
+{
+  using ConstantsMessageT = TypeParam;
+  auto type_erased_message = this->MakeTypeErasedMessage();
+  const ConstantsMessageT & message =
+    *reinterpret_cast<ConstantsMessageT *>(type_erased_message.get());
+  EXPECT_EQ(message, message);
+}
+
 }  // namespace
 }  // namespace testing
 }  // namespace rosidl_typesupport_introspection_tests

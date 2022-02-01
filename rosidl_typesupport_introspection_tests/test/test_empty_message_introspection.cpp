@@ -56,6 +56,15 @@ TYPED_TEST(EmptyMessageIntrospectionTest, MessageDescriptorIsCorrect)
   EXPECT_EQ(get_member_count(message_descriptor), 1u);
 }
 
+TYPED_TEST(EmptyMessageIntrospectionTest, CanConstructTypeErasedMessage)
+{
+  using EmptyMessageT = TypeParam;
+  auto type_erased_message = this->MakeTypeErasedMessage();
+  const EmptyMessageT & message =
+    *reinterpret_cast<EmptyMessageT *>(type_erased_message.get());
+  EXPECT_EQ(message, message);
+}
+
 }  // namespace
 }  // namespace testing
 }  // namespace rosidl_typesupport_introspection_tests

@@ -45,6 +45,8 @@ TYPED_TEST_SUITE(EmptyServiceIntrospectionTest, EmptyServiceTypes);
 TYPED_TEST(EmptyServiceIntrospectionTest, ServiceDescriptorIsCorrect)
 {
   using EmptyServiceT = TypeParam;
+  using RequestMessageT = typename EmptyServiceT::Request;
+  using ResponseMessageT = typename EmptyServiceT::Response;
 
   using TypeSupportLibraryT =
     typename introspection_traits<EmptyServiceT>::TypeSupportLibraryT;
@@ -65,7 +67,7 @@ TYPED_TEST(EmptyServiceIntrospectionTest, ServiceDescriptorIsCorrect)
   EXPECT_STREQ(get_message_name(request_message_descriptor), "Empty_Request");
   EXPECT_EQ(
     get_message_size(request_message_descriptor),
-    sizeof(typename EmptyServiceT::Request));
+    sizeof(RequestMessageT));
   const MessageDescriptorT * response_message_descriptor =
     get_service_response_descriptor(service_descriptor);
   EXPECT_STREQ(
@@ -74,7 +76,33 @@ TYPED_TEST(EmptyServiceIntrospectionTest, ServiceDescriptorIsCorrect)
   EXPECT_STREQ(get_message_name(response_message_descriptor), "Empty_Response");
   EXPECT_EQ(
     get_message_size(response_message_descriptor),
-    sizeof(typename EmptyServiceT::Response));
+    sizeof(ResponseMessageT));
+}
+
+TYPED_TEST(EmptyServiceIntrospectionTest, CanConstructTypeErasedRequestMessage)
+{
+  using EmptyServiceT = TypeParam;
+  using RequestMessageT = typename EmptyServiceT::Request;
+
+  auto type_erased_request_message =
+    this->MakeTypeErasedRequestMessage();
+  const RequestMessageT & request_message =
+    *reinterpret_cast<RequestMessageT *>(
+    type_erased_request_message.get());
+  EXPECT_EQ(request_message, request_message);
+}
+
+TYPED_TEST(EmptyServiceIntrospectionTest, CanConstructTypeErasedResponseMessage)
+{
+  using EmptyServiceT = TypeParam;
+  using ResponseMessageT = typename EmptyServiceT::Response;
+
+  auto type_erased_response_message =
+    this->MakeTypeErasedResponseMessage();
+  const ResponseMessageT & response_message =
+    *reinterpret_cast<ResponseMessageT *>(
+    type_erased_response_message.get());
+  EXPECT_EQ(response_message, response_message);
 }
 
 }  // namespace

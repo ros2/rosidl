@@ -58,12 +58,10 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember_s
   /// If is_array_ is true, a pointer to a function that gives a const pointer to the member of the
   /// array indicated by index.
   /// First argument should be a pointer to the actual memory representation of the member.
-  /// Only used for nested interface types.
   const void * (*get_const_function)(const void *, size_t index);
   /// If is_array_ is true, a pointer to a function that gives a pointer to the member of the
   /// array indicated by index.
   /// First argument should be a pointer to the actual memory representation of the member.
-  /// Only used for nested interface types.
   void * (*get_function)(void *, size_t index);
   /// Pointer to a function that fetches (i.e. copies) an item from
   /// an array or sequence member. It takes a pointer to the member,
@@ -82,7 +80,6 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember_s
   void (* assign_function)(void *, size_t index, const void *);
   /// If is_array_ is true, a pointer to a function that resizes the array.
   /// First argument should be a pointer to the actual memory representation of the member.
-  /// Only used for nested interface types.
   void (* resize_function)(void *, size_t size);
 } MessageMember;
 

@@ -2,9 +2,9 @@ This document is a declaration of software quality for the `rosidl_typesupport_i
 
 # rosidl_typesupport_introspection_c Quality Declaration
 
-The package `rosidl_typesupport_introspection_c` claims to be in the **Quality Level 3** category.
+The package `rosidl_typesupport_introspection_c` claims to be in the **Quality Level 1** category.
 
-Below are the rationales, notes, and caveats for this claim, organized by each requirement listed in the [Package Requirements for Quality Level 3 in REP-2004](https://www.ros.org/reps/rep-2004.html).
+Below are the rationales, notes, and caveats for this claim, organized by each requirement listed in the [Package Requirements for Quality Level 1 in REP-2004](https://www.ros.org/reps/rep-2004.html).
 
 ## Version Policy [1]
 
@@ -87,13 +87,26 @@ Most recent test results can be found [here](https://ci.ros2.org/job/nightly_lin
 
 ## Testing [4]
 
+### Note about tests design
+
+`rosidl_typesupport_introspection_c` tests validate generated source code rather than the code generator itself. That is, tests verify that both API and ABI of the generated source code enable the expected, relevant use cases. These tests rely on a set of input interface definition files, and a subset of the `rosidl` toolchain to generate source code for each of these files.
+
 ### Feature Testing [4.i]
 
-The `rosidl_typesupport_introspection_c` package does not have feature tests.
+Each feature provided by `rosidl_typesupport_introspection_c` and the source code it generates has corresponding tests according to the rationale outlined in the "Note about tests design" at the beginning of section [4]. These can be found in the [`rosidl_typesupport_introspection_tests`](https://github.com/ros2/rosidl/tree/master/rosidl_typesupport_introspection_tests) package.
+
+New features are required to have tests before being added.
+
+Currently nightly test results can be seen here:
+
+* [linux-aarch64_release](https://ci.ros2.org/view/nightly/job/nightly_linux-aarch64_release/lastBuild/testReport/rosidl_typesupport_introspection_tests/)
+* [linux_release](https://ci.ros2.org/view/nightly/job/nightly_linux_release/lastBuild/testReport/rosidl_typesupport_introspection_tests/)
+* [mac_osx_release](https://ci.ros2.org/view/nightly/job/nightly_osx_release/lastBuild/testReport/rosidl_typesupport_introspection_tests/)
+* [windows_release](https://ci.ros2.org/view/nightly/job/nightly_win_rel/lastBuild/testReport/rosidl_typesupport_introspection_tests/)
 
 ### Public API Testing [4.ii]
 
-The `rosidl_typesupport_introspection_c` package does not have API tests. Indirect tests do exist in the form of tests that exercise message passing and service invocation using an RMW layer that depends on it such as `rmw_cyclonedds_cpp`.
+The `rosidl_typesupport_introspection_c` package does not have tests for its own API. This is a design decision, as detailed in "Note about tests design" at the beginning of section [4]. The [`rosidl_typesupport_introspection_tests`](https://github.com/ros2/rosidl/tree/master/rosidl_typesupport_introspection_tests) packages implements such tests.
 
 ### Coverage [4.iii]
 
@@ -105,11 +118,14 @@ This includes:
 - achieving and maintaining a reasonable branch line coverage (90-100%)
 - no lines are manually skipped in coverage calculations
 
-Current coverage statistics can be viewed [here](https://ci.ros2.org/job/nightly_linux_coverage/lastSuccessfulBuild/cobertura/). A description of how coverage statistics are calculated is summarized in this page ["ROS 2 Onboarding Guide"](https://docs.ros.org/en/rolling/Contributing/Developer-Guide.html#note-on-coverage-runs).
+Current coverage statistics can be viewed [here](https://ci.ros2.org/job/nightly_linux_coverage/lastSuccessfulBuild/cobertura/). Given the different approach used for testing (detailed in "Note about the design of testing" in this same document) the pattern to search for `rosidl_typesupport_introspection_c` is:
+`build.rosidl_typesupport_introspection_tests.rosidl_typesupport_introspection_c.rosidl_typesupport_introspection_tests.*`.
 
 ### Performance [4.iv]
 
-`rosidl_typesupport_introspection_c` does not have performance tests.
+APIs in `rosidl_typesupport_introspection_c` generated source code provide a thin layer for type-erased access to `rosidl` interfaces in C. As such, no useful benchmarks can be devised at the package scope, but rather in the context of a system-wide test (e.g. by benchmarking communication using a middleware implementation that relies on these APIs and it is thus affected by the code structure these induce).
+
+Therefore, this package does not include any performance tests. Refer to the [`system_tests`](https://github.com/ros2/system_tests) repository for system-wide testing.
 
 ### Linters and Static Analysis [4.v]
 

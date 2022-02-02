@@ -87,13 +87,13 @@ Most recent test results can be found [here](https://ci.ros2.org/job/nightly_lin
 
 ## Testing [4]
 
-### Note about the design of testing
+### Note about tests design
 
-The rosidl introspection code generators will be verified using an approach based on verifying the results of generation, rather than the source code of the rosidl toolchain itself. This approach will rely on a set of input interface and service definition files; scripts that call rosidl to generate output code for each language generator using these definition files as input; and a utility for each language that will verify the generated code executes correctly.
+`rosidl_typesupport_introspection_c` tests validate generated source code rather than the code generator itself. That is, tests verify that both API and ABI of the generated source code enable the expected, relevant use cases. These tests rely on a set of input interface definition files, and a subset of the `rosidl` toolchain to generate source code for each of these files.
 
 ### Feature Testing [4.i]
 
-Each feature in `rosidl_typesupport_introspection_c` has corresponding tests that follow the design detailed at the beginning of the Testing section[4] and they are located in the package [`rosidl_typesupport_introspection_tests`](https://github.com/ros2/rosidl/tree/master/rosidl_typesupport_introspection_tests).
+Each feature provided by `rosidl_typesupport_introspection_c` and the source code it generates has corresponding tests according to the rationale outlined in the "Note about tests design" at the beginning of section [4]. These can be found in the [`rosidl_typesupport_introspection_tests`](https://github.com/ros2/rosidl/tree/master/rosidl_typesupport_introspection_tests) package.
 
 New features are required to have tests before being added.
 
@@ -106,7 +106,7 @@ Currently nightly test results can be seen here:
 
 ### Public API Testing [4.ii]
 
-The `rosidl_typesupport_introspection_c` package does not have API tests, this is a design decision (as detailed in the section named "Note about the design of testing" in this same document). The package [`rosidl_typesupport_introspection_tests`](https://github.com/ros2/rosidl/tree/master/rosidl_typesupport_introspection_tests) implements the testing described in the design.
+The `rosidl_typesupport_introspection_c` package does not have tests for its own API. This is a design decision, as detailed in "Note about tests design" at the beginning of section [4]. The [`rosidl_typesupport_introspection_tests`](https://github.com/ros2/rosidl/tree/master/rosidl_typesupport_introspection_tests) packages implements such tests.
 
 ### Coverage [4.iii]
 
@@ -123,7 +123,9 @@ Current coverage statistics can be viewed [here](https://ci.ros2.org/job/nightly
 
 ### Performance [4.iv]
 
-TODO: @hidmic
+APIs in `rosidl_typesupport_introspection_c` generated source code provide a thin layer for type-erased access to `rosidl` interfaces in C. As such, no useful benchmarks can be devised at the package scope, but rather in the context of a system-wide test (e.g. by benchmarking communication using a middleware implementation that relies on these APIs and it is thus affected by the code structure these induce).
+
+Therefore, this package does not include any performance tests. Refer to the [`system_tests`](https://github.com/ros2/system_tests) repository for system-wide testing.
 
 ### Linters and Static Analysis [4.v]
 

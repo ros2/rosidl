@@ -118,7 +118,7 @@ This includes:
 - achieving and maintaining a reasonable branch line coverage (90-100%)
 - no lines are manually skipped in coverage calculations
 
-Current coverage statistics can be viewed [here](https://ci.ros2.org/job/nightly_linux_coverage/lastSuccessfulBuild/cobertura/). Given the different approach used for testing (detailed in "Note about the design of testing" in this same document) the pattern to search for `rosidl_typesupport_introspection_c` is:
+Current coverage statistics can be viewed [here](https://ci.ros2.org/job/nightly_linux_coverage/lastSuccessfulBuild/cobertura/). Given the different approach used for testing (detailed in "Note about tests design" at the beginning of section [4]) the pattern to search for `rosidl_typesupport_introspection_c` is:
 `build.rosidl_typesupport_introspection_tests.rosidl_typesupport_introspection_c.rosidl_typesupport_introspection_tests.*`.
 
 ### Performance [4.iv]

@@ -7,14 +7,17 @@ find_package(ament_cmake REQUIRED)
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-  "$<INSTALL_INTERFACE:include>")
+  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
 if(MSVC)
   target_compile_definitions(${PROJECT_NAME} INTERFACE
   _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 endif()
 
-ament_export_include_directories(include)
+# Export old-style CMake variables
+ament_export_include_directories("include/${PROJECT_NAME}")
+
+# Export modern CMake targets
 ament_export_targets(${PROJECT_NAME})
 
 ament_index_register_resource("rosidl_runtime_packages")
@@ -41,7 +44,7 @@ if(BUILD_TESTING)
 
   ament_add_gtest(test_bounded_vector test/test_bounded_vector.cpp)
   if(TARGET test_bounded_vector)
-    target_include_directories(test_bounded_vector PUBLIC include)
+    target_link_libraries(test_bounded_vector ${PROJECT_NAME})
   endif()
 
   add_performance_test(benchmark_bounded_vector test/benchmark/benchmark_bounded_vector.cpp)
@@ -52,7 +55,7 @@ endif()
 
 install(
   DIRECTORY include/
-  DESTINATION include
+  DESTINATION include/${PROJECT_NAME}
 )
 install(
   TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}

@@ -11,6 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+find_package(rosidl_runtime_cpp REQUIRED)
+
 set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp/${PROJECT_NAME}")
 set(_generated_headers "")
@@ -115,7 +118,7 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
 endforeach()
 target_link_libraries(
   ${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE
-  ${rosidl_runtime_cpp_TARGETS})
+  rosidl_runtime_cpp::rosidl_runtime_cpp)
 
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   if(NOT _generated_headers STREQUAL "")

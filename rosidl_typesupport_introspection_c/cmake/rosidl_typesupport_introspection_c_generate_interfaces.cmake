@@ -15,7 +15,7 @@
 if(NOT TARGET ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c)
   message(FATAL_ERROR
     "The 'rosidl_generator_c' extension must be executed before the "
-    "'rosidl_typesupport_introspection_cpp' extension.")
+    "'rosidl_typesupport_introspection_c' extension.")
 endif()
 
 set(_output_path

@@ -89,6 +89,11 @@ add_custom_command(
   VERBATIM
 )
 
+# INTERFACE libraries can't have file-level dependencies in CMake,
+# so make a custom target depending on the generated files
+# TODO(sloretz) make this target name less generic than "__cpp" when other
+# generators no longer depend on it, or see if it can be replaced with
+# target_sources()
 add_custom_target(
   ${rosidl_generate_interfaces_TARGET}__cpp
   DEPENDS
@@ -113,9 +118,10 @@ target_link_libraries(
   ${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE
   rosidl_runtime_cpp::rosidl_runtime_cpp)
 
-# Make library depend on header generation target
-# TODO(sloretz) make this target name less generic than "__cpp" when other
-# generators no longer depend on it
+# Make the INTERFACE library created above depend on the generated headers.
+# That way if a package that generates interfaces also has a target depending
+# on those generated interfaces, that target will wait for this generator's
+# headers to be generated.
 add_dependencies(
   ${rosidl_generate_interfaces_TARGET}${_target_suffix}
   ${rosidl_generate_interfaces_TARGET}__cpp)

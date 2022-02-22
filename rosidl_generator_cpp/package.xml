@@ -18,11 +18,11 @@
 
   <!-- This is needed for the rosidl_message_type_support_t struct and visibility macros -->
   <build_export_depend>rosidl_generator_c</build_export_depend>
+  <build_export_depend>rosidl_runtime_cpp</build_export_depend>
 
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>rosidl_cli</exec_depend>
   <exec_depend>rosidl_parser</exec_depend>
-  <exec_depend>rosidl_runtime_cpp</exec_depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
   <test_depend>ament_lint_auto</test_depend>

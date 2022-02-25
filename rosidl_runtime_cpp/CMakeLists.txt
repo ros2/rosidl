@@ -3,11 +3,14 @@ cmake_minimum_required(VERSION 3.5)
 project(rosidl_runtime_cpp)
 
 find_package(ament_cmake REQUIRED)
+find_package(rosidl_runtime_c REQUIRED)
 
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
+target_link_libraries(${PROJECT_NAME} INTERFACE
+  rosidl_runtime_c::rosidl_runtime_c)
 
 if(MSVC)
   target_compile_definitions(${PROJECT_NAME} INTERFACE
@@ -21,6 +24,8 @@ ament_export_include_directories("include/${PROJECT_NAME}")
 ament_export_targets(${PROJECT_NAME})
 
 ament_index_register_resource("rosidl_runtime_packages")
+
+ament_export_dependencies(rosidl_runtime_c)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

@@ -2,8 +2,8 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.0 (2022-03-01)
+------------------
 * Add missing dependency on rosidl_runtime_c (`#666 <https://github.com/ros2/rosidl/issues/666>`_)
 * De-duplicate Quality Level from README and QUALITY_DECLARATION (`#661 <https://github.com/ros2/rosidl/issues/661>`_)
 * Install headers to include/${PROJECT_NAME} (`#658 <https://github.com/ros2/rosidl/issues/658>`_)

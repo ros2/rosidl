@@ -2,8 +2,8 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.0 (2022-03-01)
+------------------
 * Implement copy function for C messages (`#650 <https://github.com/ros2/rosidl/issues/650>`_)
 * Implement equality operator function for C messages. (`#648 <https://github.com/ros2/rosidl/issues/648>`_)
 * Generate documentation in generated C header files based on ROS interfaces comments (`#593 <https://github.com/ros2/rosidl/issues/593>`_)

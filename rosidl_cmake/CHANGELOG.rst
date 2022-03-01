@@ -2,8 +2,8 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.0 (2022-03-01)
+------------------
 * Add introspection typesupport tests for C/C++ messages (`#651 <https://github.com/ros2/rosidl/issues/651>`_)
 * Contributors: Michel Hidalgo
 

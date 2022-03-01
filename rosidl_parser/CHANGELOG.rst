@@ -2,8 +2,8 @@
 Changelog for package rosidl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.0 (2022-03-01)
+------------------
 * Set maybe_placeholders to False for lark 1.+ compatibility (`#664 <https://github.com/ros2/rosidl/issues/664>`_)
 * Generate documentation in generated C header files based on ROS interfaces comments (`#593 <https://github.com/ros2/rosidl/issues/593>`_)
 * Contributors: Ivan Santiago Paunovic, Shane Loretz

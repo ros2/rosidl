@@ -2,8 +2,8 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.0 (2022-03-01)
+------------------
 * Add missing build_export_depend dependency (`#665 <https://github.com/ros2/rosidl/issues/665>`_)
 * Fix bug where rosidl_runtime_cpp wasn't depended upon (`#660 <https://github.com/ros2/rosidl/issues/660>`_)
 * Contributors: Jorge Perez, Shane Loretz

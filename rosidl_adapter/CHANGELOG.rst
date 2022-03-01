@@ -2,8 +2,8 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.0 (2022-03-01)
+------------------
 * rename nested loop index (`#643 <https://github.com/ros2/rosidl/issues/643>`_)
 * Contributors: ibnHatab
 

@@ -2,8 +2,8 @@
 Changelog for package rosidl_typesupport_introspection_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.0 (2022-03-01)
+------------------
 * Bump `rosidl_typesupport_introspection_tests` coverage (`#655 <https://github.com/ros2/rosidl/issues/655>`_)
 * Add introspection typesupport tests for C/C++ services (`#653 <https://github.com/ros2/rosidl/issues/653>`_)
 * Add introspection typesupport tests for C/C++ messages (`#651 <https://github.com/ros2/rosidl/issues/651>`_)

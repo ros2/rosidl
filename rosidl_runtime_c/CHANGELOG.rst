@@ -2,8 +2,8 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.0 (2022-03-01)
+------------------
 * De-duplicate Quality Level from README and QUALITY_DECLARATION (`#661 <https://github.com/ros2/rosidl/issues/661>`_)
 * Install headers to include/${PROJECT_NAME} (`#658 <https://github.com/ros2/rosidl/issues/658>`_)
 * Implement copy function for C messages (`#650 <https://github.com/ros2/rosidl/issues/650>`_)

@@ -2,6 +2,11 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* rename nested loop index (`#643 <https://github.com/ros2/rosidl/issues/643>`_)
+* Contributors: ibnHatab
+
 3.0.1 (2022-01-13)
 ------------------
 * Fix how comments in action interfaces are processed (`#632 <https://github.com/ros2/rosidl/issues/632>`_)

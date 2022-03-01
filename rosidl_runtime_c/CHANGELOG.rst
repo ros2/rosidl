@@ -2,6 +2,14 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* De-duplicate Quality Level from README and QUALITY_DECLARATION (`#661 <https://github.com/ros2/rosidl/issues/661>`_)
+* Install headers to include/${PROJECT_NAME} (`#658 <https://github.com/ros2/rosidl/issues/658>`_)
+* Implement copy function for C messages (`#650 <https://github.com/ros2/rosidl/issues/650>`_)
+* Implement equality operator function for C messages. (`#648 <https://github.com/ros2/rosidl/issues/648>`_)
+* Contributors: Jose Luis Rivero, Michel Hidalgo, Shane Loretz
+
 3.0.1 (2022-01-13)
 ------------------
 * Set CXX standard to 17 (`#635 <https://github.com/ros2/rosidl/issues/635>`_)

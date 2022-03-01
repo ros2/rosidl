@@ -2,6 +2,13 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add missing dependency on rosidl_runtime_c (`#666 <https://github.com/ros2/rosidl/issues/666>`_)
+* De-duplicate Quality Level from README and QUALITY_DECLARATION (`#661 <https://github.com/ros2/rosidl/issues/661>`_)
+* Install headers to include/${PROJECT_NAME} (`#658 <https://github.com/ros2/rosidl/issues/658>`_)
+* Contributors: Jose Luis Rivero, Shane Loretz
+
 3.0.1 (2022-01-13)
 ------------------
 * Set CXX standard to 17 (`#635 <https://github.com/ros2/rosidl/issues/635>`_)

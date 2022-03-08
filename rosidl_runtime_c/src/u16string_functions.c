@@ -272,10 +272,8 @@ rosidl_runtime_c__U16String__Sequence__copy(
   if (output->capacity < input->size) {
     const size_t size =
       input->size * sizeof(rosidl_runtime_c__U16String);
-    rcutils_allocator_t allocator = rcutils_get_default_allocator();
     rosidl_runtime_c__U16String * data =
-      (rosidl_runtime_c__U16String *)allocator.reallocate(
-      output->data, size, allocator.state);
+      (rosidl_runtime_c__U16String *)realloc(output->data, size);
     if (!data) {
       return false;
     }
@@ -285,7 +283,7 @@ rosidl_runtime_c__U16String__Sequence__copy(
         for (; i-- > output->capacity; ) {
           rosidl_runtime_c__U16String__fini(&data[i]);
         }
-        allocator.deallocate(data, allocator.state);
+        free(data);
         return false;
       }
     }

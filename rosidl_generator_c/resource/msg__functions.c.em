@@ -456,10 +456,8 @@ bool
   if (output->capacity < input->size) {
     const size_t allocation_size =
       input->size * sizeof(@(message_typename));
-    rcutils_allocator_t allocator = rcutils_get_default_allocator();
     @(message_typename) * data =
-      (@(message_typename) *)allocator.reallocate(
-      output->data, allocation_size, allocator.state);
+      (@(message_typename) *)realloc(output->data, allocation_size);
     if (!data) {
       return false;
     }
@@ -469,7 +467,7 @@ bool
         for (; i-- > output->capacity; ) {
           @(message_typename)__fini(&data[i]);
         }
-        allocator.deallocate(data, allocator.state);
+        free(data);
         return false;
       }
     }

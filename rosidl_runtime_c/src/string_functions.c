@@ -229,10 +229,8 @@ rosidl_runtime_c__String__Sequence__copy(
   if (output->capacity < input->size) {
     const size_t allocation_size =
       input->size * sizeof(rosidl_runtime_c__String);
-    rcutils_allocator_t allocator = rcutils_get_default_allocator();
     rosidl_runtime_c__String * data =
-      (rosidl_runtime_c__String *)allocator.reallocate(
-      output->data, allocation_size, allocator.state);
+      (rosidl_runtime_c__String *)realloc(output->data, allocation_size);
     if (!data) {
       return false;
     }
@@ -242,7 +240,7 @@ rosidl_runtime_c__String__Sequence__copy(
         for (; i-- > output->capacity; ) {
           rosidl_runtime_c__String__fini(&data[i]);
         }
-        allocator.deallocate(data, allocator.state);
+        free(data);
         return false;
       }
     }

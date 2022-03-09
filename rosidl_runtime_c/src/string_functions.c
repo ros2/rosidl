@@ -245,9 +245,9 @@ rosidl_runtime_c__String__Sequence__copy(
       }
     }
     output->data = data;
-    output->size = input->size;
     output->capacity = input->size;
   }
+  output->size = input->size;
   for (size_t i = 0; i < input->size; ++i) {
     if (!rosidl_runtime_c__String__copy(
         &(input->data[i]), &(output->data[i])))

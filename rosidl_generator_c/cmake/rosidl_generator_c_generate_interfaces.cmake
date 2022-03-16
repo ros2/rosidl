@@ -155,13 +155,13 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   ament_export_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix})
 
   # Export modern CMake targets
-  ament_export_targets(${rosidl_generate_interfaces_TARGET}${_target_suffix})
+  ament_export_targets(export_${rosidl_generate_interfaces_TARGET}${_target_suffix})
   rosidl_export_typesupport_targets(${_target_suffix}
     ${rosidl_generate_interfaces_TARGET}${_target_suffix})
 
   install(
     TARGETS ${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    EXPORT ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    EXPORT export_${rosidl_generate_interfaces_TARGET}${_target_suffix}
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin

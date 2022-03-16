@@ -118,8 +118,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     C_STANDARD 11
     COMPILE_OPTIONS -Wall -Wextra -Wpedantic)
 endif()
-target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-  PRIVATE "ROSIDL_GENERATOR_C_BUILDING_DLL_${PROJECT_NAME}")
+set_property(TARGET ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  PROPERTY DEFINE_SYMBOL "ROSIDL_GENERATOR_C_BUILDING_DLL_${PROJECT_NAME}")
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c>"

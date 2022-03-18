@@ -105,18 +105,16 @@ endif()
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp>"
+  "$<INSTALL_INTERFACE:include>"
 )
 ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   "rosidl_runtime_c"
   "rosidl_typesupport_interface"
   "rosidl_typesupport_introspection_cpp")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
-  ament_target_dependencies(
-    ${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    ${_pkg_name})
   target_link_libraries(
     ${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    ${${_pkg_name}_TARGETS${_target_suffix}})
+    ${_pkg_name}::${_pkg_name}${_target_suffix})
 endforeach()
 
 add_dependencies(

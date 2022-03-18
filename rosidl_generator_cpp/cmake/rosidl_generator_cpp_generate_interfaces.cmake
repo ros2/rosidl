@@ -114,7 +114,7 @@ target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   target_link_libraries(
     ${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE
-    ${${_pkg_name}_TARGETS})
+    ${_pkg_name}::${_pkg_name}${_target_suffix})
 endforeach()
 target_link_libraries(
   ${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE

@@ -471,17 +471,16 @@ bool
     if (!data) {
       return false;
     }
+    output->data = data;
     for (size_t i = output->capacity; i < input->size; ++i) {
-      if (!@(message_typename)__init(&data[i])) {
+      if (!@(message_typename)__init(&output->data[i])) {
         /* free currently allocated and return false */
         for (; i-- > output->capacity; ) {
-          @(message_typename)__fini(&data[i]);
+          @(message_typename)__fini(&output->data[i]);
         }
-        allocator.deallocate(data, allocator.state);
         return false;
       }
     }
-    output->data = data;
     output->capacity = input->size;
   }
   output->size = input->size;

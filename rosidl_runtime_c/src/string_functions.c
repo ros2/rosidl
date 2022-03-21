@@ -243,17 +243,16 @@ rosidl_runtime_c__String__Sequence__copy(
     if (!data) {
       return false;
     }
+    output->data = data;
     for (size_t i = output->capacity; i < input->size; ++i) {
-      if (!rosidl_runtime_c__String__init(&data[i])) {
+      if (!rosidl_runtime_c__String__init(&output->data[i])) {
         /* free currently allocated and return false */
         for (; i-- > output->capacity; ) {
-          rosidl_runtime_c__String__fini(&data[i]);
+          rosidl_runtime_c__String__fini(&output->data[i]);
         }
-        allocator.deallocate(data, allocator.state);
         return false;
       }
     }
-    output->data = data;
     output->capacity = input->size;
   }
   output->size = input->size;

@@ -33,7 +33,8 @@ function(rosidl_get_typesupport_target var generate_interfaces_target typesuppor
   set(output_target "${generate_interfaces_target}__${typesupport_name}")
 
   if(NOT TARGET ${output_target})
-    message(FATAL_ERROR "${output_target} is not a CMake target - maybe the typesupport '${typesupport_name}' doesn't exist?")
+    # CMake if() evaluates strings ending in `-NOTFOUND` as false
+    set(output_target "${output_target}-NOTFOUND")
   endif()
 
   set("${var}" "${output_target}" PARENT_SCOPE)

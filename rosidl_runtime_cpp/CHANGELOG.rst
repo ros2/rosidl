@@ -2,6 +2,9 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.1 (2022-03-28)
+------------------
+
 3.1.0 (2022-03-01)
 ------------------
 * Add missing dependency on rosidl_runtime_c (`#666 <https://github.com/ros2/rosidl/issues/666>`_)

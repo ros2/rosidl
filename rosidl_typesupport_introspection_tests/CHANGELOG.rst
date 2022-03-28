@@ -2,6 +2,9 @@
 Changelog for package rosidl_typesupport_introspection_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.1 (2022-03-28)
+------------------
+
 3.1.0 (2022-03-01)
 ------------------
 * Bump `rosidl_typesupport_introspection_tests` coverage (`#655 <https://github.com/ros2/rosidl/issues/655>`_)

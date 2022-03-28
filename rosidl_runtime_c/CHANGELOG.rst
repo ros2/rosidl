@@ -2,6 +2,11 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.1 (2022-03-28)
+------------------
+* Set the output size unconditionally when copying sequences (`#669 <https://github.com/ros2/rosidl/issues/669>`_)
+* Contributors: Nikolai Morin
+
 3.1.0 (2022-03-01)
 ------------------
 * De-duplicate Quality Level from README and QUALITY_DECLARATION (`#661 <https://github.com/ros2/rosidl/issues/661>`_)

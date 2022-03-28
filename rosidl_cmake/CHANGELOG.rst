@@ -2,6 +2,11 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.1 (2022-03-28)
+------------------
+* Make rosidl_get_typesupport_target return -NOTFOUND instead of FATAL_ERROR (`#672 <https://github.com/ros2/rosidl/issues/672>`_)
+* Contributors: Shane Loretz
+
 3.1.0 (2022-03-01)
 ------------------
 * Add introspection typesupport tests for C/C++ messages (`#651 <https://github.com/ros2/rosidl/issues/651>`_)

@@ -2,6 +2,9 @@
 Changelog for package rosidl_typesupport_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.1 (2022-03-28)
+------------------
+
 3.1.0 (2022-03-01)
 ------------------
 * De-duplicate Quality Level from README and QUALITY_DECLARATION (`#661 <https://github.com/ros2/rosidl/issues/661>`_)

@@ -2,6 +2,13 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.1 (2022-03-28)
+------------------
+* Install generated headers to include/${PROJECT_NAME} (`#670 <https://github.com/ros2/rosidl/issues/670>`_)
+* Misc cleanup in the rosidl generator extensions (`#662 <https://github.com/ros2/rosidl/issues/662>`_)
+* Set the output size unconditionally when copying sequences (`#669 <https://github.com/ros2/rosidl/issues/669>`_)
+* Contributors: Nikolai Morin, Shane Loretz
+
 3.1.0 (2022-03-01)
 ------------------
 * Implement copy function for C messages (`#650 <https://github.com/ros2/rosidl/issues/650>`_)

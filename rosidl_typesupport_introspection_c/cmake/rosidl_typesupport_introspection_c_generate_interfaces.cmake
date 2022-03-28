@@ -114,7 +114,7 @@ set_property(TARGET ${rosidl_generate_interfaces_TARGET}${_target_suffix}
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_introspection_c>"
-  "$<INSTALL_INTERFACE:include>")
+  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
 # Depend on the library created by rosidl_generator_c
 target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} PUBLIC
@@ -138,7 +138,7 @@ add_dependencies(
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   install(
     DIRECTORY ${_output_path}/
-    DESTINATION "include/${PROJECT_NAME}"
+    DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}"
     PATTERN "*.h"
   )
   install(

@@ -471,10 +471,14 @@ bool
     if (!data) {
       return false;
     }
+    // If reallocation succeeded, memory may or may not have been moved
+    // to fulfill the allocation request, invalidating output->data.
     output->data = data;
     for (size_t i = output->capacity; i < input->size; ++i) {
       if (!@(message_typename)__init(&output->data[i])) {
-        /* free currently allocated and return false */
+        // If initialization of any new item fails, roll back
+        // all previously initialized items. Existing items
+        // in output are to be left unmodified.
         for (; i-- > output->capacity; ) {
           @(message_typename)__fini(&output->data[i]);
         }

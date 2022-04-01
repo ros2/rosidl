@@ -243,17 +243,20 @@ rosidl_runtime_c__String__Sequence__copy(
     if (!data) {
       return false;
     }
+    // If reallocation succeeded, memory may or may not have been moved
+    // to fulfill the allocation request, invalidating output->data.
+    output->data = data;
     for (size_t i = output->capacity; i < input->size; ++i) {
-      if (!rosidl_runtime_c__String__init(&data[i])) {
-        /* free currently allocated and return false */
+      if (!rosidl_runtime_c__String__init(&output->data[i])) {
+        // If initialization of any new item fails, roll back all
+        // previously initialized items. Existing items in output
+        // are to be left unmodified.
         for (; i-- > output->capacity; ) {
-          rosidl_runtime_c__String__fini(&data[i]);
+          rosidl_runtime_c__String__fini(&output->data[i]);
         }
-        allocator.deallocate(data, allocator.state);
         return false;
       }
     }
-    output->data = data;
     output->capacity = input->size;
   }
   output->size = input->size;

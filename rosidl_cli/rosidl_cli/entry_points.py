@@ -35,8 +35,13 @@ def get_entry_points(group_name, *, specs=None, strict=False):
     """
     if specs is not None:
         specs = set(specs)
+    entry_points_impl = importlib_metadata.entry_points()
+    if hasattr(entry_points_impl, 'select'):
+        groups = entry_points_impl.select(group=group_name)
+    else:
+        groups = entry_points_impl.get(group_name, [])
     entry_points = {}
-    for entry_point in importlib_metadata.entry_points().get(group_name, []):
+    for entry_point in groups:
         name = entry_point.name
         if specs and name not in specs:
             continue

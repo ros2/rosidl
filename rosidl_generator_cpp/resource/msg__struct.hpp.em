@@ -238,6 +238,13 @@ non_defaulted_zero_initialized_members = [
 @[for member in message.structure.members]@
   using _@(member.name)_type =
     @(msg_type_to_cpp(member.type));
+  @[for line in member.get_comment_lines()]@
+  @[  if line]@
+  /// @(line)
+  @[  else]@
+  ///
+  @[  end if]@
+  @[end for]@
   _@(member.name)_type @(member.name);
 @[end for]@
 

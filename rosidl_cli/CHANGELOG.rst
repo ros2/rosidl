@@ -2,6 +2,11 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix importlib_metdata warning with Python 3.10. (`#674 <https://github.com/ros2/rosidl/issues/674>`_)
+* Contributors: Chris Lalancette
+
 3.1.2 (2022-04-05)
 ------------------
 

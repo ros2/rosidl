@@ -448,7 +448,7 @@ class Annotatable:
         ]
         lines = []
         for comment in comments:
-            lines.extend(comment.splitlines())
+            lines.extend([x.strip() for x in comment.splitlines()])
         return lines
 
     def has_annotation(self, name):

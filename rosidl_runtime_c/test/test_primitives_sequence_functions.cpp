@@ -16,7 +16,7 @@
 #include "rosidl_runtime_c/primitives_sequence.h"
 #include "rosidl_runtime_c/primitives_sequence_functions.h"
 
-#define TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(STRUCT_NAME) \
+#define TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(STRUCT_NAME, TYPE_NAME) \
   TEST(primitives_sequence_functions, test_ ## STRUCT_NAME ## _init_fini) \
   { \
     EXPECT_FALSE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init(nullptr, 0u)); \
@@ -35,26 +35,89 @@
     EXPECT_EQ(sequence.capacity, seq_size); \
     EXPECT_NE(sequence.data, nullptr); \
     rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&sequence); \
+  } \
+ \
+  TEST(primitives_sequence_functions, test_ ## STRUCT_NAME ## _equality_comparison) \
+  { \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence empty; \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init(&empty, 0u)); \
+    EXPECT_FALSE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal(nullptr, nullptr)); \
+    EXPECT_FALSE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal(&empty, nullptr)); \
+    EXPECT_FALSE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal(nullptr, &empty)); \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal(&empty, &empty)); \
+ \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence zero_initialized; \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init(&zero_initialized, 1u)); \
+    zero_initialized.data[0] = (TYPE_NAME)0; \
+    EXPECT_FALSE( \
+      rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal( \
+        &zero_initialized, \
+        &empty)); \
+    EXPECT_FALSE( \
+      rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal( \
+        &empty, \
+        &zero_initialized)); \
+    EXPECT_TRUE( \
+      rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal( \
+        &zero_initialized, \
+        &zero_initialized)); \
+ \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence nonzero_initialized; \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init(&nonzero_initialized, 1u)); \
+    nonzero_initialized.data[0] = (TYPE_NAME)1; \
+    EXPECT_FALSE( \
+      rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal( \
+        &nonzero_initialized, \
+        &zero_initialized)); \
+    EXPECT_FALSE( \
+      rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal( \
+        &zero_initialized, \
+        &nonzero_initialized)); \
+    EXPECT_TRUE( \
+      rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal( \
+        &nonzero_initialized, \
+        &nonzero_initialized)); \
+ \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&nonzero_initialized); \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&zero_initialized); \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&empty); \
+  } \
+ \
+  TEST(primitives_sequence_functions, test_ ## STRUCT_NAME ## _copy) \
+  { \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence input, output; \
+    EXPECT_FALSE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__copy(nullptr, nullptr)); \
+    EXPECT_FALSE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__copy(nullptr, &output)); \
+    EXPECT_FALSE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__copy(&input, nullptr)); \
+ \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init(&input, 1u)); \
+    input.data[0] = (TYPE_NAME)1; \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init(&output, 0u)); \
+    EXPECT_FALSE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal(&input, &output)); \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__copy(&input, &output)); \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal(&input, &output)); \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&output); \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&input); \
   }
 
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(float)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(double)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(long_double)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(char)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(wchar)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(boolean)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(octet)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(uint8)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(int8)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(uint16)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(int16)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(uint32)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(int32)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(uint64)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(int64)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(float, float)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(double, double)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(long_double, long double)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(char, signed char)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(wchar, uint16_t)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(boolean, bool)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(octet, uint8_t)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(uint8, uint8_t)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(int8, int8_t)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(uint16, uint16_t)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(int16, int16_t)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(uint32, uint32_t)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(int32, int32_t)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(uint64, uint64_t)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(int64, int64_t)
 
 // Testing legacy API
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(bool)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(byte)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(float32)
-TEST_PRIMITIVE_SEQUENCE_FUNCTION_INIT_FINI(float64)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(bool, bool)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(byte, uint8_t)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(float32, float)
+TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(float64, double)

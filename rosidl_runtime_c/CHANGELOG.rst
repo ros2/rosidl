@@ -2,6 +2,11 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Galactic backport of `#648 <https://github.com/ros2/rosidl/issues/648>`_ and `#650 <https://github.com/ros2/rosidl/issues/650>`_ (`#668 <https://github.com/ros2/rosidl/issues/668>`_)
+* Contributors: Nikolai Morin
+
 2.2.1 (2021-04-06)
 ------------------
 * updating quality declaration links (re: `ros2/docs.ros2.org#52 <https://github.com/ros2/docs.ros2.org/issues/52>`_) (`#581 <https://github.com/ros2/rosidl/issues/581>`_)

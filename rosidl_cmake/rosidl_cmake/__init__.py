@@ -26,7 +26,7 @@ from rosidl_parser.parser import parse_idl_file
 
 def convert_camel_case_to_lower_case_underscore(value):
     # insert an underscore before any upper case letter
-    # which is not followed by another upper case letter
+    # which is followed by a lower case letter
     value = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', value)
     # insert an underscore before any upper case letter
     # which is preseded by a lower case letter or number

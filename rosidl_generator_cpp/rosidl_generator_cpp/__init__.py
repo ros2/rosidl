@@ -23,6 +23,7 @@ from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import EnumerationType
 from rosidl_parser.definition import FLOATING_POINT_TYPES
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import UnboundedSequence
@@ -95,6 +96,8 @@ def msg_type_only_to_cpp(type_):
     elif isinstance(type_, NamespacedType):
         typename = '::'.join(type_.namespaced_name())
         cpp_type = typename + '_<ContainerAllocator>'
+    elif isinstance(type_, EnumerationType):
+        cpp_type = type_.name
     else:
         assert False, type_
 
@@ -190,6 +193,12 @@ def primitive_value_to_cpp(type_, value):
 
     if isinstance(type_, AbstractWString):
         return 'u"%s"' % escape_wstring(value)
+
+    if isinstance(type_, EnumerationType):
+        return '::'.join(type_.namespaced_name() + value)
+
+    if isinstance(type_, EnumerationType):
+        return '::'.join(type_.namespaced_name() + value)
 
     if type_.typename == 'boolean':
         return 'true' if value else 'false'
@@ -310,6 +319,9 @@ def create_init_alloc_and_member_lists(message):
                     for val in default_value:
                         member.default_value.append(
                             primitive_value_to_cpp(field.type.value_type, val))
+            elif isinstance(field.type.value_type, EnumerationType):
+                member.zero_value = [
+                    'static_cast<' + field.type.value_type.name + '>(0)'] * field.type.size
             else:
                 member.zero_value = []
                 member.zero_need_array_override = True
@@ -330,6 +342,11 @@ def create_init_alloc_and_member_lists(message):
                     member.default_value = primitive_value_to_cpp(
                         field.type,
                         field.get_annotation_value('default')['value'])
+            elif isinstance(field.type, EnumerationType):
+                member.zero_value = 'static_cast<' + field.type.name + '>(0)'
+                if field.has_annotation('default'):
+                    annotation_value = field.get_annotation_value('default')['value']
+                    member.default_value = '::'.join([field.type.name, annotation_value])
             else:
                 init_list.append(field.name + '(_init)')
                 alloc_list.append(field.name + '(_alloc, _init)')

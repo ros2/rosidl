@@ -8,8 +8,11 @@ from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import AbstractGenericString
+from rosidl_parser.definition import EnumerationType
 from rosidl_parser.definition import NamespacedType
 from rosidl_generator_c import basetype_to_c
+from rosidl_generator_c import idl_enumeration_type_to_c_typename
+from rosidl_generator_c import idl_enumeration_type_sequence_to_c_typename
 from rosidl_generator_c import idl_structure_type_sequence_to_c_typename
 from rosidl_generator_c import idl_structure_type_to_c_include_prefix
 from rosidl_generator_c import idl_structure_type_to_c_typename
@@ -69,6 +72,102 @@ for member in message.structure.members:
 @[    end for]@
 @[end if]@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+@#######################################################################
+@# message enums functions
+@#######################################################################
+@[for enum in message.enumerations]@
+@{
+__enum_typename = idl_enumeration_type_to_c_typename(enum.enumeration_type)
+__enum_sequence_typename = idl_enumeration_type_sequence_to_c_typename(enum.enumeration_type)
+}@
+bool
+@(__enum_sequence_typename)__init(@(__enum_sequence_typename) * sequence, size_t size)
+{
+  if (!sequence) {
+    return false;
+  }
+
+  rcutils_allocator_t allocator = rcutils_get_default_allocator();
+  @(__enum_typename) * data = NULL;
+
+  if (size) {
+    data = (@(__enum_typename) *)allocator.zero_allocate(size, sizeof(@(__enum_typename)), allocator.state);
+    if (!data) {
+      return false;
+    }
+  }
+
+  sequence->data = data;
+  sequence->size = size;
+  sequence->capacity = size;
+  return true;
+}
+
+void
+@(__enum_sequence_typename)__fini(@(__enum_sequence_typename) * sequence)
+{
+  if (!sequence) {
+    return;
+  }
+  if (sequence->data) {
+    /* ensure that data and capacity values are consistent */
+    assert(sequence->capacity > 0);
+    free(sequence->data);
+    sequence->data = NULL;
+    sequence->size = 0;
+    sequence->capacity = 0;
+  } else {
+    /* ensure that data, size, and capacity values are consistent */
+    assert(0 == sequence->size);
+    assert(0 == sequence->capacity);
+  }
+}
+
+bool
+@(__enum_sequence_typename)__are_equal(const @(__enum_sequence_typename) * lhs, const @(__enum_sequence_typename) * rhs)
+{
+  if (!lhs || !rhs) {
+    return false;
+  }
+  if (lhs->size != rhs->size) {
+    return false;
+  }
+  for (size_t i = 0; i < lhs->size; ++i) {
+    if (lhs->data[i] != rhs->data[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool
+@(__enum_sequence_typename)__copy(
+  const @(__enum_sequence_typename) * input,
+  @(__enum_sequence_typename) * output)
+{
+  if (!input || !output) {
+    return false;
+  }
+  if (output->capacity < input->size) {
+    const size_t allocation_size =
+      input->size * sizeof(@(__enum_typename));
+    rcutils_allocator_t allocator = rcutils_get_default_allocator();
+    @(__enum_typename) * data =
+      (@(__enum_typename) *)allocator.reallocate(
+      output->data, allocation_size, allocator.state);
+    if (!data) {
+      return false;
+    }
+    output->data = data;
+    output->size = input->size;
+    output->capacity = input->size;
+  }
+  for (size_t i = 0; i < input->size; ++i) {
+    output->data[i] = input->data[i];
+  }
+  return true;
+}
+@[  end for]@
 
 @#######################################################################
 @# message functions
@@ -185,7 +284,7 @@ for member in message.structure.members:
             last_label_index += 1
             lines.append('  }')
             lines.append('}')
-    elif isinstance(member.type, BasicType):
+    elif isinstance(member.type, (BasicType, EnumerationType)):
         if member.has_annotation('default'):
             # set default value of primitive type
             lines.append('msg->%s = %s;' % (member.name, value_to_c(member.type, member.get_annotation_value('default')['value'])))
@@ -224,7 +323,7 @@ for member in message.structure.members:
     elif isinstance(member.type, AbstractSequence):
         # finalize the dynamic array
         lines.append('%s__fini(&msg->%s);' % (idl_type_to_c(member.type), member.name))
-    elif not isinstance(member.type, BasicType):
+    elif not isinstance(member.type, (BasicType, EnumerationType)):
         # finalize non-array sub messages and strings
         lines.append('%s__fini(&msg->%s);' % (basetype_to_c(member.type), member.name))
 for line in lines:

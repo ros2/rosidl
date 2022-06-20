@@ -22,6 +22,8 @@ from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
 from rosidl_parser.definition import BoundedString
 from rosidl_parser.definition import BoundedWString
+from rosidl_parser.definition import Enumeration
+from rosidl_parser.definition import EnumerationType
 from rosidl_parser.definition import IdlLocator
 from rosidl_parser.definition import Include
 from rosidl_parser.definition import Message
@@ -55,6 +57,41 @@ def test_message_parser_includes(message_idl_file):
     assert len(includes) == 2
     assert includes[0].locator == 'OtherMessage.idl'
     assert includes[1].locator == 'pkgname/msg/OtherMessage.idl'
+
+
+def test_enums_parsing(message_idl_file):
+    messages = message_idl_file.content.get_elements_of_type(Message)
+    assert len(messages) == 1
+
+    enums = messages[0].enumerations
+    assert len(enums) == 1
+    assert isinstance(enums[0], Enumeration)
+    assert enums[0].enumeration_type.name == 'MyEnum'
+    assert enums[0].enumeration_type.namespaces == [
+        'rosidl_parser', 'msg', 'MyMessage']
+    assert enums[0].enumerators == [
+        'ENUMERATOR1', 'ENUMERATOR2', 'ENUMERATOR3']
+
+    structure = messages[0].structure
+    assert isinstance(structure.members[45].type, EnumerationType)
+    assert structure.members[45].type.name == 'MyEnum'
+    assert structure.members[45].name == 'enum_value'
+
+    assert isinstance(structure.members[46].type, Array)
+    assert isinstance(structure.members[46].type.value_type, EnumerationType)
+    assert structure.members[46].type.value_type.name == 'MyEnum'
+    assert structure.members[46].type.size == 3
+    assert structure.members[46].name == 'static_array_enum_values'
+
+    assert isinstance(structure.members[47].type, UnboundedSequence)
+    assert isinstance(structure.members[47].type.value_type, EnumerationType)
+    assert structure.members[47].type.value_type.name == 'MyEnum'
+    assert structure.members[47].name == 'dynamic_array_enum_values'
+
+    assert isinstance(structure.members[48].type, BoundedSequence)
+    assert isinstance(structure.members[48].type.value_type, EnumerationType)
+    assert structure.members[48].type.value_type.name == 'MyEnum'
+    assert structure.members[48].name == 'bounded_array_enum_values'
 
 
 def test_message_parser_structure(message_idl_file):
@@ -99,7 +136,7 @@ def test_message_parser_structure(message_idl_file):
     structure = messages[0].structure
     assert structure.namespaced_type.namespaces == ['rosidl_parser', 'msg']
     assert structure.namespaced_type.name == 'MyMessage'
-    assert len(structure.members) == 45
+    assert len(structure.members) == 50
 
     assert isinstance(structure.members[0].type, BasicType)
     assert structure.members[0].type.typename == 'int16'
@@ -149,6 +186,12 @@ def test_message_parser_structure(message_idl_file):
     assert structure.members[31].type.value_type.typename == 'int16'
     assert structure.members[31].type.size == 23
     assert structure.members[31].name == 'array_short_values'
+
+    assert len(structure.members[49].annotations) == 1
+    assert structure.members[49].annotations[0].name == 'default'
+    assert len(structure.members[49].annotations[0].value) == 1
+    assert 'value' in structure.members[49].annotations[0].value
+    assert structure.members[49].annotations[0].value['value'] == 'ENUMERATOR1'
 
 
 def test_message_parser_annotations(message_idl_file):

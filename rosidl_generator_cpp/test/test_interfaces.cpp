@@ -22,6 +22,7 @@
 #include <algorithm>
 #include "test_array_generator.hpp"
 
+#include "rosidl_generator_cpp/idl/enums_message.hpp"
 #include "rosidl_generator_cpp/msg/arrays.hpp"
 #include "rosidl_generator_cpp/msg/basic_types.hpp"
 #include "rosidl_generator_cpp/msg/bounded_sequences.hpp"
@@ -536,4 +537,59 @@ TEST(Test_messages, Test_string_array_static) {
   TEST_STATIC_ARRAY_STRING(
     message, string_values_default, std::string, ARRAY_SIZE, \
     0, UINT32_MAX, 0, UINT16_MAX)
+}
+
+TEST(Test_messages, test_message_with_enumeration) {
+  using MsgType = test_msgs::idl::EnumsMessage;
+  MsgType msg;
+  msg.enum_value = MsgType::SomeEnum::ENUMERATOR2;
+
+  ASSERT_EQ(msg.enum_value, MsgType::SomeEnum::ENUMERATOR2);
+}
+
+TEST(Test_messages, test_enum_default_value) {
+  test_msgs::idl::EnumsMessage msg;
+  auto expected_value = test_msgs::idl::EnumsMessage::SomeEnum::ENUMERATOR2;
+
+  ASSERT_EQ(expected_value, msg.enum_default_value);
+}
+
+TEST(Test_messages, test_bounded_enum_array) {
+  using MsgType = test_msgs::idl::EnumsMessage;
+  using EnumType = MsgType::SomeEnum;
+
+  MsgType msg;
+  rosidl_runtime_cpp::BoundedVector<EnumType, ARRAY_SIZE> expected_array;
+  expected_array.resize(ARRAY_SIZE);
+  std::fill(expected_array.begin(), expected_array.end(), EnumType::ENUMERATOR2);
+  msg.bounded_array_values.resize(ARRAY_SIZE);
+  std::copy_n(expected_array.begin(), ARRAY_SIZE, msg.bounded_array_values.begin());
+
+  EXPECT_EQ(expected_array, msg.bounded_array_values);
+}
+
+TEST(Test_messages, test_unbounded_enum_array) {
+  using MsgType = test_msgs::idl::EnumsMessage;
+  using EnumType = MsgType::SomeEnum;
+
+  MsgType msg;
+  std::vector<EnumType> expected_array;
+  expected_array.resize(ARRAY_SIZE);
+  std::fill(expected_array.begin(), expected_array.end(), EnumType::ENUMERATOR2);
+  msg.dynamic_array_values.resize(ARRAY_SIZE);
+  std::copy_n(expected_array.begin(), ARRAY_SIZE, msg.dynamic_array_values.begin());
+
+  EXPECT_EQ(expected_array, msg.dynamic_array_values);
+}
+
+TEST(Test_messages, test_static_enum_array) {
+  using MsgType = test_msgs::idl::EnumsMessage;
+  using EnumType = MsgType::SomeEnum;
+
+  MsgType msg;
+  std::array<EnumType, ARRAY_SIZE> expected_array;
+  std::fill(expected_array.begin(), expected_array.end(), EnumType::ENUMERATOR2);
+  std::copy_n(expected_array.begin(), ARRAY_SIZE, msg.static_array_values.begin());
+
+  EXPECT_EQ(expected_array, msg.static_array_values);
 }

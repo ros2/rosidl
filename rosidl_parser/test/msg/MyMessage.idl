@@ -13,6 +13,14 @@ module rosidl_parser {
       const string EMPTY_STRING_CONSTANT = "";
     };
 
+    module MyMessage_Enums {
+      enum MyEnum {
+        ENUMERATOR1,
+        ENUMERATOR2,
+        ENUMERATOR3
+      };
+    };
+
     @verbatim ( language="comment", text="Documentation of MyMessage." "Adjacent string literal." )
     @transfer_mode(SHMEM_REF)
     struct MyMessage {
@@ -81,6 +89,14 @@ module rosidl_parser {
       float fixed_frac_only;
       @default ( value=7d )
       float fixed_int_only;
+
+      // Tests for enumerations
+      MyEnum enum_value;
+      MyEnum static_array_enum_values[3];
+      sequence<MyEnum> dynamic_array_enum_values;
+      sequence<MyEnum, 3> bounded_array_enum_values;
+      @default (value="ENUMERATOR1")
+      MyEnum enum_default_value;
     };
   };
 };

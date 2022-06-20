@@ -25,6 +25,7 @@
 #include "rosidl_runtime_c/string_functions.h"
 #include "rosidl_runtime_c/u16string_functions.h"
 
+#include "rosidl_generator_c/idl/enums_message.h"
 #include "rosidl_generator_c/msg/arrays.h"
 #include "rosidl_generator_c/msg/defaults.h"
 #include "rosidl_generator_c/msg/constants.h"
@@ -89,6 +90,11 @@ int test_nested(void);
 int test_strings(void);
 int test_unbounded_sequences(void);
 int test_wstrings(void);
+int test_enum(void);
+int test_enum_default_value(void);
+int test_enum_static_array(void);
+int test_enum_bounded_array(void);
+int test_enum_dynamic_array(void);
 
 int main(void)
 {
@@ -141,6 +147,56 @@ int main(void)
   printf("Testing rosidl_generator_c multi_nested type\n");
   if (test_multi_nested()) {
     fprintf(stderr, "test_multi_nested() FAILED\n");
+    rc++;
+  }
+  printf("Testing enum...\n");
+  if (test_enum()) {
+    fprintf(stderr, "test_enum() FAILED\n");
+    rc++;
+  }
+  printf("Testing enum default value...\n");
+  if (test_enum_default_value()) {
+    fprintf(stderr, "test_enum_default_value() FAILED\n");
+    rc++;
+  }
+  printf("Testing enum static array...\n");
+  if (test_enum_static_array()) {
+    fprintf(stderr, "test_enum_static_array() FAILED\n");
+    rc++;
+  }
+  printf("Testing enum bounded array...\n");
+  if (test_enum_bounded_array()) {
+    fprintf(stderr, "test_enum_bounded_array() FAILED\n");
+    rc++;
+  }
+  printf("Testing enum dynamic array...\n");
+  if (test_enum_dynamic_array()) {
+    fprintf(stderr, "test_enum_dynamic_array() FAILED\n");
+    rc++;
+  }
+  printf("Testing enum...\n");
+  if (test_enum()) {
+    fprintf(stderr, "test_enum() FAILED\n");
+    rc++;
+  }
+  printf("Testing enum default value...\n");
+  if (test_enum_default_value()) {
+    fprintf(stderr, "test_enum_default_value() FAILED\n");
+    rc++;
+  }
+  printf("Testing enum static array...\n");
+  if (test_enum_static_array()) {
+    fprintf(stderr, "test_enum_static_array() FAILED\n");
+    rc++;
+  }
+  printf("Testing enum bounded array...\n");
+  if (test_enum_bounded_array()) {
+    fprintf(stderr, "test_enum_bounded_array() FAILED\n");
+    rc++;
+  }
+  printf("Testing enum dynamic array...\n");
+  if (test_enum_dynamic_array()) {
+    fprintf(stderr, "test_enum_dynamic_array() FAILED\n");
     rc++;
   }
   if (rc != 0) {
@@ -1296,5 +1352,137 @@ int test_arrays()
   rosidl_generator_c__msg__Arrays__destroy(arr_copy);
 
   rosidl_generator_c__msg__Arrays__destroy(arr);
+  return 0;
+}
+
+/**
+ * Test message with enum type.
+ */
+int test_enum(void)
+{
+  // expected enumerators
+  (void)ENUMERATOR1;
+  (void)ENUMERATOR2;
+
+  test_msgs__idl__EnumsMessage msg;
+  msg.enum_value = ENUMERATOR2;
+  EXPECT_EQ(ENUMERATOR2, msg.enum_value);
+
+  return 0;
+}
+
+/**
+ * Test enum default value.
+ */
+int test_enum_default_value(void)
+{
+  test_msgs__idl__EnumsMessage * msg = NULL;
+
+  msg = test_msgs__idl__EnumsMessage__create();
+  EXPECT_NE(msg, NULL);
+
+  EXPECT_EQ(ENUMERATOR2, msg->enum_default_value);
+
+  test_msgs__idl__EnumsMessage__destroy(msg);
+
+  return 0;
+}
+
+/**
+ * Test enum static array.
+ */
+int test_enum_static_array(void)
+{
+  int i;
+  test_msgs__idl__EnumsMessage * arrays = NULL;
+  arrays = test_msgs__idl__EnumsMessage__create();
+  EXPECT_NE(NULL, arrays);
+
+  for (i = 0; i < ARR_SIZE; i++) {
+    if (0 == (i % 2)) {
+      arrays->static_array_values[i] = ENUMERATOR1;
+    } else {
+      arrays->static_array_values[i] = ENUMERATOR2;
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    if (0 == (i % 2)) {
+      EXPECT_EQ(ENUMERATOR1, arrays->static_array_values[i]);
+    } else {
+      EXPECT_EQ(ENUMERATOR2, arrays->static_array_values[i]);
+    }
+  }
+
+  test_msgs__idl__EnumsMessage__destroy(arrays);
+
+  return 0;
+}
+
+/**
+ * Test enum bounded array.
+ */
+int test_enum_bounded_array(void)
+{
+  int res;
+  int i;
+  test_msgs__idl__EnumsMessage * arrays = NULL;
+  arrays = test_msgs__idl__EnumsMessage__create();
+  EXPECT_NE(NULL, arrays);
+
+  res = test_msgs__idl__EnumsMessage__SomeEnum__Sequence__init(
+    &arrays->bounded_array_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  for (i = 0; i < ARR_SIZE; i++) {
+    if (0 == (i % 2)) {
+      arrays->bounded_array_values.data[i] = ENUMERATOR1;
+    } else {
+      arrays->bounded_array_values.data[i] = ENUMERATOR2;
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    if (0 == (i % 2)) {
+      EXPECT_EQ(ENUMERATOR1, arrays->bounded_array_values.data[i]);
+    } else {
+      EXPECT_EQ(ENUMERATOR2, arrays->bounded_array_values.data[i]);
+    }
+  }
+
+  test_msgs__idl__EnumsMessage__destroy(arrays);
+
+  return 0;
+}
+
+/**
+ * Test enum dynamic array.
+ */
+int test_enum_dynamic_array(void)
+{
+  int res;
+  int i;
+  test_msgs__idl__EnumsMessage * arrays = NULL;
+  arrays = test_msgs__idl__EnumsMessage__create();
+  EXPECT_NE(NULL, arrays);
+
+  // dynamic array
+  res = test_msgs__idl__EnumsMessage__SomeEnum__Sequence__init(
+    &arrays->dynamic_array_values, ARR_SIZE);
+  EXPECT_EQ(true, res);
+  for (i = 0; i < ARR_SIZE; i++) {
+    if (0 == (i % 2)) {
+      arrays->dynamic_array_values.data[i] = ENUMERATOR1;
+    } else {
+      arrays->dynamic_array_values.data[i] = ENUMERATOR2;
+    }
+  }
+  for (i = 0; i < ARR_SIZE; i++) {
+    if (0 == (i % 2)) {
+      EXPECT_EQ(ENUMERATOR1, arrays->dynamic_array_values.data[i]);
+    } else {
+      EXPECT_EQ(ENUMERATOR2, arrays->dynamic_array_values.data[i]);
+    }
+  }
+
+  test_msgs__idl__EnumsMessage__destroy(arrays);
+
   return 0;
 }

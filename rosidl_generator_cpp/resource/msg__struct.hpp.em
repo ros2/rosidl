@@ -234,6 +234,16 @@ non_defaulted_zero_initialized_members = [
 @[end if]@
   }
 
+  // enums
+@[for enum in message.enumerations]@
+  enum class @(enum.enumeration_type.name)
+  {
+@[  for enumerator in enum.enumerators]@
+    @(enumerator),
+@[  end for]@
+  };
+@[end for]@
+
   // field types and members
 @[for member in message.structure.members]@
   using _@(member.name)_type =

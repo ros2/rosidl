@@ -64,6 +64,8 @@ enum rosidl_typesupport_introspection_c_field_types
 
   /// An embedded message type.
   rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE = 18,
+  /// An embedded enumeration type.
+  rosidl_typesupport_introspection_c__ROS_TYPE_ENUM = 19,
 
   /// For backward compatibility only.
   rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT32 = 1,

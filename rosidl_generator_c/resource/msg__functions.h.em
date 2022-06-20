@@ -1,5 +1,7 @@
 @# Included from rosidl_generator_c/resource/idl__functions.h.em
 @{
+from rosidl_generator_c import idl_enumeration_type_sequence_to_c_typename
+from rosidl_generator_c import idl_enumeration_type_to_c_typename
 from rosidl_generator_c import idl_structure_type_sequence_to_c_typename
 from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_generator_c import interface_path_to_string
@@ -165,3 +167,60 @@ bool
 @(array_typename)__copy(
   const @(array_typename) * input,
   @(array_typename) * output);
+
+@#######################################################################
+@# message enums functions
+@#######################################################################
+@[for enum in message.enumerations]@
+@{
+__enum_typename = idl_enumeration_type_to_c_typename(enum.enumeration_type)
+__enum_sequence_typename = idl_enumeration_type_sequence_to_c_typename(enum.enumeration_type)
+}@
+/// Initialize sequence of @(__enum_typename).
+/**
+ * It allocates the memory for the number of elements.
+ * \param[in,out] sequence The allocated sequence pointer.
+ * \param[in] size The size / capacity of the sequence.
+ * \return true if initialization was successful, otherwise false
+ * If the sequence pointer is valid and the size is zero it is guaranteed
+ # to return true.
+ */
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
+bool
+@(__enum_sequence_typename)__init(@(__enum_sequence_typename) * sequence, size_t size);
+
+/// Finalize sequence of @(__enum_typename).
+/**
+ * \param[in,out] sequence The allocated sequence pointer.
+ */
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
+void
+@(__enum_sequence_typename)__fini(@(__enum_sequence_typename) * sequence);
+
+/// Check for @(__enum_typename) array equality.
+/**
+ * \param[in] lhs The array on the left hand side of the equality operator.
+ * \param[in] rhs The array on the right hand side of the equality operator.
+ * \return true if message arrays are equal in size and content, otherwise false.
+ */
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
+bool
+@(__enum_sequence_typename)__are_equal(const @(__enum_sequence_typename) * lhs, const @(__enum_sequence_typename) * rhs);
+
+/// Copy an array of @(__enum_typename).
+/**
+ * This function performs a deep copy, as opposed to the shallow copy that
+ * plain assignment yields.
+ *
+ * \param[in] input The source array pointer.
+ * \param[out] output The target array pointer, which must
+ *   have been initialized before calling this function.
+ * \return true if successful, or false if either pointer
+ *   is null or memory allocation fails.
+ */
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
+bool
+@(__enum_sequence_typename)__copy(
+  const @(__enum_sequence_typename) * input,
+  @(__enum_sequence_typename) * output);
+@[  end for]@

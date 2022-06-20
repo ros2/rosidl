@@ -18,6 +18,7 @@
 
 #include <string>
 
+#include "rosidl_generator_cpp/idl/enums_message.hpp"
 #include "rosidl_generator_cpp/msg/defaults.hpp"
 #include "rosidl_generator_cpp/msg/bounded_sequences.hpp"
 
@@ -215,4 +216,48 @@ TEST(Test_msg_initialization, skip_constructor) {
       bounded->string_values_default.end(), [](std::string i) {
         return "" == i;
       }));
+}
+
+TEST(Test_msg_initialization, message_with_enum_initialization) {
+  using EnumsMessage = test_msgs::idl::EnumsMessage;
+
+  auto zero_value = static_cast<EnumsMessage::SomeEnum>(0);
+
+  {
+    EnumsMessage msg;
+    ASSERT_EQ(msg.enum_value, zero_value);
+  }
+
+  {
+    EnumsMessage msg(rosidl_runtime_cpp::MessageInitialization::ALL);
+    ASSERT_EQ(msg.enum_value, zero_value);
+  }
+
+  {
+    EnumsMessage msg(rosidl_runtime_cpp::MessageInitialization::ZERO);
+    ASSERT_EQ(msg.enum_value, zero_value);
+  }
+
+  {
+    char * memory = new char[sizeof(EnumsMessage)];
+    ASSERT_NE(memory, nullptr);
+    std::memset(memory, 0xfe, sizeof(EnumsMessage));
+
+    EnumsMessage * def =
+      new(memory) EnumsMessage(
+      rosidl_runtime_cpp::MessageInitialization::SKIP);
+
+    // ensures that the memory gets freed even if an ASSERT is raised
+    SCOPE_EXIT(def->~EnumsMessage(); delete[] memory;);
+
+#ifndef _WIN32
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
+#endif
+    uint32_t enum_bit_pattern = *reinterpret_cast<uint32_t *>(&def->enum_value);
+    ASSERT_EQ(0xfefefefe, enum_bit_pattern);
+#ifndef _WIN32
+#pragma GCC diagnostic pop
+#endif
+  }
 }

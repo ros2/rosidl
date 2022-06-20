@@ -45,6 +45,7 @@ if(BUILD_TESTING)
 
   rosidl_generate_interfaces(${PROJECT_NAME}_interfaces
     ${test_interface_files_MSG_FILES}
+    ${test_interface_files_IDL_FILES}
     ADD_LINTER_TESTS
     SKIP_INSTALL
   )

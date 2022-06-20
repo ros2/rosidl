@@ -10,6 +10,7 @@ from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import EnumerationType
 from rosidl_parser.definition import NamespacedType
 
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
@@ -225,6 +226,13 @@ for index, member in enumerate(message.structure.members):
             assert False, 'Unknown type: ' + str(type_)
         # size_t string_upper_bound
         print('    %u,  // upper bound of string' % (type_.maximum_size if type_.has_maximum_size() else 0))
+        # const rosidl_generator_c::MessageTypeSupportHandle * members_
+        print('    NULL,  // members of sub message')
+    elif isinstance(type_, EnumerationType):
+        # uint8_t type_id_
+        print('    rosidl_typesupport_introspection_c__ROS_TYPE_ENUM,  // type')
+        # size_t string_upper_bound
+        print('    0,  // upper bound of string')
         # const rosidl_generator_c::MessageTypeSupportHandle * members_
         print('    NULL,  // members of sub message')
     else:

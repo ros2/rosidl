@@ -9,12 +9,15 @@ from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BOOLEAN_TYPE
 from rosidl_parser.definition import BoundedSequence
 from rosidl_parser.definition import CHARACTER_TYPES
+from rosidl_parser.definition import EnumerationType
 from rosidl_parser.definition import FLOATING_POINT_TYPES
 from rosidl_parser.definition import INTEGER_TYPES
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import OCTET_TYPE
 from rosidl_generator_c import basetype_to_c
 from rosidl_generator_c import idl_declaration_to_c
+from rosidl_generator_c import idl_enumeration_type_to_c_typename
+from rosidl_generator_c import idl_enumeration_type_sequence_to_c_typename
 from rosidl_generator_c import idl_structure_type_sequence_to_c_typename
 from rosidl_generator_c import idl_structure_type_to_c_include_prefix
 from rosidl_generator_c import idl_structure_type_to_c_typename
@@ -138,6 +141,30 @@ enum
 };
 @[  end for]@
 @[end if]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+// Enums defined in the message
+@[for enum in message.enumerations]@
+// Enum defined in @(interface_path_to_string(interface_path)) in the package @(package_name).
+typedef enum @(idl_enumeration_type_to_c_typename(enum.enumeration_type))
+{
+@[for enumerator in enum.enumerators]@
+  @(enumerator),
+@[end for]@
+} @(idl_enumeration_type_to_c_typename(enum.enumeration_type));
+
+// Struct for a sequence of @(idl_enumeration_type_to_c_typename(enum.enumeration_type)).
+typedef struct @(idl_enumeration_type_sequence_to_c_typename(enum.enumeration_type))
+{
+  @(idl_enumeration_type_to_c_typename(enum.enumeration_type)) * data;
+  /// The number of valid items in data
+  size_t size;
+  /// The number of allocated items in data
+  size_t capacity;
+} @(idl_enumeration_type_sequence_to_c_typename(enum.enumeration_type));
+@[  end for]@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

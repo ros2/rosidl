@@ -22,6 +22,7 @@ from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import CHARACTER_TYPES
+from rosidl_parser.definition import EnumerationType
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import OCTET_TYPE
 
@@ -67,6 +68,14 @@ BASIC_IDL_TYPES_TO_C = {
     'uint64': 'uint64_t',
     'int64': 'int64_t',
 }
+
+
+def idl_enumeration_type_to_c_typename(enumeration_type):
+    return '__'.join(enumeration_type.namespaced_name())
+
+
+def idl_enumeration_type_sequence_to_c_typename(enumeration_type):
+    return idl_enumeration_type_to_c_typename(enumeration_type) + '__Sequence'
 
 
 def idl_structure_type_to_c_include_prefix(namespaced_type, subdirectory=None):
@@ -148,6 +157,8 @@ def basetype_to_c(basetype):
         return 'rosidl_runtime_c__U16String'
     if isinstance(basetype, NamespacedType):
         return idl_structure_type_to_c_typename(basetype)
+    if isinstance(basetype, EnumerationType):
+        return idl_enumeration_type_to_c_typename(basetype)
     assert False, str(basetype)
 
 
@@ -160,6 +171,9 @@ def value_to_c(type_, value):
 
     if isinstance(type_, AbstractWString):
         return 'u"%s"' % escape_wstring(value)
+
+    if isinstance(type_, EnumerationType):
+        return '%s' % value
 
     return basic_value_to_c(type_, value)
 

@@ -8,6 +8,7 @@ from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
 from rosidl_parser.definition import EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME
+from rosidl_parser.definition import EnumerationType
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import UnboundedSequence
@@ -91,6 +92,10 @@ inline void to_flow_style_yaml(
 @[    elif isinstance(member.type, AbstractGenericString)]@
     out << "@(member.name): ";
     rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
+@[    elif isinstance(member.type, EnumerationType)]@
+    out << "@(member.name): ";
+    // TODO(r7vme): create value_to_yaml
+    out << static_cast<int>(msg.@(member.name));
 @[    elif isinstance(member.type, NamespacedType)]@
     out << "@(member.name): ";
     to_flow_style_yaml(msg.@(member.name), out);
@@ -109,6 +114,9 @@ inline void to_flow_style_yaml(
 @[        end if]@
 @[      elif isinstance(member.type.value_type, AbstractGenericString)]@
         rosidl_generator_traits::value_to_yaml(item, out);
+@[      elif isinstance(member.type.value_type, EnumerationType)]@
+        // TODO(r7vme): create value_to_yaml
+        out << static_cast<int>(item);
 @[      elif isinstance(member.type.value_type, NamespacedType)]@
         to_flow_style_yaml(item, out);
 @[      end if]@
@@ -158,6 +166,11 @@ inline void to_block_style_yaml(
     out << "@(member.name): ";
     rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
     out << "\n";
+@[    elif isinstance(member.type, EnumerationType)]@
+    out << "@(member.name): ";
+    // TODO(r7vme): create value_to_yaml
+    out << static_cast<int>(msg.@(member.name));
+    out << "\n";
 @[    elif isinstance(member.type, NamespacedType)]@
     out << "@(member.name):\n";
     to_block_style_yaml(msg.@(member.name), out, indentation + 2);
@@ -181,6 +194,11 @@ inline void to_block_style_yaml(
 @[      elif isinstance(member.type.value_type, AbstractGenericString)]@
         out << "- ";
         rosidl_generator_traits::value_to_yaml(item, out);
+        out << "\n";
+@[      elif isinstance(member.type.value_type, EnumerationType)]@
+        out << "- ";
+        // TODO(r7vme): create value_to_yaml
+        out << static_cast<int>(item);
         out << "\n";
 @[      elif isinstance(member.type.value_type, NamespacedType)]@
         out << "-\n";

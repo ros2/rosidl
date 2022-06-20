@@ -61,6 +61,8 @@ const uint8_t ROS_TYPE_WSTRING = rosidl_typesupport_introspection_c__ROS_TYPE_WS
 
 /// An embedded message type.
 const uint8_t ROS_TYPE_MESSAGE = rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE;
+/// An embedded enumeration type.
+const uint8_t ROS_TYPE_ENUM = rosidl_typesupport_introspection_c__ROS_TYPE_ENUM;
 
 /// For backward compatibility only.
 const uint8_t ROS_TYPE_BOOL = rosidl_typesupport_introspection_c__ROS_TYPE_BOOL;

@@ -36,6 +36,9 @@ from rosidl_parser.definition import BoundedString
 from rosidl_parser.definition import BoundedWString
 from rosidl_parser.definition import Constant
 from rosidl_parser.definition import CONSTANT_MODULE_SUFFIX
+from rosidl_parser.definition import ENUM_MODULE_SUFFIX
+from rosidl_parser.definition import Enumeration
+from rosidl_parser.definition import EnumerationType
 from rosidl_parser.definition import IdlContent
 from rosidl_parser.definition import IdlFile
 from rosidl_parser.definition import Include
@@ -136,45 +139,30 @@ def extract_content_from_ast(tree):
         else:
             typedefs[identifier] = abstract_type
 
+    enums = {}
+    enum_dcls = tree.find_data('enum_dcl')
+    for enum_dcl in enum_dcls:
+        module_name = get_module_identifier_values(tree, enum_dcl)[-1]
+        module_enums = enums.setdefault(module_name, [])
+        enum_identifier = get_first_identifier_value(enum_dcl)
+        # namespaces are empty, because they filled later with message namespaces
+        module_enums.append(Enumeration(
+            EnumerationType(namespaces=[], name=enum_identifier),
+            get_enumerators_from_enumeration(enum_dcl)))
+
     struct_defs = list(tree.find_data('struct_def'))
     if len(struct_defs) == 1:
-        msg = Message(Structure(NamespacedType(
-            namespaces=get_module_identifier_values(tree, struct_defs[0]),
-            name=get_child_identifier_value(struct_defs[0]))))
-        annotations = get_annotations(struct_defs[0])
-        msg.structure.annotations += annotations
-        add_message_members(msg, struct_defs[0])
-        resolve_typedefed_names(msg.structure, typedefs)
-        constant_module_name = msg.structure.namespaced_type.name + \
-            CONSTANT_MODULE_SUFFIX
-        if constant_module_name in constants:
-            msg.constants += constants[constant_module_name]
+        msg = create_message(tree, struct_defs[0], constants, enums, typedefs)
         content.elements.append(msg)
 
     elif len(struct_defs) == 2:
-        request = Message(Structure(NamespacedType(
-            namespaces=get_module_identifier_values(tree, struct_defs[0]),
-            name=get_child_identifier_value(struct_defs[0]))))
-        assert request.structure.namespaced_type.name.endswith(
+        assert str(get_child_identifier_value(struct_defs[0])).endswith(
             SERVICE_REQUEST_MESSAGE_SUFFIX)
-        add_message_members(request, struct_defs[0])
-        resolve_typedefed_names(request.structure, typedefs)
-        constant_module_name = \
-            request.structure.namespaced_type.name + CONSTANT_MODULE_SUFFIX
-        if constant_module_name in constants:
-            request.constants += constants[constant_module_name]
-
-        response = Message(Structure(NamespacedType(
-            namespaces=get_module_identifier_values(tree, struct_defs[1]),
-            name=get_child_identifier_value(struct_defs[1]))))
-        assert response.structure.namespaced_type.name.endswith(
+        assert str(get_child_identifier_value(struct_defs[1])).endswith(
             SERVICE_RESPONSE_MESSAGE_SUFFIX)
-        add_message_members(response, struct_defs[1])
-        resolve_typedefed_names(response.structure, typedefs)
-        constant_module_name = \
-            response.structure.namespaced_type.name + CONSTANT_MODULE_SUFFIX
-        if constant_module_name in constants:
-            response.constants += constants[constant_module_name]
+
+        request = create_message(tree, struct_defs[0], constants, enums, typedefs)
+        response = create_message(tree, struct_defs[1], constants, enums, typedefs)
 
         assert request.structure.namespaced_type.namespaces == \
             response.structure.namespaced_type.namespaces
@@ -192,28 +180,13 @@ def extract_content_from_ast(tree):
         content.elements.append(srv)
 
     elif len(struct_defs) == 3:
-        goal = Message(Structure(NamespacedType(
-            namespaces=get_module_identifier_values(tree, struct_defs[0]),
-            name=get_child_identifier_value(struct_defs[0]))))
-        assert goal.structure.namespaced_type.name.endswith(ACTION_GOAL_SUFFIX)
-        add_message_members(goal, struct_defs[0])
-        resolve_typedefed_names(goal.structure, typedefs)
-        constant_module_name = \
-            goal.structure.namespaced_type.name + CONSTANT_MODULE_SUFFIX
-        if constant_module_name in constants:
-            goal.constants += constants[constant_module_name]
+        assert str(get_child_identifier_value(struct_defs[0])).endswith(ACTION_GOAL_SUFFIX)
+        assert str(get_child_identifier_value(struct_defs[1])).endswith(ACTION_RESULT_SUFFIX)
+        assert str(get_child_identifier_value(struct_defs[2])).endswith(ACTION_FEEDBACK_SUFFIX)
 
-        result = Message(Structure(NamespacedType(
-            namespaces=get_module_identifier_values(tree, struct_defs[1]),
-            name=get_child_identifier_value(struct_defs[1]))))
-        assert result.structure.namespaced_type.name.endswith(
-            ACTION_RESULT_SUFFIX)
-        add_message_members(result, struct_defs[1])
-        resolve_typedefed_names(result.structure, typedefs)
-        constant_module_name = \
-            result.structure.namespaced_type.name + CONSTANT_MODULE_SUFFIX
-        if constant_module_name in constants:
-            result.constants += constants[constant_module_name]
+        goal = create_message(tree, struct_defs[0], constants, enums, typedefs)
+        result = create_message(tree, struct_defs[1], constants, enums, typedefs)
+        feedback = create_message(tree, struct_defs[2], constants, enums, typedefs)
 
         assert goal.structure.namespaced_type.namespaces == \
             result.structure.namespaced_type.namespaces
@@ -223,24 +196,11 @@ def extract_content_from_ast(tree):
             :-len(ACTION_RESULT_SUFFIX)]
         assert goal_basename == result_basename
 
-        feedback_message = Message(Structure(NamespacedType(
-            namespaces=get_module_identifier_values(tree, struct_defs[2]),
-            name=get_child_identifier_value(struct_defs[2]))))
-        assert feedback_message.structure.namespaced_type.name.endswith(
-            ACTION_FEEDBACK_SUFFIX)
-        add_message_members(feedback_message, struct_defs[2])
-        resolve_typedefed_names(feedback_message.structure, typedefs)
-        constant_module_name = \
-            feedback_message.structure.namespaced_type.name + \
-            CONSTANT_MODULE_SUFFIX
-        if constant_module_name in constants:
-            feedback_message.constants += constants[constant_module_name]
-
         action = Action(
             NamespacedType(
                 namespaces=goal.structure.namespaced_type.namespaces,
                 name=goal_basename),
-            goal, result, feedback_message)
+            goal, result, feedback)
 
         all_includes = content.get_elements_of_type(Include)
         unique_include_locators = {
@@ -259,28 +219,62 @@ def extract_content_from_ast(tree):
     return content
 
 
-def resolve_typedefed_names(structure, typedefs):
+def create_message(tree, struct_def, constants, enums, typedefs):
+    msg = Message(Structure(NamespacedType(
+        namespaces=get_module_identifier_values(tree, struct_def),
+        name=get_child_identifier_value(struct_def))))
+    annotations = get_annotations(struct_def)
+    msg.structure.annotations += annotations
+    add_message_members(msg, struct_def)
+
+    constant_module_name = msg.structure.namespaced_type.name + \
+        CONSTANT_MODULE_SUFFIX
+    if constant_module_name in constants:
+        msg.constants += constants[constant_module_name]
+
+    type_names_mapping = typedefs.copy()
+    enum_module_name = msg.structure.namespaced_type.name + ENUM_MODULE_SUFFIX
+    if enum_module_name in enums:
+        for enum in enums[enum_module_name]:
+            # use struct namespaces for enum
+            enum.enumeration_type.namespaces = list(
+                msg.structure.namespaced_type.namespaced_name())
+
+            # required to resolve short type names
+            assert enum.enumeration_type.name not in type_names_mapping, 'Fail'
+            type_names_mapping[enum.enumeration_type.name] = enum.enumeration_type
+
+            msg.enumerations.append(enum)
+
+    resolve_type_names(msg.structure, type_names_mapping)
+
+    return msg
+
+
+def resolve_type_names(structure, type_names_mapping):
     for member in structure.members:
         type_ = member.type
         if isinstance(type_, AbstractNestedType):
             type_ = type_.value_type
+
         assert isinstance(type_, AbstractType)
+
         if isinstance(type_, NamedType):
-            assert type_.name in typedefs, 'Unknown named type: ' + type_.name
-            typedefed_type = typedefs[type_.name]
+            assert type_.name in type_names_mapping, 'Unknown named type: ' + type_.name
+            resolved_type = type_names_mapping[type_.name]
 
             # second level of indirection for arrays of structures
-            if isinstance(typedefed_type, AbstractNestedType):
-                if isinstance(typedefed_type.value_type, NamedType):
-                    assert typedefed_type.value_type.name in typedefs, \
-                        'Unknown named type: ' + typedefed_type.value_type.name
-                    typedefed_type.value_type = \
-                        typedefs[typedefed_type.value_type.name]
+            if isinstance(resolved_type, AbstractNestedType):
+                if isinstance(resolved_type.value_type, NamedType):
+                    assert resolved_type.value_type.name in type_names_mapping, \
+                        'Unknown named type: ' + resolved_type.value_type.name
+                    resolved_type.value_type = \
+                        type_names_mapping[resolved_type.value_type.name]
 
             if isinstance(member.type, AbstractNestedType):
-                member.type.value_type = typedefed_type
+                member.type.value_type = resolved_type
             else:
-                member.type = typedefed_type
+                member.type = resolved_type
 
 
 def get_first_identifier_value(tree):
@@ -297,6 +291,13 @@ def get_child_identifier_value(tree):
         if c.type == 'IDENTIFIER':
             return c.value
     return None
+
+
+def get_enumerators_from_enumeration(tree):
+    """Get all enumerators from enumeration."""
+    assert isinstance(tree.children[0], Token)
+    # extract all identifiers and remove first one, which is enum name
+    return list(tree.scan_values(_find_tokens('IDENTIFIER')))[1:]
 
 
 def _find_tokens(token_type):

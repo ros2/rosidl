@@ -88,6 +88,7 @@ BASIC_TYPES = (
 EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME = 'structure_needs_at_least_one_member'
 
 CONSTANT_MODULE_SUFFIX = '_Constants'
+ENUM_MODULE_SUFFIX = '_Enums'
 
 SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
 SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
@@ -118,6 +119,7 @@ class AbstractNestableType(AbstractType):
     types.
     Nestable types are:
     - BasicType like numerics, character types, boolean and octet
+    - EnumerationType enumeration defined in the message
     - NamedType identified by a name which hasn't been resolved yet
     - NamespacedType which describes another Structure
     - Strings with any kind of character types, bounded as well as unbounded
@@ -191,6 +193,27 @@ class NamespacedType(AbstractNestableType):
     def __eq__(self, other):
         return super().__eq__(other) and \
             self.namespaces == other.namespaces and self.name == other.name
+
+
+class EnumerationType(AbstractNestableType):
+    """A type for enumerations."""
+
+    __slots__ = ('namespaces', 'name')
+
+    def __init__(self, namespaces: Iterable[str], name: str):
+        """
+        Create a EnumerationType.
+
+        :param namespaces: the names of nested namespaces identifying a
+          specific scope
+        :param name: the name of the enumeration
+        """
+        super().__init__()
+        self.namespaces = namespaces
+        self.name = name
+
+    def namespaced_name(self) -> Tuple[str, ...]:
+        return (*self.namespaces, self.name)
 
 
 class AbstractGenericString(AbstractNestableType):
@@ -508,6 +531,23 @@ class Structure(Annotatable):
         self.members = members or []
 
 
+class Enumeration(Annotatable):
+    """A enumeration definition."""
+
+    __slots__ = ('enumeration_type', 'enumerators')
+
+    def __init__(self, enumeration_type: EnumerationType, enumerators):
+        """
+        Create a Enumeration.
+
+        :param name: the name of enumeration
+        :param list enumerators: the enumerators
+        """
+        super().__init__()
+        self.enumeration_type = enumeration_type
+        self.enumerators = enumerators
+
+
 class Include:
     """An include statement."""
 
@@ -543,9 +583,9 @@ class Constant(Annotatable):
 
 
 class Message:
-    """A structure containing constants."""
+    """A structure containing constants and enumerations."""
 
-    __slots__ = ('structure', 'constants')
+    __slots__ = ('structure', 'constants', 'enumerations')
 
     def __init__(self, structure: Structure):
         """
@@ -557,6 +597,7 @@ class Message:
         assert isinstance(structure, Structure)
         self.structure = structure
         self.constants = []
+        self.enumerations = []
 
 
 class Service:
@@ -654,7 +695,7 @@ class Action:
 
         # derived types
         goal_id_type = NamespacedType(
-                namespaces=['unique_identifier_msgs', 'msg'], name='UUID')
+            namespaces=['unique_identifier_msgs', 'msg'], name='UUID')
 
         goal_service_name = namespaced_type.name + ACTION_GOAL_SERVICE_SUFFIX
         self.send_goal_service = Service(

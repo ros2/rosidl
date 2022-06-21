@@ -2,6 +2,12 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.2.1 (2022-06-21)
+------------------
+* Fix comment in camel case conversion function (`#683 <https://github.com/ros2/rosidl/issues/683>`_)
+* Protect rosidl_target_interfaces from using NOTFOUND in include_directories (`#679 <https://github.com/ros2/rosidl/issues/679>`_)
+* Contributors: Jose Luis Rivero, Shane Loretz
+
 3.2.0 (2022-05-04)
 ------------------
 

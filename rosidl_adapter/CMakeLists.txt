@@ -26,4 +26,5 @@ install(
 install(PROGRAMS
   scripts/msg2idl.py
   scripts/srv2idl.py
+  scripts/action2idl.py
   DESTINATION lib/${PROJECT_NAME})

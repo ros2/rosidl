@@ -2,6 +2,34 @@
 Changelog for package rosidl_typesupport_introspection_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.2.1 (2022-06-21)
+------------------
+
+3.2.0 (2022-05-04)
+------------------
+
+3.1.3 (2022-04-08)
+------------------
+
+3.1.2 (2022-04-05)
+------------------
+
+3.1.1 (2022-03-28)
+------------------
+* Install generated headers to include/${PROJECT_NAME} (`#670 <https://github.com/ros2/rosidl/issues/670>`_)
+* Misc cleanup in the rosidl generator extensions (`#662 <https://github.com/ros2/rosidl/issues/662>`_)
+* Contributors: Shane Loretz
+
+3.1.0 (2022-03-01)
+------------------
+* De-duplicate Quality Level from README and QUALITY_DECLARATION (`#661 <https://github.com/ros2/rosidl/issues/661>`_)
+* Update Quality declaration to level 1 in README for instrospection pkgs (`#659 <https://github.com/ros2/rosidl/issues/659>`_)
+* Install headers to include/${PROJECT_NAME} (`#658 <https://github.com/ros2/rosidl/issues/658>`_)
+* Move rosidl_typesupport_introspection_cpp quality declaration to Q1 (`#657 <https://github.com/ros2/rosidl/issues/657>`_)
+* add documentation for generators and API (`#646 <https://github.com/ros2/rosidl/issues/646>`_)
+* Rework nested types' items introspection in C and C++ (`#652 <https://github.com/ros2/rosidl/issues/652>`_)
+* Contributors: Jose Luis Rivero, Michel Hidalgo, Shane Loretz
+
 3.0.1 (2022-01-13)
 ------------------
 * Set CXX standard to 17 (`#635 <https://github.com/ros2/rosidl/issues/635>`_)

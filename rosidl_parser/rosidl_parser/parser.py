@@ -85,7 +85,7 @@ def parse_idl_string(idl_string, png_file=None):
 def get_ast_from_idl_string(idl_string):
     global _parser
     if _parser is None:
-        _parser = Lark(grammar, start='specification')
+        _parser = Lark(grammar, start='specification', maybe_placeholders=False)
     return _parser.parse(idl_string)
 
 

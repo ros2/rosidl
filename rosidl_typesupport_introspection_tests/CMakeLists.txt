@@ -18,6 +18,11 @@ if(BUILD_TESTING)
   find_package(rosidl_typesupport_introspection_cpp REQUIRED)
   find_package(test_interface_files REQUIRED)
 
+  # Drop BoundedPlainSequences as BoundedSequences
+  # already encompasses all the same member types
+  list(
+    FILTER test_interface_files_MSG_FILES
+    EXCLUDE REGEX ".*BoundedPlainSequences.*")
   rosidl_generate_interfaces(${PROJECT_NAME}
     ${test_interface_files_MSG_FILES}
     ${test_interface_files_SRV_FILES}

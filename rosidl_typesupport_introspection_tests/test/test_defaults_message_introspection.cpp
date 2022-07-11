@@ -29,33 +29,33 @@ namespace testing
 namespace
 {
 
-template<typename BasicTypesMessageT>
-class BasicTypesMessageIntrospectionTest
-  : public MessageIntrospectionTest<BasicTypesMessageT>
+template<typename DefaultsMessageT>
+class DefaultsMessageIntrospectionTest
+  : public MessageIntrospectionTest<DefaultsMessageT>
 {
 };
 
-using BasicTypesMessageTypes = ::testing::Types<
-  rosidl_typesupport_introspection_tests__msg__BasicTypes,
-  rosidl_typesupport_introspection_tests::msg::BasicTypes>;
-TYPED_TEST_SUITE(BasicTypesMessageIntrospectionTest, BasicTypesMessageTypes);
+using DefaultsMessageTypes = ::testing::Types<
+  rosidl_typesupport_introspection_tests__msg__Defaults,
+  rosidl_typesupport_introspection_tests::msg::Defaults>;
+TYPED_TEST_SUITE(DefaultsMessageIntrospectionTest, DefaultsMessageTypes);
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError
-TYPED_TEST(BasicTypesMessageIntrospectionTest, MessageDescriptorIsCorrect)
+TYPED_TEST(DefaultsMessageIntrospectionTest, MessageDescriptorIsCorrect)
 {
-  using BasicTypesMessageT = TypeParam;
+  using DefaultsMessageT = TypeParam;
 
   using TypeSupportLibraryT =
-    typename introspection_traits<BasicTypesMessageT>::TypeSupportLibraryT;
+    typename introspection_traits<DefaultsMessageT>::TypeSupportLibraryT;
   using MessageDescriptorT = typename TypeSupportLibraryT::MessageDescriptorT;
   const MessageDescriptorT * message_descriptor = this->GetMessageDescriptor();
 
   EXPECT_STREQ(
     get_message_namespace(message_descriptor),
     TypeSupportLibraryT::messages_namespace);
-  EXPECT_STREQ(get_message_name(message_descriptor), "BasicTypes");
-  EXPECT_EQ(get_message_size(message_descriptor), sizeof(BasicTypesMessageT));
+  EXPECT_STREQ(get_message_name(message_descriptor), "Defaults");
+  EXPECT_EQ(get_message_size(message_descriptor), sizeof(DefaultsMessageT));
   ASSERT_EQ(get_member_count(message_descriptor), 13u);
 
   {
@@ -151,16 +151,16 @@ TYPED_TEST(BasicTypesMessageIntrospectionTest, MessageDescriptorIsCorrect)
   }
 }
 
-TYPED_TEST(BasicTypesMessageIntrospectionTest, CanReadTypeErasedMessage)
+TYPED_TEST(DefaultsMessageIntrospectionTest, CanReadTypeErasedMessage)
 {
-  using BasicTypesMessageT = TypeParam;
+  using DefaultsMessageT = TypeParam;
 
-  const auto message_ptr = Example<BasicTypesMessageT>::Make();
-  const BasicTypesMessageT & message = *message_ptr;
+  const auto message_ptr = Example<DefaultsMessageT>::Make();
+  const DefaultsMessageT & message = *message_ptr;
   const void * type_erased_message = message_ptr.get();
 
   using TypeSupportLibraryT =
-    typename introspection_traits<BasicTypesMessageT>::TypeSupportLibraryT;
+    typename introspection_traits<DefaultsMessageT>::TypeSupportLibraryT;
   using MessageDescriptorT = typename TypeSupportLibraryT::MessageDescriptorT;
   const MessageDescriptorT * message_descriptor = this->GetMessageDescriptor();
   ASSERT_EQ(get_member_count(message_descriptor), 13u);
@@ -218,20 +218,20 @@ TYPED_TEST(BasicTypesMessageIntrospectionTest, CanReadTypeErasedMessage)
     get_member_descriptor(message_descriptor, 12u));
 }
 
-TYPED_TEST(BasicTypesMessageIntrospectionTest, CanWriteTypeErasedMessage)
+TYPED_TEST(DefaultsMessageIntrospectionTest, CanWriteTypeErasedMessage)
 {
-  using BasicTypesMessageT = TypeParam;
+  using DefaultsMessageT = TypeParam;
 
-  const auto message_ptr = Example<BasicTypesMessageT>::Make();
-  const BasicTypesMessageT & message = *message_ptr;
+  const auto message_ptr = Example<DefaultsMessageT>::Make();
+  const DefaultsMessageT & message = *message_ptr;
 
   auto type_erased_message_copy = this->MakeTypeErasedMessage();
-  const BasicTypesMessageT & message_copy =
-    *reinterpret_cast<BasicTypesMessageT *>(type_erased_message_copy.get());
+  const DefaultsMessageT & message_copy =
+    *reinterpret_cast<DefaultsMessageT *>(type_erased_message_copy.get());
   EXPECT_NE(message, message_copy);
 
   using TypeSupportLibraryT =
-    typename introspection_traits<BasicTypesMessageT>::TypeSupportLibraryT;
+    typename introspection_traits<DefaultsMessageT>::TypeSupportLibraryT;
   using MessageDescriptorT = typename TypeSupportLibraryT::MessageDescriptorT;
   const MessageDescriptorT * message_descriptor = this->GetMessageDescriptor();
   ASSERT_EQ(get_member_count(message_descriptor), 13u);

@@ -203,6 +203,7 @@ getitem(const std::array<T, N> & array, const size_t index)
 
 // Extra C++ APIs to homogeneize access to rosidl_runtime_c primitives
 DEFINE_CXX_API_FOR_C_MESSAGE_MEMBER(rosidl_runtime_c__String)
+DEFINE_CXX_API_FOR_C_MESSAGE_MEMBER(rosidl_runtime_c__U16String)
 DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__float__Sequence)
 DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__double__Sequence)
 DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__long_double__Sequence)
@@ -219,5 +220,6 @@ DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__int32__Sequence)
 DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__uint64__Sequence)
 DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__int64__Sequence)
 DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__String__Sequence)
+DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER(rosidl_runtime_c__U16String__Sequence)
 
 #endif  // ROSIDL_TYPESUPPORT_INTROSPECTION_TESTS__HELPERS_HPP_

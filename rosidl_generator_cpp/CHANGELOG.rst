@@ -2,6 +2,30 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.2.1 (2022-06-21)
+------------------
+
+3.2.0 (2022-05-04)
+------------------
+
+3.1.3 (2022-04-08)
+------------------
+
+3.1.2 (2022-04-05)
+------------------
+
+3.1.1 (2022-03-28)
+------------------
+* Install generated headers to include/${PROJECT_NAME} (`#670 <https://github.com/ros2/rosidl/issues/670>`_)
+* Misc cleanup in the rosidl generator extensions (`#662 <https://github.com/ros2/rosidl/issues/662>`_)
+* Contributors: Shane Loretz
+
+3.1.0 (2022-03-01)
+------------------
+* Add missing build_export_depend dependency (`#665 <https://github.com/ros2/rosidl/issues/665>`_)
+* Fix bug where rosidl_runtime_cpp wasn't depended upon (`#660 <https://github.com/ros2/rosidl/issues/660>`_)
+* Contributors: Jorge Perez, Shane Loretz
+
 3.0.1 (2022-01-13)
 ------------------
 * Fix include order for cpplint (`#644 <https://github.com/ros2/rosidl/issues/644>`_)

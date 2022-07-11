@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>rosidl_generator_cpp</name>
-  <version>3.0.1</version>
+  <version>3.2.1</version>
   <description>Generate the ROS interfaces in C++.</description>
   <maintainer email="michel@ekumenlabs.com">Michel Hidalgo</maintainer>
   <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>
@@ -18,6 +18,7 @@
 
   <!-- This is needed for the rosidl_message_type_support_t struct and visibility macros -->
   <build_export_depend>rosidl_generator_c</build_export_depend>
+  <build_export_depend>rosidl_runtime_cpp</build_export_depend>
 
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>rosidl_cli</exec_depend>

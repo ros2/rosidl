@@ -2,6 +2,26 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.2.1 (2022-06-21)
+------------------
+
+3.2.0 (2022-05-04)
+------------------
+
+3.1.3 (2022-04-08)
+------------------
+* Fix importlib_metdata warning with Python 3.10. (`#674 <https://github.com/ros2/rosidl/issues/674>`_)
+* Contributors: Chris Lalancette
+
+3.1.2 (2022-04-05)
+------------------
+
+3.1.1 (2022-03-28)
+------------------
+
+3.1.0 (2022-03-01)
+------------------
+
 3.0.1 (2022-01-13)
 ------------------
 * Update maintainers to Michel Hidalgo and Shane Loretz (`#633 <https://github.com/ros2/rosidl/issues/633>`_)

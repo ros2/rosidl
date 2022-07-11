@@ -2,6 +2,31 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.2.1 (2022-06-21)
+------------------
+* Fix comment in camel case conversion function (`#683 <https://github.com/ros2/rosidl/issues/683>`_)
+* Protect rosidl_target_interfaces from using NOTFOUND in include_directories (`#679 <https://github.com/ros2/rosidl/issues/679>`_)
+* Contributors: Jose Luis Rivero, Shane Loretz
+
+3.2.0 (2022-05-04)
+------------------
+
+3.1.3 (2022-04-08)
+------------------
+
+3.1.2 (2022-04-05)
+------------------
+
+3.1.1 (2022-03-28)
+------------------
+* Make rosidl_get_typesupport_target return -NOTFOUND instead of FATAL_ERROR (`#672 <https://github.com/ros2/rosidl/issues/672>`_)
+* Contributors: Shane Loretz
+
+3.1.0 (2022-03-01)
+------------------
+* Add introspection typesupport tests for C/C++ messages (`#651 <https://github.com/ros2/rosidl/issues/651>`_)
+* Contributors: Michel Hidalgo
+
 3.0.1 (2022-01-13)
 ------------------
 * Use target output name for exporting typesupport library (`#625 <https://github.com/ros2/rosidl/issues/625>`_)

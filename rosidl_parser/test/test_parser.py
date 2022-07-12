@@ -30,6 +30,8 @@ from rosidl_parser.definition import Service
 from rosidl_parser.definition import UnboundedSequence
 from rosidl_parser.definition import UnboundedString
 from rosidl_parser.definition import UnboundedWString
+from rosidl_parser.parser import get_ast_from_idl_string
+from rosidl_parser.parser import get_string_literals_value
 from rosidl_parser.parser import parse_idl_file
 
 MESSAGE_IDL_LOCATOR = IdlLocator(
@@ -43,6 +45,38 @@ ACTION_IDL_LOCATOR = IdlLocator(
 @pytest.fixture(scope='module')
 def message_idl_file():
     return parse_idl_file(MESSAGE_IDL_LOCATOR)
+
+
+def test_whitespace_at_start_of_string():
+    # Repeat to check ros2/rosidl#676
+    for _ in range(10):
+        ast = get_ast_from_idl_string('const string foo = " e";')
+        token = next(ast.find_pred(lambda t: 'string_literals' == t.data))
+        assert ' e' == get_string_literals_value(token)
+
+
+def test_whitespace_at_start_of_wide_string():
+    # Repeat to check ros2/rosidl#676
+    for _ in range(10):
+        ast = get_ast_from_idl_string('const wstring foo = L" e";')
+        token = next(ast.find_pred(lambda t: 'wide_string_literals' == t.data))
+        assert ' e' == get_string_literals_value(token, allow_unicode=True)
+
+
+def test_whitespace_at_end_of_string():
+    # Repeat to check ros2/rosidl#676
+    for _ in range(10):
+        ast = get_ast_from_idl_string('const string foo = "e ";')
+        token = next(ast.find_pred(lambda t: 'string_literals' == t.data))
+        assert 'e ' == get_string_literals_value(token)
+
+
+def test_whitespace_at_end_of_wide_string():
+    # Repeat to check ros2/rosidl#676
+    for _ in range(10):
+        ast = get_ast_from_idl_string('const wstring foo = L"e ";')
+        token = next(ast.find_pred(lambda t: 'wide_string_literals' == t.data))
+        assert 'e ' == get_string_literals_value(token, allow_unicode=True)
 
 
 def test_message_parser(message_idl_file):

@@ -17,6 +17,14 @@
 %import common.WS
 %ignore WS
 
+// Copied from lark-parser instead of imported so wide string doesn't match: `L   "white space between L and quote"`
+// https://github.com/lark-parser/lark/blob/953171821ed307f700fddf27f3fcb9483346bd46/lark/grammars/common.lark#L26-L29
+_STRING_INNER: /.*?/
+_STRING_ESC_INNER: _STRING_INNER /(?<!\\)(\\\\)*?/
+
+ESCAPED_STRING : "\"" _STRING_ESC_INNER "\""
+ESCAPED_WIDE_STRING: "L\"" _STRING_ESC_INNER "\""
+
 
 // 7.2.2 Comments
 COMMENT: "//" /[^\n]/*
@@ -71,11 +79,8 @@ _ESCAPE_SEQUENCES: "\\n" | "\\t" | "\\v" | "\\b" | "\\r" | "\\f" | "\\a" | "\\\\
 // adjacent string literals are concatenated
 string_literals: string_literal+
 wide_string_literals: wide_string_literal+
-// string_literal: "\"" CHAR* "\""
-// wide_string_literal:  "L\"" CHAR* "\""
-// replace precise rules based on the spec with regex for parsing performance
-string_literal: "\"\"" | "\"" /(\\\"|[^"])+/ "\""
-wide_string_literal: "L\"\"" | "L\"" /(\\\"|[^"])+/ "\""
+string_literal: ESCAPED_STRING
+wide_string_literal: ESCAPED_WIDE_STRING
 
 // 7.2.6.4 Floating-point Literals
 floating_pt_literal: FLOAT

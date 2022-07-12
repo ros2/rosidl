@@ -2,14 +2,18 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>rosidl_adapter</name>
-  <version>2.4.0</version>
+  <version>3.2.1</version>
   <description>
     API and scripts to parse .msg/.srv/.action files and convert them to .idl.
   </description>
-  <maintainer email="clalancette@openrobotics.org">Chris Lalancette</maintainer>
+  <maintainer email="michel@ekumenlabs.com">Michel Hidalgo</maintainer>
   <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>
   <license>Apache License 2.0</license>
   <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
+  <author email="clalancette@openrobotics.org">Chris Lalancette</author>
+
+  <buildtool_export_depend>ament_cmake_core</buildtool_export_depend>
+  <buildtool_export_depend>python3</buildtool_export_depend>
 
   <build_depend>ament_cmake</build_depend>
 

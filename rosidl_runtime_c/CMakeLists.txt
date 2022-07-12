@@ -25,7 +25,7 @@ add_library(${PROJECT_NAME}
 )
 target_include_directories(${PROJECT_NAME} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-  "$<INSTALL_INTERFACE:include>")
+  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 ament_target_dependencies(${PROJECT_NAME}
   "rcutils"
   "rosidl_typesupport_interface")
@@ -43,8 +43,12 @@ if(BUILD_TESTING AND NOT RCUTILS_DISABLE_FAULT_INJECTION)
 endif()
 
 ament_export_dependencies(rcutils rosidl_typesupport_interface)
-ament_export_include_directories(include)
+
+# Export old-style CMake variables
+ament_export_include_directories("include/${PROJECT_NAME}")
 ament_export_libraries(${PROJECT_NAME})
+
+# Export modern CMake targets
 ament_export_targets(${PROJECT_NAME})
 
 ament_index_register_resource("rosidl_runtime_packages")
@@ -59,22 +63,20 @@ if(BUILD_TESTING)
 
   # For gtest
   enable_language(CXX)
-  # Default to C++14
+  # Default to C++17
   if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 14)
+    set(CMAKE_CXX_STANDARD 17)
   endif()
 
   find_package(ament_cmake_gtest REQUIRED)
 
   ament_add_gtest(test_message_type_support test/test_message_type_support.cpp)
   if(TARGET test_message_type_support)
-    target_include_directories(test_message_type_support PUBLIC include)
     target_link_libraries(test_message_type_support ${PROJECT_NAME})
   endif()
 
   ament_add_gtest(test_primitives_sequence_functions test/test_primitives_sequence_functions.cpp)
   if(TARGET test_primitives_sequence_functions)
-    target_include_directories(test_primitives_sequence_functions PUBLIC include)
     target_link_libraries(test_primitives_sequence_functions ${PROJECT_NAME})
   endif()
 
@@ -82,40 +84,35 @@ if(BUILD_TESTING)
   if(TARGET test_sequence_bound)
     ament_target_dependencies(test_sequence_bound
       "rosidl_typesupport_interface")
-    target_include_directories(test_sequence_bound PUBLIC include)
     target_link_libraries(test_sequence_bound ${PROJECT_NAME})
   endif()
 
   ament_add_gtest(test_service_type_support test/test_service_type_support.cpp)
   if(TARGET test_service_type_support)
-    target_include_directories(test_service_type_support PUBLIC include)
     target_link_libraries(test_service_type_support ${PROJECT_NAME})
   endif()
 
   ament_add_gtest(test_string_functions test/test_string_functions.cpp)
   if(TARGET test_string_functions)
-    target_include_directories(test_string_functions PUBLIC include)
     target_link_libraries(test_string_functions ${PROJECT_NAME})
     target_compile_definitions(test_string_functions PUBLIC RCUTILS_ENABLE_FAULT_INJECTION)
   endif()
 
   ament_add_gtest(test_u16string_functions test/test_u16string_functions.cpp)
   if(TARGET test_u16string_functions)
-    target_include_directories(test_u16string_functions PUBLIC include)
     target_link_libraries(test_u16string_functions ${PROJECT_NAME})
     target_compile_definitions(test_u16string_functions PUBLIC RCUTILS_ENABLE_FAULT_INJECTION)
   endif()
 
   add_performance_test(benchmark_string_conversion test/benchmark/benchmark_string_conversion.cpp)
   if(TARGET benchmark_string_conversion)
-    target_include_directories(benchmark_string_conversion PUBLIC include)
     target_link_libraries(benchmark_string_conversion ${PROJECT_NAME})
   endif()
 endif()
 
 install(
   DIRECTORY include/
-  DESTINATION include
+  DESTINATION include/${PROJECT_NAME}
 )
 install(
   TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}

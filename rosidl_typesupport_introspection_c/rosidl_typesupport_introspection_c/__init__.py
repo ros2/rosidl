@@ -1,4 +1,4 @@
-# Copyright 2014-2018 Open Source Robotics Foundation, Inc.
+# Copyright 2014-2021 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,14 @@
 from rosidl_cmake import generate_files
 
 
-def generate_c(generator_arguments_file):
+def generate_c(generator_arguments_file: str):
+    """
+    Generate the C implementation of the type support.
+
+    :param generator_arguments_file: The path to the file containing the
+        arguments for the generator.
+    :type generator_arguments_file: str
+    """
     mapping = {
         'idl__rosidl_typesupport_introspection_c.h.em':
         'detail/%s__rosidl_typesupport_introspection_c.h',

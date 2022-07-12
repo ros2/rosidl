@@ -78,6 +78,20 @@ rosidl_runtime_c__String__fini(rosidl_runtime_c__String * str)
 }
 
 bool
+rosidl_runtime_c__String__are_equal(
+  const rosidl_runtime_c__String * lhs,
+  const rosidl_runtime_c__String * rhs)
+{
+  if (!lhs || !rhs) {
+    return false;
+  }
+  if (lhs->size != rhs->size) {
+    return false;
+  }
+  return memcmp(lhs->data, rhs->data, lhs->size) == 0;
+}
+
+bool
 rosidl_runtime_c__String__assignn(
   rosidl_runtime_c__String * str, const char * value, size_t n)
 {
@@ -115,6 +129,18 @@ rosidl_runtime_c__String__assign(
   }
   return rosidl_runtime_c__String__assignn(
     str, value, strlen(value));
+}
+
+bool
+rosidl_runtime_c__String__copy(
+  const rosidl_runtime_c__String * input,
+  rosidl_runtime_c__String * output)
+{
+  if (!input) {
+    return false;
+  }
+  return rosidl_runtime_c__String__assignn(
+    output, input->data, input->size);
 }
 
 bool
@@ -176,6 +202,72 @@ rosidl_runtime_c__String__Sequence__fini(
     assert(0 == sequence->size);
     assert(0 == sequence->capacity);
   }
+}
+
+bool
+rosidl_runtime_c__String__Sequence__are_equal(
+  const rosidl_runtime_c__String__Sequence * lhs,
+  const rosidl_runtime_c__String__Sequence * rhs)
+{
+  if (!lhs || !rhs) {
+    return false;
+  }
+  if (lhs->size != rhs->size) {
+    return false;
+  }
+  for (size_t i = 0; i < lhs->size; ++i) {
+    if (!rosidl_runtime_c__String__are_equal(
+        &(lhs->data[i]), &(rhs->data[i])))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool
+rosidl_runtime_c__String__Sequence__copy(
+  const rosidl_runtime_c__String__Sequence * input,
+  rosidl_runtime_c__String__Sequence * output)
+{
+  if (!input || !output) {
+    return false;
+  }
+  if (output->capacity < input->size) {
+    const size_t allocation_size =
+      input->size * sizeof(rosidl_runtime_c__String);
+    rcutils_allocator_t allocator = rcutils_get_default_allocator();
+    rosidl_runtime_c__String * data =
+      (rosidl_runtime_c__String *)allocator.reallocate(
+      output->data, allocation_size, allocator.state);
+    if (!data) {
+      return false;
+    }
+    // If reallocation succeeded, memory may or may not have been moved
+    // to fulfill the allocation request, invalidating output->data.
+    output->data = data;
+    for (size_t i = output->capacity; i < input->size; ++i) {
+      if (!rosidl_runtime_c__String__init(&output->data[i])) {
+        // If initialization of any new item fails, roll back all
+        // previously initialized items. Existing items in output
+        // are to be left unmodified.
+        for (; i-- > output->capacity; ) {
+          rosidl_runtime_c__String__fini(&output->data[i]);
+        }
+        return false;
+      }
+    }
+    output->capacity = input->size;
+  }
+  output->size = input->size;
+  for (size_t i = 0; i < input->size; ++i) {
+    if (!rosidl_runtime_c__String__copy(
+        &(input->data[i]), &(output->data[i])))
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 rosidl_runtime_c__String__Sequence *

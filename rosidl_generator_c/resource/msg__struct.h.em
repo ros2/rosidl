@@ -56,6 +56,18 @@ for member in message.structure.members:
 @[for constant in message.constants]@
 
 /// Constant '@(constant.name)'.
+@{comments = constant.get_comment_lines()}@
+@[if comments]@
+/**
+@[  for line in comments]@
+@[    if line]@
+  * @(line)
+@[    else]@
+  *
+@[    end if]@
+@[  end for]@
+ */
+@[end if]@
 @[    if isinstance(constant.type, BasicType)]@
 @[        if constant.type.typename in (
                 *INTEGER_TYPES, *CHARACTER_TYPES, OCTET_TYPE
@@ -129,10 +141,29 @@ enum
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-// Struct defined in @(interface_path_to_string(interface_path)) in the package @(package_name).
+/// Struct defined in @(interface_path_to_string(interface_path)) in the package @(package_name).
+@{comments = message.structure.get_comment_lines()}@
+@[if comments]@
+/**
+@[  for line in comments]@
+@[    if line]@
+  * @(line)
+@[    else]@
+  *
+@[    end if]@
+@[  end for]@
+ */
+@[end if]@
 typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_type))
 {
 @[for member in message.structure.members]@
+@[  for line in member.get_comment_lines()]@
+@[    if line]@
+  /// @(line)
+@[    else]@
+  ///
+@[    end if]@
+@[  end for]@
   @(idl_declaration_to_c(member.type, member.name));
 @[end for]@
 } @(idl_structure_type_to_c_typename(message.structure.namespaced_type));

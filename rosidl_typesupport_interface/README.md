@@ -9,4 +9,4 @@ They are available in the `macros.h` header.
 
 ## Quality Declaration
 
-This package claims to be in the **Quality Level 1** category, see the [Quality Declaration](QUALITY_DECLARATION.md) for more details.
+See the [Quality Declaration](QUALITY_DECLARATION.md) for more details.

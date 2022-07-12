@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.12)
 
 project(rosidl_typesupport_introspection_cpp)
 
-# Default to C++14
+# Default to C++17
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -22,7 +22,6 @@ ament_export_dependencies(rosidl_runtime_cpp)
 ament_export_dependencies(rosidl_typesupport_interface)
 ament_export_dependencies(rosidl_typesupport_introspection_c)
 
-ament_export_include_directories(include)
 
 ament_python_install_package(${PROJECT_NAME})
 
@@ -33,11 +32,16 @@ if(WIN32)
 endif()
 target_include_directories(${PROJECT_NAME} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-  "$<INSTALL_INTERFACE:include>")
+  "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 ament_target_dependencies(${PROJECT_NAME}
   rosidl_runtime_cpp
   rosidl_typesupport_introspection_c)
+
+# Export old-style CMake variables
+ament_export_include_directories("include/${PROJECT_NAME}")
 ament_export_libraries(${PROJECT_NAME})
+
+# Export modern CMake targets
 ament_export_targets(${PROJECT_NAME})
 
 ament_index_register_resource("rosidl_typesupport_cpp")
@@ -68,7 +72,7 @@ install(
 )
 install(
   DIRECTORY include/
-  DESTINATION include
+  DESTINATION include/${PROJECT_NAME}
 )
 install(
   TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}

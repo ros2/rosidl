@@ -2,6 +2,48 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.2.1 (2022-06-21)
+------------------
+
+3.2.0 (2022-05-04)
+------------------
+
+3.1.3 (2022-04-08)
+------------------
+
+3.1.2 (2022-04-05)
+------------------
+* Fix error handling when copying C sequence messages (`#671 <https://github.com/ros2/rosidl/issues/671>`_)
+* Contributors: Michel Hidalgo
+
+3.1.1 (2022-03-28)
+------------------
+* Install generated headers to include/${PROJECT_NAME} (`#670 <https://github.com/ros2/rosidl/issues/670>`_)
+* Misc cleanup in the rosidl generator extensions (`#662 <https://github.com/ros2/rosidl/issues/662>`_)
+* Set the output size unconditionally when copying sequences (`#669 <https://github.com/ros2/rosidl/issues/669>`_)
+* Contributors: Nikolai Morin, Shane Loretz
+
+3.1.0 (2022-03-01)
+------------------
+* Implement copy function for C messages (`#650 <https://github.com/ros2/rosidl/issues/650>`_)
+* Implement equality operator function for C messages. (`#648 <https://github.com/ros2/rosidl/issues/648>`_)
+* Generate documentation in generated C header files based on ROS interfaces comments (`#593 <https://github.com/ros2/rosidl/issues/593>`_)
+* Contributors: Ivan Santiago Paunovic, Michel Hidalgo
+
+3.0.1 (2022-01-13)
+------------------
+
+3.0.0 (2021-11-05)
+------------------
+* Update package maintainers (`#624 <https://github.com/ros2/rosidl/issues/624>`_)
+* Make rosidl packages use FindPython3 instead of FindPythonInterp (`#612 <https://github.com/ros2/rosidl/issues/612>`_)
+* Contributors: Michel Hidalgo, Shane Loretz
+
+2.5.0 (2021-08-10)
+------------------
+* Revert "Bundle and ensure the exportation of rosidl generated targets" (`#611 <https://github.com/ros2/rosidl/issues/611>`_)
+* Contributors: Michel Hidalgo
+
 2.4.0 (2021-07-12)
 ------------------
 * Bundle and ensure the exportation of rosidl generated targets (`#601 <https://github.com/ros2/rosidl/issues/601>`_)

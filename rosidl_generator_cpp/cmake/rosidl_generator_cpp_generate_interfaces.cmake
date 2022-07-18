@@ -102,6 +102,8 @@ add_custom_target(
 
 set(_target_suffix "__rosidl_generator_cpp")
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE)
+add_library(${PROJECT_NAME}::${rosidl_generate_interfaces_TARGET}${_target_suffix} ALIAS
+  ${rosidl_generate_interfaces_TARGET}${_target_suffix})
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   INTERFACE
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp>"

@@ -610,6 +610,16 @@ def get_string_literal_value(string_literal, *, allow_unicode=False):
     assert isinstance(child, Token)
     value = child.value
 
+    assert child.type in ('ESCAPED_STRING', 'ESCAPED_WIDE_STRING')
+    if 'ESCAPED_WIDE_STRING' == child.type:
+        assert len(value) >= 3
+        # Get rid of leading L" and trailing "
+        value = value[2:-1]
+    else:
+        assert len(value) >= 2
+        # Get rid of leading " and trailing "
+        value = value[1:-1]
+
     regex = _get_escape_sequences_regex(allow_unicode=allow_unicode)
     value = regex.sub(_decode_escape_sequence, value)
     # unescape double quote and backslash if preceeded by a backslash
@@ -627,14 +637,14 @@ def _get_escape_sequences_regex(*, allow_unicode):
     pattern = '('
     # newline, horizontal tab, vertical tab, backspace, carriage return,
     # form feed, alert, backslash, question mark, single quote, double quote
-    pattern += '\\[ntvbrfa\\?\'"]'
+    pattern += r'\\[ntvbrfa\\?\'"]'
     # octal number
-    pattern += '|' + '\\[0-7]{1,3}'
+    pattern += '|' + r'\\[0-7]{1,3}'
     # hexadecimal number
-    pattern += '|' + r'\\x.{1,2}'
+    pattern += '|' + r'\\x[0-9a-fA-F]{1,2}'
     if allow_unicode:
         # unicode character
-        pattern += '|' + '\\u.{1,4}'
+        pattern += '|' + r'\\u[0-9a-fA-F]{1,4}'
     pattern += ')'
 
     return re.compile(pattern)

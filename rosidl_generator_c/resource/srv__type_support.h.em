@@ -13,6 +13,13 @@ TEMPLATE(
     include_directives=include_directives)
 }@
 
+@{
+TEMPLATE(
+    'msg__type_support.h.em',
+    package_name=package_name, message=service.event_message,
+    include_directives=include_directives)
+}@
+
 @{header_file = 'rosidl_runtime_c/service_type_support_struct.h'}@
 @[if header_file in include_directives]@
 // already included above

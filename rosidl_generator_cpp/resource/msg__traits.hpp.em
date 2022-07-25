@@ -3,6 +3,8 @@
 from rosidl_parser.definition import ACTION_FEEDBACK_SUFFIX
 from rosidl_parser.definition import ACTION_GOAL_SUFFIX
 from rosidl_parser.definition import ACTION_RESULT_SUFFIX
+from rosidl_parser.definition import SERVICE_REQUEST_MESSAGE_SUFFIX
+from rosidl_parser.definition import SERVICE_RESPONSE_MESSAGE_SUFFIX
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import BasicType
@@ -28,6 +30,11 @@ for member in message.structure.members:
     if isinstance(type_, (AbstractSequence, Array)):
         type_ = type_.value_type
     if isinstance(type_, NamespacedType):
+        if (
+            type_.name.endswith(SERVICE_REQUEST_MESSAGE_SUFFIX) or
+            type_.name.endswith(SERVICE_RESPONSE_MESSAGE_SUFFIX)
+        ):
+            continue
         if (
             type_.name.endswith(ACTION_GOAL_SUFFIX) or
             type_.name.endswith(ACTION_RESULT_SUFFIX) or

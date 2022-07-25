@@ -596,10 +596,23 @@ class Service:
             namespaced_type.name + SERVICE_RESPONSE_MESSAGE_SUFFIX
         self.response_message = response
 
-        self.event_message = Message(Structure(NamespacedType(
-            namespaces=namespaced_type.namespaces,
-            name=f"{namespaced_type.name}{SERVICE_EVENT_MESSAGE_SUFFIX}"
-        )))
+        self.event_message = Message(
+            Structure(
+                NamespacedType(
+                    namespaces=namespaced_type.namespaces,
+                    name=f'{namespaced_type.name}{SERVICE_EVENT_MESSAGE_SUFFIX}'
+                ),
+                members=[
+                    Member(BasicType('uint8'), 'event_type'),
+                    Member(BasicType('int32'), 'stamp_sec'),
+                    Member(BasicType('uint32'), 'stamp_nsec'),
+                    Member(Array(BasicType('uint8'), 16), 'client_id'),
+                    Member(BasicType('int64'), 'sequence_number'),
+                    Member(request.structure.namespaced_type, 'request'),
+                    Member(response.structure.namespaced_type, 'response'),
+                ]
+            )
+        )
 
 
 class Action:

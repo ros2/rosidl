@@ -16,9 +16,7 @@ find_package(ament_cmake_ros REQUIRED)
 
 ament_export_dependencies(rosidl_cmake)
 ament_export_dependencies(rosidl_runtime_c)
-# The reason the impl folder is exported is that it contains the implementation
-# for the get_*_type_support_handle functions and defines the opensplice
-# specific version of these functions.
+ament_export_dependencies(rosidl_typesupport_interface)
 
 ament_python_install_package(${PROJECT_NAME})
 

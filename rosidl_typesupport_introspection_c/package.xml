@@ -19,6 +19,7 @@
   <buildtool_export_depend>rosidl_cmake</buildtool_export_depend>
 
   <build_export_depend>rosidl_runtime_c</build_export_depend>
+  <build_export_depend>rosidl_typesupport_interface</build_export_depend>
 
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>rosidl_cli</exec_depend>

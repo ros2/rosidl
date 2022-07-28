@@ -603,13 +603,9 @@ class Service:
                     name=f'{namespaced_type.name}{SERVICE_EVENT_MESSAGE_SUFFIX}'
                 ),
                 members=[
-                    Member(BasicType('uint8'), 'event_type'),
-                    Member(BasicType('int32'), 'stamp_sec'),
-                    Member(BasicType('uint32'), 'stamp_nsec'),
-                    Member(Array(BasicType('uint8'), 16), 'client_id'),
-                    Member(BasicType('int64'), 'sequence_number'),
-                    Member(request.structure.namespaced_type, 'request'),
-                    Member(response.structure.namespaced_type, 'response'),
+                    Member(NamespacedType(['service_msgs', 'msg'], 'ServiceEventInfo'), 'info'),
+                    Member(BoundedSequence(request.structure.namespaced_type, 1), 'request'),
+                    Member(BoundedSequence(response.structure.namespaced_type, 1), 'response'),
                 ]
             )
         )

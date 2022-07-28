@@ -155,6 +155,18 @@ macro(rosidl_generate_interfaces target)
       ament_export_dependencies(action_msgs)
       break()
     endif()
+    if("${_parent_dir}" STREQUAL "srv")
+      find_package(service_msgs QUIET)
+      if(NOT ${service_msgs_FOUND})
+        message(FATAL_ERROR
+          "Unable to generate service interface for '${_tuple_file}'. "
+          "In order to generate service interfaces you must add a depend tag "
+          "for 'service_msgs' in your package.xml.")
+      endif()
+      list_append_unique(_ARG_DEPENDENCIES "service_msgs")
+      ament_export_dependencies(service_msgs)
+      break()
+    endif()
   endforeach()
 
   # collect all interface files from dependencies

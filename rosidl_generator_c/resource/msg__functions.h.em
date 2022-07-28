@@ -149,6 +149,16 @@ ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 bool
 @(array_typename)__are_equal(const @(array_typename) * lhs, const @(array_typename) * rhs);
 
+
+/// Extend array by n
+/**
+  *
+  */
+bool
+@(array_typename)__extendn(@(array_typename) * seq, size_t n);
+
+
+
 /// Copy an array of @(interface_path_to_string(interface_path)) messages.
 /**
  * This functions performs a deep copy, as opposed to the shallow copy that

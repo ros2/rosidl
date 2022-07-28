@@ -454,6 +454,35 @@ bool
 }
 
 bool
+@(array_typename)__extendn(@(array_typename) * seq, size_t n) {
+  if (!seq) {
+    return false;
+  }
+
+  if (seq->size + n > seq->capacity) { // but this assumes that capacity is the bound! which it doesn't appear to be.
+    return false;
+  }
+
+  rcutils_allocator_t allocator = rcutils_get_default_allocator();
+  @(message_typename) * data = allocator.reallocate(seq->data, (seq->size + n) * sizeof(@(message_typename)), allocator.state);
+  if (NULL == data) {
+      return false;
+  }
+
+  for (size_t i = seq->size; i < seq->size + n; ++i) {
+    if (!@(message_typename)__init(&seq->data[i])) {
+    for (; i-- > seq->size; ) {
+      @(message_typename)__fini(&seq->data[i]);
+    }
+    return false;
+    }
+  }
+
+  seq->size = seq->size + n;
+  return true;
+}
+
+bool
 @(array_typename)__copy(
   const @(array_typename) * input,
   @(array_typename) * output)

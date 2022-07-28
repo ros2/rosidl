@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(rosidl_cmake NONE)
+project(rosidl_cmake_core NONE)
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
@@ -13,7 +13,7 @@ if(BUILD_TESTING)
 endif()
 
 ament_package(
-  CONFIG_EXTRAS "rosidl_cmake-extras.cmake"
+  CONFIG_EXTRAS "rosidl_cmake_core-extras.cmake"
 )
 
 install(

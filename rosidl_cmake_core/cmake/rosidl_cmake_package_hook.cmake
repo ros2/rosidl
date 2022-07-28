@@ -1,4 +1,4 @@
-# Copyright 2020 Open Source Robotics Foundation, Inc.
+# Copyright 2014 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# generate and register extra file for typesupport targets
+# generate and register extra file for rosidl generation
 set(_generated_extra_file
-  "${CMAKE_CURRENT_BINARY_DIR}/rosidl_cmake/rosidl_cmake_export_typesupport_targets-extras.cmake")
+  "${CMAKE_CURRENT_BINARY_DIR}/rosidl_cmake_core/rosidl_cmake-extras.cmake")
 configure_file(
-  "${rosidl_cmake_DIR}/rosidl_cmake_export_typesupport_targets-extras.cmake.in"
+  "${rosidl_cmake_core_DIR}/rosidl_cmake_core-extras.cmake.in"
   "${_generated_extra_file}"
   @ONLY
 )

@@ -1,5 +1,5 @@
 # generated from
-# rosidl_cmake/cmake/template/rosidl_cmake_export_typesupport_targets.cmake.in
+# rosidl_cmake_core/cmake/rosidl_cmake_core_export_typesupport_targets.cmake.in
 
 set(_exported_typesupport_targets
   "@_ROSIDL_CMAKE_EXPORT_TYPESUPPORT_TARGETS@")

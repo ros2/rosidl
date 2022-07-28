@@ -1,0 +1,4 @@
+# generated from rosidl_cmake_core/cmake/rosidl_cmake_core-extras.cmake.in
+
+set(@PROJECT_NAME@_IDL_FILES "@_rosidl_cmake_core_IDL_FILES@")
+set(@PROJECT_NAME@_INTERFACE_FILES "@_rosidl_cmake_core_INTERFACE_FILES@")

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# copied from rosidl_cmake/rosidl_cmake-extras.cmake
+# copied from rosidl_cmake_core/rosidl_cmake_core-extras.cmake
 
 # register ament_package() hook for definitions once
 macro(_rosidl_cmake_register_package_hook)
@@ -20,7 +20,7 @@ macro(_rosidl_cmake_register_package_hook)
     set(_ROSIDL_CMAKE_PACKAGE_HOOK_REGISTERED TRUE)
 
     find_package(ament_cmake_core QUIET REQUIRED)
-    ament_register_extension("ament_package" "rosidl_cmake"
+    ament_register_extension("ament_package" "rosidl_cmake_core"
       "rosidl_cmake_package_hook.cmake")
 
     find_package(ament_cmake_export_dependencies QUIET REQUIRED)
@@ -29,11 +29,11 @@ endmacro()
 
 find_package(rosidl_adapter)  # not required, being used when available
 
-include("${rosidl_cmake_DIR}/rosidl_generate_interfaces.cmake")
-include("${rosidl_cmake_DIR}/rosidl_get_typesupport_target.cmake")
-include("${rosidl_cmake_DIR}/rosidl_target_interfaces.cmake")
-include("${rosidl_cmake_DIR}/rosidl_write_generator_arguments.cmake")
-include("${rosidl_cmake_DIR}/string_camel_case_to_lower_case_underscore.cmake")
+include("${rosidl_cmake_core_DIR}/rosidl_generate_interfaces.cmake")
+include("${rosidl_cmake_core_DIR}/rosidl_get_typesupport_target.cmake")
+include("${rosidl_cmake_core_DIR}/rosidl_target_interfaces.cmake")
+include("${rosidl_cmake_core_DIR}/rosidl_write_generator_arguments.cmake")
+include("${rosidl_cmake_core_DIR}/string_camel_case_to_lower_case_underscore.cmake")
 
 # register ament_package() hook for typesupport libraries once
 macro(_rosidl_cmake_export_typesupport_libraries_register_package_hook)
@@ -41,7 +41,7 @@ macro(_rosidl_cmake_export_typesupport_libraries_register_package_hook)
     set(_ROSIDL_CMAKE_EXPORT_TYPESUPPORT_LIBRARIES_PACKAGE_HOOK_REGISTERED TRUE)
 
     find_package(ament_cmake_core QUIET REQUIRED)
-    ament_register_extension("ament_package" "rosidl_cmake"
+    ament_register_extension("ament_package" "rosidl_cmake_core"
       "rosidl_cmake_export_typesupport_libraries_package_hook.cmake")
   endif()
 endmacro()
@@ -51,10 +51,10 @@ macro(_rosidl_cmake_export_typesupport_targets_register_package_hook)
     set(_ROSIDL_CMAKE_EXPORT_TYPESUPPORT_TARGETS_PACKAGE_HOOK_REGISTERED TRUE)
 
     find_package(ament_cmake_core QUIET REQUIRED)
-    ament_register_extension("ament_package" "rosidl_cmake"
+    ament_register_extension("ament_package" "rosidl_cmake_core"
       "rosidl_cmake_export_typesupport_targets_package_hook.cmake")
   endif()
 endmacro()
 
-include("${rosidl_cmake_DIR}/rosidl_export_typesupport_libraries.cmake")
-include("${rosidl_cmake_DIR}/rosidl_export_typesupport_targets.cmake")
+include("${rosidl_cmake_core_DIR}/rosidl_export_typesupport_libraries.cmake")
+include("${rosidl_cmake_core_DIR}/rosidl_export_typesupport_targets.cmake")

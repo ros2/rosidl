@@ -14,7 +14,7 @@
 
 from ast import literal_eval
 
-from rosidl_cmake import generate_files
+from rosidl_cmake_core import generate_files
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractSequence

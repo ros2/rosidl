@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from rosidl_cmake import convert_camel_case_to_lower_case_underscore
-from rosidl_cmake import generate_files
+from rosidl_cmake_core import convert_camel_case_to_lower_case_underscore
+from rosidl_cmake_core import generate_files
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import AbstractString

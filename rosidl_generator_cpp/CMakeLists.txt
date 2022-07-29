@@ -5,7 +5,7 @@ project(rosidl_generator_cpp)
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 
-ament_export_dependencies(rosidl_cmake)
+ament_export_dependencies(rosidl_cmake_core)
 
 ament_index_register_resource("rosidl_generator_packages")
 

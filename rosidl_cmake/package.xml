@@ -15,6 +15,7 @@
 
   <buildtool_export_depend>ament_cmake</buildtool_export_depend>
 
+  <build_export_depend>action_msgs</build_export_depend>
   <build_export_depend>rosidl_cmake_core</build_export_depend>
 
   <!-- Forwarding Python module -->

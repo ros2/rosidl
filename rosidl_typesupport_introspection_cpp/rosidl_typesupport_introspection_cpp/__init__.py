@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from rosidl_cmake import generate_files
+from rosidl_pycommon import generate_files
 
 
 def generate_cpp(generator_arguments_file: str):

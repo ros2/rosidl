@@ -16,7 +16,7 @@
 
   <buildtool_export_depend>ament_cmake_core</buildtool_export_depend>
   <buildtool_export_depend>python3</buildtool_export_depend>
-  <buildtool_export_depend>rosidl_cmake</buildtool_export_depend>
+  <buildtool_export_depend>rosidl_pycommon</buildtool_export_depend>
 
   <build_export_depend>rosidl_typesupport_interface</build_export_depend>
   <build_export_depend>rcutils</build_export_depend>

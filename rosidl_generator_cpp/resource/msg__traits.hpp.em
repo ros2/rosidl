@@ -21,7 +21,7 @@ message_fully_qualified_name = '/'.join(message.structure.namespaced_type.namesp
 @# Collect necessary include directives for all members
 @{
 from collections import OrderedDict
-from rosidl_cmake import convert_camel_case_to_lower_case_underscore
+from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 includes = OrderedDict()
 for member in message.structure.members:
     type_ = member.type

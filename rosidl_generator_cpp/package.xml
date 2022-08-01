@@ -14,7 +14,7 @@
 
   <buildtool_export_depend>ament_cmake_core</buildtool_export_depend>
   <buildtool_export_depend>python3</buildtool_export_depend>
-  <buildtool_export_depend>rosidl_cmake</buildtool_export_depend>
+  <buildtool_export_depend>rosidl_pycommon</buildtool_export_depend>
 
   <!-- This is needed for the rosidl_message_type_support_t struct and visibility macros -->
   <build_export_depend>rosidl_generator_c</build_export_depend>

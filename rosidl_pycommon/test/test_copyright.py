@@ -1,4 +1,4 @@
-# Copyright 2015 Open Source Robotics Foundation, Inc.
+# Copyright 2022 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,10 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import warnings
-from rosidl_pycommon import *
+from ament_copyright.main import main
+import pytest
 
-warnings.warn(
-    "The 'rosidl_cmake' Python module is deprecated. Use 'rosidl_pycommon' instead.",
-    UserWarning
-)
+
+@pytest.mark.copyright
+@pytest.mark.linter
+def test_copyright():
+    rc = main(argv=['.', 'test'])
+    assert rc == 0, 'Found errors'

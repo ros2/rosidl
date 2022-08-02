@@ -13,7 +13,8 @@
 # limitations under the License.
 
 import warnings
-from rosidl_pycommon import *
+
+from rosidl_pycommon import *  # noqa: F401, F403
 
 warnings.warn(
     "The 'rosidl_cmake' Python module is deprecated. Use 'rosidl_pycommon' instead.",

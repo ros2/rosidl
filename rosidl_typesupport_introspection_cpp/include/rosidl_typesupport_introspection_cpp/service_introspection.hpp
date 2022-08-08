@@ -39,6 +39,8 @@ typedef struct ServiceMembers_s
   const MessageMembers * request_members_;
   /// A pointer to the introspection information structure for the response interface.
   const MessageMembers * response_members_;
+  /// A pointer to the introspection information structure for the event interface.
+  const MessageMembers * event_members_;
 } ServiceMembers;
 
 }  // namespace rosidl_typesupport_introspection_cpp

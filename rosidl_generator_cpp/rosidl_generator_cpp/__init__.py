@@ -23,9 +23,11 @@ from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import BoundedString
 from rosidl_parser.definition import FLOATING_POINT_TYPES
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import UnboundedSequence
+from rosidl_parser.definition import UnboundedString
 
 
 def generate_cpp(generator_arguments_file):
@@ -67,11 +69,42 @@ MSG_TYPE_TO_CPP = {
     'int32': 'int32_t',
     'uint64': 'uint64_t',
     'int64': 'int64_t',
-    'string': 'std::basic_string<char, std::char_traits<char>, ' +
-              'typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>',
-    'wstring': 'std::basic_string<char16_t, std::char_traits<char16_t>, typename ' +
-               'std::allocator_traits<ContainerAllocator>::template rebind_alloc<char16_t>>',
 }
+
+
+def resolve_string_type(type_):
+    """
+    Convert a string type into the C++ declaration,
+    respecting character width and string boundedness.
+
+    Example input: TODO
+    Example output: TODO
+
+    @param type_: The message type
+    @type type_: rosidl_parser.Type
+    """
+    if isinstance(type_, AbstractString):
+        if isinstance(type_, BoundedString):
+            return \
+                ('rosidl_runtime_cpp::bounded_basic_string<char, %u, std::char_traits<char>, ' +
+                 'std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>') \
+                % (type_.maximum_size)
+        elif isinstance(type_, UnboundedString):
+            return \
+                ('std::basic_string<char, std::char_traits<char>, ' +
+                 'std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>')
+    elif isinstance(type_, AbstractWString):
+        if isinstance(type_, BoundedWString):
+            return \
+                ('rosidl_runtime_cpp::bounded_basic_string<char16_t, %u, ' +
+                 'std::char_traits<char16_t>, ' +
+                 'std::allocator_traits<ContainerAllocator>::template rebind_alloc<char16_t>>') \
+                % (type_.maximum_size)
+        elif isinstance(type_, UnboundedWString):
+            return \
+                ('std::basic_string<char16_t, std::char_traits<char16_t>, ' +
+                 'std::allocator_traits<ContainerAllocator>::template rebind_alloc<char16_t>>')
+    assert False, type_
 
 
 def msg_type_only_to_cpp(type_):
@@ -88,10 +121,8 @@ def msg_type_only_to_cpp(type_):
         type_ = type_.value_type
     if isinstance(type_, BasicType):
         cpp_type = MSG_TYPE_TO_CPP[type_.typename]
-    elif isinstance(type_, AbstractString):
-        cpp_type = MSG_TYPE_TO_CPP['string']
-    elif isinstance(type_, AbstractWString):
-        cpp_type = MSG_TYPE_TO_CPP['wstring']
+    elif isinstance(type_, AbstractGenericString):
+        cpp_type = resolve_string_type(type_)
     elif isinstance(type_, NamespacedType):
         typename = '::'.join(type_.namespaced_name())
         cpp_type = typename + '_<ContainerAllocator>'

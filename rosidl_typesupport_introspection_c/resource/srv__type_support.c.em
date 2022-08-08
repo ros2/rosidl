@@ -14,6 +14,13 @@ TEMPLATE(
 }@
 
 @{
+TEMPLATE(
+    'msg__type_support.c.em',
+    package_name=package_name, interface_path=interface_path, message=service.event_message,
+    include_directives=include_directives)
+}@
+
+@{
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
@@ -46,7 +53,9 @@ static rosidl_typesupport_introspection_c__ServiceMembers @(function_prefix)__@(
   // these two fields are initialized below on the first access
   NULL,  // request message
   // @(function_prefix)__@(service.request_message.structure.namespaced_type.name)_message_type_support_handle,
-  NULL  // response message
+  NULL,  // response message
+  // @(function_prefix)__@(service.response_message.structure.namespaced_type.name)_message_type_support_handle
+  NULL  // event_message
   // @(function_prefix)__@(service.response_message.structure.namespaced_type.name)_message_type_support_handle
 };
 
@@ -56,12 +65,16 @@ static rosidl_service_type_support_t @(function_prefix)__@(service.namespaced_ty
   get_service_typesupport_handle_function,
 };
 
+// TODO(ihasdapie): Use postfixes from rosidl_parser.definition
 // Forward declaration of request/response type support functions
 const rosidl_message_type_support_t *
 ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name)_Request)();
 
 const rosidl_message_type_support_t *
 ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name)_Response)();
+
+const rosidl_message_type_support_t *
+ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name)_Event)();
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(package_name)
 const rosidl_service_type_support_t *
@@ -82,6 +95,11 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspecti
     service_members->response_members_ =
       (const rosidl_typesupport_introspection_c__MessageMembers *)
       ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name)_Response)()->data;
+  }
+  if (!service_members->response_members_) {
+    service_members->response_members_ =
+      (const rosidl_typesupport_introspection_c__MessageMembers *)
+      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name)_Event)()->data;
   }
 
   return &@(function_prefix)__@(service.namespaced_type.name)_service_type_support_handle;

@@ -68,6 +68,7 @@ static rosidl_service_type_support_t @(function_prefix)__@(service.namespaced_ty
   get_service_typesupport_handle_function,
 };
 
+// TODO(ihasdapie): Use postfixes from rosidl_parser.definition
 // Forward declaration of request/response type support functions
 const rosidl_message_type_support_t *
 ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name + SERVICE_REQUEST_MESSAGE_SUFFIX))();
@@ -77,6 +78,9 @@ ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspecti
 
 const rosidl_message_type_support_t *
 ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name + SERVICE_EVENT_MESSAGE_SUFFIX))();
+
+const rosidl_message_type_support_t *
+ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name)_Event)();
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(package_name)
 const rosidl_service_type_support_t *
@@ -102,6 +106,11 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspecti
     service_members->response_members_ =
       (const rosidl_typesupport_introspection_c__MessageMembers *)
       ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name + SERVICE_EVENT_MESSAGE_SUFFIX))()->data;
+  }
+  if (!service_members->response_members_) {
+    service_members->response_members_ =
+      (const rosidl_typesupport_introspection_c__MessageMembers *)
+      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name)_Event)()->data;
   }
 
   return &@(function_prefix)__@(service.namespaced_type.name)_service_type_support_handle;

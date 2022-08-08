@@ -29,6 +29,7 @@ extern "C"
 
 typedef struct rosidl_service_type_support_t rosidl_service_type_support_t;
 
+// TODO(ihasdapie): Some documentation for this fn would be nice
 typedef const rosidl_service_type_support_t * (* rosidl_service_typesupport_handle_function)(
   const rosidl_service_type_support_t *, const char *);
 

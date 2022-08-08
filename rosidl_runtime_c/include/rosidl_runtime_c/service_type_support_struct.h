@@ -15,6 +15,7 @@
 #ifndef ROSIDL_RUNTIME_C__SERVICE_TYPE_SUPPORT_STRUCT_H_
 #define ROSIDL_RUNTIME_C__SERVICE_TYPE_SUPPORT_STRUCT_H_
 
+#include "rcutils/allocator.h"
 #include "rosidl_runtime_c/message_type_support_struct.h"
 #include "rosidl_runtime_c/visibility_control.h"
 
@@ -28,6 +29,7 @@ extern "C"
 
 typedef struct rosidl_service_type_support_t rosidl_service_type_support_t;
 
+// TODO(ihasdapie): Some documentation for this fn would be nice
 typedef const rosidl_service_type_support_t * (* rosidl_service_typesupport_handle_function)(
   const rosidl_service_type_support_t *, const char *);
 
@@ -41,16 +43,19 @@ typedef struct rosidl_service_introspection_info_s {
 
 /// Fills in a service introspection request or response message
 /**
- *
+ * - Returns NULL ptr if fail
  *
  */
 typedef void * (* rosidl_service_introspection_message_create_handle)(
     const rosidl_service_introspection_info_t * info,
+    rcutils_allocator_t * allocator,
     void * request_message,
-    void * response_message);
+    void * response_message,
+    bool enable_message_payload);
 
-typedef void (* rosidl_service_introspection_message_fini_handle)(
-    void * event_message);
+typedef bool (* rosidl_service_introspection_message_destroy_handle)(
+    void * event_message,
+    rcutils_allocator_t * allocator);
 
 /// Contains rosidl service type support data
 struct rosidl_service_type_support_t
@@ -64,7 +69,7 @@ struct rosidl_service_type_support_t
   /// Pointer to function to create the introspection message
   rosidl_service_introspection_message_create_handle introspection_message_create_handle;
   /// Pointer to function to finalize the introspection message
-  rosidl_service_introspection_message_fini_handle introspection_message_fini_handle;
+  rosidl_service_introspection_message_destroy_handle introspection_message_destroy_handle;
   /// Service event message typesupport
   const rosidl_message_type_support_t * event_typesupport;
 };

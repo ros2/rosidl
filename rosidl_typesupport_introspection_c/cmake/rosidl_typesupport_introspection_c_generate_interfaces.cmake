@@ -18,6 +18,10 @@ if(NOT TARGET ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c)
     "'rosidl_typesupport_introspection_c' extension.")
 endif()
 
+find_package(rosidl_runtime_c REQUIRED)
+find_package(rosidl_typesupport_interface REQUIRED)
+find_package(rosidl_typesupport_introspection_c REQUIRED)
+
 set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_introspection_c/${PROJECT_NAME}")
 set(_generated_header_files "")
@@ -123,6 +127,8 @@ target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} PUBL
   ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c)
 
 target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} PUBLIC
+  rosidl_runtime_c::rosidl_runtime_c
+  rosidl_typesupport_interface::rosidl_typesupport_interface
   rosidl_typesupport_introspection_c::rosidl_typesupport_introspection_c)
 
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})

@@ -145,6 +145,7 @@ macro(rosidl_generate_interfaces target)
     get_filename_component(_parent_dir "${_tuple_file}" DIRECTORY)
     if("${_parent_dir}" STREQUAL "action")
       find_package(action_msgs QUIET)
+      find_package(service_msgs QUIET)
       if(NOT ${action_msgs_FOUND})
         message(FATAL_ERROR
           "Unable to generate action interface for '${_tuple_file}'. "

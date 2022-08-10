@@ -29,7 +29,6 @@ extern "C"
 
 typedef struct rosidl_service_type_support_t rosidl_service_type_support_t;
 
-// TODO(ihasdapie): Some documentation for this fn would be nice
 typedef const rosidl_service_type_support_t * (* rosidl_service_typesupport_handle_function)(
   const rosidl_service_type_support_t *, const char *);
 
@@ -41,11 +40,19 @@ typedef struct rosidl_service_introspection_info_s {
   int64_t sequence_number;
 } rosidl_service_introspection_info_t;
 
-/// Fills in a service introspection request or response message
+/// Creates a ServiceEvent message for the service.
 /**
- * - Returns NULL ptr if fail
+ * Instantiates a ServiceEvent message with the given info and request/response message.
+ * The message is allocated using the given allocator and must be deallocated using
+ * the rosidl_service_introspection_destroy_handle
  *
- */
+ * \param[in] POD fields of service_msgs/msg/ServiceEventInfo to be passed from rcl
+ * \param[in] allocator The allocator to use for allocating the ServiceEvent message
+ * \param[in] request_message type-erased handle to request message from rcl. Can be NULL.
+ * \param[in] response_message type-erased handle to request message from rcl. Can be NULL.
+ * \param[in] enable_message_payload Whether to enable message payloads in the ServiceEvent message
+ * \return The built ServiceEvent message. Will return NULL if the message could not be built.
+ **/
 typedef void * (* rosidl_service_introspection_message_create_handle)(
     const rosidl_service_introspection_info_t * info,
     rcutils_allocator_t * allocator,
@@ -53,6 +60,14 @@ typedef void * (* rosidl_service_introspection_message_create_handle)(
     void * response_message,
     bool enable_message_payload);
 
+/// Destroys a ServiceEvent message
+/**
+ * Destroys a ServiceEvent message returned by a rosidl_service_introspection_message_create_handle
+ * by calling the corresponding __fini function then deallocating
+ *
+ * \param[in] event_message The message to destroy.
+ * \param[in] allocator The allocator to use for deallocating the message.
+ */
 typedef bool (* rosidl_service_introspection_message_destroy_handle)(
     void * event_message,
     rcutils_allocator_t * allocator);

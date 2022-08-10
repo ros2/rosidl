@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from rosidl_cmake import convert_camel_case_to_lower_case_underscore
-from rosidl_cmake import generate_files
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import AbstractString
@@ -24,6 +22,8 @@ from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import CHARACTER_TYPES
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import OCTET_TYPE
+from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
+from rosidl_pycommon import generate_files
 
 
 def generate_c(generator_arguments_file):

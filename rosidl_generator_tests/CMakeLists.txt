@@ -50,7 +50,7 @@ if(BUILD_TESTING)
   if(MSVC)
     # https://developercommunity.visualstudio.com/content/problem/919371/c2017-illegal-escape-sequence-when-using-in-a-raw.html
     set_source_files_properties(
-      test/test_traits.cpp PROPERTIES COMPILE_FLAGS "/Zc:preprocessor")
+      test/rosidl_generator_cpp/test_traits.cpp PROPERTIES COMPILE_FLAGS "/Zc:preprocessor")
   endif()
 
   set(generator_cpp_test_names

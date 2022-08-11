@@ -18,12 +18,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "rosidl_generator_c/msg/detail/defaults__struct.h"
-#include "rosidl_generator_c/msg/detail/defaults__functions.h"
+#include "rosidl_generator_tests/msg/detail/defaults__struct.h"
+#include "rosidl_generator_tests/msg/detail/defaults__functions.h"
 
 int func()
 {
-  rosidl_generator_c__msg__Defaults * msg = rosidl_generator_c__msg__Defaults__create();
+  rosidl_generator_tests__msg__Defaults * msg = rosidl_generator_tests__msg__Defaults__create();
   if (!msg) {
     fprintf(stderr, "failed to allocate message\n");
     return 1;
@@ -89,7 +89,7 @@ int func()
     return 1;
   }
 
-  rosidl_generator_c__msg__Defaults__destroy(msg);
+  rosidl_generator_tests__msg__Defaults__destroy(msg);
 
   return 0;
 }

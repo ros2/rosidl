@@ -13,25 +13,25 @@
 // limitations under the License.
 
 #include <gtest/gtest.h>
-#include "rosidl_generator_cpp/msg/empty.hpp"
-#include "rosidl_generator_cpp/msg/strings.hpp"
-#include "rosidl_generator_cpp/srv/basic_types.hpp"
-#include "rosidl_generator_cpp/srv/empty.hpp"
+#include "rosidl_generator_tests/msg/empty.hpp"
+#include "rosidl_generator_tests/msg/strings.hpp"
+#include "rosidl_generator_tests/srv/basic_types.hpp"
+#include "rosidl_generator_tests/srv/empty.hpp"
 
 TEST(Test_rosidl_generator_traits, check_msg_name) {
   ASSERT_STREQ(
-    "rosidl_generator_cpp/msg/Strings",
-    rosidl_generator_traits::name<rosidl_generator_cpp::msg::Strings>());
+    "rosidl_generator_tests/msg/Strings",
+    rosidl_generator_traits::name<rosidl_generator_tests::msg::Strings>());
   ASSERT_STREQ(
-    "rosidl_generator_cpp/msg/Empty",
-    rosidl_generator_traits::name<rosidl_generator_cpp::msg::Empty>());
+    "rosidl_generator_tests/msg/Empty",
+    rosidl_generator_traits::name<rosidl_generator_tests::msg::Empty>());
 }
 
 TEST(Test_rosidl_generator_traits, check_srv_name) {
   ASSERT_STREQ(
-    "rosidl_generator_cpp/srv/BasicTypes",
-    rosidl_generator_traits::name<rosidl_generator_cpp::srv::BasicTypes>());
+    "rosidl_generator_tests/srv/BasicTypes",
+    rosidl_generator_traits::name<rosidl_generator_tests::srv::BasicTypes>());
   ASSERT_STREQ(
-    "rosidl_generator_cpp/srv/Empty",
-    rosidl_generator_traits::name<rosidl_generator_cpp::srv::Empty>());
+    "rosidl_generator_tests/srv/Empty",
+    rosidl_generator_traits::name<rosidl_generator_tests::srv::Empty>());
 }

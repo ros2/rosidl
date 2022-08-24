@@ -56,8 +56,8 @@ typedef struct rosidl_service_introspection_info_s {
 typedef void * (* rosidl_service_introspection_message_create_handle)(
     const rosidl_service_introspection_info_t * info,
     rcutils_allocator_t * allocator,
-    void * request_message,
-    void * response_message,
+    const void * request_message,
+    const void * response_message,
     bool enable_message_payload);
 
 /// Destroys a ServiceEvent message

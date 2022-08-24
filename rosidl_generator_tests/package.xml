@@ -20,6 +20,7 @@
   <test_depend>rosidl_runtime_c</test_depend>
   <test_depend>rosidl_runtime_cpp</test_depend>
   <test_depend>test_interface_files</test_depend>
+  <test_depend>service_msgs</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

@@ -146,20 +146,18 @@ macro(rosidl_generate_interfaces target)
     get_filename_component(_parent_dir "${_tuple_file}" DIRECTORY)
 
     if("${_parent_dir}" STREQUAL "action" AND NOT _action_msgs_added)
-      list_append_unique(_ARG_DEPENDENCIES "action_msgs")
-      list_append_unique(_ARG_DEPENDENCIES "service_msgs")
-      ament_export_dependencies(action_msgs)
-      ament_export_dependencies(service_msgs)
-      set(_action_msgs_added TRUE)
-      break()
-    elseif("${_parent_dir}" STREQUAL "srv" AND NOT _service_msgs_added)
-      list_append_unique(_ARG_DEPENDENCIES "service_msgs")
-      ament_export_dependencies(service_msgs)
-      set(_service_msgs_added TRUE)
-    endif()
-
-    if("${_parent_dir}" STREQUAL "action" AND NOT DEFINED action_msgs_FOUND)
-      find_package(service_msgs QUIET)
+      if (_service_msgs_added)
+        find_package(service_msgs QUIET)
+        if(NOT ${service_msgs_FOUND})
+          message(FATAL_ERROR
+            "Unable to generate service interface for '${_tuple_file}'. "
+            "In order to generate service interfaces you must add a depend tag "
+            "for 'service_msgs' in your package.xml.")
+        endif()
+        ament_export_dependencies(service_msgs)
+        list_append_unique(_ARG_DEPENDENCIES "service_msgs")
+        set(_service_msgs_added TRUE)
+      endif()
       find_package(action_msgs QUIET)
       if(NOT ${action_msgs_FOUND})
         message(FATAL_ERROR
@@ -168,14 +166,11 @@ macro(rosidl_generate_interfaces target)
           "for 'action_msgs' in your package.xml.")
       endif()
       ament_export_dependencies(action_msgs)
-      ament_export_dependencies(service_msgs)
       list_append_unique(_ARG_DEPENDENCIES "action_msgs")
-      list_append_unique(_ARG_DEPENDENCIES "service_msgs")
       set(_action_msgs_added TRUE)
       break()
-    endif()
 
-    if("${_parent_dir}" STREQUAL "srv" AND NOT DEFINED service_msgs_FOUND)
+    elseif("${_parent_dir}" STREQUAL "srv" AND NOT _service_msgs_added)
       find_package(service_msgs QUIET)
       if(NOT ${service_msgs_FOUND})
         message(FATAL_ERROR
@@ -187,6 +182,7 @@ macro(rosidl_generate_interfaces target)
       list_append_unique(_ARG_DEPENDENCIES "service_msgs")
       set(_service_msgs_added TRUE)
     endif()
+
   endforeach()
 
   # collect all interface files from dependencies

@@ -24,7 +24,7 @@ TEST(Test_srv_initialization, no_arg_request_constructor) {
   EXPECT_EQ(false, basic_types.bool_value);
   EXPECT_EQ(0, basic_types.byte_value);
   EXPECT_EQ(0, basic_types.char_value);
-  EXPECT_EQ(0.0f, basic_types.float32_value);
+  EXPECT_EQ(0.0F, basic_types.float32_value);
   EXPECT_EQ(0.0, basic_types.float64_value);
   EXPECT_EQ(0, basic_types.int8_value);
   EXPECT_EQ(0u, basic_types.uint8_value);
@@ -57,6 +57,19 @@ TEST(Test_srv_initialization, no_arg_response_constructor) {
   EXPECT_EQ("", basic_types.string_value);
 }
 
+TEST(Test_srv_initialization, no_arg_event_constructor) {
+  rosidl_generator_tests::srv::Empty::Event empty;
+
+  rosidl_generator_tests::srv::BasicTypes::Event basic_types;
+  EXPECT_EQ(basic_types.info.event_type, 0);
+  EXPECT_EQ(basic_types.info.stamp.sec, 0);
+  EXPECT_EQ(basic_types.info.stamp.nanosec, 0);
+  for (auto i : basic_types.info.client_id.uuid) {
+    EXPECT_EQ(i, 0U);
+  }
+  EXPECT_EQ(basic_types.request.size(), 0);
+  EXPECT_EQ(basic_types.response.size(), 0);
+}
 // Note that we very specifically don't add tests for some of the other
 // possibilities here (bounded strings, bounded / unbounded arrays, other
 // initialization parameters, etc).  That's because that is all tested in

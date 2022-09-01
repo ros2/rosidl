@@ -15,8 +15,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "rosidl_generator_c/msg/detail/constants__struct.h"
-#include "rosidl_generator_c/msg/detail/constants__functions.h"
+#include "rosidl_generator_tests/msg/detail/constants__struct.h"
+#include "rosidl_generator_tests/msg/detail/constants__functions.h"
 
 #include "./separate_compilation.h"
 
@@ -25,12 +25,12 @@ int main(int argc, char ** argv)
   (void)argc;
   (void)argv;
 
-  if (!rosidl_generator_c__msg__Constants__BOOL_CONST) {
+  if (!rosidl_generator_tests__msg__Constants__BOOL_CONST) {
     fprintf(stderr, "wrong boolean constant\n");
     return 1;
   }
 
-  if (rosidl_generator_c__msg__Constants__UINT8_CONST != 200) {
+  if (rosidl_generator_tests__msg__Constants__UINT8_CONST != 200) {
     fprintf(stderr, "wrong integer constant\n");
     return 1;
   }

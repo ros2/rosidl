@@ -25,16 +25,16 @@
 #include "rosidl_runtime_c/string_functions.h"
 #include "rosidl_runtime_c/u16string_functions.h"
 
-#include "rosidl_generator_c/msg/arrays.h"
-#include "rosidl_generator_c/msg/defaults.h"
-#include "rosidl_generator_c/msg/constants.h"
-#include "rosidl_generator_c/msg/basic_types.h"
-#include "rosidl_generator_c/msg/bounded_sequences.h"
-#include "rosidl_generator_c/msg/multi_nested.h"
-#include "rosidl_generator_c/msg/nested.h"
-#include "rosidl_generator_c/msg/strings.h"
-#include "rosidl_generator_c/msg/unbounded_sequences.h"
-#include "rosidl_generator_c/msg/w_strings.h"
+#include "rosidl_generator_tests/msg/arrays.h"
+#include "rosidl_generator_tests/msg/defaults.h"
+#include "rosidl_generator_tests/msg/constants.h"
+#include "rosidl_generator_tests/msg/basic_types.h"
+#include "rosidl_generator_tests/msg/bounded_sequences.h"
+#include "rosidl_generator_tests/msg/multi_nested.h"
+#include "rosidl_generator_tests/msg/nested.h"
+#include "rosidl_generator_tests/msg/strings.h"
+#include "rosidl_generator_tests/msg/unbounded_sequences.h"
+#include "rosidl_generator_tests/msg/w_strings.h"
 
 #define TEST_STRING \
   "Deep into that darkness peering, long I stood there wondering, fearing"
@@ -93,52 +93,52 @@ int test_wstrings(void);
 int main(void)
 {
   int rc = 0;
-  printf("Testing rosidl_generator_c basic types...\n");
+  printf("Testing rosidl_generator_tests basic types...\n");
   if (test_basic_types()) {
     fprintf(stderr, "test_basic_types() FAILED\n");
     rc++;
   }
-  printf("Testing rosidl_generator_c constant types...\n");
+  printf("Testing rosidl_generator_tests constant types...\n");
   if (test_constants()) {
     fprintf(stderr, "test_constant() FAILED\n");
     rc++;
   }
-  printf("Testing rosidl_generator_c default types...\n");
+  printf("Testing rosidl_generator_tests default types...\n");
   if (test_defaults()) {
     fprintf(stderr, "test_defaults() FAILED\n");
     rc++;
   }
-  printf("Testing rosidl_generator_c string types...\n");
+  printf("Testing rosidl_generator_tests string types...\n");
   if (test_strings()) {
     fprintf(stderr, "test_strings() FAILED\n");
     rc++;
   }
-  printf("Testing rosidl_generator_c array types\n");
+  printf("Testing rosidl_generator_tests array types\n");
   if (test_arrays()) {
     fprintf(stderr, "test_arrays() FAILED\n");
     rc++;
   }
-  printf("Testing rosidl_generator_c wstring types\n");
+  printf("Testing rosidl_generator_tests wstring types\n");
   if (test_wstrings()) {
     fprintf(stderr, "test_wstrings() FAILED\n");
     rc++;
   }
-  printf("Testing rosidl_generator_c bounded_sequences types\n");
+  printf("Testing rosidl_generator_tests bounded_sequences types\n");
   if (test_bounded_sequences()) {
     fprintf(stderr, "test_bounded_sequences() FAILED\n");
     rc++;
   }
-  printf("Testing rosidl_generator_c nested types\n");
+  printf("Testing rosidl_generator_tests nested types\n");
   if (test_nested()) {
     fprintf(stderr, "test_nested() FAILED\n");
     rc++;
   }
-  printf("Testing rosidl_generator_c unbounded_sequences types\n");
+  printf("Testing rosidl_generator_tests unbounded_sequences types\n");
   if (test_unbounded_sequences()) {
     fprintf(stderr, "test_unbounded_sequences() FAILED\n");
     rc++;
   }
-  printf("Testing rosidl_generator_c multi_nested type\n");
+  printf("Testing rosidl_generator_tests multi_nested type\n");
   if (test_multi_nested()) {
     fprintf(stderr, "test_multi_nested() FAILED\n");
     rc++;
@@ -153,9 +153,9 @@ int main(void)
 
 int test_basic_types(void)
 {
-  // rosidl_generator_c__msg__BasicTypes basic;
-  rosidl_generator_c__msg__BasicTypes * basic = NULL;
-  basic = rosidl_generator_c__msg__BasicTypes__create();
+  // rosidl_generator_tests__msg__BasicTypes basic;
+  rosidl_generator_tests__msg__BasicTypes * basic = NULL;
+  basic = rosidl_generator_tests__msg__BasicTypes__create();
   EXPECT_NE(basic, NULL);
 
   basic->bool_value = false;
@@ -197,46 +197,46 @@ int test_basic_types(void)
   basic->uint64_value = UINT64_MAX;
   EXPECT_EQ(UINT64_MAX, basic->uint64_value);
 
-  EXPECT_FALSE(rosidl_generator_c__msg__BasicTypes__are_equal(NULL, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__BasicTypes__are_equal(basic, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__BasicTypes__are_equal(NULL, basic));
-  EXPECT_TRUE(rosidl_generator_c__msg__BasicTypes__are_equal(basic, basic));
+  EXPECT_FALSE(rosidl_generator_tests__msg__BasicTypes__are_equal(NULL, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__BasicTypes__are_equal(basic, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__BasicTypes__are_equal(NULL, basic));
+  EXPECT_TRUE(rosidl_generator_tests__msg__BasicTypes__are_equal(basic, basic));
 
-  rosidl_generator_c__msg__BasicTypes * basic_copy = NULL;
-  basic_copy = rosidl_generator_c__msg__BasicTypes__create();
+  rosidl_generator_tests__msg__BasicTypes * basic_copy = NULL;
+  basic_copy = rosidl_generator_tests__msg__BasicTypes__create();
   EXPECT_NE(basic_copy, NULL);
-  EXPECT_FALSE(rosidl_generator_c__msg__BasicTypes__are_equal(basic, basic_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__BasicTypes__copy(basic, basic_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__BasicTypes__are_equal(basic, basic_copy));
-  rosidl_generator_c__msg__BasicTypes__destroy(basic_copy);
+  EXPECT_FALSE(rosidl_generator_tests__msg__BasicTypes__are_equal(basic, basic_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__BasicTypes__copy(basic, basic_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__BasicTypes__are_equal(basic, basic_copy));
+  rosidl_generator_tests__msg__BasicTypes__destroy(basic_copy);
 
-  rosidl_generator_c__msg__BasicTypes__destroy(basic);
+  rosidl_generator_tests__msg__BasicTypes__destroy(basic);
   return 0;
 }
 
 int test_constants(void)
 {
-  EXPECT_EQ(true, rosidl_generator_c__msg__Constants__BOOL_CONST);
-  EXPECT_EQ(50, rosidl_generator_c__msg__Constants__BYTE_CONST);
-  EXPECT_EQ(100, rosidl_generator_c__msg__Constants__CHAR_CONST);
-  EXPECT_EQ(1.125, rosidl_generator_c__msg__Constants__FLOAT32_CONST);
-  EXPECT_EQ(1.125, rosidl_generator_c__msg__Constants__FLOAT64_CONST);
-  EXPECT_EQ(-50, rosidl_generator_c__msg__Constants__INT8_CONST);
-  EXPECT_EQ(200, rosidl_generator_c__msg__Constants__UINT8_CONST);
-  EXPECT_EQ(-1000, rosidl_generator_c__msg__Constants__INT16_CONST);
-  EXPECT_EQ(2000, rosidl_generator_c__msg__Constants__UINT16_CONST);
-  EXPECT_EQ(-30000, rosidl_generator_c__msg__Constants__INT32_CONST);
-  EXPECT_EQ(60000, rosidl_generator_c__msg__Constants__UINT32_CONST);
-  EXPECT_EQ(-40000000, rosidl_generator_c__msg__Constants__INT64_CONST);
-  EXPECT_EQ(50000000, rosidl_generator_c__msg__Constants__UINT64_CONST);
+  EXPECT_EQ(true, rosidl_generator_tests__msg__Constants__BOOL_CONST);
+  EXPECT_EQ(50, rosidl_generator_tests__msg__Constants__BYTE_CONST);
+  EXPECT_EQ(100, rosidl_generator_tests__msg__Constants__CHAR_CONST);
+  EXPECT_EQ(1.125, rosidl_generator_tests__msg__Constants__FLOAT32_CONST);
+  EXPECT_EQ(1.125, rosidl_generator_tests__msg__Constants__FLOAT64_CONST);
+  EXPECT_EQ(-50, rosidl_generator_tests__msg__Constants__INT8_CONST);
+  EXPECT_EQ(200, rosidl_generator_tests__msg__Constants__UINT8_CONST);
+  EXPECT_EQ(-1000, rosidl_generator_tests__msg__Constants__INT16_CONST);
+  EXPECT_EQ(2000, rosidl_generator_tests__msg__Constants__UINT16_CONST);
+  EXPECT_EQ(-30000, rosidl_generator_tests__msg__Constants__INT32_CONST);
+  EXPECT_EQ(60000, rosidl_generator_tests__msg__Constants__UINT32_CONST);
+  EXPECT_EQ(-40000000, rosidl_generator_tests__msg__Constants__INT64_CONST);
+  EXPECT_EQ(50000000, rosidl_generator_tests__msg__Constants__UINT64_CONST);
 
   return 0;
 }
 
 int test_defaults()
 {
-  rosidl_generator_c__msg__Defaults * def = NULL;
-  def = rosidl_generator_c__msg__Defaults__create();
+  rosidl_generator_tests__msg__Defaults * def = NULL;
+  def = rosidl_generator_tests__msg__Defaults__create();
   EXPECT_NE(def, NULL);
 
   EXPECT_EQ(true, def->bool_value);
@@ -253,28 +253,28 @@ int test_defaults()
   EXPECT_EQ(-40000000, def->int64_value);
   EXPECT_EQ(50000000, def->uint64_value);
 
-  EXPECT_FALSE(rosidl_generator_c__msg__Defaults__are_equal(NULL, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__Defaults__are_equal(def, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__Defaults__are_equal(NULL, def));
-  EXPECT_TRUE(rosidl_generator_c__msg__Defaults__are_equal(def, def));
+  EXPECT_FALSE(rosidl_generator_tests__msg__Defaults__are_equal(NULL, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__Defaults__are_equal(def, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__Defaults__are_equal(NULL, def));
+  EXPECT_TRUE(rosidl_generator_tests__msg__Defaults__are_equal(def, def));
 
-  rosidl_generator_c__msg__Defaults * def_copy = NULL;
-  def_copy = rosidl_generator_c__msg__Defaults__create();
+  rosidl_generator_tests__msg__Defaults * def_copy = NULL;
+  def_copy = rosidl_generator_tests__msg__Defaults__create();
   EXPECT_NE(def_copy, NULL);
   def->bool_value = false;  // mutate message to force a difference
-  EXPECT_FALSE(rosidl_generator_c__msg__Defaults__are_equal(def, def_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__Defaults__copy(def, def_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__Defaults__are_equal(def, def_copy));
-  rosidl_generator_c__msg__Defaults__destroy(def_copy);
+  EXPECT_FALSE(rosidl_generator_tests__msg__Defaults__are_equal(def, def_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__Defaults__copy(def, def_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__Defaults__are_equal(def, def_copy));
+  rosidl_generator_tests__msg__Defaults__destroy(def_copy);
 
-  rosidl_generator_c__msg__Defaults__destroy(def);
+  rosidl_generator_tests__msg__Defaults__destroy(def);
   return 0;
 }
 
 int test_bounded_sequences()
 {
-  rosidl_generator_c__msg__BoundedSequences * seq = NULL;
-  seq = rosidl_generator_c__msg__BoundedSequences__create();
+  rosidl_generator_tests__msg__BoundedSequences * seq = NULL;
+  seq = rosidl_generator_tests__msg__BoundedSequences__create();
   EXPECT_NE(seq, NULL);
   bool res = false;
   res = rosidl_runtime_c__boolean__Sequence__init(&seq->bool_values, ARR_SIZE);
@@ -482,27 +482,27 @@ int test_bounded_sequences()
   EXPECT_EQ(0, strcmp(seq->string_values_default.data[1].data, "max value"));
   EXPECT_EQ(0, strcmp(seq->string_values_default.data[2].data, "min value"));
 
-  EXPECT_FALSE(rosidl_generator_c__msg__BoundedSequences__are_equal(NULL, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__BoundedSequences__are_equal(seq, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__BoundedSequences__are_equal(NULL, seq));
-  EXPECT_TRUE(rosidl_generator_c__msg__BoundedSequences__are_equal(seq, seq));
+  EXPECT_FALSE(rosidl_generator_tests__msg__BoundedSequences__are_equal(NULL, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__BoundedSequences__are_equal(seq, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__BoundedSequences__are_equal(NULL, seq));
+  EXPECT_TRUE(rosidl_generator_tests__msg__BoundedSequences__are_equal(seq, seq));
 
-  rosidl_generator_c__msg__BoundedSequences * seq_copy = NULL;
-  seq_copy = rosidl_generator_c__msg__BoundedSequences__create();
+  rosidl_generator_tests__msg__BoundedSequences * seq_copy = NULL;
+  seq_copy = rosidl_generator_tests__msg__BoundedSequences__create();
   EXPECT_NE(seq_copy, NULL);
-  EXPECT_FALSE(rosidl_generator_c__msg__BoundedSequences__are_equal(seq, seq_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__BoundedSequences__copy(seq, seq_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__BoundedSequences__are_equal(seq, seq_copy));
-  rosidl_generator_c__msg__BoundedSequences__destroy(seq_copy);
+  EXPECT_FALSE(rosidl_generator_tests__msg__BoundedSequences__are_equal(seq, seq_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__BoundedSequences__copy(seq, seq_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__BoundedSequences__are_equal(seq, seq_copy));
+  rosidl_generator_tests__msg__BoundedSequences__destroy(seq_copy);
 
-  rosidl_generator_c__msg__BoundedSequences__destroy(seq);
+  rosidl_generator_tests__msg__BoundedSequences__destroy(seq);
   return 0;
 }
 
 int test_unbounded_sequences()
 {
-  rosidl_generator_c__msg__UnboundedSequences * seq = NULL;
-  seq = rosidl_generator_c__msg__UnboundedSequences__create();
+  rosidl_generator_tests__msg__UnboundedSequences * seq = NULL;
+  seq = rosidl_generator_tests__msg__UnboundedSequences__create();
   EXPECT_NE(seq, NULL);
   bool res = false;
 
@@ -711,33 +711,33 @@ int test_unbounded_sequences()
   EXPECT_EQ(0, strcmp(seq->string_values_default.data[1].data, "max value"));
   EXPECT_EQ(0, strcmp(seq->string_values_default.data[2].data, "min value"));
 
-  EXPECT_FALSE(rosidl_generator_c__msg__UnboundedSequences__are_equal(NULL, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__UnboundedSequences__are_equal(seq, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__UnboundedSequences__are_equal(NULL, seq));
-  EXPECT_TRUE(rosidl_generator_c__msg__UnboundedSequences__are_equal(seq, seq));
+  EXPECT_FALSE(rosidl_generator_tests__msg__UnboundedSequences__are_equal(NULL, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__UnboundedSequences__are_equal(seq, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__UnboundedSequences__are_equal(NULL, seq));
+  EXPECT_TRUE(rosidl_generator_tests__msg__UnboundedSequences__are_equal(seq, seq));
 
-  rosidl_generator_c__msg__UnboundedSequences * seq_copy = NULL;
-  seq_copy = rosidl_generator_c__msg__UnboundedSequences__create();
+  rosidl_generator_tests__msg__UnboundedSequences * seq_copy = NULL;
+  seq_copy = rosidl_generator_tests__msg__UnboundedSequences__create();
   EXPECT_NE(seq_copy, NULL);
-  EXPECT_FALSE(rosidl_generator_c__msg__UnboundedSequences__are_equal(seq, seq_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__UnboundedSequences__copy(seq, seq_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__UnboundedSequences__are_equal(seq, seq_copy));
-  rosidl_generator_c__msg__UnboundedSequences__destroy(seq_copy);
+  EXPECT_FALSE(rosidl_generator_tests__msg__UnboundedSequences__are_equal(seq, seq_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__UnboundedSequences__copy(seq, seq_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__UnboundedSequences__are_equal(seq, seq_copy));
+  rosidl_generator_tests__msg__UnboundedSequences__destroy(seq_copy);
 
-  rosidl_generator_c__msg__UnboundedSequences__destroy(seq);
+  rosidl_generator_tests__msg__UnboundedSequences__destroy(seq);
   return 0;
 }
 
 int test_strings()
 {
-  rosidl_generator_c__msg__Strings * str = NULL;
-  str = rosidl_generator_c__msg__Strings__create();
+  rosidl_generator_tests__msg__Strings * str = NULL;
+  str = rosidl_generator_tests__msg__Strings__create();
   EXPECT_NE(str, NULL);
 
   EXPECT_EQ(0, strcmp(str->string_value.data, ""));
   EXPECT_EQ(0, strcmp(str->string_value_default1.data, "Hello world!"));
   EXPECT_EQ(0, strcmp(str->string_value_default5.data, "Hello\"world!"));
-  EXPECT_EQ(0, strcmp(rosidl_generator_c__msg__Strings__STRING_CONST, "Hello world!"));
+  EXPECT_EQ(0, strcmp(rosidl_generator_tests__msg__Strings__STRING_CONST, "Hello world!"));
 
   bool res = false;
   res = rosidl_runtime_c__String__assign(&str->bounded_string_value, TEST_STRING);
@@ -755,27 +755,27 @@ int test_strings()
   EXPECT_EQ(0, strcmp(str->bounded_string_value_default1.data, "Hello world!"));
   EXPECT_EQ(0, strcmp(str->bounded_string_value_default5.data, "Hello\"world!"));
 
-  EXPECT_FALSE(rosidl_generator_c__msg__Strings__are_equal(NULL, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__Strings__are_equal(str, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__Strings__are_equal(NULL, str));
-  EXPECT_TRUE(rosidl_generator_c__msg__Strings__are_equal(str, str));
+  EXPECT_FALSE(rosidl_generator_tests__msg__Strings__are_equal(NULL, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__Strings__are_equal(str, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__Strings__are_equal(NULL, str));
+  EXPECT_TRUE(rosidl_generator_tests__msg__Strings__are_equal(str, str));
 
-  rosidl_generator_c__msg__Strings * str_copy = NULL;
-  str_copy = rosidl_generator_c__msg__Strings__create();
+  rosidl_generator_tests__msg__Strings * str_copy = NULL;
+  str_copy = rosidl_generator_tests__msg__Strings__create();
   EXPECT_NE(str_copy, NULL);
-  EXPECT_FALSE(rosidl_generator_c__msg__Strings__are_equal(str, str_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__Strings__copy(str, str_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__Strings__are_equal(str, str_copy));
-  rosidl_generator_c__msg__Strings__destroy(str_copy);
+  EXPECT_FALSE(rosidl_generator_tests__msg__Strings__are_equal(str, str_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__Strings__copy(str, str_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__Strings__are_equal(str, str_copy));
+  rosidl_generator_tests__msg__Strings__destroy(str_copy);
 
-  rosidl_generator_c__msg__Strings__destroy(str);
+  rosidl_generator_tests__msg__Strings__destroy(str);
   return 0;
 }
 
 int test_nested()
 {
-  rosidl_generator_c__msg__Nested * nested = NULL;
-  nested = rosidl_generator_c__msg__Nested__create();
+  rosidl_generator_tests__msg__Nested * nested = NULL;
+  nested = rosidl_generator_tests__msg__Nested__create();
   EXPECT_NE(nested, NULL);
 
   nested->basic_types_value.bool_value = true;
@@ -806,27 +806,27 @@ int test_nested()
   EXPECT_EQ(-40000000, nested->basic_types_value.int64_value);
   EXPECT_EQ(50000000, nested->basic_types_value.uint64_value);
 
-  EXPECT_FALSE(rosidl_generator_c__msg__Nested__are_equal(NULL, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__Nested__are_equal(nested, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__Nested__are_equal(NULL, nested));
-  EXPECT_TRUE(rosidl_generator_c__msg__Nested__are_equal(nested, nested));
+  EXPECT_FALSE(rosidl_generator_tests__msg__Nested__are_equal(NULL, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__Nested__are_equal(nested, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__Nested__are_equal(NULL, nested));
+  EXPECT_TRUE(rosidl_generator_tests__msg__Nested__are_equal(nested, nested));
 
-  rosidl_generator_c__msg__Nested * nested_copy = NULL;
-  nested_copy = rosidl_generator_c__msg__Nested__create();
+  rosidl_generator_tests__msg__Nested * nested_copy = NULL;
+  nested_copy = rosidl_generator_tests__msg__Nested__create();
   EXPECT_NE(nested_copy, NULL);
-  EXPECT_FALSE(rosidl_generator_c__msg__Nested__are_equal(nested, nested_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__Nested__copy(nested, nested_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__Nested__are_equal(nested, nested_copy));
-  rosidl_generator_c__msg__Nested__destroy(nested_copy);
+  EXPECT_FALSE(rosidl_generator_tests__msg__Nested__are_equal(nested, nested_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__Nested__copy(nested, nested_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__Nested__are_equal(nested, nested_copy));
+  rosidl_generator_tests__msg__Nested__destroy(nested_copy);
 
-  rosidl_generator_c__msg__Nested__destroy(nested);
+  rosidl_generator_tests__msg__Nested__destroy(nested);
   return 0;
 }
 
 int test_multi_nested()
 {
-  rosidl_generator_c__msg__MultiNested * msg = NULL;
-  msg = rosidl_generator_c__msg__MultiNested__create();
+  rosidl_generator_tests__msg__MultiNested * msg = NULL;
+  msg = rosidl_generator_tests__msg__MultiNested__create();
   EXPECT_NE(msg, NULL);
   /* multi_nested fields tests todo:
   BoundedSequences[3] array_of_bounded_sequences
@@ -1058,27 +1058,27 @@ int test_multi_nested()
     EXPECT_EQ(UINT64_MAX, msg->array_of_arrays[0].uint64_values_default[2]);
   }
 
-  EXPECT_FALSE(rosidl_generator_c__msg__MultiNested__are_equal(NULL, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__MultiNested__are_equal(msg, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__MultiNested__are_equal(NULL, msg));
-  EXPECT_TRUE(rosidl_generator_c__msg__MultiNested__are_equal(msg, msg));
+  EXPECT_FALSE(rosidl_generator_tests__msg__MultiNested__are_equal(NULL, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__MultiNested__are_equal(msg, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__MultiNested__are_equal(NULL, msg));
+  EXPECT_TRUE(rosidl_generator_tests__msg__MultiNested__are_equal(msg, msg));
 
-  rosidl_generator_c__msg__MultiNested * msg_copy = NULL;
-  msg_copy = rosidl_generator_c__msg__MultiNested__create();
+  rosidl_generator_tests__msg__MultiNested * msg_copy = NULL;
+  msg_copy = rosidl_generator_tests__msg__MultiNested__create();
   EXPECT_NE(msg_copy, NULL);
-  EXPECT_FALSE(rosidl_generator_c__msg__MultiNested__are_equal(msg, msg_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__MultiNested__copy(msg, msg_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__MultiNested__are_equal(msg, msg_copy));
-  rosidl_generator_c__msg__MultiNested__destroy(msg_copy);
+  EXPECT_FALSE(rosidl_generator_tests__msg__MultiNested__are_equal(msg, msg_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__MultiNested__copy(msg, msg_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__MultiNested__are_equal(msg, msg_copy));
+  rosidl_generator_tests__msg__MultiNested__destroy(msg_copy);
 
-  rosidl_generator_c__msg__MultiNested__destroy(msg);
+  rosidl_generator_tests__msg__MultiNested__destroy(msg);
   return 0;
 }
 
 int test_wstrings()
 {
-  rosidl_generator_c__msg__WStrings * wstr = NULL;
-  wstr = rosidl_generator_c__msg__WStrings__create();
+  rosidl_generator_tests__msg__WStrings * wstr = NULL;
+  wstr = rosidl_generator_tests__msg__WStrings__create();
   EXPECT_NE(wstr, NULL);
 
   bool res = false;
@@ -1095,14 +1095,14 @@ int test_wstrings()
   // EXPECT_EQ(0, strcmp(wstrings->def_wstring5.data, "Hello\"world!"));
   // since upper-bound checking is not implemented yet, we restrict the string copying
 
-  rosidl_generator_c__msg__WStrings__destroy(wstr);
+  rosidl_generator_tests__msg__WStrings__destroy(wstr);
   return 0;
 }
 
 int test_arrays()
 {
-  rosidl_generator_c__msg__Arrays * arr = NULL;
-  arr = rosidl_generator_c__msg__Arrays__create();
+  rosidl_generator_tests__msg__Arrays * arr = NULL;
+  arr = rosidl_generator_tests__msg__Arrays__create();
   EXPECT_NE(arr, NULL);
 
   int i = 0;
@@ -1282,19 +1282,19 @@ int test_arrays()
   EXPECT_EQ(0, strcmp(arr->string_values_default[1].data, "max value"));
   EXPECT_EQ(0, strcmp(arr->string_values_default[2].data, "min value"));
 
-  EXPECT_FALSE(rosidl_generator_c__msg__Arrays__are_equal(NULL, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__Arrays__are_equal(arr, NULL));
-  EXPECT_FALSE(rosidl_generator_c__msg__Arrays__are_equal(NULL, arr));
-  EXPECT_TRUE(rosidl_generator_c__msg__Arrays__are_equal(arr, arr));
+  EXPECT_FALSE(rosidl_generator_tests__msg__Arrays__are_equal(NULL, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__Arrays__are_equal(arr, NULL));
+  EXPECT_FALSE(rosidl_generator_tests__msg__Arrays__are_equal(NULL, arr));
+  EXPECT_TRUE(rosidl_generator_tests__msg__Arrays__are_equal(arr, arr));
 
-  rosidl_generator_c__msg__Arrays * arr_copy = NULL;
-  arr_copy = rosidl_generator_c__msg__Arrays__create();
+  rosidl_generator_tests__msg__Arrays * arr_copy = NULL;
+  arr_copy = rosidl_generator_tests__msg__Arrays__create();
   EXPECT_NE(arr_copy, NULL);
-  EXPECT_FALSE(rosidl_generator_c__msg__Arrays__are_equal(arr, arr_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__Arrays__copy(arr, arr_copy));
-  EXPECT_TRUE(rosidl_generator_c__msg__Arrays__are_equal(arr, arr_copy));
-  rosidl_generator_c__msg__Arrays__destroy(arr_copy);
+  EXPECT_FALSE(rosidl_generator_tests__msg__Arrays__are_equal(arr, arr_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__Arrays__copy(arr, arr_copy));
+  EXPECT_TRUE(rosidl_generator_tests__msg__Arrays__are_equal(arr, arr_copy));
+  rosidl_generator_tests__msg__Arrays__destroy(arr_copy);
 
-  rosidl_generator_c__msg__Arrays__destroy(arr);
+  rosidl_generator_tests__msg__Arrays__destroy(arr);
   return 0;
 }

@@ -14,13 +14,13 @@
 
 #include <gtest/gtest.h>
 
-#include "rosidl_generator_cpp/srv/basic_types.hpp"
-#include "rosidl_generator_cpp/srv/empty.hpp"
+#include "rosidl_generator_tests/srv/basic_types.hpp"
+#include "rosidl_generator_tests/srv/empty.hpp"
 
 TEST(Test_srv_initialization, no_arg_request_constructor) {
-  rosidl_generator_cpp::srv::Empty::Response empty;
+  rosidl_generator_tests::srv::Empty::Response empty;
 
-  rosidl_generator_cpp::srv::BasicTypes::Request basic_types;
+  rosidl_generator_tests::srv::BasicTypes::Request basic_types;
   EXPECT_EQ(false, basic_types.bool_value);
   EXPECT_EQ(0, basic_types.byte_value);
   EXPECT_EQ(0, basic_types.char_value);
@@ -38,9 +38,9 @@ TEST(Test_srv_initialization, no_arg_request_constructor) {
 }
 
 TEST(Test_srv_initialization, no_arg_response_constructor) {
-  rosidl_generator_cpp::srv::Empty::Request empty;
+  rosidl_generator_tests::srv::Empty::Request empty;
 
-  rosidl_generator_cpp::srv::BasicTypes::Response basic_types;
+  rosidl_generator_tests::srv::BasicTypes::Response basic_types;
   EXPECT_EQ(false, basic_types.bool_value);
   EXPECT_EQ(0, basic_types.byte_value);
   EXPECT_EQ(0, basic_types.char_value);

@@ -17,29 +17,29 @@
 #include <string>
 
 // the idl file is commented out in the test_interface_files package
-// #include "rosidl_generator_cpp/idl/idl_only_types.hpp"
-#include "rosidl_generator_cpp/msg/defaults.hpp"
-#include "rosidl_generator_cpp/msg/empty.hpp"
-#include "rosidl_generator_cpp/msg/bounded_sequences.hpp"
-#include "rosidl_generator_cpp/msg/nested.hpp"
-#include "rosidl_generator_cpp/msg/strings.hpp"
-#include "rosidl_generator_cpp/msg/w_strings.hpp"
-#include "rosidl_generator_cpp/srv/empty.hpp"
+// #include "rosidl_generator_tests/idl/idl_only_types.hpp"
+#include "rosidl_generator_tests/msg/defaults.hpp"
+#include "rosidl_generator_tests/msg/empty.hpp"
+#include "rosidl_generator_tests/msg/bounded_sequences.hpp"
+#include "rosidl_generator_tests/msg/nested.hpp"
+#include "rosidl_generator_tests/msg/strings.hpp"
+#include "rosidl_generator_tests/msg/w_strings.hpp"
+#include "rosidl_generator_tests/srv/empty.hpp"
 
 using rosidl_generator_traits::is_message;
 using rosidl_generator_traits::is_service;
 using rosidl_generator_traits::is_service_request;
 using rosidl_generator_traits::is_service_response;
-using rosidl_generator_cpp::msg::to_yaml;
+using rosidl_generator_tests::msg::to_yaml;
 
 TEST(Test_rosidl_generator_traits, to_yaml_default_style) {
   {
-    const rosidl_generator_cpp::msg::Empty msg;
+    const rosidl_generator_tests::msg::Empty msg;
     EXPECT_STREQ("null\n", to_yaml(msg).c_str());
   }
 
   {
-    rosidl_generator_cpp::msg::Defaults msg;
+    rosidl_generator_tests::msg::Defaults msg;
     msg.float64_value = 1.0;
     EXPECT_STREQ(
       R"(bool_value: true
@@ -61,7 +61,7 @@ uint64_value: 50000000
   }
 
   {
-    rosidl_generator_cpp::msg::Strings msg;
+    rosidl_generator_tests::msg::Strings msg;
     msg.string_value = "Hello\nworld";
     EXPECT_STREQ(
       R"(string_value: "Hello
@@ -83,7 +83,7 @@ bounded_string_value_default5: "Hello\"world!"
   }
 
   {
-    rosidl_generator_cpp::msg::WStrings msg;
+    rosidl_generator_tests::msg::WStrings msg;
     msg.wstring_value = u"Hello\nwörld";
     EXPECT_STREQ(
       R"(wstring_value: "Hello
@@ -123,7 +123,7 @@ long_double_value: 1.12500
   }*/
 
   {
-    rosidl_generator_cpp::msg::Nested msg;
+    rosidl_generator_tests::msg::Nested msg;
     std::string yaml = to_yaml(msg);
 #ifdef _WIN32
     // update yaml to handle variance of floating point decimals on Windows
@@ -152,8 +152,8 @@ long_double_value: 1.12500
   }
 
   {
-    rosidl_generator_cpp::msg::BoundedSequences msg;
-    msg.defaults_values.push_back(rosidl_generator_cpp::msg::Defaults());
+    rosidl_generator_tests::msg::BoundedSequences msg;
+    msg.defaults_values.push_back(rosidl_generator_tests::msg::Defaults());
     std::string yaml = to_yaml(msg);
 #ifdef _WIN32
     // update yaml to handle variance of floating point decimals on Windows
@@ -259,12 +259,12 @@ alignment_check: 0
 TEST(Test_rosidl_generator_traits, to_yaml_flow_style) {
   constexpr bool use_flow_style = true;
   {
-    const rosidl_generator_cpp::msg::Empty msg;
+    const rosidl_generator_tests::msg::Empty msg;
     EXPECT_STREQ("null", to_yaml(msg, use_flow_style).c_str());
   }
 
   {
-    rosidl_generator_cpp::msg::Defaults msg;
+    rosidl_generator_tests::msg::Defaults msg;
     msg.float64_value = 1.0;
     EXPECT_STREQ(
       "{bool_value: true, byte_value: 0x32, char_value: 100, "
@@ -276,7 +276,7 @@ TEST(Test_rosidl_generator_traits, to_yaml_flow_style) {
   }
 
   {
-    rosidl_generator_cpp::msg::Strings msg;
+    rosidl_generator_tests::msg::Strings msg;
     msg.string_value = "Hello\nworld";
     EXPECT_STREQ(
       R"({string_value: "Hello
@@ -295,7 +295,7 @@ world", string_value_default1: "Hello world!", )"
   }
 
   {
-    rosidl_generator_cpp::msg::WStrings msg;
+    rosidl_generator_tests::msg::WStrings msg;
     msg.wstring_value = u"Hello\nwörld";
     EXPECT_STREQ(
       R"({wstring_value: "Hello
@@ -308,7 +308,7 @@ w\xf6rld", wstring_value_default1: "Hello world!", )"
   }
 
   {
-    rosidl_generator_cpp::msg::Nested msg;
+    rosidl_generator_tests::msg::Nested msg;
     std::string yaml = to_yaml(msg, use_flow_style);
 #ifdef _WIN32
     // update yaml to handle variance of floating point decimals on Windows
@@ -326,8 +326,8 @@ w\xf6rld", wstring_value_default1: "Hello world!", )"
   }
 
   {
-    rosidl_generator_cpp::msg::BoundedSequences msg;
-    msg.defaults_values.push_back(rosidl_generator_cpp::msg::Defaults());
+    rosidl_generator_tests::msg::BoundedSequences msg;
+    msg.defaults_values.push_back(rosidl_generator_tests::msg::Defaults());
     std::string yaml = to_yaml(msg, use_flow_style);
 #ifdef _WIN32
     // update yaml to handle variance of floating point decimals on Windows
@@ -381,14 +381,14 @@ struct is_message<Message2>: std::true_type {};
 
 TEST(Test_rosidl_generator_traits, is_message) {
   // A message is not a service
-  using Empty = rosidl_generator_cpp::msg::Empty;
+  using Empty = rosidl_generator_tests::msg::Empty;
   EXPECT_TRUE(is_message<Empty>());
   EXPECT_FALSE(is_service<Empty>());
   EXPECT_FALSE(is_service_request<Empty>());
   EXPECT_FALSE(is_service_response<Empty>());
 
   // A message is not a service
-  using Strings = rosidl_generator_cpp::msg::Strings;
+  using Strings = rosidl_generator_tests::msg::Strings;
   EXPECT_TRUE(is_message<Strings>());
   EXPECT_FALSE(is_service<Strings>());
   EXPECT_FALSE(is_service_request<Strings>());
@@ -403,7 +403,7 @@ TEST(Test_rosidl_generator_traits, is_message) {
 }
 
 TEST(Test_rosidl_generator_traits, is_service) {
-  using Service = rosidl_generator_cpp::srv::Empty;
+  using Service = rosidl_generator_tests::srv::Empty;
   using ServiceReq = Service::Request;
   using ServiceResp = Service::Response;
 

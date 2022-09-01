@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef TEST_ARRAY_GENERATOR_HPP_
-#define TEST_ARRAY_GENERATOR_HPP_
+#ifndef ROSIDL_GENERATOR_CPP__TEST_ARRAY_GENERATOR_HPP_
+#define ROSIDL_GENERATOR_CPP__TEST_ARRAY_GENERATOR_HPP_
 
 #include <climits>
 #include <random>
@@ -141,4 +141,4 @@ void test_vector_fill(
   }
 }
 
-#endif  // TEST_ARRAY_GENERATOR_HPP_
+#endif  // ROSIDL_GENERATOR_CPP__TEST_ARRAY_GENERATOR_HPP_

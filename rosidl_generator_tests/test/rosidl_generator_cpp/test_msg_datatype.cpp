@@ -12,9 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SEPARATE_COMPILATION_H_
-#define SEPARATE_COMPILATION_H_
+#include <gtest/gtest.h>
+#include "rosidl_generator_tests/msg/empty.hpp"
+#include "rosidl_generator_tests/msg/strings.hpp"
 
-int func();
 
-#endif  // SEPARATE_COMPILATION_H_
+TEST(Test_rosidl_generator_traits, check_data_type) {
+  ASSERT_STREQ(
+    "rosidl_generator_tests::msg::Strings",
+    rosidl_generator_traits::data_type<rosidl_generator_tests::msg::Strings>());
+  ASSERT_STREQ(
+    "rosidl_generator_tests::msg::Empty",
+    rosidl_generator_traits::data_type<rosidl_generator_tests::msg::Empty>());
+}

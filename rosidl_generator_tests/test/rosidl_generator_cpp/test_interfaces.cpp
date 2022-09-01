@@ -22,17 +22,17 @@
 #include <algorithm>
 #include "test_array_generator.hpp"
 
-#include "rosidl_generator_cpp/msg/arrays.hpp"
-#include "rosidl_generator_cpp/msg/basic_types.hpp"
-#include "rosidl_generator_cpp/msg/bounded_sequences.hpp"
-#include "rosidl_generator_cpp/msg/constants.hpp"
-#include "rosidl_generator_cpp/msg/defaults.hpp"
-#include "rosidl_generator_cpp/msg/empty.hpp"
-#include "rosidl_generator_cpp/msg/multi_nested.hpp"
-#include "rosidl_generator_cpp/msg/nested.hpp"
-#include "rosidl_generator_cpp/msg/strings.hpp"
-#include "rosidl_generator_cpp/msg/unbounded_sequences.hpp"
-#include "rosidl_generator_cpp/msg/w_strings.hpp"
+#include "rosidl_generator_tests/msg/arrays.hpp"
+#include "rosidl_generator_tests/msg/basic_types.hpp"
+#include "rosidl_generator_tests/msg/bounded_sequences.hpp"
+#include "rosidl_generator_tests/msg/constants.hpp"
+#include "rosidl_generator_tests/msg/defaults.hpp"
+#include "rosidl_generator_tests/msg/empty.hpp"
+#include "rosidl_generator_tests/msg/multi_nested.hpp"
+#include "rosidl_generator_tests/msg/nested.hpp"
+#include "rosidl_generator_tests/msg/strings.hpp"
+#include "rosidl_generator_tests/msg/unbounded_sequences.hpp"
+#include "rosidl_generator_tests/msg/w_strings.hpp"
 
 #define SEQUENCE_SIZE 3
 #define ARRAY_SIZE 3
@@ -41,94 +41,96 @@
 
 TEST(Test_rosidl_generator_traits, has_fixed_size) {
   static_assert(
-    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::Arrays>::value,
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_tests::msg::Arrays>::value,
     "Arrays::has_fixed_size is true");
 
   static_assert(
-    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::BoundedSequences>::value,
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_tests::msg::BoundedSequences>::value,
     "BoundedSequences::has_fixed_size is true");
 
   static_assert(
-    rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::BasicTypes>::value,
+    rosidl_generator_traits::has_fixed_size<rosidl_generator_tests::msg::BasicTypes>::value,
     "BasicTypes::has_fixed_size is false");
 
   static_assert(
-    rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::Constants>::value,
+    rosidl_generator_traits::has_fixed_size<rosidl_generator_tests::msg::Constants>::value,
     "Constants::has_fixed_size is false");
 
   static_assert(
-    rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::Defaults>::value,
+    rosidl_generator_traits::has_fixed_size<rosidl_generator_tests::msg::Defaults>::value,
     "Defaults::has_fixed_size is false");
 
   static_assert(
-    rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::Empty>::value,
+    rosidl_generator_traits::has_fixed_size<rosidl_generator_tests::msg::Empty>::value,
     "Empty::has_fixed_size is false");
 
   static_assert(
-    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::MultiNested>::value,
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_tests::msg::MultiNested>::value,
     "MultiNested::has_fixed_size is true");
 
   static_assert(
-    rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::Nested>::value,
+    rosidl_generator_traits::has_fixed_size<rosidl_generator_tests::msg::Nested>::value,
     "Nested::has_fixed_size is false");
 
   static_assert(
-    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::Strings>::value,
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_tests::msg::Strings>::value,
     "Strings::has_fixed_size is true");
 
   static_assert(
-    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::UnboundedSequences>::value,
+    !rosidl_generator_traits::has_fixed_size<
+      rosidl_generator_tests::msg::UnboundedSequences>::value,
     "UnboundedSequences::has_fixed_size is true");
 
   static_assert(
-    !rosidl_generator_traits::has_fixed_size<rosidl_generator_cpp::msg::WStrings>::value,
+    !rosidl_generator_traits::has_fixed_size<rosidl_generator_tests::msg::WStrings>::value,
     "WStrings::has_fixed_size is true");
 }
 
 TEST(Test_rosidl_generator_traits, has_bounded_size) {
   static_assert(
-    !rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::Arrays>::value,
+    !rosidl_generator_traits::has_bounded_size<rosidl_generator_tests::msg::Arrays>::value,
     "Arrays::has_bounded_size is true");
 
   static_assert(
-    !rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::BoundedSequences>::value,
+    !rosidl_generator_traits::has_bounded_size<
+      rosidl_generator_tests::msg::BoundedSequences>::value,
     "BoundedSequences::has_bounded_size is true");
 
   static_assert(
-    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::BasicTypes>::value,
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_tests::msg::BasicTypes>::value,
     "BasicTypes::has_bounded_size is false");
 
   static_assert(
-    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::Constants>::value,
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_tests::msg::Constants>::value,
     "Constants::has_bounded_size is false");
 
   static_assert(
-    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::Defaults>::value,
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_tests::msg::Defaults>::value,
     "Defaults::has_bounded_size is false");
 
   static_assert(
-    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::Empty>::value,
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_tests::msg::Empty>::value,
     "Empty::has_bounded_size is false");
 
   static_assert(
-    !rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::MultiNested>::value,
+    !rosidl_generator_traits::has_bounded_size<rosidl_generator_tests::msg::MultiNested>::value,
     "MultiNested::has_bounded_size is true");
 
   static_assert(
-    rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::Nested>::value,
+    rosidl_generator_traits::has_bounded_size<rosidl_generator_tests::msg::Nested>::value,
     "Nested::has_bounded_size is false");
 
   static_assert(
-    !rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::Strings>::value,
+    !rosidl_generator_traits::has_bounded_size<rosidl_generator_tests::msg::Strings>::value,
     "Strings::has_bounded_size is true");
 
   static_assert(
     !rosidl_generator_traits::has_bounded_size<
-      rosidl_generator_cpp::msg::UnboundedSequences>::value,
+      rosidl_generator_tests::msg::UnboundedSequences>::value,
     "UnboundedSequences::has_bounded_size is true");
 
   static_assert(
-    !rosidl_generator_traits::has_bounded_size<rosidl_generator_cpp::msg::WStrings>::value,
+    !rosidl_generator_traits::has_bounded_size<rosidl_generator_tests::msg::WStrings>::value,
     "WStrings::has_bounded_size is true");
 }
 
@@ -148,7 +150,7 @@ TEST(Test_rosidl_generator_traits, has_bounded_size) {
   Message.FieldName = InitialValue; \
   Message.FieldName = FinalValue;
 
-void test_message_basic_types(rosidl_generator_cpp::msg::BasicTypes message)
+void test_message_basic_types(rosidl_generator_tests::msg::BasicTypes message)
 {
 // workaround for https://github.com/google/googletest/issues/322
 #ifdef __linux__
@@ -193,7 +195,7 @@ void test_message_basic_types(rosidl_generator_cpp::msg::BasicTypes message)
   std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName);
 
-void test_message_bounded(rosidl_generator_cpp::msg::BoundedSequences message)
+void test_message_bounded(rosidl_generator_tests::msg::BoundedSequences message)
 {
   TEST_BOUNDED_SEQUENCE_TYPES(
     message, bool_values, bool, SEQUENCE_SIZE, \
@@ -259,7 +261,7 @@ void test_message_bounded(rosidl_generator_cpp::msg::BoundedSequences message)
   std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
-void test_message_unbounded(rosidl_generator_cpp::msg::UnboundedSequences message)
+void test_message_unbounded(rosidl_generator_tests::msg::UnboundedSequences message)
 {
   TEST_UNBOUNDED_SEQUENCE_TYPES(
     message, bool_values, bool, SEQUENCE_SIZE, \
@@ -313,7 +315,7 @@ void test_message_unbounded(rosidl_generator_cpp::msg::UnboundedSequences messag
   std::copy_n(pattern_ ## FieldName.begin(), ArraySize, Message.FieldName.begin()); \
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
-void test_message_arrays(rosidl_generator_cpp::msg::Arrays message)
+void test_message_arrays(rosidl_generator_tests::msg::Arrays message)
 {
   TEST_ARRAY_TYPES(
     message, bool_values, bool, ARRAY_SIZE, \
@@ -358,31 +360,31 @@ void test_message_arrays(rosidl_generator_cpp::msg::Arrays message)
 
 // Basic types
 TEST(Test_messages, basic_types) {
-  rosidl_generator_cpp::msg::BasicTypes message;
+  rosidl_generator_tests::msg::BasicTypes message;
   test_message_basic_types(message);
 }
 
 // Arrays
 TEST(Test_messages, arrays) {
-  rosidl_generator_cpp::msg::Arrays message;
+  rosidl_generator_tests::msg::Arrays message;
   test_message_arrays(message);
 }
 
 // Bounded sequences
 TEST(Test_messages, bounded_sequences) {
-  rosidl_generator_cpp::msg::BoundedSequences message;
+  rosidl_generator_tests::msg::BoundedSequences message;
   test_message_bounded(message);
 }
 
 // Unbounded sequences
 TEST(Test_messages, unbounded_sequences) {
-  rosidl_generator_cpp::msg::UnboundedSequences message;
+  rosidl_generator_tests::msg::UnboundedSequences message;
   test_message_unbounded(message);
 }
 
 // Array of bounded sequences
 TEST(Test_messages, array_bounded) {
-  rosidl_generator_cpp::msg::MultiNested message;
+  rosidl_generator_tests::msg::MultiNested message;
   for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
     test_message_bounded(message.array_of_bounded_sequences[i]);
   }
@@ -390,7 +392,7 @@ TEST(Test_messages, array_bounded) {
 
 // Array of unbounded sequences
 TEST(Test_messages, array_unbounded) {
-  rosidl_generator_cpp::msg::MultiNested message;
+  rosidl_generator_tests::msg::MultiNested message;
   for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
     test_message_unbounded(message.array_of_unbounded_sequences[i]);
   }
@@ -398,7 +400,7 @@ TEST(Test_messages, array_unbounded) {
 
 // Bounded sequence of basic types
 TEST(Test_messages, bounded_sequence_basic_types) {
-  rosidl_generator_cpp::msg::BoundedSequences message;
+  rosidl_generator_tests::msg::BoundedSequences message;
   message.basic_types_values.resize(SUBMESSAGE_SEQUENCE_SIZE);
   for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
     test_message_basic_types(message.basic_types_values[i]);
@@ -407,7 +409,7 @@ TEST(Test_messages, bounded_sequence_basic_types) {
 
 // Bounded sequence of bounded sequences
 TEST(Test_messages, bounded_sequence_bounded) {
-  rosidl_generator_cpp::msg::MultiNested message;
+  rosidl_generator_tests::msg::MultiNested message;
   message.bounded_sequence_of_bounded_sequences.resize(SUBMESSAGE_SEQUENCE_SIZE);
   for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
     test_message_bounded(message.bounded_sequence_of_bounded_sequences[i]);
@@ -416,7 +418,7 @@ TEST(Test_messages, bounded_sequence_bounded) {
 
 // Bounded sequence of unbounded sequences
 TEST(Test_messages, bounded_sequence_unbounded) {
-  rosidl_generator_cpp::msg::MultiNested message;
+  rosidl_generator_tests::msg::MultiNested message;
   message.bounded_sequence_of_unbounded_sequences.resize(SUBMESSAGE_SEQUENCE_SIZE);
   for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
     test_message_unbounded(message.bounded_sequence_of_unbounded_sequences[i]);
@@ -425,7 +427,7 @@ TEST(Test_messages, bounded_sequence_unbounded) {
 
 // Unbounded sequence of basic types
 TEST(Test_messages, unbounded_sequence_basic_types) {
-  rosidl_generator_cpp::msg::UnboundedSequences message;
+  rosidl_generator_tests::msg::UnboundedSequences message;
   message.basic_types_values.resize(SUBMESSAGE_SEQUENCE_SIZE);
   for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
     test_message_basic_types(message.basic_types_values[i]);
@@ -434,7 +436,7 @@ TEST(Test_messages, unbounded_sequence_basic_types) {
 
 // Unbounded sequence of bounded sequences
 TEST(Test_messages, unbounded_sequence_bounded) {
-  rosidl_generator_cpp::msg::MultiNested message;
+  rosidl_generator_tests::msg::MultiNested message;
   message.unbounded_sequence_of_bounded_sequences.resize(SUBMESSAGE_SEQUENCE_SIZE);
   for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
     test_message_bounded(message.unbounded_sequence_of_bounded_sequences[i]);
@@ -443,7 +445,7 @@ TEST(Test_messages, unbounded_sequence_bounded) {
 
 // Unbounded sequence of unbounded sequences
 TEST(Test_messages, unbounded_sequence_unbounded) {
-  rosidl_generator_cpp::msg::MultiNested message;
+  rosidl_generator_tests::msg::MultiNested message;
   message.unbounded_sequence_of_unbounded_sequences.resize(SUBMESSAGE_SEQUENCE_SIZE);
   for (int i = 0; i < SUBMESSAGE_SEQUENCE_SIZE; i++) {
     test_message_unbounded(message.unbounded_sequence_of_unbounded_sequences[i]);
@@ -452,7 +454,7 @@ TEST(Test_messages, unbounded_sequence_unbounded) {
 
 // Constants
 TEST(Test_messages, constants) {
-  rosidl_generator_cpp::msg::Constants message;
+  rosidl_generator_tests::msg::Constants message;
   ASSERT_EQ(true, message.BOOL_CONST);
   ASSERT_EQ(50, message.BYTE_CONST);
   ASSERT_EQ(100, message.CHAR_CONST);
@@ -470,7 +472,7 @@ TEST(Test_messages, constants) {
 
 // Defaults
 TEST(Test_messages, defaults) {
-  rosidl_generator_cpp::msg::Defaults message;
+  rosidl_generator_tests::msg::Defaults message;
 // workaround for https://github.com/google/googletest/issues/322
 #ifdef __linux__
 #pragma GCC diagnostic push
@@ -496,7 +498,7 @@ TEST(Test_messages, defaults) {
 
 // String array with default values
 TEST(Test_messages, string_arrays_default) {
-  rosidl_generator_cpp::msg::Arrays message;
+  rosidl_generator_tests::msg::Arrays message;
   ASSERT_STREQ("", message.string_values_default[0].c_str());
   ASSERT_STREQ("max value", message.string_values_default[1].c_str());
   ASSERT_STREQ("min value", message.string_values_default[2].c_str());
@@ -505,7 +507,7 @@ TEST(Test_messages, string_arrays_default) {
 
 // TODO(mikaelarguedas) reenable this test when bounded strings enforce length
 TEST(Test_messages, DISABLED_Test_bounded_strings) {
-  rosidl_generator_cpp::msg::Strings message;
+  rosidl_generator_tests::msg::Strings message;
   TEST_STRING_FIELD_ASSIGNMENT(message, bounded_string_value, "", "Deep into")
   std::string tooLongString = std::string("Too long string");
   message.bounded_string_value = tooLongString;
@@ -514,12 +516,12 @@ TEST(Test_messages, DISABLED_Test_bounded_strings) {
 }
 
 TEST(Test_messages, Test_string) {
-  rosidl_generator_cpp::msg::Strings message;
+  rosidl_generator_tests::msg::Strings message;
   TEST_STRING_FIELD_ASSIGNMENT(message, string_value, "", "Deep into")
 }
 
 TEST(Test_messages, Test_wstring) {
-  rosidl_generator_cpp::msg::WStrings message;
+  rosidl_generator_tests::msg::WStrings message;
   TEST_WSTRING_FIELD_ASSIGNMENT(message, wstring_value, u"", u"wstring_value_\u2122")
 }
 
@@ -532,7 +534,7 @@ TEST(Test_messages, Test_wstring) {
   ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
 TEST(Test_messages, Test_string_array_static) {
-  rosidl_generator_cpp::msg::Arrays message;
+  rosidl_generator_tests::msg::Arrays message;
   TEST_STATIC_ARRAY_STRING(
     message, string_values_default, std::string, ARRAY_SIZE, \
     0, UINT32_MAX, 0, UINT16_MAX)

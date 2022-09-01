@@ -18,8 +18,8 @@
 
 #include <string>
 
-#include "rosidl_generator_cpp/msg/defaults.hpp"
-#include "rosidl_generator_cpp/msg/bounded_sequences.hpp"
+#include "rosidl_generator_tests/msg/defaults.hpp"
+#include "rosidl_generator_tests/msg/bounded_sequences.hpp"
 
 template<typename Callable>
 struct ScopeExit
@@ -45,7 +45,7 @@ make_scope_exit(Callable callable)
   auto STRING_JOIN(scope_exit_, __LINE__) = make_scope_exit([&]() {code;})
 
 TEST(Test_msg_initialization, no_arg_constructor) {
-  rosidl_generator_cpp::msg::Defaults def;
+  rosidl_generator_tests::msg::Defaults def;
   ASSERT_TRUE(def.bool_value);
   ASSERT_EQ(50, def.byte_value);
   ASSERT_EQ(100, def.char_value);
@@ -60,7 +60,7 @@ TEST(Test_msg_initialization, no_arg_constructor) {
   ASSERT_EQ(-40000000LL, def.int64_value);
   ASSERT_EQ(50000000ULL, def.uint64_value);
 
-  rosidl_generator_cpp::msg::BasicTypes basic;
+  rosidl_generator_tests::msg::BasicTypes basic;
   ASSERT_FALSE(basic.bool_value);
   ASSERT_EQ(0, basic.byte_value);
   ASSERT_EQ(0, basic.char_value);
@@ -76,7 +76,7 @@ TEST(Test_msg_initialization, no_arg_constructor) {
 }
 
 TEST(Test_msg_initialization, all_constructor) {
-  rosidl_generator_cpp::msg::Defaults def(
+  rosidl_generator_tests::msg::Defaults def(
     rosidl_runtime_cpp::MessageInitialization::ALL);
   ASSERT_TRUE(def.bool_value);
   ASSERT_EQ(50, def.byte_value);
@@ -92,7 +92,7 @@ TEST(Test_msg_initialization, all_constructor) {
   ASSERT_EQ(-40000000LL, def.int64_value);
   ASSERT_EQ(50000000ULL, def.uint64_value);
 
-  rosidl_generator_cpp::msg::BasicTypes basic;
+  rosidl_generator_tests::msg::BasicTypes basic;
   ASSERT_FALSE(basic.bool_value);
   ASSERT_EQ(0, basic.byte_value);
   ASSERT_EQ(0, basic.char_value);
@@ -108,7 +108,7 @@ TEST(Test_msg_initialization, all_constructor) {
 }
 
 TEST(Test_msg_initialization, zero_constructor) {
-  rosidl_generator_cpp::msg::Defaults def(
+  rosidl_generator_tests::msg::Defaults def(
     rosidl_runtime_cpp::MessageInitialization::ZERO);
   ASSERT_FALSE(def.bool_value);
   ASSERT_EQ(0, def.byte_value);
@@ -124,7 +124,7 @@ TEST(Test_msg_initialization, zero_constructor) {
   ASSERT_EQ(0LL, def.int64_value);
   ASSERT_EQ(0ULL, def.uint64_value);
 
-  rosidl_generator_cpp::msg::BasicTypes basic;
+  rosidl_generator_tests::msg::BasicTypes basic;
   ASSERT_FALSE(basic.bool_value);
   ASSERT_EQ(0, basic.byte_value);
   ASSERT_EQ(0, basic.char_value);
@@ -140,7 +140,7 @@ TEST(Test_msg_initialization, zero_constructor) {
 }
 
 TEST(Test_msg_initialization, defaults_only_constructor) {
-  rosidl_generator_cpp::msg::Defaults def(
+  rosidl_generator_tests::msg::Defaults def(
     rosidl_runtime_cpp::MessageInitialization::DEFAULTS_ONLY);
   ASSERT_TRUE(def.bool_value);
   ASSERT_EQ(50, def.byte_value);
@@ -156,7 +156,7 @@ TEST(Test_msg_initialization, defaults_only_constructor) {
   ASSERT_EQ(-40000000LL, def.int64_value);
   ASSERT_EQ(50000000ULL, def.uint64_value);
 
-  rosidl_generator_cpp::msg::BasicTypes basic;
+  rosidl_generator_tests::msg::BasicTypes basic;
   ASSERT_FALSE(basic.bool_value);
   ASSERT_EQ(0, basic.byte_value);
   ASSERT_EQ(0, basic.char_value);
@@ -174,11 +174,11 @@ TEST(Test_msg_initialization, defaults_only_constructor) {
 // This is a test to ensure that when the user passes SKIP to the constructor,
 // it does no initialization.
 TEST(Test_msg_initialization, skip_constructor) {
-  char * memory = new char[sizeof(rosidl_generator_cpp::msg::BoundedSequences)];
+  char * memory = new char[sizeof(rosidl_generator_tests::msg::BoundedSequences)];
 
-  std::memset(memory, 0xfe, sizeof(rosidl_generator_cpp::msg::BoundedSequences));
-  rosidl_generator_cpp::msg::BoundedSequences * bounded =
-    new(memory) rosidl_generator_cpp::msg::BoundedSequences(
+  std::memset(memory, 0xfe, sizeof(rosidl_generator_tests::msg::BoundedSequences));
+  rosidl_generator_tests::msg::BoundedSequences * bounded =
+    new(memory) rosidl_generator_tests::msg::BoundedSequences(
     rosidl_runtime_cpp::MessageInitialization::SKIP);
 
   // ensures that the memory gets freed even if an ASSERT is raised

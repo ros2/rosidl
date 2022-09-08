@@ -2,6 +2,14 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.3.0 (2022-09-08)
+------------------
+* Move rosidl_generator_c/cpp tests to a separate package (`#701 <https://github.com/ros2/rosidl/issues/701>`_)
+* Move rosidl_cmake Python module to a new package rosidl_pycommon (`#696 <https://github.com/ros2/rosidl/issues/696>`_)
+  Deprecate the Python module in rosidl_cmake and move the implementation to the new package rosidl_pycommon.
+* Add namespaced ALIAS target to easily consume generated libraries via add_subdirectory (`#605 <https://github.com/ros2/rosidl/issues/605>`_)
+* Contributors: Jacob Perron, Silvio Traversaro
+
 3.2.1 (2022-06-21)
 ------------------
 

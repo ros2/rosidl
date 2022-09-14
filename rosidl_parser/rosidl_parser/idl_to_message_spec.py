@@ -54,6 +54,10 @@ def resolve_typename(member_type: Type[idl_def.AbstractType]) -> str:
 def build_type_string(member_type: Type[idl_def.AbstractType], constants: List[idl_def.Constant]) -> str:
     type_string = resolve_typename(member_type)
 
+    if isinstance(member_type, idl_def.AbstractNestedType):
+        if isinstance(member_type.value_type, idl_def.NamespacedType):
+            type_string = f"{member_type.value_type.namespaces[0]}/{type_string}"
+
     if type_string in IDL_TYPE_TO_MSG:
         type_string = IDL_TYPE_TO_MSG[type_string]
     elif type_string in UNSUPPORTED_ROSIDL_TYPES:
@@ -108,7 +112,7 @@ def process_members(members: List[idl_def.Member], constants: List[idl_def.Const
         type_pkg_name = None
         type_string = build_type_string(m.type, constants)
 
-        if isinstance(m.type, idl_def.NamespacedType):
+        if isinstance(m.type, idl_def.NamedType):
             type_pkg_name = m.type.namespaces[0]
 
         field_type = rosidl_parser.Type(type_string, type_pkg_name)

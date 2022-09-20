@@ -2,6 +2,9 @@
 Changelog for package rosidl_typesupport_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.0 (2022-09-20)
+------------------
+
 1.2.1 (2021-04-14)
 ------------------
 * Update quality declaration links (re: `ros2/docs.ros2.org#52 <https://github.com/ros2/docs.ros2.org/issues/52>`_) (`#582 <https://github.com/ros2/rosidl/issues/582>`_)

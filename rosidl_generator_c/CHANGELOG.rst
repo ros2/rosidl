@@ -2,6 +2,14 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.0 (2022-09-20)
+------------------
+* Fix a cpplint allocator regression (`#590 <https://github.com/ros2/rosidl/issues/590>`_)
+* Use rcutils allocators in rosidl_generator_c (`#584 <https://github.com/ros2/rosidl/issues/584>`_)
+* Implement equality operator function for C messages. (`#648 <https://github.com/ros2/rosidl/issues/648>`_) (`#667 <https://github.com/ros2/rosidl/issues/667>`_)
+* Implement copy function for C messages (`#650 <https://github.com/ros2/rosidl/issues/650>`_) (`#667 <https://github.com/ros2/rosidl/issues/667>`_)
+* Contributors: Chris Lalancette, Michel Hidalgo, Nikolai Morin, Pablo Garrido
+
 1.2.1 (2021-04-14)
 ------------------
 

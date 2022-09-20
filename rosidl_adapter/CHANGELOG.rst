@@ -2,6 +2,11 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.0 (2022-09-20)
+------------------
+* Fix escaping in string literals (`#595 <https://github.com/ros2/rosidl/issues/595>`_) (`#618 <https://github.com/ros2/rosidl/issues/618>`_)
+* Contributors: Ivan Santiago Paunovic, Jacob Perron
+
 1.2.1 (2021-04-14)
 ------------------
 * Hex constants and tab as whitespace support (`#568 <https://github.com/ros2/rosidl/issues/568>`_)

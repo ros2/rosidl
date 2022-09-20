@@ -2,6 +2,13 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.3.0 (2022-09-20)
+------------------
+* Use rcutils allocators in rosidl_generator_c (`#584 <https://github.com/ros2/rosidl/issues/584>`_)
+* Implement equality operator function for C messages. (`#648 <https://github.com/ros2/rosidl/issues/648>`_) (`#667 <https://github.com/ros2/rosidl/issues/667>`_)
+* Implement copy function for C messages (`#650 <https://github.com/ros2/rosidl/issues/650>`_) (`#667 <https://github.com/ros2/rosidl/issues/667>`_)
+* Contributors: Michel Hidalgo, Nikolai Morin, Pablo Garrido
+
 1.2.1 (2021-04-14)
 ------------------
 * Update quality declaration links (re: `ros2/docs.ros2.org#52 <https://github.com/ros2/docs.ros2.org/issues/52>`_) (`#582 <https://github.com/ros2/rosidl/issues/582>`_)

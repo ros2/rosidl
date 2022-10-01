@@ -47,14 +47,12 @@
 # :param ADD_LINTER_TESTS: if set lint the interface files using
 #   the ``ament_lint`` package
 # :type ADD_LINTER_TESTS: option
-# :param SKIP_EXPORT_DEPENDENCIES: if set don't ament export the dependencies listed
-# :type SKIP_EXPORT_DEPENDENCIES: option
 #
 # @public
 #
 macro(rosidl_generate_interfaces target)
   cmake_parse_arguments(_ARG
-    "ADD_LINTER_TESTS;SKIP_INSTALL;SKIP_GROUP_MEMBERSHIP_CHECK;SKIP_EXPORT_DEPENDENCIES"
+    "ADD_LINTER_TESTS;SKIP_INSTALL;SKIP_GROUP_MEMBERSHIP_CHECK"
     "LIBRARY_NAME" "DEPENDENCIES"
     ${ARGN})
   if(NOT _ARG_UNPARSED_ARGUMENTS)
@@ -68,7 +66,7 @@ macro(rosidl_generate_interfaces target)
   endif()
 
   _rosidl_cmake_register_package_hook()
-  if(NOT _ARG_SKIP_EXPORT_DEPENDENCIES)
+  if(NOT _ARG_SKIP_INSTALL)
     ament_export_dependencies(${_ARG_DEPENDENCIES})
   endif()
 

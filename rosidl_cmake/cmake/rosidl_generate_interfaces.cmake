@@ -171,7 +171,7 @@ macro(rosidl_generate_interfaces target)
       # It is safe to break out of the loop since services only depend on service_msgs
       # Which has already been found above
       break()
-    elseif(NOT service_msgs_FOUND AND "${_parent_dir}" STREQUAL "srv")
+    elseif("${_parent_dir}" STREQUAL "srv")
       # Services depend on service_msgs
       find_package(service_msgs QUIET)
       if(NOT ${service_msgs_FOUND})

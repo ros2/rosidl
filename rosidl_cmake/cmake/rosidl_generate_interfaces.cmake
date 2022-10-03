@@ -145,6 +145,7 @@ macro(rosidl_generate_interfaces target)
     # We use the parent directory name to identify if the interface is an action or service
     string(REGEX REPLACE ".*:([^:]*)$" "\\1" _tuple_file "${_tuple}")
     get_filename_component(_parent_dir "${_tuple_file}" DIRECTORY)
+    get_filename_component(_parent_dir ${_parent_dir} NAME)
 
     if("${_parent_dir}" STREQUAL "action")
       # Actions depend on the packages service_msgs and action_msgs

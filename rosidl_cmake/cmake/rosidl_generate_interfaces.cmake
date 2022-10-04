@@ -41,8 +41,8 @@
 # :type LIBRARY_NAME: string
 # :param SKIP_INSTALL: if set skip installing the interface files
 # :type SKIP_INSTALL: option
-# :param SKIP_GROUP_MEMBERSHIP_CHECK: if set, skip enforcing the appartenance
-#   to the rosidl_interface_packages group
+# :param SKIP_GROUP_MEMBERSHIP_CHECK: if set, skip enforcing membership in the
+#   rosidl_interface_packages group
 # :type SKIP_GROUP_MEMBERSHIP_CHECK: option
 # :param ADD_LINTER_TESTS: if set lint the interface files using
 #   the ``ament_lint`` package
@@ -66,7 +66,9 @@ macro(rosidl_generate_interfaces target)
   endif()
 
   _rosidl_cmake_register_package_hook()
-  ament_export_dependencies(${_ARG_DEPENDENCIES})
+  if(NOT _ARG_SKIP_INSTALL)
+    ament_export_dependencies(${_ARG_DEPENDENCIES})
+  endif()
 
   # check that passed interface files exist
   # a tuple with an absolute base and a relative path is returned as is

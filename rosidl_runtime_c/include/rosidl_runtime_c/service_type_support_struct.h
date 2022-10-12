@@ -15,12 +15,13 @@
 #ifndef ROSIDL_RUNTIME_C__SERVICE_TYPE_SUPPORT_STRUCT_H_
 #define ROSIDL_RUNTIME_C__SERVICE_TYPE_SUPPORT_STRUCT_H_
 
+#include <stdint.h>
+
 #include "rcutils/allocator.h"
 #include "rosidl_runtime_c/message_type_support_struct.h"
 #include "rosidl_runtime_c/visibility_control.h"
 
 #include "rosidl_typesupport_interface/macros.h"
-#include "stdint.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -32,7 +33,8 @@ typedef struct rosidl_service_type_support_t rosidl_service_type_support_t;
 typedef const rosidl_service_type_support_t * (* rosidl_service_typesupport_handle_function)(
   const rosidl_service_type_support_t *, const char *);
 
-typedef struct rosidl_service_introspection_info_s {
+typedef struct rosidl_service_introspection_info_s
+{
   uint8_t event_type;
   int32_t stamp_sec;
   uint32_t stamp_nanosec;
@@ -54,11 +56,11 @@ typedef struct rosidl_service_introspection_info_s {
  * \return The built ServiceEvent message. Will return NULL if the message could not be built.
  **/
 typedef void * (* rosidl_event_message_create_handle)(
-    const rosidl_service_introspection_info_t * info,
-    rcutils_allocator_t * allocator,
-    const void * request_message,
-    const void * response_message,
-    bool enable_message_payload);
+  const rosidl_service_introspection_info_t * info,
+  rcutils_allocator_t * allocator,
+  const void * request_message,
+  const void * response_message,
+  bool enable_message_payload);
 
 /// Destroys a ServiceEvent message
 /**
@@ -69,8 +71,8 @@ typedef void * (* rosidl_event_message_create_handle)(
  * \param[in] allocator The allocator to use for deallocating the message.
  */
 typedef bool (* rosidl_event_message_destroy_handle)(
-    void * event_message,
-    rcutils_allocator_t * allocator);
+  void * event_message,
+  rcutils_allocator_t * allocator);
 
 /// Contains rosidl service type support data
 struct rosidl_service_type_support_t

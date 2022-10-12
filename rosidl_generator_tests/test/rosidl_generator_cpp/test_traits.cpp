@@ -429,5 +429,5 @@ TEST(Test_rosidl_generator_traits, is_service) {
   EXPECT_FALSE(is_service<ServiceEvent>());
   EXPECT_TRUE(is_message<ServiceEvent>());
   EXPECT_FALSE(is_service_request<ServiceEvent>());
-  EXPECT_TRUE(is_service_response<ServiceEvent>());
+  EXPECT_FALSE(is_service_response<ServiceEvent>());
 }

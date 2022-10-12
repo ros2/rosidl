@@ -101,8 +101,7 @@ get_service_type_support_handle<@('::'.join([package_name] + list(interface_path
   if (
     service_members->request_members_ == nullptr ||
     service_members->response_members_ == nullptr ||
-    service_members->event_members_ == nullptr
-    )
+    service_members->event_members_ == nullptr)
   {
     // initialize the request_members_ with the static function from the external library
     service_members->request_members_ = static_cast<

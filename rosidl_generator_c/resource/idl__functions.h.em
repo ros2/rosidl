@@ -78,7 +78,6 @@ TEMPLATE(
     package_name=package_name, interface_path=interface_path,
     message=service.event_message)
 }@
-
 @[end for]@
 @
 @#######################################################################

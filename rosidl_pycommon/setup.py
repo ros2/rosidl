@@ -5,7 +5,7 @@ package_name = 'rosidl_pycommon'
 
 setup(
     name=package_name,
-    version='3.3.0',
+    version='3.3.1',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages',

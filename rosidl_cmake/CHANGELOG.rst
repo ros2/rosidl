@@ -2,6 +2,11 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.4 (2022-11-07)
+------------------
+* Protect rosidl_target_interfaces from using NOTFOUND in include_directories (`#679 <https://github.com/ros2/rosidl/issues/679>`_) (`#681 <https://github.com/ros2/rosidl/issues/681>`_)
+* Contributors: Jose Luis Rivero
+
 3.1.3 (2022-04-08)
 ------------------
 

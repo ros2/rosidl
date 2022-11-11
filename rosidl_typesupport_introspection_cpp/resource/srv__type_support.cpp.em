@@ -22,6 +22,9 @@ TEMPLATE(
 
 @{
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
+from rosidl_parser.definition import SERVICE_REQUEST_MESSAGE_SUFFIX
+from rosidl_parser.definition import SERVICE_RESPONSE_MESSAGE_SUFFIX
+from rosidl_parser.definition import SERVICE_EVENT_MESSAGE_SUFFIX
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 include_base = '/'.join(include_parts)
@@ -68,10 +71,69 @@ static ::rosidl_typesupport_introspection_cpp::ServiceMembers @(service.namespac
   nullptr,  // event message
 };
 
+@{
+event_type = '::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]) + SERVICE_EVENT_MESSAGE_SUFFIX}@
+void *
+rosidl_typesupport_introspection_cpp_@('_'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))_event_message_create(
+  const rosidl_service_introspection_info_t * info,
+  rcutils_allocator_t * allocator,
+  const void * request_message,
+  const void * response_message,
+  bool enable_message_payload)
+{
+  if (nullptr == info) {
+    throw std::invalid_argument("service introspection info struct cannot be null");
+  }
+  if (nullptr == allocator) {
+    throw std::invalid_argument("allocator cannot be null");
+  }
+  auto * event_msg = static_cast<@event_type *>(allocator->allocate(sizeof(@event_type), allocator->state));
+  if (nullptr == event_msg) {
+    throw std::invalid_argument("allocation failed for service event message");
+  }
+  event_msg = new(event_msg) @(event_type)();
+
+  event_msg->info.set__event_type(info->event_type);
+  event_msg->info.set__sequence_number(info->sequence_number);
+  event_msg->info.stamp.set__sec(info->stamp_sec);
+  event_msg->info.stamp.set__nanosec(info->stamp_nanosec);
+
+  std::array<uint8_t, 16> client_id;
+  std::move(std::begin(info->client_id), std::end(info->client_id), client_id.begin());
+  event_msg->info.client_id.set__uuid(client_id);
+
+  // TODO(jacobperron): consider removing this argument and let users pass nullptr for both request and response messages
+  if (!enable_message_payload) {
+    return event_msg;
+  }
+  if (nullptr != request_message) {
+    event_msg->request.push_back(*static_cast<const @('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]) + SERVICE_REQUEST_MESSAGE_SUFFIX) *>(request_message));
+  }
+  if (nullptr != response_message) {
+    event_msg->response.push_back(*static_cast<const @('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]) + SERVICE_RESPONSE_MESSAGE_SUFFIX) *>(response_message));
+  }
+
+  return event_msg;
+}
+
+bool
+rosidl_typesupport_introspection_cpp_@('_'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))_event_message_destroy(
+  void * event_msg,
+  rcutils_allocator_t * allocator)
+{
+  auto * event_msg_ = static_cast<@event_type *>(event_msg);
+  event_msg_->~@(service.namespaced_type.name)_Event();
+  allocator->deallocate(event_msg, allocator->state);
+  return true;
+}
+
 static const rosidl_service_type_support_t @(service.namespaced_type.name)_service_type_support_handle = {
   ::rosidl_typesupport_introspection_cpp::typesupport_identifier,
   &@(service.namespaced_type.name)_service_members,
   get_service_typesupport_handle_function,
+  rosidl_typesupport_introspection_cpp_@('_'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))_event_message_create,
+  rosidl_typesupport_introspection_cpp_@('_'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))_event_message_destroy,
+  ::rosidl_typesupport_cpp::get_message_type_support_handle<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))_Event>(),
 };
 
 }  // namespace rosidl_typesupport_introspection_cpp

@@ -40,10 +40,13 @@ for member in message.structure.members:
         type_ = type_.value_type
     if isinstance(type_, NamespacedType):
         if (
+            message.structure.namespaced_type.namespaces[-1] == 'srv' and (
             type_.name.endswith(SERVICE_REQUEST_MESSAGE_SUFFIX) or
-            type_.name.endswith(SERVICE_RESPONSE_MESSAGE_SUFFIX)
+            type_.name.endswith(SERVICE_RESPONSE_MESSAGE_SUFFIX))
         ):
-            continue
+            typename = type_.name.rsplit('_', 1)[0]
+            if typename == message.structure.namespaced_type.name.rsplit('_', 1)[0]:
+                continue
         if (
             type_.name.endswith(ACTION_GOAL_SUFFIX) or
             type_.name.endswith(ACTION_RESULT_SUFFIX) or

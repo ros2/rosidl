@@ -6,9 +6,14 @@
   <description>
     Command line tools for ROS interface generation.
   </description>
-  <maintainer email="michel@ekumenlabs.com">Michel Hidalgo</maintainer>
+
+  <maintainer email="aditya.pande@openrobotics.org">Aditya Pande</maintainer>
+  <maintainer email="brandon@openrobotics.org">Brandon Ong</maintainer>
+  <maintainer email="dharini@openrobotics.org">Dharini Dutia</maintainer>
   <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>
+
   <license>Apache License 2.0</license>
+
   <author email="clalancette@openrobotics.org">Chris Lalancette</author>
   <author email="michel@ekumenlabs.com">Michel Hidalgo</author>
 

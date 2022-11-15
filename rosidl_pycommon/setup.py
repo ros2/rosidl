@@ -16,8 +16,8 @@ setup(
     zip_safe=True,
     author='Jacob Perron',
     author_email='jacob@openrobotics.org',
-    maintainer='Michel Hidalgo, Shane Loretz',
-    maintainer_email='michel@ekumenlabs.com, sloretz@openrobotics.org',
+    maintainer='Aditya Pande, Brandon Ong, Dharini Dutia, Shane Loretz',
+    maintainer_email='aditya.pande@openrobotics.org, brandon@openrobotics.org, dharini@openrobotics.org, sloretz@openrobotics.org',  # noqa: E501
     description='Common Python functions used by rosidl packages.',
     license='Apache License, Version 2.0',
     tests_require=['pytest'],

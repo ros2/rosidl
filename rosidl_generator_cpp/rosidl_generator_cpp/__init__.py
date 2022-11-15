@@ -34,6 +34,7 @@ def generate_cpp(generator_arguments_file):
         'idl__builder.hpp.em': 'detail/%s__builder.hpp',
         'idl__struct.hpp.em': 'detail/%s__struct.hpp',
         'idl__traits.hpp.em': 'detail/%s__traits.hpp',
+        'idl__typesupport.hpp.em': 'detail/%s__typesupport.hpp',
     }
     return generate_files(
         generator_arguments_file, mapping,

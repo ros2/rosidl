@@ -24,6 +24,19 @@ namespace rosidl_typesupport_cpp
 template<typename T>
 const rosidl_service_type_support_t * get_service_type_support_handle();
 
+template<typename T>
+void * service_create_event_message(
+  const rosidl_service_introspection_info_t * info,
+  rcutils_allocator_t * allocator,
+  const void * request_message,
+  const void * response_message,
+  bool enable_message_payload);
+
+template<typename T>
+bool service_destroy_event_message(
+  void * event_msg,
+  rcutils_allocator_t * allocator);
+
 }  // namespace rosidl_typesupport_cpp
 
 #endif  // ROSIDL_TYPESUPPORT_CPP__SERVICE_TYPE_SUPPORT_HPP_

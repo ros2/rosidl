@@ -4,12 +4,18 @@
   <name>rosidl_generator_c</name>
   <version>3.3.1</version>
   <description>Generate the ROS interfaces in C.</description>
-  <maintainer email="michel@ekumenlabs.com">Michel Hidalgo</maintainer>
+
+  <maintainer email="aditya.pande@openrobotics.org">Aditya Pande</maintainer>
+  <maintainer email="brandon@openrobotics.org">Brandon Ong</maintainer>
+  <maintainer email="dharini@openrobotics.org">Dharini Dutia</maintainer>
   <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>
+
   <license>Apache License 2.0</license>
-  <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
-  <author email="william@osrfoundation.org">William Woodall</author>
+
   <author email="clalancette@openrobotics.org">Chris Lalancette</author>
+  <author email="dthomas@osrfoundation.org">Dirk Thomas</author>
+  <author email="michel@ekumenlabs.com">Michel Hidalgo</author>
+  <author email="william@osrfoundation.org">William Woodall</author>
 
   <buildtool_depend>ament_cmake_python</buildtool_depend>
   <buildtool_depend>ament_cmake_ros</buildtool_depend>

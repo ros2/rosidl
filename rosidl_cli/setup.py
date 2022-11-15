@@ -24,8 +24,8 @@ setup(
     zip_safe=False,
     author='Michel Hidalgo',
     author_email='michel@ekumenlabs.com',
-    maintainer='Michel Hidalgo, Shane Loretz',
-    maintainer_email='michel@ekumenlabs.com, sloretz@openrobotics.org',
+    maintainer='Aditya Pande, Brandon Ong, Dharini Dutia, Shane Loretz',
+    maintainer_email='aditya.pande@openrobotics.org, brandon@openrobotics.org, dharini@openrobotics.org, sloretz@openrobotics.org',  # noqa: E501
     url='https://github.com/ros2/rosidl/tree/master/rosidl_cli',
     download_url='https://github.com/ros2/rosidl/releases',
     keywords=[],

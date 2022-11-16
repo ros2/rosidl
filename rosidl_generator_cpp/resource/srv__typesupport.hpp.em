@@ -5,8 +5,7 @@ void * service_create_event_message(
   const rosidl_service_introspection_info_t * info,
   rcutils_allocator_t * allocator,
   const void * request_message,
-  const void * response_message,
-  bool enable_message_payload)
+  const void * response_message)
 {
   if (nullptr == info) {
     throw std::invalid_argument("service introspection info struct cannot be null");
@@ -29,10 +28,6 @@ void * service_create_event_message(
   std::move(std::begin(info->client_id), std::end(info->client_id), client_id.begin());
   event_msg->info.client_id.set__uuid(client_id);
 
-  // TODO(jacobperron): consider removing this argument and let users pass nullptr for both request and response messages
-  if (!enable_message_payload) {
-    return event_msg;
-  }
   if (nullptr != request_message) {
     event_msg->request.push_back(*static_cast<const typename T::Request *>(request_message));
   }

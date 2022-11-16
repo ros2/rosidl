@@ -29,8 +29,7 @@ void * service_create_event_message(
   const rosidl_service_introspection_info_t * info,
   rcutils_allocator_t * allocator,
   const void * request_message,
-  const void * response_message,
-  bool enable_message_payload);
+  const void * response_message);
 
 template<typename T>
 bool service_destroy_event_message(

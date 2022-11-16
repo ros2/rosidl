@@ -47,8 +47,7 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_CREATE_EVENT_MESSAGE_SYMBOL_NAME(
   const rosidl_service_introspection_info_t * info,
   rcutils_allocator_t * allocator,
   const void * request_message,
-  const void * response_message,
-  bool enable_message_payload);
+  const void * response_message);
 
 // Forward declare the function to destroy a service event message for this type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)

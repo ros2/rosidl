@@ -17,8 +17,7 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_CREATE_EVENT_MESSAGE_SYMBOL_NAME(
   const rosidl_service_introspection_info_t * info,
   rcutils_allocator_t * allocator,
   const void * request_message,
-  const void * response_message,
-  bool enable_message_payload)
+  const void * response_message)
 {
   @event_type * event_msg = (@event_type *)(allocator->allocate(sizeof(@event_type), allocator->state));
   if (!@(event_type)__init(event_msg)) {
@@ -33,11 +32,6 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_CREATE_EVENT_MESSAGE_SYMBOL_NAME(
   for (size_t i = 0; i < 16; ++i) {
     event_msg->info.client_id.uuid[i] = info->client_id[i];
   }
-
-  if (!enable_message_payload) {
-    return event_msg;
-  }
-
   if (request_message) {
     event_msg->response.capacity = 1;
     event_msg->response.size = 1;

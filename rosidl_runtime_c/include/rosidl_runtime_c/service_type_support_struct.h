@@ -59,8 +59,7 @@ typedef void * (* rosidl_event_message_create_handle)(
   const rosidl_service_introspection_info_t * info,
   rcutils_allocator_t * allocator,
   const void * request_message,
-  const void * response_message,
-  bool enable_message_payload);
+  const void * response_message);
 
 /// Destroys a ServiceEvent message
 /**

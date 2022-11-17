@@ -30,13 +30,11 @@ include_parts = [package_name] + list(interface_path.parents[0].parts) + [
 include_base = '/'.join(include_parts)
 
 header_files = [
-    'rosidl_runtime_c/service_type_support_struct.h',
     'rosidl_typesupport_cpp/message_type_support.hpp',
     'rosidl_typesupport_cpp/service_type_support.hpp',
     'rosidl_typesupport_interface/macros.h',
     'rosidl_typesupport_introspection_cpp/visibility_control.h',
     include_base + '__struct.hpp',
-    include_base + '__typesupport.hpp',
     'rosidl_typesupport_introspection_cpp/identifier.hpp',
     'rosidl_typesupport_introspection_cpp/message_type_support_decl.hpp',
     'rosidl_typesupport_introspection_cpp/service_introspection.hpp',
@@ -76,8 +74,8 @@ static const rosidl_service_type_support_t @(service.namespaced_type.name)_servi
   ::rosidl_typesupport_introspection_cpp::typesupport_identifier,
   &@(service.namespaced_type.name)_service_members,
   get_service_typesupport_handle_function,
-  &service_create_event_message<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))>,
-  &service_destroy_event_message<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))>,
+  &::rosidl_typesupport_cpp::service_create_event_message<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))>,
+  &::rosidl_typesupport_cpp::service_destroy_event_message<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))>,
   ::rosidl_typesupport_cpp::get_message_type_support_handle<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))_Event>(),
 };
 

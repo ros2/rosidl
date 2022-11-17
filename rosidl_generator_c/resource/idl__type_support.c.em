@@ -47,7 +47,22 @@ TEMPLATE(
 }@
 
 @[end for]@
+@
+@#######################################################################
+@# Handle action
+@#######################################################################
+@{
+from rosidl_parser.definition import Action
+}@
+@[for action in content.get_elements_of_type(Action)]@
+@{
+TEMPLATE(
+    'action__type_support.c.em',
+    package_name=package_name, action=action,
+    interface_path=interface_path, include_directives=include_directives)
+}@
 
+@[end for]@
 #ifdef __cplusplus
 }
 #endif

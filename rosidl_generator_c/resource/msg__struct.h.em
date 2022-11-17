@@ -46,7 +46,7 @@ for member in message.structure.members:
         member_names.append(member.name)
     elif isinstance(type_, NamespacedType):
         if (
-            message.structure.namespaced_type.namespaces[-1] == 'srv' and (
+            message.structure.namespaced_type.namespaces[-1] in ['action', 'srv'] and (
             type_.name.endswith(SERVICE_REQUEST_MESSAGE_SUFFIX) or
             type_.name.endswith(SERVICE_RESPONSE_MESSAGE_SUFFIX))
         ):

@@ -76,7 +76,7 @@ static const rosidl_service_type_support_t @(service.namespaced_type.name)_servi
   get_service_typesupport_handle_function,
   &::rosidl_typesupport_cpp::service_create_event_message<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))>,
   &::rosidl_typesupport_cpp::service_destroy_event_message<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))>,
-  ::rosidl_typesupport_cpp::get_message_type_support_handle<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))_Event>(),
+  ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))_Event>(),
 };
 
 }  // namespace rosidl_typesupport_introspection_cpp

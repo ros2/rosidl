@@ -2,6 +2,11 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.2.3 (2022-12-02)
+------------------
+* Use target output name for exporting typesupport library (`#638 <https://github.com/ros2/rosidl/issues/638>`_)
+* Contributors: Jonathan Selling
+
 2.2.2 (2022-04-28)
 ------------------
 

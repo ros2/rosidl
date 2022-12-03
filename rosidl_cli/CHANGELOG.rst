@@ -2,6 +2,11 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.2.3 (2022-12-02)
+------------------
+* Add missing f for format string (`#718 <https://github.com/ros2/rosidl/issues/718>`_)
+* Contributors: Shane Loretz
+
 2.2.2 (2022-04-28)
 ------------------
 

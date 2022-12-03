@@ -2,6 +2,9 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.2.3 (2022-12-02)
+------------------
+
 2.2.2 (2022-04-28)
 ------------------
 * Galactic backport of `#648 <https://github.com/ros2/rosidl/issues/648>`_ and `#650 <https://github.com/ros2/rosidl/issues/650>`_ (`#668 <https://github.com/ros2/rosidl/issues/668>`_)

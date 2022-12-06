@@ -73,11 +73,11 @@ static rosidl_service_type_support_t @(function_prefix)__@(service.namespaced_ty
   get_service_typesupport_handle_function,
   ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_CREATE_EVENT_MESSAGE_SYMBOL_NAME(
     rosidl_typesupport_c,
-    @(',\n  '.join(service.namespaced_type.namespaced_name()))
+    @(',\n    '.join(service.namespaced_type.namespaced_name()))
   ),
   ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_DESTROY_EVENT_MESSAGE_SYMBOL_NAME(
     rosidl_typesupport_c,
-    @(',\n  '.join(service.namespaced_type.namespaced_name()))
+    @(',\n    '.join(service.namespaced_type.namespaced_name()))
   ),
   &@(message_function_prefix)__@(service.namespaced_type.name)@(SERVICE_EVENT_MESSAGE_SUFFIX)_message_type_support_handle,
 };

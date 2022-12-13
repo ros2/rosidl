@@ -61,14 +61,14 @@ TEST(Test_srv_initialization, no_arg_event_constructor) {
   rosidl_generator_tests::srv::Empty::Event empty;
 
   rosidl_generator_tests::srv::BasicTypes::Event basic_types;
-  EXPECT_EQ(basic_types.info.event_type, 0);
+  EXPECT_EQ(basic_types.info.event_type, 0u);
   EXPECT_EQ(basic_types.info.stamp.sec, 0);
-  EXPECT_EQ(basic_types.info.stamp.nanosec, 0);
+  EXPECT_EQ(basic_types.info.stamp.nanosec, 0u);
   for (auto i : basic_types.info.client_id.uuid) {
-    EXPECT_EQ(i, 0U);
+    EXPECT_EQ(i, 0u);
   }
-  EXPECT_EQ(basic_types.request.size(), 0);
-  EXPECT_EQ(basic_types.response.size(), 0);
+  EXPECT_EQ(basic_types.request.size(), 0u);
+  EXPECT_EQ(basic_types.response.size(), 0u);
 }
 // Note that we very specifically don't add tests for some of the other
 // possibilities here (bounded strings, bounded / unbounded arrays, other

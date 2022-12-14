@@ -19,8 +19,8 @@
 #include <stdexcept>
 #include <utility>
 
-#include <rosidl_runtime_c/service_type_support_struct.h>
-#include <rosidl_runtime_c/visibility_control.h>
+#include "rosidl_runtime_c/service_type_support_struct.h"
+#include "rosidl_runtime_c/visibility_control.h"
 
 namespace rosidl_typesupport_cpp
 {
@@ -41,7 +41,8 @@ void * service_create_event_message(
   if (nullptr == allocator) {
     throw std::invalid_argument("allocator cannot be null");
   }
-  auto * event_msg = static_cast<typename T::Event *>(allocator->allocate(sizeof(typename T::Event), allocator->state));
+  auto * event_msg = static_cast<typename T::Event *>(
+    allocator->allocate(sizeof(typename T::Event), allocator->state));
   if (nullptr == event_msg) {
     throw std::invalid_argument("allocation failed for service event message");
   }

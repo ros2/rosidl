@@ -114,6 +114,11 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspecti
       (const rosidl_typesupport_introspection_c__MessageMembers *)
       ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name + SERVICE_RESPONSE_MESSAGE_SUFFIX))()->data;
   }
+  if (!service_members->event_members_) {
+    service_members->event_members_ =
+      (const rosidl_typesupport_introspection_c__MessageMembers *)
+      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name + SERVICE_EVENT_MESSAGE_SUFFIX))()->data;
+  }
 
   return &@(function_prefix)__@(service.namespaced_type.name)_service_type_support_handle;
 }

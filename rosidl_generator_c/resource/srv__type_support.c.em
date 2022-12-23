@@ -18,6 +18,9 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_CREATE_EVENT_MESSAGE_SYMBOL_NAME(
   const void * request_message,
   const void * response_message)
 {
+  if (!allocator || !info) {
+    return NULL;
+  }
   @event_type * event_msg = (@event_type *)(allocator->allocate(sizeof(@event_type), allocator->state));
   if (!@(event_type)__init(event_msg)) {
     allocator->deallocate(event_msg, allocator->state);
@@ -32,23 +35,24 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_CREATE_EVENT_MESSAGE_SYMBOL_NAME(
     event_msg->info.client_id.uuid[i] = info->client_id[i];
   }
   if (request_message) {
-    event_msg->response.capacity = 1;
-    event_msg->response.size = 1;
-    event_msg->response.data = (@response_type *)(allocator->allocate(sizeof(@response_type), allocator->state));
-    if (!@(response_type)__copy((const @response_type *)(response_message), &event_msg->response.data[0])) {
+    @(request_type)__Sequence__init(
+      &event_msg->request,
+      1);
+    if (!@(request_type)__copy((const @request_type *)(request_message), event_msg->request.data)) {
       allocator->deallocate(event_msg, allocator->state);
       return NULL;
     }
   }
   if (response_message) {
-    event_msg->request.capacity = 1;
-    event_msg->request.size = 1;
-    event_msg->request.data = (@request_type *)(allocator->allocate(sizeof(@request_type), allocator->state));
-    if (!@(request_type)__copy((const @request_type *)(request_message), &event_msg->request.data[0])) {
+    @(response_type)__Sequence__init(
+      &event_msg->response,
+      1);
+    if (!@(response_type)__copy((const @response_type *)(response_message), event_msg->response.data)) {
       allocator->deallocate(event_msg, allocator->state);
       return NULL;
     }
   }
+  fprintf(stderr, "request message return!!\n");
   return event_msg;
 }
 
@@ -61,6 +65,9 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_DESTROY_EVENT_MESSAGE_SYMBOL_NAME(
   void * event_msg,
   rcutils_allocator_t * allocator)
 {
+  if (!allocator) {
+    return false;
+  }
   if (NULL == event_msg) {
     return false;
   }

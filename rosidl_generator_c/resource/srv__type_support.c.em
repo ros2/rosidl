@@ -52,7 +52,6 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_CREATE_EVENT_MESSAGE_SYMBOL_NAME(
       return NULL;
     }
   }
-  fprintf(stderr, "request message return!!\n");
   return event_msg;
 }
 

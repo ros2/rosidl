@@ -81,8 +81,6 @@ static rosidl_service_type_support_t @(function_prefix)__@(service.namespaced_ty
   ),
   &@(message_function_prefix)__@(service.namespaced_type.name)@(SERVICE_EVENT_MESSAGE_SUFFIX)_message_type_support_handle,
 };
-// rcl_interfaces__srv__GetParameters_Event__rosidl_typesupport_introspection_c__GetParameters_Event_message_type_support_handle
-// rcl_interfaces__srv__detail__get_parameters__rosidl_typesupport_introspection_c__GetParameters_Event_message_type_support_handle,
 
 // Forward declaration of request/response type support functions
 const rosidl_message_type_support_t *

@@ -12,15 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
-
 import os
 import shutil
 import tempfile
 
+import pytest
+
 from rosidl_adapter.parser import InvalidFieldDefinition
-from rosidl_adapter.parser import parse_message_string
 from rosidl_adapter.parser import parse_message_file
+from rosidl_adapter.parser import parse_message_string
 
 
 def test_parse_message_string_with_unicode_comments():

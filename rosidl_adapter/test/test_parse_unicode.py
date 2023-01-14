@@ -39,7 +39,7 @@ def test_parse_message_file_with_unicode_comments():
     path = tempfile.mkdtemp(prefix='test_parse_message_file_with_unicode_comments_')
     try:
         filename = os.path.join(path, 'Foo.msg')
-        with open(filename, 'w') as handle:
+        with open(filename, 'w', encoding='utf-8') as handle:
             handle.write('bool \tfoo')
             # Adding a comment line with some unicode symbols.
             handle.write('# ∀ ∁ ∂ ∃ ∄ ∅ ∆ ∇ ∈ ∉ ∊ ∋ ∌')
@@ -51,7 +51,7 @@ def test_parse_message_file_with_unicode_comments():
         assert msg_spec.fields[0].default_value is None
         assert len(msg_spec.constants) == 0
 
-        with open(filename, 'a') as handle:
+        with open(filename, 'a', encoding='utf-8') as handle:
             handle.write('\nbool foo')
             handle.write('# ∀ ∁ ∂ ∃ ∄ ∅ ∆ ∇ ∈ ∉ ∊ ∋ ∌')
         with pytest.raises(ValueError) as e:

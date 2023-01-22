@@ -21,16 +21,7 @@ import re
 import sys
 
 import em
-from rosidl_parser.definition import IdlLocator
-from rosidl_parser import  definition
-from rosidl_parser.definition import (
-    IdlFile,
-    IdlContent,
-    Message,
-    Include,
-    Service,
-    Action
-)
+from rosidl_parser import definition
 from rosidl_parser.parser import parse_idl_file
 
 
@@ -146,7 +137,7 @@ def field(member: definition.Member):
     }
 
 
-def individual_type_description(msg: Message):
+def individual_type_description(msg: definition.Message):
     fields = [field(member) for member in msg.structure.members]
     # referenced_types = [f['type']['nested_type_name'] for f in fields]
     # referenced_types = [f for f in referenced_types if f != '']
@@ -164,16 +155,16 @@ def generate_type_version_hash(id_triplet, idl_files):
     services = []
     actions = []
     for el in idl.content.elements:
-        if isinstance(el, Include):
+        if isinstance(el, definition.Include):
             includes.append(el)
             print(f'  Include: {el.locator}')
-        elif isinstance(el, Message):
+        elif isinstance(el, definition.Message):
             messages.append(el)
             print(f'  Message: {el.structure.namespaced_type.namespaces} / {el.structure.namespaced_type.name}')
-        elif isinstance(el, Service):
+        elif isinstance(el, definition.Service):
             services.append(el)
             print(f'  Service: {el.namespaced_type.name}')
-        elif isinstance(el, Action):
+        elif isinstance(el, definition.Action):
             actions.append(el)
             print(el)
         else:
@@ -221,10 +212,12 @@ def generate_files(
     for idl_tuple in args.get('idl_tuples', []):
         idl_parts = idl_tuple.rsplit(':', 1)
         assert len(idl_parts) == 2
-        locator = IdlLocator(*idl_parts)
+        print(idl_parts)
+        locator = definition.IdlLocator(*idl_parts)
 
         idl_rel_path = pathlib.Path(idl_parts[1])
         namespace = str(idl_rel_path.parent)
+        print(idl_rel_path)
         idl_stem = idl_rel_path.stem
         id_triplet = (package_name, namespace, idl_stem)
         try:
@@ -240,12 +233,15 @@ def generate_files(
     for interface_dep in args.get('ros_interface_dependencies', []):
         tuple_parts = interface_dep.rsplit(':', 1)
         assert len(tuple_parts) == 2
-        package_name = tuple_parts[0]
-        idl_abs_path = tuple_parts[1]
+        print(tuple_parts)
+        referenced_package_name, idl_abs_path = tuple_parts
+
+        base_path, sep, rel_path = idl_abs_path.rpartition(referenced_package_name)
+        locator = definition.IdlLocator(idl_abs_path, '')
 
         namespace = pathlib.Path(idl_abs_path).parents[0].name
         idl_stem = pathlib.Path(idl_abs_path).stem
-        id_triplet = (package_name, namespace, idl_stem)
+        id_triplet = (referenced_package_name, namespace, idl_stem)
         try:
             print('Parsing ', id_triplet)
             idl_files[id_triplet] = parse_idl_file(locator)
@@ -265,7 +261,6 @@ def generate_files(
         print(type_hash)
 
         idl_file = idl_files[id_triplet]
-        raise Exception('poop')
         for template_file, generated_filename in mapping.items():
             generated_file = os.path.join(
                 args['output_dir'], str(idl_rel_path.parent),

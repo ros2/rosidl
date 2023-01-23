@@ -113,45 +113,46 @@ def serialize_individual_type_description(msg: definition.Message):
         'fields': fields
     }
 
-def generate_type_version_hash(id_triplet, idl_files):
-    idl = idl_files[id_triplet]
+
+def generate_type_version_hash(file_key, idl_files):
+    idl = idl_files[file_key]
 
     includes = []
-    messages = []
-    services = []
-    actions = []
+    referenced_type_descriptions = {}
+    serialization_data = {
+        'type_description': None,
+        'referenced_type_descriptions': [],
+    }
+
     for el in idl.content.elements:
         if isinstance(el, definition.Include):
-            includes.append(el)
+            includes.append(el.locator)
             print(f'  Include: {el.locator}')
         elif isinstance(el, definition.Message):
-            messages.append(el)
             print(f'  Message: {el.structure.namespaced_type.namespaces} / {el.structure.namespaced_type.name}')
+            serialization_data['type_description'] = serialize_individual_type_description(el)
         elif isinstance(el, definition.Service):
-            services.append(el)
             print(f'  Service: {el.namespaced_type.name}')
         elif isinstance(el, definition.Action):
-            actions.append(el)
-            print(el)
+            print(f'  Action: {el}')
         else:
             raise Exception(f'Do not know how to hash {el}')
 
-    # Per rosidl_parser.parser.extract_content_from_ast,
-    # IDL may have only one of Message, Service, or Action to be parsed
-    total_interfaces = len(messages) + len(services) + len(actions)
-    if total_interfaces < 1:
-        raise Exception('No interface defined in IDL, cannot hash')
-    if total_interfaces > 1:
-        raise Exception('More than one ROS interface defined in IDL, cannot hash')
+    while includes:
+        locator = includes.pop()
+        if locator not in referenced_type_descriptions:
+            included_file = idl_files[locator]
+            for el in included_file.content.elements:
+                if isinstance(el, definition.Include):
+                    includes.append(el.locator)
+                elif isinstance(el, definition.Message):
+                    referenced_type_descriptions[locator] = serialize_individual_type_description(el)
 
-    if len(messages):
-        serialization_data = {
-            'type_description': serialize_individual_type_description(messages[0]),
-            'referenced_type_descriptions': [],  # TODO referenced type descriptions
-        }
-        # TODO remove indent
-        serialized_type_description = json.dumps(serialization_data, indent=2)
-        print(serialized_type_description)
-        m = hashlib.sha256()
-        m.update(serialized_type_description.encode('utf-8'))
-        return m.hexdigest()
+    referenced_type_descriptions
+    serialization_data['referenced_type_descriptions'] = sorted(
+        referenced_type_descriptions.items(), key=lambda td: td['type_name'])
+    serialized_type_description = json.dumps(serialization_data)
+    # print(serialized_type_description)
+    m = hashlib.sha256()
+    m.update(serialized_type_description.encode('utf-8'))
+    return m.hexdigest()

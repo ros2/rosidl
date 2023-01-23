@@ -64,24 +64,18 @@ def generate_files(
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
     generated_files = []
 
-    # idl_locators = {}
-    idl_ids_to_generate = []
+    idl_files_to_generate = []
     idl_files = {}
     package_name = args['package_name']
     for idl_tuple in args.get('idl_tuples', []):
         idl_parts = idl_tuple.rsplit(':', 1)
         assert len(idl_parts) == 2
-        locator = IdlLocator(*idl_parts)
-        print("---Local")
-        print(idl_parts)
+        namespaced_idl_path = str(pathlib.Path(package_name) / idl_parts[1])
 
-        idl_rel_path = pathlib.Path(idl_parts[1])
-        namespace = str(idl_rel_path.parent)
-        idl_stem = idl_rel_path.stem
-        id_triplet = (package_name, namespace, idl_stem)
+        locator = IdlLocator(*idl_parts)
         try:
-            idl_files[id_triplet] = parse_idl_file(locator)
-            idl_ids_to_generate.append(id_triplet)
+            idl_files[namespaced_idl_path] = parse_idl_file(locator)
+            idl_files_to_generate.append(namespaced_idl_path)
         except Exception as e:
             print(
                 'Error processing idl file: ' +
@@ -93,34 +87,27 @@ def generate_files(
         assert len(tuple_parts) == 2
         referenced_package_name, idl_abs_path = tuple_parts
 
-        base_path, sep, rel_path = idl_abs_path.rpartition(referenced_package_name)
-        print("---Dependency")
-        print(referenced_package_name, rel_path)
-        assert sep == referenced_package_name
-        locator = IdlLocator(idl_abs_path, '')
+        base_path, pkg, rel_path = idl_abs_path.rpartition(referenced_package_name)
+        assert pkg == referenced_package_name
+        namespaced_idl_path = pkg + rel_path
 
-        namespace = pathlib.Path(idl_abs_path).parents[0].name
-        idl_stem = pathlib.Path(idl_abs_path).stem
-        id_triplet = (referenced_package_name, namespace, idl_stem)
+        # rel_path it starts with a pathsep from rpartition
+        locator = IdlLocator(base_path + pkg, rel_path[1:])
         try:
-            idl_files[id_triplet] = parse_idl_file(locator)
+            idl_files[namespaced_idl_path] = parse_idl_file(locator)
         except Exception as e:
             print(
                 'Error processing idl file: ' +
                 str(locator.get_absolute_path()), file=sys.stderr)
             raise(e)
 
-    print(idl_files)
-    for id_triplet in idl_ids_to_generate:
-        _, _, idl_stem = id_triplet
+    for file_key in idl_files_to_generate:
+        idl_stem = pathlib.Path(file_key).stem
         if not keep_case:
             idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)
+        type_hash = generate_type_version_hash(file_key, idl_files)
 
-        type_hash = generate_type_version_hash(id_triplet, idl_files)
-        print(type_hash)
-        raise Exception('poop')
-
-        idl_file = idl_files[id_triplet]
+        idl_file = idl_files[file_key]
         for template_file, generated_filename in mapping.items():
             generated_file = os.path.join(
                 args['output_dir'], str(idl_rel_path.parent),

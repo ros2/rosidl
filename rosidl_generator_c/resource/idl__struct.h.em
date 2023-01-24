@@ -32,6 +32,7 @@ extern "C"
 #include <stddef.h>
 #include <stdint.h>
 
+
 @#######################################################################
 @# Handle message
 @#######################################################################
@@ -43,7 +44,7 @@ from rosidl_parser.definition import Message
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=message, include_directives=include_directives)
+    message=message, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @[end for]@
@@ -59,21 +60,21 @@ from rosidl_parser.definition import Service
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=service.request_message, include_directives=include_directives)
+    message=service.request_message, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=service.response_message, include_directives=include_directives)
+    message=service.response_message, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=service.event_message, include_directives=include_directives)
+    message=service.event_message, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @[end for]@
@@ -89,63 +90,63 @@ from rosidl_parser.definition import Action
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.goal, include_directives=include_directives)
+    message=action.goal, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.result, include_directives=include_directives)
+    message=action.result, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.feedback, include_directives=include_directives)
+    message=action.feedback, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.send_goal_service.request_message, include_directives=include_directives)
+    message=action.send_goal_service.request_message, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.send_goal_service.response_message, include_directives=include_directives)
+    message=action.send_goal_service.response_message, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.send_goal_service.event_message, include_directives=include_directives)
+    message=action.send_goal_service.event_message, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.get_result_service.request_message, include_directives=include_directives)
+    message=action.get_result_service.request_message, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.get_result_service.response_message, include_directives=include_directives)
+    message=action.get_result_service.response_message, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.get_result_service.event_message, include_directives=include_directives)
+    message=action.get_result_service.event_message, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @{
@@ -153,6 +154,7 @@ TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
     message=action.feedback_message, include_directives=include_directives)
+    message=action.feedback_message, include_directives=include_directives, type_hash=type_hash)
 }@
 
 @[end for]@

@@ -61,6 +61,14 @@ for member in message.structure.members:
 }@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+// Type Version Hash for interface
+static const uint8_t @(idl_structure_type_to_c_typename(message.structure.namespaced_type))__TYPE_VERSION_HASH[32] = {
+  @
+@[for i in range(32)]@
+0x@(type_hash[i:i+1].hex()), @
+@[end for]
+};
+
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Constants defined in the message
 @[for constant in message.constants]@

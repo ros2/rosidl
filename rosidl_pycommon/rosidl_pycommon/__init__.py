@@ -67,6 +67,7 @@ def generate_files(
     idl_files_to_generate = []
     idl_files = {}
     package_name = args['package_name']
+
     for idl_tuple in args.get('idl_tuples', []):
         idl_parts = idl_tuple.rsplit(':', 1)
         assert len(idl_parts) == 2
@@ -102,10 +103,14 @@ def generate_files(
             raise(e)
 
     for file_key in idl_files_to_generate:
-        idl_stem = pathlib.Path(file_key).stem
+        idl_rel_path = pathlib.Path(file_key)
+        idl_rel_path = idl_rel_path.relative_to(idl_rel_path.parts[0])
+        idl_stem = idl_rel_path.stem
+        type_hash = generate_type_version_hash(file_key, idl_files)
+        print(f'{file_key}: {type_hash}')
+
         if not keep_case:
             idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)
-        type_hash = generate_type_version_hash(file_key, idl_files)
 
         idl_file = idl_files[file_key]
         for template_file, generated_filename in mapping.items():
@@ -117,7 +122,7 @@ def generate_files(
                 'package_name': package_name,
                 'interface_path': idl_rel_path,
                 'content': idl_file.content,
-                # 'type_hash': type_hash,
+                'type_hash': type_hash,
             }
             if additional_context is not None:
                 data.update(additional_context)

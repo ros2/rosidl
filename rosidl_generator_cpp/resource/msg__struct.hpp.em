@@ -101,6 +101,15 @@ struct @(message.structure.namespaced_type.name)_
 {
   using Type = @(message.structure.namespaced_type.name)_<ContainerAllocator>;
 
+
+  // Type Version Hash for interface
+  static constexpr uint8_t TYPE_VERSION_HASH[32] = {
+    @
+@[for i in range(32)]@
+0x@(type_hash[i:i+1].hex()), @
+@[end for]
+  };
+
 @{
 # The creation of the constructors for messages is a bit complicated.  The goal
 # is to have a constructor where the user can control how the fields of the

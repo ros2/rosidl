@@ -90,7 +90,6 @@ def serialize_field_type(ftype: definition.AbstractType):
             except AttributeError:
                 result['length'] = ftype.size
     else:
-        print(ftype)
         raise Exception('Unable to translate field type', ftype)
 
     return result
@@ -105,12 +104,9 @@ def serialize_field(member: definition.Member):
 
 
 def serialize_individual_type_description(msg: definition.Message):
-    fields = [serialize_field(member) for member in msg.structure.members]
-    # referenced_types = [f['type']['nested_type_name'] for f in fields]
-    # referenced_types = [f for f in referenced_types if f != '']
     return {
         'type_name': '/'.join(msg.structure.namespaced_type.namespaced_name()),
-        'fields': fields
+        'fields': [serialize_field(member) for member in msg.structure.members]
     }
 
 
@@ -127,19 +123,16 @@ def generate_type_version_hash(file_key, idl_files):
     for el in idl.content.elements:
         if isinstance(el, definition.Include):
             includes.append(el.locator)
-            # print(f'  Include: {el.locator}')
         elif isinstance(el, definition.Message):
-            # print(f'  Message: {el.structure.namespaced_type.namespaces} / {el.structure.namespaced_type.name}')
             serialization_data['type_description'] = serialize_individual_type_description(el)
         elif isinstance(el, definition.Service):
             serialization_data['type_description'] = {
                 'request_message': serialize_individual_type_description(el.request_message),
                 'response_message': serialize_individual_type_description(el.response_message),
             }
-            # print(f'  Service: {el.namespaced_type.name}')
             pass
         elif isinstance(el, definition.Action):
-            # print(f'  Action: {el}')
+            # TODO
             pass
         else:
             raise Exception(f'Do not know how to hash {el}')
@@ -151,7 +144,6 @@ def generate_type_version_hash(file_key, idl_files):
             for el in included_file.content.elements:
                 if isinstance(el, definition.Include):
                     includes.append(el.locator)
-                    # print(f'  Include: {el.locator}')
                 elif isinstance(el, definition.Message):
                     referenced_type_descriptions[locator] = serialize_individual_type_description(el)
 
@@ -159,7 +151,7 @@ def generate_type_version_hash(file_key, idl_files):
     serialization_data['referenced_type_descriptions'] = sorted(
         referenced_type_descriptions.values(), key=lambda td: td['type_name'])
     serialized_type_description = json.dumps(serialization_data)
-    # print(serialized_type_description)
+    # print(json.dumps(serialization_data, indent=2))
     m = hashlib.sha256()
     m.update(serialized_type_description.encode('utf-8'))
     return m.digest()

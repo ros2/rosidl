@@ -15,9 +15,8 @@
 #ifndef ROSIDL_TYPESUPPORT_CPP__SERVICE_TYPE_SUPPORT_HPP_
 #define ROSIDL_TYPESUPPORT_CPP__SERVICE_TYPE_SUPPORT_HPP_
 
-#include <array>
+#include <cstring>
 #include <stdexcept>
-#include <utility>
 
 #include "rosidl_runtime_c/service_type_support_struct.h"
 #include "rosidl_runtime_c/visibility_control.h"
@@ -53,9 +52,7 @@ void * service_create_event_message(
   event_msg->info.stamp.set__sec(info->stamp_sec);
   event_msg->info.stamp.set__nanosec(info->stamp_nanosec);
 
-  std::array<uint8_t, 16> client_id;
-  std::move(std::begin(info->client_id), std::end(info->client_id), client_id.begin());
-  event_msg->info.client_id.set__uuid(client_id);
+  std::memcpy(&event_msg->info.client_gid[0], info->client_gid, 16);
 
   if (nullptr != request_message) {
     event_msg->request.push_back(*static_cast<const typename T::Request *>(request_message));

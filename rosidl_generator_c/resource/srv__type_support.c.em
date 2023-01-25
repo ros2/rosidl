@@ -31,9 +31,7 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_CREATE_EVENT_MESSAGE_SYMBOL_NAME(
   event_msg->info.sequence_number = info->sequence_number;
   event_msg->info.stamp.sec = info->stamp_sec;
   event_msg->info.stamp.nanosec = info->stamp_nanosec;
-  for (size_t i = 0; i < 16; ++i) {
-    event_msg->info.client_id.uuid[i] = info->client_id[i];
-  }
+  memcpy(event_msg->info.client_gid, info->client_gid, 16);
   if (request_message) {
     @(request_type)__Sequence__init(
       &event_msg->request,

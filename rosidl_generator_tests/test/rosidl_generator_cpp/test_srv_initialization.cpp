@@ -64,7 +64,7 @@ TEST(Test_srv_initialization, no_arg_event_constructor) {
   EXPECT_EQ(basic_types.info.event_type, 0u);
   EXPECT_EQ(basic_types.info.stamp.sec, 0);
   EXPECT_EQ(basic_types.info.stamp.nanosec, 0u);
-  for (auto i : basic_types.info.client_id.uuid) {
+  for (auto i : basic_types.info.client_gid) {
     EXPECT_EQ(i, 0u);
   }
   EXPECT_EQ(basic_types.request.size(), 0u);

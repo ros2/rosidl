@@ -23,6 +23,8 @@ include_directives = {
   include_base + '__functions.h'}
 }@
 
+#include <string.h>
+
 @[for header_file in include_directives]@
 #include "@(header_file)"
 @[end for]@

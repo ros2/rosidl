@@ -38,7 +38,7 @@ typedef struct rosidl_service_introspection_info_s
   uint8_t event_type;
   int32_t stamp_sec;
   uint32_t stamp_nanosec;
-  uint32_t client_id[16];
+  uint8_t client_gid[16];
   int64_t sequence_number;
 } rosidl_service_introspection_info_t;
 

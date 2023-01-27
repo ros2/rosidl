@@ -110,7 +110,7 @@ def serialize_individual_type_description(msg: definition.Message):
     }
 
 
-def generate_type_version_hash(file_key, idl_files):
+def idl_to_hashable_json(file_key, idl_files):
     idl = idl_files[file_key]
 
     includes = []
@@ -150,7 +150,11 @@ def generate_type_version_hash(file_key, idl_files):
     referenced_type_descriptions
     serialization_data['referenced_type_descriptions'] = sorted(
         referenced_type_descriptions.values(), key=lambda td: td['type_name'])
-    serialized_type_description = json.dumps(serialization_data)
+    return json.dumps(serialization_data)
+
+
+def generate_type_version_hash(file_key, idl_files):
+    serialized_type_description = idl_to_hashable_json(file_key, idl_files)
     # print(json.dumps(serialization_data, indent=2))
     m = hashlib.sha256()
     m.update(serialized_type_description.encode('utf-8'))

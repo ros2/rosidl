@@ -139,11 +139,25 @@ macro(rosidl_generate_interfaces target)
   # afterwards all remaining interface files are .idl files
   list(APPEND _idl_tuples ${_idl_adapter_tuples})
 
-  # to generate action interfaces, we need to depend on "action_msgs"
+  # Check for any action or service interfaces
+  # Which have implicit dependencies that need to be found
   foreach(_tuple ${_interface_tuples})
+    # We use the parent directory name to identify if the interface is an action or service
     string(REGEX REPLACE ".*:([^:]*)$" "\\1" _tuple_file "${_tuple}")
     get_filename_component(_parent_dir "${_tuple_file}" DIRECTORY)
+    get_filename_component(_parent_dir ${_parent_dir} NAME)
+
     if("${_parent_dir}" STREQUAL "action")
+      # Actions depend on the packages service_msgs and action_msgs
+      find_package(service_msgs QUIET)
+      if(NOT ${service_msgs_FOUND})
+        message(FATAL_ERROR
+          "Unable to generate action interface for '${_tuple_file}'. "
+          "In order to generate action interfaces you must add a depend tag "
+          "for 'service_msgs' in your package.xml.")
+      endif()
+      ament_export_dependencies(service_msgs)
+      list_append_unique(_ARG_DEPENDENCIES "service_msgs")
       find_package(action_msgs QUIET)
       if(NOT ${action_msgs_FOUND})
         message(FATAL_ERROR
@@ -151,9 +165,23 @@ macro(rosidl_generate_interfaces target)
           "In order to generate action interfaces you must add a depend tag "
           "for 'action_msgs' in your package.xml.")
       endif()
-      list_append_unique(_ARG_DEPENDENCIES "action_msgs")
       ament_export_dependencies(action_msgs)
+      list_append_unique(_ARG_DEPENDENCIES "action_msgs")
+
+      # It is safe to break out of the loop since services only depend on service_msgs
+      # Which has already been found above
       break()
+    elseif("${_parent_dir}" STREQUAL "srv")
+      # Services depend on service_msgs
+      find_package(service_msgs QUIET)
+      if(NOT ${service_msgs_FOUND})
+        message(FATAL_ERROR
+          "Unable to generate service interface for '${_tuple_file}'. "
+          "In order to generate service interfaces you must add a depend tag "
+          "for 'service_msgs' in your package.xml.")
+      endif()
+      ament_export_dependencies(service_msgs)
+      list_append_unique(_ARG_DEPENDENCIES "service_msgs")
     endif()
   endforeach()
 

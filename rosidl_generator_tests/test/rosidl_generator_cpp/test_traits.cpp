@@ -406,6 +406,7 @@ TEST(Test_rosidl_generator_traits, is_service) {
   using Service = rosidl_generator_tests::srv::Empty;
   using ServiceReq = Service::Request;
   using ServiceResp = Service::Response;
+  using ServiceEvent = Service::Event;
 
   EXPECT_TRUE(is_service<Service>());
   EXPECT_FALSE(is_message<Service>());
@@ -423,4 +424,10 @@ TEST(Test_rosidl_generator_traits, is_service) {
   EXPECT_TRUE(is_message<ServiceResp>());
   EXPECT_FALSE(is_service_request<ServiceResp>());
   EXPECT_TRUE(is_service_response<ServiceResp>());
+
+  // Events are additionally messages
+  EXPECT_FALSE(is_service<ServiceEvent>());
+  EXPECT_TRUE(is_message<ServiceEvent>());
+  EXPECT_FALSE(is_service_request<ServiceEvent>());
+  EXPECT_FALSE(is_service_response<ServiceEvent>());
 }

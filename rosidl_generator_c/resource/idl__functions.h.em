@@ -72,6 +72,12 @@ TEMPLATE(
     message=service.response_message)
 }@
 
+@{
+TEMPLATE(
+    'msg__functions.h.em',
+    package_name=package_name, interface_path=interface_path,
+    message=service.event_message)
+}@
 @[end for]@
 @
 @#######################################################################
@@ -120,6 +126,13 @@ TEMPLATE(
 TEMPLATE(
     'msg__functions.h.em',
     package_name=package_name, interface_path=interface_path,
+    message=action.send_goal_service.event_message)
+}@
+
+@{
+TEMPLATE(
+    'msg__functions.h.em',
+    package_name=package_name, interface_path=interface_path,
     message=action.get_result_service.request_message)
 }@
 
@@ -128,6 +141,13 @@ TEMPLATE(
     'msg__functions.h.em',
     package_name=package_name, interface_path=interface_path,
     message=action.get_result_service.response_message)
+}@
+
+@{
+TEMPLATE(
+    'msg__functions.h.em',
+    package_name=package_name, interface_path=interface_path,
+    message=action.get_result_service.event_message)
 }@
 
 @{

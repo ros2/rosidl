@@ -91,6 +91,7 @@ CONSTANT_MODULE_SUFFIX = '_Constants'
 
 SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
 SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
+SERVICE_EVENT_MESSAGE_SUFFIX = '_Event'
 
 ACTION_GOAL_SUFFIX = '_Goal'
 ACTION_RESULT_SUFFIX = '_Result'
@@ -562,7 +563,7 @@ class Message:
 class Service:
     """A namespaced type containing a request and response message."""
 
-    __slots__ = ('namespaced_type', 'request_message', 'response_message')
+    __slots__ = ('namespaced_type', 'request_message', 'response_message', 'event_message')
 
     def __init__(
         self, namespaced_type: NamespacedType, request: Message,
@@ -594,6 +595,20 @@ class Service:
         assert response.structure.namespaced_type.name == \
             namespaced_type.name + SERVICE_RESPONSE_MESSAGE_SUFFIX
         self.response_message = response
+
+        self.event_message = Message(
+            Structure(
+                NamespacedType(
+                    namespaces=namespaced_type.namespaces,
+                    name=f'{namespaced_type.name}{SERVICE_EVENT_MESSAGE_SUFFIX}'
+                ),
+                members=[
+                    Member(NamespacedType(['service_msgs', 'msg'], 'ServiceEventInfo'), 'info'),
+                    Member(BoundedSequence(request.structure.namespaced_type, 1), 'request'),
+                    Member(BoundedSequence(response.structure.namespaced_type, 1), 'response'),
+                ]
+            )
+        )
 
 
 class Action:

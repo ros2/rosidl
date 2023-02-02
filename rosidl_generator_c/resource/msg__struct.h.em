@@ -13,6 +13,8 @@ from rosidl_parser.definition import FLOATING_POINT_TYPES
 from rosidl_parser.definition import INTEGER_TYPES
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import OCTET_TYPE
+from rosidl_parser.definition import SERVICE_REQUEST_MESSAGE_SUFFIX
+from rosidl_parser.definition import SERVICE_RESPONSE_MESSAGE_SUFFIX
 from rosidl_generator_c import basetype_to_c
 from rosidl_generator_c import idl_declaration_to_c
 from rosidl_generator_c import idl_structure_type_sequence_to_c_typename
@@ -43,6 +45,14 @@ for member in message.structure.members:
             'rosidl_runtime_c/u16string.h', [])
         member_names.append(member.name)
     elif isinstance(type_, NamespacedType):
+        if (
+            message.structure.namespaced_type.namespaces[-1] in ['action', 'srv'] and (
+            type_.name.endswith(SERVICE_REQUEST_MESSAGE_SUFFIX) or
+            type_.name.endswith(SERVICE_RESPONSE_MESSAGE_SUFFIX))
+        ):
+            typename = type_.name.rsplit('_', 1)[0]
+            if typename == message.structure.namespaced_type.name.rsplit('_', 1)[0]:
+                continue
         include_prefix = idl_structure_type_to_c_include_prefix(
             type_, 'detail')
         member_names = includes.setdefault(

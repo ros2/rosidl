@@ -32,6 +32,7 @@ def generate_c(generator_arguments_file):
         'idl__functions.c.em': 'detail/%s__functions.c',
         'idl__functions.h.em': 'detail/%s__functions.h',
         'idl__struct.h.em': 'detail/%s__struct.h',
+        'idl__type_support.c.em': 'detail/%s__type_support.c',
         'idl__type_support.h.em': 'detail/%s__type_support.h',
     }
     return generate_files(

@@ -13,13 +13,15 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-ament_package()
+ament_package(
+  CONFIG_EXTRAS "${PROJECT_NAME}-extras.cmake.in"
+)
 
 install(
-  PROGRAMS bin/rosidl_generator_c
-  DESTINATION lib/rosidl_generator_c
+  PROGRAMS bin/${PROJECT_NAME}
+  DESTINATION lib/${PROJECT_NAME}
 )
 install(
-  DIRECTORY cmake resource
+  DIRECTORY cmake # resource
   DESTINATION share/${PROJECT_NAME}
 )

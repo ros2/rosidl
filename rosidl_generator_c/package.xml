@@ -24,6 +24,7 @@
   <buildtool_export_depend>python3</buildtool_export_depend>
   <buildtool_export_depend>rosidl_pycommon</buildtool_export_depend>
 
+  <build_export_depend>rosidl_generator_type_hash</build_export_depend>
   <build_export_depend>rosidl_typesupport_interface</build_export_depend>
   <build_export_depend>rcutils</build_export_depend>
 

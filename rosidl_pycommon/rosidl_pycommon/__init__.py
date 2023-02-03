@@ -23,9 +23,6 @@ import sys
 import em
 from rosidl_parser.definition import IdlLocator
 from rosidl_parser.parser import parse_idl_file
-from rosidl_parser.type_hash import generate_type_version_hash
-from rosidl_parser.type_hash import idl_to_hashable_json
-
 
 def convert_camel_case_to_lower_case_underscore(value):
     # insert an underscore before any upper case letter
@@ -110,17 +107,8 @@ def generate_files(
         if not keep_case:
             idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)
 
-        # Generate hashable representation and write to file
-        json_repr = idl_to_hashable_json(file_key, idl_files)
-        # TODO(emersonknapp) helper fn?
-        json_file = pathlib.Path(args['output_dir']) / idl_rel_path.parent / f'{idl_stem}.json'
-        json_file.parent.mkdir(parents=True, exist_ok=True)
-        with json_file.open('w', encoding='utf-8') as f:
-            f.write(json_repr)
-
-        # Create hash
+        # TODO(emersonknapp) load hash from generator_type_hash outputs
         m = hashlib.sha256()
-        m.update(json_repr.encode('utf-8'))
         type_hash = m.digest()
 
         # Run codegen for files

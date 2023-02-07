@@ -32,7 +32,6 @@ extern "C"
 #include <stddef.h>
 #include <stdint.h>
 
-
 @#######################################################################
 @# Handle message
 @#######################################################################
@@ -153,7 +152,6 @@ TEMPLATE(
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.feedback_message, include_directives=include_directives)
     message=action.feedback_message, include_directives=include_directives, type_hash=type_hash)
 }@
 

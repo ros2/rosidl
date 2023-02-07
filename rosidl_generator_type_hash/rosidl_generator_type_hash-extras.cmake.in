@@ -1,6 +1,21 @@
-include("${CMAKE_CURRENT_LIST_DIR}/register_type_hash.cmake")
-rosidl_generator_type_hash_extras(
-  "${rosidl_generator_type_hash_DIR}/../../../lib/rosidl_generator_type_hash/rosidl_generator_type_hash"
-  "${rosidl_generator_type_hash_DIR}/../../../@PYTHON_INSTALL_DIR@/rosidl_generator_type_hash/__init__.py"
-  "${rosidl_generator_type_hash_DIR}/../resource"
-)
+find_package(ament_cmake_core QUIET REQUIRED)
+
+ament_register_extension(
+  "rosidl_generate_idl_interfaces"
+  "rosidl_generator_type_hash"
+  "rosidl_generator_type_hash_generate_interfaces.cmake")
+
+set(rosidl_generator_type_hash_BIN
+  "${rosidl_generator_type_hash_DIR}/../../../lib/rosidl_generator_type_hash/rosidl_generator_type_hash")
+normalize_path(rosidl_generator_type_hash_BIN
+  "${rosidl_generator_type_hash_BIN}")
+
+set(rosidl_generator_type_hash_GENERATOR_FILES
+  "${rosidl_generator_type_hash_DIR}/../../../@PYTHON_INSTALL_DIR@/rosidl_generator_type_hash/__init__.py")
+normalize_path(rosidl_generator_type_hash_GENERATOR_FILES
+  "${rosidl_generator_type_hash_GENERATOR_FILES}")
+
+set(rosidl_generator_type_hash_TEMPLATE_DIR
+  "${rosidl_generator_type_hash_DIR}/../resource")
+normalize_path(rosidl_generator_type_hash_TEMPLATE_DIR
+  "${rosidl_generator_type_hash_TEMPLATE_DIR}")

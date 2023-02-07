@@ -26,12 +26,21 @@ def main(argv=sys.argv[1:]):
         description='Generate hashable representations and hashes of ROS interfaces.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
-        '--generator-arguments-file',
-        required=True,
-        help='The location of the file containing the generator arguments')
+        '--package-name', required=True, help='TODO(emersonknapp')
+    parser.add_argument(
+        '--output-dir', required=True, help='TODO(emersonknapp')
+    parser.add_argument(
+        '--idl-tuples', nargs='+', required=True, help='TODO(emersonknapp)')
+    parser.add_argument(
+        '--include-paths', nargs='*', required=False, help='TODO(emersonknapp)')
+
     args = parser.parse_args(argv)
 
-    generate_type_hash(args.generator_arguments_file)
+    generate_type_hash(
+        package_name=args.package_name,
+        output_dir=args.output_dir,
+        idl_tuples=args.idl_tuples,
+        include_paths=args.include_paths)
 
 
 if __name__ == '__main__':

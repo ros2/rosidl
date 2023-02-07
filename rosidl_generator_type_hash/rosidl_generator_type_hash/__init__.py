@@ -15,73 +15,70 @@
 import hashlib
 import json
 from pathlib import Path
-import re
 import sys
+from typing import List
 
 from rosidl_parser import definition
 from rosidl_parser.parser import parse_idl_file
 
 
-def convert_camel_case_to_lower_case_underscore(value):
-    # insert an underscore before any upper case letter
-    # which is followed by a lower case letter
-    value = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', value)
-    # insert an underscore before any upper case letter
-    # which is preseded by a lower case letter or number
-    value = re.sub('([a-z0-9])([A-Z])', r'\1_\2', value)
-    return value.lower()
+def generate_type_hash(
+    package_name: str,
+    output_dir: str,
+    idl_tuples: List[str],
+    include_paths: List[str]
+):
+    include_map = {
+        package_name: Path(output_dir)
+    }
+    for include_tuple in include_paths:
+        include_parts = include_tuple.rsplit(':', 1)
+        assert len(include_parts) == 2
+        include_package_name, include_base_path = include_parts
+        include_map[include_package_name] = Path(include_base_path)
 
-
-def generate_type_hash(generator_arguments_file):
-    with open(generator_arguments_file, mode='r', encoding='utf-8') as h:
-        args = json.load(h)
-    print(args)
-
-    idl_files = {}
-    idl_files_to_generate = []
-    package_name = args['package_name']
-    output_dir = args['output_dir']
-
-    for idl_tuple in args.get('idl_tuples', []):
+    generated_files = []
+    json_contents = []
+    for idl_tuple in idl_tuples:
+        print(f'Generating for {idl_tuple}')
         idl_parts = idl_tuple.rsplit(':', 1)
         assert len(idl_parts) == 2
-        namespaced_idl_path = str(Path(package_name) / idl_parts[1])
         locator = definition.IdlLocator(*idl_parts)
         try:
-            idl_files[namespaced_idl_path] = parse_idl_file(locator)
-            idl_files_to_generate.append(namespaced_idl_path)
+            idl_file = parse_idl_file(locator)
         except Exception as e:
-            print('Error  processing idl file: ' +
+            print('Error processing idl file: ' +
                   str(locator.get_absolute_path()), file=sys.stderr)
             raise(e)
 
-    generated_files = []
-    for file_key in idl_files_to_generate:
-        idl_rel_path = Path(file_key)
-        idl_rel_path = idl_rel_path.relative_to(idl_rel_path.parts[0])
+        idl_rel_path = Path(idl_parts[1])
         idl_stem = idl_rel_path.stem
-        idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)
-        json_individual_repr = json.dumps(serialize_individual_idl(idl_files[file_key]))
-        # json_repr = idl_to_hashable_json(file_key, idl_files)
-
-        generate_to_dir = Path(output_dir) / idl_rel_path.parent
+        generate_to_dir = (Path(output_dir) / idl_rel_path).parent
         generate_to_dir.mkdir(parents=True, exist_ok=True)
+        stem_path = generate_to_dir / f'{idl_stem}'
 
-        json_path = generate_to_dir / f'{idl_stem}.individual.json'
-        with json_path.open('w', encoding='utf-8') as json_file:
-            json_file.write(json_individual_repr)
-        generated_files.append(str(json_path))
+        json_in = generate_json_in(idl_file)
+        # Need to generate all .json.in before expanding .json final
+        json_contents.append((stem_path, json_in))
 
-        json_nested_repr = json.dumps(serialize_nested_idl(file_key, idl_files))
-        json_path = generate_to_dir / f'{idl_stem}.json'
+        json_path = stem_path.with_suffix('.json.in')
         with json_path.open('w', encoding='utf-8') as json_file:
-            json_file.write(json_nested_repr)
-        generated_files.append(str(json_path))
+            json_file.write(json.dumps(json_in, indent=2))
+            generated_files.append(str(json_path))
+
+    for stem_path, json_in in json_contents:
+        json_out = generate_json_out(json_in, include_map)
+        json_out_repr = json.dumps(json_out)
+
+        json_path = stem_path.with_suffix('.json')
+        with json_path.open('w', encoding='utf-8') as json_file:
+            json_file.write(json_out_repr)
+            generated_files.append(str(json_path))
 
         sha = hashlib.sha256()
-        sha.update(json_nested_repr.encode('utf-8'))
+        sha.update(json_out_repr.encode('utf-8'))
         type_hash = sha.hexdigest()
-        hash_path = generate_to_dir / f'{idl_stem}.sha256'
+        hash_path = stem_path.with_suffix('.sha256')
         with hash_path.open('w', encoding='utf-8') as hash_file:
             hash_file.write(type_hash)
         generated_files.append(str(hash_path))
@@ -183,67 +180,66 @@ def serialize_individual_type_description(msg: definition.Message):
     }
 
 
-def serialize_individual_idl(idl: definition.IdlFile):
-    for el in idl.content.elements:
-        if isinstance(el, definition.Message):
-            return serialize_individual_type_description(el)
-        elif isinstance(el, definition.Service):
-            return {
-                'request': serialize_individual_type_description(el.request_message),
-                'response': serialize_individual_type_description(el.response_message),
-            }
-        elif isinstance(el, definition.Action):
-            # TODO(emersonknapp)
-            pass
-    raise Exception("Didn't find something to serialize...")
-
-
-def serialize_nested_idl(file_key, idl_files):
-    idl = idl_files[file_key]
-
+def generate_json_in(idl: definition.IdlFile):
+    type_description = None
     includes = []
-    referenced_type_descriptions = {}
-    serialization_data = {
-        'type_description': None,
-        'referenced_type_descriptions': [],
-    }
-
     for el in idl.content.elements:
         if isinstance(el, definition.Include):
             includes.append(el.locator)
         elif isinstance(el, definition.Message):
-            serialization_data['type_description'] = serialize_individual_type_description(el)
+            type_description = serialize_individual_type_description(el)
         elif isinstance(el, definition.Service):
-            serialization_data['type_description'] = {
+            type_description = {
                 'request_message': serialize_individual_type_description(el.request_message),
                 'response_message': serialize_individual_type_description(el.response_message),
             }
-            pass
         elif isinstance(el, definition.Action):
-            # TODO
-            pass
+            # TODO(emersonknapp)
+            type_description = {
+                'goal_service': {
+                    'request_message': None,
+                    'response_message': None,
+                },
+                'result_service': {
+                    'request_message': None,
+                    'response_message': None,
+                },
+                'feedback_message': None,
+            }
         else:
             raise Exception(f'Do not know how to hash {el}')
+    if type_description is None:
+        raise Exception('Did not find an interface to serialize in IDL file')
 
-    while includes:
-        locator = includes.pop()
-        if locator not in referenced_type_descriptions:
-            included_file = idl_files[locator]
-            for el in included_file.content.elements:
-                if isinstance(el, definition.Include):
-                    includes.append(el.locator)
-                elif isinstance(el, definition.Message):
-                    referenced_type_descriptions[locator] = serialize_individual_type_description(el)
-
-    referenced_type_descriptions
-    serialization_data['referenced_type_descriptions'] = sorted(
-        referenced_type_descriptions.values(), key=lambda td: td['type_name'])
-    return serialization_data
+    includes = [
+        str(Path(include).with_suffix('.json.in')) for include in includes
+    ]
+    return {
+        'type_description': type_description,
+        'includes': includes,
+    }
 
 
-def generate_type_version_hash(file_key, idl_files):
-    serialized_type_description = idl_to_hashable_json(file_key, idl_files)
-    # print(json.dumps(serialization_data, indent=2))
-    m = hashlib.sha256()
-    m.update(serialized_type_description.encode('utf-8'))
-    return m.digest()
+def generate_json_out(json_in, includes_map):
+    pending_includes = json_in['includes']
+    loaded_includes = {}
+    while pending_includes:
+        process_include = pending_includes.pop()
+        if process_include in loaded_includes:
+            continue
+        p_path = Path(process_include)
+        assert(not p_path.is_absolute())
+        include_package = p_path.parts[0]
+        include_file = includes_map[include_package] / p_path.relative_to(include_package)
+
+        with include_file.open('r') as include_file:
+            include_json = json.load(include_file)
+
+        loaded_includes[process_include] = include_json['type_description']
+        pending_includes.extend(include_json['includes'])
+
+    return {
+        'type_description': json_in['type_description'],
+        'referenced_type_descriptions': sorted(
+            loaded_includes.values(), key=lambda td: td['type_name'])
+    }

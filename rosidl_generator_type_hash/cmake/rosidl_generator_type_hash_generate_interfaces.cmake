@@ -88,20 +88,7 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
       DESTINATION "share/${PROJECT_NAME}/${_parent_folder}")
   endforeach()
 
-  # Export old-style CMake variables
-  # ament_export_include_directories("include/${PROJECT_NAME}")
-  # ament_export_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix})
-
+  # TODO(emersonknapp) do I need this?
   # Export modern CMake targets
   # ament_export_targets(export_${rosidl_generate_interfaces_TARGET}${_target_suffix})
-  # rosidl_export_typesupport_targets(${_target_suffix}
-  #   ${rosidl_generate_interfaces_TARGET}${_target_suffix})
-
-  # install(
-  #   TARGETS ${rosidl_generate_interfaces_TARGET}${_target_suffix}
-  #   EXPORT export_${rosidl_generate_interfaces_TARGET}${_target_suffix}
-  #   ARCHIVE DESTINATION lib
-  #   LIBRARY DESTINATION lib
-  #   RUNTIME DESTINATION bin
-  # )
 endif()

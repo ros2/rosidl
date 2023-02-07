@@ -40,7 +40,6 @@ def generate_type_hash(
     generated_files = []
     json_contents = []
     for idl_tuple in idl_tuples:
-        print(f'Generating for {idl_tuple}')
         idl_parts = idl_tuple.rsplit(':', 1)
         assert len(idl_parts) == 2
         locator = definition.IdlLocator(*idl_parts)
@@ -90,7 +89,6 @@ def generate_type_hash(
 # TODO There is no FieldType.msg definition for the following rosidl_parser.definition types
 # * SIGNED_NONEXPLICIT_INTEGER_TYPES = short, long, long long
 # * UNSIGNED_NONEXPLICIT_INTEGER_TYPES = unsigned short, unsigned long, unsigned long long
-# *
 FIELD_TYPES = {
     'nested_type': 0,
     'int8': 1,
@@ -110,7 +108,7 @@ FIELD_TYPES = {
     'octet': 15,  # byte
     definition.UnboundedString: 16,
     definition.UnboundedWString: 17,
-    # TODO there is no rosidl_parser.definition type for fixed strings (there is array of char, though?)
+    # TODO there is no rosidl_parser.definition type for fixed strings (caveat: array of char)
     # FIXED_STRING = 18
     # FIXED_WSTRING = 19
     definition.BoundedString: 20,
@@ -183,6 +181,7 @@ def serialize_individual_type_description(msg: definition.Message):
 def generate_json_in(idl: definition.IdlFile):
     type_description = None
     includes = []
+    # TODO(emersonknapp): do the individual message types get their own type hash?
     for el in idl.content.elements:
         if isinstance(el, definition.Include):
             includes.append(el.locator)
@@ -194,17 +193,20 @@ def generate_json_in(idl: definition.IdlFile):
                 'response_message': serialize_individual_type_description(el.response_message),
             }
         elif isinstance(el, definition.Action):
-            # TODO(emersonknapp)
             type_description = {
-                'goal_service': {
-                    'request_message': None,
-                    'response_message': None,
+                'send_goal_service': {
+                    'request_message': serialize_individual_type_description(
+                        el.send_goal_service.request_message),
+                    'response_message': serialize_individual_type_description(
+                        el.send_goal_service.response_message),
                 },
-                'result_service': {
-                    'request_message': None,
-                    'response_message': None,
+                'get_result_service': {
+                    'request_message': serialize_individual_type_description(
+                        el.get_result_service.request_message),
+                    'response_message': serialize_individual_type_description(
+                        el.get_result_service.response_message),
                 },
-                'feedback_message': None,
+                'feedback_message': serialize_individual_type_description(el.feedback_message),
             }
         else:
             raise Exception(f'Do not know how to hash {el}')

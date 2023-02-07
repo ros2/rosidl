@@ -83,6 +83,7 @@ rosidl_write_generator_arguments(
   OUTPUT_DIR "${_output_path}"
   TEMPLATE_DIR "${rosidl_generator_c_TEMPLATE_DIR}"
   TARGET_DEPENDENCIES ${target_dependencies}
+  TYPE_HASH_TUPLES "${${rosidl_generate_interfaces_TARGET}__HASH_TUPLES}"
 )
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
@@ -142,6 +143,9 @@ target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} PUBL
   rosidl_runtime_c::rosidl_runtime_c
   rosidl_typesupport_interface::rosidl_typesupport_interface
   rcutils::rcutils)
+add_dependencies(
+  ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  ${rosidl_generate_interfaces_TARGET}__rosidl_generator_type_hash)
 
 # Make top level generation target depend on this generated library
 add_dependencies(

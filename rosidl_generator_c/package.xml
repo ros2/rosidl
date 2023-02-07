@@ -32,6 +32,7 @@
   <exec_depend>rosidl_cli</exec_depend>
   <exec_depend>rosidl_parser</exec_depend>
   <exec_depend>rcutils</exec_depend>
+  <exec_depend>rosidl_generator_type_hash</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

@@ -16,18 +16,20 @@ find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
 set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_type_hash/${PROJECT_NAME}")
 set(_generated_json_in "")
-set(_generated_files "")
+set(_generated_json "")
+set(_generated_hash_tuples "")
+set(_generated_hash_files "")
 foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   get_filename_component(_parent_folder "${_abs_idl_file}" DIRECTORY)
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
   get_filename_component(_idl_stem "${_abs_idl_file}" NAME_WE)
-  # string_camel_case_to_lower_case_underscore("${_idl_name}" _idl_stem)
   list(APPEND _generated_json_in
     "${_output_path}/${_parent_folder}/${_idl_stem}.json.in")
-  list(APPEND _generated_files
+  list(APPEND _generated_json
     "${_output_path}/${_parent_folder}/${_idl_stem}.json")
-  list(APPEND _generated_files
-    "${_output_path}/${_parent_folder}/${_idl_stem}.sha256")
+  set(_hash_file "${_output_path}/${_parent_folder}/${_idl_stem}.sha256")
+  list(APPEND _generated_hash_files ${_hash_file})
+  list(APPEND _generated_hash_tuples "${_parent_folder}/${_idl_stem}:${_hash_file}")
 endforeach()
 
 set(_dependency_files "")
@@ -43,7 +45,7 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   endforeach()
 endforeach()
 
-set(${rosidl_generate_interfaces_TARGET}__JSON_IN_FILES ${_generated_json_in})
+set(${rosidl_generate_interfaces_TARGET}__HASH_TUPLES ${_generated_hash_tuples})
 
 set(target_dependencies
   "${rosidl_generator_type_hash_BIN}"
@@ -56,7 +58,7 @@ foreach(dep ${target_dependencies})
   endif()
 endforeach()
 
-set(_generated_files "${_generated_files};${_generated_json_in}")
+set(_generated_files "${_generated_json};${_generated_json_in};${_generated_hash_files}")
 add_custom_command(
   COMMAND Python3::Interpreter
   ARGS

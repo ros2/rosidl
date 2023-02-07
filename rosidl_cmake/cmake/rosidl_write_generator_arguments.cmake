@@ -32,6 +32,7 @@ function(rosidl_write_generator_arguments output_file)
   set(OPTIONAL_MULTI_VALUE_KEYWORDS
     "ROS_INTERFACE_DEPENDENCIES"  # since the dependencies can be empty
     "TARGET_DEPENDENCIES"
+    "TYPE_HASH_TUPLES"
     "ADDITIONAL_FILES")
 
   cmake_parse_arguments(

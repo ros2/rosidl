@@ -14,6 +14,13 @@ TEMPLATE(
 }@
 
 @{
+TEMPLATE(
+    'msg__rosidl_typesupport_introspection_cpp.hpp.em',
+    package_name=package_name, interface_path=interface_path, message=service.event_message,
+    include_directives=include_directives)
+}@
+
+@{
 header_files = [
     'rosidl_runtime_c/service_type_support_struct.h',
     'rosidl_typesupport_interface/macros.h',

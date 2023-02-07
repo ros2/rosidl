@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import hashlib
 from io import StringIO
 import json
 import os
@@ -23,6 +22,7 @@ import sys
 import em
 from rosidl_parser.definition import IdlLocator
 from rosidl_parser.parser import parse_idl_file
+
 
 def convert_camel_case_to_lower_case_underscore(value):
     # insert an underscore before any upper case letter
@@ -62,75 +62,39 @@ def generate_files(
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
     generated_files = []
 
-    idl_files_to_generate = []
-    idl_files = {}
-    package_name = args['package_name']
-
     for idl_tuple in args.get('idl_tuples', []):
         idl_parts = idl_tuple.rsplit(':', 1)
         assert len(idl_parts) == 2
-        namespaced_idl_path = str(pathlib.Path(package_name) / idl_parts[1])
-
         locator = IdlLocator(*idl_parts)
-        try:
-            idl_files[namespaced_idl_path] = parse_idl_file(locator)
-            idl_files_to_generate.append(namespaced_idl_path)
-        except Exception as e:
-            print(
-                'Error processing idl file: ' +
-                str(locator.get_absolute_path()), file=sys.stderr)
-            raise(e)
-
-    for interface_dep in args.get('ros_interface_dependencies', []):
-        tuple_parts = interface_dep.rsplit(':', 1)
-        assert len(tuple_parts) == 2
-        referenced_package_name, idl_abs_path = tuple_parts
-
-        base_path, pkg, rel_path = idl_abs_path.rpartition(referenced_package_name)
-        assert pkg == referenced_package_name
-        namespaced_idl_path = pkg + rel_path
-
-        # rel_path it starts with a pathsep from rpartition
-        locator = IdlLocator(base_path + pkg, rel_path[1:])
-        try:
-            idl_files[namespaced_idl_path] = parse_idl_file(locator)
-        except Exception as e:
-            print(
-                'Error processing idl file: ' +
-                str(locator.get_absolute_path()), file=sys.stderr)
-            raise(e)
-
-    for file_key in idl_files_to_generate:
-        idl_rel_path = pathlib.Path(file_key)
-        idl_rel_path = idl_rel_path.relative_to(idl_rel_path.parts[0])
+        idl_rel_path = pathlib.Path(idl_parts[1])
         idl_stem = idl_rel_path.stem
         if not keep_case:
             idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)
-
-        # TODO(emersonknapp) load hash from generator_type_hash outputs
-        m = hashlib.sha256()
-        type_hash = m.digest()
-
-        # Run codegen for files
-        idl_file = idl_files[file_key]
-        for template_file, generated_filename in mapping.items():
-            generated_file = os.path.join(
-                args['output_dir'], str(idl_rel_path.parent),
-                generated_filename % idl_stem)
-            generated_files.append(generated_file)
-            data = {
-                'package_name': package_name,
-                'interface_path': idl_rel_path,
-                'content': idl_file.content,
-                'type_hash': type_hash,
-            }
-            if additional_context is not None:
-                data.update(additional_context)
-            expand_template(
-                os.path.basename(template_file), data,
-                generated_file, minimum_timestamp=latest_target_timestamp,
-                template_basepath=template_basepath,
-                post_process_callback=post_process_callback)
+        try:
+            idl_file = parse_idl_file(locator)
+            for template_file, generated_filename in mapping.items():
+                generated_file = os.path.join(
+                    args['output_dir'], str(idl_rel_path.parent),
+                    generated_filename % idl_stem)
+                generated_files.append(generated_file)
+                data = {
+                    'package_name': args['package_name'],
+                    'interface_path': idl_rel_path,
+                    'content': idl_file.content,
+                    'type_hash': b'\0'*32,
+                }
+                if additional_context is not None:
+                    data.update(additional_context)
+                expand_template(
+                    os.path.basename(template_file), data,
+                    generated_file, minimum_timestamp=latest_target_timestamp,
+                    template_basepath=template_basepath,
+                    post_process_callback=post_process_callback)
+        except Exception as e:
+            print(
+                'Error processing idl file: ' +
+                str(locator.get_absolute_path()), file=sys.stderr)
+            raise(e)
 
     return generated_files
 

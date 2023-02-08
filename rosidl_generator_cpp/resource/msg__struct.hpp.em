@@ -103,10 +103,9 @@ struct @(message.structure.namespaced_type.name)_
 
 
   // Type Version Hash for interface
-  static constexpr uint8_t TYPE_VERSION_HASH[32] = {
-    @
-@[for i in range(32)]@
-0x@(type_hash[i:i+1].hex()), @
+  static constexpr uint8_t TYPE_VERSION_HASH[32] = {@
+  @[for i in range(32)]@
+@[if i % 8 == 0]@\n    @[end if]0x@(type_hash[i:i+1].hex()), @
 @[end for]
   };
 

@@ -16,7 +16,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
-from typing import List
+from typing import List, Tuple
 
 from rosidl_parser import definition
 from rosidl_parser.parser import parse_idl_file
@@ -30,6 +30,7 @@ def generate_type_hash(generator_arguments_file: str):
     idl_tuples = args['idl_tuples']
     include_paths = args.get('include_paths', [])
 
+    # Lookup for directory containing pregenerated .json.in files
     include_map = {
         package_name: Path(output_dir)
     }
@@ -41,6 +42,8 @@ def generate_type_hash(generator_arguments_file: str):
 
     generated_files = []
     json_contents = []
+
+    # First generate all .json.in files (so referenced types can be used in expansion)
     for idl_tuple in idl_tuples:
         idl_parts = idl_tuple.rsplit(':', 1)
         assert len(idl_parts) == 2
@@ -56,17 +59,18 @@ def generate_type_hash(generator_arguments_file: str):
         idl_stem = idl_rel_path.stem
         generate_to_dir = (Path(output_dir) / idl_rel_path).parent
         generate_to_dir.mkdir(parents=True, exist_ok=True)
-        stem_path = generate_to_dir / f'{idl_stem}'
 
-        json_in = generate_json_in(idl_file)
-        # Need to generate all .json.in before expanding .json final
-        json_contents.append((stem_path, json_in))
+        # Generation will create several definitions for Services and Actions
+        for stem, contents in generate_json_in(idl_file, idl_stem):
+            stem_path = generate_to_dir / stem
+            json_contents.append((stem_path, contents))
 
-        json_path = stem_path.with_suffix('.json.in')
-        with json_path.open('w', encoding='utf-8') as json_file:
-            json_file.write(json.dumps(json_in, indent=2))
-            generated_files.append(str(json_path))
+            json_path = stem_path.with_suffix('.json.in')
+            with json_path.open('w', encoding='utf-8') as json_file:
+                json_file.write(json.dumps(contents, indent=2))
+                generated_files.append(str(json_path))
 
+    # Expand .json.in and generate .sha256 hash files
     for stem_path, json_in in json_contents:
         json_out = generate_json_out(json_in, include_map)
         json_out_repr = json.dumps(json_out)
@@ -74,11 +78,12 @@ def generate_type_hash(generator_arguments_file: str):
         json_path = stem_path.with_suffix('.json')
         with json_path.open('w', encoding='utf-8') as json_file:
             json_file.write(json_out_repr)
-            generated_files.append(str(json_path))
+        generated_files.append(str(json_path))
 
         sha = hashlib.sha256()
         sha.update(json_out_repr.encode('utf-8'))
         type_hash = sha.hexdigest()
+
         hash_path = stem_path.with_suffix('.sha256')
         with hash_path.open('w', encoding='utf-8') as hash_file:
             hash_file.write(type_hash)
@@ -88,7 +93,8 @@ def generate_type_hash(generator_arguments_file: str):
 
 
 # This mapping must match the constants defined in type_description_interfaces/msgs/FieldType.msg
-# TODO There is no FieldType.msg definition for the following rosidl_parser.definition types
+# TODO(emersonknapp)
+# There is no FieldType.msg definition for the following rosidl_parser.definition types
 # * SIGNED_NONEXPLICIT_INTEGER_TYPES = short, long, long long
 # * UNSIGNED_NONEXPLICIT_INTEGER_TYPES = unsigned short, unsigned long, unsigned long long
 FIELD_TYPES = {
@@ -110,7 +116,8 @@ FIELD_TYPES = {
     'octet': 15,  # byte
     definition.UnboundedString: 16,
     definition.UnboundedWString: 17,
-    # TODO there is no rosidl_parser.definition type for fixed strings (caveat: array of char)
+    # TODO(emersonknapp)
+    # there is no rosidl_parser.definition type FixedString
     # FIXED_STRING = 18
     # FIXED_WSTRING = 19
     definition.BoundedString: 20,
@@ -119,26 +126,9 @@ FIELD_TYPES = {
 
 NESTED_FIELD_TYPE_OFFSETS = {
     definition.Array: 32,
-    definition.BoundedSequence: 64,
-    definition.UnboundedSequence: 96,
+    definition.BoundedSequence: 32 * 2,
+    definition.UnboundedSequence: 32 * 3,
 }
-
-
-def translate_type_id(value_type, offset, result):
-    if isinstance(value_type, definition.BasicType):
-        result['type_id'] = FIELD_TYPES[value_type.typename] + offset
-    elif isinstance(value_type, definition.AbstractGenericString):
-        result['type_id'] = FIELD_TYPES[type(value_type)] + offset
-        if value_type.has_maximum_size():
-            result['string_length'] = value_type.maximum_size
-    elif isinstance(value_type, definition.NamespacedType):
-        result['type_id'] = offset
-        result['nested_type_name'] = '/'.join(value_type.namespaced_name())
-    elif isinstance(value_type, definition.NamedType):
-        result['type_id'] = offset
-        result['nested_type_name'] = value_type.name
-    else:
-        raise TypeError('Unknown value type ', value_type)
 
 
 def serialize_field_type(ftype: definition.AbstractType):
@@ -149,11 +139,12 @@ def serialize_field_type(ftype: definition.AbstractType):
         'nested_type_name': '',
     }
 
+    type_id_offset = 0
     if isinstance(ftype, definition.AbstractNestableType):
-        translate_type_id(ftype, 0, result)
+        value_type = ftype
     elif isinstance(ftype, definition.AbstractNestedType):
         type_id_offset = NESTED_FIELD_TYPE_OFFSETS[type(ftype)]
-        translate_type_id(ftype.value_type, type_id_offset, result)
+        value_type = ftype.value_type
         if ftype.has_maximum_size():
             try:
                 result['length'] = ftype.maximum_size
@@ -161,6 +152,21 @@ def serialize_field_type(ftype: definition.AbstractType):
                 result['length'] = ftype.size
     else:
         raise Exception('Unable to translate field type', ftype)
+
+    if isinstance(value_type, definition.BasicType):
+        result['type_id'] = FIELD_TYPES[value_type.typename] + type_id_offset
+    elif isinstance(value_type, definition.AbstractGenericString):
+        result['type_id'] = FIELD_TYPES[type(value_type)] + type_id_offset
+        if value_type.has_maximum_size():
+            result['string_length'] = value_type.maximum_size
+    elif isinstance(value_type, definition.NamespacedType):
+        result['type_id'] = type_id_offset
+        result['nested_type_name'] = '/'.join(value_type.namespaced_name())
+    elif isinstance(value_type, definition.NamedType):
+        result['type_id'] = type_id_offset
+        result['nested_type_name'] = value_type.name
+    else:
+        raise TypeError('Unknown value type ', value_type)
 
     return result
 
@@ -180,51 +186,62 @@ def serialize_individual_type_description(msg: definition.Message):
     }
 
 
-def generate_json_in(idl: definition.IdlFile):
-    type_description = None
+def generate_json_in(idl: definition.IdlFile, stem: str) -> List[Tuple[str, dict]]:
+    type_descriptions = []
     includes = []
-    # TODO(emersonknapp): do the individual message types get their own type hash?
     for el in idl.content.elements:
         if isinstance(el, definition.Include):
             includes.append(el.locator)
         elif isinstance(el, definition.Message):
-            type_description = serialize_individual_type_description(el)
+            assert not type_descriptions, 'Found more than one interface in IDL'
+            type_descriptions = [
+                (stem, serialize_individual_type_description(el))
+            ]
         elif isinstance(el, definition.Service):
-            type_description = {
-                'request_message': serialize_individual_type_description(el.request_message),
-                'response_message': serialize_individual_type_description(el.response_message),
+            assert not type_descriptions, 'Found more than one interface in IDL'
+            request = serialize_individual_type_description(el.request_message)
+            response = serialize_individual_type_description(el.response_message)
+            service = {
+                'request': request,
+                'response': response,
             }
+            type_descriptions = [
+                (stem, service),
+                (f'{stem}_Request', request),
+                (f'{stem}_Response', response),
+            ]
         elif isinstance(el, definition.Action):
-            type_description = {
-                'send_goal_service': {
-                    'request_message': serialize_individual_type_description(
-                        el.send_goal_service.request_message),
-                    'response_message': serialize_individual_type_description(
-                        el.send_goal_service.response_message),
-                },
-                'get_result_service': {
-                    'request_message': serialize_individual_type_description(
-                        el.get_result_service.request_message),
-                    'response_message': serialize_individual_type_description(
-                        el.get_result_service.response_message),
-                },
-                'feedback_message': serialize_individual_type_description(el.feedback_message),
+            assert not type_descriptions, 'Found more than one interface in IDL'
+            goal = serialize_individual_type_description(el.goal)
+            result = serialize_individual_type_description(el.result)
+            feedback = serialize_individual_type_description(el.feedback)
+            action = {
+                'goal': goal,
+                'result': result,
+                'feedback': feedback,
             }
+            type_descriptions = [
+                (stem, action),
+                (f'{stem}_Goal', goal),
+                (f'{stem}_Result', result),
+                (f'{stem}_Feedback', feedback),
+            ]
         else:
             raise Exception(f'Do not know how to hash {el}')
-    if type_description is None:
+    if not type_descriptions:
         raise Exception('Did not find an interface to serialize in IDL file')
 
     includes = [
         str(Path(include).with_suffix('.json.in')) for include in includes
     ]
-    return {
+    # TODO(emersonknapp) do I need to break parse which sub-interfaces use which includes?
+    return [(out_stem, {
         'type_description': type_description,
         'includes': includes,
-    }
+    }) for out_stem, type_description in type_descriptions]
 
 
-def generate_json_out(json_in, includes_map):
+def generate_json_out(json_in, includes_map) -> dict:
     pending_includes = json_in['includes']
     loaded_includes = {}
     while pending_includes:

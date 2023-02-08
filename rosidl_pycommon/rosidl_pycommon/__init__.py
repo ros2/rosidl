@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ament_index_python import get_package_share_directory
-
 from io import StringIO
 import json
 import os

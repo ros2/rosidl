@@ -3,7 +3,7 @@
 <package format="3">
   <name>rosidl_generator_type_hash</name>
   <version>3.3.1</version>
-  <description>Generate the ROS interfaces in C.</description>
+  <description>Generate REP-2011 type version hashes for ROS interfaces.</description>
 
   <maintainer email="me@emersonknapp.com">Emerson Knapp</maintainer>
 

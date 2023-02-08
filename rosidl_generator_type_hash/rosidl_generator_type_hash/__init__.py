@@ -22,12 +22,14 @@ from rosidl_parser import definition
 from rosidl_parser.parser import parse_idl_file
 
 
-def generate_type_hash(
-    package_name: str,
-    output_dir: str,
-    idl_tuples: List[str],
-    include_paths: List[str]
-):
+def generate_type_hash(generator_arguments_file: str):
+    with open(generator_arguments_file, 'r') as f:
+        args = json.load(f)
+    package_name = args['package_name']
+    output_dir = args['output_dir']
+    idl_tuples = args['idl_tuples']
+    include_paths = args.get('include_paths', [])
+
     include_map = {
         package_name: Path(output_dir)
     }

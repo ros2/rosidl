@@ -58,15 +58,21 @@ foreach(dep ${target_dependencies})
   endif()
 endforeach()
 
+set(_generator_arguments_file "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_type_hash__arguments.json")
+rosidl_write_generator_arguments(
+  "${_generator_arguments_file}"
+  PACKAGE_NAME "${PROJECT_NAME}"
+  IDL_TUPLES "${rosidl_generate_interfaces_IDL_TUPLES}"
+  OUTPUT_DIR "${_output_path}"
+  INCLUDE_PATHS "${_dependency_paths}"
+)
+
 set(_generated_files "${_generated_json};${_generated_json_in};${_generated_hash_files}")
 add_custom_command(
   COMMAND Python3::Interpreter
   ARGS
   ${rosidl_generator_type_hash_BIN}
-  --package-name "${PROJECT_NAME}"
-  --output-dir "${_output_path}"
-  --idl-tuples ${rosidl_generate_interfaces_IDL_TUPLES}
-  --include-paths ${_dependency_paths}
+  --generator-arguments-file "${_generator_arguments_file}"
   OUTPUT ${_generated_files}
   DEPENDS ${target_dependencies}
   COMMENT "Generating type hashes for ROS interfaces"

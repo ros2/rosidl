@@ -26,13 +26,13 @@ def generate_type_hash(generator_arguments_file: str):
     with open(generator_arguments_file, 'r') as f:
         args = json.load(f)
     package_name = args['package_name']
-    output_dir = args['output_dir']
+    output_dir = Path(args['output_dir'])
     idl_tuples = args['idl_tuples']
     include_paths = args.get('include_paths', [])
 
     # Lookup for directory containing pregenerated .json.in files
     include_map = {
-        package_name: Path(output_dir)
+        package_name: output_dir
     }
     for include_tuple in include_paths:
         include_parts = include_tuple.rsplit(':', 1)
@@ -41,7 +41,7 @@ def generate_type_hash(generator_arguments_file: str):
         include_map[include_package_name] = Path(include_base_path)
 
     generated_files = []
-    json_contents = []
+    hashers = []
 
     # First generate all .json.in files (so referenced types can be used in expansion)
     for idl_tuple in idl_tuples:
@@ -56,38 +56,21 @@ def generate_type_hash(generator_arguments_file: str):
             raise(e)
 
         idl_rel_path = Path(idl_parts[1])
-        idl_stem = idl_rel_path.stem
-        generate_to_dir = (Path(output_dir) / idl_rel_path).parent
+        print(idl_rel_path)
+        generate_to_dir = (output_dir / idl_rel_path).parent
         generate_to_dir.mkdir(parents=True, exist_ok=True)
 
-        # Generation will create several definitions for Services and Actions
-        for stem, contents in generate_json_in(idl_file, idl_stem):
-            stem_path = generate_to_dir / stem
-            json_contents.append((stem_path, contents))
-
-            json_path = stem_path.with_suffix('.json.in')
-            with json_path.open('w', encoding='utf-8') as json_file:
-                json_file.write(json.dumps(contents, indent=2))
-                generated_files.append(str(json_path))
+        hasher = InterfaceHasher.from_idl(idl_file, idl_rel_path)
+        generated_files.extend(
+            hasher.write_json_in(output_dir))
+        hashers.append(hasher)
 
     # Expand .json.in and generate .sha256 hash files
-    for stem_path, json_in in json_contents:
-        json_out = generate_json_out(json_in, include_map)
-        json_out_repr = json.dumps(json_out)
-
-        json_path = stem_path.with_suffix('.json')
-        with json_path.open('w', encoding='utf-8') as json_file:
-            json_file.write(json_out_repr)
-        generated_files.append(str(json_path))
-
-        sha = hashlib.sha256()
-        sha.update(json_out_repr.encode('utf-8'))
-        type_hash = sha.hexdigest()
-
-        hash_path = stem_path.with_suffix('.sha256')
-        with hash_path.open('w', encoding='utf-8') as hash_file:
-            hash_file.write(type_hash)
-        generated_files.append(str(hash_path))
+    for hasher in hashers:
+        generated_files.extend(
+            hasher.write_json_out(output_dir, include_map))
+        generated_files.extend(
+            hasher.write_hash(output_dir))
 
     return generated_files
 
@@ -186,81 +169,130 @@ def serialize_individual_type_description(msg: definition.Message):
     }
 
 
-def generate_json_in(idl: definition.IdlFile, stem: str) -> List[Tuple[str, dict]]:
-    type_description = None
-    includes = []
-    for el in idl.content.elements:
-        if isinstance(el, definition.Include):
-            includes.append(el.locator)
-        elif isinstance(el, definition.Message):
-            assert not type_description, 'Found more than one interface in IDL'
-            type_description = [
-                (stem, serialize_individual_type_description(el))
-            ]
-        elif isinstance(el, definition.Service):
-            assert not type_description, 'Found more than one interface in IDL'
-            request_message = serialize_individual_type_description(el.request_message)
-            response_message = serialize_individual_type_description(el.response_message)
-            service = {
-                'request_message': request_message,
-                'response_message': response_message,
-            }
-            type_description = {
-                'service': service,
-                'request_message': request_message,
-                'response_message': response_message,
-            }
-        elif isinstance(el, definition.Action):
-            assert not type_description, 'Found more than one interface in IDL'
-            # goal = serialize_individual_type_description(el.goal)
-            # result = serialize_individual_type_description(el.result)
-            # feedback = serialize_individual_type_description(el.feedback)
-            # action = {
-            #     'goal': goal,
-            #     'result': result,
-            #     'feedback': feedback,
-            # }
-            # type_descriptions = [
-            #     (stem, action),
-            #     (f'{stem}_Goal', goal),
-            #     (f'{stem}_Result', result),
-            #     (f'{stem}_Feedback', feedback),
-            # ]
-        else:
-            raise Exception(f'Do not know how to hash {el}')
-    if not type_description:
-        raise Exception('Did not find an interface to serialize in IDL file')
-
-    includes = [
-        str(Path(include).with_suffix('.json.in')) for include in includes
-    ]
-    # TODO(emersonknapp) do I need to break parse which sub-interfaces use which includes?
+def serialize_individual_service_description(srv: definition.Service):
+    request_type = definition.NamespacedType(
+        srv.namespaced_type.namespaces, f'{srv.namespaced_type.name}_Request')
+    response_type = definition.NamespacedType(
+        srv.namespaced_type.namespaces, f'{srv.namespaced_type.name}_Response')
     return {
-        'type_description': type_description,
-        'includes': includes,
+        'type_name': '/'.join(srv.namespaced_type.namespaced_name()),
+        'fields': [
+            serialize_field(definition.Member(request_type, 'request_message')),
+            serialize_field(definition.Member(response_type, 'response_message')),
+        ]
     }
 
 
-def generate_json_out(json_in, includes_map) -> dict:
-    pending_includes = json_in['includes']
-    loaded_includes = {}
-    while pending_includes:
-        process_include = pending_includes.pop()
-        if process_include in loaded_includes:
-            continue
-        p_path = Path(process_include)
-        assert(not p_path.is_absolute())
-        include_package = p_path.parts[0]
-        include_file = includes_map[include_package] / p_path.relative_to(include_package)
+def serialize_individual_action_description(action: definition.Action):
+    raise Exception('Action plz')
 
-        with include_file.open('r') as include_file:
-            include_json = json.load(include_file)
 
-        loaded_includes[process_include] = include_json['type_description']
-        pending_includes.extend(include_json['includes'])
+class InterfaceHasher:
 
-    return {
-        'type_description': json_in['type_description'],
-        'referenced_type_descriptions': sorted(
-            loaded_includes.values(), key=lambda td: td['type_name'])
-    }
+    @classmethod
+    def from_idl(cls, idl: definition.IdlFile, idl_rel_path: str):
+        includes = idl.content.get_elements_of_type(definition.Include)
+        for el in idl.content.elements:
+            if isinstance(el, definition.Message):
+                return InterfaceHasher(el, includes, idl_rel_path)
+            elif isinstance(el, definition.Service):
+                return InterfaceHasher(el, includes, idl_rel_path)
+            elif isinstance(el, definition.Action):
+                return InterfaceHasher(el, includes, idl_rel_path)
+        raise Exception('No interface found in IDL')
+
+    def __init__(self, interface, includes, idl_rel_path: str):
+        self.includes = [str(Path(include).with_suffix('.json.in')) for include in includes]
+        self.interface = interface
+        self.interface_type = ''
+        self.rel_path = idl_rel_path
+        self.subinterfaces = {}
+
+        if isinstance(interface, definition.Message):
+            self.interface_type = 'message'
+            self.individual_type_description = serialize_individual_type_description(interface)
+        elif isinstance(interface, definition.Service):
+            self.interface_type = 'service'
+            stem = idl_rel_path.stem
+            self.subinterfaces = {
+                'request_message': InterfaceHasher(
+                    interface.request_message, includes,
+                    idl_rel_path.parent / f'{stem}_Request'),
+                'response_message': InterfaceHasher(
+                    interface.response_message, includes,
+                    idl_rel_path.parent / f'{stem}_Response'),
+                'event_message': InterfaceHasher(
+                    interface.event_message, includes,
+                    idl_rel_path.parent / f'{stem}_Event'),
+            }
+            self.individual_type_description = serialize_individual_service_description(interface)
+        elif isinstance(interface, definition.Action):
+            raise Exception('Action plz')
+
+        self.json_in = {
+            'type_description': self.individual_type_description,
+            'includes': self.includes,
+        }
+
+    def write_json_in(self, output_dir):
+        for key, val in self.subinterfaces.items():
+            val.write_json_in(output_dir)
+
+        json_path = (output_dir / self.rel_path).with_suffix('.json.in')
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        with json_path.open('w', encoding='utf-8') as json_file:
+            json_file.write(json.dumps(self.json_in, indent=2))
+        return [str(json_path)]
+
+    def write_json_out(self, output_dir, includes_map):
+        for key, val in self.subinterfaces.items():
+            val.write_json_out(output_dir, includes_map)
+
+        pending_includes = self.json_in['includes']
+        loaded_includes = {}
+        while pending_includes:
+            process_include = pending_includes.pop()
+            if process_include in loaded_includes:
+                continue
+            p_path = Path(process_include)
+            assert(not p_path.is_absolute())
+            include_package = p_path.parts[0]
+            include_file = includes_map[include_package] / p_path.relative_to(include_package)
+
+            with include_file.open('r') as include_file:
+                include_json = json.load(include_file)
+
+            loaded_includes[process_include] = include_json['type_description']
+            pending_includes.extend(include_json['includes'])
+
+        self.json_out = {
+            'type_description': self.json_in['type_description'],
+            'referenced_type_descriptions': sorted(
+                loaded_includes.values(), key=lambda td: td['type_name'])
+        }
+
+        json_path = (output_dir / self.rel_path).with_suffix('.json')
+        with json_path.open('w', encoding='utf-8') as json_file:
+            json_file.write(json.dumps(self.json_out, indent=2))
+        return [str(json_path)]
+
+    def calculate_hash(self):
+        json_out_repr = json.dumps(self.json_out)
+        sha = hashlib.sha256()
+        sha.update(json_out_repr.encode('utf-8'))
+        type_hash = sha.hexdigest()
+
+        type_hash_infos = {
+            self.interface_type: type_hash,
+        }
+        for key, val in self.subinterfaces.items():
+            type_hash_infos[key] = val.calculate_hash()
+
+        return type_hash_infos
+
+    def write_hash(self, output_dir):
+        type_hash = self.calculate_hash()
+        hash_path = (output_dir / self.rel_path).with_suffix('.sha256')
+        with hash_path.open('w', encoding='utf-8') as hash_file:
+            hash_file.write(json.dumps(type_hash, indent=2))
+        return [str(hash_path)]

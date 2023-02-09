@@ -62,6 +62,7 @@ def generate_files(
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
     generated_files = []
 
+    type_hashes_provided = 'type_hash_tuples' in args
     type_hash_files = {}
     for hash_tuple in args.get('type_hash_tuples', []):
         hash_parts = hash_tuple.split(':', 1)
@@ -75,13 +76,11 @@ def generate_files(
         idl_rel_path = pathlib.Path(idl_parts[1])
 
         idl_rel_stem = idl_rel_path.with_suffix('')
-        try:
+        if type_hashes_provided:
             type_hash_file = type_hash_files[str(idl_rel_stem)]
             with open(type_hash_file, 'r') as f:
-                type_hash_infos = f.read()
-            # type_hash = bytes.fromhex(type_hash_digest)
-        except KeyError:
-            # TODO(emersonknapp) how to handle - typesupport generators don't need hash
+                type_hash_infos = json.load(f)
+        else:
             type_hash_infos = None
 
         idl_stem = idl_rel_path.stem
@@ -202,6 +201,7 @@ def expand_template(
 
 def _add_helper_functions(data):
     data['TEMPLATE'] = _expand_template
+    data['TYPE_HASH'] = _expand_type_hash
 
 
 def _expand_template(template_name, **kwargs):
@@ -219,3 +219,14 @@ def _expand_template(template_name, **kwargs):
               file=sys.stderr)
         raise
     interpreter.invoke('afterInclude')
+
+
+def _expand_type_hash(variable_name, hex_string, indent=0):
+    ind_str = ' ' * indent
+    result = f'uint8_t {variable_name}[32] = {{'
+    for i in range(32):
+        if i % 8 == 0:
+            result += f'\n{ind_str}  '
+        result += f'0x{hex_string[i*2:i*2+1]}, '
+    result += f'\n{ind_str}}};\n'
+    return result

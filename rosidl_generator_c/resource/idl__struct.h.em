@@ -11,6 +11,7 @@
 @#  - content (IdlContent, list of elements, e.g. Messages or Services)
 @#######################################################################
 @{
+from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
@@ -55,6 +56,8 @@ TEMPLATE(
 from rosidl_parser.definition import Service
 }@
 @[for service in content.get_elements_of_type(Service)]@
+static const @(TYPE_HASH(idl_structure_type_to_c_typename(service.namespaced_type) + "__TYPE_VERSION_HASH", type_hash['service']))@
+
 @{
 TEMPLATE(
     'msg__struct.h.em',

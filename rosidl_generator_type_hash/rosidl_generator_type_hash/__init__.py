@@ -187,58 +187,58 @@ def serialize_individual_type_description(msg: definition.Message):
 
 
 def generate_json_in(idl: definition.IdlFile, stem: str) -> List[Tuple[str, dict]]:
-    type_descriptions = []
+    type_description = None
     includes = []
     for el in idl.content.elements:
         if isinstance(el, definition.Include):
             includes.append(el.locator)
         elif isinstance(el, definition.Message):
-            assert not type_descriptions, 'Found more than one interface in IDL'
-            type_descriptions = [
+            assert not type_description, 'Found more than one interface in IDL'
+            type_description = [
                 (stem, serialize_individual_type_description(el))
             ]
         elif isinstance(el, definition.Service):
-            assert not type_descriptions, 'Found more than one interface in IDL'
-            request = serialize_individual_type_description(el.request_message)
-            response = serialize_individual_type_description(el.response_message)
+            assert not type_description, 'Found more than one interface in IDL'
+            request_message = serialize_individual_type_description(el.request_message)
+            response_message = serialize_individual_type_description(el.response_message)
             service = {
-                'request': request,
-                'response': response,
+                'request_message': request_message,
+                'response_message': response_message,
             }
-            type_descriptions = [
-                (stem, service),
-                (f'{stem}_Request', request),
-                (f'{stem}_Response', response),
-            ]
+            type_description = {
+                'service': service,
+                'request_message': request_message,
+                'response_message': response_message,
+            }
         elif isinstance(el, definition.Action):
-            assert not type_descriptions, 'Found more than one interface in IDL'
-            goal = serialize_individual_type_description(el.goal)
-            result = serialize_individual_type_description(el.result)
-            feedback = serialize_individual_type_description(el.feedback)
-            action = {
-                'goal': goal,
-                'result': result,
-                'feedback': feedback,
-            }
-            type_descriptions = [
-                (stem, action),
-                (f'{stem}_Goal', goal),
-                (f'{stem}_Result', result),
-                (f'{stem}_Feedback', feedback),
-            ]
+            assert not type_description, 'Found more than one interface in IDL'
+            # goal = serialize_individual_type_description(el.goal)
+            # result = serialize_individual_type_description(el.result)
+            # feedback = serialize_individual_type_description(el.feedback)
+            # action = {
+            #     'goal': goal,
+            #     'result': result,
+            #     'feedback': feedback,
+            # }
+            # type_descriptions = [
+            #     (stem, action),
+            #     (f'{stem}_Goal', goal),
+            #     (f'{stem}_Result', result),
+            #     (f'{stem}_Feedback', feedback),
+            # ]
         else:
             raise Exception(f'Do not know how to hash {el}')
-    if not type_descriptions:
+    if not type_description:
         raise Exception('Did not find an interface to serialize in IDL file')
 
     includes = [
         str(Path(include).with_suffix('.json.in')) for include in includes
     ]
     # TODO(emersonknapp) do I need to break parse which sub-interfaces use which includes?
-    return [(out_stem, {
+    return {
         'type_description': type_description,
         'includes': includes,
-    }) for out_stem, type_description in type_descriptions]
+    }
 
 
 def generate_json_out(json_in, includes_map) -> dict:

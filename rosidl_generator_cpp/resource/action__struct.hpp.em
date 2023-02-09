@@ -17,42 +17,48 @@ action_name = '::'.join(action.namespaced_type.namespaced_name())
 TEMPLATE(
     'msg__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.goal, include_directives=include_directives, type_hash=type_hash)
+    message=action.goal, include_directives=include_directives,
+    type_hash=type_hash['goal'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.result, include_directives=include_directives, type_hash=type_hash)
+    message=action.result, include_directives=include_directives,
+    type_hash=type_hash['result'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.feedback, include_directives=include_directives, type_hash=type_hash)
+    message=action.feedback, include_directives=include_directives,
+    type_hash=type_hash['feedback'])
 }@
 
 @{
 TEMPLATE(
     'srv__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    service=action.send_goal_service, include_directives=include_directives, type_hash=type_hash)
+    service=action.send_goal_service, include_directives=include_directives,
+    type_hash=type_hash['send_goal_service'])
 }@
 
 @{
 TEMPLATE(
     'srv__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    service=action.get_result_service, include_directives=include_directives, type_hash=type_hash)
+    service=action.get_result_service, include_directives=include_directives,
+    type_hash=type_hash['get_result_service'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.feedback_message, include_directives=include_directives, type_hash=type_hash)
+    message=action.feedback_message, include_directives=include_directives,
+    type_hash=type_hash['feedback_message'])
 }@
 
 @[for header_file in action_includes]@

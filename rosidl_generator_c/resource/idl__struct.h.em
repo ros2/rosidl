@@ -59,21 +59,24 @@ from rosidl_parser.definition import Service
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=service.request_message, include_directives=include_directives, type_hash=type_hash)
+    message=service.request_message, include_directives=include_directives,
+    type_hash=type_hash['request_message'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=service.response_message, include_directives=include_directives, type_hash=type_hash)
+    message=service.response_message, include_directives=include_directives,
+    type_hash=type_hash['response_message'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=service.event_message, include_directives=include_directives, type_hash=type_hash)
+    message=service.event_message, include_directives=include_directives,
+    type_hash=type_hash['event_message'])
 }@
 
 @[end for]@
@@ -89,70 +92,80 @@ from rosidl_parser.definition import Action
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.goal, include_directives=include_directives, type_hash=type_hash)
+    message=action.goal, include_directives=include_directives,
+    type_hash=type_hash['goal'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.result, include_directives=include_directives, type_hash=type_hash)
+    message=action.result, include_directives=include_directives,
+    type_hash=type_hash['result'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.feedback, include_directives=include_directives, type_hash=type_hash)
+    message=action.feedback, include_directives=include_directives,
+    type_hash=type_hash['feedback'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.send_goal_service.request_message, include_directives=include_directives, type_hash=type_hash)
+    message=action.send_goal_service.request_message, include_directives=include_directives,
+    type_hash=type_hash['send_goal_service']['request_message'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.send_goal_service.response_message, include_directives=include_directives, type_hash=type_hash)
+    message=action.send_goal_service.response_message, include_directives=include_directives,
+    type_hash=type_hash['send_goal_service']['response_message'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.send_goal_service.event_message, include_directives=include_directives, type_hash=type_hash)
+    message=action.send_goal_service.event_message, include_directives=include_directives,
+    type_hash=type_hash['send_goal_service']['event_message'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.get_result_service.request_message, include_directives=include_directives, type_hash=type_hash)
+    message=action.get_result_service.request_message, include_directives=include_directives,
+    type_hash=type_hash['get_result_service']['request_message'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.get_result_service.response_message, include_directives=include_directives, type_hash=type_hash)
+    message=action.get_result_service.response_message, include_directives=include_directives,
+    type_hash=type_hash['get_result_service']['response_message'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.get_result_service.event_message, include_directives=include_directives, type_hash=type_hash)
+    message=action.get_result_service.event_message, include_directives=include_directives,
+    type_hash=type_hash['get_result_service']['event_message'])
 }@
 
 @{
 TEMPLATE(
     'msg__struct.h.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.feedback_message, include_directives=include_directives, type_hash=type_hash)
+    message=action.feedback_message, include_directives=include_directives,
+    type_hash=type_hash['feedback_message'])
 }@
 
 @[end for]@

@@ -78,11 +78,11 @@ def generate_files(
         try:
             type_hash_file = type_hash_files[str(idl_rel_stem)]
             with open(type_hash_file, 'r') as f:
-                type_hash_digest = f.read()
-            type_hash = bytes.fromhex(type_hash_digest)
+                type_hash_infos = f.read()
+            # type_hash = bytes.fromhex(type_hash_digest)
         except KeyError:
             # TODO(emersonknapp) how to handle - typesupport generators don't need hash
-            type_hash = b'\0' * 32
+            type_hash_infos = None
 
         idl_stem = idl_rel_path.stem
         if not keep_case:
@@ -98,7 +98,7 @@ def generate_files(
                     'package_name': args['package_name'],
                     'interface_path': idl_rel_path,
                     'content': idl_file.content,
-                    'type_hash': type_hash,
+                    'type_hash': type_hash_infos,
                 }
                 if additional_context is not None:
                     data.update(additional_context)

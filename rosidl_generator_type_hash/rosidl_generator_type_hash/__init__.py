@@ -56,7 +56,6 @@ def generate_type_hash(generator_arguments_file: str):
             raise(e)
 
         idl_rel_path = Path(idl_parts[1])
-        print(idl_rel_path)
         generate_to_dir = (output_dir / idl_rel_path).parent
         generate_to_dir.mkdir(parents=True, exist_ok=True)
 
@@ -170,21 +169,59 @@ def serialize_individual_type_description(msg: definition.Message):
 
 
 def serialize_individual_service_description(srv: definition.Service):
-    request_type = definition.NamespacedType(
-        srv.namespaced_type.namespaces, f'{srv.namespaced_type.name}_Request')
-    response_type = definition.NamespacedType(
-        srv.namespaced_type.namespaces, f'{srv.namespaced_type.name}_Response')
+    name = srv.namespaced_type.name
+    members = [
+        definition.Member(
+            definition.NamespacedType(
+                srv.namespaced_type.namespaces,
+                name + definition.SERVICE_REQUEST_MESSAGE_SUFFIX), 'request_message'),
+        definition.Member(
+            definition.NamespacedType(
+                srv.namespaced_type.namespaces,
+                name + definition.SERVICE_RESPONSE_MESSAGE_SUFFIX), 'response_message'),
+        definition.Member(
+            definition.NamespacedType(
+                srv.namespaced_type.namespaces,
+                name + definition.SERVICE_EVENT_MESSAGE_SUFFIX), 'event_message'),
+    ]
     return {
         'type_name': '/'.join(srv.namespaced_type.namespaced_name()),
-        'fields': [
-            serialize_field(definition.Member(request_type, 'request_message')),
-            serialize_field(definition.Member(response_type, 'response_message')),
-        ]
+        'fields': [serialize_field(member) for member in members],
     }
 
 
 def serialize_individual_action_description(action: definition.Action):
-    raise Exception('Action plz')
+    name = action.namespaced_type.name
+    members = [
+        definition.Member(
+            definition.NamespacedType(
+                action.namespaced_type.namespaces,
+                name + definition.ACTION_GOAL_SUFFIX), 'goal'),
+        definition.Member(
+            definition.NamespacedType(
+                action.namespaced_type.namespaces,
+                name + definition.ACTION_RESULT_SUFFIX), 'result'),
+        definition.Member(
+            definition.NamespacedType(
+                action.namespaced_type.namespaces,
+                name + definition.ACTION_FEEDBACK_SUFFIX), 'feedback'),
+        definition.Member(
+            definition.NamespacedType(
+                action.namespaced_type.namespaces,
+                name + definition.ACTION_GOAL_SERVICE_SUFFIX), 'send_goal_service'),
+        definition.Member(
+            definition.NamespacedType(
+                action.namespaced_type.namespaces,
+                name + definition.ACTION_RESULT_SERVICE_SUFFIX), 'get_result_service'),
+        definition.Member(
+            definition.NamespacedType(
+                action.namespaced_type.namespaces,
+                name + definition.ACTION_FEEDBACK_MESSAGE_SUFFIX), 'feedback_message'),
+    ]
+    return {
+        'type_name': '/'.join(action.namespaced_type.namespaced_name()),
+        'fields': [serialize_field(member) for member in members],
+    }
 
 
 class InterfaceHasher:
@@ -202,32 +239,55 @@ class InterfaceHasher:
         raise Exception('No interface found in IDL')
 
     def __init__(self, interface, includes, idl_rel_path: str):
-        self.includes = [str(Path(include).with_suffix('.json.in')) for include in includes]
+        self.includes = [str(Path(include.locator).with_suffix('.json.in')) for include in includes]
         self.interface = interface
         self.interface_type = ''
         self.rel_path = idl_rel_path
         self.subinterfaces = {}
+
+        def subipath(suffix):
+            return idl_rel_path.parent / (idl_rel_path.stem + suffix)
 
         if isinstance(interface, definition.Message):
             self.interface_type = 'message'
             self.individual_type_description = serialize_individual_type_description(interface)
         elif isinstance(interface, definition.Service):
             self.interface_type = 'service'
-            stem = idl_rel_path.stem
             self.subinterfaces = {
                 'request_message': InterfaceHasher(
                     interface.request_message, includes,
-                    idl_rel_path.parent / f'{stem}_Request'),
+                    subipath(definition.SERVICE_REQUEST_MESSAGE_SUFFIX)),
                 'response_message': InterfaceHasher(
                     interface.response_message, includes,
-                    idl_rel_path.parent / f'{stem}_Response'),
+                    subipath(definition.SERVICE_RESPONSE_MESSAGE_SUFFIX)),
                 'event_message': InterfaceHasher(
                     interface.event_message, includes,
-                    idl_rel_path.parent / f'{stem}_Event'),
+                    subipath(definition.SERVICE_EVENT_MESSAGE_SUFFIX)),
             }
             self.individual_type_description = serialize_individual_service_description(interface)
         elif isinstance(interface, definition.Action):
-            raise Exception('Action plz')
+            self.interface_type = 'action'
+            self.subinterfaces = {
+                'goal': InterfaceHasher(
+                    interface.goal, includes,
+                    subipath(definition.ACTION_GOAL_SUFFIX)),
+                'result': InterfaceHasher(
+                    interface.result, includes,
+                    subipath(definition.ACTION_RESULT_SUFFIX)),
+                'feedback': InterfaceHasher(
+                    interface.feedback, includes,
+                    subipath(definition.ACTION_FEEDBACK_SUFFIX)),
+                'send_goal_service': InterfaceHasher(
+                    interface.send_goal_service, includes,
+                    subipath(definition.ACTION_GOAL_SERVICE_SUFFIX)),
+                'get_result_service': InterfaceHasher(
+                    interface.get_result_service, includes,
+                    subipath(definition.ACTION_RESULT_SERVICE_SUFFIX)),
+                'feedback_message': InterfaceHasher(
+                    interface.feedback_message, includes,
+                    subipath(definition.ACTION_FEEDBACK_MESSAGE_SUFFIX)),
+            }
+            self.individual_type_description = serialize_individual_action_description(interface)
 
         self.json_in = {
             'type_description': self.individual_type_description,

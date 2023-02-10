@@ -22,6 +22,6 @@ install(
   DESTINATION lib/${PROJECT_NAME}
 )
 install(
-  DIRECTORY cmake # resource
+  DIRECTORY cmake
   DESTINATION share/${PROJECT_NAME}
 )

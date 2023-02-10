@@ -22,7 +22,7 @@ from rosidl_parser import definition
 from rosidl_parser.parser import parse_idl_file
 
 
-def generate_type_hash(generator_arguments_file: str):
+def generate_type_hash(generator_arguments_file: str) -> List[str]:
     with open(generator_arguments_file, 'r') as f:
         args = json.load(f)
     package_name = args['package_name']
@@ -113,7 +113,7 @@ NESTED_FIELD_TYPE_OFFSETS = {
 }
 
 
-def serialize_field_type(ftype: definition.AbstractType):
+def serialize_field_type(ftype: definition.AbstractType) -> dict:
     result = {
         'type_id': 0,
         'length': 0,
@@ -121,26 +121,26 @@ def serialize_field_type(ftype: definition.AbstractType):
         'nested_type_name': '',
     }
 
+    # Determine value type, if this is a nested type
     type_id_offset = 0
     if isinstance(ftype, definition.AbstractNestableType):
         value_type = ftype
     elif isinstance(ftype, definition.AbstractNestedType):
         type_id_offset = NESTED_FIELD_TYPE_OFFSETS[type(ftype)]
         value_type = ftype.value_type
-        if ftype.has_maximum_size():
-            try:
-                result['length'] = ftype.maximum_size
-            except AttributeError:
-                result['length'] = ftype.size
     else:
         raise Exception('Unable to translate field type', ftype)
 
+    # Translate value type to FieldType.msg const value
     if isinstance(value_type, definition.BasicType):
         result['type_id'] = FIELD_TYPES[value_type.typename] + type_id_offset
     elif isinstance(value_type, definition.AbstractGenericString):
         result['type_id'] = FIELD_TYPES[type(value_type)] + type_id_offset
         if value_type.has_maximum_size():
-            result['string_length'] = value_type.maximum_size
+            try:
+                result['length'] = value_type.maximum_size
+            except AttributeError:
+                result['length'] = value_type.size
     elif isinstance(value_type, definition.NamespacedType):
         result['type_id'] = type_id_offset
         result['nested_type_name'] = '/'.join(value_type.namespaced_name())
@@ -153,7 +153,7 @@ def serialize_field_type(ftype: definition.AbstractType):
     return result
 
 
-def serialize_field(member: definition.Member):
+def serialize_field(member: definition.Member) -> dict:
     return {
         'name': member.name,
         'type': serialize_field_type(member.type),
@@ -163,7 +163,7 @@ def serialize_field(member: definition.Member):
 
 def serialize_individual_type_description(
     namespaced_type: definition.NamespacedType, members: List[definition.Member]
-):
+) -> dict:
     return {
         'type_name': '/'.join(namespaced_type.namespaced_name()),
         'fields': [serialize_field(member) for member in members]
@@ -187,6 +187,7 @@ class InterfaceHasher:
         self.interface = interface
         self.subinterfaces = {}
 
+        # Determine top level interface, and member fields based on that
         if isinstance(interface, definition.Message):
             self.namespaced_type = interface.structure.namespaced_type
             self.interface_type = 'message'
@@ -221,6 +222,8 @@ class InterfaceHasher:
 
         self.individual_type_description = serialize_individual_type_description(
             self.namespaced_type, self.members)
+
+        # Determine needed includes from member fields
         included_types = []
         for member in self.members:
             if isinstance(member.type, definition.NamespacedType):
@@ -244,7 +247,7 @@ class InterfaceHasher:
             'includes': self.includes,
         }
 
-    def write_json_in(self, output_dir):
+    def write_json_in(self, output_dir) -> List[str]:
         generated_files = []
         for key, val in self.subinterfaces.items():
             generated_files += val.write_json_in(output_dir)
@@ -255,12 +258,13 @@ class InterfaceHasher:
             json_file.write(json.dumps(self.json_in, indent=2))
         return generated_files + [str(json_path)]
 
-    def write_json_out(self, output_dir, includes_map):
+    def write_json_out(self, output_dir: Path, includes_map: dict) -> List[str]:
         generated_files = []
         for key, val in self.subinterfaces.items():
             generated_files += val.write_json_out(output_dir, includes_map)
 
-        pending_includes = self.json_in['includes']
+        # Recursively load includes from all included type descriptions
+        pending_includes = self.includes[:]
         loaded_includes = {}
         while pending_includes:
             process_include = pending_includes.pop()
@@ -288,7 +292,7 @@ class InterfaceHasher:
             json_file.write(json.dumps(self.json_out))
         return generated_files + [str(json_path)]
 
-    def calculate_hash(self):
+    def calculate_hash(self) -> dict:
         json_out_repr = json.dumps(self.json_out)
         sha = hashlib.sha256()
         sha.update(json_out_repr.encode('utf-8'))
@@ -302,7 +306,7 @@ class InterfaceHasher:
 
         return type_hash_infos
 
-    def write_hash(self, output_dir):
+    def write_hash(self, output_dir: Path) -> List[str]:
         type_hash = self.calculate_hash()
         hash_path = output_dir / self.rel_path.with_suffix('.sha256')
         with hash_path.open('w', encoding='utf-8') as hash_file:

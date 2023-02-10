@@ -34,7 +34,6 @@ endforeach()
 
 set(_dependency_files "")
 set(_dependency_paths "")
-set(_dependencies "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   set(_include_path "${${_pkg_name}_DIR}/..")
   normalize_path(_include_path "${_include_path}")

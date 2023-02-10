@@ -161,6 +161,15 @@ def serialize_field(member: definition.Member):
     }
 
 
+def serialize_individual_type_description(
+    namespaced_type: definition.NamespacedType, members: List[definition.Member]
+):
+    return {
+        'type_name': '/'.join(namespaced_type.namespaced_name()),
+        'fields': [serialize_field(member) for member in members]
+    }
+
+
 class InterfaceHasher:
 
     @classmethod
@@ -185,12 +194,8 @@ class InterfaceHasher:
         if isinstance(interface, definition.Message):
             self.namespaced_type = interface.structure.namespaced_type
             self.interface_type = 'message'
-            self.individual_type_description = {
-                'type_name': '/'.join(self.namespaced_type.namespaced_name()),
-                'fields': [
-                    serialize_field(member) for member in interface.structure.members
-                ]
-            }
+            self.individual_type_description = serialize_individual_type_description(
+                self.namespaced_type, interface.structure.members)
         elif isinstance(interface, definition.Service):
             self.namespaced_type = interface.namespaced_type
             self.interface_type = 'service'
@@ -199,13 +204,11 @@ class InterfaceHasher:
                 'response_message': InterfaceHasher(interface.response_message, includes),
                 'event_message': InterfaceHasher(interface.event_message, includes),
             }
-            self.individual_type_description = {
-                'type_name': '/'.join(self.namespaced_type.namespaced_name()),
-                'fields': [
-                    serialize_field(definition.Member(hasher.namespaced_type, field_name))
+            self.individual_type_description = serialize_individual_type_description(
+                self.namespaced_type, [
+                    definition.Member(hasher.namespaced_type, field_name)
                     for field_name, hasher in self.subinterfaces.items()
-                ]
-            }
+                ])
         elif isinstance(interface, definition.Action):
             self.namespaced_type = interface.namespaced_type
             self.interface_type = 'action'
@@ -217,13 +220,11 @@ class InterfaceHasher:
                 'get_result_service': InterfaceHasher(interface.get_result_service, includes),
                 'feedback_message': InterfaceHasher(interface.feedback_message, includes),
             }
-            self.individual_type_description = {
-                'type_name': '/'.join(self.namespaced_type.namespaced_name()),
-                'fields': [
-                    serialize_field(definition.Member(hasher.namespaced_type, field_name))
+            self.individual_type_description = serialize_individual_type_description(
+                self.namespaced_type, [
+                    definition.Member(hasher.namespaced_type, field_name)
                     for field_name, hasher in self.subinterfaces.items()
-                ]
-            }
+                ])
 
         self.rel_path = Path(*self.namespaced_type.namespaced_name()[1:])
         self.include_path = Path(*self.namespaced_type.namespaced_name())

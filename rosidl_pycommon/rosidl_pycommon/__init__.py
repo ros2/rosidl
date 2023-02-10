@@ -227,6 +227,6 @@ def _expand_type_hash(variable_name, hex_string, indent=0):
     for i in range(32):
         if i % 8 == 0:
             result += f'\n{ind_str}  '
-        result += f'0x{hex_string[i*2:i*2+1]}, '
+        result += f'0x{hex_string[i*2:i*2+2]}, '
     result += f'\n{ind_str}}};\n'
     return result

@@ -91,6 +91,8 @@ TEMPLATE(
 from rosidl_parser.definition import Action
 }@
 @[for action in content.get_elements_of_type(Action)]@
+static const @(TYPE_HASH(idl_structure_type_to_c_typename(action.namespaced_type) + "__TYPE_VERSION_HASH", type_hash['action']))@
+
 @{
 TEMPLATE(
     'msg__struct.h.em',

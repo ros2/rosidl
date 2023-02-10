@@ -285,7 +285,7 @@ class InterfaceHasher:
 
         json_path = output_dir / self.rel_path.with_suffix('.json')
         with json_path.open('w', encoding='utf-8') as json_file:
-            json_file.write(json.dumps(self.json_out, indent=2))
+            json_file.write(json.dumps(self.json_out))
         return generated_files + [str(json_path)]
 
     def calculate_hash(self):

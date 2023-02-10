@@ -16,7 +16,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
-from typing import List, Tuple
+from typing import List
 
 from rosidl_parser import definition
 from rosidl_parser.parser import parse_idl_file
@@ -174,78 +174,91 @@ class InterfaceHasher:
 
     @classmethod
     def from_idl(cls, idl: definition.IdlFile):
-        includes = idl.content.get_elements_of_type(definition.Include)
         for el in idl.content.elements:
             if isinstance(el, definition.Message):
-                return InterfaceHasher(el, includes)
+                return InterfaceHasher(el)
             elif isinstance(el, definition.Service):
-                return InterfaceHasher(el, includes)
+                return InterfaceHasher(el)
             elif isinstance(el, definition.Action):
-                return InterfaceHasher(el, includes)
+                return InterfaceHasher(el)
         raise Exception('No interface found in IDL')
 
-    def __init__(self, interface, includes):
-        self.includes = [
-            str(Path(include.locator).with_suffix('.json.in'))
-            for include in includes]
+    def __init__(self, interface):
         self.interface = interface
         self.subinterfaces = {}
 
         if isinstance(interface, definition.Message):
             self.namespaced_type = interface.structure.namespaced_type
             self.interface_type = 'message'
-            self.individual_type_description = serialize_individual_type_description(
-                self.namespaced_type, interface.structure.members)
+            self.members = interface.structure.members
         elif isinstance(interface, definition.Service):
             self.namespaced_type = interface.namespaced_type
             self.interface_type = 'service'
             self.subinterfaces = {
-                'request_message': InterfaceHasher(interface.request_message, includes),
-                'response_message': InterfaceHasher(interface.response_message, includes),
-                'event_message': InterfaceHasher(interface.event_message, includes),
+                'request_message': InterfaceHasher(interface.request_message),
+                'response_message': InterfaceHasher(interface.response_message),
+                'event_message': InterfaceHasher(interface.event_message),
             }
-            self.individual_type_description = serialize_individual_type_description(
-                self.namespaced_type, [
-                    definition.Member(hasher.namespaced_type, field_name)
-                    for field_name, hasher in self.subinterfaces.items()
-                ])
+            self.members = [
+                definition.Member(hasher.namespaced_type, field_name)
+                for field_name, hasher in self.subinterfaces.items()
+            ]
         elif isinstance(interface, definition.Action):
             self.namespaced_type = interface.namespaced_type
             self.interface_type = 'action'
             self.subinterfaces = {
-                'goal': InterfaceHasher(interface.goal, includes),
-                'result': InterfaceHasher(interface.result, includes),
-                'feedback': InterfaceHasher(interface.feedback, includes),
-                'send_goal_service': InterfaceHasher(interface.send_goal_service, includes),
-                'get_result_service': InterfaceHasher(interface.get_result_service, includes),
-                'feedback_message': InterfaceHasher(interface.feedback_message, includes),
+                'goal': InterfaceHasher(interface.goal),
+                'result': InterfaceHasher(interface.result),
+                'feedback': InterfaceHasher(interface.feedback),
+                'send_goal_service': InterfaceHasher(interface.send_goal_service),
+                'get_result_service': InterfaceHasher(interface.get_result_service),
+                'feedback_message': InterfaceHasher(interface.feedback_message),
             }
-            self.individual_type_description = serialize_individual_type_description(
-                self.namespaced_type, [
-                    definition.Member(hasher.namespaced_type, field_name)
-                    for field_name, hasher in self.subinterfaces.items()
-                ])
+            self.members = [
+                definition.Member(hasher.namespaced_type, field_name)
+                for field_name, hasher in self.subinterfaces.items()
+            ]
+
+        self.individual_type_description = serialize_individual_type_description(
+            self.namespaced_type, self.members)
+        included_types = []
+        for member in self.members:
+            if isinstance(member.type, definition.NamespacedType):
+                included_types.append(member.type)
+            elif (
+                isinstance(member.type, definition.AbstractNestedType) and
+                isinstance(member.type.value_type, definition.NamespacedType)
+            ):
+                included_types.append(member.type.value_type)
+
+        self.includes = [
+            str(Path(*t.namespaced_name()).with_suffix('.json.in'))
+            for t in included_types
+        ]
 
         self.rel_path = Path(*self.namespaced_type.namespaced_name()[1:])
         self.include_path = Path(*self.namespaced_type.namespaced_name())
+
         self.json_in = {
             'type_description': self.individual_type_description,
             'includes': self.includes,
         }
 
     def write_json_in(self, output_dir):
+        generated_files = []
         for key, val in self.subinterfaces.items():
-            val.write_json_in(output_dir)
+            generated_files += val.write_json_in(output_dir)
 
         json_path = output_dir / self.rel_path.with_suffix('.json.in')
         json_path.parent.mkdir(parents=True, exist_ok=True)
         with json_path.open('w', encoding='utf-8') as json_file:
             json_file.write(json.dumps(self.json_in, indent=2))
-        return [str(json_path)]
+        return generated_files + [str(json_path)]
 
     def write_json_out(self, output_dir, includes_map):
+        generated_files = []
         for key, val in self.subinterfaces.items():
-            val.write_json_out(output_dir, includes_map)
+            generated_files += val.write_json_out(output_dir, includes_map)
 
         pending_includes = self.json_in['includes']
         loaded_includes = {}
@@ -273,7 +286,7 @@ class InterfaceHasher:
         json_path = output_dir / self.rel_path.with_suffix('.json')
         with json_path.open('w', encoding='utf-8') as json_file:
             json_file.write(json.dumps(self.json_out, indent=2))
-        return [str(json_path)]
+        return generated_files + [str(json_path)]
 
     def calculate_hash(self):
         json_out_repr = json.dumps(self.json_out)

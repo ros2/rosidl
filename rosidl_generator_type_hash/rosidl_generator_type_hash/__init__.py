@@ -59,7 +59,7 @@ def generate_type_hash(generator_arguments_file: str):
         generate_to_dir = (output_dir / idl_rel_path).parent
         generate_to_dir.mkdir(parents=True, exist_ok=True)
 
-        hasher = InterfaceHasher.from_idl(idl_file, idl_rel_path)
+        hasher = InterfaceHasher.from_idl(idl_file)
         generated_files.extend(
             hasher.write_json_in(output_dir))
         hashers.append(hasher)
@@ -161,134 +161,72 @@ def serialize_field(member: definition.Member):
     }
 
 
-def serialize_individual_type_description(msg: definition.Message):
-    return {
-        'type_name': '/'.join(msg.structure.namespaced_type.namespaced_name()),
-        'fields': [serialize_field(member) for member in msg.structure.members]
-    }
-
-
-def serialize_individual_service_description(srv: definition.Service):
-    name = srv.namespaced_type.name
-    members = [
-        definition.Member(
-            definition.NamespacedType(
-                srv.namespaced_type.namespaces,
-                name + definition.SERVICE_REQUEST_MESSAGE_SUFFIX), 'request_message'),
-        definition.Member(
-            definition.NamespacedType(
-                srv.namespaced_type.namespaces,
-                name + definition.SERVICE_RESPONSE_MESSAGE_SUFFIX), 'response_message'),
-        definition.Member(
-            definition.NamespacedType(
-                srv.namespaced_type.namespaces,
-                name + definition.SERVICE_EVENT_MESSAGE_SUFFIX), 'event_message'),
-    ]
-    return {
-        'type_name': '/'.join(srv.namespaced_type.namespaced_name()),
-        'fields': [serialize_field(member) for member in members],
-    }
-
-
-def serialize_individual_action_description(action: definition.Action):
-    name = action.namespaced_type.name
-    members = [
-        definition.Member(
-            definition.NamespacedType(
-                action.namespaced_type.namespaces,
-                name + definition.ACTION_GOAL_SUFFIX), 'goal'),
-        definition.Member(
-            definition.NamespacedType(
-                action.namespaced_type.namespaces,
-                name + definition.ACTION_RESULT_SUFFIX), 'result'),
-        definition.Member(
-            definition.NamespacedType(
-                action.namespaced_type.namespaces,
-                name + definition.ACTION_FEEDBACK_SUFFIX), 'feedback'),
-        definition.Member(
-            definition.NamespacedType(
-                action.namespaced_type.namespaces,
-                name + definition.ACTION_GOAL_SERVICE_SUFFIX), 'send_goal_service'),
-        definition.Member(
-            definition.NamespacedType(
-                action.namespaced_type.namespaces,
-                name + definition.ACTION_RESULT_SERVICE_SUFFIX), 'get_result_service'),
-        definition.Member(
-            definition.NamespacedType(
-                action.namespaced_type.namespaces,
-                name + definition.ACTION_FEEDBACK_MESSAGE_SUFFIX), 'feedback_message'),
-    ]
-    return {
-        'type_name': '/'.join(action.namespaced_type.namespaced_name()),
-        'fields': [serialize_field(member) for member in members],
-    }
-
-
 class InterfaceHasher:
 
     @classmethod
-    def from_idl(cls, idl: definition.IdlFile, idl_rel_path: str):
+    def from_idl(cls, idl: definition.IdlFile):
         includes = idl.content.get_elements_of_type(definition.Include)
         for el in idl.content.elements:
             if isinstance(el, definition.Message):
-                return InterfaceHasher(el, includes, idl_rel_path)
+                return InterfaceHasher(el, includes)
             elif isinstance(el, definition.Service):
-                return InterfaceHasher(el, includes, idl_rel_path)
+                return InterfaceHasher(el, includes)
             elif isinstance(el, definition.Action):
-                return InterfaceHasher(el, includes, idl_rel_path)
+                return InterfaceHasher(el, includes)
         raise Exception('No interface found in IDL')
 
-    def __init__(self, interface, includes, idl_rel_path: str):
-        self.includes = [str(Path(include.locator).with_suffix('.json.in')) for include in includes]
+    def __init__(self, interface, includes):
+        self.includes = [
+            str(Path(include.locator).with_suffix('.json.in'))
+            for include in includes]
         self.interface = interface
-        self.interface_type = ''
-        self.rel_path = idl_rel_path
         self.subinterfaces = {}
 
-        def subipath(suffix):
-            return idl_rel_path.parent / (idl_rel_path.stem + suffix)
-
         if isinstance(interface, definition.Message):
+            self.namespaced_type = interface.structure.namespaced_type
             self.interface_type = 'message'
-            self.individual_type_description = serialize_individual_type_description(interface)
+            self.individual_type_description = {
+                'type_name': '/'.join(self.namespaced_type.namespaced_name()),
+                'fields': [
+                    serialize_field(member) for member in interface.structure.members
+                ]
+            }
         elif isinstance(interface, definition.Service):
+            self.namespaced_type = interface.namespaced_type
             self.interface_type = 'service'
             self.subinterfaces = {
-                'request_message': InterfaceHasher(
-                    interface.request_message, includes,
-                    subipath(definition.SERVICE_REQUEST_MESSAGE_SUFFIX)),
-                'response_message': InterfaceHasher(
-                    interface.response_message, includes,
-                    subipath(definition.SERVICE_RESPONSE_MESSAGE_SUFFIX)),
-                'event_message': InterfaceHasher(
-                    interface.event_message, includes,
-                    subipath(definition.SERVICE_EVENT_MESSAGE_SUFFIX)),
+                'request_message': InterfaceHasher(interface.request_message, includes),
+                'response_message': InterfaceHasher(interface.response_message, includes),
+                'event_message': InterfaceHasher(interface.event_message, includes),
             }
-            self.individual_type_description = serialize_individual_service_description(interface)
+            self.individual_type_description = {
+                'type_name': '/'.join(self.namespaced_type.namespaced_name()),
+                'fields': [
+                    serialize_field(definition.Member(hasher.namespaced_type, field_name))
+                    for field_name, hasher in self.subinterfaces.items()
+                ]
+            }
         elif isinstance(interface, definition.Action):
+            self.namespaced_type = interface.namespaced_type
             self.interface_type = 'action'
             self.subinterfaces = {
-                'goal': InterfaceHasher(
-                    interface.goal, includes,
-                    subipath(definition.ACTION_GOAL_SUFFIX)),
-                'result': InterfaceHasher(
-                    interface.result, includes,
-                    subipath(definition.ACTION_RESULT_SUFFIX)),
-                'feedback': InterfaceHasher(
-                    interface.feedback, includes,
-                    subipath(definition.ACTION_FEEDBACK_SUFFIX)),
-                'send_goal_service': InterfaceHasher(
-                    interface.send_goal_service, includes,
-                    subipath(definition.ACTION_GOAL_SERVICE_SUFFIX)),
-                'get_result_service': InterfaceHasher(
-                    interface.get_result_service, includes,
-                    subipath(definition.ACTION_RESULT_SERVICE_SUFFIX)),
-                'feedback_message': InterfaceHasher(
-                    interface.feedback_message, includes,
-                    subipath(definition.ACTION_FEEDBACK_MESSAGE_SUFFIX)),
+                'goal': InterfaceHasher(interface.goal, includes),
+                'result': InterfaceHasher(interface.result, includes),
+                'feedback': InterfaceHasher(interface.feedback, includes),
+                'send_goal_service': InterfaceHasher(interface.send_goal_service, includes),
+                'get_result_service': InterfaceHasher(interface.get_result_service, includes),
+                'feedback_message': InterfaceHasher(interface.feedback_message, includes),
             }
-            self.individual_type_description = serialize_individual_action_description(interface)
+            self.individual_type_description = {
+                'type_name': '/'.join(self.namespaced_type.namespaced_name()),
+                'fields': [
+                    serialize_field(definition.Member(hasher.namespaced_type, field_name))
+                    for field_name, hasher in self.subinterfaces.items()
+                ]
+            }
 
+        self.rel_path = Path(*self.namespaced_type.namespaced_name()[1:])
+        self.include_path = Path(*self.namespaced_type.namespaced_name())
         self.json_in = {
             'type_description': self.individual_type_description,
             'includes': self.includes,
@@ -298,7 +236,7 @@ class InterfaceHasher:
         for key, val in self.subinterfaces.items():
             val.write_json_in(output_dir)
 
-        json_path = (output_dir / self.rel_path).with_suffix('.json.in')
+        json_path = output_dir / self.rel_path.with_suffix('.json.in')
         json_path.parent.mkdir(parents=True, exist_ok=True)
         with json_path.open('w', encoding='utf-8') as json_file:
             json_file.write(json.dumps(self.json_in, indent=2))
@@ -331,7 +269,7 @@ class InterfaceHasher:
                 loaded_includes.values(), key=lambda td: td['type_name'])
         }
 
-        json_path = (output_dir / self.rel_path).with_suffix('.json')
+        json_path = output_dir / self.rel_path.with_suffix('.json')
         with json_path.open('w', encoding='utf-8') as json_file:
             json_file.write(json.dumps(self.json_out, indent=2))
         return [str(json_path)]
@@ -352,7 +290,7 @@ class InterfaceHasher:
 
     def write_hash(self, output_dir):
         type_hash = self.calculate_hash()
-        hash_path = (output_dir / self.rel_path).with_suffix('.sha256')
+        hash_path = output_dir / self.rel_path.with_suffix('.sha256')
         with hash_path.open('w', encoding='utf-8') as hash_file:
             hash_file.write(json.dumps(type_hash, indent=2))
         return [str(hash_path)]

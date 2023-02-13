@@ -2,8 +2,8 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.4.0 (2023-02-13)
+------------------
 * rosidl_adapter/cmake/rosidl_adapt_interfaces.cmake: Make ament free (`#709 <https://github.com/ros2/rosidl/issues/709>`_)
 * [service introspection] generate service_event messages (`#700 <https://github.com/ros2/rosidl/issues/700>`_)
 * Adding tests for unicode support in message comments. (`#720 <https://github.com/ros2/rosidl/issues/720>`_)

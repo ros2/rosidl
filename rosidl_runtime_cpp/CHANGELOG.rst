@@ -2,8 +2,8 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.4.0 (2023-02-13)
+------------------
 * [service introspection] generate service_event messages (`#700 <https://github.com/ros2/rosidl/issues/700>`_)
 * [rolling] Update maintainers - 2022-11-07 (`#717 <https://github.com/ros2/rosidl/issues/717>`_)
 * fix conversion to ‘std::streamsize’ {aka ‘long int’} from ‘size_t’ {aka ‘long unsigned int’} may change the sign of the result (`#715 <https://github.com/ros2/rosidl/issues/715>`_)

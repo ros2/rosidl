@@ -96,13 +96,14 @@ namespace @(ns)
 
 @[end for]@
 // message struct
+
 template<class ContainerAllocator>
 struct @(message.structure.namespaced_type.name)_
 {
   using Type = @(message.structure.namespaced_type.name)_<ContainerAllocator>;
 
   // Type Version Hash for interface
-  static constexpr @(TYPE_HASH("TYPE_VERSION_HASH", type_hash['message'], indent=2))@
+  constexpr static const @(TYPE_HASH("TYPE_VERSION_HASH", type_hash['message'], indent=2))@
 
 @{
 # The creation of the constructors for messages is a bit complicated.  The goal
@@ -359,6 +360,9 @@ u@
 // alias to use template instance with default allocator
 using @(message.structure.namespaced_type.name) =
   @(message_typename)_<std::allocator<void>>;
+
+template<class ContainerAllocator>
+constexpr const uint8_t @(message.structure.namespaced_type.name)_<ContainerAllocator>::TYPE_VERSION_HASH[32];
 
 // constant definitions
 @[for c in message.constants]@

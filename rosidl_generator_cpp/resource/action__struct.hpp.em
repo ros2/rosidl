@@ -78,7 +78,7 @@ namespace @(ns)
 @[end for]@
 struct @(action.namespaced_type.name)
 {
-  static constexpr @(TYPE_HASH("TYPE_VERSION_HASH", type_hash['action'], indent=2))@
+  static constexpr const @(TYPE_HASH("TYPE_VERSION_HASH", type_hash['action'], indent=2))@
 
   /// The goal message defined in the action definition.
   using Goal = @(action_name)@(ACTION_GOAL_SUFFIX);

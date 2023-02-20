@@ -92,6 +92,7 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMembers_s
   const char * message_namespace_;
   /// The name of the interface, e.g. "Int16"
   const char * message_name_;
+  const uint8_t * type_hash_;
   /// The number of fields in the interface
   uint32_t member_count_;
   /// The size of the interface structure in memory

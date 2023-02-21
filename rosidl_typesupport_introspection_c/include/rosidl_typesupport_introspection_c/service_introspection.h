@@ -32,6 +32,8 @@ typedef struct rosidl_typesupport_introspection_c__ServiceMembers_s
   const char * service_namespace_;
   /// The name of the service, e.g. "AddTwoInts"
   const char * service_name_;
+  /// TODO(emersonknapp)
+  // const uint8_t * type_hash_;
   /// A pointer to the introspection information structure for the request interface.
   const rosidl_typesupport_introspection_c__MessageMembers * request_members_;
   /// A pointer to the introspection information structure for the response interface.

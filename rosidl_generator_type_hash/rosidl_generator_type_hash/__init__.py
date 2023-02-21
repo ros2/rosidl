@@ -30,7 +30,7 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
     idl_tuples = args['idl_tuples']
     include_paths = args.get('include_paths', [])
 
-    # Lookup for directory containing pregenerated .json.in files
+    # Lookup for directory containing pregenerated .in.json files
     include_map = {
         package_name: output_dir
     }
@@ -43,7 +43,7 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
     generated_files = []
     hashers = []
 
-    # First generate all .json.in files (so referenced types can be used in expansion)
+    # First generate all .in.json files (so referenced types can be used in expansion)
     for idl_tuple in idl_tuples:
         idl_parts = idl_tuple.rsplit(':', 1)
         assert len(idl_parts) == 2
@@ -64,7 +64,7 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
             hasher.write_json_in(output_dir))
         hashers.append(hasher)
 
-    # Expand .json.in and generate .sha256 hash files
+    # Expand .in.json and generate .sha256.json hash files
     for hasher in hashers:
         generated_files.extend(
             hasher.write_json_out(output_dir, include_map))
@@ -235,7 +235,7 @@ class InterfaceHasher:
                 included_types.append(member.type.value_type)
 
         self.includes = [
-            str(Path(*t.namespaced_name()).with_suffix('.json.in'))
+            str(Path(*t.namespaced_name()).with_suffix('.in.json'))
             for t in included_types
         ]
 
@@ -252,7 +252,7 @@ class InterfaceHasher:
         for key, val in self.subinterfaces.items():
             generated_files += val.write_json_in(output_dir)
 
-        json_path = output_dir / self.rel_path.with_suffix('.json.in')
+        json_path = output_dir / self.rel_path.with_suffix('.in.json')
         json_path.parent.mkdir(parents=True, exist_ok=True)
         with json_path.open('w', encoding='utf-8') as json_file:
             json_file.write(json.dumps(self.json_in, indent=2))
@@ -308,7 +308,7 @@ class InterfaceHasher:
 
     def write_hash(self, output_dir: Path) -> List[str]:
         type_hash = self.calculate_hash()
-        hash_path = output_dir / self.rel_path.with_suffix('.sha256')
+        hash_path = output_dir / self.rel_path.with_suffix('.sha256.json')
         with hash_path.open('w', encoding='utf-8') as hash_file:
             hash_file.write(json.dumps(type_hash, indent=2))
         return [str(hash_path)]

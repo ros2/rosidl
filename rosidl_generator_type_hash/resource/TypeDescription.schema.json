@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "TypeDescription.schema.json",
+  "title": "TypeVersionHash",
+  "description": "IndividualTypeDescription",
+  "type": "object",
+  "properties": {
+    "type_description": {"$ref": "IndividualTypeDescription"},
+    "referenced_type_descriptions": {
+      "type": "array",
+      "items": { "$ref": "IndividualTypeDescription" }
+    }
+  },
+  "required": ["type_description", "referenced_type_descriptions"]
+}

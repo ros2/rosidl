@@ -26,15 +26,15 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
   get_filename_component(_idl_stem "${_abs_idl_file}" NAME_WE)
   list(APPEND _generated_json_in
-    "${_output_path}/${_parent_folder}/${_idl_stem}.json.in")
+    "${_output_path}/${_parent_folder}/${_idl_stem}.in.json")
   list(APPEND _generated_json
     "${_output_path}/${_parent_folder}/${_idl_stem}.json")
-  set(_hash_file "${_output_path}/${_parent_folder}/${_idl_stem}.sha256")
+  set(_hash_file "${_output_path}/${_parent_folder}/${_idl_stem}.sha256.json")
   list(APPEND _generated_hash_files ${_hash_file})
   list(APPEND _generated_hash_tuples "${_parent_folder}/${_idl_stem}:${_hash_file}")
 endforeach()
 
-# Find dependency packages' .json.in files
+# Find dependency packages' .in.json files
 set(_dependency_files "")
 set(_dependency_paths "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})

@@ -19,6 +19,8 @@ set(_generated_json_in "")
 set(_generated_json "")
 set(_generated_hash_tuples "")
 set(_generated_hash_files "")
+
+# Create lists of generated fiiles
 foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   get_filename_component(_parent_folder "${_abs_idl_file}" DIRECTORY)
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
@@ -32,6 +34,7 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   list(APPEND _generated_hash_tuples "${_parent_folder}/${_idl_stem}:${_hash_file}")
 endforeach()
 
+# Find dependency packages' .json.in files
 set(_dependency_files "")
 set(_dependency_paths "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
@@ -44,6 +47,7 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   endforeach()
 endforeach()
 
+# Export __HASH_TUPLES variable for use by dependents
 set(${rosidl_generate_interfaces_TARGET}__HASH_TUPLES ${_generated_hash_tuples})
 
 set(target_dependencies

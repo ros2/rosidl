@@ -21,6 +21,7 @@ add_library(${PROJECT_NAME}
   "src/sequence_bound.c"
   "src/service_type_support.c"
   "src/string_functions.c"
+  "src/type_hash.c"
   "src/u16string_functions.c"
 )
 target_include_directories(${PROJECT_NAME} PUBLIC

@@ -45,6 +45,7 @@ rosidl_stringify_type_hash(
 
   // Hash representation will be simple hex string, two characters per byte
   const char * fmt = "RIHS%d_%064d";
+  const size_t prefix_len = 7; // RIHS1_
   char * local_output = rcutils_format_string(allocator, fmt, type_hash->version, 0);
   if (!local_output) {
     *output_string = NULL;
@@ -52,10 +53,34 @@ rosidl_stringify_type_hash(
     return RCUTILS_RET_BAD_ALLOC;
   }
   for (size_t i = 0; i < ROSIDL_TYPE_HASH_SIZE; i++) {
-    sprintf(local_output + (i * 2), "%02x", type_hash->value[i]);
+    sprintf(local_output + prefix_len + (i * 2), "%02x", type_hash->value[i]);
   }
-  fprintf(stderr, "%s", local_output);
 
   *output_string = local_output;
+  return RCUTILS_RET_OK;
+}
+
+rcutils_ret_t
+rosidl_parse_type_hash_string(
+  const char * type_hash_string,
+  size_t data_length,
+  rosidl_type_hash_t * out)
+{
+  RCUTILS_CHECK_ARGUMENT_FOR_NULL(type_hash_string, RCUTILS_RET_INVALID_ARGUMENT);
+  RCUTILS_CHECK_ARGUMENT_FOR_NULL(out, RCUTILS_RET_INVALID_ARGUMENT);
+  static const size_t value_length = 64;  // 32 bytes * 2 digit characters
+
+  char hash_value_str[value_length + 1];
+  int res = sscanf(type_hash_string, "RIHS%hhu_%64s", &out->version, hash_value_str);
+  if (res != 2) {
+    RCUTILS_SET_ERROR_MSG("Type hash data did not match expected format.");
+    return RCUTILS_RET_INVALID_ARGUMENT;
+  }
+  for (size_t i = 0; i < ROSIDL_TYPE_HASH_SIZE; i += 1) {
+    if (sscanf(hash_value_str + (i * 2), "%2hhx", &out->value[i]) != 1) {
+      RCUTILS_SET_ERROR_MSG("Couldn't parse hex string of type hash value.");
+      return RCUTILS_RET_INVALID_ARGUMENT;
+    }
+  }
   return RCUTILS_RET_OK;
 }

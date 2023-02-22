@@ -63,9 +63,12 @@ rosidl_stringify_type_hash(
 /**
  *
  */
-// ROSIDL_GENERATOR_C_PUBLIC
-// rosidl_type_hash_t
-// rosidl_parse_type_hash_string(const char * type_hash_string, size_t length);
+ROSIDL_GENERATOR_C_PUBLIC
+rcutils_ret_t
+rosidl_parse_type_hash_string(
+  const char * type_hash_string,
+  size_t length,
+  rosidl_type_hash_t * out);
 
 #ifdef __cplusplus
 }

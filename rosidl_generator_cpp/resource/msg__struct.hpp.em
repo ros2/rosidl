@@ -34,6 +34,7 @@ msvc_common_macros = ('DELETE', 'ERROR', 'NO_ERROR')
 from collections import OrderedDict
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 includes = OrderedDict()
+includes['rosidl_runtime_c/type_hash.h'] = []
 for member in message.structure.members:
     type_ = member.type
     if isinstance(type_, AbstractNestedType):
@@ -362,7 +363,7 @@ using @(message.structure.namespaced_type.name) =
   @(message_typename)_<std::allocator<void>>;
 
 template<class ContainerAllocator>
-constexpr const uint8_t @(message.structure.namespaced_type.name)_<ContainerAllocator>::TYPE_VERSION_HASH[32];
+constexpr const rosidl_type_hash_t @(message.structure.namespaced_type.name)_<ContainerAllocator>::TYPE_VERSION_HASH;
 
 // constant definitions
 @[for c in message.constants]@

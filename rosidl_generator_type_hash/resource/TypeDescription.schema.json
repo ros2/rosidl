@@ -4,11 +4,13 @@
   "title": "TypeVersionHash",
   "description": "IndividualTypeDescription",
   "type": "object",
+  "$comment": "All whitespace must be excluded for consistent hashing.",
   "properties": {
     "type_description": {"$ref": "IndividualTypeDescription"},
     "referenced_type_descriptions": {
       "type": "array",
-      "items": { "$ref": "IndividualTypeDescription" }
+      "items": { "$ref": "IndividualTypeDescription" },
+      "$comment": "Referenced type descriptions must be alphabetized."
     }
   },
   "required": ["type_description", "referenced_type_descriptions"]

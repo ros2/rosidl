@@ -34,4 +34,4 @@ NOTE: `.json` contents must have all whitespace stripped before hashing. This pa
 
 **Schema**: [TypeDescriptionIn](./resource/TypeDescriptionIn.schema.json)
 
-The `IndividualTypeDescription`-equivalent serialization, and a list of referenced `.in.json` files to be used when expanding to `.json`. This file is used by dependent interfaces, especially in dependent packages, when expanding to `.json` so IDL files must only be parsed a single time when running the generator on their own package.
+The `IndividualTypeDescription`-equivalent serialization, and a list of referenced `.in.json` files to be used when expanding to `.json`. This file is used by dependent interfaces, especially in dependent packages, when expanding to `.json` so IDL files need only be parsed a single time when running the generator on their own package.

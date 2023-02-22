@@ -34,7 +34,6 @@ msvc_common_macros = ('DELETE', 'ERROR', 'NO_ERROR')
 from collections import OrderedDict
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 includes = OrderedDict()
-includes['rosidl_runtime_c/type_hash.h'] = []
 for member in message.structure.members:
     type_ = member.type
     if isinstance(type_, AbstractNestedType):
@@ -97,7 +96,6 @@ namespace @(ns)
 
 @[end for]@
 // message struct
-
 template<class ContainerAllocator>
 struct @(message.structure.namespaced_type.name)_
 {

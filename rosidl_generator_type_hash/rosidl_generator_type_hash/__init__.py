@@ -21,6 +21,9 @@ from typing import List
 from rosidl_parser import definition
 from rosidl_parser.parser import parse_idl_file
 
+# ROS Interface Hashing Standard, per REP-2011
+RIHS_VERSION = 1
+
 
 def generate_type_hash(generator_arguments_file: str) -> List[str]:
     with open(generator_arguments_file, 'r') as f:
@@ -30,7 +33,7 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
     idl_tuples = args['idl_tuples']
     include_paths = args.get('include_paths', [])
 
-    # Lookup for directory containing pregenerated .in.json files
+    # Lookup for directory containing dependency .in.json files
     include_map = {
         package_name: output_dir
     }
@@ -75,41 +78,40 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
 
 
 # This mapping must match the constants defined in type_description_interfaces/msgs/FieldType.msg
-# TODO(emersonknapp)
-# There is no FieldType.msg definition for the following rosidl_parser.definition types
-# * SIGNED_NONEXPLICIT_INTEGER_TYPES = short, long, long long
-# * UNSIGNED_NONEXPLICIT_INTEGER_TYPES = unsigned short, unsigned long, unsigned long long
+# NOTE: Nonexplicit integer types are not defined in FieldType (short, long, long long).
+# If a ROS IDL uses these, this generator will throw a KeyError.
 FIELD_TYPES = {
-    'nested_type': 0,
-    'int8': 1,
-    'uint8': 2,
-    'int16': 3,
-    'uint16': 4,
-    'int32': 5,
-    'uint32': 6,
-    'int64': 7,
-    'uint64': 8,
-    'float': 9,
-    'double': 10,
-    'long double': 11,
-    'char': 12,
-    'wchar': 13,
-    'boolean': 14,
-    'octet': 15,  # byte
-    definition.UnboundedString: 16,
-    definition.UnboundedWString: 17,
-    # TODO(emersonknapp)
-    # there is no rosidl_parser.definition type FixedString
-    # FIXED_STRING = 18
-    # FIXED_WSTRING = 19
-    definition.BoundedString: 20,
-    definition.BoundedWString: 21,
+    # 0 reserved for "Not set"
+    'nested_type': 1,
+    'int8': 2,
+    'uint8': 3,
+    'int16': 4,
+    'uint16': 5,
+    'int32': 6,
+    'uint32': 7,
+    'int64': 8,
+    'uint64': 9,
+    'float': 10,
+    'double': 11,
+    'long double': 12,
+    'char': 13,
+    'wchar': 14,
+    'boolean': 15,
+    'octet': 16,  # byte
+    definition.UnboundedString: 17,
+    definition.UnboundedWString: 18,
+    # NOTE: rosidl_parser does not define fixed string types
+    # FIXED_STRING: 19
+    # FIXED_WSTRING: 20
+    definition.BoundedString: 21,
+    definition.BoundedWString: 22,
 }
 
+FIELD_TYPE_BLOCK_SIZE = 48
 NESTED_FIELD_TYPE_OFFSETS = {
-    definition.Array: 32,
-    definition.BoundedSequence: 32 * 2,
-    definition.UnboundedSequence: 32 * 3,
+    definition.Array: FIELD_TYPE_BLOCK_SIZE,
+    definition.BoundedSequence: FIELD_TYPE_BLOCK_SIZE * 2,
+    definition.UnboundedSequence: FIELD_TYPE_BLOCK_SIZE * 3,
 }
 
 
@@ -171,15 +173,14 @@ def serialize_individual_type_description(
 
 
 class InterfaceHasher:
+    """Contains context about subinterfaces for a given interface description."""
 
     @classmethod
     def from_idl(cls, idl: definition.IdlFile):
         for el in idl.content.elements:
-            if isinstance(el, definition.Message):
-                return InterfaceHasher(el)
-            elif isinstance(el, definition.Service):
-                return InterfaceHasher(el)
-            elif isinstance(el, definition.Action):
+            if any(isinstance(el, type_) for type_ in [
+                definition.Message, definition.Service, definition.Action
+            ]):
                 return InterfaceHasher(el)
         raise Exception('No interface found in IDL')
 
@@ -248,6 +249,7 @@ class InterfaceHasher:
         }
 
     def write_json_in(self, output_dir) -> List[str]:
+        """Return list of written files."""
         generated_files = []
         for key, val in self.subinterfaces.items():
             generated_files += val.write_json_in(output_dir)
@@ -259,6 +261,7 @@ class InterfaceHasher:
         return generated_files + [str(json_path)]
 
     def write_json_out(self, output_dir: Path, includes_map: dict) -> List[str]:
+        """Return list of written files."""
         generated_files = []
         for key, val in self.subinterfaces.items():
             generated_files += val.write_json_out(output_dir, includes_map)
@@ -281,6 +284,7 @@ class InterfaceHasher:
             loaded_includes[process_include] = include_json['type_description']
             pending_includes.extend(include_json['includes'])
 
+        # Sort included type descriptions alphabetically by type name
         self.json_out = {
             'type_description': self.json_in['type_description'],
             'referenced_type_descriptions': sorted(
@@ -289,25 +293,27 @@ class InterfaceHasher:
 
         json_path = output_dir / self.rel_path.with_suffix('.json')
         with json_path.open('w', encoding='utf-8') as json_file:
-            json_file.write(json.dumps(self.json_out))
+            json_file.write(json.dumps(self.json_out))  # NOTE: no whitespace!
         return generated_files + [str(json_path)]
 
-    def calculate_hash(self) -> dict:
-        json_out_repr = json.dumps(self.json_out)
+    def _calculate_hash_tree(self) -> dict:
+        prefix = f'RIHS{RIHS_VERSION}_'
+        json_out_repr = json.dumps(self.json_out)  # NOTE: no whitespace!
         sha = hashlib.sha256()
         sha.update(json_out_repr.encode('utf-8'))
-        type_hash = sha.hexdigest()
+        type_hash = prefix + sha.hexdigest()
 
         type_hash_infos = {
             self.interface_type: type_hash,
         }
         for key, val in self.subinterfaces.items():
-            type_hash_infos[key] = val.calculate_hash()
+            type_hash_infos[key] = val._calculate_hash_tree()
 
         return type_hash_infos
 
     def write_hash(self, output_dir: Path) -> List[str]:
-        type_hash = self.calculate_hash()
+        """Return list of written files."""
+        type_hash = self._calculate_hash_tree()
         hash_path = output_dir / self.rel_path.with_suffix('.sha256.json')
         with hash_path.open('w', encoding='utf-8') as hash_file:
             hash_file.write(json.dumps(type_hash, indent=2))

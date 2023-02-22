@@ -47,9 +47,10 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   endforeach()
 endforeach()
 
-# Export __HASH_TUPLES variable for use by dependents
+# Export __HASH_TUPLES variable for use by dependent generators
 set(${rosidl_generate_interfaces_TARGET}__HASH_TUPLES ${_generated_hash_tuples})
 
+# Validate that all dependencies exist
 set(target_dependencies
   "${rosidl_generator_type_hash_BIN}"
   ${rosidl_generator_type_hash_GENERATOR_FILES}
@@ -70,6 +71,7 @@ rosidl_write_generator_arguments(
   INCLUDE_PATHS "${_dependency_paths}"
 )
 
+# Create custom command and target to generate the hash output
 set(_generated_files "${_generated_json};${_generated_json_in};${_generated_hash_files}")
 add_custom_command(
   COMMAND Python3::Interpreter
@@ -85,7 +87,7 @@ add_custom_command(
 set(_target "${rosidl_generate_interfaces_TARGET}__rosidl_generator_type_hash")
 add_custom_target(${_target} DEPENDS ${_generated_files})
 
-# # Make top level generation target depend on this generated library
+# Make top level generation target depend on this generated library
 add_dependencies(${rosidl_generate_interfaces_TARGET} ${_target})
 
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
@@ -96,8 +98,4 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
       FILES ${_generated_file}
       DESTINATION "share/${PROJECT_NAME}/${_parent_folder}")
   endforeach()
-
-  # TODO(emersonknapp) do I need this?
-  # Export modern CMake targets
-  # ament_export_targets(export_${rosidl_generate_interfaces_TARGET}${_target_suffix})
 endif()

@@ -28,7 +28,6 @@ from rosidl_generator_c import value_to_c
 @{
 from collections import OrderedDict
 includes = OrderedDict()
-includes.setdefault('rosidl_runtime_c/type_hash.h', [])
 for member in message.structure.members:
     if isinstance(member.type, AbstractSequence) and isinstance(member.type.value_type, BasicType):
         member_names = includes.setdefault(
@@ -61,7 +60,6 @@ for member in message.structure.members:
         member_names.append(member.name)
 }@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Constants defined in the message

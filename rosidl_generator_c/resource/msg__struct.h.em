@@ -28,6 +28,7 @@ from rosidl_generator_c import value_to_c
 @{
 from collections import OrderedDict
 includes = OrderedDict()
+includes.setdefault('rosidl_runtime_c/type_hash.h', [])
 for member in message.structure.members:
     if isinstance(member.type, AbstractSequence) and isinstance(member.type.value_type, BasicType):
         member_names = includes.setdefault(
@@ -61,8 +62,6 @@ for member in message.structure.members:
 }@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-// Type Version Hash for interface
-static const @(TYPE_HASH(idl_structure_type_to_c_typename(message.structure.namespaced_type) + "__TYPE_VERSION_HASH", type_hash['message']))@
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Constants defined in the message
@@ -180,6 +179,9 @@ typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_t
   @(idl_declaration_to_c(member.type, member.name));
 @[end for]@
 } @(idl_structure_type_to_c_typename(message.structure.namespaced_type));
+
+// Type Version Hash for interface
+static const @(TYPE_HASH(idl_structure_type_to_c_typename(message.structure.namespaced_type) + "__TYPE_VERSION_HASH", type_hash['message']))@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

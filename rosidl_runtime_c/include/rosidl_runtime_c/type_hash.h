@@ -17,6 +17,7 @@
 
 #include <stdint.h>
 
+#include "rcutils/allocator.h"
 #include "rcutils/sha256.h"
 
 #include "rosidl_runtime_c/visibility_control.h"
@@ -31,6 +32,19 @@ typedef struct rosidl_type_hash_s
 } rosidl_type_hash_t;
 
 ROSIDL_GENERATOR_C_PUBLIC
-rosidl_type_hash_t get_zero_initialized_type_hash(void);
+rosidl_type_hash_t
+rosidl_get_zero_initialized_type_hash(void);
+
+ROSIDL_GENERATOR_C_PUBLIC
+rcutils_ret_t
+rosidl_stringify_type_hash(
+  const rosidl_type_hash_t * type_hash,
+  rcutils_allocator_t allocator,
+  char ** output_string);
+
+ROSIDL_GENERATOR_C_PUBLIC
+rosidl_type_hash_t
+rosidl_parse_type_hash_string(const char * type_hash_string, size_t length);
+
 
 #endif  // ROSIDL_RUNTIME_C__TYPE_HASH_H_

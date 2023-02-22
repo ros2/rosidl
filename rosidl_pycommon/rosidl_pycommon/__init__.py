@@ -221,12 +221,16 @@ def _expand_template(template_name, **kwargs):
     interpreter.invoke('afterInclude')
 
 
-def _expand_type_hash(variable_name, hex_string, indent=0):
+def _expand_type_hash(variable_name, hash_string, indent=0):
+    """
+    Generate a rosidl_type_hash_t instance with 8 bytes per line for readability.
+    """
     ind_str = ' ' * indent
-    result = f'uint8_t {variable_name}[32] = {{'
+    RIHS_VERSION = 1  # TODO(emersonknapp) where should I get this from.... IS IT IN THE HEX_STRING?
+    result = f'rosidl_type_hash_t {variable_name} = {{{RIHS_VERSION}, {{'
     for i in range(32):
         if i % 8 == 0:
             result += f'\n{ind_str}  '
-        result += f'0x{hex_string[i*2:i*2+2]}, '
-    result += f'\n{ind_str}}};\n'
+        result += f'0x{hash_string[i*2:i*2+2]}, '
+    result += f'\n{ind_str}}}}};\n'
     return result

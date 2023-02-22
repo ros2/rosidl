@@ -44,8 +44,8 @@ rosidl_stringify_type_hash(
   }
 
   // Hash representation will be simple hex string, two characters per byte
-  const char * fmt = "RIHS%d_%064d";
-  const size_t prefix_len = 7; // RIHS1_
+  const char * fmt = "RIHS%d_%64d";
+  const size_t prefix_len = strlen("RIHS1_");
   char * local_output = rcutils_format_string(allocator, fmt, type_hash->version, 0);
   if (!local_output) {
     *output_string = NULL;
@@ -69,8 +69,7 @@ rosidl_parse_type_hash_string(
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(type_hash_string, RCUTILS_RET_INVALID_ARGUMENT);
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(out, RCUTILS_RET_INVALID_ARGUMENT);
   static const size_t value_length = 64;  // 32 bytes * 2 digit characters
-
-  char hash_value_str[value_length + 1];
+  char hash_value_str[value_length];
   int res = sscanf(type_hash_string, "RIHS%hhu_%64s", &out->version, hash_value_str);
   if (res != 2) {
     RCUTILS_SET_ERROR_MSG("Type hash data did not match expected format.");

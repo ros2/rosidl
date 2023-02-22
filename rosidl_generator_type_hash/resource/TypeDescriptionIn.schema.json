@@ -1,15 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "TypeDescription.schema.json",
-  "title": "TypeVersionHash",
-  "description": "IndividualTypeDescription",
+  "$id": "TypeDescriptionIn.schema.json",
+  "title": "TypeDescriptionIn",
+  "description": "Input for TypeDescription expansion, providing include paths for references",
   "type": "object",
   "properties": {
-    "type_description": {"$ref": "IndividualTypeDescription"},
-    "referenced_type_descriptions": {
+    "type_description": {"$ref": "file:IndividualTypeDescription.schema.json"},
+    "includes": {
       "type": "array",
       "items": { "type": "string" }
     }
   },
-  "required": ["type_description", "referenced_type_descriptions"]
+  "required": ["type_description", "includes"],
+  "additionalProperties": false
 }

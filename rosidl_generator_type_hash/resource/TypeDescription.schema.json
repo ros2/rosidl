@@ -1,17 +1,18 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "TypeDescription.schema.json",
-  "title": "TypeVersionHash",
-  "description": "IndividualTypeDescription",
+  "title": "TypeDescription",
+  "description": "type_description_interfaces/msg/TypeDescription.msg JSON representation",
   "type": "object",
-  "$comment": "All whitespace must be excluded for consistent hashing.",
+  "$comment": "All whitespace must be excluded for consistent hashing, which this schema cannot enforce.",
   "properties": {
-    "type_description": {"$ref": "IndividualTypeDescription"},
+    "type_description": {"$ref": "file:IndividualTypeDescription.schema.json"},
     "referenced_type_descriptions": {
+      "$comment": "Referenced type descriptions must be alphabetized, which this schema cannot enforce.",
       "type": "array",
-      "items": { "$ref": "IndividualTypeDescription" },
-      "$comment": "Referenced type descriptions must be alphabetized."
+      "items": { "$ref": "file:IndividualTypeDescription.schema.json" }
     }
   },
-  "required": ["type_description", "referenced_type_descriptions"]
+  "required": ["type_description", "referenced_type_descriptions"],
+  "additionalProperties": false
 }

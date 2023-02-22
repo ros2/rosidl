@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "IndividualTypeDescription.jsonschema",
-  "title": "TypeVersionHash",
-  "description": "IndividualTypeDescription",
+  "$id": "IndividualTypeDescription.schema.json",
+  "title": "IndividualTypeDescription",
+  "description": "type_description_interfaces/msg/IndividualTypeDescription.msg JSON representation",
   "type": "object",
   "properties": {
     "type_name": {"type": "string", "maxLength": 255},
@@ -14,6 +14,7 @@
     }
   },
   "required": ["type_name", "fields"],
+  "additionalProperties": false,
   "$defs": {
     "Field": {
       "type": "object",
@@ -21,7 +22,8 @@
         "name": {"type": "string"},
         "type": {"$ref": "#/$defs/FieldType"}
       },
-      "required": ["name", "type"]
+      "required": ["name", "type"],
+      "additionalProperties": false
     },
     "FieldType": {
       "type": "object",
@@ -31,7 +33,8 @@
         "string_length": {"type": "integer", "minimum": 0},
         "nested_type_name": {"type": "string", "maxLength": 255}
       },
-      "required": ["type_id", "length", "string_length", "nested_type_name"]
+      "required": ["type_id", "length", "string_length", "nested_type_name"],
+      "additionalProperties": false
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "TypeVersionHash.jsonschema",
+  "$id": "TypeVersionHash.schema.json",
   "title": "TypeVersionHash",
   "description": "A tree of hashes (and sub-hashes) for ROS 2 interfaces",
   "type": "object",
@@ -10,7 +10,8 @@
       "properties": {
         "message": { "type": "string" }
       },
-      "required": [ "message" ]
+      "required": [ "message" ],
+      "additionalProperties": false
     },
     "service": {
       "type": "object",
@@ -25,7 +26,8 @@
         "request_message",
         "response_message",
         "event_message"
-      ]
+      ],
+      "additionalProperties": false
     },
     "action": {
       "type": "object",
@@ -46,7 +48,8 @@
         "send_goal_service",
         "get_result_service",
         "feedback_message"
-      ]
+      ],
+      "additionalProperties": false
     }
   },
   "oneOf": [

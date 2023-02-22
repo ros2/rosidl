@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <math.h>
+
 #include "rosidl_runtime_c/type_hash.h"
 
 #include "rcutils/error_handling.h"
@@ -63,20 +65,26 @@ rosidl_stringify_type_hash(
 rcutils_ret_t
 rosidl_parse_type_hash_string(
   const char * type_hash_string,
-  size_t data_length,
-  rosidl_type_hash_t * out)
+  rosidl_type_hash_t * hash_out)
 {
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(type_hash_string, RCUTILS_RET_INVALID_ARGUMENT);
-  RCUTILS_CHECK_ARGUMENT_FOR_NULL(out, RCUTILS_RET_INVALID_ARGUMENT);
+  RCUTILS_CHECK_ARGUMENT_FOR_NULL(hash_out, RCUTILS_RET_INVALID_ARGUMENT);
   static const size_t value_length = 64;  // 32 bytes * 2 digit characters
-  char hash_value_str[value_length];
-  int res = sscanf(type_hash_string, "RIHS%hhu_%64s", &out->version, hash_value_str);
+  char hash_value_str[value_length + 1];
+  hash_value_str[value_length] = '\0';
+  int res = sscanf(type_hash_string, "RIHS%hhu_%64s", &hash_out->version, hash_value_str);
   if (res != 2) {
     RCUTILS_SET_ERROR_MSG("Type hash data did not match expected format.");
     return RCUTILS_RET_INVALID_ARGUMENT;
   }
+  size_t version_digits = log10(hash_out->version) + 1;
+  size_t prefix_fixed_len = strlen("RIHS_");
+  if (strlen(type_hash_string) > value_length + prefix_fixed_len + version_digits) {
+    RCUTILS_SET_ERROR_MSG("Hash value too long.");
+    return RCUTILS_RET_INVALID_ARGUMENT;
+  }
   for (size_t i = 0; i < ROSIDL_TYPE_HASH_SIZE; i += 1) {
-    if (sscanf(hash_value_str + (i * 2), "%2hhx", &out->value[i]) != 1) {
+    if (sscanf(hash_value_str + (i * 2), "%2hhx", &hash_out->value[i]) != 1) {
       RCUTILS_SET_ERROR_MSG("Couldn't parse hex string of type hash value.");
       return RCUTILS_RET_INVALID_ARGUMENT;
     }

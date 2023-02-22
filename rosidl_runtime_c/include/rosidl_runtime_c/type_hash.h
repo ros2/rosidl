@@ -30,27 +30,32 @@ extern "C"
 {
 #endif
 
-/// TODO(emersonknapp)
-/**
- *
- */
+/// A ROS 2 interface type hash per REP-2011 RIHS standard.
 typedef struct rosidl_type_hash_s
 {
   uint8_t version;
   uint8_t value[ROSIDL_TYPE_HASH_SIZE];
 } rosidl_type_hash_t;
 
-/// TODO(emersonknapp)
+/// Get a new zero-initialized type hash structure.
 /**
- *
+ * Note that the version equals ROSIDL_TYPE_HASH_VERSION_UNSET.
  */
 ROSIDL_GENERATOR_C_PUBLIC
 rosidl_type_hash_t
 rosidl_get_zero_initialized_type_hash(void);
 
-/// TODO(emersonknapp)
+/// Convert type hash to a standardized string representation.
 /**
+ * Follows format RIHS{version}_{value}.
  *
+ * \param[in] type_hash Type hash to convert to string
+ * \param[in] allocator Allocator to use for allocating string space
+ * \param[out] output_string Handle to a pointer that will be set
+ *   to the newly allocated null-terminated string representation.
+ * \return RCUTILS_RET_INVALID_ARGUMENT if any pointer arguments are null or allocator invalid
+ * \return RCUTILS_RET_BAD_ALLOC if space could not be allocated for resulting string
+ * \return RCUTILS_RET_OK otherwise
  */
 ROSIDL_GENERATOR_C_PUBLIC
 rcutils_ret_t
@@ -59,16 +64,18 @@ rosidl_stringify_type_hash(
   rcutils_allocator_t allocator,
   char ** output_string);
 
-/// TODO(emersonknapp)
+/// Parse a stringified type hash to a struct.
 /**
- *
+ * \param[in] type_hash_string Null-terminated string with the hash representation
+ * \param[out] hash_out Preallocated structure to be filled with parsed hash information.
+ * \return RCTUILS_RET_INVALID_ARGUMENT on any null pointer argumunts, or malformed hash string.
+ * \return RCUTILS_RET_OK otherwise
  */
 ROSIDL_GENERATOR_C_PUBLIC
 rcutils_ret_t
 rosidl_parse_type_hash_string(
   const char * type_hash_string,
-  size_t length,
-  rosidl_type_hash_t * out);
+  rosidl_type_hash_t * hash_out);
 
 #ifdef __cplusplus
 }

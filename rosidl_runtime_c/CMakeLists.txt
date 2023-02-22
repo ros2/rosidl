@@ -99,6 +99,11 @@ if(BUILD_TESTING)
     target_compile_definitions(test_string_functions PUBLIC RCUTILS_ENABLE_FAULT_INJECTION)
   endif()
 
+  ament_add_gtest(test_type_hash test/test_type_hash.cpp)
+  if(TARGET test_type_hash)
+    target_link_libraries(test_type_hash ${PROJECT_NAME})
+  endif()
+
   ament_add_gtest(test_u16string_functions test/test_u16string_functions.cpp)
   if(TARGET test_u16string_functions)
     target_link_libraries(test_u16string_functions ${PROJECT_NAME})

@@ -33,6 +33,8 @@ extern "C"
 #include <stddef.h>
 #include <stdint.h>
 
+#include "rosidl_runtime_c/type_hash.h"
+
 @#######################################################################
 @# Handle message
 @#######################################################################

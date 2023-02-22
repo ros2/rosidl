@@ -25,16 +25,33 @@
 #define ROSIDL_TYPE_HASH_VERSION_UNSET 0
 #define ROSIDL_TYPE_HASH_SIZE RCUTILS_SHA256_BLOCK_SIZE
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/// TODO(emersonknapp)
+/**
+ *
+ */
 typedef struct rosidl_type_hash_s
 {
   uint8_t version;
   uint8_t value[ROSIDL_TYPE_HASH_SIZE];
 } rosidl_type_hash_t;
 
+/// TODO(emersonknapp)
+/**
+ *
+ */
 ROSIDL_GENERATOR_C_PUBLIC
 rosidl_type_hash_t
 rosidl_get_zero_initialized_type_hash(void);
 
+/// TODO(emersonknapp)
+/**
+ *
+ */
 ROSIDL_GENERATOR_C_PUBLIC
 rcutils_ret_t
 rosidl_stringify_type_hash(
@@ -42,9 +59,16 @@ rosidl_stringify_type_hash(
   rcutils_allocator_t allocator,
   char ** output_string);
 
-ROSIDL_GENERATOR_C_PUBLIC
-rosidl_type_hash_t
-rosidl_parse_type_hash_string(const char * type_hash_string, size_t length);
+/// TODO(emersonknapp)
+/**
+ *
+ */
+// ROSIDL_GENERATOR_C_PUBLIC
+// rosidl_type_hash_t
+// rosidl_parse_type_hash_string(const char * type_hash_string, size_t length);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // ROSIDL_RUNTIME_C__TYPE_HASH_H_

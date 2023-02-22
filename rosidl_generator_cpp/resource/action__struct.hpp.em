@@ -7,6 +7,7 @@ from rosidl_parser.definition import ACTION_GOAL_SUFFIX
 from rosidl_parser.definition import ACTION_RESULT_SERVICE_SUFFIX
 from rosidl_parser.definition import ACTION_RESULT_SUFFIX
 action_includes = (
+    'rosidl_runtime_c/type_hash.h',
     'action_msgs/srv/cancel_goal.hpp',
     'action_msgs/msg/goal_info.hpp',
     'action_msgs/msg/goal_status_array.hpp',

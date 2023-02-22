@@ -51,7 +51,7 @@ rosidl_stringify_type_hash(
     RCUTILS_SET_ERROR_MSG("Unable to allocate space for stringified type hash.");
     return RCUTILS_RET_BAD_ALLOC;
   }
-  for (size_t i = 0; i < RCUTILS_SHA256_BLOCK_SIZE; i++) {
+  for (size_t i = 0; i < ROSIDL_TYPE_HASH_SIZE; i++) {
     sprintf(local_output + (i * 2), "%02x", type_hash->value[i]);
   }
   fprintf(stderr, "%s", local_output);

@@ -31,6 +31,7 @@ from rosidl_pycommon import generate_files
 def generate_c(generator_arguments_file):
     mapping = {
         'idl.h.em': '%s.h',
+        'idl__description.c.em': 'detail/%s__description.c',
         'idl__functions.c.em': 'detail/%s__functions.c',
         'idl__functions.h.em': 'detail/%s__functions.h',
         'idl__struct.h.em': 'detail/%s__struct.h',

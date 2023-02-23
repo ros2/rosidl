@@ -286,6 +286,7 @@ static rosidl_message_type_support_t @(function_prefix)__@(message.structure.nam
   &@(function_prefix)__@(message.structure.namespaced_type.name)_message_members,
   get_message_typesupport_handle_function,
   &@(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(TYPE_HASH_VAR),
+  &@(idl_structure_type_to_c_typename(message.structure.namespaced_type))__TYPE_DESCRIPTION,
 };
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(package_name)

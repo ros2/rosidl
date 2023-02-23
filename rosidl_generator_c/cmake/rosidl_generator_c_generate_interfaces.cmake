@@ -33,6 +33,7 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
     "${_output_path}/${_parent_folder}/detail/${_header_name}__type_support.h"
   )
   list(APPEND _generated_sources
+    "${_output_path}/${_parent_folder}/detail/${_header_name}__description.c"
     "${_output_path}/${_parent_folder}/detail/${_header_name}__functions.c"
     "${_output_path}/${_parent_folder}/detail/${_header_name}__type_support.c"
   )
@@ -55,6 +56,7 @@ set(target_dependencies
   "${rosidl_generator_c_TEMPLATE_DIR}/action__type_support.h.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/action__type_support.c.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/idl.h.em"
+  "${rosidl_generator_c_TEMPLATE_DIR}/idl__description.c.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/idl__functions.c.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/idl__functions.h.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/idl__struct.h.em"

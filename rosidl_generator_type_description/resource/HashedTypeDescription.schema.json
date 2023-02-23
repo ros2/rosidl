@@ -13,9 +13,10 @@
         { "$ref": "#/$defs/ActionHashes" }
       ]
     },
-    "type_description_msg": { "$ref": "#/$defs/TypeDescription" }
+    "type_description_msg": { "$ref": "#/$defs/TypeDescription" },
+    "subinterfaces": { "$ref": "#/$defs/Subinterfaces" }
   },
-  "required": ["hashes", "type_description_msg"],
+  "required": ["hashes", "type_description_msg", "subinterfaces"],
   "additionalProperties": false,
   "$defs": {
     "MessageHash": {
@@ -94,9 +95,10 @@
       "type": "object",
       "properties": {
         "name": {"type": "string"},
-        "type": {"$ref": "#/$defs/FieldType"}
+        "type": {"$ref": "#/$defs/FieldType"},
+        "default_value": {"type": "string"}
       },
-      "required": ["name", "type"],
+      "required": ["name", "type", "default_value"],
       "additionalProperties": false
     },
     "FieldType": {
@@ -108,6 +110,16 @@
         "nested_type_name": {"type": "string", "maxLength": 255}
       },
       "required": ["type_id", "capacity", "string_capacity", "nested_type_name"],
+      "additionalProperties": false
+    },
+    "Subinterfaces": {
+      "type": "object",
+      "patternProperties": {
+        "^[^/]+/[^/]+/[^/]+$": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
       "additionalProperties": false
     }
   }

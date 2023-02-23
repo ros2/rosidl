@@ -75,12 +75,12 @@ def generate_files(
         locator = IdlLocator(*idl_parts)
         idl_rel_path = pathlib.Path(idl_parts[1])
 
+        idl_rel_stem = idl_rel_path.with_suffix('')
+        type_description_info = None
         if type_hashes_provided:
             type_hash_file = type_hash_files[idl_parts[1]]
             with open(type_hash_file, 'r') as f:
-                type_hash_infos = json.load(f)['hashes']
-        else:
-            type_hash_infos = None
+                type_description_info = json.load(f)
 
         idl_stem = idl_rel_path.stem
         if not keep_case:
@@ -96,7 +96,7 @@ def generate_files(
                     'package_name': args['package_name'],
                     'interface_path': idl_rel_path,
                     'content': idl_file.content,
-                    'type_hash': type_hash_infos,
+                    'type_description_info': type_description_info,
                 }
                 if additional_context is not None:
                     data.update(additional_context)

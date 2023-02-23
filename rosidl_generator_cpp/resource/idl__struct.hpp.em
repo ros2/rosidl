@@ -18,6 +18,7 @@ header_guard_variable = '__'.join([x.upper() for x in include_parts]) + \
     '__STRUCT_HPP_'
 
 include_directives = set()
+type_hash = type_description_info['hashes']
 }@
 
 #ifndef @(header_guard_variable)

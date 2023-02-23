@@ -60,12 +60,17 @@ for member in message.structure.members:
         member_names = includes.setdefault(
             include_prefix + '__struct.h', [])
         member_names.append(member.name)
+
+message_typename = idl_structure_type_to_c_typename(message.structure.namespaced_type)
 }@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Type Hash for interface
-static const rosidl_type_hash_t @(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['message']));
+static const rosidl_type_hash_t @(message_typename)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['message']));
+
+/// Type Description for interface, defined in compilation unit
+extern const rosidl_runtime_c__type_description__TypeDescription @(message_typename)__TYPE_DESCRIPTION;
 
 // Constants defined in the message
 @[for constant in message.constants]@
@@ -89,15 +94,15 @@ static const rosidl_type_hash_t @(idl_structure_type_to_c_typename(message.struc
         )]@
 enum
 {
-  @(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(constant.name) = @(value_to_c(constant.type, constant.value))
+  @(message_typename)__@(constant.name) = @(value_to_c(constant.type, constant.value))
 };
 @[        elif constant.type.typename in (*FLOATING_POINT_TYPES, BOOLEAN_TYPE)]@
-static const @(basetype_to_c(constant.type)) @(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(constant.name) = @(value_to_c(constant.type, constant.value));
+static const @(basetype_to_c(constant.type)) @(message_typename)__@(constant.name) = @(value_to_c(constant.type, constant.value));
 @[        else]@
 @{assert False, 'Unhandled basic type: ' + str(constant.type)}@
 @[        end if]@
 @[    elif isinstance(constant.type, AbstractString)]@
-static const char * const @(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(constant.name) = @(value_to_c(constant.type, constant.value));
+static const char * const @(message_typename)__@(constant.name) = @(value_to_c(constant.type, constant.value));
 @[    end if]@
 @[end for]@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -130,7 +135,7 @@ for member in message.structure.members:
     if isinstance(type_, BoundedSequence):
         upper_bounds.append((
             member.name,
-            '%s__%s__MAX_SIZE' % (idl_structure_type_to_c_typename(message.structure.namespaced_type), member.name),
+            '%s__%s__MAX_SIZE' % (message_typename, member.name),
             type_.maximum_size,
         ))
     if isinstance(type_, AbstractNestedType):
@@ -138,7 +143,7 @@ for member in message.structure.members:
     if isinstance(type_, AbstractGenericString) and type_.has_maximum_size():
         upper_bounds.append((
             member.name,
-            '%s__%s__MAX_STRING_SIZE' % (idl_structure_type_to_c_typename(message.structure.namespaced_type), member.name),
+            '%s__%s__MAX_STRING_SIZE' % (message_typename, member.name),
             type_.maximum_size,
         ))
 }@
@@ -169,7 +174,7 @@ enum
 @[  end for]@
  */
 @[end if]@
-typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_type))
+typedef struct @(message_typename)
 {
 @[for member in message.structure.members]@
 @[  for line in member.get_comment_lines()]@
@@ -181,16 +186,17 @@ typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_t
 @[  end for]@
   @(idl_declaration_to_c(member.type, member.name));
 @[end for]@
-} @(idl_structure_type_to_c_typename(message.structure.namespaced_type));
+} @(message_typename);
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-// Struct for a sequence of @(idl_structure_type_to_c_typename(message.structure.namespaced_type)).
+// Struct for a sequence of @(message_typename).
 typedef struct @(idl_structure_type_sequence_to_c_typename(message.structure.namespaced_type))
 {
-  @(idl_structure_type_to_c_typename(message.structure.namespaced_type)) * data;
+  @(message_typename) * data;
   /// The number of valid items in data
   size_t size;
   /// The number of allocated items in data
   size_t capacity;
 } @(idl_structure_type_sequence_to_c_typename(message.structure.namespaced_type));
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

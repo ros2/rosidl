@@ -226,7 +226,7 @@ def _expand_type_hash(variable_name, hash_string, indent=0):
     hash_length = 32
     bytes_per_line = 8
 
-    indent_str = ' ' * indent
+    indent_str = ' ' * (indent + 2)
     pattern = re.compile('RIHS(\d+)_([0-9a-f]{64})')
     match = pattern.match(hash_string)
     if not match:
@@ -237,6 +237,8 @@ def _expand_type_hash(variable_name, hash_string, indent=0):
     for i in range(hash_length):
         if i % bytes_per_line == 0:
             result += f'\n{indent_str}  '
-        result += f'0x{value[i * 2:i * 2 + 2]}, '
+        result += f'0x{value[i * 2:i * 2 + 2]},'
+        if i % bytes_per_line != bytes_per_line - 1:
+            result += ' '
     result += f'\n{indent_str}}}}};\n'
     return result

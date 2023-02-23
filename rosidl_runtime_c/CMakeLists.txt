@@ -30,6 +30,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 ament_target_dependencies(${PROJECT_NAME}
   "rcutils"
   "rosidl_typesupport_interface")
+target_link_libraries(${PROJECT_NAME} m)
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
   set_target_properties(${PROJECT_NAME} PROPERTIES
     COMPILE_OPTIONS -Wall -Wextra -Wpedantic)

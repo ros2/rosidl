@@ -55,7 +55,7 @@ rosidl_stringify_type_hash(
     return RCUTILS_RET_BAD_ALLOC;
   }
   for (size_t i = 0; i < ROSIDL_TYPE_HASH_SIZE; i++) {
-    sprintf(local_output + prefix_len + (i * 2), "%02x", type_hash->value[i]);
+    snprintf(local_output + prefix_len + (i * 2), 3, "%02x", type_hash->value[i]);  // NOLINT
   }
 
   *output_string = local_output;
@@ -69,9 +69,9 @@ rosidl_parse_type_hash_string(
 {
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(type_hash_string, RCUTILS_RET_INVALID_ARGUMENT);
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(hash_out, RCUTILS_RET_INVALID_ARGUMENT);
-  static const size_t value_length = 64;  // 32 bytes * 2 digit characters
-  char hash_value_str[value_length + 1];
-  hash_value_str[value_length] = '\0';
+  static const size_t kValueStringSize = 65;  // 32 bytes * 2 digit characters + null-terminator
+  char hash_value_str[kValueStringSize];
+  hash_value_str[kValueStringSize - 1] = '\0';
   int res = sscanf(type_hash_string, "RIHS%hhu_%64s", &hash_out->version, hash_value_str);
   if (res != 2) {
     RCUTILS_SET_ERROR_MSG("Type hash data did not match expected format.");
@@ -79,7 +79,7 @@ rosidl_parse_type_hash_string(
   }
   size_t version_digits = log10(hash_out->version) + 1;
   size_t prefix_fixed_len = strlen("RIHS_");
-  if (strlen(type_hash_string) > value_length + prefix_fixed_len + version_digits) {
+  if (strlen(type_hash_string) > kValueStringSize - 1 + prefix_fixed_len + version_digits) {
     RCUTILS_SET_ERROR_MSG("Hash value too long.");
     return RCUTILS_RET_INVALID_ARGUMENT;
   }

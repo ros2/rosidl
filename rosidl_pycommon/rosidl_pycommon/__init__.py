@@ -227,7 +227,7 @@ def _expand_type_hash(variable_name, hash_string, indent=0):
     bytes_per_line = 8
 
     indent_str = ' ' * (indent + 2)
-    pattern = re.compile('RIHS(\d+)_([0-9a-f]{64})')
+    pattern = re.compile(r'RIHS(\d+)_([0-9a-f]{64})')
     match = pattern.match(hash_string)
     if not match:
         raise Exception('Type hash string does not match expected RIHS format')

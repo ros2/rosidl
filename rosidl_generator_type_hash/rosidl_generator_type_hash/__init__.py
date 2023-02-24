@@ -275,7 +275,7 @@ class InterfaceHasher:
             indent=None,
             separators=(',', ': '),
             sort_keys=False
-        ).encode('utf-8')
+        )
 
     def write_json_out(self, output_dir: Path, includes_map: dict) -> List[str]:
         """Return list of written files."""
@@ -316,7 +316,7 @@ class InterfaceHasher:
     def _calculate_hash_tree(self) -> dict:
         prefix = f'RIHS{RIHS_VERSION}_'
         sha = hashlib.sha256()
-        sha.update(self._hashable_repr())
+        sha.update(self._hashable_repr().encode('utf-8'))
         type_hash = prefix + sha.hexdigest()
 
         type_hash_infos = {

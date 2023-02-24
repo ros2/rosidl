@@ -187,7 +187,7 @@ class InterfaceHasher:
                 definition.Message, definition.Service, definition.Action
             ]):
                 return InterfaceHasher(el)
-        raise Exception('No interface found in IDL')
+        raise ValueError('No interface found in IDL')
 
     def __init__(self, interface):
         self.interface = interface
@@ -265,6 +265,18 @@ class InterfaceHasher:
             json_file.write(json.dumps(self.json_in, indent=2))
         return generated_files + [str(json_path)]
 
+    def _hashable_repr(self) -> str:
+        return json.dumps(
+            self.json_out,
+            skipkeys=False,
+            ensure_ascii=True,
+            check_circular=True,
+            allow_nan=False,
+            indent=None,
+            separators=(',', ': '),
+            sort_keys=False
+        ).encode('utf-8')
+
     def write_json_out(self, output_dir: Path, includes_map: dict) -> List[str]:
         """Return list of written files."""
         generated_files = []
@@ -298,14 +310,13 @@ class InterfaceHasher:
 
         json_path = output_dir / self.rel_path.with_suffix('.json')
         with json_path.open('w', encoding='utf-8') as json_file:
-            json_file.write(json.dumps(self.json_out))  # NOTE: no whitespace!
+            json_file.write(self._hashable_repr())
         return generated_files + [str(json_path)]
 
     def _calculate_hash_tree(self) -> dict:
         prefix = f'RIHS{RIHS_VERSION}_'
-        json_out_repr = json.dumps(self.json_out)  # NOTE: no whitespace!
         sha = hashlib.sha256()
-        sha.update(json_out_repr.encode('utf-8'))
+        sha.update(self._hashable_repr())
         type_hash = prefix + sha.hexdigest()
 
         type_hash_infos = {

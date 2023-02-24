@@ -130,6 +130,11 @@ def serialize_field_type(ftype: definition.AbstractType) -> dict:
     elif isinstance(ftype, definition.AbstractNestedType):
         type_id_offset = NESTED_FIELD_TYPE_OFFSETS[type(ftype)]
         value_type = ftype.value_type
+        if ftype.has_maximum_size():
+            try:
+                result['length'] = ftype.maximum_size
+            except AttributeError:
+                result['length'] = ftype.size
     else:
         raise Exception('Unable to translate field type', ftype)
 
@@ -140,9 +145,9 @@ def serialize_field_type(ftype: definition.AbstractType) -> dict:
         result['type_id'] = FIELD_TYPES[type(value_type)] + type_id_offset
         if value_type.has_maximum_size():
             try:
-                result['length'] = value_type.maximum_size
+                result['string_length'] = value_type.maximum_size
             except AttributeError:
-                result['length'] = value_type.size
+                result['string_length'] = value_type.size
     elif isinstance(value_type, definition.NamespacedType):
         result['type_id'] = type_id_offset
         result['nested_type_name'] = '/'.join(value_type.namespaced_name())

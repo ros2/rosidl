@@ -10,7 +10,9 @@ ament_python_install_package(${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
+  find_package(ament_cmake_pytest REQUIRED)
   ament_lint_auto_find_test_dependencies()
+  ament_add_pytest_test(pytest_type_hash_generator test)
 endif()
 
 ament_package(

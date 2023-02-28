@@ -1,5 +1,8 @@
 @# Included from rosidl_generator_cpp/resource/idl__struct.hpp.em
 @{
+from rosidl_generator_c import type_hash_to_c_definition
+}@
+@{
 TEMPLATE(
     'msg__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
@@ -34,7 +37,7 @@ struct @(service.namespaced_type.name)
 @{
 service_typename = '::'.join(service.namespaced_type.namespaced_name())
 }@
-  static constexpr const @(TYPE_HASH("TYPE_VERSION_HASH", type_hash['service'], indent=2))@
+  static constexpr const @(type_hash_to_c_definition("TYPE_VERSION_HASH", type_hash['service'], indent=2))@
 
   using Request = @(service_typename)_Request;
   using Response = @(service_typename)_Response;

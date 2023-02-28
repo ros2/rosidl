@@ -21,6 +21,7 @@ from rosidl_generator_c import idl_structure_type_sequence_to_c_typename
 from rosidl_generator_c import idl_structure_type_to_c_include_prefix
 from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_generator_c import interface_path_to_string
+from rosidl_generator_c import type_hash_to_c_definition
 from rosidl_generator_c import value_to_c
 }@
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -179,7 +180,7 @@ typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_t
 } @(idl_structure_type_to_c_typename(message.structure.namespaced_type));
 
 // Type Version Hash for interface
-static const @(TYPE_HASH(idl_structure_type_to_c_typename(message.structure.namespaced_type) + "__TYPE_VERSION_HASH", type_hash['message']))@
+static const @(type_hash_to_c_definition(idl_structure_type_to_c_typename(message.structure.namespaced_type) + "__TYPE_VERSION_HASH", type_hash['message']))@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

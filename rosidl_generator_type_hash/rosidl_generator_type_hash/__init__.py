@@ -22,7 +22,7 @@ from rosidl_parser import definition
 from rosidl_parser.parser import parse_idl_file
 
 # ROS Interface Hashing Standard, per REP-2011
-RIHS_VERSION = 1
+RIHS_VERSION = '01'
 
 
 def generate_type_hash(generator_arguments_file: str) -> List[str]:

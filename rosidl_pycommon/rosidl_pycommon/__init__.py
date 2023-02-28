@@ -201,7 +201,6 @@ def expand_template(
 
 def _add_helper_functions(data):
     data['TEMPLATE'] = _expand_template
-    data['TYPE_HASH'] = _expand_type_hash
 
 
 def _expand_template(template_name, **kwargs):
@@ -219,26 +218,3 @@ def _expand_template(template_name, **kwargs):
               file=sys.stderr)
         raise
     interpreter.invoke('afterInclude')
-
-
-def _expand_type_hash(variable_name, hash_string, indent=0):
-    """Generate empy for rosidl_type_hash_t instance with 8 bytes per line for readability."""
-    hash_length = 32
-    bytes_per_line = 8
-
-    indent_str = ' ' * (indent + 2)
-    pattern = re.compile(r'RIHS(\d+)_([0-9a-f]{64})')
-    match = pattern.match(hash_string)
-    if not match:
-        raise Exception('Type hash string does not match expected RIHS format')
-    version, value = match.group(1, 2)
-
-    result = f'rosidl_type_hash_t {variable_name} = {{{version}, {{'
-    for i in range(hash_length):
-        if i % bytes_per_line == 0:
-            result += f'\n{indent_str}  '
-        result += f'0x{value[i * 2:i * 2 + 2]},'
-        if i % bytes_per_line != bytes_per_line - 1:
-            result += ' '
-    result += f'\n{indent_str}}}}};\n'
-    return result

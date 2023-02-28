@@ -12,6 +12,7 @@
 @#######################################################################
 @{
 from rosidl_generator_c import idl_structure_type_to_c_typename
+from rosidl_generator_c import type_hash_to_c_definition
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
@@ -58,7 +59,7 @@ TEMPLATE(
 from rosidl_parser.definition import Service
 }@
 @[for service in content.get_elements_of_type(Service)]@
-static const @(TYPE_HASH(idl_structure_type_to_c_typename(service.namespaced_type) + "__TYPE_VERSION_HASH", type_hash['service']))@
+static const @(type_hash_to_c_definition(idl_structure_type_to_c_typename(service.namespaced_type) + "__TYPE_VERSION_HASH", type_hash['service']))@
 
 @{
 TEMPLATE(
@@ -93,7 +94,7 @@ TEMPLATE(
 from rosidl_parser.definition import Action
 }@
 @[for action in content.get_elements_of_type(Action)]@
-static const @(TYPE_HASH(idl_structure_type_to_c_typename(action.namespaced_type) + "__TYPE_VERSION_HASH", type_hash['action']))@
+static const @(type_hash_to_c_definition(idl_structure_type_to_c_typename(action.namespaced_type) + "__TYPE_VERSION_HASH", type_hash['action']))@
 
 @{
 TEMPLATE(

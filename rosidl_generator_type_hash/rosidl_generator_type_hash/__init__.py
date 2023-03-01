@@ -16,7 +16,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
-from typing import List
+from typing import List, Tuple
 
 from rosidl_parser import definition
 from rosidl_parser.parser import parse_idl_file
@@ -80,84 +80,223 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
 # This mapping must match the constants defined in type_description_interfaces/msgs/FieldType.msg
 # NOTE: Nonexplicit integer types are not defined in FieldType (short, long, long long).
 # If a ROS IDL uses these, this generator will throw a KeyError.
-FIELD_TYPES = {
-    # 0 reserved for "Not set"
-    'nested_type': 1,
-    'int8': 2,
-    'uint8': 3,
-    'int16': 4,
-    'uint16': 5,
-    'int32': 6,
-    'uint32': 7,
-    'int64': 8,
-    'uint64': 9,
-    'float': 10,
-    'double': 11,
-    'long double': 12,
-    'char': 13,
-    'wchar': 14,
-    'boolean': 15,
-    'octet': 16,  # byte
-    definition.UnboundedString: 17,
-    definition.UnboundedWString: 18,
+FIELD_VALUE_TYPE_NAMES = {
+    None: 'FIELD_TYPE_NOT_SET',
+    'nested_type': 'FIELD_TYPE_NESTED_TYPE',
+    'int8': 'FIELD_TYPE_INT8',
+    'uint8': 'FIELD_TYPE_UINT8',
+    'int16': 'FIELD_TYPE_INT16',
+    'uint16': 'FIELD_TYPE_UINT16',
+    'int32': 'FIELD_TYPE_INT32',
+    'uint32': 'FIELD_TYPE_UINT32',
+    'int64': 'FIELD_TYPE_INT64',
+    'uint64': 'FIELD_TYPE_UINT64',
+    'float': 'FIELD_TYPE_FLOAT',
+    'double': 'FIELD_TYPE_DOUBLE',
+    'long': 'LONG_DOUBLE',
+    'char': 'FIELD_TYPE_CHAR',
+    'wchar': 'FIELD_TYPE_WCHAR',
+    'boolean': 'FIELD_TYPE_BOOLEAN',
+    'octet': 'FIELD_TYPE_BYTE',
+    definition.UnboundedString: 'FIELD_TYPE_STRING',
+    definition.UnboundedWString: 'FIELD_TYPE_WSTRING',
     # NOTE: rosidl_parser does not define fixed string types
-    # FIXED_STRING: 19
-    # FIXED_WSTRING: 20
-    definition.BoundedString: 21,
-    definition.BoundedWString: 22,
+    definition.BoundedString: 'FIELD_TYPE_BOUNDED_STRING',
+    definition.BoundedWString: 'FIELD_TYPE_BOUNDED_WSTRING',
 }
 
-FIELD_TYPE_BLOCK_SIZE = 48
-NESTED_FIELD_TYPE_OFFSETS = {
-    definition.Array: FIELD_TYPE_BLOCK_SIZE,
-    definition.BoundedSequence: FIELD_TYPE_BLOCK_SIZE * 2,
-    definition.UnboundedSequence: FIELD_TYPE_BLOCK_SIZE * 3,
+NESTED_FIELD_TYPE_SUFFIXES = {
+    definition.Array: '_ARRAY',
+    definition.BoundedSequence: '_BOUNDED_SEQUENCE',
+    definition.UnboundedSequence: '_UNBOUNDED_SEQUENCE',
 }
+
+# Copied directly from FieldType.msg, with a string replace-all applied
+FIELD_TYPE_IDS = {
+    'FIELD_TYPE_NOT_SET': 0,
+
+    # Nested type defined in other .msg/.idl files.
+    'FIELD_TYPE_NESTED_TYPE': 1,
+
+    # Basic Types
+    # Integer Types
+    'FIELD_TYPE_INT8': 2,
+    'FIELD_TYPE_UINT8': 3,
+    'FIELD_TYPE_INT16': 4,
+    'FIELD_TYPE_UINT16': 5,
+    'FIELD_TYPE_INT32': 6,
+    'FIELD_TYPE_UINT32': 7,
+    'FIELD_TYPE_INT64': 8,
+    'FIELD_TYPE_UINT64': 9,
+
+    # Floating-Point Types
+    'FIELD_TYPE_FLOAT': 10,
+    'FIELD_TYPE_DOUBLE': 11,
+    'FIELD_TYPE_LONG_DOUBLE': 12,
+
+    # Char and WChar Types
+    'FIELD_TYPE_CHAR': 13,
+    'FIELD_TYPE_WCHAR': 14,
+
+    # Boolean Type
+    'FIELD_TYPE_BOOLEAN': 15,
+
+    # Byte/Octet Type
+    'FIELD_TYPE_BYTE': 16,
+
+    # String Types
+    'FIELD_TYPE_STRING': 17,
+    'FIELD_TYPE_WSTRING': 18,
+
+    # Fixed String Types
+    'FIELD_TYPE_FIXED_STRING': 19,
+    'FIELD_TYPE_FIXED_WSTRING': 20,
+
+    # Bounded String Types
+    'FIELD_TYPE_BOUNDED_STRING': 21,
+    'FIELD_TYPE_BOUNDED_WSTRING': 22,
+
+    # Fixed Sized Array Types
+    'FIELD_TYPE_NESTED_TYPE_ARRAY': 49,
+    'FIELD_TYPE_INT8_ARRAY': 50,
+    'FIELD_TYPE_UINT8_ARRAY': 51,
+    'FIELD_TYPE_INT16_ARRAY': 52,
+    'FIELD_TYPE_UINT16_ARRAY': 53,
+    'FIELD_TYPE_INT32_ARRAY': 54,
+    'FIELD_TYPE_UINT32_ARRAY': 55,
+    'FIELD_TYPE_INT64_ARRAY': 56,
+    'FIELD_TYPE_UINT64_ARRAY': 57,
+    'FIELD_TYPE_FLOAT_ARRAY': 58,
+    'FIELD_TYPE_DOUBLE_ARRAY': 59,
+    'FIELD_TYPE_LONG_DOUBLE_ARRAY': 60,
+    'FIELD_TYPE_CHAR_ARRAY': 61,
+    'FIELD_TYPE_WCHAR_ARRAY': 62,
+    'FIELD_TYPE_BOOLEAN_ARRAY': 63,
+    'FIELD_TYPE_BYTE_ARRAY': 64,
+    'FIELD_TYPE_STRING_ARRAY': 65,
+    'FIELD_TYPE_WSTRING_ARRAY': 66,
+    'FIELD_TYPE_FIXED_STRING_ARRAY': 67,
+    'FIELD_TYPE_FIXED_WSTRING_ARRAY': 68,
+    'FIELD_TYPE_BOUNDED_STRING_ARRAY': 69,
+    'FIELD_TYPE_BOUNDED_WSTRING_ARRAY': 70,
+
+    # Bounded Sequence Types
+    'FIELD_TYPE_NESTED_TYPE_BOUNDED_SEQUENCE': 97,
+    'FIELD_TYPE_INT8_BOUNDED_SEQUENCE': 98,
+    'FIELD_TYPE_UINT8_BOUNDED_SEQUENCE': 99,
+    'FIELD_TYPE_INT16_BOUNDED_SEQUENCE': 100,
+    'FIELD_TYPE_UINT16_BOUNDED_SEQUENCE': 101,
+    'FIELD_TYPE_INT32_BOUNDED_SEQUENCE': 102,
+    'FIELD_TYPE_UINT32_BOUNDED_SEQUENCE': 103,
+    'FIELD_TYPE_INT64_BOUNDED_SEQUENCE': 104,
+    'FIELD_TYPE_UINT64_BOUNDED_SEQUENCE': 105,
+    'FIELD_TYPE_FLOAT_BOUNDED_SEQUENCE': 106,
+    'FIELD_TYPE_DOUBLE_BOUNDED_SEQUENCE': 107,
+    'FIELD_TYPE_LONG_DOUBLE_BOUNDED_SEQUENCE': 108,
+    'FIELD_TYPE_CHAR_BOUNDED_SEQUENCE': 109,
+    'FIELD_TYPE_WCHAR_BOUNDED_SEQUENCE': 110,
+    'FIELD_TYPE_BOOLEAN_BOUNDED_SEQUENCE': 111,
+    'FIELD_TYPE_BYTE_BOUNDED_SEQUENCE': 112,
+    'FIELD_TYPE_STRING_BOUNDED_SEQUENCE': 113,
+    'FIELD_TYPE_WSTRING_BOUNDED_SEQUENCE': 114,
+    'FIELD_TYPE_FIXED_STRING_BOUNDED_SEQUENCE': 115,
+    'FIELD_TYPE_FIXED_WSTRING_BOUNDED_SEQUENCE': 116,
+    'FIELD_TYPE_BOUNDED_STRING_BOUNDED_SEQUENCE': 117,
+    'FIELD_TYPE_BOUNDED_WSTRING_BOUNDED_SEQUENCE': 118,
+
+    # Unbounded Sequence Types
+    'FIELD_TYPE_NESTED_TYPE_UNBOUNDED_SEQUENCE': 145,
+    'FIELD_TYPE_INT8_UNBOUNDED_SEQUENCE': 146,
+    'FIELD_TYPE_UINT8_UNBOUNDED_SEQUENCE': 147,
+    'FIELD_TYPE_INT16_UNBOUNDED_SEQUENCE': 148,
+    'FIELD_TYPE_UINT16_UNBOUNDED_SEQUENCE': 149,
+    'FIELD_TYPE_INT32_UNBOUNDED_SEQUENCE': 150,
+    'FIELD_TYPE_UINT32_UNBOUNDED_SEQUENCE': 151,
+    'FIELD_TYPE_INT64_UNBOUNDED_SEQUENCE': 152,
+    'FIELD_TYPE_UINT64_UNBOUNDED_SEQUENCE': 153,
+    'FIELD_TYPE_FLOAT_UNBOUNDED_SEQUENCE': 154,
+    'FIELD_TYPE_DOUBLE_UNBOUNDED_SEQUENCE': 155,
+    'FIELD_TYPE_LONG_DOUBLE_UNBOUNDED_SEQUENCE': 156,
+    'FIELD_TYPE_CHAR_UNBOUNDED_SEQUENCE': 157,
+    'FIELD_TYPE_WCHAR_UNBOUNDED_SEQUENCE': 158,
+    'FIELD_TYPE_BOOLEAN_UNBOUNDED_SEQUENCE': 159,
+    'FIELD_TYPE_BYTE_UNBOUNDED_SEQUENCE': 160,
+    'FIELD_TYPE_STRING_UNBOUNDED_SEQUENCE': 161,
+    'FIELD_TYPE_WSTRING_UNBOUNDED_SEQUENCE': 162,
+    'FIELD_TYPE_FIXED_STRING_UNBOUNDED_SEQUENCE': 163,
+    'FIELD_TYPE_FIXED_WSTRING_UNBOUNDED_SEQUENCE': 164,
+    'FIELD_TYPE_BOUNDED_STRING_UNBOUNDED_SEQUENCE': 165,
+    'FIELD_TYPE_BOUNDED_WSTRING_UNBOUNDED_SEQUENCE': 166,
+}
+
+
+def field_type_type_name(ftype: definition.AbstractType) -> str:
+    value_type = ftype
+    name_suffix = ''
+
+    if isinstance(ftype, definition.AbstractNestedType):
+        value_type = ftype.value_type
+        name_suffix = NESTED_FIELD_TYPE_SUFFIXES[type(ftype)]
+
+    if isinstance(value_type, definition.BasicType):
+        value_type_name = FIELD_VALUE_TYPE_NAMES[value_type.typename]
+    elif isinstance(value_type, definition.AbstractGenericString):
+        value_type_name = FIELD_VALUE_TYPE_NAMES[type(value_type)]
+    elif (
+        isinstance(value_type, definition.NamespacedType) or
+        isinstance(value_type, definition.NamedType)
+    ):
+        value_type_name = 'FIELD_TYPE_NESTED_TYPE'
+
+    return value_type_name + name_suffix
+
+
+def field_type_type_id(ftype: definition.AbstractType) -> Tuple[str, int]:
+    return FIELD_TYPE_IDS[field_type_type_name(ftype)]
+
+
+def field_type_length(ftype: definition.AbstractType):
+    if isinstance(ftype, definition.AbstractNestedType):
+        if ftype.has_maximum_size():
+            try:
+                return ftype.maximum_size
+            except AttributeError:
+                return ftype.size
+    return 0
+
+
+def field_type_string_length(ftype: definition.AbstractType):
+    value_type = ftype
+    if isinstance(ftype, definition.AbstractNestedType):
+        value_type = ftype.value_type
+
+    if isinstance(value_type, definition.AbstractGenericString):
+        if value_type.has_maximum_size():
+            try:
+                return value_type.maximum_size
+            except AttributeError:
+                return value_type.size
+    return 0
+
+
+def field_type_nested_type_name(ftype: definition.AbstractType, joiner='/'):
+    value_type = ftype
+    if isinstance(ftype, definition.AbstractNestedType):
+        value_type = ftype.value_type
+    if isinstance(value_type, definition.NamespacedType):
+        return joiner.join(value_type.namespaced_name())
+    elif isinstance(value_type, definition.NamedType):
+        return value_type.name
+    return ''
 
 
 def serialize_field_type(ftype: definition.AbstractType) -> dict:
-    result = {
-        'type_id': 0,
-        'length': 0,
-        'string_length': 0,
-        'nested_type_name': '',
+    return {
+        'type_id': field_type_type_id(ftype),
+        'length': field_type_length(ftype),
+        'string_length': field_type_string_length(ftype),
+        'nested_type_name': field_type_nested_type_name(ftype),
     }
-
-    # Determine value type, if this is a nested type
-    type_id_offset = 0
-    if isinstance(ftype, definition.AbstractNestableType):
-        value_type = ftype
-    elif isinstance(ftype, definition.AbstractNestedType):
-        type_id_offset = NESTED_FIELD_TYPE_OFFSETS[type(ftype)]
-        value_type = ftype.value_type
-        if ftype.has_maximum_size():
-            try:
-                result['length'] = ftype.maximum_size
-            except AttributeError:
-                result['length'] = ftype.size
-    else:
-        raise Exception('Unable to translate field type', ftype)
-
-    # Translate value type to FieldType.msg const value
-    if isinstance(value_type, definition.BasicType):
-        result['type_id'] = FIELD_TYPES[value_type.typename] + type_id_offset
-    elif isinstance(value_type, definition.AbstractGenericString):
-        result['type_id'] = FIELD_TYPES[type(value_type)] + type_id_offset
-        if value_type.has_maximum_size():
-            try:
-                result['string_length'] = value_type.maximum_size
-            except AttributeError:
-                result['string_length'] = value_type.size
-    elif isinstance(value_type, definition.NamespacedType):
-        result['type_id'] = type_id_offset
-        result['nested_type_name'] = '/'.join(value_type.namespaced_name())
-    elif isinstance(value_type, definition.NamedType):
-        result['type_id'] = type_id_offset
-        result['nested_type_name'] = value_type.name
-    else:
-        raise TypeError('Unknown value type ', value_type)
-
-    return result
 
 
 def serialize_field(member: definition.Member) -> dict:

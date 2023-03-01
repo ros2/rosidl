@@ -45,9 +45,9 @@ rosidl_stringify_type_hash(
     return RCUTILS_RET_INVALID_ARGUMENT;
   }
 
-  // Hash representation will be simple hex string, two characters per byte
-  const char * fmt = "RIHS%d_%64d";
-  const size_t prefix_len = strlen("RIHS1_");
+  // Hash representation is hex string, two characters per byte
+  const char * fmt = "RIHS%02d_%64d";
+  const size_t prefix_len = strlen("RIHS01_");
   char * local_output = rcutils_format_string(allocator, fmt, type_hash->version, 0);
   if (!local_output) {
     *output_string = NULL;
@@ -62,6 +62,25 @@ rosidl_stringify_type_hash(
   return RCUTILS_RET_OK;
 }
 
+static int _xatoi(char c)
+{
+  if (c >= '0' && c <= '9') {
+    return c - '0';
+  }
+  if (c >= 'A' && c <= 'F') {
+    return c - 'A';
+  }
+  if (c >= 'a' && c <= 'f') {
+    return c - 'a';
+  }
+  return -1;
+}
+
+static int _str_to_byte(const char * str)
+{
+  return (_xatoi(str[0]) << 4) + _xatoi(str[1]);
+}
+
 rcutils_ret_t
 rosidl_parse_type_hash_string(
   const char * type_hash_string,
@@ -69,25 +88,27 @@ rosidl_parse_type_hash_string(
 {
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(type_hash_string, RCUTILS_RET_INVALID_ARGUMENT);
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(hash_out, RCUTILS_RET_INVALID_ARGUMENT);
-  static const size_t kValueStringSize = 65;  // 32 bytes * 2 digit characters + null-terminator
-  char hash_value_str[kValueStringSize];
-  hash_value_str[kValueStringSize - 1] = '\0';
-  int res = sscanf(type_hash_string, "RIHS%hhu_%64s", &hash_out->version, hash_value_str);
-  if (res != 2) {
-    RCUTILS_SET_ERROR_MSG("Type hash data did not match expected format.");
+  static const size_t kprefix_len = sizeof("RIHS01_") - 1;
+  static const size_t kvalue_len = 64;
+  hash_out->version = 0;
+
+  if (strlen(type_hash_string) != (kprefix_len + kvalue_len)) {
+    RCUTILS_SET_ERROR_MSG("Hash string incorrect size.");
     return RCUTILS_RET_INVALID_ARGUMENT;
   }
-  size_t version_digits = log10(hash_out->version) + 1;
-  size_t prefix_fixed_len = strlen("RIHS_");
-  if (strlen(type_hash_string) > kValueStringSize - 1 + prefix_fixed_len + version_digits) {
-    RCUTILS_SET_ERROR_MSG("Hash value too long.");
+  if (0 != strncmp(type_hash_string, "RIHS01_", 7)) {
+    RCUTILS_SET_ERROR_MSG("Type hash string is not prefixed RIHS01_");
     return RCUTILS_RET_INVALID_ARGUMENT;
   }
-  for (size_t i = 0; i < ROSIDL_TYPE_HASH_SIZE; i += 1) {
-    if (sscanf(hash_value_str + (i * 2), "%2hhx", &hash_out->value[i]) != 1) {
-      RCUTILS_SET_ERROR_MSG("Couldn't parse hex string of type hash value.");
+  hash_out->version = 1;
+  const char * value_str = type_hash_string + kprefix_len;
+  for (size_t i = 0; i < 32; i++) {
+    int byte_val = _str_to_byte(value_str + (i * 2));
+    if (byte_val < 0) {
+      RCUTILS_SET_ERROR_MSG("Type hash string value did not contain only hex digits.");
       return RCUTILS_RET_INVALID_ARGUMENT;
     }
+    hash_out->value[i] = (char)byte_val;
   }
   return RCUTILS_RET_OK;
 }

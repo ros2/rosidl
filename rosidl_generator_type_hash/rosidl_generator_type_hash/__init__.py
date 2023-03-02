@@ -255,7 +255,7 @@ def field_type_type_id(ftype: definition.AbstractType) -> Tuple[str, int]:
     return FIELD_TYPE_IDS[field_type_type_name(ftype)]
 
 
-def field_type_length(ftype: definition.AbstractType):
+def field_type_capacity(ftype: definition.AbstractType):
     if isinstance(ftype, definition.AbstractNestedType):
         if ftype.has_maximum_size():
             try:
@@ -265,7 +265,7 @@ def field_type_length(ftype: definition.AbstractType):
     return 0
 
 
-def field_type_string_length(ftype: definition.AbstractType):
+def field_type_string_capacity(ftype: definition.AbstractType):
     value_type = ftype
     if isinstance(ftype, definition.AbstractNestedType):
         value_type = ftype.value_type
@@ -293,8 +293,8 @@ def field_type_nested_type_name(ftype: definition.AbstractType, joiner='/'):
 def serialize_field_type(ftype: definition.AbstractType) -> dict:
     return {
         'type_id': field_type_type_id(ftype),
-        'length': field_type_length(ftype),
-        'string_length': field_type_string_length(ftype),
+        'capacity': field_type_capacity(ftype),
+        'string_capacity': field_type_string_capacity(ftype),
         'nested_type_name': field_type_nested_type_name(ftype),
     }
 

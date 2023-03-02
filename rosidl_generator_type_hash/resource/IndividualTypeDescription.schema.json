@@ -29,11 +29,11 @@
       "type": "object",
       "properties": {
         "type_id": {"type": "integer", "minimum": 0, "maximum": 255},
-        "length": {"type": "integer", "minimum": 0},
-        "string_length": {"type": "integer", "minimum": 0},
+        "capacity": {"type": "integer", "minimum": 0},
+        "string_capacity": {"type": "integer", "minimum": 0},
         "nested_type_name": {"type": "string", "maxLength": 255}
       },
-      "required": ["type_id", "length", "string_length", "nested_type_name"],
+      "required": ["type_id", "capacity", "string_capacity", "nested_type_name"],
       "additionalProperties": false
     }
   }

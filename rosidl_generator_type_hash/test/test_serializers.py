@@ -18,14 +18,14 @@ from rosidl_parser import definition
 
 
 def test_field_type_serializer():
-    # Sanity check for the more complex length/string_length types and nesting
+    # Sanity check for the more complex capacity/string_capacity types and nesting
     string_limit = 12
     array_size = 22
     test_type = definition.Array(definition.BoundedString(string_limit), array_size)
     expected = {
         'type_id': 69,
-        'length': array_size,
-        'string_length': string_limit,
+        'capacity': array_size,
+        'string_capacity': string_limit,
         'nested_type_name': '',
     }
 
@@ -36,8 +36,8 @@ def test_field_type_serializer():
     test_type = definition.BoundedSequence(definition.UnboundedString(), bounded_sequence_limit)
     expected = {
         'type_id': 113,
-        'length': bounded_sequence_limit,
-        'string_length': 0,
+        'capacity': bounded_sequence_limit,
+        'string_capacity': 0,
         'nested_type_name': '',
     }
     result = serialize_field_type(test_type)
@@ -46,8 +46,8 @@ def test_field_type_serializer():
     test_type = definition.BoundedWString(string_limit)
     expected = {
         'type_id': 22,
-        'length': 0,
-        'string_length': string_limit,
+        'capacity': 0,
+        'string_capacity': string_limit,
         'nested_type_name': '',
     }
     result = serialize_field_type(test_type)

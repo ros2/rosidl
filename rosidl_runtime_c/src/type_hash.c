@@ -68,10 +68,10 @@ static int _xatoi(char c)
     return c - '0';
   }
   if (c >= 'A' && c <= 'F') {
-    return c - 'A';
+    return c - 'A' + 0xa;
   }
   if (c >= 'a' && c <= 'f') {
-    return c - 'a';
+    return c - 'a' + 0xa;
   }
   return -1;
 }

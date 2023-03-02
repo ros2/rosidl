@@ -79,7 +79,7 @@ def generate_files(
         if type_hashes_provided:
             type_hash_file = type_hash_files[str(idl_rel_stem)]
             with open(type_hash_file, 'r') as f:
-                type_hash_infos = json.load(f)
+                type_hash_infos = json.load(f)['hashes']
         else:
             type_hash_infos = None
 

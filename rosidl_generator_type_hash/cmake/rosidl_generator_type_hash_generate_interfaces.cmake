@@ -15,40 +15,30 @@
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
 set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_type_hash/${PROJECT_NAME}")
-set(_generated_json_in "")
-set(_generated_json "")
-set(_generated_hash_tuples "")
-set(_generated_hash_files "")
+set(_generated_files "")
+set(_generated_tuples "")
 
-# Create lists of generated fiiles
+# Create list of generated files
 foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   get_filename_component(_parent_folder "${_abs_idl_file}" DIRECTORY)
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
   get_filename_component(_idl_stem "${_abs_idl_file}" NAME_WE)
-  list(APPEND _generated_json_in
-    "${_output_path}/${_parent_folder}/${_idl_stem}.in.json")
-  list(APPEND _generated_json
-    "${_output_path}/${_parent_folder}/${_idl_stem}.json")
-  set(_hash_file "${_output_path}/${_parent_folder}/${_idl_stem}.sha256.json")
-  list(APPEND _generated_hash_files ${_hash_file})
-  list(APPEND _generated_hash_tuples "${_parent_folder}/${_idl_stem}:${_hash_file}")
+  set(_json_file "${_output_path}/${_parent_folder}/${_idl_stem}.json")
+  list(APPEND _generated_files "${_json_file}")
+  list(APPEND _generated_tuples "${_parent_folder}/${_idl_stem}:${_json_file}")
 endforeach()
 
-# Find dependency packages' .in.json files
+# Find dependency packages' generated files
 set(_dependency_files "")
 set(_dependency_paths "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   set(_include_path "${${_pkg_name}_DIR}/..")
   normalize_path(_include_path "${_include_path}")
   list(APPEND _dependency_paths "${_pkg_name}:${_include_path}")
-  foreach(_json_in_file ${${_pkg_name}_JSON_IN_FILES})
-    set(_abs_json_in_file ${_include_path}/${_json_in_file})
-    list(APPEND _dependency_files ${_abs_json_in_file})
-  endforeach()
 endforeach()
 
 # Export __HASH_TUPLES variable for use by dependent generators
-set(${rosidl_generate_interfaces_TARGET}__HASH_TUPLES ${_generated_hash_tuples})
+set(${rosidl_generate_interfaces_TARGET}__HASH_TUPLES ${_generated_tuples})
 
 # Validate that all dependencies exist
 set(target_dependencies
@@ -72,7 +62,6 @@ rosidl_write_generator_arguments(
 )
 
 # Create custom command and target to generate the hash output
-set(_generated_files "${_generated_json};${_generated_json_in};${_generated_hash_files}")
 add_custom_command(
   COMMAND Python3::Interpreter
   ARGS

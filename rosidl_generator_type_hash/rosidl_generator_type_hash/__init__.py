@@ -33,7 +33,7 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
     idl_tuples = args['idl_tuples']
     include_paths = args.get('include_paths', [])
 
-    # Lookup for directory containing dependency .in.json files
+    # Lookup for directory containing dependency .json files
     include_map = {
         package_name: output_dir
     }
@@ -44,9 +44,9 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
         include_map[include_package_name] = Path(include_base_path)
 
     generated_files = []
-    hashers = []
+    hashers = {}
 
-    # First generate all .in.json files (so referenced types can be used in expansion)
+    # Initialize all local types first so they can be referenced by other local types
     for idl_tuple in idl_tuples:
         idl_parts = idl_tuple.rsplit(':', 1)
         assert len(idl_parts) == 2
@@ -63,16 +63,11 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
         generate_to_dir.mkdir(parents=True, exist_ok=True)
 
         hasher = InterfaceHasher.from_idl(idl_file)
-        generated_files.extend(
-            hasher.write_json_in(output_dir))
-        hashers.append(hasher)
+        hashers[hasher.namespaced_type.namespaced_name()] = hasher
 
-    # Expand .in.json and generate .sha256.json hash files
-    for hasher in hashers:
-        generated_files.extend(
-            hasher.write_json_out(output_dir, include_map))
-        generated_files.extend(
-            hasher.write_hash(output_dir))
+    # Generate output files
+    for hasher in hashers.values():
+        generated_files += hasher.write_unified_json(output_dir, hashers, include_map)
 
     return generated_files
 
@@ -111,7 +106,7 @@ NESTED_FIELD_TYPE_SUFFIXES = {
     definition.UnboundedSequence: '_UNBOUNDED_SEQUENCE',
 }
 
-# Copied directly from FieldType.msg, with a string replace-all applied
+# Copied directly from FieldType.msg, with simple string manipulation to create a dict
 FIELD_TYPE_IDS = {
     'FIELD_TYPE_NOT_SET': 0,
 
@@ -255,7 +250,7 @@ def field_type_type_id(ftype: definition.AbstractType) -> Tuple[str, int]:
     return FIELD_TYPE_IDS[field_type_type_name(ftype)]
 
 
-def field_type_capacity(ftype: definition.AbstractType):
+def field_type_capacity(ftype: definition.AbstractType) -> int:
     if isinstance(ftype, definition.AbstractNestedType):
         if ftype.has_maximum_size():
             try:
@@ -265,7 +260,7 @@ def field_type_capacity(ftype: definition.AbstractType):
     return 0
 
 
-def field_type_string_capacity(ftype: definition.AbstractType):
+def field_type_string_capacity(ftype: definition.AbstractType) -> int:
     value_type = ftype
     if isinstance(ftype, definition.AbstractNestedType):
         value_type = ftype.value_type
@@ -279,7 +274,7 @@ def field_type_string_capacity(ftype: definition.AbstractType):
     return 0
 
 
-def field_type_nested_type_name(ftype: definition.AbstractType, joiner='/'):
+def field_type_nested_type_name(ftype: definition.AbstractType, joiner='/') -> str:
     value_type = ftype
     if isinstance(ftype, definition.AbstractNestedType):
         value_type = ftype.value_type
@@ -369,44 +364,80 @@ class InterfaceHasher:
             self.namespaced_type, self.members)
 
         # Determine needed includes from member fields
-        included_types = []
+        self.includes = []
         for member in self.members:
             if isinstance(member.type, definition.NamespacedType):
-                included_types.append(member.type)
+                self.includes.append(member.type.namespaced_name())
             elif (
                 isinstance(member.type, definition.AbstractNestedType) and
                 isinstance(member.type.value_type, definition.NamespacedType)
             ):
-                included_types.append(member.type.value_type)
-
-        self.includes = [
-            str(Path(*t.namespaced_name()).with_suffix('.in.json'))
-            for t in included_types
-        ]
+                self.includes.append(member.type.value_type.namespaced_name())
 
         self.rel_path = Path(*self.namespaced_type.namespaced_name()[1:])
         self.include_path = Path(*self.namespaced_type.namespaced_name())
 
-        self.json_in = {
+    def write_unified_json(
+        self, output_dir: Path, local_hashers: dict, includes_map: dict
+    ) -> List[Path]:
+        generated_files = []
+        referenced_types = {}
+
+        for key, val in self.subinterfaces.items():
+            generated_files += val.write_unified_json(output_dir, local_hashers, includes_map)
+
+        def add_referenced_type(individual_type_description):
+            type_name = individual_type_description['type_name']
+            if (
+                type_name in referenced_types and
+                referenced_types[type_name] != individual_type_description
+            ):
+                raise Exception('Encountered two definitions of the same referenced type')
+            referenced_types[type_name] = individual_type_description
+
+        process_includes = self.includes[:]
+        while process_includes:
+            process_type = process_includes.pop()
+
+            # A type in this package may refer to types, and hasn't been unrolled yet,
+            # so process its includes breadth first
+            if process_type in local_hashers:
+                add_referenced_type(local_hashers[process_type].individual_type_description)
+                process_includes += local_hashers[process_type].includes
+                continue
+
+            # All nonlocal descriptions will have all recursively referenced types baked in
+            p_path = Path(*process_type).with_suffix('.json')
+            pkg = p_path.parts[0]
+            pkg_dir = includes_map[pkg]
+            include_path = pkg_dir / p_path.relative_to(pkg)
+            with include_path.open('r') as include_file:
+                include_json = json.load(include_file)
+
+            type_description = include_json['type_description']
+            add_referenced_type(type_description['type_description'])
+            for rt in type_description['referenced_type_descriptions']:
+                add_referenced_type(rt)
+
+        self.full_type_description = {
             'type_description': self.individual_type_description,
-            'includes': self.includes,
+            'referenced_type_descriptions': sorted(
+                referenced_types.values(), key=lambda td: td['type_name'])
         }
 
-    def write_json_in(self, output_dir) -> List[str]:
-        """Return list of written files."""
-        generated_files = []
-        for key, val in self.subinterfaces.items():
-            generated_files += val.write_json_in(output_dir)
+        hashed_type_description = {
+            'hashes': self._calculate_hash_tree(),
+            'type_description': self.full_type_description,
+        }
 
-        json_path = output_dir / self.rel_path.with_suffix('.in.json')
-        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path = output_dir / self.rel_path.with_suffix('.json')
         with json_path.open('w', encoding='utf-8') as json_file:
-            json_file.write(json.dumps(self.json_in, indent=2))
-        return generated_files + [str(json_path)]
+            json_file.write(json.dumps(hashed_type_description, indent=2))
+        return generated_files + [json_path]
 
-    def _hashable_repr(self) -> str:
-        return json.dumps(
-            self.json_out,
+    def _calculate_hash_tree(self) -> dict:
+        hashable_repr = json.dumps(
+            self.full_type_description,
             skipkeys=False,
             ensure_ascii=True,
             check_circular=True,
@@ -415,47 +446,9 @@ class InterfaceHasher:
             separators=(',', ': '),
             sort_keys=False
         )
-
-    def write_json_out(self, output_dir: Path, includes_map: dict) -> List[str]:
-        """Return list of written files."""
-        generated_files = []
-        for key, val in self.subinterfaces.items():
-            generated_files += val.write_json_out(output_dir, includes_map)
-
-        # Recursively load includes from all included type descriptions
-        pending_includes = self.includes[:]
-        loaded_includes = {}
-        while pending_includes:
-            process_include = pending_includes.pop()
-            if process_include in loaded_includes:
-                continue
-            p_path = Path(process_include)
-            assert(not p_path.is_absolute())
-            include_package = p_path.parts[0]
-            include_file = includes_map[include_package] / p_path.relative_to(include_package)
-
-            with include_file.open('r') as include_file:
-                include_json = json.load(include_file)
-
-            loaded_includes[process_include] = include_json['type_description']
-            pending_includes.extend(include_json['includes'])
-
-        # Sort included type descriptions alphabetically by type name
-        self.json_out = {
-            'type_description': self.json_in['type_description'],
-            'referenced_type_descriptions': sorted(
-                loaded_includes.values(), key=lambda td: td['type_name'])
-        }
-
-        json_path = output_dir / self.rel_path.with_suffix('.json')
-        with json_path.open('w', encoding='utf-8') as json_file:
-            json_file.write(self._hashable_repr())
-        return generated_files + [str(json_path)]
-
-    def _calculate_hash_tree(self) -> dict:
         prefix = f'RIHS{RIHS_VERSION}_'
         sha = hashlib.sha256()
-        sha.update(self._hashable_repr().encode('utf-8'))
+        sha.update(hashable_repr.encode('utf-8'))
         type_hash = prefix + sha.hexdigest()
 
         type_hash_infos = {
@@ -465,11 +458,3 @@ class InterfaceHasher:
             type_hash_infos[key] = val._calculate_hash_tree()
 
         return type_hash_infos
-
-    def write_hash(self, output_dir: Path) -> List[str]:
-        """Return list of written files."""
-        type_hash = self._calculate_hash_tree()
-        hash_path = output_dir / self.rel_path.with_suffix('.sha256.json')
-        with hash_path.open('w', encoding='utf-8') as hash_file:
-            hash_file.write(json.dumps(type_hash, indent=2))
-        return [str(hash_path)]

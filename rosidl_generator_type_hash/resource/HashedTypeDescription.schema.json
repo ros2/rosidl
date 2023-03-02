@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "HashedTypeDescription.schema.json",
+  "title": "HashedTypeDescription",
+  "description": "TODO",
+  "type": "object",
+  "properties": {
+    "hashes": {
+      "type": "object",
+      "oneOf": [
+        { "$ref": "#/$defs/MessageHash" },
+        { "$ref": "#/$defs/ServiceHashes" },
+        { "$ref": "#/$defs/ActionHashes" }
+      ]
+    },
+    "type_description": { "$ref": "#/$defs/TypeDescription" }
+  },
+  "required": ["hashes", "type_description"],
+  "additionalProperties": false,
+  "$defs": {
+    "MessageHash": {
+      "type": "object",
+      "properties": {
+        "message": { "type": "string" }
+      },
+      "required": [ "message" ],
+      "additionalProperties": false
+    },
+    "ServiceHashes": {
+      "type": "object",
+      "properties": {
+        "service": { "type": "string" },
+        "request_message": { "$ref": "#/$defs/MessageHash" },
+        "response_message": { "$ref": "#/$defs/MessageHash" },
+        "event_message": { "$ref": "#/$defs/MessageHash" }
+      },
+      "required": [
+        "service",
+        "request_message",
+        "response_message",
+        "event_message"
+      ],
+      "additionalProperties": false
+    },
+    "ActionHashes": {
+      "type": "object",
+      "properties": {
+        "action": { "type": "string" },
+        "goal": { "$ref": "#/$defs/MessageHash" },
+        "result": { "$ref": "#/$defs/MessageHash" },
+        "feedback": { "$ref": "#/$defs/MessageHash" },
+        "send_goal_service": { "$ref": "#/$defs/ServiceHashes" },
+        "get_result_service": { "$ref": "#/$defs/ServiceHashes" },
+        "feedback_message": { "$ref": "#/$defs/MessageHash" }
+      },
+      "required": [
+        "action",
+        "goal",
+        "result",
+        "feedback",
+        "send_goal_service",
+        "get_result_service",
+        "feedback_message"
+      ],
+      "additionalProperties": false
+    },
+    "TypeDescription": {
+      "type": "object",
+      "$comment": "All whitespace must be excluded for consistent hashing, which this schema cannot enforce.",
+      "properties": {
+        "type_description": {"$ref": "#/$defs/IndividualTypeDescription"},
+        "referenced_type_descriptions": {
+          "$comment": "Referenced type descriptions must be alphabetized, which this schema cannot enforce.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/IndividualTypeDescription" }
+        }
+      },
+      "required": ["type_description", "referenced_type_descriptions"],
+      "additionalProperties": false
+    },
+    "IndividualTypeDescription": {
+      "type": "object",
+      "properties": {
+        "type_name": {"type": "string", "maxLength": 255},
+        "fields": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Field" }
+        }
+      },
+      "required": ["type_name", "fields"],
+      "additionalProperties": false
+    },
+    "Field": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "type": {"$ref": "#/$defs/FieldType"}
+      },
+      "required": ["name", "type"],
+      "additionalProperties": false
+    },
+    "FieldType": {
+      "type": "object",
+      "properties": {
+        "type_id": {"type": "integer", "minimum": 0, "maximum": 255},
+        "capacity": {"type": "integer", "minimum": 0},
+        "string_capacity": {"type": "integer", "minimum": 0},
+        "nested_type_name": {"type": "string", "maxLength": 255}
+      },
+      "required": ["type_id", "capacity", "string_capacity", "nested_type_name"],
+      "additionalProperties": false
+    }
+  }
+}

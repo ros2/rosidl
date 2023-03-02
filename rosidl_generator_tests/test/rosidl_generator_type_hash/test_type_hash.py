@@ -22,46 +22,20 @@ import jsonschema
 
 def test_type_hash():
     """Test all rosidl_generator_type_hash output files against defined schemas."""
-    schema_dir = Path(get_package_share_directory('rosidl_generator_type_hash')) / 'resource'
-    resolver = jsonschema.validators.RefResolver(
-        base_uri=f'{schema_dir.as_uri()}/',
-        referrer=True,
-    )
+    schema_path = (
+        Path(get_package_share_directory('rosidl_generator_type_hash')) / 'resource' /
+        'HashedTypeDescription.schema.json')
+    with schema_path.open('r') as schema_file:
+        schema = json.load(schema_file)
 
     generated_files_dir = Path(os.environ['GENERATED_TEST_FILE_DIR'])
-    validated_sha256 = 0
-    validated_json_in = 0
-    validated_json = 0
+    validated_files = 0
     for namespace in generated_files_dir.iterdir():
         for p in namespace.iterdir():
             assert p.is_file()
             assert p.suffix == '.json'
             with p.open('r') as f:
                 instance = json.load(f)
-            subsuffix = p.with_suffix('').suffix
-            if subsuffix == '.sha256':
-                jsonschema.validate(
-                    instance=instance,
-                    schema={'$ref': 'TypeVersionHash.schema.json'},
-                    resolver=resolver,
-                )
-                validated_sha256 += 1
-            elif subsuffix == '.in':
-                jsonschema.validate(
-                    instance=instance,
-                    schema={'$ref': 'TypeDescriptionIn.schema.json'},
-                    resolver=resolver,
-                )
-                validated_json_in += 1
-            elif subsuffix == '':
-                jsonschema.validate(
-                    instance=instance,
-                    schema={'$ref': 'TypeDescription.schema.json'},
-                    resolver=resolver,
-                )
-                validated_json += 1
-            else:
-                assert False, 'Unknown file type to validate'
-    assert validated_sha256, 'Needed to validate at least one of each type of file.'
-    assert validated_json_in, 'Needed to validate at least one of each type of file.'
-    assert validated_json, 'Needed to validate at least one of each type of file.'
+            jsonschema.validate(instance=instance, schema=schema)
+            validated_files += 1
+    assert validated_files, 'Needed to validate at least one JSON output.'

@@ -27,7 +27,7 @@ TEST(type_hash, init_zero_hash) {
 
 TEST(type_hash, stringify_basic) {
   const std::string expected =
-    "RIHS1_00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff";
+    "RIHS01_00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff";
   rosidl_type_hash_t hash = rosidl_get_zero_initialized_type_hash();
   hash.version = 1;
   for (size_t i = 0; i < sizeof(hash.value); i++) {
@@ -44,7 +44,7 @@ TEST(type_hash, stringify_basic) {
 
 TEST(type_hash, parse_basic) {
   const std::string test_value =
-    "RIHS1_00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff";
+    "RIHS01_00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff";
 
   rosidl_type_hash_t hash = rosidl_get_zero_initialized_type_hash();
   ASSERT_EQ(RCUTILS_RET_OK, rosidl_parse_type_hash_string(test_value.c_str(), &hash));
@@ -57,7 +57,7 @@ TEST(type_hash, parse_basic) {
 
 TEST(type_hash, parse_bad_prefix) {
   const std::string test_value =
-    "RRRR1_00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff";
+    "RRRR01_00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff";
   rosidl_type_hash_t hash = rosidl_get_zero_initialized_type_hash();
   EXPECT_EQ(RCUTILS_RET_INVALID_ARGUMENT, rosidl_parse_type_hash_string(test_value.c_str(), &hash));
   rcutils_reset_error();
@@ -73,7 +73,7 @@ TEST(type_hash, parse_no_version) {
 
 TEST(type_hash, parse_too_short) {
   const std::string test_value =
-    "RIHS1_00112233445566778899aabbccddeeff00112233445566778899aabbccddee";
+    "RIHS01_00112233445566778899aabbccddeeff00112233445566778899aabbccddee";
   rosidl_type_hash_t hash = rosidl_get_zero_initialized_type_hash();
   EXPECT_EQ(RCUTILS_RET_INVALID_ARGUMENT, rosidl_parse_type_hash_string(test_value.c_str(), &hash));
   rcutils_reset_error();
@@ -81,16 +81,16 @@ TEST(type_hash, parse_too_short) {
 
 TEST(type_hash, parse_too_long) {
   const std::string test_value =
-    "RIHS1_00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00";
+    "RIHS01_00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00";
   rosidl_type_hash_t hash = rosidl_get_zero_initialized_type_hash();
   EXPECT_EQ(RCUTILS_RET_INVALID_ARGUMENT, rosidl_parse_type_hash_string(test_value.c_str(), &hash));
   rcutils_reset_error();
 }
 
-TEST(type_hash, parse_multidigit_version) {
+TEST(type_hash, parse_bad_version) {
   const std::string test_value =
-    "RIHS213_00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff";
+    "RIHS02_00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff";
   rosidl_type_hash_t hash = rosidl_get_zero_initialized_type_hash();
-  ASSERT_EQ(RCUTILS_RET_OK, rosidl_parse_type_hash_string(test_value.c_str(), &hash));
-  EXPECT_EQ(213, hash.version);
+  EXPECT_EQ(RCUTILS_RET_INVALID_ARGUMENT, rosidl_parse_type_hash_string(test_value.c_str(), &hash));
+  rcutils_reset_error();
 }

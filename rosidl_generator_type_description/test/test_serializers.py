@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from rosidl_generator_type_hash import serialize_field_type
+from rosidl_generator_type_description import serialize_field_type
 
 from rosidl_parser import definition
 

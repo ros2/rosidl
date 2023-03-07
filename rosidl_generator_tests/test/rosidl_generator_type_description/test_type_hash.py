@@ -21,9 +21,9 @@ import jsonschema
 
 
 def test_type_hash():
-    """Test all rosidl_generator_type_hash output files against defined schemas."""
+    """Test all rosidl_generator_type_description output files against defined schemas."""
     schema_path = (
-        Path(get_package_share_directory('rosidl_generator_type_hash')) / 'resource' /
+        Path(get_package_share_directory('rosidl_generator_type_description')) / 'resource' /
         'HashedTypeDescription.schema.json')
     with schema_path.open('r') as schema_file:
         schema = json.load(schema_file)

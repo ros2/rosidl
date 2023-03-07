@@ -102,7 +102,7 @@ add_custom_target(
 )
 add_dependencies(
   ${rosidl_generate_interfaces_TARGET}__cpp
-  ${rosidl_generate_interfaces_TARGET}__rosidl_generator_type_hash)
+  ${rosidl_generate_interfaces_TARGET}__rosidl_generator_type_description)
 
 set(_target_suffix "__rosidl_generator_cpp")
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE)

@@ -1,4 +1,4 @@
-# rosidl_generator_type_hash
+# rosidl_generator_type_description
 
 This generator serializes ROS 2 interface descriptions (message, service, action) to a common format and uses SHA256 to hash that representation into a unique hash for each type.
 

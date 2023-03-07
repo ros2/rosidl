@@ -14,7 +14,7 @@
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
-set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_type_hash/${PROJECT_NAME}")
+set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_type_description/${PROJECT_NAME}")
 set(_generated_files "")
 set(_generated_tuples "")
 
@@ -42,8 +42,8 @@ set(${rosidl_generate_interfaces_TARGET}__HASH_TUPLES ${_generated_tuples})
 
 # Validate that all dependencies exist
 set(target_dependencies
-  "${rosidl_generator_type_hash_BIN}"
-  ${rosidl_generator_type_hash_GENERATOR_FILES}
+  "${rosidl_generator_type_description_BIN}"
+  ${rosidl_generator_type_description_GENERATOR_FILES}
   ${rosidl_generate_interfaces_ABS_IDL_FILES}
   ${_dependency_files})
 foreach(dep ${target_dependencies})
@@ -52,7 +52,7 @@ foreach(dep ${target_dependencies})
   endif()
 endforeach()
 
-set(_generator_arguments_file "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_type_hash__arguments.json")
+set(_generator_arguments_file "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_type_description__arguments.json")
 rosidl_write_generator_arguments(
   "${_generator_arguments_file}"
   PACKAGE_NAME "${PROJECT_NAME}"
@@ -65,7 +65,7 @@ rosidl_write_generator_arguments(
 add_custom_command(
   COMMAND Python3::Interpreter
   ARGS
-  ${rosidl_generator_type_hash_BIN}
+  ${rosidl_generator_type_description_BIN}
   --generator-arguments-file "${_generator_arguments_file}"
   OUTPUT ${_generated_files}
   DEPENDS ${target_dependencies}
@@ -73,7 +73,7 @@ add_custom_command(
   VERBATIM
 )
 
-set(_target "${rosidl_generate_interfaces_TARGET}__rosidl_generator_type_hash")
+set(_target "${rosidl_generate_interfaces_TARGET}__rosidl_generator_type_description")
 add_custom_target(${_target} DEPENDS ${_generated_files})
 
 # Make top level generation target depend on this generated library

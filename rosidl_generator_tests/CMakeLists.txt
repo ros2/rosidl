@@ -23,7 +23,7 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   find_package(rosidl_cmake REQUIRED)
   find_package(rosidl_generator_cpp REQUIRED)
-  find_package(rosidl_generator_type_hash REQUIRED)
+  find_package(rosidl_generator_type_description REQUIRED)
   find_package(rosidl_runtime_c REQUIRED)
   find_package(rosidl_runtime_cpp REQUIRED)
   find_package(test_interface_files REQUIRED)
@@ -112,8 +112,8 @@ if(BUILD_TESTING)
     rosidl_runtime_c::rosidl_runtime_c
   )
 
-  ament_add_pytest_test(test_hash_generator test/rosidl_generator_type_hash
-    ENV GENERATED_TEST_FILE_DIR=${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_type_hash/${PROJECT_NAME}
+  ament_add_pytest_test(test_hash_generator test/rosidl_generator_type_description
+    ENV GENERATED_TEST_FILE_DIR=${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_type_description/${PROJECT_NAME}
   )
 endif()
 

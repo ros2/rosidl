@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(rosidl_generator_type_hash)
+project(rosidl_generator_type_description)
 
 find_package(ament_cmake_python REQUIRED)
 find_package(ament_cmake_ros REQUIRED)

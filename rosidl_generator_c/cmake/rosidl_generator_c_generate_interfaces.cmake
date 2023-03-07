@@ -145,7 +145,7 @@ target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} PUBL
   rcutils::rcutils)
 add_dependencies(
   ${rosidl_generate_interfaces_TARGET}${_target_suffix}
-  ${rosidl_generate_interfaces_TARGET}__rosidl_generator_type_hash)
+  ${rosidl_generate_interfaces_TARGET}__rosidl_generator_type_description)
 
 # Make top level generation target depend on this generated library
 add_dependencies(

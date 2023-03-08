@@ -68,6 +68,8 @@ rosidl_stringify_type_hash(
 /**
  * \param[in] type_hash_string Null-terminated string with the hash representation
  * \param[out] hash_out Preallocated structure to be filled with parsed hash information.
+ *   hash_out->version will be 0 if no version could be parsed,
+ *   but if a version could be determined this field will be set even if an error is returned
  * \return RCTUILS_RET_INVALID_ARGUMENT on any null pointer argumunts, or malformed hash string.
  * \return RCUTILS_RET_OK otherwise
  */

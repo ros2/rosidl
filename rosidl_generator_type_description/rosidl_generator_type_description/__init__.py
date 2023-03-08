@@ -15,14 +15,21 @@
 import hashlib
 import json
 from pathlib import Path
+import re
 import sys
 from typing import List, Tuple
 
 from rosidl_parser import definition
 from rosidl_parser.parser import parse_idl_file
 
-# ROS Interface Hashing Standard, per REP-2011
-RIHS_VERSION = '01'
+# RIHS: ROS Interface Hashing Standard, per REP-2011
+# NOTE: These values and implementations must be updated if
+# - type_description_interfaces messsages change, or
+# - the hashing algorithm for type descriptions changes
+# Both changes require an increment of the RIHS version
+RIHS01_PREFIX = 'RIHS01_'
+RIHS01_HASH_VALUE_SIZE = 32
+RIHS01_PATTERN = re.compile(r'RIHS([0-9a-f]{2})_([0-9a-f]{64})')
 
 
 def generate_type_hash(generator_arguments_file: str) -> List[str]:
@@ -70,6 +77,15 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
         generated_files += hasher.write_unified_json(output_dir, hashers, include_map)
 
     return generated_files
+
+
+def parse_rihs_string(rihs_str: str) -> Tuple[int, str]:
+    """Parse RIHS string, return (version, value) tuple."""
+    match = RIHS01_PATTERN.match(rihs_str)
+    if not match:
+        raise ValueError(f'Type hash string {rihs_str} does not match expected RIHS format.')
+    version, value = match.group(1, 2)
+    return (int(version), value)
 
 
 # This mapping must match the constants defined in type_description_interfaces/msgs/FieldType.msg
@@ -446,10 +462,9 @@ class InterfaceHasher:
             separators=(',', ': '),
             sort_keys=False
         )
-        prefix = f'RIHS{RIHS_VERSION}_'
         sha = hashlib.sha256()
         sha.update(hashable_repr.encode('utf-8'))
-        type_hash = prefix + sha.hexdigest()
+        type_hash = RIHS01_PREFIX + sha.hexdigest()
 
         type_hash_infos = {
             self.interface_type: type_hash,

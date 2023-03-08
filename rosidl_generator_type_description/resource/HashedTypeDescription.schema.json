@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "HashedTypeDescription.schema.json",
   "title": "HashedTypeDescription",
-  "description": "TODO",
+  "description": "Contains hashes and full type description for a ROS 2 interface. TypeDescription, IndividualTypeDescription, Field, and FieldType are exact representations of type_description_interfaces/msg types, see their .msg files for semantic comments.",
   "type": "object",
   "properties": {
     "hashes": {
@@ -66,11 +66,11 @@
     },
     "TypeDescription": {
       "type": "object",
-      "$comment": "All whitespace must be excluded for consistent hashing, which this schema cannot enforce.",
+      "$comment": "For hashing: All whitespace must be excluded, which this schema cannot enforce.",
       "properties": {
         "type_description": {"$ref": "#/$defs/IndividualTypeDescription"},
         "referenced_type_descriptions": {
-          "$comment": "Referenced type descriptions must be alphabetized, which this schema cannot enforce.",
+          "$comment": "For hashing: Referenced type descriptions must be alphabetized, which this schema cannot enforce.",
           "type": "array",
           "items": { "$ref": "#/$defs/IndividualTypeDescription" }
         }

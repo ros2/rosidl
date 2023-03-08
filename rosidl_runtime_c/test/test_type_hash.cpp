@@ -92,5 +92,6 @@ TEST(type_hash, parse_bad_version) {
     "RIHS02_00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff";
   rosidl_type_hash_t hash = rosidl_get_zero_initialized_type_hash();
   EXPECT_EQ(RCUTILS_RET_INVALID_ARGUMENT, rosidl_parse_type_hash_string(test_value.c_str(), &hash));
+  EXPECT_EQ(hash.version, 2);
   rcutils_reset_error();
 }

@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import re
-
+from rosidl_generator_type_description import parse_rihs_string
+from rosidl_generator_type_description import RIHS01_HASH_VALUE_SIZE
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import AbstractString
@@ -225,18 +225,14 @@ def escape_wstring(s):
 
 def type_hash_to_c_definition(variable_name, hash_string, indent=0):
     """Generate empy for rosidl_type_hash_t instance with 8 bytes per line for readability."""
-    hash_length = 32
     bytes_per_line = 8
 
     indent_str = ' ' * (indent + 2)
-    pattern = re.compile(r'RIHS([0-9a-f]{2})_([0-9a-f]{64})')
-    match = pattern.match(hash_string)
-    if not match:
-        raise Exception('Type hash string does not match expected RIHS format')
-    version, value = match.group(1, 2)
+    version, value = parse_rihs_string(hash_string)
+    assert version == 1, 'This function only knows how to generate RIHS01 definitions.'
 
     result = f'rosidl_type_hash_t {variable_name} = {{{version}, {{'
-    for i in range(hash_length):
+    for i in range(RIHS01_HASH_VALUE_SIZE):
         if i % bytes_per_line == 0:
             result += f'\n{indent_str}  '
         result += f'0x{value[i * 2:i * 2 + 2]},'

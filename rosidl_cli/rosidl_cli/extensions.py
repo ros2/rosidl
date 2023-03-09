@@ -70,7 +70,7 @@ def load_extensions(group_name, *, specs=None, strict=False):
 
     :param str group_name: the name of the extension group
     :param list specs: an optional collection of extension specs
-      (see :py:function:`parse_extension_specification` for spec format)
+      (see :py:meth:`parse_extension_specification` for spec format)
     :param bool strict: whether to raise or warn on error
     :returns: a list of :py:class:`Extension` instances
     :rtype: list

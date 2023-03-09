@@ -68,7 +68,7 @@ def load_entry_points(group_name, *, strict=False, **kwargs):
     """
     Load entry points for a specific group.
 
-    See :py:function:`get_entry_points` for further reference on
+    See :py:meth:`get_entry_points` for further reference on
     additional keyword arguments.
 
     :param str group_name: the name of the entry point group

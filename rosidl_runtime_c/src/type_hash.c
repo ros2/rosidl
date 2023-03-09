@@ -49,7 +49,7 @@ static void _xitoa(uint8_t val, char * dest)
 {
   uint8_t nibble = 0;
   for (size_t n = 0; n < 2; n++) {
-    nibble = (val >> (4 * n)) & 0x0f;
+    nibble = (val >> (4 * (1 - n))) & 0x0f;
     if (nibble < 0xa) {
       dest[n] = '0' + nibble;
     } else {  // 0xa <= nibble < 0x10
@@ -132,15 +132,15 @@ rosidl_parse_type_hash_string(
     return RCUTILS_RET_INVALID_ARGUMENT;
   }
   const char * value_str = type_hash_string + RIHS_PREFIX_LEN;
-  for (size_t i = 0; i < ROSIDL_TYPE_HASH_SIZE; i++) {
-    if (!_ishexdigit(value_str[i * 2])) {
+  for (size_t i = 0; i < ROSIDL_TYPE_HASH_SIZE * 2; i++) {
+    if (!_ishexdigit(value_str[i])) {
       RCUTILS_SET_ERROR_MSG("Type hash string value contained non-hex-digit character.");
       return RCUTILS_RET_INVALID_ARGUMENT;
     }
   }
   for (size_t i = 0; i < ROSIDL_TYPE_HASH_SIZE; i++) {
     // No error checking on byte values because the whole string was checked in prior loop
-    uint8_t byte_val = (_xatoi(value_str[i * 2]) << 4) + _xatoi(value_str[i * 2 + 1]);
+    uint8_t byte_val = (_xatoi(value_str[i * 2]) << 4) + _xatoi(value_str[(i * 2) + 1]);
     if (byte_val < 0) {
       RCUTILS_SET_ERROR_MSG("Type hash string value did not contain only hex digits.");
       return RCUTILS_RET_INVALID_ARGUMENT;

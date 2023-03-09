@@ -27,11 +27,11 @@ TEST(type_hash, init_zero_hash) {
 
 TEST(type_hash, stringify_basic) {
   const std::string expected =
-    "RIHS01_00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff";
+    "RIHS01_000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
   rosidl_type_hash_t hash = rosidl_get_zero_initialized_type_hash();
   hash.version = 1;
   for (size_t i = 0; i < sizeof(hash.value); i++) {
-    hash.value[i] = (i % 0x10) * 0x10 + (i % 0x10);
+    hash.value[i] = i;
   }
   auto allocator = rcutils_get_default_allocator();
   char * hash_string = nullptr;
@@ -44,14 +44,14 @@ TEST(type_hash, stringify_basic) {
 
 TEST(type_hash, parse_basic) {
   const std::string test_value =
-    "RIHS01_00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff";
+    "RIHS01_000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
 
   rosidl_type_hash_t hash = rosidl_get_zero_initialized_type_hash();
   ASSERT_EQ(RCUTILS_RET_OK, rosidl_parse_type_hash_string(test_value.c_str(), &hash));
   EXPECT_EQ(1, hash.version);
   for (size_t i = 0; i < sizeof(hash.value); i++) {
-    size_t expected_value = (i % 0x10) * 0x10 + (i % 0x10);
-    EXPECT_EQ(expected_value, hash.value[i]);
+    size_t expected_value = i;
+    EXPECT_EQ(expected_value, hash.value[i]) << "At byte " << i;
   }
 }
 
@@ -93,5 +93,14 @@ TEST(type_hash, parse_bad_version) {
   rosidl_type_hash_t hash = rosidl_get_zero_initialized_type_hash();
   EXPECT_EQ(RCUTILS_RET_INVALID_ARGUMENT, rosidl_parse_type_hash_string(test_value.c_str(), &hash));
   EXPECT_EQ(hash.version, 2);
+  rcutils_reset_error();
+}
+
+TEST(type_hash, parse_bad_value) {
+  const std::string test_value =
+    "RIHS01_00112233445566778899aabbccddgeff00112233445566778899aabbccddeeff";
+  rosidl_type_hash_t hash = rosidl_get_zero_initialized_type_hash();
+  EXPECT_EQ(RCUTILS_RET_INVALID_ARGUMENT, rosidl_parse_type_hash_string(test_value.c_str(), &hash));
+  EXPECT_EQ(hash.version, 1);
   rcutils_reset_error();
 }

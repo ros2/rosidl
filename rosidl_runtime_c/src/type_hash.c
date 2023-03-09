@@ -22,7 +22,7 @@ static const char RIHS01_PREFIX[] = "RIHS01_";
 // Hash representation is hex string, two characters per byte
 static const size_t RIHS_VERSION_IDX = 4;
 static const size_t RIHS_PREFIX_LEN = 7;
-static const size_t RIHS01_STRING_LEN = RIHS_PREFIX_LEN + (ROSIDL_TYPE_HASH_SIZE * 2);
+static const size_t RIHS01_STRING_LEN = 71;  // RIHS_PREFIX_LEN + (ROSIDL_TYPE_HASH_SIZE * 2);
 
 static bool _ishexdigit(char c)
 {

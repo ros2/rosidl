@@ -270,7 +270,7 @@ for index, member in enumerate(message.structure.members):
 static const rosidl_typesupport_introspection_c__MessageMembers @(function_prefix)__@(message.structure.namespaced_type.name)_message_members = {
   "@('__'.join([package_name] + list(interface_path.parents[0].parts)))",  // message namespace
   "@(message.structure.namespaced_type.name)",  // message name
-  @('__'.join(message.structure.namespaced_type.namespaced_name()))__TYPE_VERSION_HASH,
+  @('__'.join(message.structure.namespaced_type.namespaced_name()))__TYPE_VERSION_HASH__INIT,
   @(len(message.structure.members)),  // number of fields
   sizeof(@('__'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))),
   @(function_prefix)__@(message.structure.namespaced_type.name)_message_member_array,  // message members

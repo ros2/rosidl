@@ -103,7 +103,7 @@ struct @(message.structure.namespaced_type.name)_
   using Type = @(message.structure.namespaced_type.name)_<ContainerAllocator>;
 
   // Type Version Hash for interface
-  constexpr static const @(type_hash_to_c_definition("TYPE_VERSION_HASH", type_hash['message'], indent=2))@
+  constexpr static const rosidl_type_hash_t TYPE_VERSION_HASH = @(type_hash_to_c_definition(type_hash['message']));
 
 @{
 # The creation of the constructors for messages is a bit complicated.  The goal

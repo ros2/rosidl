@@ -223,20 +223,25 @@ def escape_wstring(s):
     return escape_string(s)
 
 
-def type_hash_to_c_definition(variable_name, hash_string, indent=0):
+def type_hash_to_c_definition(hash_string, *, line_final_backslash=False):
     """Generate empy for rosidl_type_hash_t instance with 8 bytes per line for readability."""
-    bytes_per_line = 8
-
-    indent_str = ' ' * (indent + 2)
+    bytes_per_row = 8
+    rows = 4
+    indent = 4  # Uncrustify prefers this indentation
     version, value = parse_rihs_string(hash_string)
     assert version == 1, 'This function only knows how to generate RIHS01 definitions.'
 
-    result = f'rosidl_type_hash_t {variable_name} = {{{version}, {{'
-    for i in range(RIHS01_HASH_VALUE_SIZE):
-        if i % bytes_per_line == 0:
-            result += f'\n{indent_str}  '
-        result += f'0x{value[i * 2:i * 2 + 2]},'
-        if i % bytes_per_line != bytes_per_line - 1:
-            result += ' '
-    result += f'\n{indent_str}}}}};\n'
+    result = f'{{{version}, {{'
+    if line_final_backslash:
+        result += ' \\'
+    result += '\n'
+    for row in range(rows):
+        result += ' ' * (indent + 1)
+        for i in range(row * bytes_per_row, (row + 1) * bytes_per_row):
+            result += f' 0x{value[i * 2]}{value[i * 2 + 1]},'
+        if line_final_backslash:
+            result += ' \\'
+        result += '\n'
+    result += ' ' * indent
+    result += '}}'
     return result

@@ -37,7 +37,7 @@ struct @(service.namespaced_type.name)
 @{
 service_typename = '::'.join(service.namespaced_type.namespaced_name())
 }@
-  static constexpr const @(type_hash_to_c_definition("TYPE_VERSION_HASH", type_hash['service'], indent=2))@
+  static constexpr const rosidl_type_hash_t TYPE_VERSION_HASH = @(type_hash_to_c_definition(type_hash['service']));
 
   using Request = @(service_typename)_Request;
   using Response = @(service_typename)_Response;

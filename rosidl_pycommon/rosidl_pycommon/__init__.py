@@ -75,9 +75,8 @@ def generate_files(
         locator = IdlLocator(*idl_parts)
         idl_rel_path = pathlib.Path(idl_parts[1])
 
-        idl_rel_stem = idl_rel_path.with_suffix('')
         if type_hashes_provided:
-            type_hash_file = type_hash_files[str(idl_rel_stem)]
+            type_hash_file = type_hash_files[idl_parts[1]]
             with open(type_hash_file, 'r') as f:
                 type_hash_infos = json.load(f)['hashes']
         else:

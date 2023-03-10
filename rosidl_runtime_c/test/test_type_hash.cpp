@@ -30,7 +30,7 @@ TEST(type_hash, stringify_basic) {
     "RIHS01_000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
   rosidl_type_hash_t hash = rosidl_get_zero_initialized_type_hash();
   hash.version = 1;
-  for (size_t i = 0; i < sizeof(hash.value); i++) {
+  for (uint8_t i = 0; i < ROSIDL_TYPE_HASH_SIZE; i++) {
     hash.value[i] = i;
   }
   auto allocator = rcutils_get_default_allocator();

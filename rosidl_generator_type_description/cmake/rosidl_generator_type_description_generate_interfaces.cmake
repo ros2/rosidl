@@ -22,10 +22,11 @@ set(_generated_tuples "")
 foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   get_filename_component(_parent_folder "${_abs_idl_file}" DIRECTORY)
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
-  get_filename_component(_idl_stem "${_abs_idl_file}" NAME_WE)
+  get_filename_component(_idl_name "${_abs_idl_file}" NAME)
+  get_filename_component(_idl_stem "${_idl_name}" NAME_WE)
   set(_json_file "${_output_path}/${_parent_folder}/${_idl_stem}.json")
   list(APPEND _generated_files "${_json_file}")
-  list(APPEND _generated_tuples "${_parent_folder}/${_idl_stem}:${_json_file}")
+  list(APPEND _generated_tuples "${_parent_folder}/${_idl_name}:${_json_file}")
 endforeach()
 
 # Find dependency packages' generated files

@@ -59,7 +59,10 @@ TEMPLATE(
 from rosidl_parser.definition import Service
 }@
 @[for service in content.get_elements_of_type(Service)]@
-static const @(type_hash_to_c_definition(idl_structure_type_to_c_typename(service.namespaced_type) + "__TYPE_VERSION_HASH", type_hash['service']))@
+
+@{ hash_var = idl_structure_type_to_c_typename(service.namespaced_type) + '__TYPE_VERSION_HASH' }@
+#define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['service'], line_final_backslash=True))
+static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
 
 @{
 TEMPLATE(
@@ -94,7 +97,10 @@ TEMPLATE(
 from rosidl_parser.definition import Action
 }@
 @[for action in content.get_elements_of_type(Action)]@
-static const @(type_hash_to_c_definition(idl_structure_type_to_c_typename(action.namespaced_type) + "__TYPE_VERSION_HASH", type_hash['action']))@
+
+@{ hash_var = idl_structure_type_to_c_typename(action.namespaced_type) + '__TYPE_VERSION_HASH' }@
+#define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['action'], line_final_backslash=True))
+static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
 
 @{
 TEMPLATE(

@@ -23,11 +23,7 @@ static const char RIHS01_PREFIX[] = "RIHS01_";
 static const size_t RIHS_VERSION_IDX = 4;
 static const size_t RIHS_PREFIX_LEN = 7;
 static const size_t RIHS01_STRING_LEN = 71;  // RIHS_PREFIX_LEN + (ROSIDL_TYPE_HASH_SIZE * 2);
-
-static bool _ishexdigit(char c)
-{
-  return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f');
-}
+static const uint8_t INVALID_NIBBLE = 0xff;
 
 /// Translate a single character hex digit to a nibble
 static uint8_t _xatoi(char c)
@@ -41,21 +37,7 @@ static uint8_t _xatoi(char c)
   if (c >= 'a' && c <= 'f') {
     return c - 'a' + 0xa;
   }
-  return -1;
-}
-
-/// Tranlate a byte value to two hex characters
-static void _xitoa(uint8_t val, char * dest)
-{
-  uint8_t nibble = 0;
-  for (size_t n = 0; n < 2; n++) {
-    nibble = (val >> (4 * (1 - n))) & 0x0f;
-    if (nibble < 0xa) {
-      dest[n] = '0' + nibble;
-    } else {  // 0xa <= nibble < 0x10
-      dest[n] = 'a' + (nibble - 0xa);
-    }
-  }
+  return INVALID_NIBBLE;
 }
 
 rosidl_type_hash_t
@@ -86,8 +68,26 @@ rosidl_stringify_type_hash(
   }
   local_output[RIHS01_STRING_LEN] = '\0';
   memcpy(local_output, RIHS01_PREFIX, RIHS_PREFIX_LEN);
+
+  uint8_t nibble = 0;
+  char * dest = NULL;
   for (size_t i = 0; i < ROSIDL_TYPE_HASH_SIZE; i++) {
-    _xitoa(type_hash->value[i], local_output + RIHS_PREFIX_LEN + (i * 2));
+    // Translate byte into two hex characters
+    dest = local_output + RIHS_PREFIX_LEN + (i * 2);
+    // First character is top half of byte
+    nibble = (type_hash->value[i] >> 4) & 0x0f;
+    if (nibble < 0xa) {
+      dest[0] = '0' + nibble;
+    } else {
+      dest[0] = 'a' + (nibble - 0xa);
+    }
+    // Second character is bottom half of byte
+    nibble = (type_hash->value[i] >> 0) & 0x0f;
+    if (nibble < 0xa) {
+      dest[1] = '0' + nibble;
+    } else {
+      dest[1] = 'a' + (nibble - 0xa);
+    }
   }
 
   *output_string = local_output;
@@ -103,6 +103,8 @@ rosidl_parse_type_hash_string(
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(hash_out, RCUTILS_RET_INVALID_ARGUMENT);
   hash_out->version = 0;
   size_t input_len = strlen(type_hash_string);
+  uint8_t hexbyte_top_nibble;
+  uint8_t hexbyte_bot_nibble;
 
   // Check prefix
   if (input_len < RIHS_PREFIX_LEN) {
@@ -115,37 +117,35 @@ rosidl_parse_type_hash_string(
   }
 
   // Parse version
-  char version_top = type_hash_string[RIHS_VERSION_IDX];
-  char version_bot = type_hash_string[RIHS_VERSION_IDX + 1];
-  if (!(_ishexdigit(version_top) && _ishexdigit(version_bot))) {
+  hexbyte_top_nibble = _xatoi(type_hash_string[RIHS_VERSION_IDX]);
+  hexbyte_bot_nibble = _xatoi(type_hash_string[RIHS_VERSION_IDX + 1]);
+  if (hexbyte_top_nibble == INVALID_NIBBLE || hexbyte_bot_nibble == INVALID_NIBBLE) {
     RCUTILS_SET_ERROR_MSG("RIHS version is not a 2-digit hex string.");
     return RCUTILS_RET_INVALID_ARGUMENT;
   }
-  hash_out->version = (_xatoi(version_top) << 4) + _xatoi(version_bot);
+  hash_out->version = (hexbyte_top_nibble << 4) + hexbyte_bot_nibble;
 
   if (hash_out->version != 1) {
     RCUTILS_SET_ERROR_MSG("Do not know how to parse RIHS version.");
     return RCUTILS_RET_INVALID_ARGUMENT;
   }
+
+  // Check total length
   if (input_len != RIHS01_STRING_LEN) {
     RCUTILS_SET_ERROR_MSG("RIHS string is the incorrect size to contain a RIHS01 value.");
     return RCUTILS_RET_INVALID_ARGUMENT;
   }
+
+  // Parse hash value
   const char * value_str = type_hash_string + RIHS_PREFIX_LEN;
-  for (size_t i = 0; i < ROSIDL_TYPE_HASH_SIZE * 2; i++) {
-    if (!_ishexdigit(value_str[i])) {
-      RCUTILS_SET_ERROR_MSG("Type hash string value contained non-hex-digit character.");
-      return RCUTILS_RET_INVALID_ARGUMENT;
-    }
-  }
   for (size_t i = 0; i < ROSIDL_TYPE_HASH_SIZE; i++) {
-    // No error checking on byte values because the whole string was checked in prior loop
-    uint8_t byte_val = (_xatoi(value_str[i * 2]) << 4) + _xatoi(value_str[(i * 2) + 1]);
-    if (byte_val < 0) {
-      RCUTILS_SET_ERROR_MSG("Type hash string value did not contain only hex digits.");
+    hexbyte_top_nibble = _xatoi(value_str[i * 2]);
+    hexbyte_bot_nibble = _xatoi(value_str[i * 2 + 1]);
+    if (hexbyte_top_nibble == INVALID_NIBBLE || hexbyte_bot_nibble == INVALID_NIBBLE) {
+      RCUTILS_SET_ERROR_MSG("Type hash string value contained non-hexdigit character.");
       return RCUTILS_RET_INVALID_ARGUMENT;
     }
-    hash_out->value[i] = (char)byte_val;
+    hash_out->value[i] = (hexbyte_top_nibble << 4) + hexbyte_bot_nibble;
   }
   return RCUTILS_RET_OK;
 }

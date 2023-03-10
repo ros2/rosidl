@@ -30,9 +30,9 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   rosidl_generate_interfaces(${PROJECT_NAME}
+    ${test_interface_files_ACTION_FILES}
     ${test_interface_files_MSG_FILES}
     ${test_interface_files_SRV_FILES}
-    ${test_interface_files_ACTION_FILES}
     ADD_LINTER_TESTS
     SKIP_INSTALL
   )

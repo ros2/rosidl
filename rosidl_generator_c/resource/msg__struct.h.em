@@ -63,6 +63,11 @@ for member in message.structure.members:
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+// Type Version Hash for interface
+@{ hash_var = idl_structure_type_to_c_typename(message.structure.namespaced_type) + '__TYPE_VERSION_HASH' }@
+#define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['message'], line_final_backslash=True))
+static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
+
 // Constants defined in the message
 @[for constant in message.constants]@
 
@@ -178,11 +183,6 @@ typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_t
   @(idl_declaration_to_c(member.type, member.name));
 @[end for]@
 } @(idl_structure_type_to_c_typename(message.structure.namespaced_type));
-
-// Type Version Hash for interface
-@{ hash_var = idl_structure_type_to_c_typename(message.structure.namespaced_type) + '__TYPE_VERSION_HASH' }@
-#define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['message'], line_final_backslash=True))
-static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

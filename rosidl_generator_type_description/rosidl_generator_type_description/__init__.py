@@ -258,6 +258,8 @@ def field_type_type_name(ftype: definition.AbstractType) -> str:
         isinstance(value_type, definition.NamedType)
     ):
         value_type_name = 'FIELD_TYPE_NESTED_TYPE'
+    else:
+        raise ValueError(f'Unknown value type {value_type}')
 
     return value_type_name + name_suffix
 

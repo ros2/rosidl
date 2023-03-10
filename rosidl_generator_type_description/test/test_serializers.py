@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from rosidl_generator_type_description import serialize_field_type
+from rosidl_generator_type_description import serialize_individual_type_description
 
 from rosidl_parser import definition
 
@@ -51,4 +52,40 @@ def test_field_type_serializer():
         'nested_type_name': '',
     }
     result = serialize_field_type(test_type)
+    assert result == expected
+
+
+def test_nested_type_serializer():
+    namespaced_type = definition.NamespacedType(['my_pkg', 'msg'], 'TestThing')
+    referenced_type = definition.NamespacedType(['other_pkg', 'msg'], 'RefThing')
+    nested_referenced_type = definition.UnboundedSequence(referenced_type)
+    members = [
+        definition.Member(referenced_type, 'ref_thing'),
+        definition.Member(nested_referenced_type, 'ref_things')
+    ]
+    expected = {
+        'type_name': 'my_pkg/msg/TestThing',
+        'fields': [
+            {
+                'name': 'ref_thing',
+                'type': {
+                    'type_id': 1,
+                    'capacity': 0,
+                    'string_capacity': 0,
+                    'nested_type_name': 'other_pkg/msg/RefThing',
+                },
+            },
+            {
+                'name': 'ref_things',
+                'type': {
+                    'type_id': 145,
+                    'capacity': 0,
+                    'string_capacity': 0,
+                    'nested_type_name': 'other_pkg/msg/RefThing',
+                },
+            },
+        ],
+    }
+    result = serialize_individual_type_description(namespaced_type, members)
+
     assert result == expected

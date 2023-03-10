@@ -45,7 +45,7 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
         package_name: output_dir
     }
     for include_tuple in include_paths:
-        include_parts = include_tuple.rsplit(':', 1)
+        include_parts = include_tuple.split(':', 1)
         assert len(include_parts) == 2
         include_package_name, include_base_path = include_parts
         include_map[include_package_name] = Path(include_base_path)

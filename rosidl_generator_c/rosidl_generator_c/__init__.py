@@ -227,6 +227,7 @@ def type_hash_to_c_definition(hash_string, *, line_final_backslash=False):
     """Generate empy for rosidl_type_hash_t instance with 8 bytes per line for readability."""
     bytes_per_row = 8
     rows = 4
+    assert bytes_per_row * rows == RIHS01_HASH_VALUE_SIZE, 'This function is outdated.'
     indent = 4  # Uncrustify prefers this indentation
     version, value = parse_rihs_string(hash_string)
     assert version == 1, 'This function only knows how to generate RIHS01 definitions.'

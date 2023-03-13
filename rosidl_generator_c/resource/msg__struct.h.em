@@ -65,6 +65,7 @@ for member in message.structure.members:
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Type Version Hash for interface
 @{ hash_var = idl_structure_type_to_c_typename(message.structure.namespaced_type) + '__TYPE_VERSION_HASH' }@
+// Note: this define is for MSVC, where the static const var can't be used in downstream aggregate initializers
 #define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['message'], line_final_backslash=True))
 static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
 

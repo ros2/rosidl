@@ -61,6 +61,7 @@ from rosidl_parser.definition import Service
 @[for service in content.get_elements_of_type(Service)]@
 
 @{ hash_var = idl_structure_type_to_c_typename(service.namespaced_type) + '__TYPE_VERSION_HASH' }@
+// Note: this define is for MSVC, where the static const var can't be used in downstream aggregate initializers
 #define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['service'], line_final_backslash=True))
 static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
 
@@ -127,6 +128,7 @@ TEMPLATE(
 }@
 
 @{ hash_var = idl_structure_type_to_c_typename(action.send_goal_service.namespaced_type) + '__TYPE_VERSION_HASH' }@
+// Note: this define is for MSVC, where the static const var can't be used in downstream aggregate initializers
 #define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['send_goal_service']['service'], line_final_backslash=True))
 static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
 
@@ -155,6 +157,7 @@ TEMPLATE(
 }@
 
 @{ hash_var = idl_structure_type_to_c_typename(action.get_result_service.namespaced_type) + '__TYPE_VERSION_HASH' }@
+// Note: this define is for MSVC, where the static const var can't be used in downstream aggregate initializers
 #define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['get_result_service']['service'], line_final_backslash=True))
 static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
 

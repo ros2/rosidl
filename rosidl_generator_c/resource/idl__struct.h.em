@@ -126,6 +126,10 @@ TEMPLATE(
     type_hash=type_hash['feedback'])
 }@
 
+@{ hash_var = idl_structure_type_to_c_typename(action.send_goal_service.namespaced_type) + '__TYPE_VERSION_HASH' }@
+#define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['send_goal_service']['service'], line_final_backslash=True))
+static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
+
 @{
 TEMPLATE(
     'msg__struct.h.em',
@@ -149,6 +153,10 @@ TEMPLATE(
     message=action.send_goal_service.event_message, include_directives=include_directives,
     type_hash=type_hash['send_goal_service']['event_message'])
 }@
+
+@{ hash_var = idl_structure_type_to_c_typename(action.get_result_service.namespaced_type) + '__TYPE_VERSION_HASH' }@
+#define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['get_result_service']['service'], line_final_backslash=True))
+static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
 
 @{
 TEMPLATE(

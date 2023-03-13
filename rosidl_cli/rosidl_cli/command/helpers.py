@@ -52,11 +52,12 @@ def interface_path_as_tuple(path):
     An interface definition file path is a relative path, optionally prefixed
     by a path against which to resolve the former followed by a colon ':'.
     Thus, this function applies following logic:
+
     - If a given path follows this pattern, it is split at the colon ':'
     - If a given path is prefixed by a relative path, it is resolved
-      relative to the current working directory.
+        relative to the current working directory.
     - If a given path has no prefix, the current working directory is
-      used as prefix.
+        used as prefix.
     """
     path_as_string = str(path)
     if ':' not in path_as_string:

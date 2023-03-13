@@ -432,9 +432,9 @@ class InterfaceHasher:
             with include_path.open('r') as include_file:
                 include_json = json.load(include_file)
 
-            type_description = include_json['type_description']
-            add_referenced_type(type_description['type_description'])
-            for rt in type_description['referenced_type_descriptions']:
+            type_description_msg = include_json['type_description_msg']
+            add_referenced_type(type_description_msg['type_description'])
+            for rt in type_description_msg['referenced_type_descriptions']:
                 add_referenced_type(rt)
 
         self.full_type_description = {
@@ -445,7 +445,7 @@ class InterfaceHasher:
 
         hashed_type_description = {
             'hashes': self._calculate_hash_tree(),
-            'type_description': self.full_type_description,
+            'type_description_msg': self.full_type_description,
         }
 
         json_path = output_dir / self.rel_path.with_suffix('.json')

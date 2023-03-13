@@ -13,9 +13,9 @@
         { "$ref": "#/$defs/ActionHashes" }
       ]
     },
-    "type_description": { "$ref": "#/$defs/TypeDescription" }
+    "type_description_msg": { "$ref": "#/$defs/TypeDescription" }
   },
-  "required": ["hashes", "type_description"],
+  "required": ["hashes", "type_description_msg"],
   "additionalProperties": false,
   "$defs": {
     "MessageHash": {

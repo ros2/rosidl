@@ -1,5 +1,6 @@
 @# Included from rosidl_generator_cpp/resource/idl__struct.hpp.em
 @{
+from rosidl_generator_c import type_hash_to_c_definition
 from rosidl_generator_cpp import create_init_alloc_and_member_lists
 from rosidl_generator_cpp import escape_string
 from rosidl_generator_cpp import escape_wstring
@@ -100,6 +101,9 @@ template<class ContainerAllocator>
 struct @(message.structure.namespaced_type.name)_
 {
   using Type = @(message.structure.namespaced_type.name)_<ContainerAllocator>;
+
+  // Type Version Hash for interface
+  constexpr static const rosidl_type_hash_t TYPE_VERSION_HASH = @(type_hash_to_c_definition(type_hash['message']));
 
 @{
 # The creation of the constructors for messages is a bit complicated.  The goal
@@ -356,6 +360,9 @@ u@
 // alias to use template instance with default allocator
 using @(message.structure.namespaced_type.name) =
   @(message_typename)_<std::allocator<void>>;
+
+template<class ContainerAllocator>
+constexpr const rosidl_type_hash_t @(message.structure.namespaced_type.name)_<ContainerAllocator>::TYPE_VERSION_HASH;
 
 // constant definitions
 @[for c in message.constants]@

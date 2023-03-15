@@ -235,6 +235,7 @@ for index, member in enumerate(message.structure.members):
 static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(message.structure.namespaced_type.name)_message_members = {
   "@('::'.join([package_name] + list(interface_path.parents[0].parts)))",  // message namespace
   "@(message.structure.namespaced_type.name)",  // message name
+  @('::'.join(message.structure.namespaced_type.namespaced_name()))::TYPE_VERSION_HASH,
   @(len(message.structure.members)),  // number of fields
   sizeof(@('::'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))),
   @(message.structure.namespaced_type.name)_message_member_array,  // message members

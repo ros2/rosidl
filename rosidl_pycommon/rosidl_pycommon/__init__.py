@@ -62,11 +62,26 @@ def generate_files(
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
     generated_files = []
 
+    type_hashes_provided = 'type_hash_tuples' in args
+    type_hash_files = {}
+    for hash_tuple in args.get('type_hash_tuples', []):
+        hash_parts = hash_tuple.split(':', 1)
+        assert len(hash_parts) == 2
+        type_hash_files[hash_parts[0]] = hash_parts[1]
+
     for idl_tuple in args.get('idl_tuples', []):
         idl_parts = idl_tuple.rsplit(':', 1)
         assert len(idl_parts) == 2
         locator = IdlLocator(*idl_parts)
         idl_rel_path = pathlib.Path(idl_parts[1])
+
+        if type_hashes_provided:
+            type_hash_file = type_hash_files[idl_parts[1]]
+            with open(type_hash_file, 'r') as f:
+                type_hash_infos = json.load(f)['hashes']
+        else:
+            type_hash_infos = None
+
         idl_stem = idl_rel_path.stem
         if not keep_case:
             idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)
@@ -81,6 +96,7 @@ def generate_files(
                     'package_name': args['package_name'],
                     'interface_path': idl_rel_path,
                     'content': idl_file.content,
+                    'type_hash': type_hash_infos,
                 }
                 if additional_context is not None:
                     data.update(additional_context)

@@ -19,15 +19,18 @@ find_package(ament_cmake REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
+  find_package(ament_cmake_pytest REQUIRED)
   find_package(ament_lint_auto REQUIRED)
   find_package(rosidl_cmake REQUIRED)
   find_package(rosidl_generator_cpp REQUIRED)
+  find_package(rosidl_generator_type_description REQUIRED)
   find_package(rosidl_runtime_c REQUIRED)
   find_package(rosidl_runtime_cpp REQUIRED)
   find_package(test_interface_files REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
   rosidl_generate_interfaces(${PROJECT_NAME}
+    ${test_interface_files_ACTION_FILES}
     ${test_interface_files_MSG_FILES}
     ${test_interface_files_SRV_FILES}
     ADD_LINTER_TESTS
@@ -107,6 +110,10 @@ if(BUILD_TESTING)
   target_link_libraries(test_invalid_initialization_c
     ${c_generator_target}
     rosidl_runtime_c::rosidl_runtime_c
+  )
+
+  ament_add_pytest_test(test_hash_generator test/rosidl_generator_type_description
+    ENV GENERATED_TEST_FILE_DIR=${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_type_description/${PROJECT_NAME}
   )
 endif()
 

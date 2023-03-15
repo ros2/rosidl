@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from rosidl_generator_type_description import parse_rihs_string
+from rosidl_generator_type_description import RIHS01_HASH_VALUE_SIZE
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import AbstractString
@@ -219,3 +221,28 @@ def escape_string(s):
 
 def escape_wstring(s):
     return escape_string(s)
+
+
+def type_hash_to_c_definition(hash_string, *, line_final_backslash=False):
+    """Generate empy for rosidl_type_hash_t instance with 8 bytes per line for readability."""
+    bytes_per_row = 8
+    rows = 4
+    assert bytes_per_row * rows == RIHS01_HASH_VALUE_SIZE, 'This function is outdated.'
+    indent = 4  # Uncrustify prefers this indentation
+    version, value = parse_rihs_string(hash_string)
+    assert version == 1, 'This function only knows how to generate RIHS01 definitions.'
+
+    result = f'{{{version}, {{'
+    if line_final_backslash:
+        result += ' \\'
+    result += '\n'
+    for row in range(rows):
+        result += ' ' * (indent + 1)
+        for i in range(row * bytes_per_row, (row + 1) * bytes_per_row):
+            result += f' 0x{value[i * 2]}{value[i * 2 + 1]},'
+        if line_final_backslash:
+            result += ' \\'
+        result += '\n'
+    result += ' ' * indent
+    result += '}}'
+    return result

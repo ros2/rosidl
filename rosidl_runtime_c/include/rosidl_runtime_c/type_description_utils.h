@@ -58,8 +58,8 @@ static const uint8_t ROSIDL_RUNTIME_C_TYPE_DESCRIPTION_UTILS_SEQUENCE_TYPE_ID_DE
  *       It will remain pointing to `NULL` if no matching `Field` is found.
  *
  * Ownership:
- * - The output `Field` borrows the `fields` arg's `Field` element. It is not authorized to delete
- *   its value and cannot outlive the owner it borrows from.
+ * - The output `Field` borrows the `fields` arg's `Field` element. It is not authorized to
+ *   deallocate it and cannot outlive the owner it borrows from.
  *
  * <hr>
  * Attribute          | Adherence
@@ -92,7 +92,7 @@ rosidl_runtime_c_type_description_utils_find_field(
  *
  * Ownership:
  * - The output `IndividualTypeDescription` borrows the `referenced_types` arg's
- *   `IndividualTypeDescription` element. It is not authorized to delete its value and cannot
+ *   `IndividualTypeDescription` element. It is not authorized to deallocate it and it cannot
  *   outlive the `referenced_types` it borrows from.
  *
  * <hr>
@@ -133,7 +133,7 @@ rosidl_runtime_c_type_description_utils_find_referenced_type_description(
  * - The caller assumes ownership of the output `rcutils_hash_map_t` and must free it and its
  *   elements, but NOT finalize its values.
  * - The output `rcutils_hash_map_t` has values that borrows the `individual_description` arg's
- *   `Field` objects. It is not authorized to delete its values and it cannot outlive the owner it
+ *   `Field` objects. It is not authorized to deallocate them and it cannot outlive the owner it
  *   borrows from.
  *   - Finalizing the `rcutils_hash_map_t` should not result in the map's values getting finalized.
  *
@@ -173,7 +173,7 @@ rosidl_runtime_c_type_description_utils_get_field_map(
  * - The caller assumes ownership of the output `rcutils_hash_map_t` and must free it and its
  *   elements, but NOT finalize its values.
  * - The output `rcutils_hash_map_t` has values that borrows the `referenced_types` arg's
- *   `IndividualTypeDescription` elements. It is not authorized to delete its values and it cannot
+ *   `IndividualTypeDescription` elements. It is not authorized to deallocate them and it cannot
  *   outlive the `referenced_types` it borrows from.
  *   - Finalizing the output `rcutils_hash_map_t` should not result in its values getting finalized.
  *
@@ -224,7 +224,7 @@ rosidl_runtime_c_type_description_utils_get_referenced_type_description_map(
  * - The caller assumes ownership of the output `rcutils_hash_map_t` and must free it and its
  *   elements, but NOT finalize its values.
  * - The output `rcutils_hash_map_t` has values that borrows the `referenced_types_map` arg's
- *   `IndividualTypeDescription` values. It is not authorized to delete its values and it cannot
+ *   `IndividualTypeDescription` values. It is not authorized to deallocate them and it cannot
  *   outlive owner it borrows from.
  *   - Finalizing the output `rcutils_hash_map_t` should not result in its values getting finalized.
  *

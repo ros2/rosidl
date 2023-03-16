@@ -586,7 +586,7 @@ rosidl_runtime_c_type_description_utils_prune_referenced_type_descriptions_in_pl
 
   rosidl_runtime_c__type_description__IndividualTypeDescription * next_ptr =
     allocator.reallocate(referenced_types->data, allocation_size, allocator.state);
-  if (next_ptr == NULL) {
+  if (next_ptr == NULL && allocation_size != 0) {
     RCUTILS_LOG_ERROR(
       "Could not shrink the necessary referenced type descriptions sequence during rearrangement! "
       "Beware! The referenced type descriptions was likely already partially modified in place!");
@@ -897,6 +897,10 @@ rosidl_runtime_c_type_description_utils_create_field(
   }
 
   *field = rosidl_runtime_c__type_description__Field__create();
+  if (*field == NULL) {
+    RCUTILS_LOG_ERROR("Could not create field");
+    return RCUTILS_RET_BAD_ALLOC;
+  }
 
   // Field
   if (!rosidl_runtime_c__String__assignn(&(*field)->name, name, name_length)) {
@@ -944,6 +948,10 @@ rosidl_runtime_c_type_description_utils_create_individual_type_description(
   }
 
   *individual_description = rosidl_runtime_c__type_description__IndividualTypeDescription__create();
+  if (*individual_description == NULL) {
+    RCUTILS_LOG_ERROR("Could not create individual description");
+    return RCUTILS_RET_BAD_ALLOC;
+  }
 
   if (!rosidl_runtime_c__String__assignn(
       &(*individual_description)->type_name, type_name, type_name_length))
@@ -969,6 +977,10 @@ rosidl_runtime_c_type_description_utils_create_type_description(
   }
 
   *type_description = rosidl_runtime_c__type_description__TypeDescription__create();
+  if (*type_description == NULL) {
+    RCUTILS_LOG_ERROR("Could not create type description");
+    return RCUTILS_RET_BAD_ALLOC;
+  }
 
   if (!rosidl_runtime_c__String__assignn(
       &(*type_description)->type_description.type_name, type_name, type_name_length))
@@ -1000,7 +1012,7 @@ rosidl_runtime_c_type_description_utils_append_field(
   size_t last_index = individual_type_description->fields.size;
   rosidl_runtime_c__type_description__Field * next_ptr = allocator.reallocate(
     individual_type_description->fields.data, allocation_size, allocator.state);
-  if (next_ptr == NULL) {
+  if (next_ptr == NULL && allocation_size != 0) {
     RCUTILS_LOG_ERROR("Could not realloc individual type description fields sequence");
     return RCUTILS_RET_BAD_ALLOC;
   }
@@ -1029,7 +1041,7 @@ fail:
     individual_type_description->fields.data,
     individual_type_description->fields.size * sizeof(rosidl_runtime_c__type_description__Field),
     allocator.state);
-  if (next_ptr == NULL) {
+  if (next_ptr == NULL && individual_type_description->fields.size != 0) {
     RCUTILS_LOG_ERROR(
       "Could not shorten individual type description fields sequence. "
       "Excess memory will be UNINITIALIZED!");
@@ -1062,7 +1074,7 @@ rosidl_runtime_c_type_description_utils_append_referenced_individual_type_descri
 
   rosidl_runtime_c__type_description__IndividualTypeDescription * next_ptr = allocator.reallocate(
     type_description->referenced_type_descriptions.data, allocation_size, allocator.state);
-  if (next_ptr == NULL) {
+  if (next_ptr == NULL && allocation_size != 0) {
     RCUTILS_LOG_ERROR("Could not realloc type description referenced type descriptions sequence");
     return RCUTILS_RET_BAD_ALLOC;
   }
@@ -1106,7 +1118,7 @@ fail:
       sizeof(rosidl_runtime_c__type_description__IndividualTypeDescription)
     ),
     allocator.state);
-  if (next_ptr == NULL) {
+  if (next_ptr == NULL && type_description->referenced_type_descriptions.size != 0) {
     RCUTILS_LOG_ERROR(
       "Could not shorten type description referenced type descriptions sequence. "
       "Excess memory will be UNINITIALIZED!");
@@ -1139,7 +1151,7 @@ rosidl_runtime_c_type_description_utils_append_referenced_type_description(
   );
   rosidl_runtime_c__type_description__IndividualTypeDescription * next_ptr = allocator.reallocate(
     type_description->referenced_type_descriptions.data, allocation_size, allocator.state);
-  if (next_ptr == NULL) {
+  if (next_ptr == NULL && allocation_size != 0) {
     RCUTILS_LOG_ERROR("Could not realloc type description referenced type descriptions sequence");
     return RCUTILS_RET_BAD_ALLOC;
   }
@@ -1207,7 +1219,7 @@ fail:
       sizeof(rosidl_runtime_c__type_description__IndividualTypeDescription)
     ),
     allocator.state);
-  if (next_ptr == NULL) {
+  if (next_ptr == NULL && type_description->referenced_type_descriptions.size != 0) {
     RCUTILS_LOG_ERROR(
       "Could not shorten type description referenced type descriptions sequence. "
       "Excess memory will be UNINITIALIZED!");
@@ -1259,7 +1271,7 @@ rosidl_runtime_c_type_description_utils_get_referenced_type_description_as_type_
   if (coerce_to_valid) {
     rcutils_ret_t ret =
       rosidl_runtime_c_type_description_utils_coerce_to_valid_type_description_in_place(
-      *output_description);
+        *output_description);
     if (ret != RCUTILS_RET_OK) {
       RCUTILS_LOG_ERROR("Could not coerce output type description to valid");
       rosidl_runtime_c__type_description__TypeDescription__destroy(*output_description);

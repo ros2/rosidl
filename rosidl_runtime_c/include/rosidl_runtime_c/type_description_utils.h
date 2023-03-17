@@ -341,7 +341,7 @@ rosidl_runtime_c_type_description_utils_prune_referenced_type_descriptions_in_pl
 ROSIDL_GENERATOR_C_PUBLIC
 bool
 rosidl_runtime_c_type_description_utils_field_is_valid(
-  rosidl_runtime_c__type_description__Field * field);
+  const rosidl_runtime_c__type_description__Field * field);
 
 /// Check if individual type description is valid
 /**
@@ -354,7 +354,7 @@ rosidl_runtime_c_type_description_utils_field_is_valid(
 ROSIDL_GENERATOR_C_PUBLIC
 bool
 rosidl_runtime_c_type_description_utils_individual_type_description_is_valid(
-  rosidl_runtime_c__type_description__IndividualTypeDescription * description);
+  const rosidl_runtime_c__type_description__IndividualTypeDescription * description);
 
 /// Check if type description is valid
 /**
@@ -370,7 +370,7 @@ rosidl_runtime_c_type_description_utils_individual_type_description_is_valid(
 ROSIDL_GENERATOR_C_PUBLIC
 bool
 rosidl_runtime_c_type_description_utils_type_description_is_valid(
-  rosidl_runtime_c__type_description__TypeDescription * description);
+  const rosidl_runtime_c__type_description__TypeDescription * description);
 
 /// This is on a best effort basis, it won't work if the fields of the main or necessary referenced
 /// types are invalid. It prunes then sorts.
@@ -597,12 +597,15 @@ rosidl_runtime_c_type_description_utils_append_referenced_type_description(
   rosidl_runtime_c__type_description__TypeDescription * type_description_to_append,
   bool coerce_to_valid);
 
-// Copy main type description, then validate if coerce_to_valid is true
+// Create a type description from a referenced description, then validate if coerce_to_valid is true
+// This is done by copy!! This allocates memory and the caller is responsible for deallocating the
+// output
 ROSIDL_GENERATOR_C_PUBLIC
 rcutils_ret_t
 rosidl_runtime_c_type_description_utils_get_referenced_type_description_as_type_description(
-  rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence * referenced_descriptions,
-  rosidl_runtime_c__type_description__IndividualTypeDescription * referenced_description,
+  const rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence *
+    referenced_descriptions,
+  const rosidl_runtime_c__type_description__IndividualTypeDescription * referenced_description,
   rosidl_runtime_c__type_description__TypeDescription ** output_description,
   bool coerce_to_valid);
 

@@ -622,7 +622,7 @@ end_ref:
 
 bool
 rosidl_runtime_c_type_description_utils_field_is_valid(
-  rosidl_runtime_c__type_description__Field * field)
+  const rosidl_runtime_c__type_description__Field * field)
 {
   if (field == NULL) {
     RCUTILS_LOG_WARN("Field is invalid: Pointer is null");
@@ -651,7 +651,7 @@ rosidl_runtime_c_type_description_utils_field_is_valid(
 
 bool
 rosidl_runtime_c_type_description_utils_individual_type_description_is_valid(
-  rosidl_runtime_c__type_description__IndividualTypeDescription * description)
+  const rosidl_runtime_c__type_description__IndividualTypeDescription * description)
 {
   if (description == NULL) {
     RCUTILS_LOG_WARN("Individual type description is invalid: Pointer is null");
@@ -710,7 +710,7 @@ end:
 
 bool
 rosidl_runtime_c_type_description_utils_type_description_is_valid(
-  rosidl_runtime_c__type_description__TypeDescription * description)
+  const rosidl_runtime_c__type_description__TypeDescription * description)
 {
   if (description == NULL) {
     RCUTILS_LOG_WARN("Type description is invalid: Pointer is null");
@@ -799,7 +799,7 @@ rosidl_runtime_c_type_description_utils_type_description_is_valid(
     RCUTILS_LOG_ERROR("Could allocate sequence for copy of referenced type descriptions");
     goto end_necessary;
   }
-  if (rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence__copy(
+  if (!rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence__copy(
       &description->referenced_type_descriptions, sorted_sequence))
   {
     RCUTILS_LOG_ERROR("Could not copy referenced type descriptions for validation");
@@ -1232,8 +1232,9 @@ fail:
 
 rcutils_ret_t
 rosidl_runtime_c_type_description_utils_get_referenced_type_description_as_type_description(
-  rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence * referenced_descriptions,
-  rosidl_runtime_c__type_description__IndividualTypeDescription * referenced_description,
+  const rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence *
+    referenced_descriptions,
+  const rosidl_runtime_c__type_description__IndividualTypeDescription * referenced_description,
   rosidl_runtime_c__type_description__TypeDescription ** output_description,
   bool coerce_to_valid)
 {

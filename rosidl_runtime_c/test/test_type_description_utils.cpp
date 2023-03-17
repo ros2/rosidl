@@ -365,6 +365,7 @@ TEST_F(TestUtilsFixture, test_appends_and_advanced_construction)
     individual_desc_1,                                  // Depends on ref: "empty"
     &subset_desc_2,
     true);                                              // Coercion to valid
+  EXPECT_TRUE(rosidl_runtime_c_type_description_utils_type_description_is_valid(subset_desc_2));
   EXPECT_EQ(subset_desc_2->referenced_type_descriptions.size, 1);
   EXPECT_EQ(subset_desc_2->referenced_type_descriptions.capacity, 1);
   EXPECT_FALSE(

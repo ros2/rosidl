@@ -74,5 +74,4 @@ TEMPLATE(
 }@
 
 @[end for]@
-
 #endif  // @(header_guard_variable)

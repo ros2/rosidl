@@ -15,7 +15,7 @@ extern "C"
 // Forward declare the get type support functions for this type.
 ROSIDL_GENERATOR_CPP_PUBLIC_@(package_name)
 const rosidl_action_type_support_t *
-ROSIDL_TYPESUPPORT_INTERFACE__ACTION_SYMBOL_NAME(
+  ROSIDL_TYPESUPPORT_INTERFACE__ACTION_SYMBOL_NAME(
   rosidl_typesupport_cpp,
   @(',\n  '.join(action.namespaced_type.namespaced_name()))
 )();

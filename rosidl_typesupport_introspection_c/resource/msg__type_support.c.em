@@ -2,6 +2,7 @@
 @{
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 from rosidl_generator_c import idl_structure_type_to_c_include_prefix
+from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractSequence
@@ -270,7 +271,6 @@ for index, member in enumerate(message.structure.members):
 static const rosidl_typesupport_introspection_c__MessageMembers @(function_prefix)__@(message.structure.namespaced_type.name)_message_members = {
   "@('__'.join([package_name] + list(interface_path.parents[0].parts)))",  // message namespace
   "@(message.structure.namespaced_type.name)",  // message name
-  @('__'.join(message.structure.namespaced_type.namespaced_name()))__TYPE_VERSION_HASH__INIT,
   @(len(message.structure.members)),  // number of fields
   sizeof(@('__'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))),
   @(function_prefix)__@(message.structure.namespaced_type.name)_message_member_array,  // message members
@@ -284,6 +284,7 @@ static rosidl_message_type_support_t @(function_prefix)__@(message.structure.nam
   0,
   &@(function_prefix)__@(message.structure.namespaced_type.name)_message_members,
   get_message_typesupport_handle_function,
+  &@(idl_structure_type_to_c_typename(message.structure.namespaced_type))__TYPE_VERSION_HASH,
 };
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(package_name)

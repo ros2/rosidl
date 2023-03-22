@@ -54,13 +54,13 @@ function_prefix = '__'.join(include_parts) + '__rosidl_typesupport_introspection
 static rosidl_typesupport_introspection_c__ServiceMembers @(function_prefix)__@(service.namespaced_type.name)_service_members = {
   "@('__'.join([package_name] + list(interface_path.parents[0].parts)))",  // service namespace
   "@(service.namespaced_type.name)",  // service name
-  // these two fields are initialized below on the first access
-  NULL,  // request message
-  // @(function_prefix)__@(service.request_message.structure.namespaced_type.name)_message_type_support_handle,
-  NULL,  // response message
-  // @(function_prefix)__@(service.response_message.structure.namespaced_type.name)_message_type_support_handle
-  NULL  // event_message
-  // @(function_prefix)__@(service.response_message.structure.namespaced_type.name)_message_type_support_handle
+  // these fields are initialized below on the first access
+  NULL,  // request type support
+  NULL,  // request members
+  NULL,  // response type support
+  NULL,  // response members
+  NULL,  // event type support
+  NULL,  // event_message
 };
 
 @{event_type = '__'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]) + SERVICE_EVENT_MESSAGE_SUFFIX}@
@@ -103,19 +103,19 @@ ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(rosidl_typesupport_introspecti
     (rosidl_typesupport_introspection_c__ServiceMembers *)@(function_prefix)__@(service.namespaced_type.name)_service_type_support_handle.data;
 
   if (!service_members->request_members_) {
-    service_members->request_members_ =
-      (const rosidl_typesupport_introspection_c__MessageMembers *)
-      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name + SERVICE_REQUEST_MESSAGE_SUFFIX))()->data;
+    service_members->request_type_support_ =
+      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name + SERVICE_REQUEST_MESSAGE_SUFFIX))();
+    service_members->request_members_ = (const rosidl_typesupport_introspection_c__MessageMembers *)service_members->request_type_support_->data;
   }
   if (!service_members->response_members_) {
-    service_members->response_members_ =
-      (const rosidl_typesupport_introspection_c__MessageMembers *)
-      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name + SERVICE_RESPONSE_MESSAGE_SUFFIX))()->data;
+    service_members->response_type_support_ =
+      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name + SERVICE_RESPONSE_MESSAGE_SUFFIX))();
+    service_members->response_members_ = (const rosidl_typesupport_introspection_c__MessageMembers *)service_members->response_type_support_->data;
   }
   if (!service_members->event_members_) {
-    service_members->event_members_ =
-      (const rosidl_typesupport_introspection_c__MessageMembers *)
-      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name + SERVICE_EVENT_MESSAGE_SUFFIX))()->data;
+    service_members->event_type_support_ =
+      ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name + SERVICE_EVENT_MESSAGE_SUFFIX))();
+    service_members->event_members_ = (const rosidl_typesupport_introspection_c__MessageMembers *)service_members->event_type_support_->data;
   }
 
   return &@(function_prefix)__@(service.namespaced_type.name)_service_type_support_handle;

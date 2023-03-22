@@ -33,13 +33,10 @@ typedef struct rosidl_typesupport_introspection_c__ServiceMembers_s
   /// The name of the service, e.g. "AddTwoInts"
   const char * service_name_;
   /// A pointer to the introspection information structure for the request interface.
-  const rosidl_message_type_support_t * request_type_support_;
   const rosidl_typesupport_introspection_c__MessageMembers * request_members_;
   /// A pointer to the introspection information structure for the response interface.
-  const rosidl_message_type_support_t * response_type_support_;
   const rosidl_typesupport_introspection_c__MessageMembers * response_members_;
   /// A pointer to the introspection information structure for the event interface.
-  const rosidl_message_type_support_t * event_type_support_;
   const rosidl_typesupport_introspection_c__MessageMembers * event_members_;
 } rosidl_typesupport_introspection_c__ServiceMembers;
 

@@ -41,15 +41,12 @@ struct @(service.namespaced_type.name)
 @{
 service_typename = '::'.join(service.namespaced_type.namespaced_name())
 }@
-  constexpr static const rosidl_type_hash_t @(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['service']));
+  static constexpr const rosidl_type_hash_t @(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['service']));
 
   using Request = @(service_typename)@(SERVICE_REQUEST_MESSAGE_SUFFIX);
   using Response = @(service_typename)@(SERVICE_RESPONSE_MESSAGE_SUFFIX);
   using Event = @(service_typename)@(SERVICE_EVENT_MESSAGE_SUFFIX);
 };
-
-// constexpr const rosidl_type_hash_t @(service.namespaced_type.name)::@(TYPE_HASH_VAR);
-
 @
 @[for ns in reversed(service.namespaced_type.namespaces)]@
 

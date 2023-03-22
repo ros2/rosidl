@@ -43,7 +43,8 @@ TEST(rosidl_generator_cpp, bounded_vector_rvalue) {
   ASSERT_EQ(v.size(), 0u);
   ASSERT_EQ(v.max_size(), 2u);
   v.emplace_back(1);
-  v.emplace_back(2);
+  auto & value = v.emplace_back(2);
+  ASSERT_EQ(value, 2);
   ASSERT_THROW(v.emplace_back(3), std::length_error);
   ASSERT_EQ(v.size(), 2u);
   // move assignment

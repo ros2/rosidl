@@ -223,7 +223,7 @@ def escape_wstring(s):
     return escape_string(s)
 
 
-def type_hash_to_c_definition(hash_string, * , indent=2):
+def type_hash_to_c_definition(hash_string, *, indent=2):
     """Generate empy for rosidl_type_hash_t instance with 8 bytes per line for readability."""
     bytes_per_row = 8
     rows = 4

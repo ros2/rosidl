@@ -27,6 +27,7 @@
 #include <string.h>
 
 #include <rcutils/logging_macros.h>
+#include <rcutils/repl_str.h>
 #include <rcutils/qsort.h>
 #include <rcutils/types/rcutils_ret.h>
 #include <rcutils/types/hash_map.h>
@@ -1233,7 +1234,7 @@ fail:
 rcutils_ret_t
 rosidl_runtime_c_type_description_utils_get_referenced_type_description_as_type_description(
   const rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence *
-    referenced_descriptions,
+  referenced_descriptions,
   const rosidl_runtime_c__type_description__IndividualTypeDescription * referenced_description,
   rosidl_runtime_c__type_description__TypeDescription ** output_description,
   bool coerce_to_valid)
@@ -1272,12 +1273,115 @@ rosidl_runtime_c_type_description_utils_get_referenced_type_description_as_type_
   if (coerce_to_valid) {
     rcutils_ret_t ret =
       rosidl_runtime_c_type_description_utils_coerce_to_valid_type_description_in_place(
-        *output_description);
+      *output_description);
     if (ret != RCUTILS_RET_OK) {
       RCUTILS_LOG_ERROR("Could not coerce output type description to valid");
       rosidl_runtime_c__type_description__TypeDescription__destroy(*output_description);
       *output_description = NULL;
       return ret;
+    }
+  }
+  return RCUTILS_RET_OK;
+}
+
+
+rcutils_ret_t
+rosidl_runtime_c_type_description_utils_repl_individual_type_description_type_names_in_place(
+  rosidl_runtime_c__type_description__IndividualTypeDescription * individual_type_description,
+  const char * from,
+  const char * to)
+{
+  RCUTILS_CHECK_ARGUMENT_FOR_NULL(individual_type_description, RCUTILS_RET_INVALID_ARGUMENT);
+  RCUTILS_CHECK_ARGUMENT_FOR_NULL(from, RCUTILS_RET_INVALID_ARGUMENT);
+  RCUTILS_CHECK_ARGUMENT_FOR_NULL(to, RCUTILS_RET_INVALID_ARGUMENT);
+
+  rcutils_allocator_t allocator = rcutils_get_default_allocator();
+  bool ret = false;
+  char * repl = NULL;
+
+  // Replace type name
+  repl = rcutils_repl_str(
+    individual_type_description->type_name.data, from, to, &allocator);
+  if (repl == NULL) {
+    RCUTILS_LOG_ERROR("Could not replace individual type description type name");
+    return RCUTILS_RET_ERROR;
+  }
+
+  ret = rosidl_runtime_c__String__assign(&(individual_type_description->type_name), repl);
+  allocator.deallocate(repl, allocator.state);
+  if (!ret) {
+    RCUTILS_LOG_ERROR("Could not assign individual type description type name");
+    return RCUTILS_RET_ERROR;
+  }
+
+  // Replace field nested type names
+  rosidl_runtime_c__type_description__Field * field = NULL;
+  if (individual_type_description->fields.data) {
+    for (size_t i = 0; i < individual_type_description->fields.size; i++) {
+      field = &individual_type_description->fields.data[i];
+      if (!field->type.nested_type_name.size) {
+        continue;
+      }
+
+      repl = rcutils_repl_str(field->type.nested_type_name.data, from, to, &allocator);
+      if (repl == NULL) {
+        RCUTILS_LOG_ERROR(
+          "Could not replace individual type description field nested type name. Beware! "
+          "Partial in-place replacements might have already happened!");
+        return RCUTILS_RET_ERROR;
+      }
+
+      ret = rosidl_runtime_c__String__assign(&(field->type.nested_type_name), repl);
+      allocator.deallocate(repl, allocator.state);
+      if (!ret) {
+        RCUTILS_LOG_ERROR(
+          "Could not assign individual type description field nested type name. Beware! "
+          "Partial in-place replacements might have already happened!");
+        return RCUTILS_RET_ERROR;
+      }
+    }
+  }
+  return RCUTILS_RET_OK;
+}
+
+
+rcutils_ret_t
+rosidl_runtime_c_type_description_utils_repl_all_type_description_type_names_in_place(
+  rosidl_runtime_c__type_description__TypeDescription * type_description,
+  const char * from,
+  const char * to)
+{
+  RCUTILS_CHECK_ARGUMENT_FOR_NULL(type_description, RCUTILS_RET_INVALID_ARGUMENT);
+  RCUTILS_CHECK_ARGUMENT_FOR_NULL(from, RCUTILS_RET_INVALID_ARGUMENT);
+  RCUTILS_CHECK_ARGUMENT_FOR_NULL(to, RCUTILS_RET_INVALID_ARGUMENT);
+
+  rcutils_ret_t end_ret = RCUTILS_RET_ERROR;
+
+  end_ret =
+    rosidl_runtime_c_type_description_utils_repl_individual_type_description_type_names_in_place(
+    &type_description->type_description, from, to);
+  if (end_ret != RCUTILS_RET_OK) {
+    RCUTILS_LOG_ERROR("Could not replace main type description type name");
+    return end_ret;
+  }
+
+  if (type_description->referenced_type_descriptions.data) {
+    for (size_t i = 0; i < type_description->referenced_type_descriptions.size; i++) {
+      rosidl_runtime_c__type_description__IndividualTypeDescription * individual_type_description =
+        &type_description->referenced_type_descriptions.data[i];
+
+      /* *INDENT-OFF* */  // Uncrustify will dislodge the NOLINT
+      end_ret =
+        rosidl_runtime_c_type_description_utils_repl_individual_type_description_type_names_in_place(  // NOLINT
+          individual_type_description, from, to);
+      /* *INDENT-ON* */
+
+      if (end_ret != RCUTILS_RET_OK) {
+        RCUTILS_LOG_ERROR(
+          "Could not replace type names in referenced type. Beware! "
+          "Partial in-place replacements might have already happened!");
+        return end_ret;
+      }
     }
   }
   return RCUTILS_RET_OK;

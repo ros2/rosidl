@@ -604,11 +604,53 @@ ROSIDL_GENERATOR_C_PUBLIC
 rcutils_ret_t
 rosidl_runtime_c_type_description_utils_get_referenced_type_description_as_type_description(
   const rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence *
-    referenced_descriptions,
+  referenced_descriptions,
   const rosidl_runtime_c__type_description__IndividualTypeDescription * referenced_description,
   rosidl_runtime_c__type_description__TypeDescription ** output_description,
   bool coerce_to_valid);
 
+// Create a type description from a referenced description, then validate if coerce_to_valid is true
+// This is done by copy!! This allocates memory and the caller is responsible for deallocating the
+// output
+ROSIDL_GENERATOR_C_PUBLIC
+rcutils_ret_t
+rosidl_runtime_c_type_description_utils_get_referenced_type_description_as_type_description(
+  const rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence *
+  referenced_descriptions,
+  const rosidl_runtime_c__type_description__IndividualTypeDescription * referenced_description,
+  rosidl_runtime_c__type_description__TypeDescription ** output_description,
+  bool coerce_to_valid);
+
+/// In-place replace substrings in an individual description's type name and nested names in fields
+/**
+ * This means the `IndividualTypeDescription`'s' type_name will get replaced and all references
+ * to any nested_type_names in the description's fields.
+ *
+ * NOTE(methylDragon): This method is pretty inefficient because it doesn't do checking and will
+ *                     re-copy all names.
+ */
+ROSIDL_GENERATOR_C_PUBLIC
+rcutils_ret_t
+rosidl_runtime_c_type_description_utils_repl_individual_type_description_type_names_in_place(
+  rosidl_runtime_c__type_description__IndividualTypeDescription * individual_type_description,
+  const char * from,
+  const char * to);
+
+
+/// In-place replace substrings across all type names (and references to those names)
+/**
+ * This means all `IndividualTypeDescription` type_names will get replaced, in the main description
+ * and referenced type descriptions, and also all references to those names (nested_type_name.)
+ *
+ * NOTE(methylDragon): This method is pretty inefficient because it doesn't do checking and will
+ *                     re-copy all names.
+ */
+ROSIDL_GENERATOR_C_PUBLIC
+rcutils_ret_t
+rosidl_runtime_c_type_description_utils_repl_all_type_description_type_names_in_place(
+  rosidl_runtime_c__type_description__TypeDescription * type_description,
+  const char * from,
+  const char * to);
 
 // =================================================================================================
 // DESCRIPTION PRINTING

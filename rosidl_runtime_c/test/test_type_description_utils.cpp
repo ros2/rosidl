@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <rcutils/types/rcutils_ret.h>
+#include <rcutils/types/hash_map.h>
+
 #include "rosidl_runtime_c/type_description/field__functions.h"
 #include "rosidl_runtime_c/type_description/field__struct.h"
 #include "rosidl_runtime_c/type_description/individual_type_description__functions.h"
@@ -19,9 +22,6 @@
 #include "rosidl_runtime_c/type_description/type_description__functions.h"
 #include "rosidl_runtime_c/type_description/type_description__struct.h"
 #include "rosidl_runtime_c/type_description_utils.h"
-
-#include <rcutils/types/rcutils_ret.h>
-#include <rcutils/types/hash_map.h>
 #include <rosidl_runtime_c/string_functions.h>
 
 #include <stdlib.h>
@@ -127,7 +127,7 @@ TEST(TestUtils, test_basic_construction)
 }
 
 
-class TestUtilsFixture: public ::testing::Test
+class TestUtilsFixture : public ::testing::Test
 {
 public:
   void SetUp()
@@ -374,8 +374,15 @@ TEST_F(TestUtilsFixture, test_appends_and_advanced_construction)
   EXPECT_TRUE(
     rosidl_runtime_c__type_description__IndividualTypeDescription__are_equal(
       &subset_desc_2->referenced_type_descriptions.data[0], empty_individual_desc));
-  // rosidl_runtime_c_type_description_utils_print_type_description(type_description_1);
-  // rosidl_runtime_c_type_description_utils_print_type_description(subset_desc_2);
+
+  // Test type name string replacements
+  ret = rosidl_runtime_c_type_description_utils_repl_all_type_description_type_names_in_place(
+    subset_desc_2, "mpty", "ligibility"  // Expect eligibility
+  );
+  EXPECT_EQ(ret, RCUTILS_RET_OK);
+  EXPECT_FALSE(
+    rosidl_runtime_c__type_description__IndividualTypeDescription__are_equal(
+      &subset_desc_2->referenced_type_descriptions.data[0], empty_individual_desc));
   rosidl_runtime_c__type_description__TypeDescription__destroy(subset_desc_2);
 }
 

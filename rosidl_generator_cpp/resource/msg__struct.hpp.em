@@ -6,6 +6,7 @@ from rosidl_generator_cpp import escape_string
 from rosidl_generator_cpp import escape_wstring
 from rosidl_generator_cpp import msg_type_to_cpp
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
+from rosidl_generator_type_description import TYPE_HASH_VAR
 from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractString
 from rosidl_parser.definition import AbstractWString
@@ -102,8 +103,7 @@ struct @(message.structure.namespaced_type.name)_
 {
   using Type = @(message.structure.namespaced_type.name)_<ContainerAllocator>;
 
-  // Type Version Hash for interface
-  constexpr static const rosidl_type_hash_t TYPE_VERSION_HASH = @(type_hash_to_c_definition(type_hash['message']));
+  constexpr static const rosidl_type_hash_t @(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['message']));
 
 @{
 # The creation of the constructors for messages is a bit complicated.  The goal
@@ -362,7 +362,7 @@ using @(message.structure.namespaced_type.name) =
   @(message_typename)_<std::allocator<void>>;
 
 template<class ContainerAllocator>
-constexpr const rosidl_type_hash_t @(message.structure.namespaced_type.name)_<ContainerAllocator>::TYPE_VERSION_HASH;
+constexpr const rosidl_type_hash_t @(message.structure.namespaced_type.name)_<ContainerAllocator>::@(TYPE_HASH_VAR);
 
 // constant definitions
 @[for c in message.constants]@

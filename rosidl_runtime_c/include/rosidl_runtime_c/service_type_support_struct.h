@@ -82,6 +82,10 @@ struct rosidl_service_type_support_t
   const void * data;
   /// Pointer to the service type support handler function
   rosidl_service_typesupport_handle_function func;
+  /// Service request message typesupport
+  const rosidl_message_type_support_t * request_typesupport;
+  /// Service response message typesupport
+  const rosidl_message_type_support_t * response_typesupport;
   /// Pointer to function to create the introspection message
   rosidl_event_message_create_handle_function_function event_message_create_handle_function;
   /// Pointer to function to finalize the introspection message

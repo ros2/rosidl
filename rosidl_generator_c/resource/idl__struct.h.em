@@ -13,6 +13,7 @@
 @{
 from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_generator_c import type_hash_to_c_definition
+from rosidl_generator_type_description import TYPE_HASH_VAR
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
@@ -60,10 +61,7 @@ from rosidl_parser.definition import Service
 }@
 @[for service in content.get_elements_of_type(Service)]@
 
-@{ hash_var = idl_structure_type_to_c_typename(service.namespaced_type) + '__TYPE_VERSION_HASH' }@
-// Note: this define is for MSVC, where the static const var can't be used in downstream aggregate initializers
-#define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['service'], line_final_backslash=True))
-static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
+static const rosidl_type_hash_t @(idl_structure_type_to_c_typename(service.namespaced_type))__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['service']));
 
 @{
 TEMPLATE(
@@ -99,9 +97,7 @@ from rosidl_parser.definition import Action
 }@
 @[for action in content.get_elements_of_type(Action)]@
 
-@{ hash_var = idl_structure_type_to_c_typename(action.namespaced_type) + '__TYPE_VERSION_HASH' }@
-#define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['action'], line_final_backslash=True))
-static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
+static const rosidl_type_hash_t @(idl_structure_type_to_c_typename(action.namespaced_type))__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['action']));
 
 @{
 TEMPLATE(
@@ -127,10 +123,7 @@ TEMPLATE(
     type_hash=type_hash['feedback'])
 }@
 
-@{ hash_var = idl_structure_type_to_c_typename(action.send_goal_service.namespaced_type) + '__TYPE_VERSION_HASH' }@
-// Note: this define is for MSVC, where the static const var can't be used in downstream aggregate initializers
-#define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['send_goal_service']['service'], line_final_backslash=True))
-static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
+static const rosidl_type_hash_t @(idl_structure_type_to_c_typename(action.send_goal_service.namespaced_type))__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['send_goal_service']['service']));
 
 @{
 TEMPLATE(
@@ -156,10 +149,7 @@ TEMPLATE(
     type_hash=type_hash['send_goal_service']['event_message'])
 }@
 
-@{ hash_var = idl_structure_type_to_c_typename(action.get_result_service.namespaced_type) + '__TYPE_VERSION_HASH' }@
-// Note: this define is for MSVC, where the static const var can't be used in downstream aggregate initializers
-#define @(hash_var)__INIT @(type_hash_to_c_definition(type_hash['get_result_service']['service'], line_final_backslash=True))
-static const rosidl_type_hash_t @(hash_var) = @(hash_var)__INIT;
+static const rosidl_type_hash_t @(idl_structure_type_to_c_typename(action.get_result_service.namespaced_type))__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['get_result_service']['service']));
 
 @{
 TEMPLATE(

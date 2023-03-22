@@ -21,10 +21,12 @@ TEMPLATE(
 }@
 
 @{
-from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
+from rosidl_generator_c import idl_structure_type_to_c_typename
+from rosidl_generator_type_description import TYPE_HASH_VAR
+from rosidl_parser.definition import SERVICE_EVENT_MESSAGE_SUFFIX
 from rosidl_parser.definition import SERVICE_REQUEST_MESSAGE_SUFFIX
 from rosidl_parser.definition import SERVICE_RESPONSE_MESSAGE_SUFFIX
-from rosidl_parser.definition import SERVICE_EVENT_MESSAGE_SUFFIX
+from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 include_base = '/'.join(include_parts)
@@ -37,7 +39,10 @@ header_files = [
     'rosidl_typesupport_introspection_c/service_introspection.h',
 ]
 
-message_function_prefix = '__'.join([package_name] + list(interface_path.parents[0].parts) + [service.namespaced_type.name]) + f'{SERVICE_EVENT_MESSAGE_SUFFIX}__rosidl_typesupport_introspection_c'
+message_function_prefix = '__'.join([package_name] + list(interface_path.parents[0].parts) + [service.namespaced_type.name])
+request_message_function_prefix = message_function_prefix + f'{SERVICE_REQUEST_MESSAGE_SUFFIX}__rosidl_typesupport_introspection_c'
+response_message_function_prefix = message_function_prefix + f'{SERVICE_RESPONSE_MESSAGE_SUFFIX}__rosidl_typesupport_introspection_c'
+event_message_function_prefix = message_function_prefix + f'{SERVICE_EVENT_MESSAGE_SUFFIX}__rosidl_typesupport_introspection_c'
 function_prefix = '__'.join(include_parts) + '__rosidl_typesupport_introspection_c'
 }@
 @[for header_file in header_files]@
@@ -71,6 +76,8 @@ static rosidl_service_type_support_t @(function_prefix)__@(service.namespaced_ty
   0,
   &@(function_prefix)__@(service.namespaced_type.name)_service_members,
   get_service_typesupport_handle_function,
+  &@(request_message_function_prefix)__@(service.namespaced_type.name)@(SERVICE_REQUEST_MESSAGE_SUFFIX)_message_type_support_handle,
+  &@(response_message_function_prefix)__@(service.namespaced_type.name)@(SERVICE_RESPONSE_MESSAGE_SUFFIX)_message_type_support_handle,
   ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_CREATE_EVENT_MESSAGE_SYMBOL_NAME(
     rosidl_typesupport_c,
     @(',\n    '.join(service.namespaced_type.namespaced_name()))
@@ -79,7 +86,8 @@ static rosidl_service_type_support_t @(function_prefix)__@(service.namespaced_ty
     rosidl_typesupport_c,
     @(',\n    '.join(service.namespaced_type.namespaced_name()))
   ),
-  &@(message_function_prefix)__@(service.namespaced_type.name)@(SERVICE_EVENT_MESSAGE_SUFFIX)_message_type_support_handle,
+  &@(event_message_function_prefix)__@(service.namespaced_type.name)@(SERVICE_EVENT_MESSAGE_SUFFIX)_message_type_support_handle,
+  &@(idl_structure_type_to_c_typename(service.namespaced_type))__@(TYPE_HASH_VAR),
 };
 
 // Forward declaration of request/response type support functions

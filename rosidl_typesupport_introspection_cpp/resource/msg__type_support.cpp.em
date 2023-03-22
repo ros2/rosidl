@@ -1,5 +1,6 @@
 @# Included from rosidl_typesupport_introspection_cpp/resource/idl__type_support.cpp.em
 @{
+from rosidl_generator_type_description import TYPE_HASH_VAR
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractSequence
@@ -246,7 +247,7 @@ static const rosidl_message_type_support_t @(message.structure.namespaced_type.n
   ::rosidl_typesupport_introspection_cpp::typesupport_identifier,
   &@(message.structure.namespaced_type.name)_message_members,
   get_message_typesupport_handle_function,
-  &@('::'.join(message.structure.namespaced_type.namespaced_name()))::TYPE_VERSION_HASH,
+  &@('::'.join(message.structure.namespaced_type.namespaced_name()))::@(TYPE_HASH_VAR),
 };
 
 }  // namespace rosidl_typesupport_introspection_cpp

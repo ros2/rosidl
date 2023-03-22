@@ -1,6 +1,7 @@
 @# Included from rosidl_generator_cpp/resource/idl__struct.hpp.em
 @{
 from rosidl_generator_c import type_hash_to_c_definition
+from rosidl_generator_type_description import TYPE_HASH_VAR
 from rosidl_parser.definition import ACTION_FEEDBACK_MESSAGE_SUFFIX
 from rosidl_parser.definition import ACTION_FEEDBACK_SUFFIX
 from rosidl_parser.definition import ACTION_GOAL_SERVICE_SUFFIX
@@ -79,7 +80,7 @@ namespace @(ns)
 @[end for]@
 struct @(action.namespaced_type.name)
 {
-  static constexpr const rosidl_type_hash_t TYPE_VERSION_HASH = @(type_hash_to_c_definition(type_hash['action']));
+  static constexpr const rosidl_type_hash_t @(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['action']));
 
   /// The goal message defined in the action definition.
   using Goal = @(action_name)@(ACTION_GOAL_SUFFIX);

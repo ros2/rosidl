@@ -1,6 +1,10 @@
 @# Included from rosidl_generator_cpp/resource/idl__struct.hpp.em
 @{
 from rosidl_generator_c import type_hash_to_c_definition
+from rosidl_generator_type_description import TYPE_HASH_VAR
+from rosidl_parser.definition import SERVICE_EVENT_MESSAGE_SUFFIX
+from rosidl_parser.definition import SERVICE_REQUEST_MESSAGE_SUFFIX
+from rosidl_parser.definition import SERVICE_RESPONSE_MESSAGE_SUFFIX
 }@
 @{
 TEMPLATE(
@@ -37,12 +41,15 @@ struct @(service.namespaced_type.name)
 @{
 service_typename = '::'.join(service.namespaced_type.namespaced_name())
 }@
-  static constexpr const rosidl_type_hash_t TYPE_VERSION_HASH = @(type_hash_to_c_definition(type_hash['service']));
+  constexpr static const rosidl_type_hash_t @(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['service']));
 
-  using Request = @(service_typename)_Request;
-  using Response = @(service_typename)_Response;
-  using Event = @(service_typename)_Event;
+  using Request = @(service_typename)@(SERVICE_REQUEST_MESSAGE_SUFFIX);
+  using Response = @(service_typename)@(SERVICE_RESPONSE_MESSAGE_SUFFIX);
+  using Event = @(service_typename)@(SERVICE_EVENT_MESSAGE_SUFFIX);
 };
+
+// constexpr const rosidl_type_hash_t @(service.namespaced_type.name)::@(TYPE_HASH_VAR);
+
 @
 @[for ns in reversed(service.namespaced_type.namespaces)]@
 

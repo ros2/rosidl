@@ -474,7 +474,7 @@ public:
    * \param args Arguments to be forwarded to the constructor of Tp
    */
   template<typename ... Args>
-  auto
+  typename Base::reference
   emplace_back(Args && ... args)
   {
     if (size() >= UpperBound) {

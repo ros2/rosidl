@@ -80,7 +80,7 @@ namespace @(ns)
 @[end for]@
 struct @(action.namespaced_type.name)
 {
-  static constexpr const rosidl_type_hash_t @(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['action']));
+  static constexpr const rosidl_type_hash_t @(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['action'], indent=4));
 
   /// The goal message defined in the action definition.
   using Goal = @(action_name)@(ACTION_GOAL_SUFFIX);

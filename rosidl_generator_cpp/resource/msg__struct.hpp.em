@@ -103,7 +103,7 @@ struct @(message.structure.namespaced_type.name)_
 {
   using Type = @(message.structure.namespaced_type.name)_<ContainerAllocator>;
 
-  constexpr static const rosidl_type_hash_t @(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['message']));
+  constexpr static const rosidl_type_hash_t @(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['message'], indent=4));
 
 @{
 # The creation of the constructors for messages is a bit complicated.  The goal

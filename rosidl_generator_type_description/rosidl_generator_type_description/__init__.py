@@ -464,7 +464,8 @@ class InterfaceHasher:
             check_circular=True,
             allow_nan=False,
             indent=None,
-            separators=(',', ': '),
+            # note: libyaml in C doesn't allow for tweaking these separators, this is its builtin
+            separators=(', ', ': '),
             sort_keys=False
         )
         sha = hashlib.sha256()

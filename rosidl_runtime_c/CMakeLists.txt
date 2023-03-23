@@ -15,6 +15,8 @@ find_package(ament_cmake_ros REQUIRED)
 find_package(rcutils REQUIRED)
 find_package(rosidl_typesupport_interface REQUIRED)
 
+file(GLOB type_description_sources "src/type_description/*.c")
+file(GLOB type_description_includes "include/rosidl_runtime_c/type_description/*.h")
 add_library(${PROJECT_NAME}
   "src/message_type_support.c"
   "src/primitives_sequence_functions.c"
@@ -23,6 +25,7 @@ add_library(${PROJECT_NAME}
   "src/string_functions.c"
   "src/type_hash.c"
   "src/u16string_functions.c"
+  ${type_description_sources}
 )
 target_include_directories(${PROJECT_NAME} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
@@ -60,7 +63,30 @@ if(BUILD_TESTING)
   # Give cppcheck hints about macro definitions coming from outside this package
   get_target_property(ament_cmake_cppcheck_ADDITIONAL_INCLUDE_DIRS performance_test_fixture::performance_test_fixture
     INTERFACE_INCLUDE_DIRECTORIES)
+
+  set(AMENT_LINT_AUTO_FILE_EXCLUDE ${type_description_includes} ${type_description_sources})
   ament_lint_auto_find_test_dependencies()
+
+  # Run specific linters on copied generated code
+  if(ament_cmake_cppcheck_FOUND)
+    ament_cppcheck(
+      TESTNAME "cppcheck_copied_type_description_interfaces"
+      ${type_description_includes} ${type_description_sources})
+  endif()
+  if(ament_cmake_cpplint_FOUND)
+    ament_cpplint(
+      TESTNAME "cpplint_copied_type_description_interfaces"
+      # the generated code might contain longer lines for templated types
+      MAX_LINE_LENGTH 999
+      ${type_description_includes} ${type_description_sources})
+  endif()
+  if(ament_cmake_uncrustify_FOUND)
+    ament_uncrustify(
+      TESTNAME "uncrustify_copied_type_description_interfaces"
+      # the generated code might contain longer lines for templated types
+      MAX_LINE_LENGTH 0
+      ${type_description_includes} ${type_description_sources})
+  endif()
 
   # For gtest
   enable_language(CXX)

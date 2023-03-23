@@ -9,22 +9,43 @@
 @#  - package_name (string)
 @#  - interface_path (Path relative to the directory named after the package)
 @#  - content (IdlContent, list of elements, e.g. Messages or Services)
+@#  - type_description_info (HashedTypeDescription.schema.json dict)
 @#######################################################################
 @{
 from rosidl_generator_c import escape_string
+from rosidl_generator_type_description import extract_subinterface
+from rosidl_parser.definition import Action
+from rosidl_parser.definition import Service
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 
-subinterfaces = type_description_info['subinterfaces']
+type_description_msg = type_description_info['type_description_msg']
+all_type_descriptions = [type_description_msg['type_description']] + type_description_msg['referenced_type_descriptions']
 
-type_description_struct = type_description_info['type_description_msg']
-toplevel_type_description = type_description_struct['type_description']
-referenced_type_descriptions = type_description_struct['referenced_type_descriptions']
-all_type_descriptions = [toplevel_type_description] + referenced_type_descriptions
-
-message_typename = toplevel_type_description['type_name'].replace('/', '__')
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 include_base = '/'.join(include_parts)
+
+full_type_descriptions = [type_description_msg]
+for service in content.get_elements_of_type(Service):
+  full_type_descriptions.append(extract_subinterface(type_description_msg, 'request_message'))
+  full_type_descriptions.append(extract_subinterface(type_description_msg, 'response_message'))
+  full_type_descriptions.append(extract_subinterface(type_description_msg, 'event_message'))
+for action in content.get_elements_of_type(Action):
+  full_type_descriptions.append(extract_subinterface(type_description_msg, 'goal'))
+  full_type_descriptions.append(extract_subinterface(type_description_msg, 'result'))
+  full_type_descriptions.append(extract_subinterface(type_description_msg, 'feedback'))
+
+  send_goal_service = extract_subinterface(type_description_msg, 'send_goal_service')
+  full_type_descriptions.append(extract_subinterface(send_goal_service, 'request_message'))
+  full_type_descriptions.append(extract_subinterface(send_goal_service, 'response_message'))
+  full_type_descriptions.append(extract_subinterface(send_goal_service, 'event_message'))
+
+  get_result_service = extract_subinterface(type_description_msg, 'get_result_service')
+  full_type_descriptions.append(extract_subinterface(get_result_service, 'request_message'))
+  full_type_descriptions.append(extract_subinterface(get_result_service, 'response_message'))
+  full_type_descriptions.append(extract_subinterface(get_result_service, 'event_message'))
+
+  full_type_descriptions.append(extract_subinterface(type_description_msg, 'feedback_message'))
 }@
 
 #include "@(include_base)__struct.h"
@@ -44,8 +65,9 @@ static char @(td_typename)__DEFAULT_VALUE__@(field['name'])[] = "@(escape_string
 @[  end for]@
 
 @[end for]@
+@
+/// Define all arrays of Fields
 
-// Define all arrays of fields
 @[for itype_description in all_type_descriptions]@
 @{  td_typename = itype_description['type_name'].replace('/', '__') }@
 @[  if itype_description['fields']]@
@@ -74,8 +96,9 @@ static rosidl_runtime_c__type_description__Field @(td_typename)__FIELDS[] = {
 @[  end if]@
 
 @[end for]@
+@
+/// Define all IndividualTypeDescriptions
 
-// Define all IndividualTypeDescriptions
 @[for itype_description in all_type_descriptions]@
 @{ td_typename = itype_description['type_name'].replace('/', '__') }@
 static const rosidl_runtime_c__type_description__IndividualTypeDescription @(td_typename)__INDIVIDUAL_TYPE_DESCRIPTION = {
@@ -88,22 +111,26 @@ static const rosidl_runtime_c__type_description__IndividualTypeDescription @(td_
 };
 
 @[end for]@
+@
+/// Define exported TypeDescriptions
 
-// Define all TypeDescriptions
-@[for subinterface_typename, ref_tds in subinterfaces.items()]@
-@{  subinterface_symbol = subinterface_typename.replace('/', '__') }@
+@[for msg in full_type_descriptions]@
+@{
+td_var_name = msg['type_description']['type_name'].replace('/', '__')
+ref_tds = msg['referenced_type_descriptions']
+}@
 @[  if ref_tds]@
-static rosidl_runtime_c__type_description__IndividualTypeDescription @(subinterface_symbol)__REFERENCED_TYPE_DESCRIPTIONS[] = {
-@[    for ref_td_typename in ref_tds]@
-  @(ref_td_typename.replace('/', '__'))__INDIVIDUAL_TYPE_DESCRIPTION,
+static rosidl_runtime_c__type_description__IndividualTypeDescription @(td_var_name)__REFERENCED_TYPE_DESCRIPTIONS[] = {
+@[    for ref_td in ref_tds]@
+  @(ref_td['type_name'].replace('/', '__'))__INDIVIDUAL_TYPE_DESCRIPTION,
 @[    end for]@
 };
 @[  end if]@
 
-const rosidl_runtime_c__type_description__TypeDescription @(subinterface_symbol)__TYPE_DESCRIPTION = {
-  @(subinterface_symbol)__INDIVIDUAL_TYPE_DESCRIPTION,
+const rosidl_runtime_c__type_description__TypeDescription @(td_var_name)__TYPE_DESCRIPTION = {
+  @(td_var_name)__INDIVIDUAL_TYPE_DESCRIPTION,
 @[  if ref_tds]@
-  STATIC_SEQ(@(subinterface_symbol)__REFERENCED_TYPE_DESCRIPTIONS),
+  STATIC_SEQ(@(td_var_name)__REFERENCED_TYPE_DESCRIPTIONS),
 @[  else]@
   NULL_SEQ,
 @[  end if]@

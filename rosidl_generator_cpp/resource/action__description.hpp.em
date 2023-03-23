@@ -42,13 +42,13 @@ TEMPLATE(
 @{
 TEMPLATE(
     'srv__description.hpp.em',
-    namespaced_type=action.send_goal_service,
+    service=action.send_goal_service,
     type_description_msg=extract_subinterface(type_description_msg, 'send_goal_service'))
 }@
 @{
 TEMPLATE(
     'srv__description.hpp.em',
-    namespaced_type=action.get_result_service,
+    service=action.get_result_service,
     type_description_msg=extract_subinterface(type_description_msg, 'get_result_service'))
 }@
 

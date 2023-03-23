@@ -77,9 +77,9 @@ static const rosidl_service_type_support_t @(service.namespaced_type.name)_servi
   get_service_typesupport_handle_function,
   ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))@(SERVICE_REQUEST_MESSAGE_SUFFIX)>(),
   ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))@(SERVICE_RESPONSE_MESSAGE_SUFFIX)>(),
+  ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))@(SERVICE_EVENT_MESSAGE_SUFFIX)>(),
   &::rosidl_typesupport_cpp::service_create_event_message<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))>,
   &::rosidl_typesupport_cpp::service_destroy_event_message<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))>,
-  ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))@(SERVICE_EVENT_MESSAGE_SUFFIX)>(),
   &@('::'.join(service.namespaced_type.namespaced_name()))::@(TYPE_HASH_VAR),
 };
 

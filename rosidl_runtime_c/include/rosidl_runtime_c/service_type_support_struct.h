@@ -86,12 +86,12 @@ struct rosidl_service_type_support_t
   const rosidl_message_type_support_t * request_typesupport;
   /// Service response message typesupport
   const rosidl_message_type_support_t * response_typesupport;
+  /// Service event message typesupport
+  const rosidl_message_type_support_t * event_typesupport;
   /// Pointer to function to create the introspection message
   rosidl_event_message_create_handle_function_function event_message_create_handle_function;
   /// Pointer to function to finalize the introspection message
   rosidl_event_message_destroy_handle_function_function event_message_destroy_handle_function;
-  /// Service event message typesupport
-  const rosidl_message_type_support_t * event_typesupport;
   /// Hash of the service's description
   const rosidl_type_hash_t * type_hash;
 };

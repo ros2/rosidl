@@ -22,6 +22,7 @@ include_parts = [package_name] + list(interface_path.parents[0].parts) + [
 include_base = '/'.join(include_parts)
 header_guard_variable = '__'.join([x.upper() for x in include_parts]) + \
     '__DESCRIPTION_HPP_'
+type_description_msg = type_description_info['type_description_msg']
 }@
 
 #ifndef @(header_guard_variable)
@@ -37,7 +38,7 @@ header_guard_variable = '__'.join([x.upper() for x in include_parts]) + \
 TEMPLATE(
   'any__description.hpp.em',
   namespaced_type=message.structure.namespaced_type,
-  type_description_msg=type_description_info['type_description_msg'])
+  type_description_msg=type_description_msg)
 }@
 
 @[end for]@
@@ -46,7 +47,7 @@ TEMPLATE(
 TEMPLATE(
   'srv__description.hpp.em',
   service=service,
-  type_description_info=type_description_info)
+  type_description_msg=type_description_msg)
 }@
 
 @[end for]@
@@ -55,7 +56,7 @@ TEMPLATE(
 TEMPLATE(
   'action__description.hpp.em',
   action=action,
-  type_description_info=type_description_info)
+  type_description_msg=type_description_msg)
 }@
 
 @[end for]@

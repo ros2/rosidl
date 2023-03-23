@@ -452,25 +452,12 @@ class InterfaceHasher:
         hashed_type_description = {
             'hashes': self._calculate_hash_tree(),
             'type_description_msg': self.full_type_description,
-            'subinterfaces': self._all_interface_references(),
         }
 
         json_path = output_dir / self.rel_path.with_suffix('.json')
         with json_path.open('w', encoding='utf-8') as json_file:
             json_file.write(json.dumps(hashed_type_description, indent=2))
         return generated_files + [json_path]
-
-    def _all_interface_references(self) -> dict:
-        results = {
-            self.individual_type_description['type_name']: [
-                x['type_name']
-                for x in self.full_type_description['referenced_type_descriptions']
-            ]
-        }
-        if self.subinterfaces:
-            for hasher in self.subinterfaces.values():
-                results.update(hasher._all_interface_references())
-        return results
 
     def _calculate_hash_tree(self) -> dict:
         hashable_dict = deepcopy(self.full_type_description)
@@ -504,24 +491,47 @@ class InterfaceHasher:
         return type_hash_infos
 
 
-def extract_subinterface(type_description_msg: dict, field_name: str, subinterfaces: dict):
+def extract_subinterface(type_description_msg: dict, field_name: str):
     """
     Given a full TypeDescription json with all referenced type descriptions,
-    produce a top-level TypeDescription for one of its referenced types.
+    produce a top-level TypeDescription for the type of one of its fields.
     """
-    nested_type_name = next(
+    output_type_name = next(
         field['type']['nested_type_name']
         for field in type_description_msg['type_description']['fields']
         if field['name'] == field_name)
-    toplevel_type_description = next(
-        type_description
-        for type_description in type_description_msg['referenced_type_descriptions']
-        if type_description['type_name'] == nested_type_name)
-    referenced_types = subinterfaces[nested_type_name]
+    assert output_type_name, 'Given field is not a nested type'
+
+    # Create a lookup map for matching names to type descriptions
+    toplevel_type = type_description_msg['type_description']
+    referenced_types = type_description_msg['referenced_type_descriptions']
+    type_map = {
+        individual_type['type_name']: individual_type
+        for individual_type
+        in [toplevel_type] + referenced_types
+    }
+
+    # Do a tree traversal to narrow down the referenced for the output type
+    output_type = type_map[output_type_name]
+    output_references = set()
+    process_queue = [
+        field['type']['nested_type_name']
+        for field in output_type['fields']
+        if field['type']['nested_type_name']
+    ]
+    while process_queue:
+        process_type = process_queue.pop()
+        if process_type not in output_references:
+            output_references.add(process_type)
+            process_queue.extend([
+                field['type']['nested_type_name']
+                for field in type_map[process_type]['fields']
+                if field['type']['nested_type_name']
+            ])
 
     return {
-        'type_description': toplevel_type_description,
+        'type_description': output_type,
         'referenced_type_descriptions': [
-            td for td in type_description_msg['referenced_type_descriptions']
-            if td['type_name'] in referenced_types],
+            type_map[type_name] for type_name in sorted(list(output_references))
+        ],
     }

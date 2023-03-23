@@ -5,12 +5,10 @@
 @#
 @# Context:
 @#  - action (Action)
-@#  - type_description_info (HashedTypeDescription.schema.json)
+@#  - type_description_msg (dict representation of TypeDescription.msg)
 @#######################################################################
 @{
 from rosidl_generator_type_description import extract_subinterface
-type_description_msg = type_description_info['type_description_msg']
-subinterfaces = type_description_info['subinterfaces']
 }@
 
 @{
@@ -24,39 +22,39 @@ TEMPLATE(
 TEMPLATE(
     'any__description.hpp.em',
     namespaced_type=action.goal.structure.namespaced_type,
-    type_description_msg=extract_subinterface(type_description_msg, 'goal', subinterfaces))
+    type_description_msg=extract_subinterface(type_description_msg, 'goal'))
 }@
 
 @{
 TEMPLATE(
     'any__description.hpp.em',
     namespaced_type=action.result.structure.namespaced_type,
-    type_description_msg=extract_subinterface(type_description_msg, 'result', subinterfaces))
+    type_description_msg=extract_subinterface(type_description_msg, 'result'))
 }@
 
 @{
 TEMPLATE(
     'any__description.hpp.em',
     namespaced_type=action.feedback.structure.namespaced_type,
-    type_description_msg=extract_subinterface(type_description_msg, 'feedback', subinterfaces))
+    type_description_msg=extract_subinterface(type_description_msg, 'feedback'))
 }@
 
 @{
 TEMPLATE(
     'srv__description.hpp.em',
     namespaced_type=action.send_goal_service,
-    type_description_msg=extract_subinterface(type_description_msg, 'send_goal_service', subinterfaces))
+    type_description_msg=extract_subinterface(type_description_msg, 'send_goal_service'))
 }@
 @{
 TEMPLATE(
     'srv__description.hpp.em',
     namespaced_type=action.get_result_service,
-    type_description_msg=extract_subinterface(type_description_msg, 'get_result_service', subinterfaces))
+    type_description_msg=extract_subinterface(type_description_msg, 'get_result_service'))
 }@
 
 @{
 TEMPLATE(
     'any__description.hpp.em',
     namespaced_type=action.feedback_message.structure.namespaced_type,
-    type_description_msg=extract_subinterface(type_description_msg, 'feedback_message', subinterfaces))
+    type_description_msg=extract_subinterface(type_description_msg, 'feedback_message'))
 }@

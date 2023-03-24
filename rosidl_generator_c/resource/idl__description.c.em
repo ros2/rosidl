@@ -36,11 +36,13 @@ for action in content.get_elements_of_type(Action):
   full_type_descriptions.append(extract_subinterface(type_description_msg, 'feedback'))
 
   send_goal_service = extract_subinterface(type_description_msg, 'send_goal_service')
+  full_type_descriptions.append(send_goal_service)
   full_type_descriptions.append(extract_subinterface(send_goal_service, 'request_message'))
   full_type_descriptions.append(extract_subinterface(send_goal_service, 'response_message'))
   full_type_descriptions.append(extract_subinterface(send_goal_service, 'event_message'))
 
   get_result_service = extract_subinterface(type_description_msg, 'get_result_service')
+  full_type_descriptions.append(get_result_service)
   full_type_descriptions.append(extract_subinterface(get_result_service, 'request_message'))
   full_type_descriptions.append(extract_subinterface(get_result_service, 'response_message'))
   full_type_descriptions.append(extract_subinterface(get_result_service, 'event_message'))

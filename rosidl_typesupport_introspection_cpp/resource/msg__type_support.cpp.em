@@ -248,6 +248,7 @@ static const rosidl_message_type_support_t @(message.structure.namespaced_type.n
   &@(message.structure.namespaced_type.name)_message_members,
   get_message_typesupport_handle_function,
   &@('::'.join(message.structure.namespaced_type.namespaced_name()))::@(TYPE_HASH_VAR),
+  nullptr, // TODO(ek)
 };
 
 }  // namespace rosidl_typesupport_introspection_cpp

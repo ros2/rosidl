@@ -106,6 +106,7 @@ add_dependencies(
 
 set(_target_suffix "__rosidl_generator_cpp")
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE)
+target_compile_features(${rosidl_generate_interfaces_TARGET}${_target_suffix} INTERFACE cxx_std_17)
 add_library(${PROJECT_NAME}::${rosidl_generate_interfaces_TARGET}${_target_suffix} ALIAS
   ${rosidl_generate_interfaces_TARGET}${_target_suffix})
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}

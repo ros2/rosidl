@@ -31,6 +31,9 @@ RIHS01_PREFIX = 'RIHS01_'
 RIHS01_HASH_VALUE_SIZE = 32
 RIHS01_PATTERN = re.compile(r'RIHS([0-9a-f]{2})_([0-9a-f]{64})')
 
+# Used by code generators to create type hash variable names
+TYPE_HASH_VAR = 'TYPE_HASH'
+
 
 def generate_type_hash(generator_arguments_file: str) -> List[str]:
     with open(generator_arguments_file, 'r') as f:
@@ -461,7 +464,8 @@ class InterfaceHasher:
             check_circular=True,
             allow_nan=False,
             indent=None,
-            separators=(',', ': '),
+            # note: libyaml in C doesn't allow for tweaking these separators, this is its builtin
+            separators=(', ', ': '),
             sort_keys=False
         )
         sha = hashlib.sha256()

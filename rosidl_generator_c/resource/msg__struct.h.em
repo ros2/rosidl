@@ -23,6 +23,7 @@ from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_generator_c import interface_path_to_string
 from rosidl_generator_c import type_hash_to_c_definition
 from rosidl_generator_c import value_to_c
+from rosidl_generator_type_description import TYPE_DESCRIPTION_VAR
 from rosidl_generator_type_description import TYPE_HASH_VAR
 }@
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -68,7 +69,7 @@ for member in message.structure.members:
 static const rosidl_type_hash_t @(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['message']));
 
 /// Type Description for interface, defined in compilation unit
-extern const rosidl_runtime_c__type_description__TypeDescription @(idl_structure_type_to_c_typename(message.structure.namespaced_type))__TYPE_DESCRIPTION;
+extern const rosidl_runtime_c__type_description__TypeDescription @(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(TYPE_DESCRIPTION_VAR);
 
 // Constants defined in the message
 @[for constant in message.constants]@

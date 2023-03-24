@@ -30,6 +30,9 @@ typedef struct rosidl_message_type_support_t rosidl_message_type_support_t;
 typedef const rosidl_message_type_support_t * (* rosidl_message_typesupport_handle_function)(
   const rosidl_message_type_support_t *, const char *);
 
+typedef const rosidl_runtime_c__type_description__TypeDescription *
+(* rosidl_get_type_description_function)();
+
 /// Contains rosidl message type support data
 struct rosidl_message_type_support_t
 {
@@ -41,8 +44,8 @@ struct rosidl_message_type_support_t
   rosidl_message_typesupport_handle_function func;
   /// Hash of the message's description
   const rosidl_type_hash_t * type_hash;
-  /// Description of the type
-  const rosidl_runtime_c__type_description__TypeDescription * type_description;
+  /// Pointer to a function to retrieve the description of the type
+  rosidl_get_type_description_function get_type_description_function;
 };
 
 /// Get the message type support handle specific to this identifier.

@@ -41,6 +41,8 @@ struct rosidl_action_type_support_t
   const rosidl_message_type_support_t * status_message_type_support;
   /// Hash of the action's description
   const rosidl_type_hash_t * type_hash;
+  /// Description of the action type
+  // const rosidl_runtime_c__type_description__TypeDescription * type_description;
 };
 
 /// Get the action type support given a provided action and package.

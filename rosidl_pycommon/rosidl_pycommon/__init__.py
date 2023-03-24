@@ -62,12 +62,11 @@ def generate_files(
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
     generated_files = []
 
-    type_hashes_provided = 'type_hash_tuples' in args
-    type_hash_files = {}
-    for hash_tuple in args.get('type_hash_tuples', []):
-        hash_parts = hash_tuple.split(':', 1)
-        assert len(hash_parts) == 2
-        type_hash_files[hash_parts[0]] = hash_parts[1]
+    type_description_files = {}
+    for description_tuple in args.get('type_description_tuples', []):
+        tuple_parts = description_tuple.split(':', 1)
+        assert len(tuple_parts) == 2
+        type_description_files[tuple_parts[0]] = tuple_parts[1]
 
     for idl_tuple in args.get('idl_tuples', []):
         idl_parts = idl_tuple.rsplit(':', 1)
@@ -76,8 +75,8 @@ def generate_files(
         idl_rel_path = pathlib.Path(idl_parts[1])
 
         type_description_info = None
-        if type_hashes_provided:
-            type_hash_file = type_hash_files[idl_parts[1]]
+        if type_description_files:
+            type_hash_file = type_description_files[idl_parts[1]]
             with open(type_hash_file, 'r') as f:
                 type_description_info = json.load(f)
 

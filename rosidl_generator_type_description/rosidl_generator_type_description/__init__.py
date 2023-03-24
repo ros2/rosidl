@@ -32,7 +32,8 @@ RIHS01_PREFIX = 'RIHS01_'
 RIHS01_HASH_VALUE_SIZE = 32
 RIHS01_PATTERN = re.compile(r'RIHS([0-9a-f]{2})_([0-9a-f]{64})')
 
-# Used by code generators to create type hash variable names
+# Used by code generators to create variable names
+TYPE_DESCRIPTION_VAR = 'TYPE_DESCRIPTION'
 TYPE_HASH_VAR = 'TYPE_HASH'
 
 

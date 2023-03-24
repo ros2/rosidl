@@ -32,7 +32,7 @@ def generate_cpp(generator_arguments_file):
     mapping = {
         'idl.hpp.em': '%s.hpp',
         'idl__builder.hpp.em': 'detail/%s__builder.hpp',
-        'idl__description.hpp.em': 'detail/%s__description.hpp',
+        # 'idl__description.hpp.em': 'detail/%s__description.hpp',
         'idl__struct.hpp.em': 'detail/%s__struct.hpp',
         'idl__traits.hpp.em': 'detail/%s__traits.hpp',
     }

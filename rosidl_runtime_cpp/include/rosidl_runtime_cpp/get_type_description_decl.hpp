@@ -15,7 +15,7 @@
 #ifndef ROSIDL_RUNTIME_CPP__GET_TYPE_DESCRIPTION_DECL_HPP_
 #define ROSIDL_RUNTIME_CPP__GET_TYPE_DESCRIPTION_DECL_HPP_
 
-#include <rosidl_runtime_cpp/type_description/type_description__struct.hpp>
+#include <rosidl_runtime_c/type_description/type_description__struct.h>
 
 namespace rosidl_runtime_cpp
 {
@@ -26,7 +26,7 @@ namespace rosidl_runtime_cpp
  * \return A const reference to the static type description of the interface.
  */
 template<typename T>
-const rosidl_runtime_cpp::type_description::TypeDescription & get_type_description();
+const rosidl_runtime_c__type_description__TypeDescription * get_type_description();
 
 }  // namespace rosidl_runtime_cpp
 

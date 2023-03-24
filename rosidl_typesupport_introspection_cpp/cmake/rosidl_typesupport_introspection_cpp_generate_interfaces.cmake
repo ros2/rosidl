@@ -114,6 +114,7 @@ target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
 
 # Depend on the library created by rosidl_generator_cpp
 target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} PUBLIC
+  ${rosidl_generate_interfaces_TARGET}__rosidl_generator_c
   ${rosidl_generate_interfaces_TARGET}__rosidl_generator_cpp
 )
 

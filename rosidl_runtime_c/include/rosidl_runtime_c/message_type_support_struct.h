@@ -45,7 +45,8 @@ struct rosidl_message_type_support_t
   /// Hash of the message's description
   const rosidl_type_hash_t * type_hash;
   /// Pointer to a function to retrieve the description of the type
-  rosidl_get_type_description_function get_type_description_function;
+  const rosidl_runtime_c__type_description__TypeDescription * type_description;
+  // rosidl_get_type_description_function get_type_description_function;
 };
 
 /// Get the message type support handle specific to this identifier.

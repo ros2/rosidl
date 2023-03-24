@@ -26,7 +26,6 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   list(APPEND _generated_headers
     "${_output_path}/${_parent_folder}/${_header_name}.hpp"
     "${_output_path}/${_parent_folder}/detail/${_header_name}__builder.hpp"
-    "${_output_path}/${_parent_folder}/detail/${_header_name}__description.hpp"
     "${_output_path}/${_parent_folder}/detail/${_header_name}__struct.hpp"
     "${_output_path}/${_parent_folder}/detail/${_header_name}__traits.hpp"
   )
@@ -47,20 +46,16 @@ set(target_dependencies
   "${rosidl_generator_cpp_BIN}"
   ${rosidl_generator_cpp_GENERATOR_FILES}
   "${rosidl_generator_cpp_TEMPLATE_DIR}/action__builder.hpp.em"
-  "${rosidl_generator_cpp_TEMPLATE_DIR}/action__description.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/action__struct.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/action__traits.hpp.em"
-  "${rosidl_generator_cpp_TEMPLATE_DIR}/any__description.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/idl.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/idl__builder.hpp.em"
-  "${rosidl_generator_cpp_TEMPLATE_DIR}/idl__description.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/idl__struct.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/idl__traits.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__builder.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__struct.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__traits.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__builder.hpp.em"
-  "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__description.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__struct.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__traits.hpp.em"
   ${rosidl_generate_interfaces_ABS_IDL_FILES}

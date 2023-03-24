@@ -96,7 +96,7 @@ struct rosidl_service_type_support_t
   /// Hash of the service's description
   const rosidl_type_hash_t * type_hash;
   /// Description of the type
-  // const rosidl_runtime_c__type_description__TypeDescription * type_description;
+  const rosidl_runtime_c__type_description__TypeDescription * type_description;
 };
 
 /// Get the service type support handle specific to this identifier.

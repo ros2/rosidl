@@ -69,9 +69,9 @@ static char @(td_typename)__DEFAULT_VALUE__@(field['name'])[] = "@(escape_string
 @[end for]@
 @
 /// Define all arrays of Fields
-
 @[for itype_description in all_type_descriptions]@
 @{  td_typename = itype_description['type_name'].replace('/', '__') }@
+
 @[  if itype_description['fields']]@
 static rosidl_runtime_c__type_description__Field @(td_typename)__FIELDS[] = {
 @[    for field in itype_description['fields']]@
@@ -96,13 +96,12 @@ static rosidl_runtime_c__type_description__Field @(td_typename)__FIELDS[] = {
 @[    end for]@
 };
 @[  end if]@
-
 @[end for]@
 @
 /// Define all IndividualTypeDescriptions
-
 @[for itype_description in all_type_descriptions]@
 @{ td_typename = itype_description['type_name'].replace('/', '__') }@
+
 static const rosidl_runtime_c__type_description__IndividualTypeDescription @(td_typename)__INDIVIDUAL_TYPE_DESCRIPTION = {
   STATIC_SEQ(@(td_typename)__TYPE_NAME),
 @[  if itype_description['fields']]@
@@ -111,16 +110,15 @@ static const rosidl_runtime_c__type_description__IndividualTypeDescription @(td_
   NULL_SEQ,
 @[  end if]@
 };
-
 @[end for]@
 @
 /// Define exported TypeDescriptions
-
 @[for msg in full_type_descriptions]@
 @{
 td_var_name = msg['type_description']['type_name'].replace('/', '__')
 ref_tds = msg['referenced_type_descriptions']
 }@
+
 @[  if ref_tds]@
 static rosidl_runtime_c__type_description__IndividualTypeDescription @(td_var_name)__REFERENCED_TYPE_DESCRIPTIONS[] = {
 @[    for ref_td in ref_tds]@
@@ -137,5 +135,4 @@ const rosidl_runtime_c__type_description__TypeDescription @(td_var_name)__TYPE_D
   NULL_SEQ,
 @[  end if]@
 };
-
 @[end for]@

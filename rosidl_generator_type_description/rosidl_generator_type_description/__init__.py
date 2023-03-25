@@ -495,9 +495,10 @@ class InterfaceHasher:
 
 def extract_subinterface(type_description_msg: dict, field_name: str):
     """
-    Given a full TypeDescription json with all referenced type descriptions,
-    produce a top-level TypeDescription for the type of one of its fields,
-    filtering reference by doing a DAG traversal on the referenced type descriptions.
+    Filter full TypeDescription to produce a TypeDescription for one of its fields' types.
+
+    Given then name of a field, finds its type, and finds all its referenced type descriptions
+    by doing a DAG traversal on the referenced type descriptions of the input type.
     """
     output_type_name = next(
         field['type']['nested_type_name']
@@ -535,6 +536,6 @@ def extract_subinterface(type_description_msg: dict, field_name: str):
     return {
         'type_description': output_type,
         'referenced_type_descriptions': [
-            type_map[type_name] for type_name in sorted(list(output_references))
+            type_map[type_name] for type_name in sorted(output_references)
         ],
     }

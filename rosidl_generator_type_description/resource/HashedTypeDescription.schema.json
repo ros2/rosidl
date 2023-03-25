@@ -93,6 +93,7 @@
     "Field": {
       "type": "object",
       "properties": {
+        "default_value": {"type": "string"},
         "name": {"type": "string"},
         "type": {"$ref": "#/$defs/FieldType"}
       },

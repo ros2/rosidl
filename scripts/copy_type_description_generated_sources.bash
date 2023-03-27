@@ -3,7 +3,10 @@ set -euxo pipefail
 
 # Description:
 # Copy the structs defined in type_description_interfaces to rosidl_runtime_c and rosidl_runtime_cpp
-# so that they can be used in code generation to describe interface types
+# so that they can be used in code generation to describe interface types.
+# The copy is needed to avoid a circular dependency - type_description_interfaces would be used
+# directly for code generation, except as an interface package like any other, it depends on
+# rosidl_runtime to have its code generated.
 #
 # Usage:
 # First, `colcon build --packages-up-to type_description_interfaces` from the latest sources.
@@ -33,7 +36,7 @@ cp $C_DETAIL/*__functions.c $C_SRC_DEST/
 
 # add copy notice
 sed -i '1s/^/\/\/ DO NOT EDIT MANUALLY - this copied file managed by copy_type_description_generated_sources.bash\n/' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
-# remove unecessary includes (before doing replacements)
+# remove unnecessary includes (before doing replacements)
 sed -i '/type_description_interfaces\/msg\/rosidl_generator_c__visibility_control.h/d' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
 sed -i '/#include "rosidl_runtime_c\/type_description\/type_description__struct.h/d' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
 # include guards
@@ -44,7 +47,6 @@ sed -i -e 's/ROSIDL_GENERATOR_C_PUBLIC_type_description_interfaces/ROSIDL_GENERA
 sed -i -e 's/type_description_interfaces__msg__/rosidl_runtime_c__type_description__/g' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
 # includes
 sed -i -e 's/type_description_interfaces\/msg\/detail/rosidl_runtime_c\/type_description/g' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
-# sed -i -e 's/extern const rosidl_runtime_c__type_description__TypeDescription/\/\/ extern const rosidl_runtime_c__type_description__TypeDescription/' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
 
 # C++ structs
 mkdir -p $CPP_INCLUDE_DEST
@@ -67,5 +69,4 @@ sed -i -e 's/type_description_interfaces\/msg\/detail/rosidl_runtime_cpp\/type_d
 sed -i -e 's/type_description_interfaces::msg::/rosidl_runtime_cpp::type_description::/g' *.hpp
 # macros
 sed -i -e 's/type_description_interfaces__msg__/rosidl_runtime_cpp__type_description__/g' *.hpp
-# sed -i -e 's/static const rosidl_runtime_cpp::type_description::TypeDescription/\/\/ static const rosidl_runtime_cpp::type_description::TypeDescription/' *.hpp
 popd

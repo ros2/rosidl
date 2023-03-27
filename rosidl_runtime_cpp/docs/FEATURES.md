@@ -29,6 +29,7 @@ This class is utilized by rosidl types that declare a bounded sequence.
 ## Type Description Interface Structs
 
 A copy of the output of `rosidl_generator_cpp` for `type_description_interfaces` messages.
+The copy is needed to avoid a circular dependency - `type_description_interfaces` would be used directly for code generation, except as an interface package like any other, it depends on `rosidl_runtime_cpp` to have its code generated.
 
 Provides base runtime representations of the descriptions of interface types in C++.
 These can be used in code generation to embed descriptions of types, and can be used for programmatic creation of dynamic types.

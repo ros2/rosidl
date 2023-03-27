@@ -1,0 +1,63 @@
+
+name: Check copied type description sources
+
+on:
+  pull_request:
+
+jobs:
+  test_copied_sources_changed:
+    runs-on: ubuntu-latest
+    outputs:
+      needs_verification: ${{ steps.needs_verification.outputs.changed }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: tj-actions/changed-files@v35
+      id: changed-fingerprint
+      with:
+        files: scripts/type_description.fingerprint
+    - uses: tj-actions/changed-files@v35
+      id: changed-copied-sources
+      with:
+        files: |
+          rosidl_runtime_c/include/type_description
+          rosidl_runtime_c/src/type_description
+          rosidl_runtime_cpp/include/type_description
+    - if: (steps.changed-fingerprint.outputs.any_changed == 'true') && (steps.changed-copied-sources.outputs.any_changed != 'true')
+      run: |
+        echo "Fingerprint changed but no copied sources changed"
+        exit 1
+    - if: (steps.changed-fingerprint.outputs.any_changed != 'true') && (steps.changed-copied-sources.outputs.any_changed == 'true')
+      run: |
+        echo "Copied sources changed but fingerprint not updated"
+        exit 1
+    - id: needs_verification
+      if: (steps.changed-fingerprint.outputs.any_changed == 'true') && (steps.changed-copied-sources.outputs.any_changed == 'true')
+      run: echo "changed=true" >> "$GITHUB_OUTPUT"
+
+  test_copied_sources_fingerprint:
+    needs: test_copied_sources_changed
+    if: needs.test_copied_sources_changed.outputs.needs_verification
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out rcl_interfaces
+      uses: actions/checkout@v3
+      with:
+        repository: ros2/rcl_interfaces
+        ref: rolling
+        path: rcl_interfaces
+    - name: Check out sources
+      uses: actions/checkout@v3
+      with:
+        path: rosidl
+    - name: Get latest rcl_interfaces commit
+      shell: bash
+      working-directory: rcl_interfaces
+      run: echo "commit=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+      id: extract_rcl_interfaces_commit
+    - name: Compare fingerprint commit hash
+      run: |
+        source rosidl/scripts/type_description.fingerprint
+        if [ "$RCL_INTERFACES_COMMIT" != "${{ steps.extract_rcl_interfaces_commit.outputs.commit }}" ]; then
+          echo "Commit hash $RCL_INTERFACES_COMMIT in scripts/type_description.fingerprint does not match latest rcl_interfaces commit ${{ steps.extract_rcl_interfaces_commit.outputs.commit }}, but sources were changed."
+          exit 1
+        fi

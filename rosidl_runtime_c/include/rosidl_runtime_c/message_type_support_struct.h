@@ -16,6 +16,7 @@
 #define ROSIDL_RUNTIME_C__MESSAGE_TYPE_SUPPORT_STRUCT_H_
 
 #include "rosidl_runtime_c/type_description/type_description__struct.h"
+#include "rosidl_runtime_c/type_description/type_source__struct.h"
 #include "rosidl_runtime_c/type_hash.h"
 #include "rosidl_runtime_c/visibility_control.h"
 #include "rosidl_typesupport_interface/macros.h"
@@ -43,6 +44,8 @@ struct rosidl_message_type_support_t
   const rosidl_type_hash_t * type_hash;
   /// The description of the type
   const rosidl_runtime_c__type_description__TypeDescription * type_description;
+  /// Original sources defining the message
+  const rosidl_runtime_c__type_description__TypeSource__Sequence * type_description_sources;
 };
 
 /// Get the message type support handle specific to this identifier.

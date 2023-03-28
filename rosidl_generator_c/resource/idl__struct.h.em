@@ -13,6 +13,7 @@
 @{
 from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_generator_c import type_hash_to_c_definition
+from rosidl_generator_type_description import RAW_SOURCE_VAR
 from rosidl_generator_type_description import TYPE_DESCRIPTION_VAR
 from rosidl_generator_type_description import TYPE_HASH_VAR
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
@@ -38,6 +39,7 @@ extern "C"
 #include <stdint.h>
 
 #include "rosidl_runtime_c/type_description/type_description__struct.h"
+#include "rosidl_runtime_c/type_description/type_source__struct.h"
 #include "rosidl_runtime_c/type_hash.h"
 
 @#######################################################################
@@ -63,11 +65,13 @@ TEMPLATE(
 from rosidl_parser.definition import Service
 }@
 @[for service in content.get_elements_of_type(Service)]@
-@{ srv_var = idl_structure_type_to_c_typename(service.namespaced_type) }@
+@{ srv_typename = idl_structure_type_to_c_typename(service.namespaced_type) }@
 
-extern const rosidl_runtime_c__type_description__TypeDescription @(srv_var)__@(TYPE_DESCRIPTION_VAR);
+static const rosidl_type_hash_t @(srv_typename)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['service']));
 
-static const rosidl_type_hash_t @(srv_var)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['service']));
+extern const rosidl_runtime_c__type_description__TypeDescription @(srv_typename)__@(TYPE_DESCRIPTION_VAR);
+
+extern const rosidl_runtime_c__type_description__TypeSource__Sequence @(srv_typename)__@(RAW_SOURCE_VAR);
 
 @{
 TEMPLATE(
@@ -103,14 +107,16 @@ from rosidl_parser.definition import Action
 }@
 @[for action in content.get_elements_of_type(Action)]@
 @{
-action_var = idl_structure_type_to_c_typename(action.namespaced_type)
-send_goal_srv_var = idl_structure_type_to_c_typename(action.send_goal_service.namespaced_type)
-get_result_srv_var = idl_structure_type_to_c_typename(action.get_result_service.namespaced_type)
+action_typename = idl_structure_type_to_c_typename(action.namespaced_type)
+send_goal_srv_typename = idl_structure_type_to_c_typename(action.send_goal_service.namespaced_type)
+get_result_srv_typename = idl_structure_type_to_c_typename(action.get_result_service.namespaced_type)
 }@
 
-extern const rosidl_runtime_c__type_description__TypeDescription @(action_var)__@(TYPE_DESCRIPTION_VAR);
+static const rosidl_type_hash_t @(action_typename)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['action']));
 
-static const rosidl_type_hash_t @(action_var)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['action']));
+extern const rosidl_runtime_c__type_description__TypeDescription @(action_typename)__@(TYPE_DESCRIPTION_VAR);
+
+extern const rosidl_runtime_c__type_description__TypeSource__Sequence @(action_typename)__@(RAW_SOURCE_VAR);
 
 @{
 TEMPLATE(
@@ -136,9 +142,11 @@ TEMPLATE(
     type_hash=type_hash['feedback'])
 }@
 
-extern const rosidl_runtime_c__type_description__TypeDescription @(send_goal_srv_var)__@(TYPE_DESCRIPTION_VAR);
+static const rosidl_type_hash_t @(send_goal_srv_typename)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['send_goal_service']['service']));
 
-static const rosidl_type_hash_t @(send_goal_srv_var)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['send_goal_service']['service']));
+extern const rosidl_runtime_c__type_description__TypeDescription @(send_goal_srv_typename)__@(TYPE_DESCRIPTION_VAR);
+
+extern const rosidl_runtime_c__type_description__TypeSource__Sequence @(send_goal_srv_typename)__@(RAW_SOURCE_VAR);
 
 @{
 TEMPLATE(
@@ -164,9 +172,11 @@ TEMPLATE(
     type_hash=type_hash['send_goal_service']['event_message'])
 }@
 
-static const rosidl_type_hash_t @(get_result_srv_var)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['get_result_service']['service']));
+static const rosidl_type_hash_t @(get_result_srv_typename)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['get_result_service']['service']));
 
-extern const rosidl_runtime_c__type_description__TypeDescription @(get_result_srv_var)__@(TYPE_DESCRIPTION_VAR);
+extern const rosidl_runtime_c__type_description__TypeDescription @(get_result_srv_typename)__@(TYPE_DESCRIPTION_VAR);
+
+extern const rosidl_runtime_c__type_description__TypeSource__Sequence @(get_result_srv_typename)__@(RAW_SOURCE_VAR);
 
 @{
 TEMPLATE(

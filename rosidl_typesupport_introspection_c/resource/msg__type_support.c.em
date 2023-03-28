@@ -3,6 +3,7 @@
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 from rosidl_generator_c import idl_structure_type_to_c_include_prefix
 from rosidl_generator_c import idl_structure_type_to_c_typename
+from rosidl_generator_type_description import RAW_SOURCE_VAR
 from rosidl_generator_type_description import TYPE_DESCRIPTION_VAR
 from rosidl_generator_type_description import TYPE_HASH_VAR
 from rosidl_parser.definition import AbstractGenericString
@@ -288,6 +289,7 @@ static rosidl_message_type_support_t @(function_prefix)__@(message.structure.nam
   get_message_typesupport_handle_function,
   &@(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(TYPE_HASH_VAR),
   &@(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(TYPE_DESCRIPTION_VAR),
+  &@(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(RAW_SOURCE_VAR),
 };
 
 ROSIDL_TYPESUPPORT_INTROSPECTION_C_EXPORT_@(package_name)

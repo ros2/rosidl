@@ -112,6 +112,20 @@ if(BUILD_TESTING)
     rosidl_runtime_c::rosidl_runtime_c
   )
 
+  add_executable(
+    test_descriptions_c
+    test/rosidl_generator_c/test_descriptions.c
+  )
+  ament_add_test(
+    test_descriptions_c
+    COMMAND "$<TARGET_FILE:test_descriptions_c>"
+    GENERATE_RESULT_FOR_RETURN_CODE_ZERO
+  )
+  target_link_libraries(test_descriptions_c
+    ${c_generator_target}
+    rosidl_runtime_c::rosidl_runtime_c
+  )
+
   ament_add_pytest_test(test_hash_generator test/rosidl_generator_type_description
     ENV GENERATED_TEST_FILE_DIR=${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_type_description/${PROJECT_NAME}
   )

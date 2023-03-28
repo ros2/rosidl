@@ -13,22 +13,20 @@ set -euxo pipefail
 # Set the following environment variables (script will fail if unset):
 # BUILD_DIR - path to the build output of `type_description_interfaces`
 # RCL_INTERFACES_SRC_DIR - path to the `rcl_interfaces` repository, where type description interface definitions come from
-# ROSIDL_SRC_DIR - path to the `rosidl` repository, where type description files will be placed
 #
 # Example:
 # BUILD_DIR=build/type_description_interfaces ROSIDL_SRC_DIR=src/ros2/rosidl src/ros2/rosidl/scripts/copy_type_description_generated_sources.bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-pushd $RCL_INTERFACES_SRC_DIR
-RCL_INTERFACES_COMMIT=$(git rev-parse HEAD)
-popd
+C_DETAIL_SUBPATH=rosidl_generator_c/type_description_interfaces/msg/detail
+CPP_DETAIL_SUBPATH=rosidl_generator_cpp/type_description_interfaces/msg/detail
 
-C_DETAIL=$BUILD_DIR/rosidl_generator_c/type_description_interfaces/msg/detail/
-C_INCLUDE_DEST=$ROSIDL_SRC_DIR/rosidl_runtime_c/include/rosidl_runtime_c/type_description/
-C_SRC_DEST=$ROSIDL_SRC_DIR/rosidl_runtime_c/src/type_description/
+C_DETAIL=$BUILD_DIR/$C_DETAIL_SUBPATH
+C_INCLUDE_DEST=$ROSIDL_SRC_DIR/rosidl_runtime_c/include/rosidl_runtime_c/type_description
+C_SRC_DEST=$ROSIDL_SRC_DIR/rosidl_runtime_c/src/type_description
 
-CPP_DETAIL=$BUILD_DIR/rosidl_generator_cpp/type_description_interfaces/msg/detail/
-CPP_INCLUDE_DEST=$ROSIDL_SRC_DIR/rosidl_runtime_cpp/include/rosidl_runtime_cpp/type_description/
+CPP_DETAIL=$BUILD_DIR/$CPP_DETAIL_SUBPATH
+CPP_INCLUDE_DEST=$ROSIDL_SRC_DIR/rosidl_runtime_cpp/include/rosidl_runtime_cpp/type_description
 
 # C structs
 mkdir -p $C_INCLUDE_DEST
@@ -81,7 +79,8 @@ popd
 rm -f $SCRIPT_DIR/type_description.fingerprint
 cat << EOF > $SCRIPT_DIR/type_description.fingerprint
 # DO NOT EDIT MANUALLY - managed by scripts/copy_type_description_generated_sources.bash
-# INTENTIONALLY CHANGING THIS FILE OUTSIDE THE SCRIPT WILL RESULT IN UNDEFINED BEHAVIOR FOR
-# ALL OF ROS 2 CORE
-RCL_INTERFACES_COMMIT=$RCL_INTERFACES_COMMIT
+# INTENTIONALLY CHANGING THIS FILE OUTSIDE THE SCRIPT WILL RESULT IN UNDEFINED BEHAVIOR FOR ALL OF ROS 2 CORE
 EOF
+pushd $BUILD_DIR
+sha256sum --tag $C_DETAIL_SUBPATH/*__struct.h $C_DETAIL_SUBPATH/*__functions.h $C_DETAIL_SUBPATH/*__functions.c $CPP_DETAIL_SUBPATH/*__struct.hpp >> $SCRIPT_DIR/type_description.fingerprint
+popd

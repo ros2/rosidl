@@ -43,6 +43,8 @@ extern "C"
 #include "rosidl_runtime_c/type_description/type_source__struct.h"
 #include "rosidl_runtime_c/type_hash.h"
 
+#include "@(package_name)/msg/rosidl_generator_c__visibility_control.h"
+
 @#######################################################################
 @# Handle message
 @#######################################################################
@@ -70,8 +72,10 @@ from rosidl_parser.definition import Service
 
 static const rosidl_type_hash_t @(srv_typename)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['service']));
 
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 extern const rosidl_runtime_c__type_description__TypeDescription @(srv_typename)__@(TYPE_DESCRIPTION_VAR);
 
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 extern const rosidl_runtime_c__type_description__TypeSource__Sequence @(srv_typename)__@(RAW_SOURCE_VAR);
 
 @{
@@ -115,8 +119,10 @@ get_result_srv_typename = idl_structure_type_to_c_typename(action.get_result_ser
 
 static const rosidl_type_hash_t @(action_typename)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['action']));
 
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 extern const rosidl_runtime_c__type_description__TypeDescription @(action_typename)__@(TYPE_DESCRIPTION_VAR);
 
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 extern const rosidl_runtime_c__type_description__TypeSource__Sequence @(action_typename)__@(RAW_SOURCE_VAR);
 
 @{
@@ -145,8 +151,10 @@ TEMPLATE(
 
 static const rosidl_type_hash_t @(send_goal_srv_typename)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['send_goal_service']['service']));
 
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 extern const rosidl_runtime_c__type_description__TypeDescription @(send_goal_srv_typename)__@(TYPE_DESCRIPTION_VAR);
 
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 extern const rosidl_runtime_c__type_description__TypeSource__Sequence @(send_goal_srv_typename)__@(RAW_SOURCE_VAR);
 
 @{
@@ -175,8 +183,10 @@ TEMPLATE(
 
 static const rosidl_type_hash_t @(get_result_srv_typename)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['get_result_service']['service']));
 
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 extern const rosidl_runtime_c__type_description__TypeDescription @(get_result_srv_typename)__@(TYPE_DESCRIPTION_VAR);
 
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 extern const rosidl_runtime_c__type_description__TypeSource__Sequence @(get_result_srv_typename)__@(RAW_SOURCE_VAR);
 
 @{

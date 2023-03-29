@@ -71,9 +71,11 @@ for member in message.structure.members:
 static const rosidl_type_hash_t @(message_typename)__@(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['message']));
 
 /// Type Description for interface
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 extern const rosidl_runtime_c__type_description__TypeDescription @(message_typename)__@(TYPE_DESCRIPTION_VAR);
 
 /// Raw sources defining the type description
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 extern const rosidl_runtime_c__type_description__TypeSource__Sequence @(message_typename)__@(RAW_SOURCE_VAR);
 
 // Constants defined in the message

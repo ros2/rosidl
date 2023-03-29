@@ -102,18 +102,6 @@ static rosidl_runtime_c__type_description__Field @(td_c_typename)__FIELDS[] = {
 @[  end if]@
 @[end for]@
 
-/// Define all IndividualTypeDescriptions
-@[for itype_description in all_type_descriptions]@
-@{
-td_c_typename = typename_to_c(itype_description['type_name'])
-}@
-
-static const rosidl_runtime_c__type_description__IndividualTypeDescription @(td_c_typename)__INDIVIDUAL_TYPE_DESCRIPTION = {
-  @(static_seq(f'{td_c_typename}__TYPE_NAME', itype_description['type_name'])),
-  @(static_seq(f'{td_c_typename}__FIELDS', itype_description['fields'])),
-};
-@[end for]@
-
 /// Define exported TypeDescriptions and TypeSources
 @[for msg in full_type_descriptions]@
 @{
@@ -125,13 +113,19 @@ ref_tds = msg['referenced_type_descriptions']
 @[  if ref_tds]@
 static rosidl_runtime_c__type_description__IndividualTypeDescription @(td_c_typename)__REFERENCED_TYPE_DESCRIPTIONS[] = {
 @[    for ref_td in ref_tds]@
-  @(typename_to_c(ref_td['type_name']))__INDIVIDUAL_TYPE_DESCRIPTION,
+  {
+    @(static_seq(f"{typename_to_c(ref_td['type_name'])}__TYPE_NAME", ref_td['type_name'])),
+    @(static_seq(f"{typename_to_c(ref_td['type_name'])}__FIELDS", ref_td['fields'])),
+  },
 @[    end for]@
 };
 @[  end if]@
 
 const rosidl_runtime_c__type_description__TypeDescription @(td_c_typename)__@(TYPE_DESCRIPTION_VAR) = {
-  @(td_c_typename)__INDIVIDUAL_TYPE_DESCRIPTION,
+  {
+    @(static_seq(f'{td_c_typename}__TYPE_NAME', td_typename)),
+    @(static_seq(f'{td_c_typename}__FIELDS', msg['type_description']['fields'])),
+  },
   @(static_seq(f'{td_c_typename}__REFERENCED_TYPE_DESCRIPTIONS', ref_tds)),
 };
 

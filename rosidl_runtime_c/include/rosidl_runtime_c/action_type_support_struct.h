@@ -17,8 +17,6 @@
 
 #include "rosidl_runtime_c/message_type_support_struct.h"
 #include "rosidl_runtime_c/service_type_support_struct.h"
-#include "rosidl_runtime_c/type_description/type_description__struct.h"
-#include "rosidl_runtime_c/type_description/type_source__struct.h"
 #include "rosidl_runtime_c/type_hash.h"
 #include "rosidl_runtime_c/visibility_control.h"
 #include "rosidl_typesupport_interface/macros.h"
@@ -43,10 +41,10 @@ struct rosidl_action_type_support_t
   const rosidl_message_type_support_t * status_message_type_support;
   /// Hash of the action's description
   const rosidl_type_hash_t * type_hash;
-  /// Description of the action type
-  const rosidl_runtime_c__type_description__TypeDescription * type_description;
-  /// Original sources defining the action
-  const rosidl_runtime_c__type_description__TypeSource__Sequence * type_description_sources;
+  /// Pointer to function to get the description of the type
+  rosidl_get_type_description_function get_type_description_func;
+  /// Pointer to function to get the text of the sources that defined the description of the type
+  rosidl_get_type_description_sources_function get_type_description_sources_func;
 };
 
 /// Get the action type support given a provided action and package.

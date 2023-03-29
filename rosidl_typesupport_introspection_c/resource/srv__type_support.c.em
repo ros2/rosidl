@@ -22,8 +22,8 @@ TEMPLATE(
 
 @{
 from rosidl_generator_c import idl_structure_type_to_c_typename
-from rosidl_generator_type_description import RAW_SOURCE_VAR
-from rosidl_generator_type_description import TYPE_DESCRIPTION_VAR
+from rosidl_generator_type_description import GET_DESCRIPTION_FUNC
+from rosidl_generator_type_description import GET_SOURCES_FUNC
 from rosidl_generator_type_description import TYPE_HASH_VAR
 from rosidl_parser.definition import SERVICE_EVENT_MESSAGE_SUFFIX
 from rosidl_parser.definition import SERVICE_REQUEST_MESSAGE_SUFFIX
@@ -90,8 +90,8 @@ static rosidl_service_type_support_t @(function_prefix)__@(service.namespaced_ty
     @(',\n    '.join(service.namespaced_type.namespaced_name()))
   ),
   &@(idl_structure_type_to_c_typename(service.namespaced_type))__@(TYPE_HASH_VAR),
-  &@(idl_structure_type_to_c_typename(service.namespaced_type))__@(TYPE_DESCRIPTION_VAR),
-  &@(idl_structure_type_to_c_typename(service.namespaced_type))__@(RAW_SOURCE_VAR),
+  &@(idl_structure_type_to_c_typename(service.namespaced_type))__@(GET_DESCRIPTION_FUNC),
+  &@(idl_structure_type_to_c_typename(service.namespaced_type))__@(GET_SOURCES_FUNC),
 };
 
 // Forward declaration of request/response type support functions

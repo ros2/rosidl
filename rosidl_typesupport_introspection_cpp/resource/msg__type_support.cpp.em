@@ -1,8 +1,8 @@
 @# Included from rosidl_typesupport_introspection_cpp/resource/idl__type_support.cpp.em
 @{
 from rosidl_generator_c import idl_structure_type_to_c_typename
-from rosidl_generator_type_description import RAW_SOURCE_VAR
-from rosidl_generator_type_description import TYPE_DESCRIPTION_VAR
+from rosidl_generator_type_description import GET_DESCRIPTION_FUNC
+from rosidl_generator_type_description import GET_SOURCES_FUNC
 from rosidl_generator_type_description import TYPE_HASH_VAR
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractNestedType
@@ -27,7 +27,7 @@ header_files = [
     'rosidl_runtime_c/message_type_support_struct.h',
     'rosidl_typesupport_cpp/message_type_support.hpp',
     'rosidl_typesupport_interface/macros.h',
-    include_base + '__struct.h',
+    include_base + '__functions.h',
     include_base + '__struct.hpp',
     'rosidl_typesupport_introspection_cpp/field_types.hpp',
     'rosidl_typesupport_introspection_cpp/identifier.hpp',
@@ -252,8 +252,8 @@ static const rosidl_message_type_support_t @(message.structure.namespaced_type.n
   &@(message.structure.namespaced_type.name)_message_members,
   get_message_typesupport_handle_function,
   &@('::'.join(message.structure.namespaced_type.namespaced_name()))::@(TYPE_HASH_VAR),
-  &@(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(TYPE_DESCRIPTION_VAR),
-  &@(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(RAW_SOURCE_VAR),
+  &@(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(GET_DESCRIPTION_FUNC),
+  &@(idl_structure_type_to_c_typename(message.structure.namespaced_type))__@(GET_SOURCES_FUNC),
 };
 
 }  // namespace rosidl_typesupport_introspection_cpp

@@ -19,8 +19,6 @@
 
 #include "rcutils/allocator.h"
 #include "rosidl_runtime_c/message_type_support_struct.h"
-#include "rosidl_runtime_c/type_description/type_description__struct.h"
-#include "rosidl_runtime_c/type_description/type_source__struct.h"
 #include "rosidl_runtime_c/type_hash.h"
 #include "rosidl_runtime_c/visibility_control.h"
 
@@ -96,10 +94,10 @@ struct rosidl_service_type_support_t
   rosidl_event_message_destroy_handle_function_function event_message_destroy_handle_function;
   /// Hash of the service's description
   const rosidl_type_hash_t * type_hash;
-  /// Description of the type
-  const rosidl_runtime_c__type_description__TypeDescription * type_description;
-  /// Original sources defining the service
-  const rosidl_runtime_c__type_description__TypeSource__Sequence * type_description_sources;
+  /// Pointer to function to get the description of the type
+  rosidl_get_type_description_function get_type_description_func;
+  /// Pointer to function to get the text of the sources that defined the description of the type
+  rosidl_get_type_description_sources_function get_type_description_sources_func;
 };
 
 /// Get the service type support handle specific to this identifier.

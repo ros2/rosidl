@@ -14,8 +14,8 @@
 @{
 from rosidl_generator_c import escape_string
 from rosidl_generator_type_description import extract_subinterface
-from rosidl_generator_type_description import RAW_SOURCE_VAR
-from rosidl_generator_type_description import TYPE_DESCRIPTION_VAR
+from rosidl_generator_type_description import GET_DESCRIPTION_FUNC
+from rosidl_generator_type_description import GET_SOURCES_FUNC
 from rosidl_parser.definition import Action
 from rosidl_parser.definition import Service
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
@@ -61,7 +61,7 @@ def static_seq(varname, values):
   return '{NULL, 0, 0}'
 }@
 
-#include "@(include_base)__struct.h"
+#include "@(include_base)__functions.h"
 
 // Declare and define all type names, field names, and default values
 @[for itype_description in all_type_descriptions]@
@@ -121,14 +121,24 @@ static rosidl_runtime_c__type_description__IndividualTypeDescription @(td_c_type
 };
 @[  end if]@
 
-const rosidl_runtime_c__type_description__TypeDescription @(td_c_typename)__@(TYPE_DESCRIPTION_VAR) = {
-  {
-    @(static_seq(f'{td_c_typename}__TYPE_NAME', td_typename)),
-    @(static_seq(f'{td_c_typename}__FIELDS', msg['type_description']['fields'])),
-  },
-  @(static_seq(f'{td_c_typename}__REFERENCED_TYPE_DESCRIPTIONS', ref_tds)),
-};
+const rosidl_runtime_c__type_description__TypeDescription *
+@(td_c_typename)__@(GET_DESCRIPTION_FUNC)()
+{
+  static const rosidl_runtime_c__type_description__TypeDescription description = {
+    {
+      @(static_seq(f'{td_c_typename}__TYPE_NAME', td_typename)),
+      @(static_seq(f'{td_c_typename}__FIELDS', msg['type_description']['fields'])),
+    },
+    @(static_seq(f'{td_c_typename}__REFERENCED_TYPE_DESCRIPTIONS', ref_tds)),
+  };
+  return &description;
+}
 
 // NOTE: currently filling only empty sequence
-const rosidl_runtime_c__type_description__TypeSource__Sequence @(td_c_typename)__@(RAW_SOURCE_VAR) = @(static_seq(None, ''));
+const rosidl_runtime_c__type_description__TypeSource__Sequence *
+@(td_c_typename)__@(GET_SOURCES_FUNC)()
+{
+  static const rosidl_runtime_c__type_description__TypeSource__Sequence sources = @(static_seq(None, ''));
+  return &sources;
+}
 @[end for]@

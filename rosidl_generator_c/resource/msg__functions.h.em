@@ -3,6 +3,8 @@
 from rosidl_generator_c import idl_structure_type_sequence_to_c_typename
 from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_generator_c import interface_path_to_string
+from rosidl_generator_type_description import GET_DESCRIPTION_FUNC
+from rosidl_generator_type_description import GET_SOURCES_FUNC
 
 message_typename = idl_structure_type_to_c_typename(message.structure.namespaced_type)
 array_typename = idl_structure_type_sequence_to_c_typename(
@@ -85,6 +87,16 @@ bool
 @(message_typename)__copy(
   const @(message_typename) * input,
   @(message_typename) * output);
+
+/// Retrieve pointer to the description of the message type.
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
+const rosidl_runtime_c__type_description__TypeDescription *
+@(message_typename)__@(GET_DESCRIPTION_FUNC)();
+
+/// Retrieve pointer to the raw source texts that defined the description of the message type.
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
+const rosidl_runtime_c__type_description__TypeSource__Sequence *
+@(message_typename)__@(GET_SOURCES_FUNC)();
 
 @#######################################################################
 @# array functions

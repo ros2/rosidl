@@ -1,0 +1,33 @@
+name: Check copied type description sources
+
+on:
+  pull_request:
+
+jobs:
+  test_copied_sources_changed_with_fingerprint:
+    runs-on: ubuntu-latest
+    outputs:
+      needs_verification: ${{ steps.needs_verification.outputs.changed }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Check fingerprint changed
+      uses: tj-actions/changed-files@v35
+      id: changed-fingerprint
+      with:
+        files: scripts/type_description.fingerprint
+    - name: Check type description sources changed
+      uses: tj-actions/changed-files@v35
+      id: changed-copied-sources
+      with:
+        files: |
+          rosidl_runtime_c/include/rosidl_runtime_c/type_description/**
+          rosidl_runtime_c/src/type_description/**
+          rosidl_runtime_cpp/include/rosidl_runtime_cpp/type_description/**
+    - if: (steps.changed-fingerprint.outputs.any_changed == 'true') && (steps.changed-copied-sources.outputs.any_changed != 'true')
+      run: |
+        echo "Fingerprint changed but no copied sources changed"
+        exit 1
+    - if: (steps.changed-fingerprint.outputs.any_changed != 'true') && (steps.changed-copied-sources.outputs.any_changed == 'true')
+      run: |
+        echo "Copied sources changed but fingerprint not updated"
+        exit 1

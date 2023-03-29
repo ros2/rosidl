@@ -9,6 +9,7 @@
 @#  - package_name (string)
 @#  - interface_path (Path relative to the directory named after the package)
 @#  - content (IdlContent, list of elements, e.g. Messages or Services)
+@#  - type_description_info (HashedTypeDescription.schema.json dict)
 @#######################################################################
 @{
 from rosidl_generator_c import idl_structure_type_to_c_typename

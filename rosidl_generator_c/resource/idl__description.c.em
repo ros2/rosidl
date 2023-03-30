@@ -14,6 +14,7 @@
 @{
 from rosidl_generator_c import escape_string
 from rosidl_generator_type_description import extract_subinterface
+from rosidl_generator_type_description import FIELD_TYPE_ID_TO_NAME
 from rosidl_generator_type_description import GET_DESCRIPTION_FUNC
 from rosidl_generator_type_description import GET_SOURCES_FUNC
 from rosidl_parser.definition import Action
@@ -90,7 +91,7 @@ static rosidl_runtime_c__type_description__Field @(td_c_typename)__FIELDS[] = {
   {
     @(static_seq(f"{td_c_typename}__FIELD_NAME__{field['name']}", field['name'])),
     {
-      @(field['type']['type_id']),  // TODO(ek) should this be named to FieldType const, or is value ok?
+      rosidl_runtime_c__type_description__FieldType__@(FIELD_TYPE_ID_TO_NAME[field['type']['type_id']]),
       @(field['type']['capacity']),
       @(field['type']['string_capacity']),
       @(static_seq(f"{typename_to_c(field['type']['nested_type_name'])}__TYPE_NAME", field['type']['nested_type_name'])),
@@ -134,10 +135,10 @@ const rosidl_runtime_c__type_description__TypeDescription *
   return &description;
 }
 
-// NOTE: currently filling only empty sequence
 const rosidl_runtime_c__type_description__TypeSource__Sequence *
 @(td_c_typename)__@(GET_SOURCES_FUNC)()
 {
+@# TODO(emersonknapp) Implement raw source code embedding/generation. This sequence is left empty for now.
   static const rosidl_runtime_c__type_description__TypeSource__Sequence sources = @(static_seq(None, ''));
   return &sources;
 }

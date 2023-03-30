@@ -129,7 +129,7 @@ NESTED_FIELD_TYPE_SUFFIXES = {
 }
 
 # Copied directly from FieldType.msg, with simple string manipulation to create a dict
-FIELD_TYPE_IDS = {
+FIELD_TYPE_NAME_TO_ID = {
     'FIELD_TYPE_NOT_SET': 0,
 
     # Nested type defined in other .msg/.idl files.
@@ -246,6 +246,10 @@ FIELD_TYPE_IDS = {
     'FIELD_TYPE_BOUNDED_WSTRING_UNBOUNDED_SEQUENCE': 166,
 }
 
+FIELD_TYPE_ID_TO_NAME = {
+    val: key for key, val in FIELD_TYPE_NAME_TO_ID.items()
+}
+
 
 def field_type_type_name(ftype: definition.AbstractType) -> str:
     value_type = ftype
@@ -271,7 +275,7 @@ def field_type_type_name(ftype: definition.AbstractType) -> str:
 
 
 def field_type_type_id(ftype: definition.AbstractType) -> Tuple[str, int]:
-    return FIELD_TYPE_IDS[field_type_type_name(ftype)]
+    return FIELD_TYPE_NAME_TO_ID[field_type_type_name(ftype)]
 
 
 def field_type_capacity(ftype: definition.AbstractType) -> int:
@@ -498,7 +502,7 @@ def extract_subinterface(type_description_msg: dict, field_name: str):
     """
     Filter full TypeDescription to produce a TypeDescription for one of its fields' types.
 
-    Given then name of a field, finds its type, and finds all its referenced type descriptions
+    Given the name of a field, finds its type, and finds all its referenced type descriptions
     by doing a DAG traversal on the referenced type descriptions of the input type.
     """
     output_type_name = next(

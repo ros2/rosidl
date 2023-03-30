@@ -60,6 +60,10 @@ def static_seq(varname, values):
   if values:
     return f'{{{varname}, {len(values)}, {len(values)}}}'
   return '{NULL, 0, 0}'
+
+def represent_default(default_value):
+  # Encode to UTF-8 in case of WStrings, then remove the b'' from the representation.
+  return repr(default_value.encode('utf-8'))[2:-1]
 }@
 
 #include "@(include_base)__functions.h"
@@ -73,7 +77,7 @@ static char @(td_c_typename)__TYPE_NAME[] = "@(itype_description['type_name'])";
 @[  for field in itype_description['fields']]@
 static char @(td_c_typename)__FIELD_NAME__@(field['name'])[] = "@(field['name'])";
 @[    if field['default_value']]@
-static char @(td_c_typename)__DEFAULT_VALUE__@(field['name'])[] = "@(escape_string(field['default_value']))";
+static char @(td_c_typename)__DEFAULT_VALUE__@(field['name'])[] = "@(escape_string(represent_default(field['default_value'])))";
 @[    end if]@
 @[  end for]@
 

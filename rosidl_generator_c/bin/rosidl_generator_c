@@ -29,9 +29,13 @@ def main(argv=sys.argv[1:]):
         '--generator-arguments-file',
         required=True,
         help='The location of the file containing the generator arguments')
+    parser.add_argument(
+        '--disable-description-codegen', action='store_true',
+        help='If set, disable the generation of static type description '
+             'code to reduce binary size.')
     args = parser.parse_args(argv)
 
-    generate_c(args.generator_arguments_file)
+    generate_c(args.generator_arguments_file, args.disable_description_codegen)
 
 
 if __name__ == '__main__':

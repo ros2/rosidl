@@ -19,12 +19,19 @@ def represent_default(default_value):
   return repr(default_value.encode('utf-8'))[2:-1]
 }@
 
-// Declare and define all type names, field names, and default values
 @[for itype_description in all_type_descriptions]@
+static char @(typename_to_c(itype_description['type_name']))__TYPE_NAME[] = "@(itype_description['type_name'])";
+@[end for]@
+
+@[for msg in full_type_descriptions]@
 @{
-td_c_typename = typename_to_c(itype_description['type_name'])
+itype_description = msg['type_description']
+td_typename = itype_description['type_name']
+td_c_typename = typename_to_c(td_typename)
+ref_tds = msg['referenced_type_descriptions']
 }@
-static char @(td_c_typename)__TYPE_NAME[] = "@(itype_description['type_name'])";
+@
+// Define type names, field names, and default values
 @[  for field in itype_description['fields']]@
 static char @(td_c_typename)__FIELD_NAME__@(field['name'])[] = "@(field['name'])";
 @[    if field['default_value']]@
@@ -32,14 +39,8 @@ static char @(td_c_typename)__DEFAULT_VALUE__@(field['name'])[] = "@(escape_stri
 @[    end if]@
 @[  end for]@
 
-@[end for]@
+/// Define arrays of Fields
 @
-/// Define all arrays of Fields
-@[for itype_description in all_type_descriptions]@
-@{
-td_c_typename = typename_to_c(itype_description['type_name'])
-}@
-
 @[  if itype_description['fields']]@
 static rosidl_runtime_c__type_description__Field @(td_c_typename)__FIELDS[] = {
 @[    for field in itype_description['fields']]@
@@ -56,23 +57,12 @@ static rosidl_runtime_c__type_description__Field @(td_c_typename)__FIELDS[] = {
 @[    end for]@
 };
 @[  end if]@
-@[end for]@
 
-/// Define exported TypeDescriptions and TypeSources
-@[for msg in full_type_descriptions]@
-@{
-td_typename = msg['type_description']['type_name']
-td_c_typename = typename_to_c(td_typename)
-ref_tds = msg['referenced_type_descriptions']
-}@
-
+/// Define exported TypeDescription and TypeSources
 @[  if ref_tds]@
 static rosidl_runtime_c__type_description__IndividualTypeDescription @(td_c_typename)__REFERENCED_TYPE_DESCRIPTIONS[] = {
 @[    for ref_td in ref_tds]@
-  {
-    @(static_seq(f"{typename_to_c(ref_td['type_name'])}__TYPE_NAME", ref_td['type_name'])),
-    @(static_seq(f"{typename_to_c(ref_td['type_name'])}__FIELDS", ref_td['fields'])),
-  },
+  *@(typename_to_c(ref_td['type_name']))__@(GET_DESCRIPTION_FUNC)(),
 @[    end for]@
 };
 @[  end if]@
@@ -80,6 +70,7 @@ static rosidl_runtime_c__type_description__IndividualTypeDescription @(td_c_type
 const rosidl_runtime_c__type_description__TypeDescription *
 @(td_c_typename)__@(GET_DESCRIPTION_FUNC)()
 {
+  // static bool constructed = false;
   static const rosidl_runtime_c__type_description__TypeDescription description = {
     {
       @(static_seq(f'{td_c_typename}__TYPE_NAME', td_typename)),

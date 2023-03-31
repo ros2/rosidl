@@ -78,6 +78,9 @@ foreach(dep ${target_dependencies})
   endif()
 endforeach()
 
+get_target_property(_target_sources ${rosidl_generate_interfaces_TARGET} SOURCES)
+message(WARNING "TARGET SOURCES  ${_target_sources}")
+
 set(generator_arguments_file "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c__arguments.json")
 rosidl_write_generator_arguments(
   "${generator_arguments_file}"

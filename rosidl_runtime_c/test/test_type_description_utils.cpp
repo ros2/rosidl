@@ -12,8 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <stdlib.h>
+#include <gtest/gtest.h>
+
 #include <rcutils/types/rcutils_ret.h>
 #include <rcutils/types/hash_map.h>
+#include <rosidl_runtime_c/string_functions.h>
+
+#include <cstring>
 
 #include "rosidl_runtime_c/type_description/field__functions.h"
 #include "rosidl_runtime_c/type_description/field__struct.h"
@@ -22,12 +28,6 @@
 #include "rosidl_runtime_c/type_description/type_description__functions.h"
 #include "rosidl_runtime_c/type_description/type_description__struct.h"
 #include "rosidl_runtime_c/type_description_utils.h"
-#include <rosidl_runtime_c/string_functions.h>
-
-#include <stdlib.h>
-#include <gtest/gtest.h>
-
-#include <cstring>
 
 
 TEST(TestUtils, test_basic_construction)
@@ -545,9 +545,10 @@ TEST_F(TestUtilsFixture, test_maps)
 
   // Ref type map to sequence
   rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence * seq = NULL;
-  ret =
-    rosidl_runtime_c_type_description_utils_copy_init_sequence_from_referenced_type_descriptions_map(
+  /* *INDENT-OFF* */
+  ret = rosidl_runtime_c_type_description_utils_copy_init_sequence_from_referenced_type_descriptions_map(  // NOLINT
     ref_types_hash_map, &seq, true);
+  /* *INDENT-ON* */
   EXPECT_EQ(ret, RCUTILS_RET_OK);
   EXPECT_TRUE(
     rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence__are_equal(

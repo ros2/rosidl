@@ -18,7 +18,6 @@ header_guard_variable = '__'.join([x.upper() for x in include_parts]) + \
     '__STRUCT_HPP_'
 
 include_directives = set()
-type_hash = type_description_info['hashes']
 }@
 
 #ifndef @(header_guard_variable)
@@ -30,7 +29,6 @@ type_hash = type_description_info['hashes']
 #include <string>
 #include <vector>
 
-#include "rosidl_runtime_c/type_hash.h"
 #include "rosidl_runtime_cpp/bounded_vector.hpp"
 #include "rosidl_runtime_cpp/message_initialization.hpp"
 
@@ -45,7 +43,7 @@ from rosidl_parser.definition import Message
 TEMPLATE(
     'msg__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=message, include_directives=include_directives, type_hash=type_hash)
+    message=message, include_directives=include_directives)
 }@
 
 @[end for]@
@@ -61,7 +59,7 @@ from rosidl_parser.definition import Service
 TEMPLATE(
     'srv__struct.hpp.em',
     package_name=package_name, interface_path=interface_path, service=service,
-    include_directives=include_directives, type_hash=type_hash)
+    include_directives=include_directives)
 }@
 
 @[end for]@
@@ -77,7 +75,7 @@ from rosidl_parser.definition import Action
 TEMPLATE(
     'action__struct.hpp.em',
     package_name=package_name, interface_path=interface_path, action=action,
-    include_directives=include_directives, type_hash=type_hash)
+    include_directives=include_directives)
 }@
 
 @[end for]@

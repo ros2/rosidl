@@ -89,6 +89,7 @@ TEMPLATE(
 TEMPLATE(
   'full__description.c.em',
   toplevel_type_description=toplevel_type_description,
-  implicit_type_descriptions=implicit_type_descriptions)
+  implicit_type_descriptions=implicit_type_descriptions,
+  hash_lookup=hash_lookup)
 }@
 @[end if]@

@@ -8,7 +8,7 @@ def typename_to_c(typename):
 }@
 
 /// Define exported TypeDescriptions and TypeSources
-@[for msg in full_type_descriptions]@
+@[for msg in [toplevel_type_description] + implicit_type_descriptions]@
 @{
 td_typename = msg['type_description']['type_name']
 td_c_typename = typename_to_c(td_typename)

@@ -19,35 +19,34 @@ from rosidl_parser.definition import Service
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 
 type_description_msg = type_description_info['type_description_msg']
-all_type_descriptions = [type_description_msg['type_description']] + type_description_msg['referenced_type_descriptions']
 
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 include_base = '/'.join(include_parts)
 
-full_type_descriptions = [type_description_msg]
+implicit_type_descriptions = []
 for service in content.get_elements_of_type(Service):
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'request_message'))
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'response_message'))
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'event_message'))
+  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'request_message'))
+  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'response_message'))
+  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'event_message'))
 for action in content.get_elements_of_type(Action):
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'goal'))
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'result'))
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'feedback'))
+  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'goal'))
+  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'result'))
+  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'feedback'))
 
   send_goal_service = extract_subinterface(type_description_msg, 'send_goal_service')
-  full_type_descriptions.append(send_goal_service)
-  full_type_descriptions.append(extract_subinterface(send_goal_service, 'request_message'))
-  full_type_descriptions.append(extract_subinterface(send_goal_service, 'response_message'))
-  full_type_descriptions.append(extract_subinterface(send_goal_service, 'event_message'))
+  implicit_type_descriptions.append(send_goal_service)
+  implicit_type_descriptions.append(extract_subinterface(send_goal_service, 'request_message'))
+  implicit_type_descriptions.append(extract_subinterface(send_goal_service, 'response_message'))
+  implicit_type_descriptions.append(extract_subinterface(send_goal_service, 'event_message'))
 
   get_result_service = extract_subinterface(type_description_msg, 'get_result_service')
-  full_type_descriptions.append(get_result_service)
-  full_type_descriptions.append(extract_subinterface(get_result_service, 'request_message'))
-  full_type_descriptions.append(extract_subinterface(get_result_service, 'response_message'))
-  full_type_descriptions.append(extract_subinterface(get_result_service, 'event_message'))
+  implicit_type_descriptions.append(get_result_service)
+  implicit_type_descriptions.append(extract_subinterface(get_result_service, 'request_message'))
+  implicit_type_descriptions.append(extract_subinterface(get_result_service, 'response_message'))
+  implicit_type_descriptions.append(extract_subinterface(get_result_service, 'event_message'))
 
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'feedback_message'))
+  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'feedback_message'))
 }@
 
 #include "@(include_base)__functions.h"
@@ -56,13 +55,14 @@ for action in content.get_elements_of_type(Action):
 @{
 TEMPLATE(
   'empty__description.c.em',
-  full_type_descriptions=full_type_descriptions)
+  toplevel_type_description=type_description_msg,
+  implicit_type_descriptions=implicit_type_descriptions)
 }@
 @[else]@
 @{
 TEMPLATE(
   'full__description.c.em',
-  all_type_descriptions=all_type_descriptions,
-  full_type_descriptions=full_type_descriptions)
+  toplevel_type_description=type_description_msg,
+  implicit_type_descriptions=implicit_type_descriptions)
 }@
 @[end if]@

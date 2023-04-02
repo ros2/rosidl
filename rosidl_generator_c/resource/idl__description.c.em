@@ -13,6 +13,7 @@
 @#  - disable_description_codegen (bool)
 @#######################################################################
 @{
+from rosidl_generator_c import type_hash_to_c_definition
 from rosidl_generator_type_description import extract_subinterface
 from rosidl_generator_type_description import GET_HASH_FUNC
 from rosidl_parser.definition import Action
@@ -20,6 +21,10 @@ from rosidl_parser.definition import Service
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 
 type_description_msg = type_description_info['type_description_msg']
+hash_lookup = {
+  val['type_name']: val['hash_string']
+  for val in type_description_info['type_hashes']
+}
 
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
@@ -58,13 +63,16 @@ for action in content.get_elements_of_type(Action):
 
 #include "@(include_base)__functions.h"
 
-@[for msg, interface_type in [toplevel_type_description] + implicit_type_descriptions]@
+@[for type_description_msg, interface_type in [toplevel_type_description] + implicit_type_descriptions]@
+@{
+typename = type_description_msg['type_description']['type_name']
+c_typename = typename.replace('/', '__')
+}@
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_type_hash_t *
-@(msg['type_description']['type_name'].replace('/', '__'))__@(GET_HASH_FUNC)(const rosidl_@(interface_type)_type_support_t *)
+@(c_typename)__@(GET_HASH_FUNC)(const rosidl_@(interface_type)_type_support_t *)
 {
-  // TODO(ek)
-  static rosidl_type_hash_t hash;
+  static rosidl_type_hash_t hash = @(type_hash_to_c_definition(hash_lookup[typename]));
   return &hash;
 }
 @[end for]@

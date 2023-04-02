@@ -104,7 +104,8 @@ int main(int argc, char ** argv)
   // Implicit message of implicit service of an action
   if (0 != test_basic(
       rosidl_generator_tests__action__Fibonacci_GetResult_Request__get_type_description(NULL),
-      rosidl_generator_tests__action__Fibonacci_GetResult_Request__get_type_description_sources(NULL),
+      rosidl_generator_tests__action__Fibonacci_GetResult_Request__get_type_description_sources(
+        NULL),
       "rosidl_generator_tests/action/Fibonacci_GetResult_Request"))
   {
     return 1;

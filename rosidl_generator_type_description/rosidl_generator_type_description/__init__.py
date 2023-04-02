@@ -78,9 +78,12 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
         hasher = InterfaceHasher.from_idl(idl_file)
         hashers[hasher.namespaced_type.namespaced_name()] = hasher
 
-    # Generate output files
+    # Generate output representation
     for hasher in hashers.values():
-        generated_files += hasher.write_unified_json(output_dir, hashers, include_map)
+        hasher.generate_full_description(output_dir, hashers, include_map)
+    # Calculate hashes and write to generated json file
+    for hasher in hashers.values():
+        generated_files += hasher.write_unified_json(output_dir)
 
     return generated_files
 
@@ -392,6 +395,8 @@ class InterfaceHasher:
 
         self.individual_type_description = serialize_individual_type_description(
             self.namespaced_type, self.members)
+        self.all_type_hashes = {}
+        self.pending_local_hashes = set()
 
         # Determine needed includes from member fields
         self.includes = []
@@ -407,14 +412,11 @@ class InterfaceHasher:
         self.rel_path = Path(*self.namespaced_type.namespaced_name()[1:])
         self.include_path = Path(*self.namespaced_type.namespaced_name())
 
-    def write_unified_json(
+    def generate_full_description(
         self, output_dir: Path, local_hashers: dict, includes_map: dict
-    ) -> List[Path]:
-        generated_files = []
+    ) -> None:
         referenced_types = {}
 
-        for key, val in self.subinterfaces.items():
-            generated_files += val.write_unified_json(output_dir, local_hashers, includes_map)
 
         def add_referenced_type(individual_type_description):
             type_name = individual_type_description['type_name']
@@ -431,9 +433,11 @@ class InterfaceHasher:
 
             # A type in this package may refer to types, and hasn't been unrolled yet,
             # so process its includes breadth first
-            if process_type in local_hashers:
-                add_referenced_type(local_hashers[process_type].individual_type_description)
-                process_includes += local_hashers[process_type].includes
+            local_hasher = local_hashers.get(process_type, None)
+            if local_hasher is not None:
+                add_referenced_type(local_hasher.individual_type_description)
+                process_includes += local_hasher.includes
+                self.pending_local_hashes.add(local_hasher)
                 continue
 
             # All nonlocal descriptions will have all recursively referenced types baked in
@@ -445,6 +449,10 @@ class InterfaceHasher:
                 include_json = json.load(include_file)
 
             type_description_msg = include_json['type_description_msg']
+            self.all_type_hashes.update({
+                val['type_name']: val['hash_string']
+                for val in include_json['type_hashes']
+            })
             add_referenced_type(type_description_msg['type_description'])
             for rt in type_description_msg['referenced_type_descriptions']:
                 add_referenced_type(rt)
@@ -455,9 +463,23 @@ class InterfaceHasher:
                 referenced_types.values(), key=lambda td: td['type_name'])
         }
 
+    def write_unified_json(
+        self, output_dir: Path
+    ) -> List[Path]:
+        generated_files = []
+        for val in self.subinterfaces.values():
+            generated_files += val.write_unified_json(output_dir)
+
+        self.all_type_hashes.update(self._calculate_type_hashes())
+        for local_hasher in self.pending_local_hashes:
+            self.all_type_hashes.update(local_hasher._calculate_type_hashes())
+        type_hash_list = [
+            { 'type_name': key, 'hash_string': val }
+            for key, val in self.all_type_hashes.items()
+        ]
         hashed_type_description = {
-            'hashes': self._calculate_hash_tree(),
             'type_description_msg': self.full_type_description,
+            'type_hashes': type_hash_list,
         }
 
         json_path = output_dir / self.rel_path.with_suffix('.json')
@@ -465,7 +487,7 @@ class InterfaceHasher:
             json_file.write(json.dumps(hashed_type_description, indent=2))
         return generated_files + [json_path]
 
-    def _calculate_hash_tree(self) -> dict:
+    def _calculate_type_hashes(self) -> dict:
         # Create a copy of the description, removing all default values
         hashable_dict = deepcopy(self.full_type_description)
         for field in hashable_dict['type_description']['fields']:
@@ -489,13 +511,13 @@ class InterfaceHasher:
         sha.update(hashable_repr.encode('utf-8'))
         type_hash = RIHS01_PREFIX + sha.hexdigest()
 
-        type_hash_infos = {
-            self.interface_type: type_hash,
+        type_hashes = {
+            self.individual_type_description['type_name']: type_hash,
         }
-        for key, val in self.subinterfaces.items():
-            type_hash_infos[key] = val._calculate_hash_tree()
+        for hasher in self.subinterfaces.values():
+            type_hashes.update(hasher._calculate_type_hashes())
 
-        return type_hash_infos
+        return type_hashes
 
 
 def extract_subinterface(type_description_msg: dict, field_name: str):

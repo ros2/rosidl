@@ -108,8 +108,7 @@ const rosidl_runtime_c__type_description__TypeDescription *
     // TODO(ek) check hashes for consistency
 @[  for idx, ref_td in enumerate(ref_tds)]@
     {
-      const rosidl_runtime_c__type_description__TypeDescription * ref_desc = @
-      @(typename_to_c(ref_td['type_name']))__@(GET_DESCRIPTION_FUNC)(NULL);
+      const rosidl_runtime_c__type_description__TypeDescription * ref_desc = @(typename_to_c(ref_td['type_name']))__@(GET_DESCRIPTION_FUNC)(NULL);
       description.referenced_type_descriptions.data[@(idx)].fields.data = ref_desc->type_description.fields.data;
       description.referenced_type_descriptions.data[@(idx)].fields.size = ref_desc->type_description.fields.size;
       description.referenced_type_descriptions.data[@(idx)].fields.capacity = ref_desc->type_description.fields.capacity;

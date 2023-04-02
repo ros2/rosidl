@@ -31,11 +31,14 @@ typedef struct rosidl_message_type_support_t rosidl_message_type_support_t;
 typedef const rosidl_message_type_support_t * (* rosidl_message_typesupport_handle_function)(
   const rosidl_message_type_support_t *, const char *);
 
+typedef const rosidl_type_hash_t *
+(* rosidl_message_get_type_hash_function)(const rosidl_message_type_support_t *);
+
 typedef const rosidl_runtime_c__type_description__TypeDescription *
-(* rosidl_get_type_description_function)();
+(* rosidl_message_get_type_description_function)(const rosidl_message_type_support_t *);
 
 typedef const rosidl_runtime_c__type_description__TypeSource__Sequence *
-(* rosidl_get_type_description_sources_function)();
+(* rosidl_message_get_type_description_sources_function)(const rosidl_message_type_support_t *);
 
 /// Contains rosidl message type support data
 struct rosidl_message_type_support_t
@@ -46,12 +49,12 @@ struct rosidl_message_type_support_t
   const void * data;
   /// Pointer to the message type support handler function
   rosidl_message_typesupport_handle_function func;
-  /// Hash of the message's description
-  const rosidl_type_hash_t * type_hash;
+  /// Pointer to function to get the hash of the message's description
+  rosidl_message_get_type_hash_function get_type_hash_func;
   /// Pointer to function to get the description of the type
-  rosidl_get_type_description_function get_type_description_func;
+  rosidl_message_get_type_description_function get_type_description_func;
   /// Pointer to function to get the text of the sources that defined the description of the type
-  rosidl_get_type_description_sources_function get_type_description_sources_func;
+  rosidl_message_get_type_description_sources_function get_type_description_sources_func;
 };
 
 /// Get the message type support handle specific to this identifier.

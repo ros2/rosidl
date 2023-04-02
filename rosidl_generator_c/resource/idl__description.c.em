@@ -14,6 +14,7 @@
 @#######################################################################
 @{
 from rosidl_generator_type_description import extract_subinterface
+from rosidl_generator_type_description import GET_HASH_FUNC
 from rosidl_parser.definition import Action
 from rosidl_parser.definition import Service
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
@@ -25,44 +26,61 @@ include_parts = [package_name] + list(interface_path.parents[0].parts) + [
 include_base = '/'.join(include_parts)
 
 implicit_type_descriptions = []
+toplevel_type_description = (type_description_msg, 'message')
 for service in content.get_elements_of_type(Service):
-  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'request_message'))
-  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'response_message'))
-  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'event_message'))
+  toplevel_type_description = (type_description_msg, 'service')
+  implicit_type_descriptions.extend([
+    (extract_subinterface(type_description_msg, 'request_message'), 'message'),
+    (extract_subinterface(type_description_msg, 'response_message'), 'message'),
+    (extract_subinterface(type_description_msg, 'event_message'), 'message'),
+  ])
 for action in content.get_elements_of_type(Action):
-  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'goal'))
-  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'result'))
-  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'feedback'))
-
+  toplevel_type_description = (type_description_msg, 'action')
   send_goal_service = extract_subinterface(type_description_msg, 'send_goal_service')
-  implicit_type_descriptions.append(send_goal_service)
-  implicit_type_descriptions.append(extract_subinterface(send_goal_service, 'request_message'))
-  implicit_type_descriptions.append(extract_subinterface(send_goal_service, 'response_message'))
-  implicit_type_descriptions.append(extract_subinterface(send_goal_service, 'event_message'))
-
   get_result_service = extract_subinterface(type_description_msg, 'get_result_service')
-  implicit_type_descriptions.append(get_result_service)
-  implicit_type_descriptions.append(extract_subinterface(get_result_service, 'request_message'))
-  implicit_type_descriptions.append(extract_subinterface(get_result_service, 'response_message'))
-  implicit_type_descriptions.append(extract_subinterface(get_result_service, 'event_message'))
+  implicit_type_descriptions.extend([
+    (extract_subinterface(type_description_msg, 'goal'), 'message'),
+    (extract_subinterface(type_description_msg, 'result'), 'message'),
+    (extract_subinterface(type_description_msg, 'feedback'), 'message'),
 
-  implicit_type_descriptions.append(extract_subinterface(type_description_msg, 'feedback_message'))
+    (send_goal_service, 'service'),
+    (extract_subinterface(send_goal_service, 'request_message'), 'message'),
+    (extract_subinterface(send_goal_service, 'response_message'), 'message'),
+    (extract_subinterface(send_goal_service, 'event_message'), 'message'),
+
+    (get_result_service, 'service'),
+    (extract_subinterface(get_result_service, 'request_message'), 'message'),
+    (extract_subinterface(get_result_service, 'response_message'), 'message'),
+    (extract_subinterface(get_result_service, 'event_message'), 'message'),
+    (extract_subinterface(type_description_msg, 'feedback_message'), 'message'),
+  ])
 }@
 
 #include "@(include_base)__functions.h"
+
+@[for msg, interface_type in [toplevel_type_description] + implicit_type_descriptions]@
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
+const rosidl_type_hash_t *
+@(msg['type_description']['type_name'].replace('/', '__'))__@(GET_HASH_FUNC)(const rosidl_@(interface_type)_type_support_t *)
+{
+  // TODO(ek)
+  static rosidl_type_hash_t hash;
+  return &hash;
+}
+@[end for]@
 
 @[if disable_description_codegen]@
 @{
 TEMPLATE(
   'empty__description.c.em',
-  toplevel_type_description=type_description_msg,
+  toplevel_type_description=toplevel_type_description,
   implicit_type_descriptions=implicit_type_descriptions)
 }@
 @[else]@
 @{
 TEMPLATE(
   'full__description.c.em',
-  toplevel_type_description=type_description_msg,
+  toplevel_type_description=toplevel_type_description,
   implicit_type_descriptions=implicit_type_descriptions)
 }@
 @[end if]@

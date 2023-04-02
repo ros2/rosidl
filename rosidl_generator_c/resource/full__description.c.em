@@ -20,10 +20,11 @@ def represent_default(default_value):
   # Encode to UTF-8 in case of WStrings, then remove the b'' from the representation.
   return repr(default_value.encode('utf-8'))[2:-1]
 
-implicit_type_names = set(td['type_description']['type_name'] for td in implicit_type_descriptions)
-
+implicit_type_names = set(td['type_description']['type_name'] for td, _ in implicit_type_descriptions)
 includes = set()
-for referenced_td in toplevel_type_description['referenced_type_descriptions']:
+toplevel_msg, _ = toplevel_type_description
+
+for referenced_td in toplevel_msg['referenced_type_descriptions']:
     if referenced_td['type_name'] in implicit_type_names:
         continue
     names = referenced_td['type_name'].split('/')
@@ -32,7 +33,7 @@ for referenced_td in toplevel_type_description['referenced_type_descriptions']:
     includes.add(include_prefix + '__functions.h')
 
 full_type_descriptions = [toplevel_type_description] + implicit_type_descriptions
-all_type_descriptions = [toplevel_type_description['type_description']] + toplevel_type_description['referenced_type_descriptions']
+all_type_descriptions = [toplevel_msg['type_description']] + toplevel_msg['referenced_type_descriptions']
 }@
 
 // Include directives for referenced types
@@ -45,7 +46,7 @@ all_type_descriptions = [toplevel_type_description['type_description']] + toplev
 static char @(typename_to_c(itype_description['type_name']))__TYPE_NAME[] = "@(itype_description['type_name'])";
 @[end for]@
 
-@[for msg in full_type_descriptions]@
+@[for msg, interface_type in full_type_descriptions]@
 @{
 itype_description = msg['type_description']
 td_typename = itype_description['type_name']
@@ -93,7 +94,7 @@ static rosidl_runtime_c__type_description__IndividualTypeDescription @(td_c_type
 @[  end if]@
 
 const rosidl_runtime_c__type_description__TypeDescription *
-@(td_c_typename)__@(GET_DESCRIPTION_FUNC)()
+@(td_c_typename)__@(GET_DESCRIPTION_FUNC)(const rosidl_@(interface_type)_type_support_t *)
 {
   static bool constructed = false;
   static const rosidl_runtime_c__type_description__TypeDescription description = {
@@ -107,7 +108,8 @@ const rosidl_runtime_c__type_description__TypeDescription *
     // TODO(ek) check hashes for consistency
 @[  for idx, ref_td in enumerate(ref_tds)]@
     {
-      const rosidl_runtime_c__type_description__TypeDescription * ref_desc = @(typename_to_c(ref_td['type_name']))__@(GET_DESCRIPTION_FUNC)();
+      const rosidl_runtime_c__type_description__TypeDescription * ref_desc = @
+      @(typename_to_c(ref_td['type_name']))__@(GET_DESCRIPTION_FUNC)(NULL);
       description.referenced_type_descriptions.data[@(idx)].fields.data = ref_desc->type_description.fields.data;
       description.referenced_type_descriptions.data[@(idx)].fields.size = ref_desc->type_description.fields.size;
       description.referenced_type_descriptions.data[@(idx)].fields.capacity = ref_desc->type_description.fields.capacity;
@@ -119,9 +121,9 @@ const rosidl_runtime_c__type_description__TypeDescription *
 }
 
 const rosidl_runtime_c__type_description__TypeSource__Sequence *
-@(td_c_typename)__@(GET_SOURCES_FUNC)()
+@(td_c_typename)__@(GET_SOURCES_FUNC)(const rosidl_@(interface_type)_type_support_t *)
 {
-@# TODO(emersonknapp) Implement raw source code embedding/generation. This sequence is left empty for now.
+@# TODO(ek) Implement raw source code embedding/generation. This sequence is left empty for now.
   static const rosidl_runtime_c__type_description__TypeSource__Sequence sources = @(static_seq(None, ''));
   return &sources;
 }

@@ -5,63 +5,22 @@
   "description": "Contains hashes and full type description for a ROS 2 interface. TypeDescription, IndividualTypeDescription, Field, and FieldType are exact representations of type_description_interfaces/msg types, see their .msg files for semantic comments.",
   "type": "object",
   "properties": {
-    "hashes": {
-      "type": "object",
-      "oneOf": [
-        { "$ref": "#/$defs/MessageHash" },
-        { "$ref": "#/$defs/ServiceHashes" },
-        { "$ref": "#/$defs/ActionHashes" }
-      ]
-    },
-    "type_description_msg": { "$ref": "#/$defs/TypeDescription" }
+    "type_description_msg": { "$ref": "#/$defs/TypeDescription" },
+    "type_hashes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/TypeNameAndHash" }
+    }
   },
-  "required": ["hashes", "type_description_msg"],
+  "required": ["type_description_msg", "type_hashes"],
   "additionalProperties": false,
   "$defs": {
-    "MessageHash": {
+    "TypeNameAndHash": {
       "type": "object",
       "properties": {
-        "message": { "type": "string" }
+        "type_name": { "type": "string" },
+        "hash_string": { "type": "string" }
       },
-      "required": [ "message" ],
-      "additionalProperties": false
-    },
-    "ServiceHashes": {
-      "type": "object",
-      "properties": {
-        "service": { "type": "string" },
-        "request_message": { "$ref": "#/$defs/MessageHash" },
-        "response_message": { "$ref": "#/$defs/MessageHash" },
-        "event_message": { "$ref": "#/$defs/MessageHash" }
-      },
-      "required": [
-        "service",
-        "request_message",
-        "response_message",
-        "event_message"
-      ],
-      "additionalProperties": false
-    },
-    "ActionHashes": {
-      "type": "object",
-      "properties": {
-        "action": { "type": "string" },
-        "goal": { "$ref": "#/$defs/MessageHash" },
-        "result": { "$ref": "#/$defs/MessageHash" },
-        "feedback": { "$ref": "#/$defs/MessageHash" },
-        "send_goal_service": { "$ref": "#/$defs/ServiceHashes" },
-        "get_result_service": { "$ref": "#/$defs/ServiceHashes" },
-        "feedback_message": { "$ref": "#/$defs/MessageHash" }
-      },
-      "required": [
-        "action",
-        "goal",
-        "result",
-        "feedback",
-        "send_goal_service",
-        "get_result_service",
-        "feedback_message"
-      ],
+      "required": [ "type_name", "hash_string" ],
       "additionalProperties": false
     },
     "TypeDescription": {

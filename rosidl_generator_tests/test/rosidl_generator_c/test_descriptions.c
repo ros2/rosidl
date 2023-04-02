@@ -53,8 +53,8 @@ int main(int argc, char ** argv)
 
   // Message
   if (0 != test_basic(
-      rosidl_generator_tests__msg__Defaults__get_type_description(),
-      rosidl_generator_tests__msg__Defaults__get_type_description_sources(),
+      rosidl_generator_tests__msg__Defaults__get_type_description(NULL),
+      rosidl_generator_tests__msg__Defaults__get_type_description_sources(NULL),
       "rosidl_generator_tests/msg/Defaults"))
   {
     return 1;
@@ -62,16 +62,16 @@ int main(int argc, char ** argv)
 
   // Service
   if (0 != test_basic(
-      rosidl_generator_tests__srv__Empty__get_type_description(),
-      rosidl_generator_tests__srv__Empty__get_type_description_sources(),
+      rosidl_generator_tests__srv__Empty__get_type_description(NULL),
+      rosidl_generator_tests__srv__Empty__get_type_description_sources(NULL),
       "rosidl_generator_tests/srv/Empty"))
   {
     return 1;
   }
   // Implicit message of a service
   if (0 != test_basic(
-      rosidl_generator_tests__srv__Empty_Request__get_type_description(),
-      rosidl_generator_tests__srv__Empty_Request__get_type_description_sources(),
+      rosidl_generator_tests__srv__Empty_Request__get_type_description(NULL),
+      rosidl_generator_tests__srv__Empty_Request__get_type_description_sources(NULL),
       "rosidl_generator_tests/srv/Empty_Request"))
   {
     return 1;
@@ -79,32 +79,32 @@ int main(int argc, char ** argv)
 
   // Action
   if (0 != test_basic(
-      rosidl_generator_tests__action__Fibonacci__get_type_description(),
-      rosidl_generator_tests__action__Fibonacci__get_type_description_sources(),
+      rosidl_generator_tests__action__Fibonacci__get_type_description(NULL),
+      rosidl_generator_tests__action__Fibonacci__get_type_description_sources(NULL),
       "rosidl_generator_tests/action/Fibonacci"))
   {
     return 1;
   }
   // Implicit message of an action
   if (0 != test_basic(
-      rosidl_generator_tests__action__Fibonacci_Feedback__get_type_description(),
-      rosidl_generator_tests__action__Fibonacci_Feedback__get_type_description_sources(),
+      rosidl_generator_tests__action__Fibonacci_Feedback__get_type_description(NULL),
+      rosidl_generator_tests__action__Fibonacci_Feedback__get_type_description_sources(NULL),
       "rosidl_generator_tests/action/Fibonacci_Feedback"))
   {
     return 1;
   }
   // Implicit service of an action
   if (0 != test_basic(
-      rosidl_generator_tests__action__Fibonacci_SendGoal__get_type_description(),
-      rosidl_generator_tests__action__Fibonacci_SendGoal__get_type_description_sources(),
+      rosidl_generator_tests__action__Fibonacci_SendGoal__get_type_description(NULL),
+      rosidl_generator_tests__action__Fibonacci_SendGoal__get_type_description_sources(NULL),
       "rosidl_generator_tests/action/Fibonacci_SendGoal"))
   {
     return 1;
   }
   // Implicit message of implicit service of an action
   if (0 != test_basic(
-      rosidl_generator_tests__action__Fibonacci_GetResult_Request__get_type_description(),
-      rosidl_generator_tests__action__Fibonacci_GetResult_Request__get_type_description_sources(),
+      rosidl_generator_tests__action__Fibonacci_GetResult_Request__get_type_description(NULL),
+      rosidl_generator_tests__action__Fibonacci_GetResult_Request__get_type_description_sources(NULL),
       "rosidl_generator_tests/action/Fibonacci_GetResult_Request"))
   {
     return 1;

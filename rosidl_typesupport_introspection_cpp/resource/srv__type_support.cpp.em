@@ -23,8 +23,8 @@ TEMPLATE(
 @{
 from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_generator_type_description import GET_DESCRIPTION_FUNC
+from rosidl_generator_type_description import GET_HASH_FUNC
 from rosidl_generator_type_description import GET_SOURCES_FUNC
-from rosidl_generator_type_description import TYPE_HASH_VAR
 from rosidl_parser.definition import SERVICE_EVENT_MESSAGE_SUFFIX
 from rosidl_parser.definition import SERVICE_REQUEST_MESSAGE_SUFFIX
 from rosidl_parser.definition import SERVICE_RESPONSE_MESSAGE_SUFFIX
@@ -84,7 +84,7 @@ static const rosidl_service_type_support_t @(service.namespaced_type.name)_servi
   ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))@(SERVICE_EVENT_MESSAGE_SUFFIX)>(),
   &::rosidl_typesupport_cpp::service_create_event_message<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))>,
   &::rosidl_typesupport_cpp::service_destroy_event_message<@('::'.join([package_name, *interface_path.parents[0].parts, service.namespaced_type.name]))>,
-  &@('::'.join(service.namespaced_type.namespaced_name()))::@(TYPE_HASH_VAR),
+  &@(idl_structure_type_to_c_typename(service.namespaced_type))__@(GET_HASH_FUNC),
   &@(idl_structure_type_to_c_typename(service.namespaced_type))__@(GET_DESCRIPTION_FUNC),
   &@(idl_structure_type_to_c_typename(service.namespaced_type))__@(GET_SOURCES_FUNC),
 };

@@ -92,17 +92,20 @@ bool
 /// Retrieve pointer to the hash of the description of the message type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_type_hash_t *
-@(message_typename)__@(GET_HASH_FUNC)(const rosidl_message_type_support_t *);
+@(message_typename)__@(GET_HASH_FUNC)(
+  const rosidl_message_type_support_t *);
 
 /// Retrieve pointer to the description of the message type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_runtime_c__type_description__TypeDescription *
-@(message_typename)__@(GET_DESCRIPTION_FUNC)(const rosidl_message_type_support_t *);
+@(message_typename)__@(GET_DESCRIPTION_FUNC)(
+  const rosidl_message_type_support_t *);
 
 /// Retrieve pointer to the raw source texts that defined the description of the message type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_runtime_c__type_description__TypeSource__Sequence *
-@(message_typename)__@(GET_SOURCES_FUNC)(const rosidl_message_type_support_t *);
+@(message_typename)__@(GET_SOURCES_FUNC)(
+  const rosidl_message_type_support_t *);
 
 @#######################################################################
 @# array functions

@@ -14,6 +14,11 @@ extern "C"
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "rosidl_runtime_c/action_type_support_struct.h"
+#include "rosidl_runtime_c/message_type_support_struct.h"
+#include "rosidl_runtime_c/service_type_support_struct.h"
+#include "rosidl_runtime_c/type_description/type_source__struct.h"
+#include "rosidl_runtime_c/type_hash.h"
 #include "rosidl_runtime_c/visibility_control.h"
 
 #include "rosidl_runtime_c/type_description/key_value__struct.h"
@@ -92,6 +97,24 @@ bool
 rosidl_runtime_c__type_description__KeyValue__copy(
   const rosidl_runtime_c__type_description__KeyValue * input,
   rosidl_runtime_c__type_description__KeyValue * output);
+
+/// Retrieve pointer to the hash of the description of the message type.
+ROSIDL_GENERATOR_C_PUBLIC
+const rosidl_type_hash_t *
+rosidl_runtime_c__type_description__KeyValue__get_type_hash(
+  const rosidl_message_type_support_t *);
+
+/// Retrieve pointer to the description of the message type.
+ROSIDL_GENERATOR_C_PUBLIC
+const rosidl_runtime_c__type_description__TypeDescription *
+rosidl_runtime_c__type_description__KeyValue__get_type_description(
+  const rosidl_message_type_support_t *);
+
+/// Retrieve pointer to the raw source texts that defined the description of the message type.
+ROSIDL_GENERATOR_C_PUBLIC
+const rosidl_runtime_c__type_description__TypeSource__Sequence *
+rosidl_runtime_c__type_description__KeyValue__get_type_description_sources(
+  const rosidl_message_type_support_t *);
 
 /// Initialize array of msg/KeyValue messages.
 /**

@@ -74,17 +74,20 @@ service_typename = idl_structure_type_to_c_typename(service.namespaced_type)
 /// Retrieve pointer to the hash of the description of the service type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_type_hash_t *
-@(service_typename)__@(GET_HASH_FUNC)(const rosidl_service_type_support_t *);
+@(service_typename)__@(GET_HASH_FUNC)(
+  const rosidl_service_type_support_t *);
 
 /// Retrieve pointer to the description of the service type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_runtime_c__type_description__TypeDescription *
-@(service_typename)__@(GET_DESCRIPTION_FUNC)(const rosidl_service_type_support_t *);
+@(service_typename)__@(GET_DESCRIPTION_FUNC)(
+  const rosidl_service_type_support_t *);
 
 /// Retrieve pointer to the raw source texts that defined the description of the service type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_runtime_c__type_description__TypeSource__Sequence *
-@(service_typename)__@(GET_SOURCES_FUNC)(const rosidl_service_type_support_t *);
+@(service_typename)__@(GET_SOURCES_FUNC)(
+  const rosidl_service_type_support_t *);
 
 @{
 TEMPLATE(
@@ -123,17 +126,20 @@ get_result_srv_typename = idl_structure_type_to_c_typename(action.get_result_ser
 /// Retrieve pointer to the hash of the description of the service type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_type_hash_t *
-@(action_typename)__@(GET_HASH_FUNC)(const rosidl_action_type_support_t *);
+@(action_typename)__@(GET_HASH_FUNC)(
+  const rosidl_action_type_support_t *);
 
 /// Retrieve pointer to the description of the action type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_runtime_c__type_description__TypeDescription *
-@(action_typename)__@(GET_DESCRIPTION_FUNC)(const rosidl_action_type_support_t *);
+@(action_typename)__@(GET_DESCRIPTION_FUNC)(
+  const rosidl_action_type_support_t *);
 
 /// Retrieve pointer to the raw source texts that defined the description of the action type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_runtime_c__type_description__TypeSource__Sequence *
-@(action_typename)__@(GET_SOURCES_FUNC)(const rosidl_action_type_support_t *);
+@(action_typename)__@(GET_SOURCES_FUNC)(
+  const rosidl_action_type_support_t *);
 
 @{
 TEMPLATE(
@@ -159,17 +165,20 @@ TEMPLATE(
 /// Retrieve pointer to the hash of the description of the service type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_type_hash_t *
-@(send_goal_srv_typename)__@(GET_HASH_FUNC)(const rosidl_service_type_support_t *);
+@(send_goal_srv_typename)__@(GET_HASH_FUNC)(
+  const rosidl_service_type_support_t *);
 
 /// Retrieve pointer to the description of the service type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_runtime_c__type_description__TypeDescription *
-@(send_goal_srv_typename)__@(GET_DESCRIPTION_FUNC)(const rosidl_service_type_support_t *);
+@(send_goal_srv_typename)__@(GET_DESCRIPTION_FUNC)(
+  const rosidl_service_type_support_t *);
 
 /// Retrieve pointer to the raw source texts that defined the description of the service type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_runtime_c__type_description__TypeSource__Sequence *
-@(send_goal_srv_typename)__@(GET_SOURCES_FUNC)(const rosidl_service_type_support_t *);
+@(send_goal_srv_typename)__@(GET_SOURCES_FUNC)(
+  const rosidl_service_type_support_t *);
 
 @{
 TEMPLATE(
@@ -195,17 +204,20 @@ TEMPLATE(
 /// Retrieve pointer to the hash of the description of the service type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_type_hash_t *
-@(get_result_srv_typename)__@(GET_HASH_FUNC)(const rosidl_service_type_support_t *);
+@(get_result_srv_typename)__@(GET_HASH_FUNC)(
+  const rosidl_service_type_support_t *);
 
 /// Retrieve pointer to the description of the service type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_runtime_c__type_description__TypeDescription *
-@(get_result_srv_typename)__@(GET_DESCRIPTION_FUNC)(const rosidl_service_type_support_t *);
+@(get_result_srv_typename)__@(GET_DESCRIPTION_FUNC)(
+  const rosidl_service_type_support_t *);
 
 /// Retrieve pointer to the raw source texts that defined the description of the service type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_runtime_c__type_description__TypeSource__Sequence *
-@(get_result_srv_typename)__@(GET_SOURCES_FUNC)(const rosidl_service_type_support_t *);
+@(get_result_srv_typename)__@(GET_SOURCES_FUNC)(
+  const rosidl_service_type_support_t *);
 
 @{
 TEMPLATE(

@@ -22,6 +22,7 @@
 
 #include "rosidl_runtime_c/type_description_utils.h"
 
+#include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -1399,8 +1400,8 @@ rosidl_runtime_c_type_description_utils_print_field_type(
   printf(
     "  [FIELD TYPE]\n"
     "    type_id: %d\n"
-    "    capacity: %ld\n"
-    "    string_capacity: %ld\n",
+    "    capacity: %" PRIu64 "\n"
+    "    string_capacity: %" PRIu64 "\n",
     field_type->type_id, field_type->capacity, field_type->string_capacity);
 
   if (field_type->nested_type_name.data == NULL) {
@@ -1438,7 +1439,7 @@ rosidl_runtime_c_type_description_utils_print_individual_type_description(
   const rosidl_runtime_c__type_description__IndividualTypeDescription * individual_type_description)
 {
   printf(
-    "\n[INDIVIDUAL TYPE DESCRIPTION] (Fields: %ld)\n", individual_type_description->fields.size);
+    "\n[INDIVIDUAL TYPE DESCRIPTION] (Fields: %zd)\n", individual_type_description->fields.size);
 
   if (individual_type_description->type_name.data == NULL) {
     printf("  type_name: %s\n", individual_type_description->type_name.data);
@@ -1459,7 +1460,7 @@ void rosidl_runtime_c_type_description_utils_print_type_description(
   printf("\n\n---\n\n");
 
   printf(
-    "= [PRINTING TYPE DESCRIPTION] = (Referenced descriptions: %ld)\n",
+    "= [PRINTING TYPE DESCRIPTION] = (Referenced descriptions: %zd)\n",
     type_description->referenced_type_descriptions.size);
 
   printf("\n== [MAIN DESCRIPTION] ==\n");

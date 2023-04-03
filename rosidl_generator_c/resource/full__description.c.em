@@ -2,9 +2,11 @@
 @{
 from rosidl_generator_c import escape_string
 from rosidl_generator_c import idl_structure_type_to_c_include_prefix
+from rosidl_generator_c import type_hash_to_c_definition
 from rosidl_parser.definition import NamespacedType
 from rosidl_generator_type_description import FIELD_TYPE_ID_TO_NAME
 from rosidl_generator_type_description import GET_DESCRIPTION_FUNC
+from rosidl_generator_type_description import GET_HASH_FUNC
 from rosidl_generator_type_description import GET_SOURCES_FUNC
 
 def typename_to_c(typename):
@@ -33,12 +35,26 @@ for referenced_td in toplevel_msg['referenced_type_descriptions']:
     includes.add(include_prefix + '__functions.h')
 
 full_type_descriptions = [toplevel_type_description] + implicit_type_descriptions
+full_type_names = [t['type_description']['type_name'] for t, _ in full_type_descriptions]
 all_type_descriptions = [toplevel_msg['type_description']] + toplevel_msg['referenced_type_descriptions']
 }@
 
+#include <assert.h>
+#include <string.h>
 // Include directives for referenced types
 @[for header_file in includes]@
 #include "@(header_file)"
+@[end for]@
+
+// Expected hashes for externally referenced types
+@[for referenced_type_description in toplevel_msg['referenced_type_descriptions']]@
+@{
+type_name = referenced_type_description['type_name']
+c_typename = type_name.replace('/', '__')
+}@
+@[  if type_name not in full_type_names]@
+static const rosidl_type_hash_t @(c_typename)__EXPECTED_HASH = @(type_hash_to_c_definition(hash_lookup[type_name]));
+@[  end if]@
 @[end for]@
 
 // Names for all types
@@ -105,10 +121,15 @@ const rosidl_runtime_c__type_description__TypeDescription *
     @(static_seq(f'{td_c_typename}__REFERENCED_TYPE_DESCRIPTIONS', ref_tds)),
   };
   if (!constructed) {
-    // TODO(ek) check hashes for consistency
 @[  for idx, ref_td in enumerate(ref_tds)]@
+@{
+c_typename = typename_to_c(ref_td['type_name'])
+}@
     {
-      const rosidl_runtime_c__type_description__TypeDescription * ref_desc = @(typename_to_c(ref_td['type_name']))__@(GET_DESCRIPTION_FUNC)(NULL);
+@[    if ref_td['type_name'] not in full_type_names]@
+      assert(0 == memcmp(&@(c_typename)__EXPECTED_HASH, @(c_typename)__@(GET_HASH_FUNC)(NULL), sizeof(rosidl_type_hash_t)));
+@[    end if]@
+      const rosidl_runtime_c__type_description__TypeDescription * ref_desc = @(c_typename)__@(GET_DESCRIPTION_FUNC)(NULL);
       description.referenced_type_descriptions.data[@(idx)].fields.data = ref_desc->type_description.fields.data;
       description.referenced_type_descriptions.data[@(idx)].fields.size = ref_desc->type_description.fields.size;
       description.referenced_type_descriptions.data[@(idx)].fields.capacity = ref_desc->type_description.fields.capacity;

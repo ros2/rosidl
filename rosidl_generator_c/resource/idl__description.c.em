@@ -76,8 +76,9 @@ const rosidl_type_hash_t *
   static rosidl_type_hash_t hash = @(type_hash_to_c_definition(hash_lookup[typename], indent=4));
   return &hash;
 }
-@[end for]@
 
+@[end for]@
+@
 @[if disable_description_codegen]@
 @{
 TEMPLATE(

@@ -169,12 +169,6 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
         except KeyError:
             raise Exception(f'Key "type_hashes" not  found in {include_path}')
 
-        # TODO(ek) check for diff def
-        # if (
-        #     type_name in referenced_types and
-        #     referenced_types[type_name] != individual_type_description
-        # ):
-        #     raise Exception('Encountered two definitions of the same referenced type')
         serialized_type_lookup[type_description_msg['type_description']['type_name']] = \
             type_description_msg['type_description']
         for referenced_type in type_description_msg['referenced_type_descriptions']:

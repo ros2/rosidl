@@ -54,6 +54,7 @@ int description_namecheck(
 
 int test_description_linkage();
 int test_copied_type_description_struct_hashes();
+int test_source_defined();
 
 int main(void)
 {
@@ -66,6 +67,11 @@ int main(void)
   printf("Testing rosidl_generator_tests copied type description struct hashes...\n");
   if (test_copied_type_description_struct_hashes()) {
     fprintf(stderr, "test_copied_type_description_struct_hashes() FAILED\n");
+    rc++;
+  }
+  printf("Testing rosidl_generator_tests embedded raw sources...\n");
+  if (test_source_defined()) {
+    fprintf(stderr, "test_source_defined() FAILED\n");
     rc++;
   }
 
@@ -132,6 +138,42 @@ int test_description_linkage()
     return 1;
   }
 
+  return 0;
+}
+
+int test_source_defined()
+{
+  // Smoke test that definitions are present for raw type sources
+  // Message
+  if (!rosidl_generator_tests__msg__Defaults__get_type_description_sources(NULL)) {
+    return 1;
+  }
+
+  // Service
+  if (!rosidl_generator_tests__srv__Empty__get_type_description_sources(NULL)) {
+    return 1;
+  }
+  // Implicit message of a service
+  if (!rosidl_generator_tests__srv__Empty_Response__get_type_description_sources(NULL)) {
+    return 1;
+  }
+
+  // Action
+  if (!rosidl_generator_tests__action__Fibonacci__get_type_description_sources(NULL)) {
+    return 1;
+  }
+  // Implicit message of an action
+  if (!rosidl_generator_tests__action__Fibonacci_Goal__get_type_description_sources(NULL)) {
+    return 1;
+  }
+  // Implicit service of an action
+  if (!rosidl_generator_tests__action__Fibonacci_GetResult__get_type_description_sources(NULL)) {
+    return 1;
+  }
+  // Implicit message of implicit service of an action
+  if (!rosidl_generator_tests__action__Fibonacci_SendGoal_Response__get_type_description_sources(NULL)) {
+    return 1;
+  }
   return 0;
 }
 

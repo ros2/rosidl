@@ -35,6 +35,7 @@ RIHS01_PATTERN = re.compile(r'RIHS([0-9a-f]{2})_([0-9a-f]{64})')
 # Used by code generators to create variable names
 GET_DESCRIPTION_FUNC = 'get_type_description'
 GET_HASH_FUNC = 'get_type_hash'
+GET_INDIVIDUAL_SOURCE_FUNC = 'get_individual_type_description_source'
 GET_SOURCES_FUNC = 'get_type_description_sources'
 
 

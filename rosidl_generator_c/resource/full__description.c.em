@@ -7,10 +7,17 @@ from rosidl_parser.definition import NamespacedType
 from rosidl_generator_type_description import FIELD_TYPE_ID_TO_NAME
 from rosidl_generator_type_description import GET_DESCRIPTION_FUNC
 from rosidl_generator_type_description import GET_HASH_FUNC
+from rosidl_generator_type_description import GET_INDIVIDUAL_SOURCE_FUNC
 from rosidl_generator_type_description import GET_SOURCES_FUNC
 
 def typename_to_c(typename):
   return typename.replace('/', '__')
+
+def static_seq_n(varname, n):
+  """Statically define a runtime Sequence or String type."""
+  if n > 0:
+    return f'{{{varname}, {n}, {n}}}'
+  return '{NULL, 0, 0}'
 
 def static_seq(varname, values):
   """Statically define a runtime Sequence or String type."""
@@ -37,6 +44,10 @@ for referenced_td in toplevel_msg['referenced_type_descriptions']:
 full_type_descriptions = [toplevel_type_description] + implicit_type_descriptions
 full_type_names = [t['type_description']['type_name'] for t, _ in full_type_descriptions]
 all_type_descriptions = [toplevel_msg['type_description']] + toplevel_msg['referenced_type_descriptions']
+
+toplevel_encoding = type_source_file.suffix[1:]
+with open(type_source_file, 'r') as f:
+  raw_source_content = f.read()
 }@
 
 #include <assert.h>
@@ -62,6 +73,9 @@ static const rosidl_type_hash_t @(c_typename)__EXPECTED_HASH = @(type_hash_to_c_
 static char @(typename_to_c(itype_description['type_name']))__TYPE_NAME[] = "@(itype_description['type_name'])";
 @[end for]@
 
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Define all values going into each local type
+@
 @[for msg, interface_type in full_type_descriptions]@
 @{
 itype_description = msg['type_description']
@@ -78,7 +92,6 @@ static char @(td_c_typename)__DEFAULT_VALUE__@(field['name'])[] = "@(escape_stri
 @[    end if]@
 @[  end for]@
 
-/// Define arrays of Fields
 @
 @[  if itype_description['fields']]@
 static rosidl_runtime_c__type_description__Field @(td_c_typename)__FIELDS[] = {
@@ -97,7 +110,6 @@ static rosidl_runtime_c__type_description__Field @(td_c_typename)__FIELDS[] = {
 };
 @[  end if]@
 
-/// Define exported TypeDescription and TypeSources
 @[  if ref_tds]@
 static rosidl_runtime_c__type_description__IndividualTypeDescription @(td_c_typename)__REFERENCED_TYPE_DESCRIPTIONS[] = {
 @[    for ref_td in ref_tds]@
@@ -139,12 +151,67 @@ c_typename = typename_to_c(ref_td['type_name'])
   }
   return &description;
 }
+@[end for]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Define Raw Sources
+@[if raw_source_content]@
+static char toplevel_type_raw_source[] = ""@
+@[  for line in raw_source_content.splitlines()]
+"@(escape_string(line))\n"@
+@[  end for]@
+;
+@[end if]@
+@
+static char @(toplevel_encoding)_encoding[] = "@(toplevel_encoding)";
+@[if implicit_type_descriptions]@
+static char implicit_encoding[] = "implicit";
+@[end if]@
+@
+@[for type_description_msg, interface_type in full_type_descriptions]@
+@{
+itype_description = type_description_msg['type_description']
+td_typename = itype_description['type_name']
+td_c_typename = typename_to_c(td_typename)
+encoding = 'implicit' if td_typename in implicit_type_names else toplevel_encoding
+contents = None if td_typename in implicit_type_names else raw_source_content
+}@
+
+const rosidl_runtime_c__type_description__TypeSource *
+@(td_c_typename)__@(GET_INDIVIDUAL_SOURCE_FUNC)(
+  const rosidl_@(interface_type)_type_support_t *)
+{
+  static const rosidl_runtime_c__type_description__TypeSource source = {
+    @(static_seq(f'{td_c_typename}__TYPE_NAME', td_typename)),
+    @(static_seq(f'{encoding}_encoding', encoding)),
+    @(static_seq('toplevel_type_raw_source', contents)),
+  };
+  return &source;
+}
+@[end for]@
+@
+@[for type_description_msg, interface_type in full_type_descriptions]@
+@{
+ref_tds = type_description_msg['referenced_type_descriptions']
+num_sources = len(ref_tds) + 1
+td_c_typename = typename_to_c(type_description_msg['type_description']['type_name'])
+}@
 
 const rosidl_runtime_c__type_description__TypeSource__Sequence *
-@(td_c_typename)__@(GET_SOURCES_FUNC)(const rosidl_@(interface_type)_type_support_t *)
+@(td_c_typename)__@(GET_SOURCES_FUNC)(
+  const rosidl_@(interface_type)_type_support_t *)
 {
-@# TODO(ek) Implement raw source code embedding/generation. This sequence is left empty for now.
-  static const rosidl_runtime_c__type_description__TypeSource__Sequence sources = @(static_seq(None, ''));
-  return &sources;
+  static rosidl_runtime_c__type_description__TypeSource sources[@(num_sources)];
+  static const rosidl_runtime_c__type_description__TypeSource__Sequence source_sequence = @(static_seq_n('sources', num_sources));
+  static bool constructed = false;
+  if (!constructed) {
+    sources[0] = *@(td_c_typename)__@(GET_INDIVIDUAL_SOURCE_FUNC)(NULL),
+@[  for idx, ref_td in enumerate(ref_tds)]@
+    sources[@(idx)] = *@(typename_to_c(ref_td['type_name']))__@(GET_INDIVIDUAL_SOURCE_FUNC)(NULL);
+@[  end for]@
+    constructed = true;
+  }
+  return &source_sequence;
 }
 @[end for]@

@@ -79,8 +79,6 @@ foreach(dep ${target_dependencies})
 endforeach()
 
 get_target_property(_target_sources ${rosidl_generate_interfaces_TARGET} SOURCES)
-message(WARNING "TARGET SOURCES  ${_target_sources}")
-
 set(generator_arguments_file "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c__arguments.json")
 rosidl_write_generator_arguments(
   "${generator_arguments_file}"
@@ -91,6 +89,7 @@ rosidl_write_generator_arguments(
   TEMPLATE_DIR "${rosidl_generator_c_TEMPLATE_DIR}"
   TARGET_DEPENDENCIES ${target_dependencies}
   TYPE_DESCRIPTION_TUPLES "${${rosidl_generate_interfaces_TARGET}__DESCRIPTION_TUPLES}"
+  ROS_INTERFACE_FILES "${_target_sources}"
 )
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)

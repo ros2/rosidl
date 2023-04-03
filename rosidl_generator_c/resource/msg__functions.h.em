@@ -5,6 +5,7 @@ from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_generator_c import interface_path_to_string
 from rosidl_generator_type_description import GET_DESCRIPTION_FUNC
 from rosidl_generator_type_description import GET_HASH_FUNC
+from rosidl_generator_type_description import GET_INDIVIDUAL_SOURCE_FUNC
 from rosidl_generator_type_description import GET_SOURCES_FUNC
 
 message_typename = idl_structure_type_to_c_typename(message.structure.namespaced_type)
@@ -99,6 +100,11 @@ const rosidl_type_hash_t *
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_runtime_c__type_description__TypeDescription *
 @(message_typename)__@(GET_DESCRIPTION_FUNC)(
+  const rosidl_message_type_support_t *);
+
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
+const rosidl_runtime_c__type_description__TypeSource *
+@(message_typename)__@(GET_INDIVIDUAL_SOURCE_FUNC)(
   const rosidl_message_type_support_t *);
 
 /// Retrieve pointer to the raw source texts that defined the description of the message type.

@@ -240,7 +240,6 @@ macro(rosidl_generate_interfaces target)
     endif()
   endforeach()
 
-  message(WARNING "NonIdlFiles ${_non_idl_files}")
   add_custom_target(
     ${target} ALL
     DEPENDS

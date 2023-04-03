@@ -57,6 +57,7 @@ for action in content.get_elements_of_type(Action):
     (extract_subinterface(get_result_service, 'request_message'), 'message'),
     (extract_subinterface(get_result_service, 'response_message'), 'message'),
     (extract_subinterface(get_result_service, 'event_message'), 'message'),
+
     (extract_subinterface(type_description_msg, 'feedback_message'), 'message'),
   ])
 }@
@@ -72,7 +73,7 @@ ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_type_hash_t *
 @(c_typename)__@(GET_HASH_FUNC)(const rosidl_@(interface_type)_type_support_t *)
 {
-  static rosidl_type_hash_t hash = @(type_hash_to_c_definition(hash_lookup[typename]));
+  static rosidl_type_hash_t hash = @(type_hash_to_c_definition(hash_lookup[typename], indent=4));
   return &hash;
 }
 @[end for]@

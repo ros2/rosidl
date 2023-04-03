@@ -41,17 +41,17 @@
 #include "rosidl_runtime_c/type_description/type_description__struct.h"
 
 
-// Modified from https://stackoverflow.com/questions/4398711/round-to-the-nearest-power-of-two
-int next_power_of_two(int v)
+// Modified from http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+size_t next_power_of_two(size_t v)
 {
   v--;
+  size_t shf = 1;
   v |= v >> 1;
-  v |= v >> 2;
-  v |= v >> 4;
-  v |= v >> 8;
-  v |= v >> 16;
+  for (size_t i = 0; i < sizeof(size_t); i++) {
+    shf = shf * 2;
+    v |= v >> shf;
+  }
   v++;   // next power of 2
-
   return v > 1 ? v : 1;
 }
 

@@ -26,6 +26,8 @@ rosidl_runtime_c__type_description__TypeSource__get_type_hash(
 // Include directives for referenced types
 
 // Hashes for external referenced types
+#ifndef NDEBUG
+#endif
 
 static char rosidl_runtime_c__type_description__TypeSource__TYPE_NAME[] = "type_description_interfaces/msg/TypeSource";
 

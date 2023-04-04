@@ -182,8 +182,14 @@ static char implicit_encoding[] = "implicit";
 itype_description = type_description_msg['type_description']
 td_typename = itype_description['type_name']
 td_c_typename = typename_to_c(td_typename)
-encoding = 'implicit' if td_typename in implicit_type_names else toplevel_encoding
-contents = None if td_typename in implicit_type_names else raw_source_content
+if td_typename in implicit_type_names:
+  encoding = 'implicit'
+  contents_var = None
+  contents = None
+else:
+  encoding = toplevel_encoding
+  contents_var = 'toplevel_type_raw_source'
+  contents = raw_source_content
 }@
 
 const rosidl_runtime_c__type_description__TypeSource *
@@ -194,7 +200,7 @@ const rosidl_runtime_c__type_description__TypeSource *
   static const rosidl_runtime_c__type_description__TypeSource source = {
     @(static_seq(f'{td_c_typename}__TYPE_NAME', td_typename)),
     @(static_seq(f'{encoding}_encoding', encoding)),
-    @(static_seq('toplevel_type_raw_source', contents)),
+    @(static_seq(contents_var, contents)),
   };
   return &source;
 }

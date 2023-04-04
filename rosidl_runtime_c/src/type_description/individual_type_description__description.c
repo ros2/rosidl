@@ -28,6 +28,7 @@ rosidl_runtime_c__type_description__IndividualTypeDescription__get_type_hash(
 #include "rosidl_runtime_c/type_description/field_type__functions.h"
 
 // Hashes for external referenced types
+#ifndef NDEBUG
 static const rosidl_type_hash_t rosidl_runtime_c__type_description__Field__EXPECTED_HASH = {1, {
     0xc0, 0xb0, 0x13, 0x79, 0xcd, 0x42, 0x26, 0x28,
     0x12, 0x85, 0xcc, 0xaf, 0x6b, 0xe4, 0x66, 0x53,
@@ -40,6 +41,7 @@ static const rosidl_type_hash_t rosidl_runtime_c__type_description__FieldType__E
     0x88, 0x6e, 0xa3, 0xe5, 0x31, 0xa1, 0xd9, 0x5c,
     0xc0, 0xf3, 0x80, 0xa3, 0x97, 0x3c, 0xca, 0xa6,
   }};
+#endif
 
 static char rosidl_runtime_c__type_description__IndividualTypeDescription__TYPE_NAME[] = "type_description_interfaces/msg/IndividualTypeDescription";
 static char rosidl_runtime_c__type_description__Field__TYPE_NAME[] = "type_description_interfaces/msg/Field";

@@ -25,9 +25,10 @@ def static_seq(varname, values):
     return f'{{{varname}, {len(values)}, {len(values)}}}'
   return '{NULL, 0, 0}'
 
-def represent_default(default_value):
-  # Encode to UTF-8 in case of WStrings, then remove the b'' from the representation.
-  return repr(default_value.encode('utf-8'))[2:-1]
+def utf8_encode(value_string):
+  from rosidl_generator_c import escape_string
+  # Slice removes the b'' from the representation.
+  return escape_string(repr(value_string.encode('utf-8'))[2:-1])
 
 implicit_type_names = set(td['type_description']['type_name'] for td, _ in implicit_type_descriptions)
 includes = set()
@@ -94,7 +95,7 @@ ref_tds = msg['referenced_type_descriptions']
 @[  for field in itype_description['fields']]@
 static char @(td_c_typename)__FIELD_NAME__@(field['name'])[] = "@(field['name'])";
 @[    if field['default_value']]@
-static char @(td_c_typename)__DEFAULT_VALUE__@(field['name'])[] = "@(escape_string(represent_default(field['default_value'])))";
+static char @(td_c_typename)__DEFAULT_VALUE__@(field['name'])[] = "@(utf8_encode(field['default_value']))";
 @[    end if]@
 @[  end for]@
 
@@ -163,9 +164,9 @@ c_typename = typename_to_c(ref_td['type_name'])
 @[if raw_source_content]@
 static char toplevel_type_raw_source[] =@
 @[  for line in raw_source_content.splitlines()[:-1]]
-  "@(escape_string(line))\n"@
+  "@(utf8_encode(line))\n"@
 @[  end for]
-  "@(escape_string(raw_source_content.splitlines()[-1]))";
+  "@(utf8_encode(raw_source_content.splitlines()[-1]))";
 @[end if]@
 
 static char @(toplevel_encoding)_encoding[] = "@(toplevel_encoding)";

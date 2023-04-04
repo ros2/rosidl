@@ -122,8 +122,10 @@ static rosidl_runtime_c__type_description__IndividualTypeDescription @(td_c_type
 @[  end if]@
 
 const rosidl_runtime_c__type_description__TypeDescription *
-@(td_c_typename)__@(GET_DESCRIPTION_FUNC)(const rosidl_@(interface_type)_type_support_t *)
+@(td_c_typename)__@(GET_DESCRIPTION_FUNC)(
+  const rosidl_@(interface_type)_type_support_t * type_support)
 {
+  (void)type_support;
   static bool constructed = false;
   static const rosidl_runtime_c__type_description__TypeDescription description = {
     {
@@ -157,18 +159,19 @@ c_typename = typename_to_c(ref_td['type_name'])
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 @# Define Raw Sources
 @[if raw_source_content]@
-static char toplevel_type_raw_source[] = ""@
-@[  for line in raw_source_content.splitlines()]
-"@(escape_string(line))\n"@
-@[  end for]@
-;
+static char toplevel_type_raw_source[] =@
+@[  for line in raw_source_content.splitlines()[:-1]]
+  "@(escape_string(line))\n"@
+@[  end for]
+  "@(escape_string(raw_source_content.splitlines()[-1]))";
 @[end if]@
-@
+
 static char @(toplevel_encoding)_encoding[] = "@(toplevel_encoding)";
 @[if implicit_type_descriptions]@
 static char implicit_encoding[] = "implicit";
 @[end if]@
-@
+
+// Define all individual source functions
 @[for type_description_msg, interface_type in full_type_descriptions]@
 @{
 itype_description = type_description_msg['type_description']
@@ -180,8 +183,9 @@ contents = None if td_typename in implicit_type_names else raw_source_content
 
 const rosidl_runtime_c__type_description__TypeSource *
 @(td_c_typename)__@(GET_INDIVIDUAL_SOURCE_FUNC)(
-  const rosidl_@(interface_type)_type_support_t *)
+  const rosidl_@(interface_type)_type_support_t * type_support)
 {
+  (void)type_support;
   static const rosidl_runtime_c__type_description__TypeSource source = {
     @(static_seq(f'{td_c_typename}__TYPE_NAME', td_typename)),
     @(static_seq(f'{encoding}_encoding', encoding)),
@@ -190,7 +194,8 @@ const rosidl_runtime_c__type_description__TypeSource *
   return &source;
 }
 @[end for]@
-@
+
+// Define all full source sequence functions
 @[for type_description_msg, interface_type in full_type_descriptions]@
 @{
 ref_tds = type_description_msg['referenced_type_descriptions']
@@ -200,8 +205,9 @@ td_c_typename = typename_to_c(type_description_msg['type_description']['type_nam
 
 const rosidl_runtime_c__type_description__TypeSource__Sequence *
 @(td_c_typename)__@(GET_SOURCES_FUNC)(
-  const rosidl_@(interface_type)_type_support_t *)
+  const rosidl_@(interface_type)_type_support_t * type_support)
 {
+  (void)type_support;
   static rosidl_runtime_c__type_description__TypeSource sources[@(num_sources)];
   static const rosidl_runtime_c__type_description__TypeSource__Sequence source_sequence = @(static_seq_n('sources', num_sources));
   static bool constructed = false;

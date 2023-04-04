@@ -71,8 +71,10 @@ c_typename = typename.replace('/', '__')
 }@
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 const rosidl_type_hash_t *
-@(c_typename)__@(GET_HASH_FUNC)(const rosidl_@(interface_type)_type_support_t *)
+@(c_typename)__@(GET_HASH_FUNC)(
+  const rosidl_@(interface_type)_type_support_t * type_support)
 {
+  (void)type_support;
   static rosidl_type_hash_t hash = @(type_hash_to_c_definition(hash_lookup[typename], indent=4));
   return &hash;
 }

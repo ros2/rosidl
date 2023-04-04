@@ -8,15 +8,17 @@ def typename_to_c(typename):
 }@
 
 /// Define exported TypeDescriptions and TypeSources
-@[for msg in [toplevel_type_description] + implicit_type_descriptions]@
+@[for msg, interface_type in [toplevel_type_description] + implicit_type_descriptions]@
 @{
 td_typename = msg['type_description']['type_name']
 td_c_typename = typename_to_c(td_typename)
 }@
 
 const rosidl_runtime_c__type_description__TypeDescription *
-@(td_c_typename)__@(GET_DESCRIPTION_FUNC)()
+@(td_c_typename)__@(GET_DESCRIPTION_FUNC)(
+  const rosidl_@(interface_type)_type_support_t * type_support)
 {
+  (void)type_support;
   static const rosidl_runtime_c__type_description__TypeDescription description = {
     {
       {NULL, 0, 0},
@@ -28,8 +30,23 @@ const rosidl_runtime_c__type_description__TypeDescription *
 }
 
 const rosidl_runtime_c__type_description__TypeSource__Sequence *
-@(td_c_typename)__@(GET_SOURCES_FUNC)()
+@(td_c_typename)__@(GET_INDIVIDUAL_SOURCE_FUNC)(
+  const rosidl_@(interface_type)_type_support_t * type_support)
 {
+  (void)type_support;
+  static const rosidl_runtime_c__type_description__TypeSource source = {
+    {NULL, 0, 0},
+    {NULL, 0, 0},
+    {NULL, 0, 0}
+  };
+  return &source;
+}
+
+const rosidl_runtime_c__type_description__TypeSource__Sequence *
+@(td_c_typename)__@(GET_SOURCES_FUNC)(
+  const rosidl_@(interface_type)_type_support_t * type_support)
+{
+  (void)type_support;
   static const rosidl_runtime_c__type_description__TypeSource__Sequence sources = {NULL, 0, 0};
   return &sources;
 }

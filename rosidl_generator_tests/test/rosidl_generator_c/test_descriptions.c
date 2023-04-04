@@ -171,7 +171,9 @@ int test_source_defined()
     return 1;
   }
   // Implicit message of implicit service of an action
-  if (!rosidl_generator_tests__action__Fibonacci_SendGoal_Response__get_type_description_sources(NULL)) {
+  if (!rosidl_generator_tests__action__Fibonacci_SendGoal_Response__get_type_description_sources(
+      NULL))
+  {
     return 1;
   }
   return 0;

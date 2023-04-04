@@ -7,8 +7,10 @@
 
 ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_type_hash_t *
-rosidl_runtime_c__type_description__KeyValue__get_type_hash(const rosidl_message_type_support_t *)
+rosidl_runtime_c__type_description__KeyValue__get_type_hash(
+  const rosidl_message_type_support_t * type_support)
 {
+  (void)type_support;
   static rosidl_type_hash_t hash = {1, {
       0x27, 0x4f, 0xe5, 0x6b, 0xf1, 0x4f, 0x33, 0xc7,
       0x51, 0x2e, 0x34, 0xc6, 0x46, 0xa3, 0x75, 0x79,
@@ -32,7 +34,6 @@ static char rosidl_runtime_c__type_description__KeyValue__TYPE_NAME[] = "type_de
 static char rosidl_runtime_c__type_description__KeyValue__FIELD_NAME__key[] = "key";
 static char rosidl_runtime_c__type_description__KeyValue__FIELD_NAME__value[] = "value";
 
-/// Define arrays of Fields
 static rosidl_runtime_c__type_description__Field rosidl_runtime_c__type_description__KeyValue__FIELDS[] = {
   {
     {rosidl_runtime_c__type_description__KeyValue__FIELD_NAME__key, 3, 3},
@@ -56,11 +57,12 @@ static rosidl_runtime_c__type_description__Field rosidl_runtime_c__type_descript
   },
 };
 
-/// Define exported TypeDescription and TypeSources
 
 const rosidl_runtime_c__type_description__TypeDescription *
-rosidl_runtime_c__type_description__KeyValue__get_type_description(const rosidl_message_type_support_t *)
+rosidl_runtime_c__type_description__KeyValue__get_type_description(
+  const rosidl_message_type_support_t * type_support)
 {
+  (void)type_support;
   static bool constructed = false;
   static const rosidl_runtime_c__type_description__TypeDescription description = {
     {
@@ -75,9 +77,42 @@ rosidl_runtime_c__type_description__KeyValue__get_type_description(const rosidl_
   return &description;
 }
 
-const rosidl_runtime_c__type_description__TypeSource__Sequence *
-rosidl_runtime_c__type_description__KeyValue__get_type_description_sources(const rosidl_message_type_support_t *)
+static char toplevel_type_raw_source[] =
+  "# Represents an arbitrary key-value pair for application-specific information.\n"
+  "\n"
+  "string key\n"
+  "string value";
+
+static char msg_encoding[] = "msg";
+
+// Define all individual source functions
+
+const rosidl_runtime_c__type_description__TypeSource *
+rosidl_runtime_c__type_description__KeyValue__get_individual_type_description_source(
+  const rosidl_message_type_support_t * type_support)
 {
-  static const rosidl_runtime_c__type_description__TypeSource__Sequence sources = {NULL, 0, 0};
-  return &sources;
+  (void)type_support;
+  static const rosidl_runtime_c__type_description__TypeSource source = {
+    {rosidl_runtime_c__type_description__KeyValue__TYPE_NAME, 40, 40},
+    {msg_encoding, 3, 3},
+    {toplevel_type_raw_source, 104, 104},
+  };
+  return &source;
+}
+
+// Define all full source sequence functions
+
+const rosidl_runtime_c__type_description__TypeSource__Sequence *
+rosidl_runtime_c__type_description__KeyValue__get_type_description_sources(
+  const rosidl_message_type_support_t * type_support)
+{
+  (void)type_support;
+  static rosidl_runtime_c__type_description__TypeSource sources[1];
+  static const rosidl_runtime_c__type_description__TypeSource__Sequence source_sequence = {sources, 1, 1};
+  static bool constructed = false;
+  if (!constructed) {
+    sources[0] = *rosidl_runtime_c__type_description__KeyValue__get_individual_type_description_source(NULL),
+    constructed = true;
+  }
+  return &source_sequence;
 }

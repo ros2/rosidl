@@ -7,8 +7,10 @@
 
 ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_type_hash_t *
-rosidl_runtime_c__type_description__Field__get_type_hash(const rosidl_message_type_support_t *)
+rosidl_runtime_c__type_description__Field__get_type_hash(
+  const rosidl_message_type_support_t * type_support)
 {
+  (void)type_support;
   static rosidl_type_hash_t hash = {1, {
       0xc0, 0xb0, 0x13, 0x79, 0xcd, 0x42, 0x26, 0x28,
       0x12, 0x85, 0xcc, 0xaf, 0x6b, 0xe4, 0x66, 0x53,
@@ -41,7 +43,6 @@ static char rosidl_runtime_c__type_description__Field__FIELD_NAME__name[] = "nam
 static char rosidl_runtime_c__type_description__Field__FIELD_NAME__type[] = "type";
 static char rosidl_runtime_c__type_description__Field__FIELD_NAME__default_value[] = "default_value";
 
-/// Define arrays of Fields
 static rosidl_runtime_c__type_description__Field rosidl_runtime_c__type_description__Field__FIELDS[] = {
   {
     {rosidl_runtime_c__type_description__Field__FIELD_NAME__name, 4, 4},
@@ -75,7 +76,6 @@ static rosidl_runtime_c__type_description__Field rosidl_runtime_c__type_descript
   },
 };
 
-/// Define exported TypeDescription and TypeSources
 static rosidl_runtime_c__type_description__IndividualTypeDescription rosidl_runtime_c__type_description__Field__REFERENCED_TYPE_DESCRIPTIONS[] = {
   {
     {rosidl_runtime_c__type_description__FieldType__TYPE_NAME, 41, 41},
@@ -84,8 +84,10 @@ static rosidl_runtime_c__type_description__IndividualTypeDescription rosidl_runt
 };
 
 const rosidl_runtime_c__type_description__TypeDescription *
-rosidl_runtime_c__type_description__Field__get_type_description(const rosidl_message_type_support_t *)
+rosidl_runtime_c__type_description__Field__get_type_description(
+  const rosidl_message_type_support_t * type_support)
 {
+  (void)type_support;
   static bool constructed = false;
   static const rosidl_runtime_c__type_description__TypeDescription description = {
     {
@@ -107,9 +109,48 @@ rosidl_runtime_c__type_description__Field__get_type_description(const rosidl_mes
   return &description;
 }
 
-const rosidl_runtime_c__type_description__TypeSource__Sequence *
-rosidl_runtime_c__type_description__Field__get_type_description_sources(const rosidl_message_type_support_t *)
+static char toplevel_type_raw_source[] =
+  "# Represents a single field in a type.\n"
+  "\n"
+  "# Name of the field.\n"
+  "string name\n"
+  "# Type of the field, including details about the type like length, nested name, etc.\n"
+  "FieldType type\n"
+  "# Literal default value of the field as a string, as it appeared in the original\n"
+  "# message description file, whether that be .msg/.srv/.action or .idl.\n"
+  "string default_value";
+
+static char msg_encoding[] = "msg";
+
+// Define all individual source functions
+
+const rosidl_runtime_c__type_description__TypeSource *
+rosidl_runtime_c__type_description__Field__get_individual_type_description_source(
+  const rosidl_message_type_support_t * type_support)
 {
-  static const rosidl_runtime_c__type_description__TypeSource__Sequence sources = {NULL, 0, 0};
-  return &sources;
+  (void)type_support;
+  static const rosidl_runtime_c__type_description__TypeSource source = {
+    {rosidl_runtime_c__type_description__Field__TYPE_NAME, 37, 37},
+    {msg_encoding, 3, 3},
+    {toplevel_type_raw_source, 346, 346},
+  };
+  return &source;
+}
+
+// Define all full source sequence functions
+
+const rosidl_runtime_c__type_description__TypeSource__Sequence *
+rosidl_runtime_c__type_description__Field__get_type_description_sources(
+  const rosidl_message_type_support_t * type_support)
+{
+  (void)type_support;
+  static rosidl_runtime_c__type_description__TypeSource sources[2];
+  static const rosidl_runtime_c__type_description__TypeSource__Sequence source_sequence = {sources, 2, 2};
+  static bool constructed = false;
+  if (!constructed) {
+    sources[0] = *rosidl_runtime_c__type_description__Field__get_individual_type_description_source(NULL),
+    sources[0] = *rosidl_runtime_c__type_description__FieldType__get_individual_type_description_source(NULL);
+    constructed = true;
+  }
+  return &source_sequence;
 }

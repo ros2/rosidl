@@ -47,6 +47,7 @@ sed -i '1s/^/\/\/ DO NOT EDIT MANUALLY - this copied file managed by copy_type_d
 # remove unnecessary includes (before doing replacements)
 sed -i '/type_description_interfaces\/msg\/rosidl_generator_c__visibility_control.h/d' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
 sed -i '/#include "rosidl_runtime_c\/type_description\/type_description__struct.h/d' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
+sed -i '/#include "rosidl_runtime_c\/type_description\/type_source__struct.h/d' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
 # include guards
 sed -i -e 's/TYPE_DESCRIPTION_INTERFACES__MSG__DETAIL__/ROSIDL_RUNTIME_C__TYPE_DESCRIPTION__/g' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
 # visibility macros

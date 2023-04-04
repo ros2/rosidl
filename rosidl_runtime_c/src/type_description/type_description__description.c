@@ -7,8 +7,10 @@
 
 ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_type_hash_t *
-rosidl_runtime_c__type_description__TypeDescription__get_type_hash(const rosidl_message_type_support_t *)
+rosidl_runtime_c__type_description__TypeDescription__get_type_hash(
+  const rosidl_message_type_support_t * type_support)
 {
+  (void)type_support;
   static rosidl_type_hash_t hash = {1, {
       0x73, 0x9f, 0x25, 0x08, 0xc9, 0xfa, 0x3a, 0x6f,
       0x33, 0x09, 0x13, 0xff, 0x5b, 0x9d, 0x25, 0xfb,
@@ -22,9 +24,9 @@ rosidl_runtime_c__type_description__TypeDescription__get_type_hash(const rosidl_
 #include <assert.h>
 #include <string.h>
 // Include directives for referenced types
+#include "rosidl_runtime_c/type_description/field__functions.h"
 #include "rosidl_runtime_c/type_description/individual_type_description__functions.h"
 #include "rosidl_runtime_c/type_description/field_type__functions.h"
-#include "rosidl_runtime_c/type_description/field__functions.h"
 
 // Expected hashes for externally referenced types
 static const rosidl_type_hash_t rosidl_runtime_c__type_description__Field__EXPECTED_HASH = {1, {
@@ -56,7 +58,6 @@ static char rosidl_runtime_c__type_description__IndividualTypeDescription__TYPE_
 static char rosidl_runtime_c__type_description__TypeDescription__FIELD_NAME__type_description[] = "type_description";
 static char rosidl_runtime_c__type_description__TypeDescription__FIELD_NAME__referenced_type_descriptions[] = "referenced_type_descriptions";
 
-/// Define arrays of Fields
 static rosidl_runtime_c__type_description__Field rosidl_runtime_c__type_description__TypeDescription__FIELDS[] = {
   {
     {rosidl_runtime_c__type_description__TypeDescription__FIELD_NAME__type_description, 16, 16},
@@ -80,7 +81,6 @@ static rosidl_runtime_c__type_description__Field rosidl_runtime_c__type_descript
   },
 };
 
-/// Define exported TypeDescription and TypeSources
 static rosidl_runtime_c__type_description__IndividualTypeDescription rosidl_runtime_c__type_description__TypeDescription__REFERENCED_TYPE_DESCRIPTIONS[] = {
   {
     {rosidl_runtime_c__type_description__Field__TYPE_NAME, 37, 37},
@@ -97,8 +97,10 @@ static rosidl_runtime_c__type_description__IndividualTypeDescription rosidl_runt
 };
 
 const rosidl_runtime_c__type_description__TypeDescription *
-rosidl_runtime_c__type_description__TypeDescription__get_type_description(const rosidl_message_type_support_t *)
+rosidl_runtime_c__type_description__TypeDescription__get_type_description(
+  const rosidl_message_type_support_t * type_support)
 {
+  (void)type_support;
   static bool constructed = false;
   static const rosidl_runtime_c__type_description__TypeDescription description = {
     {
@@ -134,9 +136,47 @@ rosidl_runtime_c__type_description__TypeDescription__get_type_description(const 
   return &description;
 }
 
-const rosidl_runtime_c__type_description__TypeSource__Sequence *
-rosidl_runtime_c__type_description__TypeDescription__get_type_description_sources(const rosidl_message_type_support_t *)
+static char toplevel_type_raw_source[] =
+  "# Represents a complete type description, including the type itself as well as the types it references.\n"
+  "\n"
+  "# Description of the type.\n"
+  "IndividualTypeDescription type_description\n"
+  "# Descriptions of all referenced types, recursively.\n"
+  "IndividualTypeDescription[] referenced_type_descriptions";
+
+static char msg_encoding[] = "msg";
+
+// Define all individual source functions
+
+const rosidl_runtime_c__type_description__TypeSource *
+rosidl_runtime_c__type_description__TypeDescription__get_individual_type_description_source(
+  const rosidl_message_type_support_t * type_support)
 {
-  static const rosidl_runtime_c__type_description__TypeSource__Sequence sources = {NULL, 0, 0};
-  return &sources;
+  (void)type_support;
+  static const rosidl_runtime_c__type_description__TypeSource source = {
+    {rosidl_runtime_c__type_description__TypeDescription__TYPE_NAME, 47, 47},
+    {msg_encoding, 3, 3},
+    {toplevel_type_raw_source, 285, 285},
+  };
+  return &source;
+}
+
+// Define all full source sequence functions
+
+const rosidl_runtime_c__type_description__TypeSource__Sequence *
+rosidl_runtime_c__type_description__TypeDescription__get_type_description_sources(
+  const rosidl_message_type_support_t * type_support)
+{
+  (void)type_support;
+  static rosidl_runtime_c__type_description__TypeSource sources[4];
+  static const rosidl_runtime_c__type_description__TypeSource__Sequence source_sequence = {sources, 4, 4};
+  static bool constructed = false;
+  if (!constructed) {
+    sources[0] = *rosidl_runtime_c__type_description__TypeDescription__get_individual_type_description_source(NULL),
+    sources[0] = *rosidl_runtime_c__type_description__Field__get_individual_type_description_source(NULL);
+    sources[1] = *rosidl_runtime_c__type_description__FieldType__get_individual_type_description_source(NULL);
+    sources[2] = *rosidl_runtime_c__type_description__IndividualTypeDescription__get_individual_type_description_source(NULL);
+    constructed = true;
+  }
+  return &source_sequence;
 }

@@ -1405,7 +1405,7 @@ rosidl_runtime_c_type_description_utils_print_field_type(
     field_type->type_id, field_type->capacity, field_type->string_capacity);
 
   if (field_type->nested_type_name.data == NULL) {
-    printf("    nested_type_name: %s\n", field_type->nested_type_name.data);
+    printf("    nested_type_name: (null)\n");
   } else {
     printf("    nested_type_name: \"%s\"\n", field_type->nested_type_name.data);
   }
@@ -1419,13 +1419,13 @@ rosidl_runtime_c_type_description_utils_print_field(
   printf("[FIELD]\n");
 
   if (field->name.data == NULL) {
-    printf("  name: %s\n", field->name.data);
+    printf("  name: (null)\n");
   } else {
     printf("  name: \"%s\"\n", field->name.data);
   }
 
   if (field->default_value.data == NULL) {
-    printf("  default_value: %s\n", field->default_value.data);
+    printf("  default_value: (null)\n");
   } else {
     printf("  default_value: \"%s\"\n", field->default_value.data);
   }
@@ -1442,7 +1442,7 @@ rosidl_runtime_c_type_description_utils_print_individual_type_description(
     "\n[INDIVIDUAL TYPE DESCRIPTION] (Fields: %zd)\n", individual_type_description->fields.size);
 
   if (individual_type_description->type_name.data == NULL) {
-    printf("  type_name: %s\n", individual_type_description->type_name.data);
+    printf("  type_name: (null)\n");
   } else {
     printf("  type_name: \"%s\"\n", individual_type_description->type_name.data);
   }
@@ -1485,7 +1485,7 @@ rosidl_runtime_c_type_description_utils_print_field_map(const rcutils_hash_map_t
   rcutils_ret_t status = rcutils_hash_map_get_next_key_and_data(hash_map, NULL, &key, &data);
   while (RCUTILS_RET_OK == status) {
     if (key == NULL) {
-      printf("\n== KEY: %s ==\n", key);
+      printf("\n== KEY: (null) ==\n");
     } else {
       printf("\n== KEY: \"%s\" ==\n", key);
     }
@@ -1504,7 +1504,7 @@ rosidl_runtime_c_type_description_utils_print_referenced_type_description_map(
   rcutils_ret_t status = rcutils_hash_map_get_next_key_and_data(hash_map, NULL, &key, &data);
   while (RCUTILS_RET_OK == status) {
     if (key == NULL) {
-      printf("\n== KEY: %s ==\n", key);
+      printf("\n== KEY: (null) ==\n");
     } else {
       printf("\n== KEY: \"%s\" ==\n", key);
     }

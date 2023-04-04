@@ -47,7 +47,7 @@ full_type_names = [t['type_description']['type_name'] for t, _ in full_type_desc
 all_type_descriptions = [toplevel_msg['type_description']] + toplevel_msg['referenced_type_descriptions']
 
 toplevel_encoding = type_source_file.suffix[1:]
-with open(type_source_file, 'r') as f:
+with open(type_source_file, 'r', encoding='utf-8') as f:
   raw_source_content = f.read()
 }@
 @

@@ -49,15 +49,18 @@ toplevel_encoding = type_source_file.suffix[1:]
 with open(type_source_file, 'r') as f:
   raw_source_content = f.read()
 }@
-
+@
 #include <assert.h>
 #include <string.h>
+
 // Include directives for referenced types
 @[for header_file in includes]@
 #include "@(header_file)"
 @[end for]@
 
-// Expected hashes for externally referenced types
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Cache expected hashes for externally referenced types, for error checking
+// Hashes for external referenced types
 @[for referenced_type_description in toplevel_msg['referenced_type_descriptions']]@
 @{
 type_name = referenced_type_description['type_name']
@@ -67,11 +70,14 @@ c_typename = type_name.replace('/', '__')
 static const rosidl_type_hash_t @(c_typename)__EXPECTED_HASH = @(type_hash_to_c_definition(hash_lookup[type_name]));
 @[  end if]@
 @[end for]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-// Names for all types
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Names for all types
 @[for itype_description in all_type_descriptions]@
 static char @(typename_to_c(itype_description['type_name']))__TYPE_NAME[] = "@(itype_description['type_name'])";
 @[end for]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 @# Define all values going into each local type
@@ -109,8 +115,9 @@ static rosidl_runtime_c__type_description__Field @(td_c_typename)__FIELDS[] = {
 @[    end for]@
 };
 @[  end if]@
-
+@
 @[  if ref_tds]@
+
 static rosidl_runtime_c__type_description__IndividualTypeDescription @(td_c_typename)__REFERENCED_TYPE_DESCRIPTIONS[] = {
 @[    for ref_td in ref_tds]@
   {
@@ -139,15 +146,10 @@ const rosidl_runtime_c__type_description__TypeDescription *
 @{
 c_typename = typename_to_c(ref_td['type_name'])
 }@
-    {
 @[    if ref_td['type_name'] not in full_type_names]@
-      assert(0 == memcmp(&@(c_typename)__EXPECTED_HASH, @(c_typename)__@(GET_HASH_FUNC)(NULL), sizeof(rosidl_type_hash_t)));
+    assert(0 == memcmp(&@(c_typename)__EXPECTED_HASH, @(c_typename)__@(GET_HASH_FUNC)(NULL), sizeof(rosidl_type_hash_t)));
 @[    end if]@
-      const rosidl_runtime_c__type_description__TypeDescription * ref_desc = @(c_typename)__@(GET_DESCRIPTION_FUNC)(NULL);
-      description.referenced_type_descriptions.data[@(idx)].fields.data = ref_desc->type_description.fields.data;
-      description.referenced_type_descriptions.data[@(idx)].fields.size = ref_desc->type_description.fields.size;
-      description.referenced_type_descriptions.data[@(idx)].fields.capacity = ref_desc->type_description.fields.capacity;
-    }
+    description.referenced_type_descriptions.data[@(idx)].fields = @(c_typename)__@(GET_DESCRIPTION_FUNC)(NULL)->type_description.fields;
 @[  end for]@
     constructed = true;
   }
@@ -157,7 +159,7 @@ c_typename = typename_to_c(ref_td['type_name'])
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-@# Define Raw Sources
+@# Define individual raw sources
 @[if raw_source_content]@
 static char toplevel_type_raw_source[] =@
 @[  for line in raw_source_content.splitlines()[:-1]]
@@ -194,8 +196,10 @@ const rosidl_runtime_c__type_description__TypeSource *
   return &source;
 }
 @[end for]@
-
-// Define all full source sequence functions
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+@
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Define full raw source sequences
 @[for type_description_msg, interface_type in full_type_descriptions]@
 @{
 ref_tds = type_description_msg['referenced_type_descriptions']
@@ -221,3 +225,4 @@ const rosidl_runtime_c__type_description__TypeSource__Sequence *
   return &source_sequence;
 }
 @[end for]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

@@ -20,13 +20,13 @@ rosidl_runtime_c__type_description__Field__get_type_hash(
   return &hash;
 }
 
-
 #include <assert.h>
 #include <string.h>
+
 // Include directives for referenced types
 #include "rosidl_runtime_c/type_description/field_type__functions.h"
 
-// Expected hashes for externally referenced types
+// Hashes for external referenced types
 static const rosidl_type_hash_t rosidl_runtime_c__type_description__FieldType__EXPECTED_HASH = {1, {
     0xa7, 0x0b, 0x6d, 0xd9, 0x19, 0x64, 0x5a, 0x03,
     0xa3, 0x58, 0x6f, 0x7f, 0x82, 0x1d, 0xef, 0xbc,
@@ -34,7 +34,6 @@ static const rosidl_type_hash_t rosidl_runtime_c__type_description__FieldType__E
     0xc0, 0xf3, 0x80, 0xa3, 0x97, 0x3c, 0xca, 0xa6,
   }};
 
-// Names for all types
 static char rosidl_runtime_c__type_description__Field__TYPE_NAME[] = "type_description_interfaces/msg/Field";
 static char rosidl_runtime_c__type_description__FieldType__TYPE_NAME[] = "type_description_interfaces/msg/FieldType";
 
@@ -97,13 +96,8 @@ rosidl_runtime_c__type_description__Field__get_type_description(
     {rosidl_runtime_c__type_description__Field__REFERENCED_TYPE_DESCRIPTIONS, 1, 1},
   };
   if (!constructed) {
-    {
-      assert(0 == memcmp(&rosidl_runtime_c__type_description__FieldType__EXPECTED_HASH, rosidl_runtime_c__type_description__FieldType__get_type_hash(NULL), sizeof(rosidl_type_hash_t)));
-      const rosidl_runtime_c__type_description__TypeDescription * ref_desc = rosidl_runtime_c__type_description__FieldType__get_type_description(NULL);
-      description.referenced_type_descriptions.data[0].fields.data = ref_desc->type_description.fields.data;
-      description.referenced_type_descriptions.data[0].fields.size = ref_desc->type_description.fields.size;
-      description.referenced_type_descriptions.data[0].fields.capacity = ref_desc->type_description.fields.capacity;
-    }
+    assert(0 == memcmp(&rosidl_runtime_c__type_description__FieldType__EXPECTED_HASH, rosidl_runtime_c__type_description__FieldType__get_type_hash(NULL), sizeof(rosidl_type_hash_t)));
+    description.referenced_type_descriptions.data[0].fields = rosidl_runtime_c__type_description__FieldType__get_type_description(NULL)->type_description.fields;
     constructed = true;
   }
   return &description;
@@ -136,8 +130,6 @@ rosidl_runtime_c__type_description__Field__get_individual_type_description_sourc
   };
   return &source;
 }
-
-// Define all full source sequence functions
 
 const rosidl_runtime_c__type_description__TypeSource__Sequence *
 rosidl_runtime_c__type_description__Field__get_type_description_sources(

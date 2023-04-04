@@ -20,14 +20,13 @@ rosidl_runtime_c__type_description__KeyValue__get_type_hash(
   return &hash;
 }
 
-
 #include <assert.h>
 #include <string.h>
+
 // Include directives for referenced types
 
-// Expected hashes for externally referenced types
+// Hashes for external referenced types
 
-// Names for all types
 static char rosidl_runtime_c__type_description__KeyValue__TYPE_NAME[] = "type_description_interfaces/msg/KeyValue";
 
 // Define type names, field names, and default values
@@ -56,7 +55,6 @@ static rosidl_runtime_c__type_description__Field rosidl_runtime_c__type_descript
     {NULL, 0, 0},
   },
 };
-
 
 const rosidl_runtime_c__type_description__TypeDescription *
 rosidl_runtime_c__type_description__KeyValue__get_type_description(
@@ -99,8 +97,6 @@ rosidl_runtime_c__type_description__KeyValue__get_individual_type_description_so
   };
   return &source;
 }
-
-// Define all full source sequence functions
 
 const rosidl_runtime_c__type_description__TypeSource__Sequence *
 rosidl_runtime_c__type_description__KeyValue__get_type_description_sources(

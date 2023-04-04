@@ -10,6 +10,7 @@
 @#  - interface_path (Path relative to the directory named after the package)
 @#  - content (IdlContent, list of elements, e.g. Messages or Services)
 @#  - type_description_info (HashedTypeDescription.schema.json dict)
+@#  - type_source_file (absolute Path to original source definition file for this interface)
 @#  - disable_description_codegen (bool)
 @#######################################################################
 @{
@@ -64,6 +65,8 @@ for action in content.get_elements_of_type(Action):
 
 #include "@(include_base)__functions.h"
 
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Define get_type_hash functions
 @[for type_description_msg, interface_type in [toplevel_type_description] + implicit_type_descriptions]@
 @{
 typename = type_description_msg['type_description']['type_name']
@@ -80,7 +83,10 @@ const rosidl_type_hash_t *
 }
 
 @[end for]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 @
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Descriptions and sources functions (optionally disabled)
 @[if disable_description_codegen]@
 @{
 TEMPLATE(
@@ -98,3 +104,4 @@ TEMPLATE(
   type_source_file=type_source_file)
 }@
 @[end if]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

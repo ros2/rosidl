@@ -1,6 +1,7 @@
 @# Included from rosidl_generator_c/resource/idl__description.c.em
 @{
 from rosidl_generator_type_description import GET_DESCRIPTION_FUNC
+from rosidl_generator_type_description import GET_INDIVIDUAL_SOURCE_FUNC
 from rosidl_generator_type_description import GET_SOURCES_FUNC
 
 def typename_to_c(typename):
@@ -29,7 +30,7 @@ const rosidl_runtime_c__type_description__TypeDescription *
   return &description;
 }
 
-const rosidl_runtime_c__type_description__TypeSource__Sequence *
+const rosidl_runtime_c__type_description__TypeSource *
 @(td_c_typename)__@(GET_INDIVIDUAL_SOURCE_FUNC)(
   const rosidl_@(interface_type)_type_support_t * type_support)
 {

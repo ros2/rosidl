@@ -62,6 +62,7 @@ with open(type_source_file, 'r') as f:
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 @# Cache expected hashes for externally referenced types, for error checking
 // Hashes for external referenced types
+#ifndef NDEBUG
 @[for referenced_type_description in toplevel_msg['referenced_type_descriptions']]@
 @{
 type_name = referenced_type_description['type_name']
@@ -71,6 +72,7 @@ c_typename = type_name.replace('/', '__')
 static const rosidl_type_hash_t @(c_typename)__EXPECTED_HASH = @(type_hash_to_c_definition(hash_lookup[type_name]));
 @[  end if]@
 @[end for]@
+#endif
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

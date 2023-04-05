@@ -40,16 +40,28 @@
 #include "type_description_interfaces/msg/type_source.h"
 
 
-int description_namecheck(
+bool description_namecheck(
   const rosidl_runtime_c__type_description__TypeDescription * description,
   const char * expected_name)
 {
   const rosidl_runtime_c__String * typename = &description->type_description.type_name;
   if (0 != memcmp(typename->data, expected_name, typename->size)) {
     fprintf(stderr, "Typename incorrect, expected %s\n", expected_name);
-    return 1;
+    return false;
   }
-  return 0;
+  return true;
+}
+
+bool string_char_equal(const rosidl_runtime_c__String * lhs, const char * rhs)
+{
+  if (!lhs || !rhs) {
+    return false;
+  }
+  size_t rhs_len = strlen(rhs);
+  if (lhs->size != rhs_len) {
+    return false;
+  }
+  return 0 == memcmp(lhs->data, rhs, rhs_len);
 }
 
 int test_description_linkage();
@@ -87,54 +99,61 @@ int test_description_linkage()
 {
   // Smoke test linkage and basic values for msg, srv, action
   // Message
-  if (0 != description_namecheck(
+  if (!description_namecheck(
       rosidl_generator_tests__msg__Defaults__get_type_description(NULL),
       "rosidl_generator_tests/msg/Defaults"))
   {
+    fprintf(stderr, "Defaults.msg description name mismatch\n");
     return 1;
   }
 
   // Service
-  if (0 != description_namecheck(
+  if (!description_namecheck(
       rosidl_generator_tests__srv__Empty__get_type_description(NULL),
       "rosidl_generator_tests/srv/Empty"))
   {
+    fprintf(stderr, "Empty.srv description name mismatch\n");
     return 1;
   }
   // Implicit message of a service
-  if (0 != description_namecheck(
+  if (!description_namecheck(
       rosidl_generator_tests__srv__Empty_Request__get_type_description(NULL),
       "rosidl_generator_tests/srv/Empty_Request"))
   {
+    fprintf(stderr, "Empty.srv Request description name mismatch\n");
     return 1;
   }
 
   // Action
-  if (0 != description_namecheck(
+  if (!description_namecheck(
       rosidl_generator_tests__action__Fibonacci__get_type_description(NULL),
       "rosidl_generator_tests/action/Fibonacci"))
   {
+    fprintf(stderr, "Fibonacci.action description name mismatch\n");
     return 1;
   }
   // Implicit message of an action
-  if (0 != description_namecheck(
+  if (!description_namecheck(
       rosidl_generator_tests__action__Fibonacci_Feedback__get_type_description(NULL),
       "rosidl_generator_tests/action/Fibonacci_Feedback"))
   {
+    fprintf(stderr, "Fibonacci.action Feedback msg description name mismatch\n");
     return 1;
   }
   // Implicit service of an action
-  if (0 != description_namecheck(
+  if (!description_namecheck(
       rosidl_generator_tests__action__Fibonacci_SendGoal__get_type_description(NULL),
       "rosidl_generator_tests/action/Fibonacci_SendGoal"))
   {
+    fprintf(stderr, "Fibonacci.action SendGoal srv description name mismatch\n");
     return 1;
   }
   // Implicit message of implicit service of an action
-  if (0 != description_namecheck(
+  if (!description_namecheck(
       rosidl_generator_tests__action__Fibonacci_GetResult_Request__get_type_description(NULL),
       "rosidl_generator_tests/action/Fibonacci_GetResult_Request"))
   {
+    fprintf(stderr, "Fibonacci.action GetResult srv Request description name mismatch\n");
     return 1;
   }
 
@@ -145,12 +164,71 @@ int test_source_defined()
 {
   // Smoke test that definitions are present for raw type sources
   // Message
-  if (!rosidl_generator_tests__msg__Defaults__get_type_description_sources(NULL)) {
+  const rosidl_runtime_c__type_description__TypeSource__Sequence * defaults_sources =
+    rosidl_generator_tests__msg__Defaults__get_type_description_sources(NULL);
+  if (!defaults_sources) {
+    fprintf(stderr, "Defaults.msg raw sources undefined\n");
+    return 1;
+  }
+  if (defaults_sources->size != 1) {
+    fprintf(stderr, "Defaults.msg expected exactly 1 raw sources\n");
+    return 1;
+  }
+  const rosidl_runtime_c__type_description__TypeSource * check_src = defaults_sources->data;
+  if (!string_char_equal(&check_src->type_name, "rosidl_generator_tests/msg/Defaults")) {
+    fprintf(stderr, "Defaults.msg source name not as expected\n");
+    return 1;
+  }
+  if (!string_char_equal(&check_src->encoding, "msg")) {
+    fprintf(stderr, "Defaults.msg source not encoded as msg\n");
+    return 1;
+  }
+  if (0 == check_src->raw_file_contents.size) {
+    fprintf(stderr, "Defaults.msg raw contents empty\n");
     return 1;
   }
 
   // Service
-  if (!rosidl_generator_tests__srv__Empty__get_type_description_sources(NULL)) {
+  // Hardcoding a bit of knowledge about an empty srv - it has 5 referenced type descriptions:
+  // builtin_interfaces/msg/Time
+  // rosidl_generator_tests/srv/Empty_Event
+  // rosidl_generator_tests/srv/Empty_Request
+  // rosidl_generator_tests/srv/Empty_Response
+  // service_msgs/msg/ServiceEventInfo
+  const rosidl_runtime_c__type_description__TypeSource__Sequence * empty_srv_sources =
+    rosidl_generator_tests__srv__Empty__get_type_description_sources(NULL);
+  if (!empty_srv_sources) {
+    fprintf(stderr, "Empty.srv raw sources undefined\n");
+    return 1;
+  }
+  if (empty_srv_sources->size != 6) {
+    fprintf(stderr, "Empty.srv expected exactly 6 raw sources\n");
+    return 1;
+  }
+  check_src = empty_srv_sources->data;
+  if (!string_char_equal(&check_src->type_name, "rosidl_generator_tests/srv/Empty")) {
+    fprintf(stderr, "Empty.srv source name '%s' not as expected\n", check_src->type_name.data);
+    return 1;
+  }
+  if (!string_char_equal(&check_src->encoding, "srv")) {
+    fprintf(stderr, "Empty.srv source encoding '%s' is not 'srv'\n", check_src->encoding.data);
+    return 1;
+  }
+  if (0 == check_src->raw_file_contents.size) {
+    fprintf(stderr, "Empty.srv raw contents empty\n");
+    return 1;
+  }
+  check_src = &empty_srv_sources->data[2];  // Looking past Time to the implicit Event
+  if (!string_char_equal(&check_src->type_name, "rosidl_generator_tests/srv/Empty_Event")) {
+    fprintf(stderr, "Empty.srv Event src name '%s' not as expected\n", check_src->type_name.data);
+    return 1;
+  }
+  if (!string_char_equal(&check_src->encoding, "implicit")) {
+    fprintf(stderr, "Defaults first source not encoded as implicit\n");
+    return 1;
+  }
+  if (0 != check_src->raw_file_contents.size) {
+    fprintf(stderr, "Empty.srv Request implicit source not empty.\n");
     return 1;
   }
   // Implicit message of a service

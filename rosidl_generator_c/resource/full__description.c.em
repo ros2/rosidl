@@ -227,7 +227,7 @@ const rosidl_runtime_c__type_description__TypeSource__Sequence *
   if (!constructed) {
     sources[0] = *@(td_c_typename)__@(GET_INDIVIDUAL_SOURCE_FUNC)(NULL),
 @[  for idx, ref_td in enumerate(ref_tds)]@
-    sources[@(idx)] = *@(typename_to_c(ref_td['type_name']))__@(GET_INDIVIDUAL_SOURCE_FUNC)(NULL);
+    sources[@(idx + 1)] = *@(typename_to_c(ref_td['type_name']))__@(GET_INDIVIDUAL_SOURCE_FUNC)(NULL);
 @[  end for]@
     constructed = true;
   }

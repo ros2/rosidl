@@ -28,6 +28,8 @@ C_SRC_DEST=$ROSIDL_SRC_DIR/rosidl_runtime_c/src/type_description
 CPP_DETAIL=$BUILD_DIR/$CPP_DETAIL_SUBPATH
 CPP_INCLUDE_DEST=$ROSIDL_SRC_DIR/rosidl_runtime_cpp/include/rosidl_runtime_cpp/type_description
 
+_all_copied=""
+
 # C structs
 mkdir -p $C_INCLUDE_DEST
 rm -f $C_INCLUDE_DEST/*.h
@@ -35,14 +37,17 @@ mkdir -p $C_SRC_DEST
 rm -f $C_SRC_DEST/*.c
 
 cp $C_DETAIL/*__struct.h $C_INCLUDE_DEST/
+cp $C_DETAIL/*__description.c $C_SRC_DEST/
 cp $C_DETAIL/*__functions.h $C_INCLUDE_DEST/
 cp $C_DETAIL/*__functions.c $C_SRC_DEST/
+_all_copied="$_all_copied $C_DETAIL_SUBPATH/*__struct.h $C_DETAIL_SUBPATH/*__functions.h $C_DETAIL_SUBPATH/*__functions.c $C_DETAIL_SUBPATH/*__description.c"
 
 # add copy notice
 sed -i '1s/^/\/\/ DO NOT EDIT MANUALLY - this copied file managed by copy_type_description_generated_sources.bash\n/' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
 # remove unnecessary includes (before doing replacements)
 sed -i '/type_description_interfaces\/msg\/rosidl_generator_c__visibility_control.h/d' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
 sed -i '/#include "rosidl_runtime_c\/type_description\/type_description__struct.h/d' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
+sed -i '/#include "rosidl_runtime_c\/type_description\/type_source__struct.h/d' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
 # include guards
 sed -i -e 's/TYPE_DESCRIPTION_INTERFACES__MSG__DETAIL__/ROSIDL_RUNTIME_C__TYPE_DESCRIPTION__/g' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
 # visibility macros
@@ -57,6 +62,7 @@ mkdir -p $CPP_INCLUDE_DEST
 rm -f $CPP_INCLUDE_DEST/*.hpp
 
 cp $CPP_DETAIL/*__struct.hpp $CPP_INCLUDE_DEST
+_all_copied="$_all_copied $CPP_DETAIL_SUBPATH/*__struct.hpp"
 
 pushd $CPP_INCLUDE_DEST
 # add copy notice
@@ -82,5 +88,5 @@ cat << EOF > $SCRIPT_DIR/type_description.fingerprint
 # INTENTIONALLY CHANGING THIS FILE OUTSIDE THE SCRIPT WILL RESULT IN UNDEFINED BEHAVIOR FOR ALL OF ROS 2 CORE
 EOF
 pushd $BUILD_DIR
-sha256sum --tag $C_DETAIL_SUBPATH/*__struct.h $C_DETAIL_SUBPATH/*__functions.h $C_DETAIL_SUBPATH/*__functions.c $CPP_DETAIL_SUBPATH/*__struct.hpp >> $SCRIPT_DIR/type_description.fingerprint
+sha256sum --tag $_all_copied >> $SCRIPT_DIR/type_description.fingerprint
 popd

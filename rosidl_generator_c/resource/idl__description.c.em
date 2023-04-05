@@ -10,140 +10,98 @@
 @#  - interface_path (Path relative to the directory named after the package)
 @#  - content (IdlContent, list of elements, e.g. Messages or Services)
 @#  - type_description_info (HashedTypeDescription.schema.json dict)
+@#  - type_source_file (absolute Path to original source definition file for this interface)
+@#  - disable_description_codegen (bool)
 @#######################################################################
 @{
-from rosidl_generator_c import escape_string
+from rosidl_generator_c import type_hash_to_c_definition
 from rosidl_generator_type_description import extract_subinterface
-from rosidl_generator_type_description import FIELD_TYPE_ID_TO_NAME
-from rosidl_generator_type_description import GET_DESCRIPTION_FUNC
-from rosidl_generator_type_description import GET_SOURCES_FUNC
+from rosidl_generator_type_description import GET_HASH_FUNC
 from rosidl_parser.definition import Action
 from rosidl_parser.definition import Service
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 
 type_description_msg = type_description_info['type_description_msg']
-all_type_descriptions = [type_description_msg['type_description']] + type_description_msg['referenced_type_descriptions']
+hash_lookup = {
+  val['type_name']: val['hash_string']
+  for val in type_description_info['type_hashes']
+}
 
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 include_base = '/'.join(include_parts)
 
-full_type_descriptions = [type_description_msg]
+implicit_type_descriptions = []
+toplevel_type_description = (type_description_msg, 'message')
 for service in content.get_elements_of_type(Service):
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'request_message'))
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'response_message'))
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'event_message'))
+  toplevel_type_description = (type_description_msg, 'service')
+  implicit_type_descriptions.extend([
+    (extract_subinterface(type_description_msg, 'request_message'), 'message'),
+    (extract_subinterface(type_description_msg, 'response_message'), 'message'),
+    (extract_subinterface(type_description_msg, 'event_message'), 'message'),
+  ])
 for action in content.get_elements_of_type(Action):
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'goal'))
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'result'))
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'feedback'))
-
+  toplevel_type_description = (type_description_msg, 'action')
   send_goal_service = extract_subinterface(type_description_msg, 'send_goal_service')
-  full_type_descriptions.append(send_goal_service)
-  full_type_descriptions.append(extract_subinterface(send_goal_service, 'request_message'))
-  full_type_descriptions.append(extract_subinterface(send_goal_service, 'response_message'))
-  full_type_descriptions.append(extract_subinterface(send_goal_service, 'event_message'))
-
   get_result_service = extract_subinterface(type_description_msg, 'get_result_service')
-  full_type_descriptions.append(get_result_service)
-  full_type_descriptions.append(extract_subinterface(get_result_service, 'request_message'))
-  full_type_descriptions.append(extract_subinterface(get_result_service, 'response_message'))
-  full_type_descriptions.append(extract_subinterface(get_result_service, 'event_message'))
+  implicit_type_descriptions.extend([
+    (extract_subinterface(type_description_msg, 'goal'), 'message'),
+    (extract_subinterface(type_description_msg, 'result'), 'message'),
+    (extract_subinterface(type_description_msg, 'feedback'), 'message'),
 
-  full_type_descriptions.append(extract_subinterface(type_description_msg, 'feedback_message'))
+    (send_goal_service, 'service'),
+    (extract_subinterface(send_goal_service, 'request_message'), 'message'),
+    (extract_subinterface(send_goal_service, 'response_message'), 'message'),
+    (extract_subinterface(send_goal_service, 'event_message'), 'message'),
 
-def typename_to_c(typename):
-  return typename.replace('/', '__')
+    (get_result_service, 'service'),
+    (extract_subinterface(get_result_service, 'request_message'), 'message'),
+    (extract_subinterface(get_result_service, 'response_message'), 'message'),
+    (extract_subinterface(get_result_service, 'event_message'), 'message'),
 
-def static_seq(varname, values):
-  """Statically define a runtime Sequence or String type."""
-  if values:
-    return f'{{{varname}, {len(values)}, {len(values)}}}'
-  return '{NULL, 0, 0}'
-
-def represent_default(default_value):
-  # Encode to UTF-8 in case of WStrings, then remove the b'' from the representation.
-  return repr(default_value.encode('utf-8'))[2:-1]
+    (extract_subinterface(type_description_msg, 'feedback_message'), 'message'),
+  ])
 }@
 
 #include "@(include_base)__functions.h"
 
-// Declare and define all type names, field names, and default values
-@[for itype_description in all_type_descriptions]@
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Define get_type_hash functions
+@[for type_description_msg, interface_type in [toplevel_type_description] + implicit_type_descriptions]@
 @{
-td_c_typename = typename_to_c(itype_description['type_name'])
+typename = type_description_msg['type_description']['type_name']
+c_typename = typename.replace('/', '__')
 }@
-static char @(td_c_typename)__TYPE_NAME[] = "@(itype_description['type_name'])";
-@[  for field in itype_description['fields']]@
-static char @(td_c_typename)__FIELD_NAME__@(field['name'])[] = "@(field['name'])";
-@[    if field['default_value']]@
-static char @(td_c_typename)__DEFAULT_VALUE__@(field['name'])[] = "@(escape_string(represent_default(field['default_value'])))";
-@[    end if]@
-@[  end for]@
+ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
+const rosidl_type_hash_t *
+@(c_typename)__@(GET_HASH_FUNC)(
+  const rosidl_@(interface_type)_type_support_t * type_support)
+{
+  (void)type_support;
+  static rosidl_type_hash_t hash = @(type_hash_to_c_definition(hash_lookup[typename], indent=4));
+  return &hash;
+}
 
 @[end for]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 @
-/// Define all arrays of Fields
-@[for itype_description in all_type_descriptions]@
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# Descriptions and sources functions (optionally disabled)
+@[if disable_description_codegen]@
 @{
-td_c_typename = typename_to_c(itype_description['type_name'])
+TEMPLATE(
+  'empty__description.c.em',
+  toplevel_type_description=toplevel_type_description,
+  implicit_type_descriptions=implicit_type_descriptions)
 }@
-
-@[  if itype_description['fields']]@
-static rosidl_runtime_c__type_description__Field @(td_c_typename)__FIELDS[] = {
-@[    for field in itype_description['fields']]@
-  {
-    @(static_seq(f"{td_c_typename}__FIELD_NAME__{field['name']}", field['name'])),
-    {
-      rosidl_runtime_c__type_description__FieldType__@(FIELD_TYPE_ID_TO_NAME[field['type']['type_id']]),
-      @(field['type']['capacity']),
-      @(field['type']['string_capacity']),
-      @(static_seq(f"{typename_to_c(field['type']['nested_type_name'])}__TYPE_NAME", field['type']['nested_type_name'])),
-    },
-    @(static_seq(f"{td_c_typename}__DEFAULT_VALUE__{field['name']}", field['default_value'])),
-  },
-@[    end for]@
-};
-@[  end if]@
-@[end for]@
-
-/// Define exported TypeDescriptions and TypeSources
-@[for msg in full_type_descriptions]@
+@[else]@
 @{
-td_typename = msg['type_description']['type_name']
-td_c_typename = typename_to_c(td_typename)
-ref_tds = msg['referenced_type_descriptions']
+TEMPLATE(
+  'full__description.c.em',
+  toplevel_type_description=toplevel_type_description,
+  implicit_type_descriptions=implicit_type_descriptions,
+  hash_lookup=hash_lookup,
+  type_source_file=type_source_file)
 }@
-
-@[  if ref_tds]@
-static rosidl_runtime_c__type_description__IndividualTypeDescription @(td_c_typename)__REFERENCED_TYPE_DESCRIPTIONS[] = {
-@[    for ref_td in ref_tds]@
-  {
-    @(static_seq(f"{typename_to_c(ref_td['type_name'])}__TYPE_NAME", ref_td['type_name'])),
-    @(static_seq(f"{typename_to_c(ref_td['type_name'])}__FIELDS", ref_td['fields'])),
-  },
-@[    end for]@
-};
-@[  end if]@
-
-const rosidl_runtime_c__type_description__TypeDescription *
-@(td_c_typename)__@(GET_DESCRIPTION_FUNC)()
-{
-  static const rosidl_runtime_c__type_description__TypeDescription description = {
-    {
-      @(static_seq(f'{td_c_typename}__TYPE_NAME', td_typename)),
-      @(static_seq(f'{td_c_typename}__FIELDS', msg['type_description']['fields'])),
-    },
-    @(static_seq(f'{td_c_typename}__REFERENCED_TYPE_DESCRIPTIONS', ref_tds)),
-  };
-  return &description;
-}
-
-const rosidl_runtime_c__type_description__TypeSource__Sequence *
-@(td_c_typename)__@(GET_SOURCES_FUNC)()
-{
-@# TODO(emersonknapp) Implement raw source code embedding/generation. This sequence is left empty for now.
-  static const rosidl_runtime_c__type_description__TypeSource__Sequence sources = @(static_seq(None, ''));
-  return &sources;
-}
-@[end for]@
+@[end if]@
+@#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

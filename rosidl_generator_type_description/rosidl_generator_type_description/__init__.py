@@ -34,8 +34,58 @@ RIHS01_PATTERN = re.compile(r'RIHS([0-9a-f]{2})_([0-9a-f]{64})')
 
 # Used by code generators to create variable names
 GET_DESCRIPTION_FUNC = 'get_type_description'
+GET_HASH_FUNC = 'get_type_hash'
+GET_INDIVIDUAL_SOURCE_FUNC = 'get_individual_type_description_source'
 GET_SOURCES_FUNC = 'get_type_description_sources'
-TYPE_HASH_VAR = 'TYPE_HASH'
+
+
+def to_type_name(namespaced_type):
+    return '/'.join(namespaced_type.namespaced_name())
+
+
+class GenericInterface:
+    def __init__(
+        self, namespaced_type: definition.NamespacedType, members: List[definition.Member]
+    ):
+        self.namespaced_type = namespaced_type
+        self.members = members
+
+
+def add_msg(msg: definition.Message, to_dict: dict):
+    to_dict[to_type_name(msg.structure.namespaced_type)] = GenericInterface(
+        msg.structure.namespaced_type, msg.structure.members)
+
+
+def add_srv(srv: definition.Service, to_dict: dict):
+    service_members = [
+        definition.Member(srv.request_message.structure.namespaced_type, 'request_message'),
+        definition.Member(srv.response_message.structure.namespaced_type, 'response_message'),
+        definition.Member(srv.event_message.structure.namespaced_type, 'event_message'),
+    ]
+    to_dict[to_type_name(srv.namespaced_type)] = GenericInterface(
+        srv.namespaced_type, service_members)
+    add_msg(srv.request_message, to_dict)
+    add_msg(srv.response_message, to_dict)
+    add_msg(srv.event_message, to_dict)
+
+
+def add_action(action, to_dict):
+    action_members = [
+        definition.Member(action.goal.structure.namespaced_type, 'goal'),
+        definition.Member(action.result.structure.namespaced_type, 'result'),
+        definition.Member(action.feedback.structure.namespaced_type, 'feedback'),
+        definition.Member(action.send_goal_service.namespaced_type, 'send_goal_service'),
+        definition.Member(action.get_result_service.namespaced_type, 'get_result_service'),
+        definition.Member(action.feedback_message.structure.namespaced_type, 'feedback_message'),
+    ]
+    to_dict[to_type_name(action.namespaced_type)] = GenericInterface(
+        action.namespaced_type, action_members)
+    add_msg(action.goal, to_dict)
+    add_msg(action.result, to_dict)
+    add_msg(action.feedback, to_dict)
+    add_srv(action.send_goal_service, to_dict)
+    add_srv(action.get_result_service, to_dict)
+    add_msg(action.feedback_message, to_dict)
 
 
 def generate_type_hash(generator_arguments_file: str) -> List[str]:
@@ -56,10 +106,8 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
         include_package_name, include_base_path = include_parts
         include_map[include_package_name] = Path(include_base_path)
 
-    generated_files = []
-    hashers = {}
-
-    # Initialize all local types first so they can be referenced by other local types
+    # Define all local IndividualTypeDescriptions
+    individual_types = {}
     for idl_tuple in idl_tuples:
         idl_parts = idl_tuple.rsplit(':', 1)
         assert len(idl_parts) == 2
@@ -74,13 +122,88 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
         idl_rel_path = Path(idl_parts[1])
         generate_to_dir = (output_dir / idl_rel_path).parent
         generate_to_dir.mkdir(parents=True, exist_ok=True)
+        for el in idl_file.content.elements:
+            if isinstance(el, definition.Message):
+                add_msg(el, individual_types)
+            elif isinstance(el, definition.Service):
+                add_srv(el, individual_types)
+            elif isinstance(el, definition.Action):
+                add_action(el, individual_types)
 
-        hasher = InterfaceHasher.from_idl(idl_file)
-        hashers[hasher.namespaced_type.namespaced_name()] = hasher
+    # Determine needed includes for types from other packages
+    pending_includes = set()
+    for individual_type in individual_types.values():
+        for member in individual_type.members:
+            if isinstance(member.type, definition.NamespacedType):
+                member_type = member.type
+            elif (
+                isinstance(member.type, definition.AbstractNestedType) and
+                isinstance(member.type.value_type, definition.NamespacedType)
+            ):
+                member_type = member.type.value_type
+            else:
+                continue
 
-    # Generate output files
-    for hasher in hashers.values():
-        generated_files += hasher.write_unified_json(output_dir, hashers, include_map)
+            if to_type_name(member_type) not in individual_types:
+                pending_includes.add(Path(*member_type.namespaced_name()))
+
+    # Load all included types, create lookup maps of included individual descriptions and hashes
+    serialized_type_lookup = {
+        key: serialize_individual_type_description(val.namespaced_type, val.members)
+        for key, val in individual_types.items()
+    }
+    hash_lookup = {}
+    while pending_includes:
+        process_include = pending_includes.pop()
+        p_path = process_include.with_suffix('.json')
+        pkg = p_path.parts[0]
+        pkg_dir = include_map[pkg]
+        include_path = pkg_dir / p_path.relative_to(pkg)
+        with include_path.open('r') as include_file:
+            include_json = json.load(include_file)
+
+        type_description_msg = include_json['type_description_msg']
+        try:
+            hash_lookup.update({
+                val['type_name']: val['hash_string'] for val in include_json['type_hashes']
+            })
+        except KeyError:
+            raise Exception(f'Key "type_hashes" not  found in {include_path}')
+
+        serialized_type_lookup[type_description_msg['type_description']['type_name']] = \
+            type_description_msg['type_description']
+        for referenced_type in type_description_msg['referenced_type_descriptions']:
+            serialized_type_lookup[referenced_type['type_name']] = referenced_type
+
+    # Create fully-unrolled TypeDescription instances for local full types, and calculate hashes
+    full_types = []
+    for type_name, individual_type in individual_types.items():
+        full_type_description = extract_full_type_description(type_name, serialized_type_lookup)
+        full_types.append(full_type_description)
+        hash_lookup[type_name] = calculate_type_hash(full_type_description)
+
+    # Write JSON output for each full TypeDescription
+    generated_files = []
+    for full_type_description in full_types:
+        top_type_name = full_type_description['type_description']['type_name']
+        hashes = [{
+            'type_name': top_type_name,
+            'hash_string': hash_lookup[top_type_name],
+        }]
+        for referenced_type in full_type_description['referenced_type_descriptions']:
+            hashes.append({
+                'type_name': referenced_type['type_name'],
+                'hash_string': hash_lookup[referenced_type['type_name']],
+            })
+        json_content = {
+            'type_description_msg': full_type_description,
+            'type_hashes': hashes,
+        }
+        rel_path = Path(*top_type_name.split('/')[1:])
+        json_path = output_dir / rel_path.with_suffix('.json')
+        with json_path.open('w', encoding='utf-8') as json_file:
+            json_file.write(json.dumps(json_content, indent=2))
+        generated_files.append(json_path)
 
     return generated_files
 
@@ -336,190 +459,38 @@ def serialize_individual_type_description(
     namespaced_type: definition.NamespacedType, members: List[definition.Member]
 ) -> dict:
     return {
-        'type_name': '/'.join(namespaced_type.namespaced_name()),
+        'type_name': to_type_name(namespaced_type),
         'fields': [serialize_field(member) for member in members]
     }
 
 
-class InterfaceHasher:
-    """Contains context about subinterfaces for a given interface description."""
-
-    @classmethod
-    def from_idl(cls, idl: definition.IdlFile):
-        for el in idl.content.elements:
-            if any(isinstance(el, type_) for type_ in [
-                definition.Message, definition.Service, definition.Action
-            ]):
-                return InterfaceHasher(el)
-        raise ValueError('No interface found in IDL')
-
-    def __init__(self, interface):
-        self.interface = interface
-        self.subinterfaces = {}
-
-        # Determine top level interface, and member fields based on that
-        if isinstance(interface, definition.Message):
-            self.namespaced_type = interface.structure.namespaced_type
-            self.interface_type = 'message'
-            self.members = interface.structure.members
-        elif isinstance(interface, definition.Service):
-            self.namespaced_type = interface.namespaced_type
-            self.interface_type = 'service'
-            self.subinterfaces = {
-                'request_message': InterfaceHasher(interface.request_message),
-                'response_message': InterfaceHasher(interface.response_message),
-                'event_message': InterfaceHasher(interface.event_message),
-            }
-            self.members = [
-                definition.Member(hasher.namespaced_type, field_name)
-                for field_name, hasher in self.subinterfaces.items()
-            ]
-        elif isinstance(interface, definition.Action):
-            self.namespaced_type = interface.namespaced_type
-            self.interface_type = 'action'
-            self.subinterfaces = {
-                'goal': InterfaceHasher(interface.goal),
-                'result': InterfaceHasher(interface.result),
-                'feedback': InterfaceHasher(interface.feedback),
-                'send_goal_service': InterfaceHasher(interface.send_goal_service),
-                'get_result_service': InterfaceHasher(interface.get_result_service),
-                'feedback_message': InterfaceHasher(interface.feedback_message),
-            }
-            self.members = [
-                definition.Member(hasher.namespaced_type, field_name)
-                for field_name, hasher in self.subinterfaces.items()
-            ]
-
-        self.individual_type_description = serialize_individual_type_description(
-            self.namespaced_type, self.members)
-
-        # Determine needed includes from member fields
-        self.includes = []
-        for member in self.members:
-            if isinstance(member.type, definition.NamespacedType):
-                self.includes.append(member.type.namespaced_name())
-            elif (
-                isinstance(member.type, definition.AbstractNestedType) and
-                isinstance(member.type.value_type, definition.NamespacedType)
-            ):
-                self.includes.append(member.type.value_type.namespaced_name())
-
-        self.rel_path = Path(*self.namespaced_type.namespaced_name()[1:])
-        self.include_path = Path(*self.namespaced_type.namespaced_name())
-
-    def write_unified_json(
-        self, output_dir: Path, local_hashers: dict, includes_map: dict
-    ) -> List[Path]:
-        generated_files = []
-        referenced_types = {}
-
-        for key, val in self.subinterfaces.items():
-            generated_files += val.write_unified_json(output_dir, local_hashers, includes_map)
-
-        def add_referenced_type(individual_type_description):
-            type_name = individual_type_description['type_name']
-            if (
-                type_name in referenced_types and
-                referenced_types[type_name] != individual_type_description
-            ):
-                raise Exception('Encountered two definitions of the same referenced type')
-            referenced_types[type_name] = individual_type_description
-
-        process_includes = self.includes[:]
-        while process_includes:
-            process_type = process_includes.pop()
-
-            # A type in this package may refer to types, and hasn't been unrolled yet,
-            # so process its includes breadth first
-            if process_type in local_hashers:
-                add_referenced_type(local_hashers[process_type].individual_type_description)
-                process_includes += local_hashers[process_type].includes
-                continue
-
-            # All nonlocal descriptions will have all recursively referenced types baked in
-            p_path = Path(*process_type).with_suffix('.json')
-            pkg = p_path.parts[0]
-            pkg_dir = includes_map[pkg]
-            include_path = pkg_dir / p_path.relative_to(pkg)
-            with include_path.open('r') as include_file:
-                include_json = json.load(include_file)
-
-            type_description_msg = include_json['type_description_msg']
-            add_referenced_type(type_description_msg['type_description'])
-            for rt in type_description_msg['referenced_type_descriptions']:
-                add_referenced_type(rt)
-
-        self.full_type_description = {
-            'type_description': self.individual_type_description,
-            'referenced_type_descriptions': sorted(
-                referenced_types.values(), key=lambda td: td['type_name'])
-        }
-
-        hashed_type_description = {
-            'hashes': self._calculate_hash_tree(),
-            'type_description_msg': self.full_type_description,
-        }
-
-        json_path = output_dir / self.rel_path.with_suffix('.json')
-        with json_path.open('w', encoding='utf-8') as json_file:
-            json_file.write(json.dumps(hashed_type_description, indent=2))
-        return generated_files + [json_path]
-
-    def _calculate_hash_tree(self) -> dict:
-        # Create a copy of the description, removing all default values
-        hashable_dict = deepcopy(self.full_type_description)
-        for field in hashable_dict['type_description']['fields']:
+def calculate_type_hash(serialized_type_description):
+    # Create a copy of the description, removing all default values
+    hashable_dict = deepcopy(serialized_type_description)
+    for field in hashable_dict['type_description']['fields']:
+        del field['default_value']
+    for referenced_td in hashable_dict['referenced_type_descriptions']:
+        for field in referenced_td['fields']:
             del field['default_value']
-        for referenced_td in hashable_dict['referenced_type_descriptions']:
-            for field in referenced_td['fields']:
-                del field['default_value']
 
-        hashable_repr = json.dumps(
-            hashable_dict,
-            skipkeys=False,
-            ensure_ascii=True,
-            check_circular=True,
-            allow_nan=False,
-            indent=None,
-            # note: libyaml in C doesn't allow for tweaking these separators, this is its builtin
-            separators=(', ', ': '),
-            sort_keys=False
-        )
-        sha = hashlib.sha256()
-        sha.update(hashable_repr.encode('utf-8'))
-        type_hash = RIHS01_PREFIX + sha.hexdigest()
-
-        type_hash_infos = {
-            self.interface_type: type_hash,
-        }
-        for key, val in self.subinterfaces.items():
-            type_hash_infos[key] = val._calculate_hash_tree()
-
-        return type_hash_infos
+    hashable_repr = json.dumps(
+        hashable_dict,
+        skipkeys=False,
+        ensure_ascii=True,
+        check_circular=True,
+        allow_nan=False,
+        indent=None,
+        # note: libyaml in C doesn't allow for tweaking these separators, this is its builtin
+        separators=(', ', ': '),
+        sort_keys=False
+    )
+    sha = hashlib.sha256()
+    sha.update(hashable_repr.encode('utf-8'))
+    type_hash = RIHS01_PREFIX + sha.hexdigest()
+    return type_hash
 
 
-def extract_subinterface(type_description_msg: dict, field_name: str):
-    """
-    Filter full TypeDescription to produce a TypeDescription for one of its fields' types.
-
-    Given the name of a field, finds its type, and finds all its referenced type descriptions
-    by doing a DAG traversal on the referenced type descriptions of the input type.
-    """
-    output_type_name = next(
-        field['type']['nested_type_name']
-        for field in type_description_msg['type_description']['fields']
-        if field['name'] == field_name)
-    assert output_type_name, 'Given field is not a nested type'
-
-    # Create a lookup map for matching names to type descriptions
-    toplevel_type = type_description_msg['type_description']
-    referenced_types = type_description_msg['referenced_type_descriptions']
-    type_map = {
-        individual_type['type_name']: individual_type
-        for individual_type
-        in [toplevel_type] + referenced_types
-    }
-
+def extract_full_type_description(output_type_name, type_map):
     # Traverse reference graph to narrow down the references for the output type
     output_type = type_map[output_type_name]
     output_references = set()
@@ -544,3 +515,27 @@ def extract_subinterface(type_description_msg: dict, field_name: str):
             type_map[type_name] for type_name in sorted(output_references)
         ],
     }
+
+
+def extract_subinterface(type_description_msg: dict, field_name: str):
+    """
+    Filter full TypeDescription to produce a TypeDescription for one of its fields' types.
+
+    Given the name of a field, finds its type, and finds all its referenced type descriptions
+    by doing a DAG traversal on the referenced type descriptions of the input type.
+    """
+    output_type_name = next(
+        field['type']['nested_type_name']
+        for field in type_description_msg['type_description']['fields']
+        if field['name'] == field_name)
+    assert output_type_name, 'Given field is not a nested type'
+
+    # Create a lookup map for matching names to type descriptions
+    toplevel_type = type_description_msg['type_description']
+    referenced_types = type_description_msg['referenced_type_descriptions']
+    type_map = {
+        individual_type['type_name']: individual_type
+        for individual_type
+        in [toplevel_type] + referenced_types
+    }
+    return extract_full_type_description(output_type_name, type_map)

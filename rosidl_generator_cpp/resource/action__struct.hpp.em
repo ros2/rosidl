@@ -1,7 +1,5 @@
 @# Included from rosidl_generator_cpp/resource/idl__struct.hpp.em
 @{
-from rosidl_generator_c import type_hash_to_c_definition
-from rosidl_generator_type_description import TYPE_HASH_VAR
 from rosidl_parser.definition import ACTION_FEEDBACK_MESSAGE_SUFFIX
 from rosidl_parser.definition import ACTION_FEEDBACK_SUFFIX
 from rosidl_parser.definition import ACTION_GOAL_SERVICE_SUFFIX
@@ -19,48 +17,42 @@ action_name = '::'.join(action.namespaced_type.namespaced_name())
 TEMPLATE(
     'msg__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.goal, include_directives=include_directives,
-    type_hash=type_hash['goal'])
+    message=action.goal, include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.result, include_directives=include_directives,
-    type_hash=type_hash['result'])
+    message=action.result, include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.feedback, include_directives=include_directives,
-    type_hash=type_hash['feedback'])
+    message=action.feedback, include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'srv__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    service=action.send_goal_service, include_directives=include_directives,
-    type_hash=type_hash['send_goal_service'])
+    service=action.send_goal_service, include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'srv__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    service=action.get_result_service, include_directives=include_directives,
-    type_hash=type_hash['get_result_service'])
+    service=action.get_result_service, include_directives=include_directives)
 }@
 
 @{
 TEMPLATE(
     'msg__struct.hpp.em',
     package_name=package_name, interface_path=interface_path,
-    message=action.feedback_message, include_directives=include_directives,
-    type_hash=type_hash['feedback_message'])
+    message=action.feedback_message, include_directives=include_directives)
 }@
 
 @[for header_file in action_includes]@
@@ -80,8 +72,6 @@ namespace @(ns)
 @[end for]@
 struct @(action.namespaced_type.name)
 {
-  static constexpr const rosidl_type_hash_t @(TYPE_HASH_VAR) = @(type_hash_to_c_definition(type_hash['action'], indent=4));
-
   /// The goal message defined in the action definition.
   using Goal = @(action_name)@(ACTION_GOAL_SUFFIX);
   /// The result message defined in the action definition.

@@ -12,7 +12,6 @@
 #include <string>
 #include <vector>
 
-#include "rosidl_runtime_c/type_hash.h"
 #include "rosidl_runtime_cpp/bounded_vector.hpp"
 #include "rosidl_runtime_cpp/message_initialization.hpp"
 
@@ -38,13 +37,6 @@ template<class ContainerAllocator>
 struct IndividualTypeDescription_
 {
   using Type = IndividualTypeDescription_<ContainerAllocator>;
-
-  constexpr static const rosidl_type_hash_t TYPE_HASH = {1, {
-      0x55, 0xc8, 0x27, 0xd8, 0x6c, 0x3c, 0x14, 0x1b,
-      0xdd, 0x31, 0x8f, 0xe6, 0xc2, 0x2e, 0x11, 0x19,
-      0x0e, 0x4d, 0x3b, 0x37, 0xc8, 0xf4, 0xf9, 0x75,
-      0x1a, 0x08, 0x4a, 0xa0, 0x5c, 0xe9, 0x65, 0x60,
-    }};
 
   explicit IndividualTypeDescription_(rosidl_runtime_cpp::MessageInitialization _init = rosidl_runtime_cpp::MessageInitialization::ALL)
   {
@@ -146,9 +138,6 @@ struct IndividualTypeDescription_
 // alias to use template instance with default allocator
 using IndividualTypeDescription =
   rosidl_runtime_cpp::type_description::IndividualTypeDescription_<std::allocator<void>>;
-
-template<class ContainerAllocator>
-constexpr const rosidl_type_hash_t IndividualTypeDescription_<ContainerAllocator>::TYPE_HASH;
 
 // constant definitions
 

@@ -55,6 +55,8 @@ set(target_dependencies
   ${rosidl_generator_c_GENERATOR_FILES}
   "${rosidl_generator_c_TEMPLATE_DIR}/action__type_support.h.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/action__type_support.c.em"
+  "${rosidl_generator_c_TEMPLATE_DIR}/empty__description.c.em"
+  "${rosidl_generator_c_TEMPLATE_DIR}/full__description.c.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/idl.h.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/idl__description.c.em"
   "${rosidl_generator_c_TEMPLATE_DIR}/idl__functions.c.em"
@@ -76,6 +78,7 @@ foreach(dep ${target_dependencies})
   endif()
 endforeach()
 
+get_target_property(_target_sources ${rosidl_generate_interfaces_TARGET} SOURCES)
 set(generator_arguments_file "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c__arguments.json")
 rosidl_write_generator_arguments(
   "${generator_arguments_file}"
@@ -86,15 +89,22 @@ rosidl_write_generator_arguments(
   TEMPLATE_DIR "${rosidl_generator_c_TEMPLATE_DIR}"
   TARGET_DEPENDENCIES ${target_dependencies}
   TYPE_DESCRIPTION_TUPLES "${${rosidl_generate_interfaces_TARGET}__DESCRIPTION_TUPLES}"
+  ROS_INTERFACE_FILES "${_target_sources}"
 )
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
+
+set(disable_description_codegen_arg)
+if(ROSIDL_GENERATOR_C_DISABLE_TYPE_DESCRIPTION_CODEGEN)
+  set(disable_description_codegen_arg "--disable-description-codegen")
+endif()
 
 add_custom_command(
   OUTPUT ${_generated_headers} ${_generated_sources}
   COMMAND Python3::Interpreter
   ARGS ${rosidl_generator_c_BIN}
   --generator-arguments-file "${generator_arguments_file}"
+  ${disable_description_codegen_arg}
   DEPENDS ${target_dependencies}
   COMMENT "Generating C code for ROS interfaces"
   VERBATIM

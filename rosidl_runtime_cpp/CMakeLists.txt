@@ -5,11 +5,11 @@ project(rosidl_runtime_cpp)
 find_package(ament_cmake REQUIRED)
 find_package(rosidl_runtime_c REQUIRED)
 
-add_library(${PROJECT_NAME} INTERFACE)
-target_include_directories(${PROJECT_NAME} INTERFACE
+add_library(${PROJECT_NAME} src/type_hash.cpp)
+target_include_directories(${PROJECT_NAME} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
-target_link_libraries(${PROJECT_NAME} INTERFACE
+target_link_libraries(${PROJECT_NAME} PUBLIC
   rosidl_runtime_c::rosidl_runtime_c)
 
 if(MSVC)
@@ -75,6 +75,11 @@ if(BUILD_TESTING)
   ament_add_gtest(test_bounded_vector test/test_bounded_vector.cpp)
   if(TARGET test_bounded_vector)
     target_link_libraries(test_bounded_vector ${PROJECT_NAME})
+  endif()
+
+  ament_add_gtest(test_type_hash test/test_type_hash.cpp)
+  if(TARGET test_type_hash)
+    target_link_libraries(test_type_hash ${PROJECT_NAME})
   endif()
 
   add_performance_test(benchmark_bounded_vector test/benchmark/benchmark_bounded_vector.cpp)

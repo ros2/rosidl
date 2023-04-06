@@ -12,7 +12,6 @@
 #include <string>
 #include <vector>
 
-#include "rosidl_runtime_c/type_hash.h"
 #include "rosidl_runtime_cpp/bounded_vector.hpp"
 #include "rosidl_runtime_cpp/message_initialization.hpp"
 
@@ -38,13 +37,6 @@ template<class ContainerAllocator>
 struct Field_
 {
   using Type = Field_<ContainerAllocator>;
-
-  constexpr static const rosidl_type_hash_t TYPE_HASH = {1, {
-      0xc0, 0xb0, 0x13, 0x79, 0xcd, 0x42, 0x26, 0x28,
-      0x12, 0x85, 0xcc, 0xaf, 0x6b, 0xe4, 0x66, 0x53,
-      0x96, 0x8f, 0x85, 0x5f, 0x7c, 0x5e, 0x41, 0x61,
-      0x4f, 0xf5, 0xd7, 0xa8, 0x54, 0xef, 0xef, 0x7c,
-    }};
 
   explicit Field_(rosidl_runtime_cpp::MessageInitialization _init = rosidl_runtime_cpp::MessageInitialization::ALL)
   : type(_init)
@@ -163,9 +155,6 @@ struct Field_
 // alias to use template instance with default allocator
 using Field =
   rosidl_runtime_cpp::type_description::Field_<std::allocator<void>>;
-
-template<class ContainerAllocator>
-constexpr const rosidl_type_hash_t Field_<ContainerAllocator>::TYPE_HASH;
 
 // constant definitions
 

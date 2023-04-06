@@ -28,9 +28,10 @@ from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 from rosidl_pycommon import generate_files
 
 
-def generate_c(generator_arguments_file):
+def generate_c(generator_arguments_file, disable_description_codegen=False):
     mapping = {
         'idl.h.em': '%s.h',
+        'idl__description.c.em': 'detail/%s__description.c',
         'idl__functions.c.em': 'detail/%s__functions.c',
         'idl__functions.h.em': 'detail/%s__functions.h',
         'idl__struct.h.em': 'detail/%s__struct.h',
@@ -39,7 +40,10 @@ def generate_c(generator_arguments_file):
     }
     return generate_files(
         generator_arguments_file, mapping,
-        post_process_callback=prefix_with_bom_if_necessary)
+        post_process_callback=prefix_with_bom_if_necessary,
+        additional_context={
+            'disable_description_codegen': disable_description_codegen
+        })
 
 
 def prefix_with_bom_if_necessary(content):

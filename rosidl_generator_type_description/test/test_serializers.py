@@ -67,6 +67,7 @@ def test_nested_type_serializer():
         'type_name': 'my_pkg/msg/TestThing',
         'fields': [
             {
+                'default_value': '',
                 'name': 'ref_thing',
                 'type': {
                     'type_id': 1,
@@ -76,6 +77,7 @@ def test_nested_type_serializer():
                 },
             },
             {
+                'default_value': '',
                 'name': 'ref_things',
                 'type': {
                     'type_id': 145,

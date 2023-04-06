@@ -12,7 +12,6 @@
 #include <string>
 #include <vector>
 
-#include "rosidl_runtime_c/type_hash.h"
 #include "rosidl_runtime_cpp/bounded_vector.hpp"
 #include "rosidl_runtime_cpp/message_initialization.hpp"
 
@@ -34,13 +33,6 @@ template<class ContainerAllocator>
 struct TypeSource_
 {
   using Type = TypeSource_<ContainerAllocator>;
-
-  constexpr static const rosidl_type_hash_t TYPE_HASH = {1, {
-      0xfa, 0xea, 0xec, 0x75, 0x96, 0xc0, 0x4e, 0xcf,
-      0x5b, 0x6e, 0x99, 0xad, 0x22, 0x5e, 0x4c, 0x7c,
-      0xbb, 0x99, 0x7a, 0xd5, 0x43, 0x5f, 0x79, 0x35,
-      0x26, 0xfb, 0x39, 0x84, 0xd0, 0x11, 0xaa, 0xe5,
-    }};
 
   explicit TypeSource_(rosidl_runtime_cpp::MessageInitialization _init = rosidl_runtime_cpp::MessageInitialization::ALL)
   {
@@ -160,9 +152,6 @@ struct TypeSource_
 // alias to use template instance with default allocator
 using TypeSource =
   rosidl_runtime_cpp::type_description::TypeSource_<std::allocator<void>>;
-
-template<class ContainerAllocator>
-constexpr const rosidl_type_hash_t TypeSource_<ContainerAllocator>::TYPE_HASH;
 
 // constant definitions
 

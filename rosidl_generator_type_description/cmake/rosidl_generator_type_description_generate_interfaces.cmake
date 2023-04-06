@@ -38,8 +38,8 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   list(APPEND _dependency_paths "${_pkg_name}:${_include_path}")
 endforeach()
 
-# Export __HASH_TUPLES variable for use by dependent generators
-set(${rosidl_generate_interfaces_TARGET}__HASH_TUPLES ${_generated_tuples})
+# Export __DESCRIPTION_TUPLES variable for use by dependent generators
+set(${rosidl_generate_interfaces_TARGET}__DESCRIPTION_TUPLES ${_generated_tuples})
 
 # Validate that all dependencies exist
 set(target_dependencies

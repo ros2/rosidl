@@ -27,6 +27,7 @@ if(BUILD_TESTING)
   find_package(rosidl_runtime_c REQUIRED)
   find_package(rosidl_runtime_cpp REQUIRED)
   find_package(test_interface_files REQUIRED)
+  find_package(type_description_interfaces REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
   rosidl_generate_interfaces(${PROJECT_NAME}
@@ -110,6 +111,21 @@ if(BUILD_TESTING)
   target_link_libraries(test_invalid_initialization_c
     ${c_generator_target}
     rosidl_runtime_c::rosidl_runtime_c
+  )
+
+  add_executable(
+    test_descriptions_c
+    test/rosidl_generator_c/test_descriptions.c
+  )
+  ament_add_test(
+    test_descriptions_c
+    COMMAND "$<TARGET_FILE:test_descriptions_c>"
+    GENERATE_RESULT_FOR_RETURN_CODE_ZERO
+  )
+  target_link_libraries(test_descriptions_c
+    ${c_generator_target}
+    rosidl_runtime_c::rosidl_runtime_c
+    ${type_description_interfaces_TARGETS}
   )
 
   ament_add_pytest_test(test_hash_generator test/rosidl_generator_type_description

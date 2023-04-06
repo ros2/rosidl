@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <gtest/gtest.h>
 
+#include <rcutils/error_handling.h>
 #include <rcutils/types/rcutils_ret.h>
 #include <rcutils/types/hash_map.h>
 #include <rosidl_runtime_c/string_functions.h>
@@ -325,6 +326,7 @@ TEST_F(TestUtilsFixture, test_appends_and_advanced_construction)
     rosidl_runtime_c_type_description_utils_append_referenced_type_description(
       type_description_3, type_description_1, true),
     RCUTILS_RET_WARN);
+  rcutils_reset_error();
   EXPECT_EQ(type_description_3->referenced_type_descriptions.size, 4);
   EXPECT_EQ(type_description_3->referenced_type_descriptions.capacity, 4);
 
@@ -365,7 +367,9 @@ TEST_F(TestUtilsFixture, test_appends_and_advanced_construction)
     individual_desc_1,                                  // Depends on ref: "empty"
     &subset_desc_2,
     true);                                              // Coercion to valid
-  EXPECT_TRUE(rosidl_runtime_c_type_description_utils_type_description_is_valid(subset_desc_2));
+  EXPECT_EQ(
+    rosidl_runtime_c_type_description_utils_type_description_is_valid(subset_desc_2),
+    RCUTILS_RET_OK);
   EXPECT_EQ(subset_desc_2->referenced_type_descriptions.size, 1);
   EXPECT_EQ(subset_desc_2->referenced_type_descriptions.capacity, 1);
   EXPECT_FALSE(
@@ -402,6 +406,7 @@ TEST_F(TestUtilsFixture, test_find)
     &individual_desc_1->fields, "a",
     &find_field);
   EXPECT_EQ(ret, RCUTILS_RET_NOT_FOUND);
+  rcutils_reset_error();
   EXPECT_FALSE(find_field);
 
   ret = rosidl_runtime_c_type_description_utils_find_field(
@@ -425,6 +430,7 @@ TEST_F(TestUtilsFixture, test_find)
   ret = rosidl_runtime_c_type_description_utils_find_referenced_type_description(
     &type_description_1->referenced_type_descriptions, "a", &find_desc);
   EXPECT_EQ(ret, RCUTILS_RET_NOT_FOUND);
+  rcutils_reset_error();
   EXPECT_FALSE(find_desc);
 
   ret = rosidl_runtime_c_type_description_utils_find_referenced_type_description(

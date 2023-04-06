@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** rosidl_runtime_c_type_description_utils: Utilities for manipulating type_description_interfaces
- *                                           C message structs
+/**
+ * \file Utilities for manipulating type_description_interfaces C message structs.
+ *
+ * Every instance of a non-message struct (e.g. hash map) borrows, whereas the message structs copy.
+ * Hence, lifetime should be managed by the message structs.
  */
-
-// NOTE(methylDragon): I made it so that every instance of a non-message struct (e.g. hash map)
-//                     borrows, whereas the message structs copy.
-//                     So lifetime should be managed by the message structs.
 
 #ifndef ROSIDL_RUNTIME_C__TYPE_DESCRIPTION_UTILS_H_
 #define ROSIDL_RUNTIME_C__TYPE_DESCRIPTION_UTILS_H_
@@ -39,14 +38,12 @@
 #include "rosidl_runtime_c/type_description/type_description__functions.h"
 #include "rosidl_runtime_c/type_description/type_description__struct.h"
 
-
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-static const uint8_t ROSIDL_RUNTIME_C_TYPE_DESCRIPTION_UTILS_SEQUENCE_TYPE_ID_DELIMITER = 48;
-
+static const uint8_t ROSIDL_RUNTIME_C_TYPE_DESCRIPTION_UTILS_SEQUENCE_TYPE_ID_MASK = 48;
 
 // =================================================================================================
 // GET BY NAME
@@ -54,8 +51,8 @@ static const uint8_t ROSIDL_RUNTIME_C_TYPE_DESCRIPTION_UTILS_SEQUENCE_TYPE_ID_DE
 
 /// Get the first Field, matching by name.
 /**
- * NOTE: The `field` output arg must be passed in pointing to `NULL`.
- *       It will remain pointing to `NULL` if no matching `Field` is found.
+ * The `field` output arg must be passed in pointing to `NULL`.
+ * It will remain pointing to `NULL` if no matching `Field` is found.
  *
  * Ownership:
  * - The output `Field` borrows the `fields` arg's `Field` element. It is not authorized to
@@ -72,7 +69,7 @@ static const uint8_t ROSIDL_RUNTIME_C_TYPE_DESCRIPTION_UTILS_SEQUENCE_TYPE_ID_DE
  * \param[in] fields array of fields to search through
  * \param[in] name field name of the field to look for
  * \param[out] field the first field with field name that matches the name arg.
- *                   Must point to `NULL`, outputs pointing to `NULL` if not found.
+ *   Must point to `NULL`, outputs pointing to `NULL` if not found.
  * \return #RCUTILS_RET_OK if successful, or
  * \return #RCUTILS_RET_INVALID_ARGUMENT for invalid arguments, or
  * \return #RCUTILS_RET_NOT_FOUND if no `Field` with a matching name is found, or
@@ -87,13 +84,14 @@ rosidl_runtime_c_type_description_utils_find_field(
 
 /// Get the first referenced IndividualTypeDescription, matching by type name.
 /**
- * NOTE: The `referenced_type` output arg must be passed in pointing `NULL`.
- *       It will remain pointing to `NULL` if no matching `IndividualTypeDescription` is found.
+ * The `referenced_type` output arg must be passed in pointing `NULL`.
+ * It will remain pointing to `NULL` if no matching `IndividualTypeDescription` is found.
  *
  * Ownership:
  * - The output `IndividualTypeDescription` borrows the `referenced_types` arg's
- *   `IndividualTypeDescription` element. It is not authorized to deallocate it and it cannot
- *   outlive the `referenced_types` it borrows from.
+ *   `IndividualTypeDescription` element.
+ *   It is not authorized to deallocate it and it cannot outlive the `referenced_types` it borrows
+ *   from.
  *
  * <hr>
  * Attribute          | Adherence
@@ -106,8 +104,7 @@ rosidl_runtime_c_type_description_utils_find_field(
  * \param[in] referenced_types array of referenced individual type descriptions to search through
  * \param[in] type_name name of the referenced referenced individual type description to look for
  * \param[out] referenced_type the first individual type description with type name that matches the
- *                             type_name arg. Must point to `NULL`, outputs pointing to `NULL` if
- *                             not found.
+ *   type_name arg. Must point to `NULL`, outputs pointing to `NULL` if not found.
  * \return #RCUTILS_RET_OK if successful, or
  * \return #RCUTILS_RET_INVALID_ARGUMENT for invalid arguments, or
  * \return #RCUTILS_RET_NOT_FOUND if no `IndividualTypeDescription` with matching name is found, or
@@ -148,8 +145,7 @@ rosidl_runtime_c_type_description_utils_find_referenced_type_description(
  * \param[in] individual_description the individual type description to get the fields from
  * \param[in] allocator the allocator to use through out the lifetime of the hash_map
  * \param[out] hash_map `rcutils_hash_map_t` to be initialized, containing `Field` objects keyed by
- *                      their field names. Must point to `NULL`, outputs pointing to `NULL`
- *                      if error.
+ *   their field names. Must point to `NULL`, outputs pointing to `NULL` if error.
  * \return #RCUTILS_RET_OK if successful, or
  * \return #RCUTILS_RET_BAD_ALLOC if memory allocation fails, or
  * \return #RCUTILS_RET_INVALID_ARGUMENT for invalid arguments, or
@@ -165,9 +161,9 @@ rosidl_runtime_c_type_description_utils_get_field_map(
 /// Construct a hash map of an `IndividualTypeDescription__Sequence`'s `IndividualTypeDescription`
 /// objects, keyed by type name.
 /**
- * NOTE: The `hash_map` output arg must be passed in pointing to `NULL`.
- *       Furthermore, if the input `referenced_types` sequence has types with identical names but
- *       differing structures, this function will return `RCUTILS_RET_INVALID_ARGUMENT` and fail.
+ * The `hash_map` output arg must be passed in pointing to `NULL`.
+ * Furthermore, if the input `referenced_types` sequence has types with identical names but
+ * differing structures, this function will return `RCUTILS_RET_INVALID_ARGUMENT` and fail.
  *
  * Ownership:
  * - The caller assumes ownership of the output `rcutils_hash_map_t` and must free it and its
@@ -189,8 +185,8 @@ rosidl_runtime_c_type_description_utils_get_field_map(
  *                             types from
  * \param[in] allocator the allocator to use through out the lifetime of the hash_map
  * \param[out] hash_map `rcutils_hash_map_t` to be initialized, containing
- *                      `IndividualTypeDescription` objects keyed by their type names. Must point to
- *                      `NULL`, outputs pointing to `NULL` if error.
+ *   `IndividualTypeDescription` objects keyed by their type names.
+ *  Must point to `NULL`, outputs pointing to `NULL` if error.
  * \return #RCUTILS_RET_OK if successful, or
  * \return #RCUTILS_RET_BAD_ALLOC if memory allocation fails, or
  * \return #RCUTILS_RET_INVALID_ARGUMENT for invalid arguments, or
@@ -210,8 +206,8 @@ rosidl_runtime_c_type_description_utils_get_referenced_type_description_map(
 
 /// Return a map of only the referenced type descriptions that are recursively necessary.
 /**
- * NOTE: The `seen_map` output arg must be passed in pointing to `NULL`. It's a parameter so it can
- *       be passed into subsequent recursive calls to traverse nested types.
+ * The `seen_map` output arg must be passed in pointing to `NULL`.
+ * It's a parameter so it can be passed into subsequent recursive calls to traverse nested types.
  *
  * A referenced type description is recursively necessary if it is either:
  *   - Needed by a field of the main IndividualTypeDescription
@@ -250,9 +246,8 @@ rosidl_runtime_c_type_description_utils_get_referenced_type_description_map(
  *
  * \param[in] main_type_description the main individual type description to check the fields of
  * \param[in] referenced_types_map a map of referenced `IndividualTypeDescription` objects from the
- *                                 main individual type description's parent `TypeDescription`
- *                                 object, keyed by their type names
- * \param[in] allocator the allocator to use through out the lifetime of the hash_map
+ *   main individual type description's parent `TypeDescription` object, keyed by their type names.
+ * \param[in] allocator the allocator to use through out the lifetime of the hash_map.
  * \param[in,out] seen_map `rcutils_hash_map_t` of seen necessary `IndividualTypeDescription`
  *                         objects keyed by their type names. Used in recursive calls. Must point to
  *                         `NULL` for user's top level call, outputs pointing to `NULL` if error.
@@ -272,7 +267,7 @@ rosidl_runtime_c_type_description_utils_get_necessary_referenced_type_descriptio
 
 /// Deep copy a map of individual type descriptions into a new IndividualTypeDescription__Sequence.
 /**
- * NOTE: The `sequence` output arg must be passed in pointing to `NULL`.
+ * The `sequence` output arg must be passed in pointing to `NULL`.
  *
  * This method also validates that each IndividualTypeDescription in the map has a type name that
  * matches the key it was indexed by.
@@ -293,8 +288,8 @@ rosidl_runtime_c_type_description_utils_get_necessary_referenced_type_descriptio
  *
  * \param[in] hash_map the referenced type descriptions map to convert (via deep copy) to a sequence
  * \param[out] sequence the `IndividualTypeDescription__Sequence` containing copies of the
- *                      `IndividualTypeDescription` objects stored in the values of the input
- *                      `hash_map` arg. Must point to `NULL`, outputs pointing to `NULL` if error.
+ *   `IndividualTypeDescription` objects stored in the values of the input `hash_map` arg.
+ *   Must point to `NULL`, outputs pointing to `NULL` if error.
  * \param[in] sort sorts the referenced type descriptions if true, best effort
  * \return #RCUTILS_RET_OK if successful, or
  * \return #RCUTILS_RET_INVALID_ARGUMENT for invalid arguments, or
@@ -320,9 +315,12 @@ rosidl_runtime_c_type_description_utils_sort_referenced_type_descriptions_in_pla
   rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence * sequence);
 
 /// Remove unnecessary referenced type descriptions from a sequence of referenced types.
-/// IndividualTypeDescription elements are COPY ASSIGNED in-place, and the original sequence is
-/// shrunken afterwards.
-/// NOTE: DOES NOT SORT AFTER PRUNING! Call sort separately.
+/**
+ * IndividualTypeDescription elements are COPY ASSIGNED in-place, and the original sequence is
+ * shrunken afterwards.
+ *
+ * DOES NOT SORT AFTER PRUNING! Call sort separately.
+ */
 ROSIDL_GENERATOR_C_PUBLIC
 rcutils_ret_t
 rosidl_runtime_c_type_description_utils_prune_referenced_type_descriptions_in_place(
@@ -339,7 +337,7 @@ rosidl_runtime_c_type_description_utils_prune_referenced_type_descriptions_in_pl
  *     - Has a non-empty nested type name if nested
  */
 ROSIDL_GENERATOR_C_PUBLIC
-bool
+rcutils_ret_t
 rosidl_runtime_c_type_description_utils_field_is_valid(
   const rosidl_runtime_c__type_description__Field * field);
 
@@ -352,7 +350,7 @@ rosidl_runtime_c_type_description_utils_field_is_valid(
  *   - It does not have duplicate fields
  */
 ROSIDL_GENERATOR_C_PUBLIC
-bool
+rcutils_ret_t
 rosidl_runtime_c_type_description_utils_individual_type_description_is_valid(
   const rosidl_runtime_c__type_description__IndividualTypeDescription * description);
 
@@ -368,7 +366,7 @@ rosidl_runtime_c_type_description_utils_individual_type_description_is_valid(
  *     - Sorted
  */
 ROSIDL_GENERATOR_C_PUBLIC
-bool
+rcutils_ret_t
 rosidl_runtime_c_type_description_utils_type_description_is_valid(
   const rosidl_runtime_c__type_description__TypeDescription * description);
 
@@ -651,6 +649,7 @@ rosidl_runtime_c_type_description_utils_repl_all_type_description_type_names_in_
   rosidl_runtime_c__type_description__TypeDescription * type_description,
   const char * from,
   const char * to);
+
 
 // =================================================================================================
 // DESCRIPTION PRINTING

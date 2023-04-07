@@ -634,7 +634,6 @@ rosidl_runtime_c_type_description_utils_repl_individual_type_description_type_na
   const char * from,
   const char * to);
 
-
 /// In-place replace substrings across all type names (and references to those names)
 /**
  * This means all `IndividualTypeDescription` type_names will get replaced, in the main description
@@ -649,47 +648,6 @@ rosidl_runtime_c_type_description_utils_repl_all_type_description_type_names_in_
   rosidl_runtime_c__type_description__TypeDescription * type_description,
   const char * from,
   const char * to);
-
-
-// =================================================================================================
-// DESCRIPTION PRINTING
-// =================================================================================================
-
-/// Print rosidl_runtime_c__type_description__FieldType
-ROSIDL_GENERATOR_C_PUBLIC
-void
-rosidl_runtime_c_type_description_utils_print_field_type(
-  const rosidl_runtime_c__type_description__FieldType * field_type);
-
-/// Print rosidl_runtime_c__type_description__Field
-ROSIDL_GENERATOR_C_PUBLIC
-void
-rosidl_runtime_c_type_description_utils_print_field(
-  const rosidl_runtime_c__type_description__Field * field);
-
-/// Print rosidl_runtime_c__type_description__IndividualTypeDescription
-ROSIDL_GENERATOR_C_PUBLIC
-void
-rosidl_runtime_c_type_description_utils_print_individual_type_description(
-  const rosidl_runtime_c__type_description__IndividualTypeDescription * individual_type_description
-);
-
-/// Print rosidl_runtime_c__type_description__TypeDescription
-ROSIDL_GENERATOR_C_PUBLIC
-void rosidl_runtime_c_type_description_utils_print_type_description(
-  const rosidl_runtime_c__type_description__TypeDescription * type_description);
-
-/// Print hashmap of rosidl_runtime_c__type_description__Field, keyed by name
-ROSIDL_GENERATOR_C_PUBLIC
-void
-rosidl_runtime_c_type_description_utils_print_field_map(const rcutils_hash_map_t * hash_map);
-
-/// Print hashmap of rosidl_runtime_c__type_description__IndividualTypeDescription, keyed by name
-ROSIDL_GENERATOR_C_PUBLIC
-void
-rosidl_runtime_c_type_description_utils_print_referenced_type_description_map(
-  const rcutils_hash_map_t * hash_map);
-
 
 #ifdef __cplusplus
 }

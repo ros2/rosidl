@@ -569,5 +569,4 @@ TEST_F(TestUtilsFixture, test_maps)
 }
 
 // TODO(methylDragon)
-// TEST(Utils, test_prints)  <-- deferred because it's utility
 // TEST(Utils, test_validity)  <-- This is technically implicitly tested with appends with coercion

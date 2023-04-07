@@ -53,7 +53,7 @@ def prefix_with_bom_if_necessary(content):
 
 MSG_TYPE_TO_CPP = {
     'boolean': 'bool',
-    'octet': 'unsigned char',  # TODO change to std::byte with C++17
+    'octet': 'std::byte',
     'char': 'unsigned char',
     'wchar': 'char16_t',
     'float': 'float',
@@ -120,6 +120,8 @@ def msg_type_to_cpp(type_):
                 ('std::vector<%s, typename std::allocator_traits<ContainerAllocator>::template ' +
                  'rebind_alloc<%s>>') % (cpp_type, cpp_type)
         elif isinstance(type_, BoundedSequence):
+            if type_.maximum_size == 1:
+                return 'std::optional<%s>' % (cpp_type)
             return \
                 ('rosidl_runtime_cpp::BoundedVector<%s, %u, typename std::allocator_traits' +
                  '<ContainerAllocator>::template rebind_alloc<%s>>') % (cpp_type,

@@ -39,7 +39,7 @@ size_t next_power_of_two(size_t v)
   size_t shf = 0;
   v--;
   for (size_t i = 0; shf < sizeof(size_t) * 4; ++i) {
-    shf = (1 << i);
+    shf = (((size_t) 1) << i);
     v |= v >> shf;
   }
   v++;

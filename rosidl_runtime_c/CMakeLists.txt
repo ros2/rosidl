@@ -25,6 +25,7 @@ add_library(${PROJECT_NAME}
   "src/string_functions.c"
   "src/type_hash.c"
   "src/u16string_functions.c"
+  "src/type_description_utils.c"
   ${type_description_sources}
 )
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -134,6 +135,11 @@ if(BUILD_TESTING)
   if(TARGET test_u16string_functions)
     target_link_libraries(test_u16string_functions ${PROJECT_NAME})
     target_compile_definitions(test_u16string_functions PUBLIC RCUTILS_ENABLE_FAULT_INJECTION)
+  endif()
+
+  ament_add_gtest(test_type_description_utils test/test_type_description_utils.cpp)
+  if(TARGET test_type_description_utils)
+    target_link_libraries(test_type_description_utils ${PROJECT_NAME})
   endif()
 
   add_performance_test(benchmark_string_conversion test/benchmark/benchmark_string_conversion.cpp)

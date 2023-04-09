@@ -57,6 +57,10 @@ struct rosidl_message_type_support_t
   rosidl_message_get_type_description_sources_function get_type_description_sources_func;
 };
 
+/// Return a rosidl_message_type_support_t struct with members set to `NULL`.
+ROSIDL_GENERATOR_C_PUBLIC
+rosidl_message_type_support_t rosidl_get_zero_initialized_message_type_support_handle(void);
+
 /// Get the message type support handle specific to this identifier.
 /**
  * The handle's message typesupport identifier function is returned or if the parameters are NULL

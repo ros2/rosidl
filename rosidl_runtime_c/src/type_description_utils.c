@@ -693,6 +693,13 @@ rosidl_runtime_c_type_description_utils_individual_type_description_is_valid(
     goto end;
   }
 
+  ret = rcutils_hash_map_fini(hash_map);
+  if (ret != RCUTILS_RET_OK) {
+    RCUTILS_SET_ERROR_MSG("Could not finalize hash map");
+    return ret;
+  }
+  allocator.deallocate(hash_map, &allocator.state);
+
   return RCUTILS_RET_OK;
 
 end:
@@ -853,7 +860,7 @@ rosidl_runtime_c_type_description_utils_type_description_is_valid(
     goto end_sequence;
   }
 
-  return RCUTILS_RET_OK;
+  ret = RCUTILS_RET_OK;
 
 end_sequence:
   rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence__destroy(sorted_sequence);

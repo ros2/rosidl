@@ -112,6 +112,10 @@ rosidl_runtime_c_type_description_utils_get_field_map(
 {
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(individual_description, RCUTILS_RET_INVALID_ARGUMENT);
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(allocator, RCUTILS_RET_INVALID_ARGUMENT);
+  if (!rcutils_allocator_is_valid(allocator)) {
+    RCUTILS_SET_ERROR_MSG("allocator is invalid");
+    return RCUTILS_RET_INVALID_ARGUMENT;
+  }
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(hash_map, RCUTILS_RET_INVALID_ARGUMENT);
   if (*hash_map != NULL) {
     RCUTILS_SET_ERROR_MSG("'hash_map' output argument is not pointing to null");
@@ -176,6 +180,10 @@ rosidl_runtime_c_type_description_utils_get_referenced_type_description_map(
 {
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(referenced_types, RCUTILS_RET_INVALID_ARGUMENT);
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(allocator, RCUTILS_RET_INVALID_ARGUMENT);
+  if (!rcutils_allocator_is_valid(allocator)) {
+    RCUTILS_SET_ERROR_MSG("allocator is invalid");
+    return RCUTILS_RET_INVALID_ARGUMENT;
+  }
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(hash_map, RCUTILS_RET_INVALID_ARGUMENT);
   if (*hash_map != NULL) {
     RCUTILS_SET_ERROR_MSG("'hash_map' output argument is not pointing to null");
@@ -277,6 +285,10 @@ rosidl_runtime_c_type_description_utils_get_necessary_referenced_type_descriptio
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(main_type_description, RCUTILS_RET_INVALID_ARGUMENT);
   HASH_MAP_VALIDATE_HASH_MAP(referenced_types_map);
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(allocator, RCUTILS_RET_INVALID_ARGUMENT);
+  if (!rcutils_allocator_is_valid(allocator)) {
+    RCUTILS_SET_ERROR_MSG("allocator is invalid");
+    return RCUTILS_RET_INVALID_ARGUMENT;
+  }
   RCUTILS_CHECK_ARGUMENT_FOR_NULL(seen_map, RCUTILS_RET_INVALID_ARGUMENT);
 
   // Only true for the top level call, so we can determine when to finalize the map

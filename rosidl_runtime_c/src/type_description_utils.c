@@ -698,7 +698,7 @@ rosidl_runtime_c_type_description_utils_individual_type_description_is_valid(
     RCUTILS_SET_ERROR_MSG("Could not finalize hash map");
     return ret;
   }
-  allocator.deallocate(hash_map, &allocator.state);
+  allocator.deallocate(hash_map, allocator.state);
 
   return RCUTILS_RET_OK;
 

@@ -2,8 +2,8 @@
 Changelog for package rosidl_typesupport_introspection_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.0 (2023-04-11)
+------------------
 * Fix a few more clang analysis problems. (`#731 <https://github.com/ros2/rosidl/issues/731>`_)
   In particular, make sure to mark the fact that we are
   C++17 (as the emplace_back signature changed), and also

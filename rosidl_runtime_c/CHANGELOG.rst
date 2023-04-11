@@ -2,8 +2,8 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.0 (2023-04-11)
+------------------
 * Dynamic Subscription (BONUS: Allocators): rosidl (`#737 <https://github.com/ros2/rosidl/issues/737>`_)
 * Runtime Interface Reflection: rosidl (`#728 <https://github.com/ros2/rosidl/issues/728>`_)
 * Type Description Codegen and Typesupport  (rep2011) (`#727 <https://github.com/ros2/rosidl/issues/727>`_)

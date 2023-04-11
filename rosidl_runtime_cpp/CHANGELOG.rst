@@ -2,8 +2,8 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.0.0 (2023-04-11)
+------------------
 * Type Description Codegen and Typesupport  (rep2011) (`#727 <https://github.com/ros2/rosidl/issues/727>`_)
 * Copied type_description_interfaces structs (rep2011) (`#732 <https://github.com/ros2/rosidl/issues/732>`_)
 * Fix a few more clang analysis problems. (`#731 <https://github.com/ros2/rosidl/issues/731>`_)

@@ -18,6 +18,19 @@
 #include <stdio.h>
 #include <string.h>
 
+rosidl_message_type_support_t rosidl_get_zero_initialized_message_type_support_handle(void)
+{
+  static rosidl_message_type_support_t null_message_type_support = {
+    .typesupport_identifier = NULL,
+    .data = NULL,
+    .func = NULL,
+    .get_type_hash_func = NULL,
+    .get_type_description_func = NULL,
+    .get_type_description_sources_func = NULL
+  };
+  return null_message_type_support;
+}
+
 const rosidl_message_type_support_t * get_message_typesupport_handle(
   const rosidl_message_type_support_t * handle, const char * identifier)
 {

@@ -2,6 +2,11 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix warnings (`#726 <https://github.com/ros2/rosidl/issues/726>`_)
+* Contributors: Yadu
+
 3.4.0 (2023-02-13)
 ------------------
 * [rolling] Update maintainers - 2022-11-07 (`#717 <https://github.com/ros2/rosidl/issues/717>`_)

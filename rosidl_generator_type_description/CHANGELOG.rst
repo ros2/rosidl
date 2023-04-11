@@ -1,20 +1,16 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package rosidl_typesupport_introspection_tests
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package rosidl_generator_type_description
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Forthcoming
 -----------
-* Fix a few more clang analysis problems. (`#731 <https://github.com/ros2/rosidl/issues/731>`_)
-  In particular, make sure to mark the fact that we are
-  C++17 (as the emplace_back signature changed), and also
-  add in a few more (void)_ for benchmark tests.
-* Contributors: Chris Lalancette
+* Type Description Codegen and Typesupport  (rep2011) (`#727 <https://github.com/ros2/rosidl/issues/727>`_)
+* Expose type hash on typesupports (rep2011) (`#729 <https://github.com/ros2/rosidl/issues/729>`_)
+* Type hash in interface codegen (rep2011) (`#722 <https://github.com/ros2/rosidl/issues/722>`_)
+* Contributors: Emerson Knapp
 
 3.4.0 (2023-02-13)
 ------------------
-* [service introspection] generate service_event messages (`#700 <https://github.com/ros2/rosidl/issues/700>`_)
-* [rolling] Update maintainers - 2022-11-07 (`#717 <https://github.com/ros2/rosidl/issues/717>`_)
-* Contributors: Audrow Nash, Brian
 
 3.3.1 (2022-11-02)
 ------------------
@@ -39,10 +35,6 @@ Forthcoming
 
 3.1.0 (2022-03-01)
 ------------------
-* Bump `rosidl_typesupport_introspection_tests` coverage (`#655 <https://github.com/ros2/rosidl/issues/655>`_)
-* Add introspection typesupport tests for C/C++ services (`#653 <https://github.com/ros2/rosidl/issues/653>`_)
-* Add introspection typesupport tests for C/C++ messages (`#651 <https://github.com/ros2/rosidl/issues/651>`_)
-* Contributors: Michel Hidalgo
 
 3.0.1 (2022-01-13)
 ------------------

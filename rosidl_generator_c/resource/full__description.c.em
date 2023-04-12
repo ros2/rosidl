@@ -150,7 +150,9 @@ const rosidl_runtime_c__type_description__TypeDescription *
 c_typename = typename_to_c(ref_td['type_name'])
 }@
 @[    if ref_td['type_name'] not in full_type_names]@
+    #ifndef NDEBUG
     assert(0 == memcmp(&@(c_typename)__EXPECTED_HASH, @(c_typename)__@(GET_HASH_FUNC)(NULL), sizeof(rosidl_type_hash_t)));
+    #endif
 @[    end if]@
     description.referenced_type_descriptions.data[@(idx)].fields = @(c_typename)__@(GET_DESCRIPTION_FUNC)(NULL)->type_description.fields;
 @[  end for]@

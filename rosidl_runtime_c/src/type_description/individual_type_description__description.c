@@ -99,11 +99,13 @@ rosidl_runtime_c__type_description__IndividualTypeDescription__get_type_descript
     {rosidl_runtime_c__type_description__IndividualTypeDescription__REFERENCED_TYPE_DESCRIPTIONS, 2, 2},
   };
   if (!constructed) {
+    #ifndef NDEBUG
     assert(0 == memcmp(&rosidl_runtime_c__type_description__Field__EXPECTED_HASH, rosidl_runtime_c__type_description__Field__get_type_hash(NULL), sizeof(rosidl_type_hash_t)));
     description.referenced_type_descriptions.data[0].fields = rosidl_runtime_c__type_description__Field__get_type_description(NULL)->type_description.fields;
     assert(0 == memcmp(&rosidl_runtime_c__type_description__FieldType__EXPECTED_HASH, rosidl_runtime_c__type_description__FieldType__get_type_hash(NULL), sizeof(rosidl_type_hash_t)));
     description.referenced_type_descriptions.data[1].fields = rosidl_runtime_c__type_description__FieldType__get_type_description(NULL)->type_description.fields;
     constructed = true;
+    #endif
   }
   return &description;
 }

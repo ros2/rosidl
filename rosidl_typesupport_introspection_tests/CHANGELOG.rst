@@ -2,6 +2,9 @@
 Changelog for package rosidl_typesupport_introspection_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.1.0 (2023-04-28)
+------------------
+
 4.0.0 (2023-04-11)
 ------------------
 * Fix a few more clang analysis problems. (`#731 <https://github.com/ros2/rosidl/issues/731>`_)

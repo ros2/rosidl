@@ -2,6 +2,9 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.1.0 (2023-04-28)
+------------------
+
 4.0.0 (2023-04-11)
 ------------------
 * Dynamic Subscription (BONUS: Allocators): rosidl (`#737 <https://github.com/ros2/rosidl/issues/737>`_)

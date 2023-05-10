@@ -1,6 +1,9 @@
 // generated from rosidl_generator_c/resource/idl__type_support.h.em
 // with input from @(package_name):@(interface_path)
 // generated code does not contain a copyright notice
+@{from rosidl_pycommon import convert_camel_case_to_lower_case_underscore}
+// IWYU pragma: private, include "@(package_name)/@(interface_path.parent)/@(convert_camel_case_to_lower_case_underscore(interface_path.stem)).h"
+
 @
 @#######################################################################
 @# EmPy template for generating <idl>__struct.h files

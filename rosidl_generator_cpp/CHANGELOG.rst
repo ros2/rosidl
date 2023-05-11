@@ -2,6 +2,11 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix IWYU for clangd in C and C++ (`#742 <https://github.com/ros2/rosidl/issues/742>`_)
+* Contributors: Alexis Paques
+
 4.1.0 (2023-04-28)
 ------------------
 

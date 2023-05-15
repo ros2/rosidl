@@ -25,5 +25,6 @@ include_base = '/'.join(include_parts_detail)
 #include "@(include_base)__struct.hpp"
 #include "@(include_base)__builder.hpp"
 #include "@(include_base)__traits.hpp"
+#include "@(include_base)__type_support.hpp"
 
 #endif  // @(header_guard_variable)

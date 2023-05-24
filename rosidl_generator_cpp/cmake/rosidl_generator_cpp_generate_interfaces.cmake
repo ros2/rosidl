@@ -25,6 +25,7 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
     "${_output_path}/${_parent_folder}/detail/${_header_name}__builder.hpp"
     "${_output_path}/${_parent_folder}/detail/${_header_name}__struct.hpp"
     "${_output_path}/${_parent_folder}/detail/${_header_name}__traits.hpp"
+    "${_output_path}/${_parent_folder}/detail/${_header_name}__type_support.hpp"
   )
 endforeach()
 
@@ -45,16 +46,20 @@ set(target_dependencies
   "${rosidl_generator_cpp_TEMPLATE_DIR}/action__builder.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/action__struct.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/action__traits.hpp.em"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/action__type_support.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/idl.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/idl__builder.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/idl__struct.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/idl__traits.hpp.em"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/idl__type_support.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__builder.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__struct.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__traits.hpp.em"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/msg__type_support.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__builder.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__struct.hpp.em"
   "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__traits.hpp.em"
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/srv__type_support.hpp.em"
   ${rosidl_generate_interfaces_ABS_IDL_FILES}
   ${_dependency_files})
 foreach(dep ${target_dependencies})
@@ -82,6 +87,17 @@ add_custom_command(
   COMMENT "Generating C++ code for ROS interfaces"
   VERBATIM
 )
+
+# generate header to switch between export and import for a specific package
+set(_visibility_control_file
+  "${_output_path}/msg/rosidl_generator_cpp__visibility_control.hpp")
+string(TOUPPER "${PROJECT_NAME}" PROJECT_NAME_UPPER)
+configure_file(
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/rosidl_generator_cpp__visibility_control.hpp.in"
+  "${_visibility_control_file}"
+  @ONLY
+)
+list(APPEND _generated_headers "${_visibility_control_file}")
 
 if(TARGET ${rosidl_generate_interfaces_TARGET}__cpp)
   message(WARNING "Custom target ${rosidl_generate_interfaces_TARGET}__cpp already exists")

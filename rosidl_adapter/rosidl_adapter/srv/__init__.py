@@ -32,7 +32,7 @@ def convert_srv_to_idl(package_dir, package_name, input_file, output_dir):
     print(f'Writing output file: {abs_output_file}')
     data = {
         'pkg_name': package_name,
-        'relative_input_file': input_file,
+        'relative_input_file': input_file.as_posix(),
         'srv': srv,
     }
 

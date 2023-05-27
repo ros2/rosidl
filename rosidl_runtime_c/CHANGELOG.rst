@@ -2,6 +2,9 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.3.0 (2022-09-20)
 ------------------
 * Use rcutils allocators in rosidl_generator_c (`#584 <https://github.com/ros2/rosidl/issues/584>`_)

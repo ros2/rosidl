@@ -471,7 +471,7 @@ def calculate_type_hash(serialized_type_description):
         del field['default_value']
     for referenced_td in hashable_dict['referenced_type_descriptions']:
         for field in referenced_td['fields']:
-            del field['default_value']
+            field.pop('defaut_value', None)
 
     hashable_repr = json.dumps(
         hashable_dict,

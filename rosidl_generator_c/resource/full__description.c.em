@@ -77,8 +77,16 @@ static const rosidl_type_hash_t @(c_typename)__EXPECTED_HASH = @(type_hash_to_c_
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 @# Names for all types
+@{
+added_itype_names = set()
+}@
 @[for itype_description in all_type_descriptions]@
+@[  if itype_description['type_name'] not in added_itype_names]@
 static char @(typename_to_c(itype_description['type_name']))__TYPE_NAME[] = "@(itype_description['type_name'])";
+@{
+added_itype_names.add(itype_description['type_name'])
+}@
+@[  end if]@
 @[end for]@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

@@ -19,6 +19,9 @@ include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 include_base = '/'.join(include_parts)
 
+message_namespace = '::'.join([package_name] + list(interface_path.parents[0].parts))
+message_namespaced_name = '::'.join([message_namespace, message.structure.namespaced_type.name])
+
 header_files = [
     'array',
     'cstddef',  # providing offsetof()
@@ -45,6 +48,19 @@ header_files = [
 @[    end if]@
 #include "@(header_file)"
 @[end for]@
+
+
+namespace rosidl_typesupport_introspection_cpp
+{
+
+// forward declare template, as it may be used in MessageMember
+template<>
+ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
+const rosidl_message_type_support_t *
+get_message_type_support_handle<@(message_namespaced_name)>();
+
+}  // namespace rosidl_typesupport_introspection_cpp
+
 @[for ns in message.structure.namespaced_type.namespaces]@
 
 namespace @(ns)
@@ -57,12 +73,12 @@ namespace rosidl_typesupport_introspection_cpp
 void @(message.structure.namespaced_type.name)_init_function(
   void * message_memory, rosidl_runtime_cpp::MessageInitialization _init)
 {
-  new (message_memory) @('::'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))(_init);
+  new (message_memory) @(message_namespaced_name)(_init);
 }
 
 void @(message.structure.namespaced_type.name)_fini_function(void * message_memory)
 {
-  auto typed_message = static_cast<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name])) *>(message_memory);
+  auto typed_message = static_cast<@(message_namespaced_name) *>(message_memory);
   typed_message->~@(message.structure.namespaced_type.name)();
 }
 
@@ -241,7 +257,7 @@ static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(message.st
   "@('::'.join([package_name] + list(interface_path.parents[0].parts)))",  // message namespace
   "@(message.structure.namespaced_type.name)",  // message name
   @(len(message.structure.members)),  // number of fields
-  sizeof(@('::'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))),
+  sizeof(@(message_namespaced_name)),
   @(message.structure.namespaced_type.name)_message_member_array,  // message members
   @(message.structure.namespaced_type.name)_init_function,  // function to initialize message memory (memory has to be allocated)
   @(message.structure.namespaced_type.name)_fini_function  // function to terminate message instance (will not free memory)
@@ -269,7 +285,7 @@ namespace rosidl_typesupport_introspection_cpp
 template<>
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_message_type_support_t *
-get_message_type_support_handle<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))>()
+get_message_type_support_handle<@(message_namespaced_name)>()
 {
   return &::@('::'.join([package_name] + list(interface_path.parents[0].parts)))::rosidl_typesupport_introspection_cpp::@(message.structure.namespaced_type.name)_message_type_support_handle;
 }

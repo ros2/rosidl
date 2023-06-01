@@ -151,6 +151,22 @@ enum
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@# We must define the sequence type before the type itself
+@# for the special case, that the type contains a sequence
+@# of the type itself.
+// forward declare type
+struct @(idl_structure_type_to_c_typename(message.structure.namespaced_type));
+// Struct for a sequence of @(idl_structure_type_to_c_typename(message.structure.namespaced_type)).
+typedef struct @(idl_structure_type_sequence_to_c_typename(message.structure.namespaced_type))
+{
+  struct @(idl_structure_type_to_c_typename(message.structure.namespaced_type)) * data;
+  /// The number of valid items in data
+  size_t size;
+  /// The number of allocated items in data
+  size_t capacity;
+} @(idl_structure_type_sequence_to_c_typename(message.structure.namespaced_type));
+
+@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 /// Struct defined in @(interface_path_to_string(interface_path)) in the package @(package_name).
 @{comments = message.structure.get_comment_lines()}@
 @[if comments]@
@@ -179,13 +195,3 @@ typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_t
 } @(idl_structure_type_to_c_typename(message.structure.namespaced_type));
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-@#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-// Struct for a sequence of @(idl_structure_type_to_c_typename(message.structure.namespaced_type)).
-typedef struct @(idl_structure_type_sequence_to_c_typename(message.structure.namespaced_type))
-{
-  @(idl_structure_type_to_c_typename(message.structure.namespaced_type)) * data;
-  /// The number of valid items in data
-  size_t size;
-  /// The number of allocated items in data
-  size_t capacity;
-} @(idl_structure_type_sequence_to_c_typename(message.structure.namespaced_type));

@@ -221,6 +221,13 @@ def test_message_parser_annotations(message_idl_file):
     assert 'max' in structure.members[3].annotations[1].value
     assert structure.members[3].annotations[1].value['max'] == 10
 
+    assert len(structure.members[22].annotations) == 1
+
+    assert structure.members[22].annotations[0].name == 'cdr_plain'
+    assert len(structure.members[22].annotations[0].value) == 1
+    assert 'capacity' in structure.members[22].annotations[0].value
+    assert structure.members[22].annotations[0].value['capacity'] == 64
+
     assert isinstance(structure.members[32].type, BasicType)
     assert structure.members[32].type.typename == 'float'
     assert structure.members[32].name == 'int_and_frac_with_positive_scientific'

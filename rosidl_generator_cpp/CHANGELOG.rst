@@ -2,6 +2,12 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix deprecation warnings for message constants (`#750 <https://github.com/ros2/rosidl/issues/750>`_)
+* Generate typesupport declarations for actions, messages and services (`#703 <https://github.com/ros2/rosidl/issues/703>`_)
+* Contributors: Emerson Knapp, Stefan Fabian
+
 4.1.1 (2023-05-11)
 ------------------
 * Fix IWYU for clangd in C and C++ (`#742 <https://github.com/ros2/rosidl/issues/742>`_)

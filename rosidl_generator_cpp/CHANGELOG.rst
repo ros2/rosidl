@@ -2,8 +2,8 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.2.0 (2023-06-07)
+------------------
 * Fix deprecation warnings for message constants (`#750 <https://github.com/ros2/rosidl/issues/750>`_)
 * Generate typesupport declarations for actions, messages and services (`#703 <https://github.com/ros2/rosidl/issues/703>`_)
 * Contributors: Emerson Knapp, Stefan Fabian

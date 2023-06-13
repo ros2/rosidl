@@ -42,6 +42,28 @@ public:
     clear();
   }
 
+  // Implicit conversion from C string
+  CDRCompatibleFixedCapacityString(const char * const str)
+      : CDRCompatibleFixedCapacityString()
+  {
+    if (nullptr == str) {
+      throw std::invalid_argument(
+          "Constructing CDRCompatibleFixedCapacityString with null pointer");
+    }
+
+    append_value(str);
+  }
+
+  // Implicit conversion from C++ string
+  CDRCompatibleFixedCapacityString(const std::string& str)
+      : CDRCompatibleFixedCapacityString()
+  {
+    append_value(str.c_str(), str.length());
+  }
+
+  // Implicit conversion to C++ string
+  operator std::string() const { return std::string(m_string); }
+
   inline constexpr bool empty() const noexcept { return '\0' == m_string[0u]; }
 
   char* data() noexcept { return m_string; }
@@ -80,6 +102,22 @@ public:
   void clear() noexcept { ::memset(m_string, 0, m_capacity); }
 
  private:
+
+  void append_value(const char* const str) { append_value(str, ::strlen(str)); }
+
+  void append_value(const char * const str, size_t len)
+  {
+    size_t my_len = this->length();
+    size_t new_len = my_len + len;
+
+    if (new_len > capacity()) {
+      // TODO(MiguelCompany): Make this configurable
+      throw std::overflow_error("Appending string will overflow capacity");
+    }
+
+    ::memmove(&m_string[my_len], str, len);
+    m_string[new_len] = '\0';
+  }
 
   // NOTE: In order for this to be binary compatible with its CDR representation, the following
   // two fields shall be the only attributes in this class.

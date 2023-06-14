@@ -377,8 +377,11 @@ template<typename ContainerAllocator>
 const @(MSG_TYPE_TO_CPP['wstring'])
 @(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name) = u"@(escape_wstring(c.value))";
 @[ else ]@
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr @(MSG_TYPE_TO_CPP[c.type.typename]) @(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name);
+#endif  // __cplusplus < 201703L
 @[ end if]@
 @[ if c.name in msvc_common_macros]@
 #if defined(_WIN32)

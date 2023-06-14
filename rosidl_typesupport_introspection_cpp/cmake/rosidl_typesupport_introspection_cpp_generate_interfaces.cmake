@@ -100,11 +100,12 @@ if(rosidl_generate_interfaces_LIBRARY_NAME)
 endif()
 set_property(TARGET ${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PROPERTY DEFINE_SYMBOL "ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_BUILDING_DLL")
+set_property(TARGET ${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  PROPERTY CXX_STANDARD 17)
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix} PROPERTIES
-    CXX_STANDARD 17
-    COMPILE_OPTIONS -Wall -Wextra -Wpedantic
-  )
+  target_compile_options(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}

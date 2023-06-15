@@ -103,6 +103,67 @@ public:
 
   void clear() noexcept { ::memset(m_string, 0, m_capacity); }
 
+  int32_t compare(
+      const size_t my_pos,
+      const size_t my_count,
+      const char* const other,
+      const size_t other_count = std::string::npos) const
+  {
+    if (nullptr == other) {
+      throw std::invalid_argument("other is nullptr");
+    }
+
+    const size_t my_len = length();
+    if (my_pos > my_len) {
+      throw std::out_of_range("my_pos > my_len");
+    }
+
+    const size_t my_used_count =
+        (std::string::npos == my_count) ? my_len : my_count;
+    size_t other_len = other_count;
+    if (std::string::npos == other_count) {
+      other_len = ::strlen(other);
+    }
+
+    const size_t my_remaining_len = std::min(my_used_count, my_len - my_pos);
+    int32_t retval = ::strncmp(data() + my_pos, other, std::min(my_remaining_len, other_len));
+
+    if (retval == 0) {
+      if (my_remaining_len < other_len) {
+        retval = -1;
+      }
+      if (my_remaining_len > other_len) {
+        retval = 1;
+      }
+    }
+    return retval;
+  }
+
+  inline int32_t compare(const char* const s) const
+  {
+    return this->compare(0U, std::string::npos, s);
+  }
+
+  bool operator==(const std::string& rhs) const
+  {
+    return this->compare(rhs.c_str()) == 0;
+  }
+
+  bool operator!=(const std::string& rhs) const
+  {
+    return !operator==(rhs);
+  }
+
+  bool operator==(const char* const rhs) const
+  {
+    return this->compare(rhs) == 0;
+  }
+
+  bool operator!=(const char* const rhs) const
+  {
+    return !operator==(rhs);
+  }
+
  private:
 
   void append_value(const char* const str) { append_value(str, ::strlen(str)); }
@@ -135,6 +196,20 @@ typename ::std::basic_ostream<char>& operator<<(
 {
   return out_stream.write(str.c_str(),
                           static_cast<std::streamsize>(str.size()));
+}
+
+template <typename Stringable, uint32_t Capacity>
+inline bool operator==(const Stringable& lhs,
+    const CDRCompatibleFixedCapacityString<Capacity>& rhs)
+{
+  return 0 == rhs.compare(lhs.c_str());
+}
+
+template <typename T, uint32_t Capacity>
+inline bool operator!=(const T& lhs,
+    const CDRCompatibleFixedCapacityString<Capacity>& rhs)
+{
+  return 0 != rhs.compare(lhs.c_str());
 }
 
 }  // namespace rosidl_runtime_cpp

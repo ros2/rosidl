@@ -34,9 +34,10 @@ class CDRCompatibleFixedCapacityString
 {
 public:
 
-  static_assert(Capacity > 0,
-    "CDRCompatibleFixedCapacityString requires space for at least the NUL terminator");
+  static_assert(Capacity > 0, "Should have space for at least the NUL terminator");
+  static_assert(0 == (Capacity % sizeof(uint32_t)), "Needs alignment as uint32_t");
 
+  // Default constructor
   CDRCompatibleFixedCapacityString()
   {
     clear();
@@ -66,11 +67,11 @@ public:
 
   inline constexpr bool empty() const noexcept { return '\0' == m_string[0u]; }
 
-  char* data() noexcept { return m_string; }
+  constexpr char* data() noexcept { return m_string; }
 
-  const char* data() const noexcept { return m_string; }
+  constexpr const char* data() const noexcept { return m_string; }
 
-  const char* c_str() const noexcept { return m_string; }
+  constexpr const char* c_str() const noexcept { return m_string; }
 
   inline constexpr size_t capacity() const { return m_capacity - 1u; }
 

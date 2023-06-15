@@ -17,6 +17,7 @@
 
 #include <cstring>
 #include <memory>
+#include <ostream>
 #include <stdexcept>
 #include <string>
 
@@ -126,6 +127,15 @@ public:
   uint32_t m_capacity = Capacity;
   char m_string[Capacity];
 };
+
+template <uint32_t Capacity>
+typename ::std::basic_ostream<char>& operator<<(
+    std::basic_ostream<char>& out_stream,
+    const CDRCompatibleFixedCapacityString<Capacity>& str)
+{
+  return out_stream.write(str.c_str(),
+                          static_cast<std::streamsize>(str.size()));
+}
 
 }  // namespace rosidl_runtime_cpp
 

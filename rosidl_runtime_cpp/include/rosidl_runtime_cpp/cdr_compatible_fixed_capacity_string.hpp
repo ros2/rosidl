@@ -164,6 +164,19 @@ public:
     return !operator==(rhs);
   }
 
+  CDRCompatibleFixedCapacityString<Capacity>& operator+=(const char* const rhs)
+  {
+    this->append_value(rhs);
+    return *this;
+  }
+
+  template<typename Stringable>
+  CDRCompatibleFixedCapacityString<Capacity>& operator+=(const Stringable& rhs)
+  {
+    this->append_value(rhs.c_str());
+    return *this;
+  }
+
  private:
 
   void append_value(const char* const str) { append_value(str, ::strlen(str)); }
@@ -210,6 +223,20 @@ inline bool operator!=(const T& lhs,
     const CDRCompatibleFixedCapacityString<Capacity>& rhs)
 {
   return 0 != rhs.compare(lhs.c_str());
+}
+
+template <size_t N, uint32_t Capacity>
+inline std::string operator+(
+    const char (&lhs)[N], const CDRCompatibleFixedCapacityString<Capacity>& rhs)
+{
+  return std::string(lhs) + rhs.c_str();
+}
+
+template <uint32_t Capacity>
+inline std::string operator+(
+    const std::string& lhs, const CDRCompatibleFixedCapacityString<Capacity>& rhs)
+{
+  return lhs + rhs.c_str();
 }
 
 }  // namespace rosidl_runtime_cpp

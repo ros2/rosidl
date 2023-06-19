@@ -104,7 +104,7 @@ configure_file(
   "${_visibility_control_file}"
   @ONLY
 )
-list(APPEND _generated_msg_headers "${_visibility_control_file}")
+list(APPEND _generated_headers "${_visibility_control_file}")
 
 
 # INTERFACE libraries can't have file-level dependencies in CMake,

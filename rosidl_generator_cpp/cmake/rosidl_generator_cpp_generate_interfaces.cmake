@@ -32,6 +32,17 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   )
 endforeach()
 
+# generate header to switch between export and import for a specific package
+set(_visibility_control_file
+  "${_output_path}/msg/rosidl_generator_cpp__visibility_control.hpp")
+string(TOUPPER "${PROJECT_NAME}" PROJECT_NAME_UPPER)
+configure_file(
+  "${rosidl_generator_cpp_TEMPLATE_DIR}/rosidl_generator_cpp__visibility_control.hpp.in"
+  "${_visibility_control_file}"
+  @ONLY
+)
+list(APPEND _generated_headers "${_visibility_control_file}")
+
 set(_dependency_files "")
 set(_dependencies "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
@@ -94,18 +105,6 @@ add_custom_command(
   COMMENT "Generating C++ code for ROS interfaces"
   VERBATIM
 )
-
-# generate header to switch between export and import for a specific package
-set(_visibility_control_file
-  "${_output_path}/msg/rosidl_generator_cpp__visibility_control.hpp")
-string(TOUPPER "${PROJECT_NAME}" PROJECT_NAME_UPPER)
-configure_file(
-  "${rosidl_generator_cpp_TEMPLATE_DIR}/rosidl_generator_cpp__visibility_control.hpp.in"
-  "${_visibility_control_file}"
-  @ONLY
-)
-list(APPEND _generated_msg_headers "${_visibility_control_file}")
-
 
 # INTERFACE libraries can't have file-level dependencies in CMake,
 # so make a custom target depending on the generated files

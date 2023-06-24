@@ -910,3 +910,31 @@ def parse_action_string(pkg_name, action_name, action_string):
 
     return ActionSpecification(
         pkg_name, action_name, goal_message, result_message, feedback_message)
+
+
+def tangle_markdown_to_rosidl(markdown_content, adapter_type):
+    if adapter_type == 'msg':
+        section_separator = None
+    elif adapter_type == 'srv':
+        section_separator = SERVICE_REQUEST_RESPONSE_SEPARATOR
+    elif adapter_type == 'action':
+        section_separator = ACTION_REQUEST_RESPONSE_SEPARATOR
+    tangle_yes_pattern = r'^```[^`]*tangle-yes'
+    output_lines = []
+    inside_codeblock = False
+    for line in [line.strip() for line in markdown_content.splitlines()]:
+        if inside_codeblock is True:
+            is_end_codefence = line == '```'
+            if is_end_codefence is True:
+                inside_codeblock = False
+            else:
+                output_lines.append(line)
+        else:
+            is_start_codefence = (line == '```' or re.search(tangle_yes_pattern, line))
+            if is_start_codefence is True:
+                inside_codeblock = True
+            else:
+                is_separator_line = (line == section_separator)
+                if is_separator_line is True:
+                    output_lines.append(section_separator)
+    return '\n'.join(output_lines)

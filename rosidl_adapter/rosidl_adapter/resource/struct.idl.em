@@ -81,6 +81,10 @@ else:
 @[      end for]@
 )
 @[    end if]@
+@[    if field.annotations.get('bound')]@
+      @(field.annotations['bound'])@
+
+@[    end if]@
 @[    if field.default_value is not None]@
       @@default (value=@(to_idl_literal(get_idl_type(field.type), field.default_value)))
 @[    end if]@

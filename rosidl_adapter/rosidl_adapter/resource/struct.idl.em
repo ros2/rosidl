@@ -81,8 +81,8 @@ else:
 @[      end for]@
 )
 @[    end if]@
-@[    if field.annotations.get('bound')]@
-      @(field.annotations['bound'])@
+@[    if field.annotations.get('cdr_plain')]@
+      @(field.annotations['cdr_plain'])@
 
 @[    end if]@
 @[    if field.default_value is not None]@

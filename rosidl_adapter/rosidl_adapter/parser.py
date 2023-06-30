@@ -473,14 +473,19 @@ def parse_message_string(pkg_name, msg_name, message_string):
     message_string = message_string.replace('\t', ' ')
 
     # Try to load type bounds config file from the environment
-    type_bounds_file = os.environ['ROS2_TYPE_BOUNDS_FILE']
-    bounds_config = None
-    if type_bounds_file:
+    fixed_size_config = None
+    type_fixed_size_file = None
+    try:
+        type_fixed_size_file = os.environ['ROS2_TYPE_FIXED_SIZE_FILE']
+    except KeyError:
+        pass
+
+    if type_fixed_size_file:
         try:
-            with open(type_bounds_file, 'r', encoding='utf-8') as config_file:
-                bounds_config = yaml.safe_load(config_file)
+            with open(type_fixed_size_file, 'r', encoding='utf-8') as config_file:
+                fixed_size_config = yaml.safe_load(config_file)
         except IOError as exc:
-            print(f'Cannot open {type_bounds_file}. {exc}')
+            print(f'Cannot open {type_fixed_size_file}. {exc}')
 
     current_comments = []
     message_comments, lines = extract_file_level_comments(message_string)
@@ -554,15 +559,14 @@ def parse_message_string(pkg_name, msg_name, message_string):
         comment_lines += current_comments
         current_comments = []
 
-        # Add bound annotations if configured in file
+        # Add fixed_size annotations if configured in file
         for based_type in ['string', 'wstring']:
-            __add_bound_annotations(
+            __add_fixed_size_annotations(
                 pkg_name=pkg_name,
                 msg_name=msg_name,
                 last_element=last_element,
                 field_base_type=based_type,
-                bounds_config=bounds_config)
-            print('')
+                fixed_size_config=fixed_size_config)
 
     msg = MessageSpecification(pkg_name, msg_name, fields, constants)
     msg.annotations['comment'] = message_comments
@@ -577,22 +581,22 @@ def parse_message_string(pkg_name, msg_name, message_string):
     return msg
 
 
-def __add_bound_annotations(pkg_name, msg_name, last_element, field_base_type, bounds_config):
+def __add_fixed_size_annotations(pkg_name, msg_name, last_element, field_base_type, fixed_size_config):
     elem_based_type = str(last_element.type).split('[')[0]
-    if bounds_config is None or field_base_type != elem_based_type:
+    if fixed_size_config is None or field_base_type != elem_based_type:
         return
 
-    bound = None
+    fixed_size = None
     skip_field = False
     field_full_name = f'{pkg_name}/{msg_name}/{last_element.name}'
 
     # Check if config for strings
-    if field_base_type not in bounds_config:
+    if field_base_type not in fixed_size_config:
         skip_field = True
 
     # Check if field is blocklisted
-    elif 'skip' in bounds_config[field_base_type]:
-        for elem in bounds_config[field_base_type]['skip']:
+    elif 'skip' in fixed_size_config[field_base_type]:
+        for elem in fixed_size_config[field_base_type]['skip']:
             if fnmatch.fnmatch(field_full_name, elem):
                 skip_field = True
                 break
@@ -601,25 +605,25 @@ def __add_bound_annotations(pkg_name, msg_name, last_element, field_base_type, b
     if not skip_field:
 
         # Check if config for package
-        if pkg_name not in bounds_config[field_base_type]:
+        if pkg_name not in fixed_size_config[field_base_type]:
             pass
 
         # Check if config for type
-        elif msg_name not in bounds_config[field_base_type][pkg_name]:
+        elif msg_name not in fixed_size_config[field_base_type][pkg_name]:
             pass
 
         # Check if config for field
-        elif str(last_element.name) in bounds_config[field_base_type][pkg_name][msg_name]:
-            bound = bounds_config[field_base_type][pkg_name][msg_name][str(last_element.name)]
+        elif str(last_element.name) in fixed_size_config[field_base_type][pkg_name][msg_name]:
+            fixed_size = fixed_size_config[field_base_type][pkg_name][msg_name][str(last_element.name)]
 
-        # Load default bound if present
-        elif 'default_bound' in bounds_config[field_base_type]:
-            bound = bounds_config[field_base_type]['default_bound']
+        # Load default fixed_size if present
+        elif 'default_fixed_size' in fixed_size_config[field_base_type]:
+            fixed_size = fixed_size_config[field_base_type]['default_fixed_size']
 
-    if bound is not None:
+    if fixed_size is not None:
         last_element.annotations.setdefault(
-            'bound',
-            f'@bound(size={bound})'
+            'cdr_plain',
+            f'@cdr_plain(fixed_size={fixed_size})'
         )
 
 

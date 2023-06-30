@@ -621,6 +621,12 @@ def __add_fixed_size_annotations(pkg_name, msg_name, last_element, field_base_ty
             fixed_size = fixed_size_config[field_base_type]['default_fixed_size']
 
     if fixed_size is not None:
+        if fixed_size % 4 != 0:
+            print(
+                f'ERROR: Configured fixed size for {field_full_name} is {fixed_size}: ' +
+                'NOT a multiple of 4.'
+            )
+            sys.exit(1)
         last_element.annotations.setdefault(
             'cdr_plain',
             f'@cdr_plain(fixed_size={fixed_size})'

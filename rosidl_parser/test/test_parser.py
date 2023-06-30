@@ -225,8 +225,8 @@ def test_message_parser_annotations(message_idl_file):
 
     assert structure.members[22].annotations[0].name == 'cdr_plain'
     assert len(structure.members[22].annotations[0].value) == 1
-    assert 'capacity' in structure.members[22].annotations[0].value
-    assert structure.members[22].annotations[0].value['capacity'] == 64
+    assert 'fixed_size' in structure.members[22].annotations[0].value
+    assert structure.members[22].annotations[0].value['fixed_size'] == 64
 
     assert isinstance(structure.members[32].type, BasicType)
     assert structure.members[32].type.typename == 'float'

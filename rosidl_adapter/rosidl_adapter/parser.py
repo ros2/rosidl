@@ -560,7 +560,7 @@ def parse_message_string(pkg_name, msg_name, message_string):
         current_comments = []
 
         # Add fixed_size annotations if configured in file
-        for based_type in ['string', 'wstring']:
+        for based_type in ['string']:
             __add_fixed_size_annotations(
                 pkg_name=pkg_name,
                 msg_name=msg_name,
@@ -617,7 +617,7 @@ def __add_fixed_size_annotations(pkg_name, msg_name, last_element, field_base_ty
             fixed_size = fixed_size_config[field_base_type][pkg_name][msg_name][str(last_element.name)]
 
         # Load default fixed_size if present
-        elif 'default_fixed_size' in fixed_size_config[field_base_type]:
+        if fixed_size is None and 'default_fixed_size' in fixed_size_config[field_base_type]:
             fixed_size = fixed_size_config[field_base_type]['default_fixed_size']
 
     if fixed_size is not None:

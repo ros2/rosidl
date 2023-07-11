@@ -2,6 +2,11 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed visibility control file added to wrong header list variable. (`#755 <https://github.com/ros2/rosidl/issues/755>`_)
+* Contributors: Stefan Fabian
+
 4.2.0 (2023-06-07)
 ------------------
 * Fix deprecation warnings for message constants (`#750 <https://github.com/ros2/rosidl/issues/750>`_)

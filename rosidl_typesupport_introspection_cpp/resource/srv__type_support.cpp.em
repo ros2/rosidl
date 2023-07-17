@@ -68,7 +68,7 @@ namespace rosidl_typesupport_introspection_cpp
 static ::rosidl_typesupport_introspection_cpp::ServiceMembers @(service.namespaced_type.name)_service_members = {
   "@('::'.join([package_name] + list(interface_path.parents[0].parts)))",  // service namespace
   "@(service.namespaced_type.name)",  // service name
-  // these three fields are initialized below on the first access
+  // the following fields are initialized below on first access
   // see get_service_type_support_handle<@('::'.join([package_name] + list(interface_path.parents[0].parts) + [service.namespaced_type.name]))>()
   nullptr,  // request message
   nullptr,  // response message

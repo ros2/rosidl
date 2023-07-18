@@ -2,6 +2,12 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.5 (2023-07-18)
+------------------
+* Merge pull request `#752 <https://github.com/ros2/rosidl/issues/752>`_ from ros2/mergify/bp/humble/pr-750
+* Fix deprecation warnings for message constants (`#750 <https://github.com/ros2/rosidl/issues/750>`_)
+* Contributors: Emerson Knapp
+
 3.1.4 (2022-11-07)
 ------------------
 * Add namespaced ALIAS target to easily consume generated libraries via add_subdirectory (`#605 <https://github.com/ros2/rosidl/issues/605>`_) (`#692 <https://github.com/ros2/rosidl/issues/692>`_)

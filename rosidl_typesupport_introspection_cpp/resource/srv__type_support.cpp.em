@@ -111,7 +111,7 @@ get_service_type_support_handle<@('::'.join([package_name] + list(interface_path
   auto service_members = const_cast<::rosidl_typesupport_introspection_cpp::ServiceMembers *>(
     static_cast<const ::rosidl_typesupport_introspection_cpp::ServiceMembers *>(
       service_type_support->data));
-  // make sure that both the request_members_ and the response_members_ are initialized
+  // make sure all of the service_members are initialized
   // if they are not, initialize them
   if (
     service_members->request_members_ == nullptr ||

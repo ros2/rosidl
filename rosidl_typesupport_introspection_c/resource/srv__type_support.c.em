@@ -61,7 +61,7 @@ function_prefix = '__'.join(include_parts) + '__rosidl_typesupport_introspection
 static rosidl_typesupport_introspection_c__ServiceMembers @(function_prefix)__@(service.namespaced_type.name)_service_members = {
   "@('__'.join([package_name] + list(interface_path.parents[0].parts)))",  // service namespace
   "@(service.namespaced_type.name)",  // service name
-  // these two fields are initialized below on the first access
+  // the following fields are initialized below on first access
   NULL,  // request message
   // @(function_prefix)__@(service.request_message.structure.namespaced_type.name)_message_type_support_handle,
   NULL,  // response message
@@ -94,7 +94,7 @@ static rosidl_service_type_support_t @(function_prefix)__@(service.namespaced_ty
   &@(idl_structure_type_to_c_typename(service.namespaced_type))__@(GET_SOURCES_FUNC),
 };
 
-// Forward declaration of request/response type support functions
+// Forward declaration of message type support functions for service members
 const rosidl_message_type_support_t *
 ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(rosidl_typesupport_introspection_c, @(', '.join([package_name] + list(interface_path.parents[0].parts))), @(service.namespaced_type.name + SERVICE_REQUEST_MESSAGE_SUFFIX))();
 

@@ -70,8 +70,8 @@ def generate_files(
     ros_interface_files = {}
     for ros_interface_file in args.get('ros_interface_files',  []):
         p = pathlib.Path(ros_interface_file)
-        # e.g. ('Empty', 'msg')
-        key = (p.stem, p.suffix[1:])
+        # e.g. ('msg', 'Empty')
+        key = (p.suffix[1:], p.stem)
         ros_interface_files[key] = p
 
     for idl_tuple in args.get('idl_tuples', []):
@@ -87,7 +87,7 @@ def generate_files(
                 type_description_info = json.load(f)
 
         idl_stem = idl_rel_path.stem
-        type_source_key = (idl_stem, idl_rel_path.parts[-2])
+        type_source_key = (idl_rel_path.parts[-2], idl_stem)
         type_source_file = ros_interface_files.get(type_source_key, locator.get_absolute_path())
         if not keep_case:
             idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)

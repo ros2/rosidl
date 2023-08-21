@@ -2,8 +2,8 @@
 Changelog for package rosidl_typesupport_introspection_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.3.1 (2023-08-21)
+------------------
 * update comment (`#757 <https://github.com/ros2/rosidl/issues/757>`_)
 * Contributors: Chen Lihui
 

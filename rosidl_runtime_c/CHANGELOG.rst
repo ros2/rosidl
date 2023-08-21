@@ -2,8 +2,8 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.3.1 (2023-08-21)
+------------------
 * Set the C++ version to 17. (`#761 <https://github.com/ros2/rosidl/issues/761>`_)
 * Contributors: Chris Lalancette
 

@@ -25,6 +25,7 @@
   <buildtool_export_depend>rosidl_generator_c</buildtool_export_depend>
   <buildtool_export_depend>rosidl_pycommon</buildtool_export_depend>
 
+  <build_export_depend>rosidl_cmake</build_export_depend>
   <build_export_depend>rosidl_runtime_c</build_export_depend>
   <build_export_depend>rosidl_typesupport_interface</build_export_depend>
 

@@ -58,3 +58,4 @@ endmacro()
 
 include("${rosidl_cmake_DIR}/rosidl_export_typesupport_libraries.cmake")
 include("${rosidl_cmake_DIR}/rosidl_export_typesupport_targets.cmake")
+include("${rosidl_cmake_DIR}/rosidl_find_package_idl.cmake")

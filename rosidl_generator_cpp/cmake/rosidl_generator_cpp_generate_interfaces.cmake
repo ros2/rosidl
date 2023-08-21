@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+find_package(rosidl_cmake REQUIRED)
 find_package(rosidl_runtime_cpp REQUIRED)
 
 set(_output_path
@@ -47,8 +48,7 @@ set(_dependency_files "")
 set(_dependencies "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   foreach(_idl_file ${${_pkg_name}_IDL_FILES})
-    set(_abs_idl_file "${${_pkg_name}_DIR}/../${_idl_file}")
-    normalize_path(_abs_idl_file "${_abs_idl_file}")
+    rosidl_find_package_idl(_abs_idl_file "${_pkg_name}" "${_idl_file}")
     list(APPEND _dependency_files "${_abs_idl_file}")
     list(APPEND _dependencies "${_pkg_name}:${_abs_idl_file}")
   endforeach()

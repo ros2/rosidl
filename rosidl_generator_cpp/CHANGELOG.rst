@@ -2,6 +2,9 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.3.1 (2023-08-21)
+------------------
+
 4.3.0 (2023-07-11)
 ------------------
 * Fixed visibility control file added to wrong header list variable. (`#755 <https://github.com/ros2/rosidl/issues/755>`_)

@@ -2,6 +2,9 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.3.1 (2023-08-21)
+------------------
+
 4.3.0 (2023-07-11)
 ------------------
 * Remove unused splitting of .srv files in CMake (`#753 <https://github.com/ros2/rosidl/issues/753>`_)

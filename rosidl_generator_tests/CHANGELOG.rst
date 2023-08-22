@@ -2,6 +2,11 @@
 Changelog for package rosidl_generator_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.3.1 (2023-08-21)
+------------------
+* Fix same named types overriding typesources (`#759 <https://github.com/ros2/rosidl/issues/759>`_)
+* Contributors: Emerson Knapp
+
 4.3.0 (2023-07-11)
 ------------------
 

@@ -76,7 +76,8 @@ public:
   MakeTypeErasedMessage() const
   {
     std::allocator<MessageT> allocator;
-    std::function<void(void *)> type_erased_message_deleter = [ = ](void * ptr) mutable {
+    std::function<void(void *)> type_erased_message_deleter =
+      [allocator, this](void * ptr) mutable {
         finalize_message(ptr, message_descriptor_);
         allocator.deallocate(reinterpret_cast<MessageT *>(ptr), 1);
       };

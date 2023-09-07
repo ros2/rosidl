@@ -2,8 +2,8 @@
 Changelog for package rosidl_typesupport_introspection_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.4.0 (2023-09-07)
+------------------
 * Add rosidl_find_package_idl helper function (`#754 <https://github.com/ros2/rosidl/issues/754>`_)
 * Contributors: Mike Purvis
 

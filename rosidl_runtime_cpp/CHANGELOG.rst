@@ -2,6 +2,9 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.3.1 (2023-08-21)
 ------------------
 

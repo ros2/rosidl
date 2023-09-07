@@ -2,6 +2,11 @@
 Changelog for package rosidl_typesupport_introspection_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed C++20 warning implicit capture of this in lambda (`#766 <https://github.com/ros2/rosidl/issues/766>`_)
+* Contributors: AiVerisimilitude
+
 4.3.1 (2023-08-21)
 ------------------
 

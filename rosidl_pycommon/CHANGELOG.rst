@@ -2,6 +2,9 @@
 Changelog for package rosidl_pycommon
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.3.1 (2023-08-21)
 ------------------
 * Fix same named types overriding typesources (`#759 <https://github.com/ros2/rosidl/issues/759>`_)

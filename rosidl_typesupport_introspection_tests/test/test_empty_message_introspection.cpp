@@ -36,7 +36,7 @@ class EmptyMessageIntrospectionTest
 using EmptyMessageTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__msg__Empty,
   rosidl_typesupport_introspection_tests::msg::Empty>;
-TYPED_TEST_SUITE(EmptyMessageIntrospectionTest, EmptyMessageTypes);
+TYPED_TEST_SUITE(EmptyMessageIntrospectionTest, EmptyMessageTypes, );
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

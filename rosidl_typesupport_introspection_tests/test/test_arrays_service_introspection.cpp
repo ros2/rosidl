@@ -41,7 +41,7 @@ class ArraysServiceIntrospectionTest
 using ArraysServiceTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__srv__Arrays,
   rosidl_typesupport_introspection_tests::srv::Arrays>;
-TYPED_TEST_SUITE(ArraysServiceIntrospectionTest, ArraysServiceTypes);
+TYPED_TEST_SUITE(ArraysServiceIntrospectionTest, ArraysServiceTypes, );
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

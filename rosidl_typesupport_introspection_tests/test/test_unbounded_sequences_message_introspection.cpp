@@ -38,7 +38,7 @@ class UnboundedSequencesMessageIntrospectionTest
 using UnboundedSequencesMessageTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__msg__UnboundedSequences,
   rosidl_typesupport_introspection_tests::msg::UnboundedSequences>;
-TYPED_TEST_SUITE(UnboundedSequencesMessageIntrospectionTest, UnboundedSequencesMessageTypes);
+TYPED_TEST_SUITE(UnboundedSequencesMessageIntrospectionTest, UnboundedSequencesMessageTypes, );
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

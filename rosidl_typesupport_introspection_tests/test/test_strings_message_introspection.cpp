@@ -38,7 +38,7 @@ class StringsMessageIntrospectionTest
 using StringsMessageTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__msg__Strings,
   rosidl_typesupport_introspection_tests::msg::Strings>;
-TYPED_TEST_SUITE(StringsMessageIntrospectionTest, StringsMessageTypes);
+TYPED_TEST_SUITE(StringsMessageIntrospectionTest, StringsMessageTypes, );
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

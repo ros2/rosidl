@@ -38,7 +38,7 @@ class EmptyServiceIntrospectionTest
 using EmptyServiceTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__srv__Empty,
   rosidl_typesupport_introspection_tests::srv::Empty>;
-TYPED_TEST_SUITE(EmptyServiceIntrospectionTest, EmptyServiceTypes);
+TYPED_TEST_SUITE(EmptyServiceIntrospectionTest, EmptyServiceTypes, );
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

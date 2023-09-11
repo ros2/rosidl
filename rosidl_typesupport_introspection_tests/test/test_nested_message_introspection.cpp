@@ -38,7 +38,7 @@ class NestedMessageIntrospectionTest
 using NestedMessageTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__msg__Nested,
   rosidl_typesupport_introspection_tests::msg::Nested>;
-TYPED_TEST_SUITE(NestedMessageIntrospectionTest, NestedMessageTypes);
+TYPED_TEST_SUITE(NestedMessageIntrospectionTest, NestedMessageTypes, );
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

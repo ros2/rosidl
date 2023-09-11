@@ -38,7 +38,7 @@ class DefaultsMessageIntrospectionTest
 using DefaultsMessageTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__msg__Defaults,
   rosidl_typesupport_introspection_tests::msg::Defaults>;
-TYPED_TEST_SUITE(DefaultsMessageIntrospectionTest, DefaultsMessageTypes);
+TYPED_TEST_SUITE(DefaultsMessageIntrospectionTest, DefaultsMessageTypes, );
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

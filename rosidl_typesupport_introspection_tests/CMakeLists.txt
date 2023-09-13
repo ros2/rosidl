@@ -15,6 +15,12 @@ if(BUILD_TESTING)
   if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options(-Wall -Wextra -Wpedantic)
   endif()
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    # When building under Clang, the "TYPED_TEST_SUITE" macros in the tests print the following
+    # warning: "must specify at least one argument for '...' parameter of variadic macro".
+    # Since this isn't really a problem, and will be allowed under C++20, just disable the warning.
+    add_compile_options(-Wno-gnu-zero-variadic-macro-arguments)
+  endif()
 
   find_package(rosidl_cmake REQUIRED)
   find_package(rosidl_generator_c REQUIRED)

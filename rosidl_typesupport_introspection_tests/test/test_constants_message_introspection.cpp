@@ -36,7 +36,7 @@ class ConstantsMessageIntrospectionTest
 using ConstantsMessageTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__msg__Constants,
   rosidl_typesupport_introspection_tests::msg::Constants>;
-TYPED_TEST_SUITE(ConstantsMessageIntrospectionTest, ConstantsMessageTypes, );
+TYPED_TEST_SUITE(ConstantsMessageIntrospectionTest, ConstantsMessageTypes);
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

@@ -38,7 +38,7 @@ class BasicTypesMessageIntrospectionTest
 using BasicTypesMessageTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__msg__BasicTypes,
   rosidl_typesupport_introspection_tests::msg::BasicTypes>;
-TYPED_TEST_SUITE(BasicTypesMessageIntrospectionTest, BasicTypesMessageTypes, );
+TYPED_TEST_SUITE(BasicTypesMessageIntrospectionTest, BasicTypesMessageTypes);
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

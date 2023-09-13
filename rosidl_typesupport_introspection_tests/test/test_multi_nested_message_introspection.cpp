@@ -38,7 +38,7 @@ class MultiNestedMessageIntrospectionTest
 using MultiNestedMessageTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__msg__MultiNested,
   rosidl_typesupport_introspection_tests::msg::MultiNested>;
-TYPED_TEST_SUITE(MultiNestedMessageIntrospectionTest, MultiNestedMessageTypes, );
+TYPED_TEST_SUITE(MultiNestedMessageIntrospectionTest, MultiNestedMessageTypes);
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

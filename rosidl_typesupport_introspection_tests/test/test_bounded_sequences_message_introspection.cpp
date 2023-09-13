@@ -38,7 +38,7 @@ class BoundedSequencesMessageIntrospectionTest
 using BoundedSequencesMessageTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__msg__BoundedSequences,
   rosidl_typesupport_introspection_tests::msg::BoundedSequences>;
-TYPED_TEST_SUITE(BoundedSequencesMessageIntrospectionTest, BoundedSequencesMessageTypes, );
+TYPED_TEST_SUITE(BoundedSequencesMessageIntrospectionTest, BoundedSequencesMessageTypes);
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

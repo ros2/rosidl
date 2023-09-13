@@ -38,7 +38,7 @@ class ArraysMessageIntrospectionTest
 using ArraysMessageTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__msg__Arrays,
   rosidl_typesupport_introspection_tests::msg::Arrays>;
-TYPED_TEST_SUITE(ArraysMessageIntrospectionTest, ArraysMessageTypes, );
+TYPED_TEST_SUITE(ArraysMessageIntrospectionTest, ArraysMessageTypes);
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

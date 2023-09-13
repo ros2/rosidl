@@ -38,7 +38,7 @@ class BasicTypesServiceIntrospectionTest
 using BasicTypesServiceTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__srv__BasicTypes,
   rosidl_typesupport_introspection_tests::srv::BasicTypes>;
-TYPED_TEST_SUITE(BasicTypesServiceIntrospectionTest, BasicTypesServiceTypes, );
+TYPED_TEST_SUITE(BasicTypesServiceIntrospectionTest, BasicTypesServiceTypes);
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

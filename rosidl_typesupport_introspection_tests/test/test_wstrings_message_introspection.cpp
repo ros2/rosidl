@@ -38,7 +38,7 @@ class WStringsMessageIntrospectionTest
 using WStringsMessageTypes = ::testing::Types<
   rosidl_typesupport_introspection_tests__msg__WStrings,
   rosidl_typesupport_introspection_tests::msg::WStrings>;
-TYPED_TEST_SUITE(WStringsMessageIntrospectionTest, WStringsMessageTypes, );
+TYPED_TEST_SUITE(WStringsMessageIntrospectionTest, WStringsMessageTypes);
 
 // NOTE(hidmic): cppcheck complains about gtest macros
 // cppcheck-suppress syntaxError

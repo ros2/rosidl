@@ -31,7 +31,7 @@ using IntrospectionTypeSupportLibraries = ::testing::Types<
 
 INSTANTIATE_TYPED_TEST_SUITE_P(
   Introspection, TypeSupportLibraryTest,
-  IntrospectionTypeSupportLibraries, );
+  IntrospectionTypeSupportLibraries);
 
 }  // namespace
 }  // namespace testing

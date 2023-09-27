@@ -62,17 +62,21 @@ rosidl_write_generator_arguments(
   INCLUDE_PATHS "${_dependency_paths}"
 )
 
-# Create custom command and target to generate the hash output
-add_custom_command(
-  COMMAND Python3::Interpreter
-  ARGS
-  ${rosidl_generator_type_description_BIN}
-  --generator-arguments-file "${_generator_arguments_file}"
-  OUTPUT ${_generated_files}
-  DEPENDS ${target_dependencies}
-  COMMENT "Generating type hashes for ROS interfaces"
-  VERBATIM
+# Execute command to generate the hash output
+set(cmd
+  "${Python3_EXECUTABLE}" ${rosidl_generator_type_description_BIN}
+  --generator-arguments-file "${_generator_arguments_file}")
+execute_process(
+  COMMAND ${cmd}
+  OUTPUT_QUIET
+  ERROR_VARIABLE error
+  RESULT_VARIABLE result
 )
+if(NOT result EQUAL 0)
+  string(REPLACE ";" " " cmd_str "${cmd}")
+  message(FATAL_ERROR
+    "execute_process(${cmd_str}) returned error code ${result}:\n${error}")
+endif()
 
 set(_target "${rosidl_generate_interfaces_TARGET}__rosidl_generator_type_description")
 add_custom_target(${_target} DEPENDS ${_generated_files})

@@ -1,4 +1,4 @@
-# Copyright 2014-2018 Open Source Robotics Foundation, Inc.
+# Copyright 2014-2023 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -277,6 +277,24 @@ macro(rosidl_generate_interfaces target)
     list(APPEND rosidl_generate_interfaces_ABS_IDL_FILES "${_abs_idl_file}")
   endforeach()
 
+  # Create the type descriptions for use when writing the generator arguments files
+  ament_execute_extensions("rosidl_create_type_descriptions_extensions")
+
+  # Write the generator argument files for all registered languages and type supports
+  set(rosidl_generator_arguments_files)
+  ament_execute_extensions("rosidl_write_generator_arguments_extensions")
+
+  find_package(Python3 REQUIRED COMPONENTS Interpreter)
+
+  # Generate the interface source files for all registered languages and type supports
+  set(rosidl_cmake_generate_interfaces_BIN "${rosidl_cmake_DIR}/../../../lib/rosidl_cmake/rosidl_cmake_generate_interfaces")
+  execute_process(
+    COMMAND ${Python3_EXECUTABLE} ${rosidl_cmake_generate_interfaces_BIN}
+    --generator-arguments-files "${rosidl_generator_arguments_files}"
+    ECHO_OUTPUT_VARIABLE
+  )
+
+  # Build the interfaces from the generated files
   ament_execute_extensions("rosidl_generate_idl_interfaces")
 
   # check for extensions registered with the previous extension point

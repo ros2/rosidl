@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import sys
+
+try:
+    from rosidl_pycommon import generate_files_from_arguments_files
+except ImportError:
+    # modifying sys.path and importing the Python package with the same
+    # name as this script does not work on Windows
+    rosidl_pycommon_root = os.path.dirname(os.path.dirname(__file__))
+    rosidl_pycommon_module = os.path.join(
+        rosidl_pycommon_root, 'rosidl_pycommon', '__init__.py')
+    if not os.path.exists(rosidl_pycommon_module):
+        raise
+    from importlib.machinery import SourceFileLoader
+
+    loader = SourceFileLoader('rosidl_pycommon', rosidl_pycommon_module)
+    rosidl_pycommon = loader.load_module()
+    generate_files_from_arguments_files = rosidl_pycommon.generate_files_from_arguments_files
+
+
+def main(argv=sys.argv[1:]):
+    parser = argparse.ArgumentParser(
+        description='Generate the ROS interfaces.',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument(
+        '--generator-arguments-files',
+        required=True,
+        help='The location of the files containing the generator arguments')
+    args = parser.parse_args(argv)
+
+    print(args.generator_arguments_files)
+
+    generate_files_from_arguments_files(args.generator_arguments_files)
+
+
+if __name__ == '__main__':
+    sys.exit(main())

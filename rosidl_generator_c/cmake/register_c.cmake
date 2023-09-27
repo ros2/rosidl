@@ -1,4 +1,4 @@
-# Copyright 2015 Open Source Robotics Foundation, Inc.
+# Copyright 2023 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,16 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-macro(rosidl_generator_c_extras BIN GENERATOR_FILES TEMPLATE_DIR)
+macro(rosidl_generator_c_extras GENERATOR_FILES TEMPLATE_DIR)
   find_package(ament_cmake_core QUIET REQUIRED)
   find_package(rosidl_generator_type_description QUIET REQUIRED)
+
+  ament_register_extension(
+    "rosidl_write_generator_arguments_extensions"
+    "rosidl_generator_c"
+    "rosidl_generator_c_write_arguments.cmake")
   ament_register_extension(
     "rosidl_generate_idl_interfaces"
     "rosidl_generator_c"
     "rosidl_generator_c_generate_interfaces.cmake")
-
-  normalize_path(BIN "${BIN}")
-  set(rosidl_generator_c_BIN "${BIN}")
 
   normalize_path(GENERATOR_FILES "${GENERATOR_FILES}")
   set(rosidl_generator_c_GENERATOR_FILES "${GENERATOR_FILES}")

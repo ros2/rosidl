@@ -13,58 +13,28 @@
 # limitations under the License.
 
 #
-# Generate a JSON / YAML file containing the rosidl generator arguments.
+# Generate a JSON / YAML file containing additional context data for expanding
+# IDL templates
 #
 #
 # @public
 #
-function(rosidl_write_generator_arguments output_file)
-  set(REQUIRED_ONE_VALUE_KEYWORDS
-    "PACKAGE_NAME")
+function(rosidl_write_additional_context output_file)
+  
   set(OPTIONAL_ONE_VALUE_KEYWORDS
-    "OUTPUT_DIR"
-    "TEMPLATE_DIR"
-    "ADDITIONAL_CONTEXT_FILE")
-
-  set(REQUIRED_MULTI_VALUE_KEYWORDS  # only require one of them
-    "IDL_TUPLES"
-    "NON_IDL_TUPLES"
-    "ROS_INTERFACE_FILES"
-    "GENERATOR_FILES")
+    "DISABLE_DESCRIPTION_CODEGEN")
   set(OPTIONAL_MULTI_VALUE_KEYWORDS
-    "ROS_INTERFACE_DEPENDENCIES"  # since the dependencies can be empty
-    "TARGET_DEPENDENCIES"
-    "TYPE_DESCRIPTION_TUPLES"
-    "INCLUDE_PATHS"
-    "ADDITIONAL_FILES")
+    "TYPE_SUPPORTS")
 
   cmake_parse_arguments(
     ARG
     ""
-    "${REQUIRED_ONE_VALUE_KEYWORDS};${OPTIONAL_ONE_VALUE_KEYWORDS}"
-    "${REQUIRED_MULTI_VALUE_KEYWORDS};${OPTIONAL_MULTI_VALUE_KEYWORDS}"
+    "${OPTIONAL_ONE_VALUE_KEYWORDS}"
+    "${OPTIONAL_MULTI_VALUE_KEYWORDS}"
     ${ARGN})
   if(ARG_UNPARSED_ARGUMENTS)
-    message(FATAL_ERROR "rosidl_write_generator_arguments() called with unused "
+    message(FATAL_ERROR "rosidl_write_additional_context() called with unused "
       "arguments: ${ARG_UNPARSED_ARGUMENTS}")
-  endif()
-  foreach(required_argument ${REQUIRED_ONE_VALUE_KEYWORDS})
-    if(NOT ARG_${required_argument})
-      message(FATAL_ERROR
-        "rosidl_write_generator_arguments() must be invoked with the "
-        "${required_argument} argument")
-    endif()
-  endforeach()
-  set(has_a_required_multi_value_argument FALSE)
-  foreach(required_argument ${REQUIRED_MULTI_VALUE_KEYWORDS})
-    if(ARG_${required_argument})
-      set(has_a_required_multi_value_argument TRUE)
-    endif()
-  endforeach()
-  if(NOT has_a_required_multi_value_argument)
-    message(FATAL_ERROR
-      "rosidl_write_generator_arguments() must be invoked with at least one of "
-      "the ${REQUIRED_MULTI_VALUE_KEYWORDS} arguments")
   endif()
 
   # create folder
@@ -78,8 +48,8 @@ function(rosidl_write_generator_arguments output_file)
   set(first_element TRUE)
 
   # write string values
-  foreach(one_value_argument ${REQUIRED_ONE_VALUE_KEYWORDS} ${OPTIONAL_ONE_VALUE_KEYWORDS})
-    if(ARG_${one_value_argument})
+  foreach(one_value_argument ${OPTIONAL_ONE_VALUE_KEYWORDS})
+    if(DEFINED ARG_${one_value_argument})
       # write conditional comma and mandatory newline
       if(NOT first_element)
         file(APPEND "${output_file}" ",")
@@ -96,7 +66,7 @@ function(rosidl_write_generator_arguments output_file)
   endforeach()
 
   # write array values
-  foreach(multi_value_argument ${REQUIRED_MULTI_VALUE_KEYWORDS} ${OPTIONAL_MULTI_VALUE_KEYWORDS})
+  foreach(multi_value_argument ${OPTIONAL_MULTI_VALUE_KEYWORDS})
     if(ARG_${multi_value_argument})
       # write conditional comma and mandatory newline and indentation
       if(NOT first_element)

@@ -19,10 +19,6 @@ ament_package(
 )
 
 install(
-  PROGRAMS bin/rosidl_generator_cpp
-  DESTINATION lib/rosidl_generator_cpp
-)
-install(
   DIRECTORY cmake resource
   DESTINATION share/${PROJECT_NAME}
 )

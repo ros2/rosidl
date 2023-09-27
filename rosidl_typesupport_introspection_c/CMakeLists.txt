@@ -54,10 +54,6 @@ ament_package(
 )
 
 install(
-  PROGRAMS bin/rosidl_typesupport_introspection_c
-  DESTINATION lib/rosidl_typesupport_introspection_c
-)
-install(
   DIRECTORY cmake resource
   DESTINATION share/${PROJECT_NAME}
 )

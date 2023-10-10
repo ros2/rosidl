@@ -13,13 +13,15 @@
 // limitations under the License.
 
 #include <gtest/gtest.h>
-#include <iostream>
-#include <climits>
+
+#include <algorithm>
+#include <array>
 #include <cfloat>
+#include <climits>
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <algorithm>
+
 #include "test_array_generator.hpp"
 
 #include "rosidl_generator_tests/msg/arrays.hpp"
@@ -145,10 +147,6 @@ TEST(Test_rosidl_generator_traits, has_bounded_size) {
   ASSERT_STREQ(InitialValue, Message.FieldName.c_str()); \
   Message.FieldName = FinalValue; \
   ASSERT_STREQ(FinalValue, Message.FieldName.c_str());
-
-#define TEST_WSTRING_FIELD_ASSIGNMENT(Message, FieldName, InitialValue, FinalValue) \
-  Message.FieldName = InitialValue; \
-  Message.FieldName = FinalValue;
 
 void test_message_basic_types(rosidl_generator_tests::msg::BasicTypes message)
 {
@@ -522,20 +520,19 @@ TEST(Test_messages, Test_string) {
 
 TEST(Test_messages, Test_wstring) {
   rosidl_generator_tests::msg::WStrings message;
-  TEST_WSTRING_FIELD_ASSIGNMENT(message, wstring_value, u"", u"wstring_value_\u2122")
+  message.wstring_value = u"";
+  message.wstring_value = u"wstring_value_\u2122";
 }
-
-#define TEST_STATIC_ARRAY_STRING( \
-    Message, FieldName, PrimitiveType, ArraySize, MinVal, MaxVal, MinLength, MaxLength) \
-  std::array<PrimitiveType, ArraySize> pattern_ ## FieldName; \
-  test_vector_fill<decltype(pattern_ ## FieldName)>( \
-    &pattern_ ## FieldName, ArraySize, MinVal, MaxVal, MinLength, MaxLength); \
-  std::copy_n(pattern_ ## FieldName.begin(), Message.FieldName.size(), Message.FieldName.begin()); \
-  ASSERT_EQ(pattern_ ## FieldName, Message.FieldName); \
 
 TEST(Test_messages, Test_string_array_static) {
   rosidl_generator_tests::msg::Arrays message;
-  TEST_STATIC_ARRAY_STRING(
-    message, string_values_default, std::string, ARRAY_SIZE, \
-    0, UINT32_MAX, 0, UINT16_MAX)
+  std::array<std::string, ARRAY_SIZE> pattern_string_values_default;
+
+  test_vector_fill<std::array<std::string, ARRAY_SIZE>>(
+    &pattern_string_values_default, ARRAY_SIZE, 0, UINT32_MAX, 0, UINT16_MAX);
+  std::copy_n(
+    pattern_string_values_default.begin(),
+    message.string_values_default.size(),
+    message.string_values_default.begin());
+  ASSERT_EQ(pattern_string_values_default, message.string_values_default);
 }

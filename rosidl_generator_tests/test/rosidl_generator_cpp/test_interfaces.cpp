@@ -32,6 +32,7 @@
 #include "rosidl_generator_tests/msg/empty.hpp"
 #include "rosidl_generator_tests/msg/multi_nested.hpp"
 #include "rosidl_generator_tests/msg/nested.hpp"
+#include "rosidl_generator_tests/msg/small_constant.hpp"
 #include "rosidl_generator_tests/msg/strings.hpp"
 #include "rosidl_generator_tests/msg/unbounded_sequences.hpp"
 #include "rosidl_generator_tests/msg/w_strings.hpp"
@@ -466,6 +467,12 @@ TEST(Test_messages, constants) {
   ASSERT_EQ(60000ul, message.UINT32_CONST);
   ASSERT_EQ(-40000000, message.INT64_CONST);
   ASSERT_EQ(50000000ull, message.UINT64_CONST);
+}
+
+TEST(Test_messages, constants_assign) {
+  float x = rosidl_generator_tests::msg::SmallConstant::FLOAT32_CONST;
+
+  ASSERT_EQ(x, rosidl_generator_tests::msg::SmallConstant::FLOAT32_CONST);
 }
 
 // Defaults

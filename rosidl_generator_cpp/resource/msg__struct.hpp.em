@@ -280,10 +280,16 @@ non_defaulted_zero_initialized_members = [
   static const @(MSG_TYPE_TO_CPP['wstring']) @(constant.name);
 @[ else]@
   static constexpr @(MSG_TYPE_TO_CPP[constant.type.typename]) @(constant.name) =
-@[  if isinstance(constant.type, BasicType) and constant.type.typename in (*INTEGER_TYPES, *CHARACTER_TYPES, BOOLEAN_TYPE, OCTET_TYPE)]@
+@[  if isinstance(constant.type, BasicType)]@
+@[   if constant.type.typename in (*INTEGER_TYPES, *CHARACTER_TYPES, BOOLEAN_TYPE, OCTET_TYPE)]@
     @(int(constant.value))@
-@[   if constant.type.typename in UNSIGNED_INTEGER_TYPES]@
+@[    if constant.type.typename in UNSIGNED_INTEGER_TYPES]@
 u@
+@[    end if]@
+@[   elif constant.type.typename == 'float']@
+    @(constant.value)f@
+@[   else]@
+    @(constant.value)@
 @[   end if];
 @[  else]@
     @(constant.value);

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #include <assert.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -63,97 +62,28 @@
 }
 #define EXPECT_NE(arg1, arg2) if ((arg1) == (arg2)) return 1
 
-const uint8_t test_values_byte[ARR_SIZE] = {0, 57, 110};
-const char test_values_char[ARR_SIZE] = {'a', '5', '#'};
-const float test_values_float32[ARR_SIZE] = {-3.000001f, 22143.541325f, 6331.00432f};
-const double test_values_float64[ARR_SIZE] = {
+static const uint8_t test_values_byte[ARR_SIZE] = {0, 57, 110};
+static const char test_values_char[ARR_SIZE] = {'a', '5', '#'};
+static const float test_values_float32[ARR_SIZE] = {-3.000001f, 22143.541325f, 6331.00432f};
+static const double test_values_float64[ARR_SIZE] = {
   -120310.00843902140001, 22143.54483920141325, 6331.0048392104432
 };
-const int8_t test_values_int8[ARR_SIZE] = {-50, 13, 110};
-const uint8_t test_values_uint8[ARR_SIZE] = {0, 125, 250};
-const int16_t test_values_int16[ARR_SIZE] = {-22222, 0, 32767};
-const uint16_t test_values_uint16[ARR_SIZE] = {0U, 33333U, 65535U};
-const int32_t test_values_int32[ARR_SIZE] = {INT32_MIN / 2, 0L, INT32_MAX / 2};
-const uint32_t test_values_uint32[ARR_SIZE] = {0UL, 444444UL, 4294967295UL};
-const int64_t test_values_int64[ARR_SIZE] = {-9223372036854775807LL, 0, 9223372036854775807ULL};
-const uint64_t test_values_uint64[ARR_SIZE] = {0ULL, 567890123456789ULL, 18446744073709551615ULL};
-const char * test_values_string[ARR_SIZE] = {"", "max value", "min value"};
+static const int8_t test_values_int8[ARR_SIZE] = {-50, 13, 110};
+static const uint8_t test_values_uint8[ARR_SIZE] = {0, 125, 250};
+static const int16_t test_values_int16[ARR_SIZE] = {-22222, 0, 32767};
+static const uint16_t test_values_uint16[ARR_SIZE] = {0U, 33333U, 65535U};
+static const int32_t test_values_int32[ARR_SIZE] = {INT32_MIN / 2, 0L, INT32_MAX / 2};
+static const uint32_t test_values_uint32[ARR_SIZE] = {0UL, 444444UL, 4294967295UL};
+static const int64_t test_values_int64[ARR_SIZE] = {
+  -9223372036854775807LL, 0, 9223372036854775807ULL
+};
+static const uint64_t test_values_uint64[ARR_SIZE] = {
+  0ULL, 567890123456789ULL, 18446744073709551615ULL
+};
+static const char * test_values_string[ARR_SIZE] = {"", "max value", "min value"};
 
-int test_arrays(void);
-int test_basic_types(void);
-int test_bounded_sequences(void);
-int test_constants(void);
-int test_defaults(void);
-int test_multi_nested(void);
-int test_nested(void);
-int test_strings(void);
-int test_unbounded_sequences(void);
-int test_wstrings(void);
-
-int main(void)
+static int test_basic_types(void)
 {
-  int rc = 0;
-  printf("Testing rosidl_generator_tests basic types...\n");
-  if (test_basic_types()) {
-    fprintf(stderr, "test_basic_types() FAILED\n");
-    rc++;
-  }
-  printf("Testing rosidl_generator_tests constant types...\n");
-  if (test_constants()) {
-    fprintf(stderr, "test_constant() FAILED\n");
-    rc++;
-  }
-  printf("Testing rosidl_generator_tests default types...\n");
-  if (test_defaults()) {
-    fprintf(stderr, "test_defaults() FAILED\n");
-    rc++;
-  }
-  printf("Testing rosidl_generator_tests string types...\n");
-  if (test_strings()) {
-    fprintf(stderr, "test_strings() FAILED\n");
-    rc++;
-  }
-  printf("Testing rosidl_generator_tests array types\n");
-  if (test_arrays()) {
-    fprintf(stderr, "test_arrays() FAILED\n");
-    rc++;
-  }
-  printf("Testing rosidl_generator_tests wstring types\n");
-  if (test_wstrings()) {
-    fprintf(stderr, "test_wstrings() FAILED\n");
-    rc++;
-  }
-  printf("Testing rosidl_generator_tests bounded_sequences types\n");
-  if (test_bounded_sequences()) {
-    fprintf(stderr, "test_bounded_sequences() FAILED\n");
-    rc++;
-  }
-  printf("Testing rosidl_generator_tests nested types\n");
-  if (test_nested()) {
-    fprintf(stderr, "test_nested() FAILED\n");
-    rc++;
-  }
-  printf("Testing rosidl_generator_tests unbounded_sequences types\n");
-  if (test_unbounded_sequences()) {
-    fprintf(stderr, "test_unbounded_sequences() FAILED\n");
-    rc++;
-  }
-  printf("Testing rosidl_generator_tests multi_nested type\n");
-  if (test_multi_nested()) {
-    fprintf(stderr, "test_multi_nested() FAILED\n");
-    rc++;
-  }
-  if (rc != 0) {
-    fprintf(stderr, "Some tests failed!\n");
-  } else {
-    printf("All tests were good!\n");
-  }
-  return rc != 0;
-}
-
-int test_basic_types(void)
-{
-  // rosidl_generator_tests__msg__BasicTypes basic;
   rosidl_generator_tests__msg__BasicTypes * basic = NULL;
   basic = rosidl_generator_tests__msg__BasicTypes__create();
   EXPECT_NE(basic, NULL);
@@ -214,7 +144,7 @@ int test_basic_types(void)
   return 0;
 }
 
-int test_constants(void)
+static int test_constants(void)
 {
   EXPECT_EQ(true, rosidl_generator_tests__msg__Constants__BOOL_CONST);
   EXPECT_EQ(50, rosidl_generator_tests__msg__Constants__BYTE_CONST);
@@ -233,7 +163,7 @@ int test_constants(void)
   return 0;
 }
 
-int test_defaults()
+static int test_defaults(void)
 {
   rosidl_generator_tests__msg__Defaults * def = NULL;
   def = rosidl_generator_tests__msg__Defaults__create();
@@ -271,7 +201,7 @@ int test_defaults()
   return 0;
 }
 
-int test_bounded_sequences()
+static int test_bounded_sequences(void)
 {
   rosidl_generator_tests__msg__BoundedSequences * seq = NULL;
   seq = rosidl_generator_tests__msg__BoundedSequences__create();
@@ -728,7 +658,7 @@ int test_unbounded_sequences()
   return 0;
 }
 
-int test_strings()
+static int test_strings(void)
 {
   rosidl_generator_tests__msg__Strings * str = NULL;
   str = rosidl_generator_tests__msg__Strings__create();
@@ -772,7 +702,7 @@ int test_strings()
   return 0;
 }
 
-int test_nested()
+static int test_nested(void)
 {
   rosidl_generator_tests__msg__Nested * nested = NULL;
   nested = rosidl_generator_tests__msg__Nested__create();
@@ -823,7 +753,7 @@ int test_nested()
   return 0;
 }
 
-int test_multi_nested()
+static int test_multi_nested(void)
 {
   rosidl_generator_tests__msg__MultiNested * msg = NULL;
   msg = rosidl_generator_tests__msg__MultiNested__create();
@@ -872,7 +802,6 @@ int test_multi_nested()
   }
 
   // char_values
-  char test_values_char[ARR_SIZE] = {'a', '5', '#'};
   for (i = 0; i < ARR_SIZE; i++) {
     for (j = 0; j < ARR_SIZE; j++) {
       msg->array_of_arrays[i].char_values[j] = test_values_char[j];
@@ -1099,7 +1028,7 @@ int test_wstrings()
   return 0;
 }
 
-int test_arrays()
+static int test_arrays(void)
 {
   rosidl_generator_tests__msg__Arrays * arr = NULL;
   arr = rosidl_generator_tests__msg__Arrays__create();
@@ -1297,4 +1226,65 @@ int test_arrays()
 
   rosidl_generator_tests__msg__Arrays__destroy(arr);
   return 0;
+}
+
+int main(void)
+{
+  int rc = 0;
+  printf("Testing rosidl_generator_tests basic types...\n");
+  if (test_basic_types()) {
+    fprintf(stderr, "test_basic_types() FAILED\n");
+    rc++;
+  }
+  printf("Testing rosidl_generator_tests constant types...\n");
+  if (test_constants()) {
+    fprintf(stderr, "test_constant() FAILED\n");
+    rc++;
+  }
+  printf("Testing rosidl_generator_tests default types...\n");
+  if (test_defaults()) {
+    fprintf(stderr, "test_defaults() FAILED\n");
+    rc++;
+  }
+  printf("Testing rosidl_generator_tests string types...\n");
+  if (test_strings()) {
+    fprintf(stderr, "test_strings() FAILED\n");
+    rc++;
+  }
+  printf("Testing rosidl_generator_tests array types\n");
+  if (test_arrays()) {
+    fprintf(stderr, "test_arrays() FAILED\n");
+    rc++;
+  }
+  printf("Testing rosidl_generator_tests wstring types\n");
+  if (test_wstrings()) {
+    fprintf(stderr, "test_wstrings() FAILED\n");
+    rc++;
+  }
+  printf("Testing rosidl_generator_tests bounded_sequences types\n");
+  if (test_bounded_sequences()) {
+    fprintf(stderr, "test_bounded_sequences() FAILED\n");
+    rc++;
+  }
+  printf("Testing rosidl_generator_tests nested types\n");
+  if (test_nested()) {
+    fprintf(stderr, "test_nested() FAILED\n");
+    rc++;
+  }
+  printf("Testing rosidl_generator_tests unbounded_sequences types\n");
+  if (test_unbounded_sequences()) {
+    fprintf(stderr, "test_unbounded_sequences() FAILED\n");
+    rc++;
+  }
+  printf("Testing rosidl_generator_tests multi_nested type\n");
+  if (test_multi_nested()) {
+    fprintf(stderr, "test_multi_nested() FAILED\n");
+    rc++;
+  }
+  if (rc != 0) {
+    fprintf(stderr, "Some tests failed!\n");
+  } else {
+    printf("All tests were good!\n");
+  }
+  return rc != 0;
 }

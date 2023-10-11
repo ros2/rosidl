@@ -1,0 +1,1 @@
+float32 FLOAT32_CONST=0.05

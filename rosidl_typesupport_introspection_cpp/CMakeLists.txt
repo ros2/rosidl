@@ -16,11 +16,7 @@ find_package(ament_cmake_ros REQUIRED)
 find_package(rosidl_runtime_cpp REQUIRED)
 find_package(rosidl_typesupport_introspection_c REQUIRED)
 
-ament_export_dependencies(rosidl_runtime_c)
-ament_export_dependencies(rosidl_runtime_cpp)
-ament_export_dependencies(rosidl_typesupport_interface)
-ament_export_dependencies(rosidl_typesupport_introspection_c)
-
+ament_export_dependencies(rosidl_runtime_cpp rosidl_typesupport_introspection_c)
 
 ament_python_install_package(${PROJECT_NAME})
 
@@ -32,9 +28,10 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
-ament_target_dependencies(${PROJECT_NAME}
-  rosidl_runtime_cpp
-  rosidl_typesupport_introspection_c)
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  rosidl_runtime_cpp::rosidl_runtime_cpp
+  rosidl_typesupport_introspection_c::rosidl_typesupport_introspection_c
+)
 
 # Export old-style CMake variables
 ament_export_include_directories("include/${PROJECT_NAME}")

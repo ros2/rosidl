@@ -37,9 +37,10 @@ add_library(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
-ament_target_dependencies(${PROJECT_NAME}
-  "rcutils"
-  "rosidl_typesupport_interface")
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  rcutils::rcutils
+  rosidl_typesupport_interface::rosidl_typesupport_interface
+)
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
   set_target_properties(${PROJECT_NAME} PROPERTIES
     COMPILE_OPTIONS -Wall -Wextra -Wpedantic)
@@ -116,8 +117,6 @@ if(BUILD_TESTING)
 
   ament_add_gtest(test_sequence_bound test/test_sequence_bound.cpp)
   if(TARGET test_sequence_bound)
-    ament_target_dependencies(test_sequence_bound
-      "rosidl_typesupport_interface")
     target_link_libraries(test_sequence_bound ${PROJECT_NAME})
   endif()
 

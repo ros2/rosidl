@@ -183,7 +183,7 @@ defaults_values:
 -
   bool_value: true
   byte_value: 0x32
-  char_value: 100
+  char_value: 0x64
   float32_value: 1.12500
   float64_value: 1.12500
   int8_value: -50
@@ -349,7 +349,7 @@ w\xf6rld", wstring_value_default1: "Hello world!", )"
       R"(uint32_value: 60000, int64_value: -40000000, uint64_value: 50000000}],)"
       R"( bool_values_default: [false, true, false], )"
       R"(byte_values_default: [0x00, 0x01, 0xff], )"
-      R"(char_values_default: [0, 1, 127], float32_values_default: [1.12500, )"
+      R"(char_values_default: [0x00, 0x01, 0x7f], float32_values_default: [1.12500, )"
       R"(0.00000, -1.12500], float64_values_default: [3.14150, 0.00000, )"
       R"(-3.14150], int8_values_default: [0, 127, -128], )"
       R"(uint8_values_default: [0, 1, 255], int16_values_default: )"

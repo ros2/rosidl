@@ -136,7 +136,7 @@ long_double_value: 1.12500
       R"(basic_types_value:
   bool_value: false
   byte_value: 0x00
-  char_value: 0
+  char_value: 0x00
   float32_value: 0.00000
   float64_value: 0.00000
   int8_value: 0
@@ -203,9 +203,9 @@ byte_values_default:
 - 0x01
 - 0xff
 char_values_default:
-- 0
-- 1
-- 127
+- 0x00
+- 0x01
+- 0x7f
 float32_values_default:
 - 1.12500
 - 0.00000
@@ -267,7 +267,7 @@ TEST(Test_rosidl_generator_traits, to_yaml_flow_style) {
     rosidl_generator_tests::msg::Defaults msg;
     msg.float64_value = 1.0;
     EXPECT_STREQ(
-      "{bool_value: true, byte_value: 0x32, char_value: 100, "
+      "{bool_value: true, byte_value: 0x32, char_value: 0x64, "
       "float32_value: 1.12500, float64_value: 1.00000, int8_value: -50, "
       "uint8_value: 200, int16_value: -1000, uint16_value: 2000, "
       "int32_value: -30000, uint32_value: 60000, int64_value: -40000000, "
@@ -319,7 +319,7 @@ w\xf6rld", wstring_value_default1: "Hello world!", )"
 #endif
     EXPECT_STREQ(
       R"({basic_types_value: {bool_value: false, byte_value: 0x00, )"
-      R"(char_value: 0, float32_value: 0.00000, float64_value: 0.00000, )"
+      R"(char_value: 0x00, float32_value: 0.00000, float64_value: 0.00000, )"
       R"(int8_value: 0, uint8_value: 0, int16_value: 0, uint16_value: 0, )"
       R"(int32_value: 0, uint32_value: 0, int64_value: 0, uint64_value: 0}})",
       yaml.c_str());
@@ -343,7 +343,7 @@ w\xf6rld", wstring_value_default1: "Hello world!", )"
       R"(int32_values: [], uint32_values: [], int64_values: [], )"
       R"(uint64_values: [], string_values: [], basic_types_values: [], )"
       R"(constants_values: [], defaults_values: [{bool_value: true, )"
-      R"(byte_value: 0x32, char_value: 100, float32_value: 1.12500, )"
+      R"(byte_value: 0x32, char_value: 0x64, float32_value: 1.12500, )"
       R"(float64_value: 1.12500, int8_value: -50, uint8_value: 200, )"
       R"(int16_value: -1000, uint16_value: 2000, int32_value: -30000, )"
       R"(uint32_value: 60000, int64_value: -40000000, uint64_value: 50000000}],)"

@@ -44,7 +44,7 @@ TEST(Test_rosidl_generator_traits, to_yaml_default_style) {
     EXPECT_STREQ(
       R"(bool_value: true
 byte_value: 0x32
-char_value: 100
+char_value: 0x64
 float32_value: 1.12500
 float64_value: 1.00000
 int8_value: -50

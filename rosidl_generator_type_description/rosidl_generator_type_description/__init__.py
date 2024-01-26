@@ -117,7 +117,7 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
         except Exception as e:
             print('Error processing idl file: ' +
                   str(locator.get_absolute_path()), file=sys.stderr)
-            raise(e)
+            raise e
 
         idl_rel_path = Path(idl_parts[1])
         generate_to_dir = (output_dir / idl_rel_path).parent

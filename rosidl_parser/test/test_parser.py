@@ -315,13 +315,13 @@ def test_service_parser(service_idl_file):
     assert srv.namespaced_type.name == 'MyService'
     assert len(srv.request_message.structure.members) == 2
     assert len(srv.response_message.structure.members) == 1
-    assert(srv.event_message.structure.namespaced_type.name ==
+    assert (srv.event_message.structure.namespaced_type.name ==
            'MyService' + SERVICE_EVENT_MESSAGE_SUFFIX)
 
     event_message_members = [i.name for i in srv.event_message.structure.members]
-    assert('request' in event_message_members)
-    assert('response' in event_message_members)
-    assert('info' in event_message_members)
+    assert 'request' in event_message_members
+    assert 'response' in event_message_members
+    assert 'info' in event_message_members
 
     constants = srv.request_message.constants
     assert len(constants) == 1

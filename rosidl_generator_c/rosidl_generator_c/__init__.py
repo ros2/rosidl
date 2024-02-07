@@ -1,4 +1,4 @@
-# Copyright 2015 Open Source Robotics Foundation, Inc.
+# Copyright 2023 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 from rosidl_pycommon import generate_files
 
 
-def generate_c(generator_arguments_file, disable_description_codegen=False):
-    mapping = {
+def get_template_mapping():
+    return {
         'idl.h.em': '%s.h',
         'idl__description.c.em': 'detail/%s__description.c',
         'idl__functions.c.em': 'detail/%s__functions.c',
@@ -38,6 +38,10 @@ def generate_c(generator_arguments_file, disable_description_codegen=False):
         'idl__type_support.c.em': 'detail/%s__type_support.c',
         'idl__type_support.h.em': 'detail/%s__type_support.h',
     }
+
+
+def generate_c(generator_arguments_file, disable_description_codegen=False):
+    mapping = get_template_mapping()
     return generate_files(
         generator_arguments_file, mapping,
         post_process_callback=prefix_with_bom_if_necessary,
@@ -55,6 +59,10 @@ def prefix_with_bom_if_necessary(content):
             'since it contain non-ASCII characters\n'
         content = prefix + content
     return content
+
+
+# def post_process_callback(content):
+#     return prefix_with_bom_if_necessary(content)
 
 
 BASIC_IDL_TYPES_TO_C = {

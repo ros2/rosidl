@@ -1,4 +1,4 @@
-# Copyright 2014-2018 Open Source Robotics Foundation, Inc.
+# Copyright 2014-2023 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,14 +28,17 @@ from rosidl_parser.definition import UnboundedSequence
 from rosidl_pycommon import generate_files
 
 
-def generate_cpp(generator_arguments_file):
-    mapping = {
+def get_template_mapping():
+    return {
         'idl.hpp.em': '%s.hpp',
         'idl__builder.hpp.em': 'detail/%s__builder.hpp',
         'idl__struct.hpp.em': 'detail/%s__struct.hpp',
         'idl__traits.hpp.em': 'detail/%s__traits.hpp',
         'idl__type_support.hpp.em': 'detail/%s__type_support.hpp',
     }
+
+def generate_cpp(generator_arguments_file):
+    mapping = get_template_mapping()
     return generate_files(
         generator_arguments_file, mapping,
         post_process_callback=prefix_with_bom_if_necessary)
@@ -50,6 +53,10 @@ def prefix_with_bom_if_necessary(content):
             'since it contain non-ASCII characters\n'
         content = prefix + content
     return content
+
+
+def post_process_callback(content):
+    return prefix_with_bom_if_necessary(content)
 
 
 MSG_TYPE_TO_CPP = {

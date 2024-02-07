@@ -1,4 +1,4 @@
-# Copyright 2015 Open Source Robotics Foundation, Inc.
+# Copyright 2023 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
 
 from io import StringIO
 import json
+from multiprocessing import Pool
 import os
 import pathlib
 import re
@@ -22,6 +23,7 @@ import sys
 import em
 from rosidl_parser.definition import IdlLocator
 from rosidl_parser.parser import parse_idl_file
+from rosidl_pycommon.generator_config import GeneratorConfig
 
 
 def convert_camel_case_to_lower_case_underscore(value):
@@ -117,6 +119,116 @@ def generate_files(
                 'Error processing idl file: ' +
                 str(locator.get_absolute_path()), file=sys.stderr)
             raise e
+
+    return generated_files
+
+
+def generate_files_for_idl_tuple(args):
+    """
+    Generate source files for a specific IDL tuple, using a set of generator configurations.
+    Each configuration is defined by an arguments file.
+
+    Argument tuple format: (
+        IDL tuple,
+        list of GeneratorConfig configurations
+    )
+    """
+    idl_tuple, configs_for_idl_tuple = args
+
+    # Parse IDl file
+    idl_parts = idl_tuple.rsplit(':', 1)
+    assert len(idl_parts) == 2
+    locator = IdlLocator(*idl_parts)
+    idl_rel_path = pathlib.Path(idl_parts[1])
+    try:
+        idl_file = parse_idl_file(locator)
+
+        # Generate code from templates according to each of the generator configs
+        generated_files = []
+        for config in configs_for_idl_tuple:
+            template_basepath = pathlib.Path(config.arguments['template_dir'])
+            for template_filename in config.mapping.keys():
+                assert (template_basepath / template_filename).exists(), \
+                    'Could not find template: ' + template_filename
+
+            latest_target_timestamp = get_newest_modification_time(config.arguments['target_dependencies'])
+
+            type_description_files = {}
+            for description_tuple in config.arguments.get('type_description_tuples', []):
+                tuple_parts = description_tuple.split(':', 1)
+                assert len(tuple_parts) == 2
+                type_description_files[tuple_parts[0]] = tuple_parts[1]
+
+            ros_interface_files = {}
+            for ros_interface_file in config.arguments.get('ros_interface_files',  []):
+                p = pathlib.Path(ros_interface_file)
+                # e.g. ('msg', 'Empty')
+                key = (p.suffix[1:], p.stem)
+                ros_interface_files[key] = p
+
+            type_description_info = None
+            if type_description_files:
+                type_hash_file = type_description_files[idl_parts[1]]
+                with open(type_hash_file, 'r') as f:
+                    type_description_info = json.load(f)
+
+            idl_stem = idl_rel_path.stem
+            if not config.keep_case:
+                idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)
+
+            type_source_key = (idl_rel_path.parts[-2], idl_stem)
+            type_source_file = ros_interface_files.get(type_source_key, locator.get_absolute_path())
+
+            data = {
+                'package_name': config.arguments['package_name'],
+                'interface_path': idl_rel_path,
+                'content': idl_file.content,
+                'type_description_info': type_description_info,
+                'type_source_file': type_source_file,
+            }
+            if config.additional_context is not None:
+                data.update(config.additional_context)
+
+            # Expand templates
+            for template_file, generated_filename in config.mapping.items():
+                generated_file = os.path.join(
+                    config.arguments['output_dir'], str(idl_rel_path.parent),
+                    generated_filename % idl_stem)
+                generated_files.append(generated_file)
+
+                expand_template(
+                    os.path.basename(template_file), data,
+                    generated_file, minimum_timestamp=latest_target_timestamp,
+                    template_basepath=template_basepath,
+                    post_process_callback=config.post_process_callback)
+
+        return generated_files
+
+    except Exception as e:
+        print('Error processing idl file: ' + str(locator.get_absolute_path()), file=sys.stderr)
+        raise(e)
+
+
+def generate_files_from_arguments_files(arguments_files = ""):
+    # Get mapping of IDL files to configs and type descriptions
+    configs_for_idl_tuple = {}
+    arg_file_list = arguments_files.split(";")
+    for arg_file in arg_file_list:
+        config = GeneratorConfig(arg_file)
+        for idl_tuple in config.arguments.get('idl_tuples', []):
+            idl_parts = idl_tuple.rsplit(':', 1)
+            assert len(idl_parts) == 2
+
+            if idl_tuple in configs_for_idl_tuple:
+                configs_for_idl_tuple[idl_tuple].append(config)
+            else:
+                configs_for_idl_tuple[idl_tuple] = [config]
+
+    pool = Pool()
+    generated_files_per_idl_tuple = pool.map(
+        generate_files_for_idl_tuple,
+        ((idl_tuple, configs_for_idl_tuple[idl_tuple]) for idl_tuple in configs_for_idl_tuple.keys()))
+    generated_files = [file for file_list in generated_files_per_idl_tuple for file in file_list ]
 
     return generated_files
 

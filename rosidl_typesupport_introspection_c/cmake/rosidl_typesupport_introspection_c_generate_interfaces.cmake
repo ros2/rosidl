@@ -1,4 +1,4 @@
-# Copyright 2014-2018 Open Source Robotics Foundation, Inc.
+# Copyright 2014-2023 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,55 +38,7 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
     "${_output_path}/${_parent_folder}/detail/${_header_name}__type_support.c")
 endforeach()
 
-set(_dependency_files "")
-set(_dependencies "")
-foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
-  foreach(_idl_file ${${_pkg_name}_IDL_FILES})
-    rosidl_find_package_idl(_abs_idl_file "${_pkg_name}" "${_idl_file}")
-    list(APPEND _dependency_files "${_abs_idl_file}")
-    list(APPEND _dependencies "${_pkg_name}:${_abs_idl_file}")
-  endforeach()
-endforeach()
-
-set(target_dependencies
-  "${rosidl_typesupport_introspection_c_BIN}"
-  ${rosidl_typesupport_introspection_c_GENERATOR_FILES}
-  "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/idl__rosidl_typesupport_introspection_c.h.em"
-  "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/idl__type_support.c.em"
-  "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/msg__rosidl_typesupport_introspection_c.h.em"
-  "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/msg__type_support.c.em"
-  "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/srv__rosidl_typesupport_introspection_c.h.em"
-  "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}/srv__type_support.c.em"
-  ${rosidl_generate_interfaces_ABS_IDL_FILES}
-  ${_dependency_files})
-foreach(dep ${target_dependencies})
-  if(NOT EXISTS "${dep}")
-    message(FATAL_ERROR "Target dependency '${dep}' does not exist")
-  endif()
-endforeach()
-
 set(generator_arguments_file "${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_introspection_c__arguments.json")
-rosidl_write_generator_arguments(
-  "${generator_arguments_file}"
-  PACKAGE_NAME "${PROJECT_NAME}"
-  IDL_TUPLES "${rosidl_generate_interfaces_IDL_TUPLES}"
-  ROS_INTERFACE_DEPENDENCIES "${_dependencies}"
-  OUTPUT_DIR "${_output_path}"
-  TEMPLATE_DIR "${rosidl_typesupport_introspection_c_TEMPLATE_DIR}"
-  TARGET_DEPENDENCIES ${target_dependencies}
-)
-
-find_package(Python3 REQUIRED COMPONENTS Interpreter)
-
-add_custom_command(
-  OUTPUT ${_generated_header_files} ${_generated_source_files}
-  COMMAND Python3::Interpreter
-  ARGS ${rosidl_typesupport_introspection_c_BIN}
-  --generator-arguments-file "${generator_arguments_file}"
-  DEPENDS ${target_dependencies}
-  COMMENT "Generating C introspection for ROS interfaces"
-  VERBATIM
-)
 
 # generate header to switch between export and import for a specific package
 set(_visibility_control_file

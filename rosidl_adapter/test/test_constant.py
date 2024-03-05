@@ -30,6 +30,16 @@ def test_constant_constructor():
     with pytest.raises(ValueError):
         Constant('bool', 'FOO', None)
 
+    # NaN is case insensitive in python, so test a few variations.
+    value = Constant('float32', 'FOO', 'nan')
+    value = Constant('float32', 'FOO', 'Nan')
+    value = Constant('float32', 'FOO', 'NaN')
+    value = Constant('float32', 'FOO', 'NAN')
+    value = Constant('float64', 'FOO', 'nan')
+    value = Constant('float64', 'FOO', 'Nan')
+    value = Constant('float64', 'FOO', 'NaN')
+    value = Constant('float64', 'FOO', 'NAN')
+
 
 def test_constant_methods():
     assert Constant('bool', 'FOO', '1') != 23

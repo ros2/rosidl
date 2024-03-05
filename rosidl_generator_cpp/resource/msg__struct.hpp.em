@@ -286,8 +286,12 @@ non_defaulted_zero_initialized_members = [
 @[    if constant.type.typename in UNSIGNED_INTEGER_TYPES]@
 u@
 @[    end if]@
-@[   elif constant.type.typename == 'float']@
-    @(constant.value)f@
+@[   elif constant.type.typename == 'float' or constant.type.typename == 'double']@
+@{
+from rosidl_generator_cpp import primitive_value_to_cpp
+val = primitive_value_to_cpp(constant.type, constant.value)
+}@
+    @(val)@
 @[   else]@
     @(constant.value)@
 @[   end if];

@@ -16,7 +16,6 @@ import pathlib
 from typing import Dict
 from typing import Iterable
 from typing import List
-from typing import Literal
 from typing import Optional
 from typing import Set
 from typing import Tuple
@@ -94,6 +93,7 @@ BASIC_TYPES = (
 )
 
 if TYPE_CHECKING:
+    from typing import Literal
     SignedNonexplicitIntegerTypeValues = Union[Literal['short'], Literal['long'],
                                                Literal['long long']]
     UnsignedNonexplicitIntegerTypeValues = Union[Literal['unsigned short'],

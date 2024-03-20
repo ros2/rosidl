@@ -94,25 +94,20 @@ BASIC_TYPES = (
 
 if TYPE_CHECKING:
     from typing import Literal
-    SignedNonexplicitIntegerTypeValues = Union[Literal['short'], Literal['long'],
-                                               Literal['long long']]
-    UnsignedNonexplicitIntegerTypeValues = Union[Literal['unsigned short'],
-                                                 Literal['unsigned long'],
-                                                 Literal['unsigned long long']]
+    SignedNonexplicitIntegerTypeValues = Literal['short', 'long', 'long long']
+    UnsignedNonexplicitIntegerTypeValues = Literal['unsigned short', 'unsigned long',
+                                                   'unsigned long long']
 
     NonexplicitIntegerTypeValues = Union[SignedNonexplicitIntegerTypeValues,
                                          UnsignedNonexplicitIntegerTypeValues]
 
-    FloatingPointTypeValues = Union[Literal['float'], Literal['double'],
-                                    Literal['long double']]
-    CharacterTypeValues = Union[Literal['char'], Literal['wchar']]
+    FloatingPointTypeValues = Literal['float', 'double', 'long double']
+    CharacterTypeValues = Literal['char', 'wchar']
     BooleanValue = Literal['boolean']
     OctetValue = Literal['octet']
 
-    SignedExplicitIntegerTypeValues = Union[Literal['int8'], Literal['int16'],
-                                            Literal['int32'], Literal['int64']]
-    UnsignedExplicitIntegerTypeValues = Union[Literal['uint8'], Literal['uint16'],
-                                              Literal['uint32'], Literal['uint64']]
+    SignedExplicitIntegerTypeValues = Literal['int8', 'int16', 'int32' 'int64']
+    UnsignedExplicitIntegerTypeValues = Literal['uint8', 'uint16', 'uint32', 'uint64']
 
     ExplicitIntegerTypeValues = Union[SignedExplicitIntegerTypeValues,
                                       UnsignedExplicitIntegerTypeValues]

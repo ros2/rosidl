@@ -13,8 +13,15 @@
 # limitations under the License.
 
 import pathlib
+from typing import Dict
 from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import Set
 from typing import Tuple
+from typing import Type
+from typing import TYPE_CHECKING
+from typing import Union
 
 # Basic types as defined by the IDL specification
 
@@ -85,6 +92,36 @@ BASIC_TYPES = (
     OCTET_TYPE,
 )
 
+if TYPE_CHECKING:
+    from typing import Literal
+    SignedNonexplicitIntegerTypeValues = Literal['short', 'long', 'long long']
+    UnsignedNonexplicitIntegerTypeValues = Literal['unsigned short', 'unsigned long',
+                                                   'unsigned long long']
+
+    NonexplicitIntegerTypeValues = Union[SignedNonexplicitIntegerTypeValues,
+                                         UnsignedNonexplicitIntegerTypeValues]
+
+    FloatingPointTypeValues = Literal['float', 'double', 'long double']
+    CharacterTypeValues = Literal['char', 'wchar']
+    BooleanValue = Literal['boolean']
+    OctetValue = Literal['octet']
+
+    SignedExplicitIntegerTypeValues = Literal['int8', 'int16', 'int32' 'int64']
+    UnsignedExplicitIntegerTypeValues = Literal['uint8', 'uint16', 'uint32', 'uint64']
+
+    ExplicitIntegerTypeValues = Union[SignedExplicitIntegerTypeValues,
+                                      UnsignedExplicitIntegerTypeValues]
+
+    SignedIntegerTypeValues = Union[SignedNonexplicitIntegerTypeValues,
+                                    SignedExplicitIntegerTypeValues]
+    UnsignedIntegerTypeValues = Union[UnsignedNonexplicitIntegerTypeValues,
+                                      UnsignedExplicitIntegerTypeValues]
+    IntegerTypeValues = Union[SignedIntegerTypeValues, UnsignedIntegerTypeValues]
+
+    BasicTypeValues = Union[IntegerTypeValues, FloatingPointTypeValues,
+                            CharacterTypeValues, BooleanValue,
+                            OctetValue]
+
 EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME = 'structure_needs_at_least_one_member'
 
 CONSTANT_MODULE_SUFFIX = '_Constants'
@@ -107,8 +144,8 @@ class AbstractType:
 
     __slots__ = ()
 
-    def __eq__(self, other):
-        return type(self) == type(other)
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, type(self))
 
 
 class AbstractNestableType(AbstractType):
@@ -137,7 +174,7 @@ class BasicType(AbstractNestableType):
 
     __slots__ = ('typename', )
 
-    def __init__(self, typename: str):
+    def __init__(self, typename: 'BasicTypeValues') -> None:
         """
         Create a BasicType.
 
@@ -147,7 +184,9 @@ class BasicType(AbstractNestableType):
         assert typename in BASIC_TYPES
         self.typename = typename
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, BasicType):
+            return False
         return super().__eq__(other) and self.typename == other.typename
 
 
@@ -156,7 +195,7 @@ class NamedType(AbstractNestableType):
 
     __slots__ = ('name')
 
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
         """
         Create a NamedType.
 
@@ -165,7 +204,9 @@ class NamedType(AbstractNestableType):
         super().__init__()
         self.name = name
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, NamedType):
+            return False
         return super().__eq__(other) and self.name == other.name
 
 
@@ -174,7 +215,7 @@ class NamespacedType(AbstractNestableType):
 
     __slots__ = ('namespaces', 'name')
 
-    def __init__(self, namespaces: Iterable[str], name: str):
+    def __init__(self, namespaces: Iterable[str], name: str) -> None:
         """
         Create a NamespacedType.
 
@@ -189,7 +230,9 @@ class NamespacedType(AbstractNestableType):
     def namespaced_name(self) -> Tuple[str, ...]:
         return (*self.namespaces, self.name)
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, NamespacedType):
+            return False
         return super().__eq__(other) and \
             self.namespaces == other.namespaces and self.name == other.name
 
@@ -199,7 +242,7 @@ class AbstractGenericString(AbstractNestableType):
 
     __slots__ = ()
 
-    def has_maximum_size(self):
+    def has_maximum_size(self) -> bool:
         raise NotImplementedError('Only implemented in subclasses')
 
 
@@ -214,7 +257,7 @@ class BoundedString(AbstractString):
 
     __slots__ = ('maximum_size', )
 
-    def __init__(self, maximum_size: int):
+    def __init__(self, maximum_size: int) -> None:
         """
         Create a BoundedString.
 
@@ -224,10 +267,12 @@ class BoundedString(AbstractString):
         assert maximum_size >= 0
         self.maximum_size = maximum_size
 
-    def has_maximum_size(self):
+    def has_maximum_size(self) -> 'Literal[True]':
         return True
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, BoundedString):
+            return False
         return super().__eq__(other) and \
             self.maximum_size == other.maximum_size
 
@@ -237,7 +282,7 @@ class UnboundedString(AbstractString):
 
     __slots__ = ()
 
-    def has_maximum_size(self):
+    def has_maximum_size(self) -> 'Literal[False]':
         return False
 
 
@@ -252,7 +297,7 @@ class BoundedWString(AbstractWString):
 
     __slots__ = ('maximum_size', )
 
-    def __init__(self, maximum_size: int):
+    def __init__(self, maximum_size: int) -> None:
         """
         Create a BoundedWString.
 
@@ -265,10 +310,12 @@ class BoundedWString(AbstractWString):
         # assert maximum_size > 0
         self.maximum_size = maximum_size
 
-    def has_maximum_size(self):
+    def has_maximum_size(self) -> 'Literal[True]':
         return True
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, BoundedWString):
+            return False
         return super().__eq__(other) and \
             self.maximum_size == other.maximum_size
 
@@ -278,7 +325,7 @@ class UnboundedWString(AbstractWString):
 
     __slots__ = ()
 
-    def has_maximum_size(self):
+    def has_maximum_size(self) -> 'Literal[False]':
         return False
 
 
@@ -294,7 +341,7 @@ class AbstractNestedType(AbstractType):
 
     __slots__ = ('value_type', )
 
-    def __init__(self, value_type: AbstractNestableType):
+    def __init__(self, value_type: AbstractNestableType) -> None:
         """
         Create an AbstractNestedType.
 
@@ -304,10 +351,12 @@ class AbstractNestedType(AbstractType):
         assert isinstance(value_type, AbstractNestableType)
         self.value_type = value_type
 
-    def has_maximum_size(self):
+    def has_maximum_size(self) -> bool:
         raise NotImplementedError('Only implemented in subclasses')
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, AbstractNestedType):
+            return False
         return super().__eq__(other) and self.value_type == other.value_type
 
 
@@ -316,7 +365,7 @@ class Array(AbstractNestedType):
 
     __slots__ = ('size')
 
-    def __init__(self, value_type: AbstractNestableType, size: int):
+    def __init__(self, value_type: AbstractNestableType, size: int) -> None:
         """
         Create an Array.
 
@@ -328,19 +377,21 @@ class Array(AbstractNestedType):
         assert size > 0
         self.size = size
 
-    def has_maximum_size(self):
+    def has_maximum_size(self) -> 'Literal[True]':
         return True
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Array):
+            return False
         return super().__eq__(other) and self.size == other.size
 
 
 class AbstractSequence(AbstractNestedType):
     """The abstract base class of sequence types."""
 
-    __slots__ = set()
+    __slots__: Set[str] = set()
 
-    def __init__(self, value_type: AbstractNestableType):
+    def __init__(self, value_type: AbstractNestableType) -> None:
         super().__init__(value_type)
 
 
@@ -349,7 +400,7 @@ class BoundedSequence(AbstractSequence):
 
     __slots__ = ('maximum_size', )
 
-    def __init__(self, value_type: AbstractNestableType, maximum_size: int):
+    def __init__(self, value_type: AbstractNestableType, maximum_size: int) -> None:
         """
         Create a BoundedSequence.
 
@@ -360,10 +411,12 @@ class BoundedSequence(AbstractSequence):
         assert maximum_size > 0
         self.maximum_size = maximum_size
 
-    def has_maximum_size(self):
+    def has_maximum_size(self) -> 'Literal[True]':
         return True
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, BoundedSequence):
+            return False
         return super().__eq__(other) and \
             self.maximum_size == other.maximum_size
 
@@ -373,7 +426,7 @@ class UnboundedSequence(AbstractSequence):
 
     __slots__ = ()
 
-    def __init__(self, value_type: AbstractNestableType):
+    def __init__(self, value_type: AbstractNestableType) -> None:
         """
         Create an UnboundedSequence.
 
@@ -381,8 +434,11 @@ class UnboundedSequence(AbstractSequence):
         """
         super().__init__(value_type)
 
-    def has_maximum_size(self):
+    def has_maximum_size(self) -> 'Literal[False]':
         return False
+
+
+ValueType = Union[str, int, float, bool, Dict[str, Union[str, int, float, bool]], None]
 
 
 class Annotation:
@@ -390,7 +446,7 @@ class Annotation:
 
     __slots__ = ('name', 'value')
 
-    def __init__(self, name: str, value):
+    def __init__(self, name: str, value: ValueType) -> None:
         """
         Create an Annotation.
 
@@ -409,14 +465,14 @@ class Annotatable:
 
     __slots__ = ('annotations', )
 
-    def __init__(self):
-        self.annotations = []
+    def __init__(self) -> None:
+        self.annotations: List[Annotation] = []
 
-    def get_annotation_value(self, name):
+    def get_annotation_value(self, name: str) -> ValueType:
         """
         Get the unique value of an annotation of a specific type.
 
-        :param str name: the name of the annotation type
+        :param name: the name of the annotation type
         :returns: the annotation value
         :raises: ValueError if there is no or multiple annotations with the
           given name
@@ -428,16 +484,16 @@ class Annotatable:
             raise ValueError(f"Multiple '{name}' annotations")
         return values[0]
 
-    def get_annotation_values(self, name):
+    def get_annotation_values(self, name: str) -> List[ValueType]:
         """
         Get the values of annotations of a specific type.
 
-        :param str name: the name of the annotation type
+        :param name: the name of the annotation type
         :returns: a list of annotation values
         """
         return [a.value for a in self.annotations if a.name == name]
 
-    def get_comment_lines(self):
+    def get_comment_lines(self) -> List[str]:
         """
         Get the comment lines of the annotatable.
 
@@ -445,28 +501,29 @@ class Annotatable:
         """
         comments = [
             x['text'] for x in self.get_annotation_values('verbatim') if
+            isinstance(x, Dict) and
             'language' in x and 'text' in x and x['language'] == 'comment'
         ]
-        lines = []
+        lines: List[str] = []
         for comment in comments:
-            lines.extend(comment.splitlines())
+            lines.extend(str(comment).splitlines())
         return lines
 
-    def has_annotation(self, name):
+    def has_annotation(self, name: str) -> bool:
         """
         Check if there is exactly one annotation of a specific type.
 
-        :param str name: the name of the annotation type
+        :param name: the name of the annotation type
         :returns: True if there is exactly one annotation, False otherwise
         """
         values = self.get_annotation_values(name)
         return len(values) == 1
 
-    def has_annotations(self, name):
+    def has_annotations(self, name: str) -> bool:
         """
         Check if there are any annotations of a specific type.
 
-        :param str name: the name of the annotation type
+        :param name: the name of the annotation type
         :returns: True if there are any annotations, False otherwise
         """
         annotations = self.get_annotation_values(name)
@@ -496,7 +553,8 @@ class Structure(Annotatable):
 
     __slots__ = ('namespaced_type', 'members')
 
-    def __init__(self, namespaced_type: NamespacedType, members=None):
+    def __init__(self, namespaced_type: NamespacedType,
+                 members: Optional[List['Member']] = None) -> None:
         """
         Create a Structure.
 
@@ -514,11 +572,11 @@ class Include:
 
     __slots__ = ('locator', )
 
-    def __init__(self, locator):
+    def __init__(self, locator: str) -> None:
         """
         Create an Include.
 
-        :param str locator: a URI identifying the included file
+        :param locator: a URI identifying the included file
         """
         self.locator = locator
 
@@ -528,7 +586,8 @@ class Constant(Annotatable):
 
     __slots__ = ('name', 'type', 'value')
 
-    def __init__(self, name: str, type_: AbstractType, value):
+    def __init__(self, name: str, type_: AbstractType,
+                 value: Union[str, int, float, bool]) -> None:
         """
         Create a Constant.
 
@@ -548,7 +607,7 @@ class Message:
 
     __slots__ = ('structure', 'constants')
 
-    def __init__(self, structure: Structure):
+    def __init__(self, structure: Structure) -> None:
         """
         Create a Message.
 
@@ -557,7 +616,7 @@ class Message:
         super().__init__()
         assert isinstance(structure, Structure)
         self.structure = structure
-        self.constants = []
+        self.constants: List[Constant] = []
 
 
 class Service:
@@ -568,7 +627,7 @@ class Service:
     def __init__(
         self, namespaced_type: NamespacedType, request: Message,
         response: Message
-    ):
+    ) -> None:
         """
         Create a Service.
 
@@ -622,7 +681,7 @@ class Action:
     def __init__(
         self, namespaced_type: NamespacedType, goal: Message, result: Message,
         feedback: Message
-    ):
+    ) -> None:
         """
         Create an Action.
 
@@ -732,18 +791,18 @@ class IdlLocator:
 
     __slots__ = ('basepath', 'relative_path')
 
-    def __init__(self, basepath, relative_path):
+    def __init__(self, basepath: str, relative_path: str) -> None:
         """
         Create an IdlLocator.
 
-        :param str basepath: the basepath of file
-        :param str relative_path: the path relative to the basepath of the file
+        :param basepath: the basepath of file
+        :param relative_path: the path relative to the basepath of the file
         """
         super().__init__()
         self.basepath = pathlib.Path(basepath)
         self.relative_path = pathlib.Path(relative_path)
 
-    def get_absolute_path(self):
+    def get_absolute_path(self) -> pathlib.Path:
         return self.basepath / self.relative_path
 
 
@@ -752,11 +811,14 @@ class IdlContent:
 
     __slots__ = ('elements', )
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
-        self.elements = []
+        self.elements: List[Union[Include, Message, Service, Action]] = []
 
-    def get_elements_of_type(self, type_):
+    def get_elements_of_type(
+            self,
+            type_: Type[Union[Include, Message, Service, Action]]
+    ) -> List[Union[Include, Message, Service, Action]]:
         return [e for e in self.elements if isinstance(e, type_)]
 
 
@@ -765,12 +827,12 @@ class IdlFile:
 
     __slots__ = ('locator', 'content')
 
-    def __init__(self, locator, content):
+    def __init__(self, locator: IdlLocator, content: IdlContent) -> None:
         """
         Create an IdlFile.
 
-        :param IdlLocator locator: the locator of the IDL file
-        :param IdlContent content: the content of the IDL file
+        :param locator: the locator of the IDL file
+        :param content: the content of the IDL file
         """
         super().__init__()
         assert isinstance(locator, IdlLocator)

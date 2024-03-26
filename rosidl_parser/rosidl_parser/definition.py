@@ -508,6 +508,15 @@ class Structure(Annotatable):
         self.namespaced_type = namespaced_type
         self.members = members or []
 
+    def has_any_member_with_annotation(self, name: str):
+        """
+        Returns whether any member has a particular annotation.
+
+        :param name: the annotation name
+        """
+        has_any = [member.name for member in self.members if member.has_annotation(name)]
+        return bool(has_any)
+
 
 class Include:
     """An include statement."""

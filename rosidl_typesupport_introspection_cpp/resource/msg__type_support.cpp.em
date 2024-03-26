@@ -204,6 +204,8 @@ for index, member in enumerate(message.structure.members):
         print('    0,  // upper bound of string')
         # const rosidl_message_type_support_t * members_
         print('    ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<%s>(),  // members of sub message' % '::'.join(type_.namespaced_name()))
+    # bool is_key_
+    print('    %s,  // is key' % ('true' if member.has_annotation('key') else 'false'))
     # bool is_array_
     print('    %s,  // is array' % ('true' if isinstance(member.type, AbstractNestedType) else 'false'))
     # size_t array_size_
@@ -242,6 +244,11 @@ static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(message.st
   "@(message.structure.namespaced_type.name)",  // message name
   @(len(message.structure.members)),  // number of fields
   sizeof(@('::'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))),
+@[  if message.structure.has_any_member_with_annotation('key') ]@
+  true, // is key
+@[  else]@
+  false, // is key
+@[  end if]@
   @(message.structure.namespaced_type.name)_message_member_array,  // message members
   @(message.structure.namespaced_type.name)_init_function,  // function to initialize message memory (memory has to be allocated)
   @(message.structure.namespaced_type.name)_fini_function  // function to terminate message instance (will not free memory)

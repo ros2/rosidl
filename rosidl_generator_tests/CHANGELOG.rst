@@ -2,6 +2,11 @@
 Changelog for package rosidl_generator_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixes for modern uncrustify. (`#793 <https://github.com/ros2/rosidl/issues/793>`_)
+* Contributors: Chris Lalancette
+
 4.5.1 (2024-02-07)
 ------------------
 

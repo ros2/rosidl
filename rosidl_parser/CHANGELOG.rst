@@ -2,8 +2,8 @@
 Changelog for package rosidl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.5.2 (2024-03-27)
+------------------
 * Small fix for newer flake8 compatibility. (`#792 <https://github.com/ros2/rosidl/issues/792>`_)
 * Contributors: Chris Lalancette
 

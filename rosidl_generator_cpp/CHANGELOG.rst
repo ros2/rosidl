@@ -2,8 +2,8 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.5.2 (2024-03-27)
+------------------
 * Set hints to find the python version we actually want. (`#785 <https://github.com/ros2/rosidl/issues/785>`_)
 * Contributors: Chris Lalancette
 

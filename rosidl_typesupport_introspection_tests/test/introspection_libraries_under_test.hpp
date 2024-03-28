@@ -354,7 +354,7 @@ struct Example<rosidl_typesupport_introspection_tests__msg__BoundedSequences>
       !rosidl_typesupport_introspection_tests__msg__BoundedSequences__init(message.get()) ||
       !rosidl_runtime_c__boolean__Sequence__init(&message->bool_values, 1u) ||
       !rosidl_runtime_c__byte__Sequence__init(&message->byte_values, 1u) ||
-      !rosidl_runtime_c__uint8__Sequence__init(&message->char_values, 1u) ||
+      !rosidl_runtime_c__char__Sequence__init(&message->char_values, 1u) ||
       !rosidl_runtime_c__float__Sequence__init(&message->float32_values, 1u) ||
       !rosidl_runtime_c__double__Sequence__init(&message->float64_values, 1u) ||
       !rosidl_runtime_c__int8__Sequence__init(&message->int8_values, 1u) ||
@@ -513,7 +513,7 @@ struct Example<rosidl_typesupport_introspection_tests__msg__UnboundedSequences>
       !rosidl_typesupport_introspection_tests__msg__UnboundedSequences__init(message.get()) ||
       !rosidl_runtime_c__boolean__Sequence__init(&message->bool_values, 1u) ||
       !rosidl_runtime_c__byte__Sequence__init(&message->byte_values, 1u) ||
-      !rosidl_runtime_c__uint8__Sequence__init(&message->char_values, 1u) ||
+      !rosidl_runtime_c__char__Sequence__init(&message->char_values, 1u) ||
       !rosidl_runtime_c__float__Sequence__init(&message->float32_values, 1u) ||
       !rosidl_runtime_c__double__Sequence__init(&message->float64_values, 1u) ||
       !rosidl_runtime_c__int8__Sequence__init(&message->int8_values, 1u) ||

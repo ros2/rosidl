@@ -231,7 +231,7 @@ static int test_bounded_sequences(void)
   }
 
   // char_values
-  res = rosidl_runtime_c__uint8__Sequence__init(&seq->char_values, ARR_SIZE);
+  res = rosidl_runtime_c__char__Sequence__init(&seq->char_values, ARR_SIZE);
   EXPECT_EQ(true, res);
   for (i = 0; i < ARR_SIZE; i++) {
     seq->char_values.data[i] = test_values_char[i];
@@ -461,7 +461,7 @@ int test_unbounded_sequences()
   }
 
   // char_values
-  res = rosidl_runtime_c__uint8__Sequence__init(&seq->char_values, ARR_SIZE);
+  res = rosidl_runtime_c__char__Sequence__init(&seq->char_values, ARR_SIZE);
   EXPECT_EQ(true, res);
   for (i = 0; i < ARR_SIZE; i++) {
     seq->char_values.data[i] = test_values_char[i];

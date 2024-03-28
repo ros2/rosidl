@@ -84,7 +84,7 @@ TYPED_TEST(BasicTypesServiceIntrospectionTest, ServiceDescriptorIsCorrect)
     auto * member_descriptor = get_member_descriptor(request_message_descriptor, 2u);
     EXPECT_STREQ(get_member_name(member_descriptor), "char_value");
     // In ROS message definitions, char is an alias for uint8.
-    EXPECT_TRUE(is_base_type_member(member_descriptor, ROS_TYPE_UINT8));
+    EXPECT_TRUE(is_base_type_member(member_descriptor, ROS_TYPE_CHAR));
     EXPECT_TRUE(has_simple_structure(member_descriptor));
   }
 
@@ -192,7 +192,7 @@ TYPED_TEST(BasicTypesServiceIntrospectionTest, ServiceDescriptorIsCorrect)
     auto * member_descriptor = get_member_descriptor(response_message_descriptor, 2u);
     EXPECT_STREQ(get_member_name(member_descriptor), "char_value");
     // In ROS message definitions, char is an alias for uint8.
-    EXPECT_TRUE(is_base_type_member(member_descriptor, ROS_TYPE_UINT8));
+    EXPECT_TRUE(is_base_type_member(member_descriptor, ROS_TYPE_CHAR));
     EXPECT_TRUE(has_simple_structure(member_descriptor));
   }
 

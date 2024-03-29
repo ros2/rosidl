@@ -39,7 +39,7 @@ typedef struct rosidl_typesupport_introspection_c__MessageMember_s
   /// If the type_id_ value is rosidl_typesupport_introspection_c__ROS_TYPE_MESSAGE,
   /// this points to an array describing the fields of the sub-interface.
   const rosidl_message_type_support_t * members_;
-  /// True if this field is a keyed field, false otherwise.
+  /// True if this field is annotated as `@key`, false otherwise.
   bool is_key_;
   /// True if this field is an array type, false if it is any other type. An
   /// array has the same value for / type_id_.
@@ -92,7 +92,7 @@ typedef struct rosidl_typesupport_introspection_c__MessageMembers_s
   uint32_t member_count_;
   /// The size of the interface structure in memory
   size_t size_of_;
-  /// A boolean value indicating if there are any members annotated as key in the interface structure.
+  /// A boolean value indicating if there are any members annotated as `@key` in the structure.
   bool has_any_key_member_;
   /// A pointer to the array that describes each field of the interface
   const rosidl_typesupport_introspection_c__MessageMember * members_;

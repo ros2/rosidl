@@ -279,9 +279,9 @@ static const rosidl_typesupport_introspection_c__MessageMembers @(function_prefi
   @(len(message.structure.members)),  // number of fields
   sizeof(@('__'.join([package_name] + list(interface_path.parents[0].parts) + [message.structure.namespaced_type.name]))),
 @[  if message.structure.has_any_member_with_annotation('key') ]@
-  true, // has_any_key_member_
+  true,  // has_any_key_member_
 @[  else]@
-  false, // has_any_key_member_
+  false,  // has_any_key_member_
 @[  end if]@
   @(function_prefix)__@(message.structure.namespaced_type.name)_message_member_array,  // message members
   @(function_prefix)__@(message.structure.namespaced_type.name)_init_function,  // function to initialize message memory (memory has to be allocated)

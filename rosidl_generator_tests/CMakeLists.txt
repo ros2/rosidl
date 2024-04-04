@@ -136,3 +136,8 @@ if(BUILD_TESTING)
 endif()
 
 ament_package()
+
+if(TEST cpplint)
+  # must set the property after ament_package()
+  set_tests_properties(cpplint PROPERTIES TIMEOUT 300)
+endif()

@@ -29,34 +29,93 @@
 # @public
 #
 function(rosidl_target_interfaces target interface_target typesupport_name)
-  message(DEPRECATION "Use rosidl_get_typesupport_target() and target_link_libraries() instead of rosidl_target_interfaces(). i.e:
+  message(
+    DEPRECATION
+      "Use rosidl_get_typesupport_target() and target_link_libraries() instead of rosidl_target_interfaces(). i.e:
   rosidl_get_typesupport_target(cpp_typesupport_target \"\${PROJECT_NAME}\" \"rosidl_typesupport_cpp\")
   target_link_libraries(\${PROJECT_NAME}_node \"\${cpp_typesupport_target}\")
 ")
-  if(ARGN)
-    message(FATAL_ERROR
-      "rosidl_target_interfaces() called with unused arguments: ${ARGN}")
-  endif()
-  if(NOT TARGET ${target})
-    message(FATAL_ERROR
-      "rosidl_target_interfaces() the first argument '${target}' must be a valid target name")
-  endif()
-  if(NOT TARGET ${interface_target})
-    message(FATAL_ERROR
-      "rosidl_target_interfaces() the second argument '${interface_target}' must be a valid target name")
-  endif()
-  set(typesupport_target "${interface_target}__${typesupport_name}")
-  if(NOT TARGET ${typesupport_target})
-    message(FATAL_ERROR
-      "rosidl_target_interfaces() the second argument '${interface_target}' "
-      "concatenated with the third argument '${typesupport_name}' "
-      "using double underscores must be a valid target name")
+  if(${ARGC} GREATER 4)
+    list(SUBLIST ARGN 1 -1 REMAINING_ARGS)
+    message(
+      FATAL_ERROR
+        "rosidl_target_interfaces() called with unused arguments: ${REMAINING_ARGS}"
+    )
   endif()
 
-  add_dependencies(${target} ${interface_target})
-  get_target_property(include_directories ${typesupport_target} INTERFACE_INCLUDE_DIRECTORIES)
-  if(${include_directories})
-    target_include_directories(${target} PUBLIC ${include_directories})
+  if(${ARGC} EQUAL 4)
+    if("${ARGV1}" STREQUAL "PUBLIC")
+      set(optional_keyword "${ARGV1}")
+    elseif("${ARGV1}" STREQUAL "PRIVATE")
+      set(optional_keyword "${ARGV1}")
+    elseif("${ARGV1}" STREQUAL "INTERFACE")
+      set(optional_keyword "${ARGV1}")
+    else()
+      message(
+        FATAL_ERROR
+          "rosidl_target_interfaces() the second argument must be a scope keyword PRIVATE|PUBLIC|INTERFACE"
+      )
+    endif()
+
+    if(NOT TARGET ${ARGV0})
+      message(
+        FATAL_ERROR
+          "rosidl_target_interfaces() the first argument '${ARGV0}' must be a valid target name"
+      )
+    endif()
+    if(NOT TARGET ${ARGV2})
+      message(
+        FATAL_ERROR
+          "rosidl_target_interfaces() the third argument '${ARGV2}' must be a valid target name"
+      )
+    endif()
+    set(typesupport_target "${ARGV2}__${ARGV3}")
+    if(NOT TARGET ${typesupport_target})
+      message(
+        FATAL_ERROR
+          "rosidl_target_interfaces() the third argument '${ARGV2}' "
+          "concatenated with the fourth argument '${ARGV3}' "
+          "using double underscores must be a valid target name")
+    endif()
+
+    add_dependencies(${ARGV0} ${ARGV2})
+    get_target_property(include_directories ${typesupport_target}
+                        INTERFACE_INCLUDE_DIRECTORIES)
+    if(include_directories)
+      target_include_directories(${ARGV0} PUBLIC ${include_directories})
+    endif()
+    target_link_libraries(${ARGV0} ${optional_keyword} ${typesupport_target})
+
+  else()
+
+    if(NOT TARGET ${target})
+      message(
+        FATAL_ERROR
+          "rosidl_target_interfaces() the first argument '${target}' must be a valid target name"
+      )
+    endif()
+    if(NOT TARGET ${interface_target})
+      message(
+        FATAL_ERROR
+          "rosidl_target_interfaces() the second argument '${interface_target}' must be a valid target name"
+      )
+    endif()
+    set(typesupport_target "${interface_target}__${typesupport_name}")
+    if(NOT TARGET ${typesupport_target})
+      message(
+        FATAL_ERROR
+          "rosidl_target_interfaces() the second argument '${interface_target}' "
+          "concatenated with the third argument '${typesupport_name}' "
+          "using double underscores must be a valid target name")
+    endif()
+
+    add_dependencies(${target} ${interface_target})
+    get_target_property(include_directories ${typesupport_target}
+                        INTERFACE_INCLUDE_DIRECTORIES)
+    if(include_directories)
+      target_include_directories(${target} PUBLIC ${include_directories})
+    endif()
+    target_link_libraries(${target} ${typesupport_target})
+
   endif()
-  target_link_libraries(${target} ${typesupport_target})
 endfunction()

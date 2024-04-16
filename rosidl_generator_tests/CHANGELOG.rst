@@ -2,6 +2,11 @@
 Changelog for package rosidl_generator_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.6.0 (2024-04-16)
+------------------
+* Increased the cpplint timeout to 300 seconds (`#797 <https://github.com/ros2/rosidl/issues/797>`_)
+* Contributors: Alejandro Hernández Cordero
+
 4.5.2 (2024-03-27)
 ------------------
 * Fixes for modern uncrustify. (`#793 <https://github.com/ros2/rosidl/issues/793>`_)

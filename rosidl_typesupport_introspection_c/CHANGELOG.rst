@@ -2,6 +2,12 @@
 Changelog for package rosidl_typesupport_introspection_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.6.0 (2024-04-16)
+------------------
+* Adding interfaces to support `@key` annotation (`#796 <https://github.com/ros2/rosidl/issues/796>`_)
+  Co-authored-by: Mario Dominguez <mariodominguez@eprosima.com>
+* Contributors: Miguel Company
+
 4.5.2 (2024-03-27)
 ------------------
 * Set hints to find the python version we actually want. (`#785 <https://github.com/ros2/rosidl/issues/785>`_)

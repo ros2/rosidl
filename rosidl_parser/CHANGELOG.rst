@@ -2,6 +2,12 @@
 Changelog for package rosidl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.6.0 (2024-04-16)
+------------------
+* Adding interfaces to support `@key` annotation (`#796 <https://github.com/ros2/rosidl/issues/796>`_)
+  Co-authored-by: Mario Dominguez <mariodominguez@eprosima.com>
+* Contributors: Miguel Company
+
 4.5.2 (2024-03-27)
 ------------------
 * Small fix for newer flake8 compatibility. (`#792 <https://github.com/ros2/rosidl/issues/792>`_)

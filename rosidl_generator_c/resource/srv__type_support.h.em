@@ -35,7 +35,7 @@ const rosidl_service_type_support_t *
 ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(
   rosidl_typesupport_c,
   @(',\n  '.join(service.namespaced_type.namespaced_name()))
-)();
+)(void);
 
 // Forward declare the function to create a service event message for this type.
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)

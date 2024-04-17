@@ -50,7 +50,7 @@ void
  */
 ROSIDL_GENERATOR_C_PUBLIC_@(package_name)
 @(message_typename) *
-@(message_typename)__create();
+@(message_typename)__create(void);
 
 /// Destroy @(interface_path_to_string(interface_path)) message.
 /**

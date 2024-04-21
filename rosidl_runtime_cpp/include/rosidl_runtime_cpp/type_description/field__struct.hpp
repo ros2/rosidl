@@ -133,6 +133,7 @@ struct Field_
     ConstPtr;
 
   // comparison operators
+  [[nodiscard]]
   bool operator==(const Field_ & other) const
   {
     if (this->name != other.name) {
@@ -146,6 +147,7 @@ struct Field_
     }
     return true;
   }
+  [[nodiscard]]
   bool operator!=(const Field_ & other) const
   {
     return !this->operator==(other);

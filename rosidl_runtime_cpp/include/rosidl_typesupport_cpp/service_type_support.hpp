@@ -25,6 +25,7 @@ namespace rosidl_typesupport_cpp
 {
 
 template<typename T>
+[[nodiscard]]
 const rosidl_service_type_support_t * get_service_type_support_handle();
 
 template<typename T>

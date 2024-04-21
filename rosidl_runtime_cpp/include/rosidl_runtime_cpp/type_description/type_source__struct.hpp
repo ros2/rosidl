@@ -130,6 +130,7 @@ struct TypeSource_
     ConstPtr;
 
   // comparison operators
+  [[nodiscard]]
   bool operator==(const TypeSource_ & other) const
   {
     if (this->type_name != other.type_name) {
@@ -143,6 +144,7 @@ struct TypeSource_
     }
     return true;
   }
+  [[nodiscard]]
   bool operator!=(const TypeSource_ & other) const
   {
     return !this->operator==(other);

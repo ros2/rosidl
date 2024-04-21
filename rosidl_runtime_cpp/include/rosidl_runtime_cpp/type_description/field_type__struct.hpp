@@ -335,6 +335,7 @@ struct FieldType_
     ConstPtr;
 
   // comparison operators
+  [[nodiscard]]
   bool operator==(const FieldType_ & other) const
   {
     if (this->type_id != other.type_id) {
@@ -351,6 +352,7 @@ struct FieldType_
     }
     return true;
   }
+  [[nodiscard]]
   bool operator!=(const FieldType_ & other) const
   {
     return !this->operator==(other);

@@ -21,6 +21,16 @@
 #include <utility>
 #include <vector>
 
+// GCC 13 has false positive warnings around stringop-overflow and array-bounds.
+// The layout of a BoundedVector<bool> triggers these warnings.  Suppress them
+// until this is fixed in upstream gcc.  See
+// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=114758 for more details.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
+
 namespace rosidl_runtime_cpp
 {
 
@@ -788,5 +798,9 @@ swap(BoundedVector<Tp, UpperBound, Alloc> & x, BoundedVector<Tp, UpperBound, All
 }
 
 }  // namespace rosidl_runtime_cpp
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 #endif  // ROSIDL_RUNTIME_CPP__BOUNDED_VECTOR_HPP_

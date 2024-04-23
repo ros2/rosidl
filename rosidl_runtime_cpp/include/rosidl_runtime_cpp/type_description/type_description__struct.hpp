@@ -113,7 +113,6 @@ struct TypeDescription_
     ConstPtr;
 
   // comparison operators
-  [[nodiscard]]
   bool operator==(const TypeDescription_ & other) const
   {
     if (this->type_description != other.type_description) {
@@ -124,7 +123,6 @@ struct TypeDescription_
     }
     return true;
   }
-  [[nodiscard]]
   bool operator!=(const TypeDescription_ & other) const
   {
     return !this->operator==(other);

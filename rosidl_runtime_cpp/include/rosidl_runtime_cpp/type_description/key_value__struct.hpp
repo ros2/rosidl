@@ -118,7 +118,6 @@ struct KeyValue_
     ConstPtr;
 
   // comparison operators
-  [[nodiscard]]
   bool operator==(const KeyValue_ & other) const
   {
     if (this->key != other.key) {
@@ -129,7 +128,6 @@ struct KeyValue_
     }
     return true;
   }
-  [[nodiscard]]
   bool operator!=(const KeyValue_ & other) const
   {
     return !this->operator==(other);

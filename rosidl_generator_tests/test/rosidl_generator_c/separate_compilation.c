@@ -21,7 +21,7 @@
 #include "rosidl_generator_tests/msg/detail/defaults__struct.h"
 #include "rosidl_generator_tests/msg/detail/defaults__functions.h"
 
-int func()
+int func(void)
 {
   rosidl_generator_tests__msg__Defaults * msg = rosidl_generator_tests__msg__Defaults__create();
   if (!msg) {

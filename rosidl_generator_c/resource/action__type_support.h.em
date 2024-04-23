@@ -14,7 +14,7 @@ const rosidl_action_type_support_t *
 ROSIDL_TYPESUPPORT_INTERFACE__ACTION_SYMBOL_NAME(
   rosidl_typesupport_c,
   @(',\n  '.join(action.namespaced_type.namespaced_name()))
-)();
+)(void);
 
 @{
 TEMPLATE(

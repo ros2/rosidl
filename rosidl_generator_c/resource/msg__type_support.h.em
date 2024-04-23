@@ -14,4 +14,4 @@ const rosidl_message_type_support_t *
 ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(
   rosidl_typesupport_c,
   @(',\n  '.join(message.structure.namespaced_type.namespaced_name()))
-)();
+)(void);

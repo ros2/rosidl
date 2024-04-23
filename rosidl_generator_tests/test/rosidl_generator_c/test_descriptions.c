@@ -66,10 +66,10 @@ bool string_char_equal(const rosidl_runtime_c__String * lhs, const char * rhs)
   return 0 == memcmp(lhs->data, rhs, rhs_len);
 }
 
-int test_description_linkage();
-int test_copied_type_description_struct_hashes();
-int test_source_defined();
-int test_same_name_types();
+int test_description_linkage(void);
+int test_copied_type_description_struct_hashes(void);
+int test_source_defined(void);
+int test_same_name_types(void);
 
 int main(void)
 {
@@ -103,7 +103,7 @@ int main(void)
   return rc != 0;
 }
 
-int test_description_linkage()
+int test_description_linkage(void)
 {
   // Smoke test linkage and basic values for msg, srv, action
   // Message
@@ -168,7 +168,7 @@ int test_description_linkage()
   return 0;
 }
 
-int test_source_defined()
+int test_source_defined(void)
 {
   // Smoke test that definitions are present for raw type sources
   // Message
@@ -277,7 +277,7 @@ int test_source_defined()
   return 0;
 }
 
-int test_copied_type_description_struct_hashes()
+int test_copied_type_description_struct_hashes(void)
 {
   #define runtimehash(x) rosidl_runtime_c__type_description__ ## x ## __get_type_hash(NULL)
   #define msghash(x) type_description_interfaces__msg__ ## x ## __get_type_hash(NULL)
@@ -313,7 +313,7 @@ int test_copied_type_description_struct_hashes()
   return rc;
 }
 
-int test_same_name_types()
+int test_same_name_types(void)
 {
   // Msg and srv with same name in this package
   // Regression check case, this was receiving "srv" encoding with Empty.srv sources

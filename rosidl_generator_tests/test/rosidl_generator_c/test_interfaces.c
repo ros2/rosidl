@@ -424,7 +424,7 @@ static int test_bounded_sequences(void)
   return 0;
 }
 
-int test_unbounded_sequences()
+int test_unbounded_sequences(void)
 {
   rosidl_generator_tests__msg__UnboundedSequences * seq = NULL;
   seq = rosidl_generator_tests__msg__UnboundedSequences__create();
@@ -999,7 +999,7 @@ static int test_multi_nested(void)
   return 0;
 }
 
-int test_wstrings()
+int test_wstrings(void)
 {
   rosidl_generator_tests__msg__WStrings * wstr = NULL;
   wstr = rosidl_generator_tests__msg__WStrings__create();

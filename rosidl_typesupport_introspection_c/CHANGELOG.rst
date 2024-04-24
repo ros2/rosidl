@@ -2,8 +2,8 @@
 Changelog for package rosidl_typesupport_introspection_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.6.1 (2024-04-24)
+------------------
 * Fixed warnings - strict-prototypes (`#800 <https://github.com/ros2/rosidl/issues/800>`_) (`#802 <https://github.com/ros2/rosidl/issues/802>`_)
 * Contributors: mergify[bot]
 

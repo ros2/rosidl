@@ -724,6 +724,7 @@ private:
    * \param y A %BoundedVector of the same type as @a x
    * \return True if the size and elements of the vectors are equal
   */
+  [[nodiscard]]
   friend bool
   operator==(
     const BoundedVector & x,
@@ -744,6 +745,7 @@ private:
    * \param y A %BoundedVector of the same type as @a x
    * @return True if @a x is lexicographically less than @a y
   */
+  [[nodiscard]]
   friend bool
   operator<(
     const BoundedVector & x,
@@ -753,6 +755,7 @@ private:
   }
 
   /// Based on operator==
+  [[nodiscard]]
   friend bool
   operator!=(
     const BoundedVector & x,
@@ -762,6 +765,7 @@ private:
   }
 
   /// Based on operator<
+  [[nodiscard]]
   friend bool
   operator>(
     const BoundedVector & x,
@@ -771,6 +775,7 @@ private:
   }
 
   /// Based on operator<
+  [[nodiscard]]
   friend bool
   operator<=(
     const BoundedVector & x,
@@ -780,6 +785,7 @@ private:
   }
 
   /// Based on operator<
+  [[nodiscard]]
   friend bool
   operator>=(
     const BoundedVector & x,

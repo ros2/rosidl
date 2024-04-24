@@ -27,6 +27,7 @@ namespace rosidl_runtime_cpp
  * \return Function handler for the service's typesupport.
  */
 template<typename T>
+[[nodiscard]]
 const rosidl_service_type_support_t * get_service_type_support_handle();
 
 }  // namespace rosidl_runtime_cpp

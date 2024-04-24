@@ -27,6 +27,7 @@ namespace rosidl_typesupport_introspection_cpp
 /// services.
 /// This is implemented in the shared library provided by this package.
 template<typename T>
+[[nodiscard]]
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_service_type_support_t * get_service_type_support_handle();
 

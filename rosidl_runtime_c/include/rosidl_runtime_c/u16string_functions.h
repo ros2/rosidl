@@ -175,7 +175,7 @@ rosidl_runtime_c__U16String__resize(
  * memory.
  *
  * \param[inout] sequence a pointer to a U16 string sequence structure
- * \param[in] size represents the size of the U16 string
+ * \param[in] size represents the size of the U16 string sequence
  * \return true if successful, false if the passed string pointer is null
  *   or the memory allocation failed
  */
@@ -233,7 +233,7 @@ rosidl_runtime_c__U16String__Sequence__copy(
  * The U16 string sequence structure should be deallocated using the given
  * function rosidl_runtime_c__U16String__Sequence__destroy() when it is no longer needed.
  *
- * \param[in] size of the desired U16 string
+ * \param[in] size of the desired U16 string sequence
  * \return a U16 string sequence if initialization was successfully, otherwise NULL.
  */
 ROSIDL_GENERATOR_C_PUBLIC

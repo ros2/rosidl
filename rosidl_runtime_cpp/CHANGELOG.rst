@@ -2,6 +2,16 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Global use of nodiscard (`#801 <https://github.com/ros2/rosidl/issues/801>`_)
+  * Global use of nodiscard
+* Suppress a warning around BoundedVector. (`#803 <https://github.com/ros2/rosidl/issues/803>`_)
+  The comment has more explanation, but in short GCC 13
+  has false positives around some warnings, so we suppress
+  it for BoundedVector.
+* Contributors: Chris Lalancette, Lucas Wendland
+
 4.6.0 (2024-04-16)
 ------------------
 

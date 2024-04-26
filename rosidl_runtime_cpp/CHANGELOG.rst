@@ -2,8 +2,8 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.7.0 (2024-04-26)
+------------------
 * Global use of nodiscard (`#801 <https://github.com/ros2/rosidl/issues/801>`_)
   * Global use of nodiscard
 * Suppress a warning around BoundedVector. (`#803 <https://github.com/ros2/rosidl/issues/803>`_)

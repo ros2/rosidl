@@ -26,7 +26,8 @@ extern "C"
 #endif
 
 /// Initialize a rosidl_runtime_c__U16String structure.
-/* The contents of rosidl_runtime_c__U16String are initialized to a single null character.
+/**
+ * The contents of rosidl_runtime_c__U16String are initialized to a single null character.
  * The string initially has size 0 and capacity 1.
  * Size represents the size of the contents of the string, while capacity represents the overall
  * storage of the string (counting the null terminator).
@@ -45,7 +46,7 @@ bool
 rosidl_runtime_c__U16String__init(rosidl_runtime_c__U16String * str);
 
 /// Deallocate the memory of the rosidl_runtime_c__U16String structure.
-/*
+/**
 * Calling the function with an already deallocated sequence is a no-op.
 *
 * \param[inout] str a pointer to a U16 string structure to be finalized
@@ -86,7 +87,7 @@ rosidl_runtime_c__U16String__copy(
   rosidl_runtime_c__U16String * output);
 
 /// Assign the uint16_t value of n characters to the rosidl_runtime_c__U16String structure.
-/*
+/**
  * This function returns `false` if memory cannot be allocated,
  * if the input uint16_t pointer is null or if the size is higher than SIZE_MAX.
  * In both cases no error message is set.
@@ -104,7 +105,7 @@ rosidl_runtime_c__U16String__assignn(
   rosidl_runtime_c__U16String * str, const uint16_t * value, size_t n);
 
 /// Assign the c string pointer value of n characters to the rosidl_runtime_c__U16String structure.
-/*
+/**
  * This function is identical to rosidl_runtime_c__U16String__assignn() except the type of the
  * value is a c string pointer.
  *
@@ -124,7 +125,7 @@ rosidl_runtime_c__U16String__assignn_from_char(
   rosidl_runtime_c__U16String * str, const char * value, size_t n);
 
 /// Assign the uint16_t pointer to the rosidl_runtime_c__U16String structure.
-/*
+/**
  * This function is identical to rosidl_runtime_c__U16String__assignn() except the length of the
  * uint16_t does not have to be given.
  * rosidl_runtime_c__U16String__len() is being used to determine the length of the passed string.
@@ -143,7 +144,7 @@ rosidl_runtime_c__U16String__assign(
   rosidl_runtime_c__U16String * str, const uint16_t * value);
 
 /// Get the length of the uint16_t pointer.
-/*
+/**
  * This function returns the length of the input value pointer.
  *
  * \param[in] value points to a sequence of 16 bit chars for which the first null char is
@@ -155,7 +156,7 @@ size_t
 rosidl_runtime_c__U16String__len(const uint16_t * value);
 
 /// Resize the uint16_t pointer.
-/*
+/**
  * This function resize the input value pointer.
  *
  * \param[in] n the new size of the internal buffer
@@ -168,7 +169,7 @@ rosidl_runtime_c__U16String__resize(
   rosidl_runtime_c__U16String * str, size_t n);
 
 /// Initialize a U16 string sequence structure.
-/*
+/**
  * The rosidl_runtime_c__U16String__Sequence is initialized to the size passed to the function.
  * The U16 string sequence structure should be deallocated using the given
  * function rosidl_runtime_c__U16String__Sequence__fini() when it is no longer needed.
@@ -186,7 +187,7 @@ rosidl_runtime_c__U16String__Sequence__init(
   rosidl_runtime_c__U16String__Sequence * sequence, size_t size);
 
 /// Deallocate the memory of the string sequence structure.
-/*
+/**
  * Calling the function with an already deallocated sequence is a no-op.
  *
  * \param[inout] sequence a pointer to a U16 string to be finalized
@@ -228,7 +229,7 @@ rosidl_runtime_c__U16String__Sequence__copy(
   rosidl_runtime_c__U16String__Sequence * output);
 
 /// Create a U16 string sequence structure with a specific size.
-/*
+/**
  * The U16 string sequence initially has size and capacity equal to the size
  * argument.
  * The U16 string sequence structure should be deallocated using the given
@@ -242,7 +243,7 @@ rosidl_runtime_c__U16String__Sequence *
 rosidl_runtime_c__U16String__Sequence__create(size_t size);
 
 /// Destroy a U16 string sequence structure.
-/*
+/**
  * Calling the function with an already deallocated sequence is a no-op.
  *
  * \param[inout] sequence a pointer to a U16 string sequence to be finalized

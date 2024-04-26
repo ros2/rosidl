@@ -106,15 +106,16 @@ rosidl_runtime_c__U16String__assignn(
 /// Assign the c string pointer value of n characters to the rosidl_runtime_c__U16String structure.
 /*
  * This function is identical to rosidl_runtime_c__U16String__assignn() except the type of the
- * value is c string pointer
+ * value is a c string pointer.
  *
  * \see rosidl_runtime_c__U16String__assignn()
  *
  * \param[inout] str a pointer to a U16 string structure
- * \param[in] value points to a sequence of 16 bit chars
- * \param[in] n size of the value string
+ * \param[in] value c string pointer to be assigned
+ * \param[in] n size of the value string as the number of 8 bit chars
  * \return true if successful, false if the passed string pointer is null
- *   or if the passed value pointer is null or if the size is higher than SIZE_MAX
+ *   or if the passed value pointer is null
+ *   or if the size is not even or is higher than SIZE_MAX
  *   or if the memory reallocation failed.
  */
 ROSIDL_GENERATOR_C_PUBLIC

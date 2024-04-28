@@ -78,6 +78,18 @@ TEST(string_functions, resize_assignn) {
   EXPECT_TRUE(rosidl_runtime_c__String__init(&s));
   EXPECT_TRUE(rosidl_runtime_c__String__init(&t));
 
+  EXPECT_FALSE(rosidl_runtime_c__String__resize(nullptr, s_size));
+
+  // If you're here because this test crashed your computer, it might be because it just tried
+  // to allocate SIZE_MAX * 2 bytes, which means someone removed an important check.
+  EXPECT_FALSE(rosidl_runtime_c__String__resize(nullptr, SIZE_MAX * 2));
+
+  EXPECT_TRUE(rosidl_runtime_c__String__resize(&s, s_size));
+  EXPECT_EQ(s.size, s_size);
+  EXPECT_EQ(s.capacity, s_size + 1u);
+  EXPECT_NE(s.data, nullptr);
+  EXPECT_EQ(s.data[s_size], 0);
+
   EXPECT_FALSE(rosidl_runtime_c__String__assign(nullptr, nullptr));
   EXPECT_FALSE(rosidl_runtime_c__String__assignn(nullptr, nullptr, 0));
   EXPECT_FALSE(rosidl_runtime_c__String__assignn(&s, nullptr, 0));

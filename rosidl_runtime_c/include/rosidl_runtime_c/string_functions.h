@@ -121,6 +121,7 @@ rosidl_runtime_c__String__assign(
 /**
  * This function resize the input value pointer.
  *
+ * \param[inout] str a pointer to a rosidl_runtime_c__String structure
  * \param[in] n the new size of the internal buffer
  * \return true if successful, false if the passed string pointer is null
  *   or if the size is higher than SIZE_MAX or if the memory reallocation failed.

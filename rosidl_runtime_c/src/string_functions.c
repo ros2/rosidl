@@ -143,7 +143,8 @@ rosidl_runtime_c__String__copy(
     output, input->data, input->size);
 }
 
-bool rosidl_runtime_c__String__resize(
+bool
+rosidl_runtime_c__String__resize(
   rosidl_runtime_c__String *str, size_t n)
 {
   if(!str) {

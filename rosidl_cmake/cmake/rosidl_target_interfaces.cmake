@@ -19,12 +19,15 @@
 # It also adds target dependencies to `target` to ensure the interface
 # generation happens before.
 #
+# It can have an optional scope keyword (PRIVATE | PUBLIC | INTERFACE) as a second argument.
+#
 # :param target: the target name
 # :type target: string
 # :param interface_target: the target name of generated interfaces
 # :type interface_target: string
 # :param typesupport_name: the package name of the type support
 # :type typesupport_name: string
+# :scope keyword(optional): PUBLIC | PRIVATE | INTERFACE
 #
 # @public
 #

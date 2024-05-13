@@ -2,6 +2,16 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Suppress a warning around BoundedVector. (`#803 <https://github.com/ros2/rosidl/issues/803>`_) (`#804 <https://github.com/ros2/rosidl/issues/804>`_)
+  The comment has more explanation, but in short GCC 13
+  has false positives around some warnings, so we suppress
+  it for BoundedVector.
+  (cherry picked from commit 858e76adb03edba00469b91d50dd5fe0dcb34236)
+  Co-authored-by: Chris Lalancette <clalancette@gmail.com>
+* Contributors: mergify[bot]
+
 4.6.1 (2024-04-24)
 ------------------
 

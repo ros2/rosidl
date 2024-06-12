@@ -67,7 +67,18 @@ BENCHMARK_F(PerformanceTest, bounded_vector_insert)(benchmark::State & st)
   for (auto _ : st) {
     (void)_;
     v.insert(v.begin(), v2.begin(), v2.end());
+// GCC 13 has false positive warnings around stringop-overflow and array-bounds.
+// Suppress them until this is fixed in upstream gcc.  See
+// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=114758 for more details.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
     v.erase(v.begin());
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
   }
 }
 

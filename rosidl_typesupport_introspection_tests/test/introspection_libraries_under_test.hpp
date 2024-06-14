@@ -47,14 +47,28 @@
 #include "rosidl_typesupport_introspection_tests/msg/constants.hpp"
 #include "rosidl_typesupport_introspection_tests/msg/defaults.hpp"
 #include "rosidl_typesupport_introspection_tests/msg/empty.hpp"
-#include "rosidl_typesupport_introspection_tests/msg/multi_nested.hpp"
 #include "rosidl_typesupport_introspection_tests/msg/nested.hpp"
 #include "rosidl_typesupport_introspection_tests/msg/strings.hpp"
 #include "rosidl_typesupport_introspection_tests/msg/w_strings.hpp"
-#include "rosidl_typesupport_introspection_tests/msg/unbounded_sequences.hpp"
 #include "rosidl_typesupport_introspection_tests/srv/arrays.hpp"
 #include "rosidl_typesupport_introspection_tests/srv/basic_types.hpp"
 #include "rosidl_typesupport_introspection_tests/srv/empty.hpp"
+
+// GCC 13 has false positive warnings around stringop-overflow and array-bounds.
+// Suppress them until this is fixed in upstream gcc.  See
+// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=114758 for more details.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
+
+#include "rosidl_typesupport_introspection_tests/msg/multi_nested.hpp"
+#include "rosidl_typesupport_introspection_tests/msg/unbounded_sequences.hpp"
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 #include "rosidl_typesupport_introspection_tests/fixtures.hpp"
 #include "rosidl_typesupport_introspection_tests/helpers.hpp"

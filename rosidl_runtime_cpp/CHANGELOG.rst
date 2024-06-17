@@ -2,8 +2,8 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.8.0 (2024-06-17)
+------------------
 * Suppress warnings in the benchmarks for upstream GCC false positives. (`#810 <https://github.com/ros2/rosidl/issues/810>`_)
 * Contributors: Chris Lalancette
 

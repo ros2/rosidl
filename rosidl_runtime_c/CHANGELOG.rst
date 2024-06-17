@@ -2,6 +2,12 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Implement `resize` function for String (`#806 <https://github.com/ros2/rosidl/issues/806>`_)
+* Fix u16 docs and improve docs formatting (`#805 <https://github.com/ros2/rosidl/issues/805>`_)
+* Contributors: Christophe Bedard, WATANABE Aoi
+
 4.7.0 (2024-04-26)
 ------------------
 

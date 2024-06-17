@@ -2,6 +2,11 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Suppress warnings in the benchmarks for upstream GCC false positives. (`#810 <https://github.com/ros2/rosidl/issues/810>`_)
+* Contributors: Chris Lalancette
+
 4.7.0 (2024-04-26)
 ------------------
 * Global use of nodiscard (`#801 <https://github.com/ros2/rosidl/issues/801>`_)

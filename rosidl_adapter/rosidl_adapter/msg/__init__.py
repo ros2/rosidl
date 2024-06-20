@@ -61,7 +61,9 @@ MSG_TYPE_TO_IDL = {
 
 def to_idl_literal(idl_type, value):
     if idl_type[-1] == ']' or idl_type.startswith('sequence<'):
-        content = repr(tuple(value)).replace('\\', r'\\').replace('"', r'\"')
+        content = repr(tuple(value)).replace('\\', r'\\')
+        content = content.encode().decode('unicode_escape')
+        content = content.replace('"', r'\"').replace("'", r"\'")
         return f'"{content}"'
 
     if 'boolean' == idl_type:

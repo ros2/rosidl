@@ -12,7 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
 #include <gtest/gtest.h>
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 #include <algorithm>
 #include <array>
@@ -478,15 +486,7 @@ TEST(Test_messages, constants_assign) {
 // Defaults
 TEST(Test_messages, defaults) {
   rosidl_generator_tests::msg::Defaults message;
-// workaround for https://github.com/google/googletest/issues/322
-#ifdef __linux__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion-null"
-#endif
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, bool_value, true, false);
-#ifdef __linux__
-#pragma GCC diagnostic pop
-#endif
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, byte_value, 50, 255);
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, char_value, 100, UINT8_MAX);
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, float32_value, 1.125f, FLT_MAX);
@@ -510,7 +510,6 @@ TEST(Test_messages, string_arrays_default) {
   ASSERT_EQ(3ul, message.string_values_default.size());
 }
 
-// TODO(mikaelarguedas) reenable this test when bounded strings enforce length
 TEST(Test_messages, DISABLED_Test_bounded_strings) {
   rosidl_generator_tests::msg::Strings message;
   TEST_STRING_FIELD_ASSIGNMENT(message, bounded_string_value, "", "Deep into")

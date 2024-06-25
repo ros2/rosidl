@@ -2,6 +2,9 @@
 Changelog for package rosidl_typesupport_introspection_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.8.0 (2024-06-17)
 ------------------
 * Suppress false positive warnings from gcc. (`#811 <https://github.com/ros2/rosidl/issues/811>`_)

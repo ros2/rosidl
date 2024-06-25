@@ -2,6 +2,9 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.8.0 (2024-06-17)
 ------------------
 * Implement `resize` function for String (`#806 <https://github.com/ros2/rosidl/issues/806>`_)

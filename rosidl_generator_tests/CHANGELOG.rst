@@ -2,6 +2,11 @@
 Changelog for package rosidl_generator_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Silence one more gcc false-positive. (`#814 <https://github.com/ros2/rosidl/issues/814>`_)
+* Contributors: Chris Lalancette
+
 4.8.0 (2024-06-17)
 ------------------
 * Switch to using fastjsonschema for schema validation. (`#809 <https://github.com/ros2/rosidl/issues/809>`_)

@@ -2,6 +2,13 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Suppress warnings in the benchmarks for upstream GCC false positives. (`#810 <https://github.com/ros2/rosidl/issues/810>`_) (`#816 <https://github.com/ros2/rosidl/issues/816>`_)
+  (cherry picked from commit 57940a28bd9d0aface66130f21e5a9c5945694aa)
+  Co-authored-by: Chris Lalancette <clalancette@gmail.com>
+* Contributors: mergify[bot]
+
 4.6.2 (2024-05-13)
 ------------------
 * Suppress a warning around BoundedVector. (`#803 <https://github.com/ros2/rosidl/issues/803>`_) (`#804 <https://github.com/ros2/rosidl/issues/804>`_)

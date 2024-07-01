@@ -19,6 +19,7 @@ from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import AbstractString
 from rosidl_parser.definition import AbstractWString
+from rosidl_parser.definition import Annotatable
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
@@ -70,12 +71,20 @@ MSG_TYPE_TO_CPP = {
     'int64': 'int64_t',
     'string': 'std::basic_string<char, std::char_traits<char>, ' +
               'typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>',
+    'fixed_size_string': 'rosidl_runtime_cpp::CDRCompatibleFixedCapacityString<%u>',
     'wstring': 'std::basic_string<char16_t, std::char_traits<char16_t>, typename ' +
                'std::allocator_traits<ContainerAllocator>::template rebind_alloc<char16_t>>',
 }
 
 
-def msg_type_only_to_cpp(type_):
+def get_member_fixed_size_annotation(member):
+    try:
+        return member.get_annotation_values('cdr_plain')[0]["fixed_size"]
+    except:
+        return 0
+
+
+def msg_type_only_to_cpp(member):
     """
     Convert a message type into the C++ declaration, ignoring array types.
 
@@ -85,12 +94,17 @@ def msg_type_only_to_cpp(type_):
     @param type_: The message type
     @type type_: rosidl_parser.Type
     """
+    type_ = member.type
     if isinstance(type_, AbstractNestedType):
         type_ = type_.value_type
     if isinstance(type_, BasicType):
         cpp_type = MSG_TYPE_TO_CPP[type_.typename]
     elif isinstance(type_, AbstractString):
-        cpp_type = MSG_TYPE_TO_CPP['string']
+        fixed_size = get_member_fixed_size_annotation(member)
+        if fixed_size < 1:
+            cpp_type = MSG_TYPE_TO_CPP['string']
+        else:
+            cpp_type = MSG_TYPE_TO_CPP['fixed_size_string'] % fixed_size
     elif isinstance(type_, AbstractWString):
         cpp_type = MSG_TYPE_TO_CPP['wstring']
     elif isinstance(type_, NamespacedType):
@@ -102,7 +116,7 @@ def msg_type_only_to_cpp(type_):
     return cpp_type
 
 
-def msg_type_to_cpp(type_):
+def msg_type_to_cpp(member_):
     """
     Convert a message type into the C++ declaration, along with the array type.
 
@@ -113,22 +127,22 @@ def msg_type_to_cpp(type_):
     @param type_: The message type
     @type type_: rosidl_parser.Type
     """
-    cpp_type = msg_type_only_to_cpp(type_)
+    cpp_type = msg_type_only_to_cpp(member_)
 
-    if isinstance(type_, AbstractNestedType):
-        if isinstance(type_, UnboundedSequence):
+    if isinstance(member_.type, AbstractNestedType):
+        if isinstance(member_.type, UnboundedSequence):
             return \
                 ('std::vector<%s, typename std::allocator_traits<ContainerAllocator>::template ' +
                  'rebind_alloc<%s>>') % (cpp_type, cpp_type)
-        elif isinstance(type_, BoundedSequence):
+        elif isinstance(member_.type, BoundedSequence):
             return \
                 ('rosidl_runtime_cpp::BoundedVector<%s, %u, typename std::allocator_traits' +
                  '<ContainerAllocator>::template rebind_alloc<%s>>') % (cpp_type,
-                                                                        type_.maximum_size,
+                                                                        member_.type.maximum_size,
                                                                         cpp_type)
         else:
-            assert isinstance(type_, Array)
-            return 'std::array<%s, %u>' % (cpp_type, type_.size)
+            assert isinstance(member_.type, Array)
+            return 'std::array<%s, %u>' % (cpp_type, member_.type.size)
     else:
         return cpp_type
 
@@ -256,13 +270,14 @@ def create_init_alloc_and_member_lists(message):
     # a single member of the class.
     class Member:
 
-        def __init__(self, name):
-            self.name = name
+        def __init__(self, real_member):
+            self.name = real_member.name
             self.default_value = None
             self.zero_value = None
             self.zero_need_array_override = False
             self.type = None
             self.num_prealloc = 0
+            self.real_member = real_member
 
         def same_default_and_zero_value(self, other):
             return self.default_value == other.default_value and \
@@ -295,7 +310,7 @@ def create_init_alloc_and_member_lists(message):
     alloc_list = []
     member_list = []
     for field in message.structure.members:
-        member = Member(field.name)
+        member = Member(field)
         member.type = field.type
         if isinstance(field.type, Array):
             alloc_list.append(field.name + '(_alloc)')

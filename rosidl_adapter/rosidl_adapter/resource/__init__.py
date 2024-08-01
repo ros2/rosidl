@@ -14,10 +14,13 @@
 
 from io import StringIO
 import os
+from packaging import version
 import sys
 
 import em
 
+if version.parse(em.__version__) >= version.parse('4.0.0'):
+    from em import Configuration
 
 def expand_template(template_name, data, output_file, encoding='utf-8'):
     content = evaluate_template(template_name, data)
@@ -45,18 +48,29 @@ def evaluate_template(template_name, data):
 
     output = StringIO()
     try:
-        _interpreter = em.Interpreter(
-            output=output,
-            options={
-                em.BUFFERED_OPT: True,
-                em.RAW_OPT: True,
-            })
-
+        if version.parse(em.__version__) >= version.parse('4.0.0'):
+            config = Configuration(
+                defaultRoot=template_path,
+                defaultStdout=output,
+                useProxy=False)
+            _interpreter = em.Interpreter(
+                config=config,
+                dispatcher=False)
+        else:
+            _interpreter = em.Interpreter(
+                output=output,
+                options={
+                    em.BUFFERED_OPT: True,
+                    em.RAW_OPT: True,
+                })
         with open(template_path, 'r') as h:
             content = h.read()
         _interpreter.invoke(
             'beforeFile', name=template_name, file=h, locals=data)
-        _interpreter.string(content, template_path, locals=data)
+        if version.parse(em.__version__) >= version.parse('4.0.0'):
+            _interpreter.string(content, locals=data)
+        else:
+            _interpreter.string(content, template_path, locals=data)
         _interpreter.invoke('afterFile')
 
         return output.getvalue()
@@ -66,7 +80,8 @@ def evaluate_template(template_name, data):
             file=sys.stderr)
         raise
     finally:
-        _interpreter.shutdown()
+        if _interpreter is not None:
+            _interpreter.shutdown()
         _interpreter = None
 
 

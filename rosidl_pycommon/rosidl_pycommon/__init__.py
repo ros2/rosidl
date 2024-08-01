@@ -15,11 +15,16 @@
 from io import StringIO
 import json
 import os
+from packaging import version
 import pathlib
 import re
 import sys
 
 import em
+
+if version.parse(em.__version__) >= version.parse('4.0.0'):
+    from em import Configuration
+
 from rosidl_parser.definition import IdlLocator
 from rosidl_parser.parser import parse_idl_file
 
@@ -146,19 +151,28 @@ def expand_template(
         template_basepath = template_name.parent
         template_name = template_name.name
 
-    global interpreter
-    output = StringIO()
-    interpreter = em.Interpreter(
-        output=output,
-        options={
-            em.BUFFERED_OPT: True,
-            em.RAW_OPT: True,
-        },
-    )
-
     global template_prefix_path
     template_prefix_path.append(template_basepath)
     template_path = get_template_path(template_name)
+
+    global interpreter
+    output = StringIO()
+    if version.parse(em.__version__) >= version.parse('4.0.0'):
+        config = Configuration(
+            defaultRoot=template_path,
+            defaultStdout=output,
+            useProxy=False)
+        interpreter = em.Interpreter(
+            config=config,
+            dispatcher=False)
+    else:
+        interpreter = em.Interpreter(
+            output=output,
+            options={
+                em.BUFFERED_OPT: True,
+                em.RAW_OPT: True,
+            },
+        )
 
     # create copy before manipulating
     data = dict(data)

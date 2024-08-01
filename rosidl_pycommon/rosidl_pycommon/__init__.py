@@ -22,8 +22,11 @@ import sys
 
 import em
 
-if version.parse(em.__version__) >= version.parse('4.0.0'):
+try:
     from em import Configuration
+    em_has_configuration = True
+except ImportError:
+    em_has_configuration = False
 
 from rosidl_parser.definition import IdlLocator
 from rosidl_parser.parser import parse_idl_file
@@ -157,10 +160,12 @@ def expand_template(
 
     global interpreter
     output = StringIO()
-    if version.parse(em.__version__) >= version.parse('4.0.0'):
+    if em_has_configuration:
         config = Configuration(
             defaultRoot=template_path,
             defaultStdout=output,
+            deleteOnError=True,
+            rawErrors=True,
             useProxy=False)
         interpreter = em.Interpreter(
             config=config,
@@ -183,7 +188,10 @@ def expand_template(
             template_content = h.read()
             interpreter.invoke(
                 'beforeFile', name=template_name, file=h, locals=data)
-        interpreter.string(template_content, template_path, locals=data)
+        if em_has_configuration:
+            interpreter.string(template_content, locals=data)
+        else:
+            interpreter.string(template_content, template_path, locals=data)
         interpreter.invoke('afterFile')
     except Exception as e:  # noqa: F841
         if os.path.exists(output_file):
@@ -232,7 +240,10 @@ def _expand_template(template_name, **kwargs):
             'beforeInclude', name=str(template_path), file=h, locals=kwargs)
         content = h.read()
     try:
-        interpreter.string(content, str(template_path), kwargs)
+        if em_has_configuration:
+            interpreter.string(content, locals=kwargs)
+        else:
+            interpreter.string(content, str(template_path), kwargs)
     except Exception as e:  # noqa: F841
         print(f"{e.__class__.__name__} in template '{template_path}': {e}",
               file=sys.stderr)

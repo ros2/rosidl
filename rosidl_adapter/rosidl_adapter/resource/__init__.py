@@ -14,13 +14,15 @@
 
 from io import StringIO
 import os
-from packaging import version
 import sys
 
 import em
 
-if version.parse(em.__version__) >= version.parse('4.0.0'):
+try:
     from em import Configuration
+    em_has_configuration = True
+except ImportError:
+    em_has_configuration = False
 
 def expand_template(template_name, data, output_file, encoding='utf-8'):
     content = evaluate_template(template_name, data)
@@ -48,10 +50,12 @@ def evaluate_template(template_name, data):
 
     output = StringIO()
     try:
-        if version.parse(em.__version__) >= version.parse('4.0.0'):
+        if em_has_configuration:
             config = Configuration(
                 defaultRoot=template_path,
                 defaultStdout=output,
+                deleteOnError=True,
+                rawErrors=True,
                 useProxy=False)
             _interpreter = em.Interpreter(
                 config=config,
@@ -67,7 +71,7 @@ def evaluate_template(template_name, data):
             content = h.read()
         _interpreter.invoke(
             'beforeFile', name=template_name, file=h, locals=data)
-        if version.parse(em.__version__) >= version.parse('4.0.0'):
+        if em_has_configuration:
             _interpreter.string(content, locals=data)
         else:
             _interpreter.string(content, template_path, locals=data)
@@ -76,7 +80,7 @@ def evaluate_template(template_name, data):
         return output.getvalue()
     except Exception as e:  # noqa: F841
         print(
-            f"{e.__class__.__name__} processing template '{template_name}'",
+            f"{e.__class__.__name__} processing2 template '{template_name}'",
             file=sys.stderr)
         raise
     finally:
@@ -93,10 +97,13 @@ def _evaluate_template(template_name, **kwargs):
             'beforeInclude', name=template_path, file=h, locals=kwargs)
         content = h.read()
     try:
-        _interpreter.string(content, template_path, kwargs)
+        if em_has_configuration:
+            _interpreter.string(content, locals=kwargs)
+        else:
+            _interpreter.string(content, template_path, kwargs)
     except Exception as e:  # noqa: F841
         print(
-            f"{e.__class__.__name__} processing template '{template_name}': "
+            f"{e.__class__.__name__} processing1 template '{template_name}': "
             f'{e}', file=sys.stderr)
         sys.exit(1)
     _interpreter.invoke('afterInclude')

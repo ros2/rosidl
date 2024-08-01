@@ -15,7 +15,6 @@
 from io import StringIO
 import json
 import os
-from packaging import version
 import pathlib
 import re
 import sys

@@ -24,6 +24,7 @@ try:
 except ImportError:
     em_has_configuration = False
 
+
 def expand_template(template_name, data, output_file, encoding='utf-8'):
     content = evaluate_template(template_name, data)
 

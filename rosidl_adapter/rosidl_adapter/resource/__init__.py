@@ -81,7 +81,7 @@ def evaluate_template(template_name, data):
         return output.getvalue()
     except Exception as e:  # noqa: F841
         print(
-            f"{e.__class__.__name__} processing2 template '{template_name}'",
+            f"{e.__class__.__name__} processing template '{template_name}'",
             file=sys.stderr)
         raise
     finally:
@@ -104,7 +104,7 @@ def _evaluate_template(template_name, **kwargs):
             _interpreter.string(content, template_path, kwargs)
     except Exception as e:  # noqa: F841
         print(
-            f"{e.__class__.__name__} processing1 template '{template_name}': "
+            f"{e.__class__.__name__} processing template '{template_name}': "
             f'{e}', file=sys.stderr)
         sys.exit(1)
     _interpreter.invoke('afterInclude')

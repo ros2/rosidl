@@ -165,7 +165,7 @@ def expand_template(
             defaultStdout=output,
             deleteOnError=True,
             rawErrors=True,
-            useProxy=False)
+            useProxy=True)
         interpreter = em.Interpreter(
             config=config,
             dispatcher=False)

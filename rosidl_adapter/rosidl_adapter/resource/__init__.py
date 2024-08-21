@@ -44,7 +44,6 @@ _interpreter = None
 def evaluate_template(template_name, data):
     global _interpreter
     # create copy before manipulating
-    print('data', data)
     data = dict(data)
     data['TEMPLATE'] = _evaluate_template
 

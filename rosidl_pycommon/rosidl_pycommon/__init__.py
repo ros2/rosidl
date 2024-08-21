@@ -242,7 +242,7 @@ def _expand_template(template_name, **kwargs):
         if em_has_configuration:
             interpreter.string(content, locals=kwargs)
         else:
-            interpreter.string(content, str(template_path), kwargs)
+            interpreter.string(content, template_path, locals=kwargs)
     except Exception as e:  # noqa: F841
         print(f"{e.__class__.__name__} in template '{template_path}': {e}",
               file=sys.stderr)

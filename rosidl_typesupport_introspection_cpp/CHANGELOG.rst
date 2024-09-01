@@ -2,6 +2,29 @@
 Changelog for package rosidl_typesupport_introspection_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.8.1 (2024-06-25)
+------------------
+
+4.8.0 (2024-06-17)
+------------------
+
+4.7.0 (2024-04-26)
+------------------
+* Global use of nodiscard (`#801 <https://github.com/ros2/rosidl/issues/801>`_)
+  * Global use of nodiscard
+* Contributors: Lucas Wendland
+
+4.6.0 (2024-04-16)
+------------------
+* Adding interfaces to support `@key` annotation (`#796 <https://github.com/ros2/rosidl/issues/796>`_)
+  Co-authored-by: Mario Dominguez <mariodominguez@eprosima.com>
+* Contributors: Miguel Company
+
+4.5.2 (2024-03-27)
+------------------
+* Set hints to find the python version we actually want. (`#785 <https://github.com/ros2/rosidl/issues/785>`_)
+* Contributors: Chris Lalancette
+
 4.5.1 (2024-02-07)
 ------------------
 

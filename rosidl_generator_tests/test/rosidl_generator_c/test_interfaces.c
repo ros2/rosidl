@@ -45,21 +45,16 @@
   u"Deep into that darkness peering, long I stood there wondering, fearing \u2122"
 #define ARR_SIZE 3
 
-#define STRINGIFY(x) _STRINGIFY(x)
 #define _STRINGIFY(x) #x
+#define STRINGIFY(x) _STRINGIFY(x)
 
-#define EXPECT_FALSE(arg) if (arg) { \
-    fputs(STRINGIFY(arg) " is not false\n", stderr); \
-    return 1; \
-}
-#define EXPECT_TRUE(arg) if (!(arg)) { \
-    fputs(STRINGIFY(arg) " is not true\n", stderr); \
-    return 1; \
-}
-#define EXPECT_EQ(arg1, arg2) if ((arg1) != (arg2)) { \
-    fputs(STRINGIFY(arg1) " != " STRINGIFY(arg2) "\n", stderr); \
-    return 1; \
-}
+#define PUTS(arg, extra) fprintf(stderr, "%s%s\n", STRINGIFY(arg), extra)
+
+#define EXPECT_FALSE(arg) if (arg) {PUTS(arg, " is not false"); return 1;}
+#define EXPECT_TRUE(arg) if (!(arg)) {PUTS(arg, " is not true"); return 1;}
+
+#define PUTS_NE(arg1, arg2) fprintf(stderr, "%s != %s\n", STRINGIFY(arg1), STRINGIFY(arg2))
+#define EXPECT_EQ(arg1, arg2) if ((arg1) != (arg2)) {PUTS_NE(arg1, arg2); return 1;}
 #define EXPECT_NE(arg1, arg2) if ((arg1) == (arg2)) return 1
 
 static const uint8_t test_values_byte[ARR_SIZE] = {0, 57, 110};
@@ -429,7 +424,7 @@ static int test_bounded_sequences(void)
   return 0;
 }
 
-int test_unbounded_sequences()
+int test_unbounded_sequences(void)
 {
   rosidl_generator_tests__msg__UnboundedSequences * seq = NULL;
   seq = rosidl_generator_tests__msg__UnboundedSequences__create();
@@ -1004,7 +999,7 @@ static int test_multi_nested(void)
   return 0;
 }
 
-int test_wstrings()
+int test_wstrings(void)
 {
   rosidl_generator_tests__msg__WStrings * wstr = NULL;
   wstr = rosidl_generator_tests__msg__WStrings__create();

@@ -317,7 +317,7 @@ bool
 }
 
 @(message_typename) *
-@(message_typename)__create()
+@(message_typename)__create(void)
 {
   rcutils_allocator_t allocator = rcutils_get_default_allocator();
   @(message_typename) * msg = (@(message_typename) *)allocator.allocate(sizeof(@(message_typename)), allocator.state);

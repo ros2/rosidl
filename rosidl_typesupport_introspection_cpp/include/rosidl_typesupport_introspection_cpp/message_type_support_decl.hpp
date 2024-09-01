@@ -28,6 +28,7 @@ namespace rosidl_typesupport_introspection_cpp
 /// the rosidl_generate_interfaces() macro.
 /// This is implemented in the shared library provided by this package.
 template<typename T>
+[[nodiscard]]
 ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC
 const rosidl_message_type_support_t * get_message_type_support_handle();
 

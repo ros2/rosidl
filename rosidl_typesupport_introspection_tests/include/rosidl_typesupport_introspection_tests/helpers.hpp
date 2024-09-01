@@ -186,6 +186,8 @@ getitem(const std::array<T, N> & array, const size_t index)
   DEFINE_CXX_API_FOR_C_MESSAGE_SEQUENCE_MEMBER( \
     RCUTILS_JOIN(C_INTERFACE_NAME(package_name, interface_type, message_name), __Sequence))
 
+// *INDENT-OFF*
+
 /// Defines C++ helper API for a C service.
 #define DEFINE_CXX_API_FOR_C_SERVICE(package_name, interface_type, service_name) \
   DEFINE_CXX_API_FOR_C_MESSAGE_MEMBER( \
@@ -200,6 +202,8 @@ getitem(const std::array<T, N> & array, const size_t index)
   using Response = \
     C_INTERFACE_NAME(package_name, interface_type, RCUTILS_JOIN(service_name, _Response)); \
 };
+
+// *INDENT-ON*
 
 // Extra C++ APIs to homogeneize access to rosidl_runtime_c primitives
 DEFINE_CXX_API_FOR_C_MESSAGE_MEMBER(rosidl_runtime_c__String)

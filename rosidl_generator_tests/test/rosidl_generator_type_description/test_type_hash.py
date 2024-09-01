@@ -17,7 +17,7 @@ import os
 from pathlib import Path
 
 from ament_index_python import get_package_share_directory
-import jsonschema
+import fastjsonschema
 
 
 def test_type_hash():
@@ -25,8 +25,10 @@ def test_type_hash():
     schema_path = (
         Path(get_package_share_directory('rosidl_generator_type_description')) / 'resource' /
         'HashedTypeDescription.schema.json')
+
     with schema_path.open('r') as schema_file:
         schema = json.load(schema_file)
+        validator = fastjsonschema.compile(schema)
 
     generated_files_dir = Path(os.environ['GENERATED_TEST_FILE_DIR'])
     validated_files = 0
@@ -36,6 +38,6 @@ def test_type_hash():
             assert p.suffix == '.json'
             with p.open('r') as f:
                 instance = json.load(f)
-            jsonschema.validate(instance=instance, schema=schema)
+            validator(instance)
             validated_files += 1
     assert validated_files, 'Needed to validate at least one JSON output.'

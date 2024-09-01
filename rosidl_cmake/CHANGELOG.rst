@@ -2,6 +2,23 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.8.1 (2024-06-25)
+------------------
+
+4.8.0 (2024-06-17)
+------------------
+
+4.7.0 (2024-04-26)
+------------------
+
+4.6.0 (2024-04-16)
+------------------
+
+4.5.2 (2024-03-27)
+------------------
+* Improve deprecation notice of rosidl_target_interface to give a hint on how to update the code (`#788 <https://github.com/ros2/rosidl/issues/788>`_)
+* Contributors: Alexis Paques
+
 4.5.1 (2024-02-07)
 ------------------
 

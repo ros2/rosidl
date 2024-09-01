@@ -2,6 +2,31 @@
 Changelog for package rosidl_generator_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.8.1 (2024-06-25)
+------------------
+* Silence one more gcc false-positive. (`#814 <https://github.com/ros2/rosidl/issues/814>`_)
+* Contributors: Chris Lalancette
+
+4.8.0 (2024-06-17)
+------------------
+* Switch to using fastjsonschema for schema validation. (`#809 <https://github.com/ros2/rosidl/issues/809>`_)
+* Contributors: Chris Lalancette
+
+4.7.0 (2024-04-26)
+------------------
+* Fixed warnings - strict-prototypes (`#800 <https://github.com/ros2/rosidl/issues/800>`_)
+* Contributors: Alejandro Hernández Cordero
+
+4.6.0 (2024-04-16)
+------------------
+* Increased the cpplint timeout to 300 seconds (`#797 <https://github.com/ros2/rosidl/issues/797>`_)
+* Contributors: Alejandro Hernández Cordero
+
+4.5.2 (2024-03-27)
+------------------
+* Fixes for modern uncrustify. (`#793 <https://github.com/ros2/rosidl/issues/793>`_)
+* Contributors: Chris Lalancette
+
 4.5.1 (2024-02-07)
 ------------------
 

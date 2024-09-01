@@ -14,6 +14,7 @@
 
 import pathlib
 from typing import Dict
+from typing import Final
 from typing import Iterable
 from typing import List
 from typing import Optional
@@ -21,70 +22,71 @@ from typing import Set
 from typing import Tuple
 from typing import Type
 from typing import TYPE_CHECKING
+from typing import TypeVar
 from typing import Union
 
 # Basic types as defined by the IDL specification
 
 # 7.4.1.4.4.2 Basic Types
-SIGNED_NONEXPLICIT_INTEGER_TYPES = (  # rules (26)
+SIGNED_NONEXPLICIT_INTEGER_TYPES: Final = (  # rules (26)
     'short',  # rule (27)
     'long',  # rule (28)
     'long long',  # rule (29)
 )
-UNSIGNED_NONEXPLICIT_INTEGER_TYPES = (  # rules (30)
+UNSIGNED_NONEXPLICIT_INTEGER_TYPES: Final = (  # rules (30)
     'unsigned short',  # rule (31)
     'unsigned long',  # rule (32)
     'unsigned long long',  # rule (33)
 )
-NONEXPLICIT_INTEGER_TYPES = (
+NONEXPLICIT_INTEGER_TYPES: Final = (
     *SIGNED_NONEXPLICIT_INTEGER_TYPES,
     *UNSIGNED_NONEXPLICIT_INTEGER_TYPES,
 )
-FLOATING_POINT_TYPES = (  # rule (24)
+FLOATING_POINT_TYPES: Final = (  # rule (24)
     'float',
     'double',
     'long double',
 )
-CHARACTER_TYPES = (
+CHARACTER_TYPES: Final = (
     'char',  # rule (34)
     'wchar',  # rule (35)
 )
-BOOLEAN_TYPE = 'boolean'  # rule (36)
-OCTET_TYPE = 'octet'  # rule (37)
+BOOLEAN_TYPE: Final = 'boolean'  # rule (36)
+OCTET_TYPE: Final = 'octet'  # rule (37)
 
 # 7.4.13.4.4 Integers restricted to holding 8-bits of information
 # 7.4.13.4.5 Explicitly-named Integer Types
-SIGNED_EXPLICIT_INTEGER_TYPES = (
+SIGNED_EXPLICIT_INTEGER_TYPES: Final = (
     'int8',  # rule (208)
     'int16',  # rule (210)
     'int32',  # rule (211)
     'int64',  # rule (212)
 )
-UNSIGNED_EXPLICIT_INTEGER_TYPES = (
+UNSIGNED_EXPLICIT_INTEGER_TYPES: Final = (
     'uint8',  # rule (209)
     'uint16',  # rule (213)
     'uint32',  # rule (214)
     'uint64',  # rule (215)
 )
-EXPLICIT_INTEGER_TYPES = (
+EXPLICIT_INTEGER_TYPES: Final = (
     *SIGNED_EXPLICIT_INTEGER_TYPES,
     *UNSIGNED_EXPLICIT_INTEGER_TYPES,
 )
-SIGNED_INTEGER_TYPES = (   # rules (26) + (208) + (210-212)
+SIGNED_INTEGER_TYPES: Final = (   # rules (26) + (208) + (210-212)
     *SIGNED_NONEXPLICIT_INTEGER_TYPES,
     *SIGNED_EXPLICIT_INTEGER_TYPES,
 )
-UNSIGNED_INTEGER_TYPES = (   # rules (30) + (209) + (213-215)
+UNSIGNED_INTEGER_TYPES: Final = (   # rules (30) + (209) + (213-215)
     *UNSIGNED_NONEXPLICIT_INTEGER_TYPES,
     *UNSIGNED_EXPLICIT_INTEGER_TYPES,
 )
-INTEGER_TYPES = (   # rules (25) + (206-207) + (210-215)
+INTEGER_TYPES: Final = (   # rules (25) + (206-207) + (210-215)
     *SIGNED_INTEGER_TYPES,
     *UNSIGNED_INTEGER_TYPES,
 )
 
 """All basic types as defined by the IDL specification."""
-BASIC_TYPES = (
+BASIC_TYPES: Final = (
     *INTEGER_TYPES,
     *FLOATING_POINT_TYPES,
     *CHARACTER_TYPES,
@@ -93,7 +95,7 @@ BASIC_TYPES = (
 )
 
 if TYPE_CHECKING:
-    from typing import Literal
+    from typing import Literal, TypeAlias
     SignedNonexplicitIntegerTypeValues = Literal['short', 'long', 'long long']
     UnsignedNonexplicitIntegerTypeValues = Literal['unsigned short', 'unsigned long',
                                                    'unsigned long long']
@@ -122,21 +124,21 @@ if TYPE_CHECKING:
                             CharacterTypeValues, BooleanValue,
                             OctetValue]
 
-EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME = 'structure_needs_at_least_one_member'
+EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME: Final = 'structure_needs_at_least_one_member'
 
-CONSTANT_MODULE_SUFFIX = '_Constants'
+CONSTANT_MODULE_SUFFIX: Final = '_Constants'
 
-SERVICE_REQUEST_MESSAGE_SUFFIX = '_Request'
-SERVICE_RESPONSE_MESSAGE_SUFFIX = '_Response'
-SERVICE_EVENT_MESSAGE_SUFFIX = '_Event'
+SERVICE_REQUEST_MESSAGE_SUFFIX: Final = '_Request'
+SERVICE_RESPONSE_MESSAGE_SUFFIX: Final = '_Response'
+SERVICE_EVENT_MESSAGE_SUFFIX: Final = '_Event'
 
-ACTION_GOAL_SUFFIX = '_Goal'
-ACTION_RESULT_SUFFIX = '_Result'
-ACTION_FEEDBACK_SUFFIX = '_Feedback'
+ACTION_GOAL_SUFFIX: Final = '_Goal'
+ACTION_RESULT_SUFFIX: Final = '_Result'
+ACTION_FEEDBACK_SUFFIX: Final = '_Feedback'
 
-ACTION_GOAL_SERVICE_SUFFIX = '_SendGoal'
-ACTION_RESULT_SERVICE_SUFFIX = '_GetResult'
-ACTION_FEEDBACK_MESSAGE_SUFFIX = '_FeedbackMessage'
+ACTION_GOAL_SERVICE_SUFFIX: Final = '_SendGoal'
+ACTION_RESULT_SERVICE_SUFFIX: Final = '_GetResult'
+ACTION_FEEDBACK_MESSAGE_SUFFIX: Final = '_FeedbackMessage'
 
 
 class AbstractType:
@@ -145,7 +147,7 @@ class AbstractType:
     __slots__ = ()
 
     def __eq__(self, other: object) -> bool:
-        return isinstance(other, type(self))
+        return type(self) is type(other)
 
 
 class AbstractNestableType(AbstractType):
@@ -566,6 +568,16 @@ class Structure(Annotatable):
         self.namespaced_type = namespaced_type
         self.members = members or []
 
+    def has_any_member_with_annotation(self, name: str) -> bool:
+        """
+        Check whether any member has a particular annotation.
+
+        :param str name: the name of the annotation
+        :returns: True if there is at least one member with the annotation, False otherwise
+        """
+        has_any = [member.name for member in self.members if member.has_annotation(name)]
+        return bool(has_any)
+
 
 class Include:
     """An include statement."""
@@ -806,6 +818,10 @@ class IdlLocator:
         return self.basepath / self.relative_path
 
 
+IdlContentElement: 'TypeAlias' = Union[Include, Message, Service, Action]
+IdlContentElementT = TypeVar('IdlContentElementT', bound=IdlContentElement)
+
+
 class IdlContent:
     """The content of an IDL file consisting of a list of elements."""
 
@@ -813,12 +829,12 @@ class IdlContent:
 
     def __init__(self) -> None:
         super().__init__()
-        self.elements: List[Union[Include, Message, Service, Action]] = []
+        self.elements: List[IdlContentElement] = []
 
     def get_elements_of_type(
             self,
-            type_: Type[Union[Include, Message, Service, Action]]
-    ) -> List[Union[Include, Message, Service, Action]]:
+            type_: Type[IdlContentElementT]
+    ) -> List[IdlContentElementT]:
         return [e for e in self.elements if isinstance(e, type_)]
 
 

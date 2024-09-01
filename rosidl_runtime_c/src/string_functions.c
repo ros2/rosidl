@@ -144,6 +144,29 @@ rosidl_runtime_c__String__copy(
 }
 
 bool
+rosidl_runtime_c__String__resize(
+  rosidl_runtime_c__String *str, size_t n)
+{
+  if(!str) {
+    return false;
+  }
+  // check valid range of n before allocating n + 1 characters
+  if(n > SIZE_MAX / sizeof(char) - 1) {
+    return false;
+  }
+  rcutils_allocator_t allocator = rcutils_get_default_allocator();
+  char * data = allocator.reallocate(str->data, (n + 1) * sizeof(char), allocator.state);
+  if(!data) {
+    return false;
+  }
+  data[n] = 0;
+  str->data = data;
+  str->size = n;
+  str->capacity = n + 1;
+  return true;
+}
+
+bool
 rosidl_runtime_c__String__Sequence__init(
   rosidl_runtime_c__String__Sequence * sequence, size_t size)
 {

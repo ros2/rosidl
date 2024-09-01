@@ -2,6 +2,25 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.8.1 (2024-06-25)
+------------------
+
+4.8.0 (2024-06-17)
+------------------
+
+4.7.0 (2024-04-26)
+------------------
+* Fixed warnings - strict-prototypes (`#800 <https://github.com/ros2/rosidl/issues/800>`_)
+* Contributors: Alejandro Hernández Cordero
+
+4.6.0 (2024-04-16)
+------------------
+
+4.5.2 (2024-03-27)
+------------------
+* Set hints to find the python version we actually want. (`#785 <https://github.com/ros2/rosidl/issues/785>`_)
+* Contributors: Chris Lalancette
+
 4.5.1 (2024-02-07)
 ------------------
 

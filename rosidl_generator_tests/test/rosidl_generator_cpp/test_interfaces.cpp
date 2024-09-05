@@ -549,7 +549,7 @@ TEST(Test_messages, Test_nan) {
   float float_nv_lc = rosidl_generator_tests::msg::NanTest::FLOAT32_NAN_UC;
   double double_nv_uc = rosidl_generator_tests::msg::NanTest::FLOAT64_NAN_UC;
   double double_nv_lc = rosidl_generator_tests::msg::NanTest::FLOAT64_NAN_UC;
-  
+
   // nan is not equal to nan, so make sure the values are nan
   EXPECT_TRUE(std::isnan(float_nv_uc));
   EXPECT_TRUE(std::isnan(float_nv_lc));

@@ -27,6 +27,8 @@ from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import UnboundedSequence
 from rosidl_pycommon import generate_files
 
+from math import isnan
+
 
 def generate_cpp(generator_arguments_file):
     mapping = {
@@ -198,12 +200,17 @@ def primitive_value_to_cpp(type_, value):
     if type_.typename in [
         'short', 'unsigned short',
         'char', 'wchar',
-        'double', 'long double',
         'octet',
         'int8', 'uint8',
         'int16', 'uint16',
     ]:
         return str(value)
+    
+    if type_.typename in ['double', 'long double']:
+        if isnan(value):
+            return 'std::numeric_limits<double>::quiet_NaN()'
+        else:
+            return str(value)
 
     if type_.typename == 'int32':
         # Handle edge case for INT32_MIN
@@ -226,6 +233,8 @@ def primitive_value_to_cpp(type_, value):
         return '%sull' % value
 
     if type_.typename == 'float':
+        if isnan(value) :
+            return 'std::numeric_limits<float>::quiet_NaN()'
         return '%sf' % value
 
     assert False, "unknown primitive type '%s'" % type_.typename

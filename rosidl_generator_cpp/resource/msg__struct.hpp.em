@@ -287,7 +287,17 @@ non_defaulted_zero_initialized_members = [
 u@
 @[    end if]@
 @[   elif constant.type.typename == 'float']@
+@[    if constant.value == 'nan']
+    std::numeric_limits<float>::quiet_NaN()
+@[    else]@
     @(constant.value)f@
+@[    end if]@
+@[   elif constant.type.typename == 'double']@
+@[    if constant.value == 'nan']
+    std::numeric_limits<double>::quiet_NaN()
+@[    else]@
+    @(constant.value)f@
+@[    end if]@
 @[   else]@
     @(constant.value)@
 @[   end if];

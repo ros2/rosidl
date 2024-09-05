@@ -172,6 +172,17 @@ def value_to_c(type_, value):
 
 
 def basic_value_to_c(type_, value):
+    """
+    Convert a python value into a string representing that value in C.
+
+    Warning: The value has to be a primitive and not a list
+      (aka this function doesn't work for arrays)
+    @param type_: a ROS IDL basic type
+    @type type_: builtin.str
+    @param value: the value to convert
+    @type value: builtin.str
+    @returns: a string containing the C representation of the value
+    """
     assert isinstance(type_, BasicType)
     assert value is not None
 
@@ -209,9 +220,13 @@ def basic_value_to_c(type_, value):
         return f'{value}ull'
 
     if 'float' == type_.typename:
+        if 'nan' == value:
+            return 'NAN'
         return f'{value}f'
 
     if 'double' == type_.typename:
+        if 'nan' == value:
+            return '(double)NAN'
         return f'{value}l'
 
     assert False, "unknown basic type '%s'" % type_

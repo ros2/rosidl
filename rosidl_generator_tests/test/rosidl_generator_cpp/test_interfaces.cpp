@@ -41,6 +41,7 @@
 #include "rosidl_generator_tests/msg/multi_nested.hpp"
 #include "rosidl_generator_tests/msg/nested.hpp"
 #include "rosidl_generator_tests/msg/small_constant.hpp"
+#include "rosidl_generator_tests/msg/nan_test.hpp"
 #include "rosidl_generator_tests/msg/strings.hpp"
 #include "rosidl_generator_tests/msg/unbounded_sequences.hpp"
 #include "rosidl_generator_tests/msg/w_strings.hpp"
@@ -541,4 +542,17 @@ TEST(Test_messages, Test_string_array_static) {
     message.string_values_default.size(),
     message.string_values_default.begin());
   ASSERT_EQ(pattern_string_values_default, message.string_values_default);
+}
+
+TEST(Test_messages, Test_nan) {
+  float float_nv_uc = rosidl_generator_tests::msg::NanTest::FLOAT32_NAN_UC;
+  float float_nv_lc = rosidl_generator_tests::msg::NanTest::FLOAT32_NAN_UC;
+  double double_nv_uc = rosidl_generator_tests::msg::NanTest::FLOAT64_NAN_UC;
+  double double_nv_lc = rosidl_generator_tests::msg::NanTest::FLOAT64_NAN_UC;
+  
+  // nan is not equal to nan, so make sure the values are nan
+  EXPECT_TRUE(std::isnan(float_nv_uc));
+  EXPECT_TRUE(std::isnan(float_nv_lc));
+  EXPECT_TRUE(std::isnan(double_nv_uc));
+  EXPECT_TRUE(std::isnan(double_nv_lc));
 }

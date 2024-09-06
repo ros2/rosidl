@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from math import isnan
+
 from rosidl_generator_type_description import parse_rihs_string
 from rosidl_generator_type_description import RIHS01_HASH_VALUE_SIZE
 from rosidl_parser.definition import AbstractGenericString
@@ -220,7 +222,7 @@ def basic_value_to_c(type_, value):
         return f'{value}ull'
 
     if 'float' == type_.typename:
-        if 'nan' == value:
+        if isnan(float(value)):
             return 'NAN'
         return f'{value}f'
 

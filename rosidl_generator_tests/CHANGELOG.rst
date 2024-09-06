@@ -2,6 +2,16 @@
 Changelog for package rosidl_generator_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Silence one more gcc false-positive. (`#814 <https://github.com/ros2/rosidl/issues/814>`_) (`#817 <https://github.com/ros2/rosidl/issues/817>`_)
+  gcc 13 has false positives around array-bounds and
+  stringop-overflow, so suppress them here while generating
+  test cases.
+  (cherry picked from commit 86fa39823b6ec7d2e24940647c214a4082beab79)
+  Co-authored-by: Chris Lalancette <clalancette@gmail.com>
+* Contributors: mergify[bot]
+
 4.6.3 (2024-06-27)
 ------------------
 

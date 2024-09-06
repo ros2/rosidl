@@ -33,8 +33,14 @@ from rosidl_parser.parser import parse_idl_file
 
 
 if TYPE_CHECKING:
-    from _typeshed import FileDescriptorOrPath
+    from typing_extensions import TypeAlias
+    import _typeshed
 
+    if hasattr(_typeshed, "FileDescriptorOrPath"):
+        from _typeshed import FileDescriptorOrPath   
+    else:
+        # Done since Windows and RHEL uses a mypy too old have FileDescriptorOrPath
+        FileDescriptorOrPath: TypeAlias = Any  #type: ignore[misc, no-redef]
 
 def convert_camel_case_to_lower_case_underscore(value: str) -> str:
     # insert an underscore before any upper case letter

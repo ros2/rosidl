@@ -36,11 +36,12 @@ if TYPE_CHECKING:
     from typing_extensions import TypeAlias
     import _typeshed
 
-    if hasattr(_typeshed, "FileDescriptorOrPath"):
-        from _typeshed import FileDescriptorOrPath   
+    if hasattr(_typeshed, 'FileDescriptorOrPath'):
+        from _typeshed import FileDescriptorOrPath
     else:
         # Done since Windows and RHEL uses a mypy too old have FileDescriptorOrPath
-        FileDescriptorOrPath: TypeAlias = Any  #type: ignore[misc, no-redef]
+        FileDescriptorOrPath: TypeAlias = Any  # type: ignore[misc, no-redef]
+
 
 def convert_camel_case_to_lower_case_underscore(value: str) -> str:
     # insert an underscore before any upper case letter

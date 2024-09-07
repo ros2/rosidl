@@ -18,7 +18,7 @@ import os
 import pathlib
 import re
 import sys
-from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING
+from typing import Any, Callable, Dict, List, Optional
 
 import em
 
@@ -32,17 +32,6 @@ from rosidl_parser.definition import IdlLocator
 from rosidl_parser.parser import parse_idl_file
 
 
-if TYPE_CHECKING:
-    from typing_extensions import TypeAlias
-    import _typeshed
-
-    if hasattr(_typeshed, 'FileDescriptorOrPath'):
-        from _typeshed import FileDescriptorOrPath
-    else:
-        # Done since Windows and RHEL uses a mypy too old have FileDescriptorOrPath
-        FileDescriptorOrPath: TypeAlias = Any  # type: ignore[misc, no-redef]
-
-
 def convert_camel_case_to_lower_case_underscore(value: str) -> str:
     # insert an underscore before any upper case letter
     # which is followed by a lower case letter
@@ -53,13 +42,13 @@ def convert_camel_case_to_lower_case_underscore(value: str) -> str:
     return value.lower()
 
 
-def read_generator_arguments(input_file: 'FileDescriptorOrPath') -> Any:
+def read_generator_arguments(input_file: str) -> Any:
     with open(input_file, mode='r', encoding='utf-8') as h:
         return json.load(h)
 
 
 def get_newest_modification_time(
-    target_dependencies: List['FileDescriptorOrPath']
+    target_dependencies: List[str]
 ) -> Optional[float]:
     newest_timestamp = None
     for dep in target_dependencies:
@@ -70,7 +59,7 @@ def get_newest_modification_time(
 
 
 def generate_files(
-    generator_arguments_file: 'FileDescriptorOrPath', mapping: Dict[str, str],
+    generator_arguments_file: str, mapping: Dict[str, str],
     additional_context: Optional[Dict[str, bool]] = None,
     keep_case: bool = False, post_process_callback: Optional[Callable[[str], str]] = None
 ) -> List[str]:

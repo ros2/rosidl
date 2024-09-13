@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import List
+
 from rosidl_generator_type_description import parse_rihs_string
 from rosidl_generator_type_description import RIHS01_HASH_VALUE_SIZE
 from rosidl_parser.definition import AbstractGenericString
@@ -28,7 +30,7 @@ from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 from rosidl_pycommon import generate_files
 
 
-def generate_c(generator_arguments_file, disable_description_codegen=False):
+def generate_c(generator_arguments_file, disable_description_codegen: bool = False) -> List[str]:
     mapping = {
         'idl.h.em': '%s.h',
         'idl__description.c.em': 'detail/%s__description.c',
@@ -46,7 +48,7 @@ def generate_c(generator_arguments_file, disable_description_codegen=False):
         })
 
 
-def prefix_with_bom_if_necessary(content):
+def prefix_with_bom_if_necessary(content: str) -> str:
     try:
         content.encode('ASCII')
     except UnicodeError:

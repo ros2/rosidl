@@ -14,10 +14,19 @@
 
 import logging
 import re
+from typing import Any, Dict, Final, List, Optional, Tuple, TYPE_CHECKING, Union
 
 from rosidl_cli.entry_points import load_entry_points
 
 import yaml
+
+if TYPE_CHECKING:
+    from typing import TypedDict
+    from typing_extensions import NotRequired
+
+    class LoadExtensionsArg(TypedDict):
+        specs: NotRequired[Optional[List[str]]]
+        strict: NotRequired[bool]
 
 
 logger = logging.getLogger(__name__)
@@ -26,18 +35,18 @@ logger = logging.getLogger(__name__)
 class Extension:
     """A generic extension point."""
 
-    def __init__(self, name):
+    def __init__(self, name: str) -> None:
         self.__name = name
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.__name
 
 
-SPECS_PATTERN = re.compile(r'^(\w+)(?:\[(.+)\])?$')
+SPECS_PATTERN: Final = re.compile(r'^(\w+)(?:\[(.+)\])?$')
 
 
-def parse_extension_specification(spec):
+def parse_extension_specification(spec: str) -> Tuple[Union[str, Any], Union[Dict[Any, Any], Any]]:
     """
     Parse extension specification.
 
@@ -64,7 +73,8 @@ def parse_extension_specification(spec):
     return name, kwargs
 
 
-def load_extensions(group_name, *, specs=None, strict=False):
+def load_extensions(group_name: str, *, specs: Optional[List[str]] = None,
+                    strict: bool = False) -> List[Extension]:
     """
     Load extensions for a specific group.
 
@@ -75,7 +85,7 @@ def load_extensions(group_name, *, specs=None, strict=False):
     :returns: a list of :py:class:`Extension` instances
     :rtype: list
     """
-    extensions = []
+    extensions: List[Extension] = []
 
     if specs is not None:
         kwargs = dict(map(

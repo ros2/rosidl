@@ -12,18 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import importlib.metadata as importlib_metadata
 import logging
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
-try:
-    import importlib.metadata as importlib_metadata
-except ModuleNotFoundError:
-    import importlib_metadata
+if TYPE_CHECKING:
+    from typing import TypedDict
+    from typing_extensions import Unpack, NotRequired
 
+    class LoadEntryPointsArgs(TypedDict):
+        specs: NotRequired[Optional[List[str]]]
 
 logger = logging.getLogger(__name__)
 
 
-def get_entry_points(group_name, *, specs=None, strict=False):
+def get_entry_points(group_name: str, *, specs: Optional[List[str]] = None, strict: bool = False
+                     ) -> Dict[str, importlib_metadata.EntryPoint]:
     """
     Get entry points from a specific group.
 
@@ -34,16 +38,13 @@ def get_entry_points(group_name, *, specs=None, strict=False):
     :rtype: dict
     """
     if specs is not None:
-        specs = set(specs)
+        specs_set = set(specs)
     entry_points_impl = importlib_metadata.entry_points()
-    if hasattr(entry_points_impl, 'select'):
-        groups = entry_points_impl.select(group=group_name)
-    else:
-        groups = entry_points_impl.get(group_name, [])
-    entry_points = {}
+    groups = entry_points_impl.select(group=group_name)
+    entry_points: Dict[str, importlib_metadata.EntryPoint] = {}
     for entry_point in groups:
         name = entry_point.name
-        if specs and name not in specs:
+        if specs_set and name not in specs_set:
             continue
         if name in entry_points:
             msg = (f"Found duplicate entry point '{name}': "
@@ -53,8 +54,8 @@ def get_entry_points(group_name, *, specs=None, strict=False):
             logger.warning(msg)
             continue
         entry_points[name] = entry_point
-    if specs:
-        pending = specs - set(entry_points)
+    if specs_set:
+        pending = specs_set - set(entry_points)
         if pending:
             msg = 'Some specs could not be met: '
             msg += ', '.join(map(str, pending))
@@ -64,7 +65,9 @@ def get_entry_points(group_name, *, specs=None, strict=False):
     return entry_points
 
 
-def load_entry_points(group_name, *, strict=False, **kwargs):
+def load_entry_points(group_name: str, *, strict: bool = False,
+                      **kwargs: 'Unpack[LoadEntryPointsArgs]'
+                      ) -> Dict[str, Any]:
     """
     Load entry points for a specific group.
 
@@ -76,7 +79,7 @@ def load_entry_points(group_name, *, strict=False, **kwargs):
     :returns: mapping from entry point name to loaded entry point
     :rtype: dict
     """
-    loaded_entry_points = {}
+    loaded_entry_points: Dict[str, Any] = {}
     for name, entry_point in get_entry_points(
         group_name, strict=strict, **kwargs
     ).items():

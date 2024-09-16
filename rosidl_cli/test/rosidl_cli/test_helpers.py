@@ -15,7 +15,7 @@
 import json
 import os
 import pathlib
-from typing import Iterable, Type
+from typing import Iterable
 
 import pytest
 

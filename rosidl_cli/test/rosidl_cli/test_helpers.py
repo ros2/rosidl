@@ -15,7 +15,7 @@
 import json
 import os
 import pathlib
-from typing import Iterable
+from typing import Iterable, Type
 
 import pytest
 
@@ -38,7 +38,7 @@ def test_interface_path_as_tuple() -> None:
 
 
 @pytest.fixture
-def current_path(request) -> Iterable[pathlib.Path]:
+def current_path(request: pytest.FixtureRequest) -> Iterable[pathlib.Path]:
     path = pathlib.Path(request.module.__file__)
     path = path.resolve()
     path = path.parent

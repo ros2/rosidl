@@ -12,15 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from pathlib import Path
-from typing import cast, ClassVar, List, TYPE_CHECKING
+from typing import cast, ClassVar, List, Optional
 
 from rosidl_cli.extensions import Extension
 from rosidl_cli.extensions import load_extensions
-
-
-if TYPE_CHECKING:
-    from rosidl_cli.extensions import LoadExtensionsArg
-    from typing_extensions import Unpack
 
 
 class TranslateCommandExtension(Extension):
@@ -67,10 +62,10 @@ class TranslateCommandExtension(Extension):
         raise NotImplementedError()
 
 
-def load_translate_extensions(**kwargs: 'Unpack[LoadExtensionsArg]'
+def load_translate_extensions(*, specs: Optional[List[str]], strict: bool
                               ) -> List[TranslateCommandExtension]:
     """Load extensions for interface definition translation."""
     extensions = load_extensions(
-        'rosidl_cli.command.translate.extensions', **kwargs
+        'rosidl_cli.command.translate.extensions', specs=specs, strict=strict
     )
     return cast(List[TranslateCommandExtension], extensions)

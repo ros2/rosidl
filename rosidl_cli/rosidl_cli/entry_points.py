@@ -15,14 +15,8 @@
 import importlib.metadata as importlib_metadata
 import logging
 import sys
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
+from typing import Any, Dict, List, Optional, Union
 
-if TYPE_CHECKING:
-    from typing import TypedDict
-    from typing_extensions import Unpack, NotRequired
-
-    class LoadEntryPointsArgs(TypedDict):
-        specs: NotRequired[Optional[List[str]]]
 
 logger = logging.getLogger(__name__)
 
@@ -71,8 +65,8 @@ def get_entry_points(group_name: str, *, specs: Optional[List[str]] = None, stri
     return entry_points
 
 
-def load_entry_points(group_name: str, *, strict: bool = False,
-                      **kwargs: 'Unpack[LoadEntryPointsArgs]'
+def load_entry_points(group_name: str, *, specs: Optional[List[str]],
+                      strict: bool = False,
                       ) -> Dict[str, Any]:
     """
     Load entry points for a specific group.
@@ -86,7 +80,7 @@ def load_entry_points(group_name: str, *, strict: bool = False,
     """
     loaded_entry_points: Dict[str, Any] = {}
     for name, entry_point in get_entry_points(
-        group_name, strict=strict, **kwargs
+        group_name, strict=strict, specs=specs
     ).items():
         try:
             loaded_entry_points[name] = entry_point.load()

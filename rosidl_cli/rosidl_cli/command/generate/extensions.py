@@ -13,15 +13,10 @@
 # limitations under the License.
 
 from pathlib import Path
-from typing import cast, List, TYPE_CHECKING
+from typing import cast, List, Optional
 
 from rosidl_cli.extensions import Extension
 from rosidl_cli.extensions import load_extensions
-
-
-if TYPE_CHECKING:
-    from rosidl_cli.extensions import LoadExtensionsArg
-    from typing_extensions import Unpack
 
 
 class GenerateCommandExtension(Extension):
@@ -56,14 +51,17 @@ class GenerateCommandExtension(Extension):
         raise NotImplementedError()
 
 
-def load_type_extensions(**kwargs: 'Unpack[LoadExtensionsArg]') -> List[GenerateCommandExtension]:
+def load_type_extensions(*, specs: Optional[List[str]],
+                         strict: bool) -> List[GenerateCommandExtension]:
     """Load extensions for type representation source code generation."""
-    extensions = load_extensions('rosidl_cli.command.generate.type_extensions', **kwargs)
+    extensions = load_extensions('rosidl_cli.command.generate.type_extensions', specs=specs,
+                                 strict=strict)
     return cast(List[GenerateCommandExtension], extensions)
 
 
-def load_typesupport_extensions(**kwargs: 'Unpack[LoadExtensionsArg]'
+def load_typesupport_extensions(*, specs: Optional[List[str]], strict: bool
                                 ) -> List[GenerateCommandExtension]:
     """Load extensions for type support source code generation."""
-    extensions = load_extensions('rosidl_cli.command.generate.typesupport_extensions', **kwargs)
+    extensions = load_extensions('rosidl_cli.command.generate.typesupport_extensions',
+                                 specs=specs, strict=strict)
     return cast(List[GenerateCommandExtension], extensions)

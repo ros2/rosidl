@@ -36,8 +36,7 @@ def get_entry_points(group_name: str, *, specs: Optional[List[str]] = None, stri
     entry_points_impl = importlib_metadata.entry_points()
     # Select does not exist until python 3.10
     if sys.version_info >= (3, 10):
-        groups: Union[importlib_metadata.EntryPoints, List[importlib_metadata.EntryPoint]] = \
-            entry_points_impl.select(group=group_name)
+        groups = entry_points_impl.select(group=group_name)
     else:
         groups = entry_points_impl.get(group_name, [])
 

@@ -18,7 +18,7 @@ from typing import Any, Dict, Final, List, Optional, Tuple, TYPE_CHECKING, Union
 
 from rosidl_cli.entry_points import load_entry_points
 
-import yaml  # type: ignore[import-untyped]
+import yaml  # type: ignore[import]
 
 if TYPE_CHECKING:
     from typing import TypedDict
@@ -78,12 +78,11 @@ def load_extensions(group_name: str, *, specs: Optional[List[str]] = None,
     """
     Load extensions for a specific group.
 
-    :param str group_name: the name of the extension group
-    :param list specs: an optional collection of extension specs
+    :param group_name: the name of the extension group
+    :param specs: an optional collection of extension specs
       (see :py:meth:`parse_extension_specification` for spec format)
-    :param bool strict: whether to raise or warn on error
+    :param strict: whether to raise or warn on error
     :returns: a list of :py:class:`Extension` instances
-    :rtype: list
     """
     extensions: List[Extension] = []
 

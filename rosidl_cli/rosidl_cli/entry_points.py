@@ -14,7 +14,8 @@
 
 import importlib.metadata as importlib_metadata
 import logging
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+import sys
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
     from typing import TypedDict
@@ -31,16 +32,21 @@ def get_entry_points(group_name: str, *, specs: Optional[List[str]] = None, stri
     """
     Get entry points from a specific group.
 
-    :param str group_name: the name of the entry point group
-    :param list specs: an optional collection of entry point names to retrieve
-    :param bool strict: whether to raise or warn on error
+    :param group_name: the name of the entry point group
+    :param specs: an optional collection of entry point names to retrieve
+    :param strict: whether to raise or warn on error
     :returns: mapping from entry point names to ``EntryPoint`` instances
-    :rtype: dict
     """
     if specs is not None:
         specs_set = set(specs)
     entry_points_impl = importlib_metadata.entry_points()
-    groups = entry_points_impl.select(group=group_name)
+    # Select does not exist until python 3.10
+    if sys.version_info >= (3, 10):
+        groups: Union[importlib_metadata.EntryPoints, List[importlib_metadata.EntryPoint]] = \
+            entry_points_impl.select(group=group_name)
+    else:
+        groups = entry_points_impl.get(group_name, [])
+
     entry_points: Dict[str, importlib_metadata.EntryPoint] = {}
     for entry_point in groups:
         name = entry_point.name
@@ -74,10 +80,9 @@ def load_entry_points(group_name: str, *, strict: bool = False,
     See :py:meth:`get_entry_points` for further reference on
     additional keyword arguments.
 
-    :param str group_name: the name of the entry point group
-    :param bool strict: whether to raise or warn on error
+    :param group_name: the name of the entry point group
+    :param strict: whether to raise or warn on error
     :returns: mapping from entry point name to loaded entry point
-    :rtype: dict
     """
     loaded_entry_points: Dict[str, Any] = {}
     for name, entry_point in get_entry_points(

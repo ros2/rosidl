@@ -2,8 +2,8 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.9.0 (2024-10-03)
+------------------
 * Add types `rosidl_pycommon` (`#824 <https://github.com/ros2/rosidl/issues/824>`_)
 * Contributors: Michael Carlstrom
 

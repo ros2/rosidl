@@ -2,6 +2,11 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Support empy3 and empy4 (`#821 <https://github.com/ros2/rosidl/issues/821>`_)
+* Contributors: Alejandro Hernández Cordero
+
 4.8.1 (2024-06-25)
 ------------------
 

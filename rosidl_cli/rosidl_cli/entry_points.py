@@ -15,7 +15,7 @@
 import importlib.metadata as importlib_metadata
 import logging
 import sys
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,8 @@ def get_entry_points(group_name: str, *, specs: Optional[List[str]] = None, stri
     if sys.version_info >= (3, 10):
         groups = entry_points_impl.select(group=group_name)
     else:
-        groups = entry_points_impl.get(group_name, [])
+        groups: Union[Tuple[importlib_metadata.EntryPoint, ...],
+                      List[importlib_metadata.EntryPoint]] = entry_points_impl.get(group_name, [])
 
     entry_points: Dict[str, importlib_metadata.EntryPoint] = {}
     for entry_point in groups:

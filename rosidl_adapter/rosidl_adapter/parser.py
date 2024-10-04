@@ -817,7 +817,7 @@ def validate_field_types(spec: Union[MessageSpecification,
                          known_msg_types: List[BaseType]) -> None:
     if isinstance(spec, MessageSpecification):
         spec_type = 'Message'
-        fields = spec.fields
+        fields: List[Field] = spec.fields
     elif isinstance(spec, ServiceSpecification):
         spec_type = 'Service'
         fields = spec.request.fields + spec.response.fields

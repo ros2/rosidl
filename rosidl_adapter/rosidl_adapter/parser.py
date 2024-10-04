@@ -839,7 +839,6 @@ def validate_field_types(spec: Union[MessageSpecification,
                 (spec_type, base_type, field))
 
 
-
 class ServiceSpecification:
 
     def __init__(self, pkg_name: str, srv_name: str, request: MessageSpecification,

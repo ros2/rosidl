@@ -15,20 +15,21 @@
 import collections
 import os
 import pathlib
+from typing import DefaultDict, Dict, List, Optional, Union
 
 from .extensions import load_translate_extensions
 
 
 def translate(
     *,
-    package_name,
-    interface_files,
-    output_format,
-    input_format=None,
-    include_paths=None,
-    output_path=None,
-    translators=None
-):
+    package_name: str,
+    interface_files: List[str],
+    output_format: str,
+    input_format: Optional[str] = None,
+    include_paths: Optional[List[str]] = None,
+    output_path: Optional[pathlib.Path] = None,
+    translators: Optional[List[str]] = None
+) -> List[str]:
     """
     Translate interface definition files from one format to another.
 
@@ -64,7 +65,8 @@ def translate(
         raise RuntimeError('No translate extensions found')
 
     if not input_format:
-        interface_files_per_format = collections.defaultdict(list)
+        interface_files_per_format: Union[DefaultDict[str, List[str]],
+                                          Dict[str, List[str]]] = collections.defaultdict(list)
         for interface_file in interface_files:
             input_format = os.path.splitext(interface_file)[-1][1:]
             interface_files_per_format[input_format].append(interface_file)

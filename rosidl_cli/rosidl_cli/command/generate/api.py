@@ -14,22 +14,20 @@
 
 import os
 import pathlib
-from typing import List, Optional
 
-from .extensions import GenerateCommandExtension
 from .extensions import load_type_extensions
 from .extensions import load_typesupport_extensions
 
 
 def generate(
     *,
-    package_name: str,
-    interface_files: List[str],
-    include_paths: Optional[List[str]] = None,
-    output_path: Optional[pathlib.Path] = None,
-    types: Optional[List[str]] = None,
-    typesupports: Optional[List[str]] = None
-) -> List[List[str]]:
+    package_name,
+    interface_files,
+    include_paths=None,
+    output_path=None,
+    types=None,
+    typesupports=None
+):
     """
     Generate source code from interface definition files.
 
@@ -62,7 +60,7 @@ def generate(
     :returns: list of lists of paths to generated source code files,
         one group per type or type support extension invoked
     """
-    extensions: List[GenerateCommandExtension] = []
+    extensions = []
 
     unspecific_generation = not types and not typesupports
 

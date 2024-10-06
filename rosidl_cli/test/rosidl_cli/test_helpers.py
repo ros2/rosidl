@@ -15,7 +15,6 @@
 import json
 import os
 import pathlib
-from typing import Iterable
 
 import pytest
 
@@ -23,7 +22,7 @@ from rosidl_cli.command.helpers import interface_path_as_tuple
 from rosidl_cli.command.helpers import legacy_generator_arguments_file
 
 
-def test_interface_path_as_tuple() -> None:
+def test_interface_path_as_tuple():
     prefix, path = interface_path_as_tuple('/tmp:msg/Empty.idl')
     assert pathlib.Path('msg/Empty.idl') == path
     assert pathlib.Path(os.path.abspath('/tmp')) == prefix
@@ -38,7 +37,7 @@ def test_interface_path_as_tuple() -> None:
 
 
 @pytest.fixture
-def current_path(request: pytest.FixtureRequest) -> Iterable[pathlib.Path]:
+def current_path(request):
     path = pathlib.Path(request.module.__file__)
     path = path.resolve()
     path = path.parent
@@ -50,7 +49,7 @@ def current_path(request: pytest.FixtureRequest) -> Iterable[pathlib.Path]:
         os.chdir(str(cwd))
 
 
-def test_legacy_generator_arguments_file(current_path: pathlib.Path) -> None:
+def test_legacy_generator_arguments_file(current_path):
     with legacy_generator_arguments_file(
         package_name='foo',
         interface_files=['msg/Foo.idl'],

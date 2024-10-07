@@ -34,6 +34,7 @@ if(BUILD_TESTING)
     ${test_interface_files_ACTION_FILES}
     ${test_interface_files_MSG_FILES}
     ${test_interface_files_SRV_FILES}
+    msg/BasicIdl.idl
     ADD_LINTER_TESTS
     SKIP_INSTALL
   )

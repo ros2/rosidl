@@ -29,7 +29,9 @@
 #include "rosidl_runtime_c/type_description/type_source__struct.h"
 
 #include "rosidl_generator_tests/action/fibonacci.h"
+#include "rosidl_generator_tests/msg/basic_idl.h"
 #include "rosidl_generator_tests/msg/defaults.h"
+#include "rosidl_generator_tests/msg/empty.h"
 #include "rosidl_generator_tests/srv/empty.h"
 
 #include "type_description_interfaces/msg/field.h"
@@ -67,6 +69,7 @@ bool string_char_equal(const rosidl_runtime_c__String * lhs, const char * rhs)
 int test_description_linkage();
 int test_copied_type_description_struct_hashes();
 int test_source_defined();
+int test_same_name_types();
 
 int main(void)
 {
@@ -84,6 +87,11 @@ int main(void)
   printf("Testing rosidl_generator_tests embedded raw sources...\n");
   if (test_source_defined()) {
     fprintf(stderr, "test_source_defined() FAILED\n");
+    rc++;
+  }
+  printf("Testing same named types...\n");
+  if (test_same_name_types()) {
+    fprintf(stderr, "test_same_name_types() FAILED\n");
     rc++;
   }
 
@@ -254,6 +262,18 @@ int test_source_defined()
   {
     return 1;
   }
+
+  // IDL
+  check_src = rosidl_generator_tests__msg__BasicIdl__get_individual_type_description_source(NULL);
+  if (!check_src) {
+    fprintf(stderr, "BasicIdl.idl sources not available.\n");
+    return 1;
+  }
+  if (!string_char_equal(&check_src->encoding, "idl")) {
+    fprintf(stderr, "BasicIdl.idl source encoding '%s' is not 'idl'\n", check_src->encoding.data);
+    return 1;
+  }
+
   return 0;
 }
 
@@ -291,4 +311,32 @@ int test_copied_type_description_struct_hashes()
   #undef msghash
   #undef runtimehash
   return rc;
+}
+
+int test_same_name_types()
+{
+  // Msg and srv with same name in this package
+  // Regression check case, this was receiving "srv" encoding with Empty.srv sources
+  const rosidl_runtime_c__type_description__TypeSource * empty_msg_src =
+    rosidl_generator_tests__msg__Empty__get_individual_type_description_source(NULL);
+  if (!string_char_equal(&empty_msg_src->type_name, "rosidl_generator_tests/msg/Empty")) {
+    fprintf(stderr, "Empty.msg source name not as expected\n");
+    return 1;
+  }
+  if (!string_char_equal(&empty_msg_src->encoding, "msg")) {
+    fprintf(stderr, "Empty.msg source not encoded as msg\n");
+    return 1;
+  }
+
+  const rosidl_runtime_c__type_description__TypeSource * empty_srv_src =
+    rosidl_generator_tests__srv__Empty__get_individual_type_description_source(NULL);
+  if (!string_char_equal(&empty_srv_src->type_name, "rosidl_generator_tests/srv/Empty")) {
+    fprintf(stderr, "Empty.srv source name not as expected\n");
+    return 1;
+  }
+  if (!string_char_equal(&empty_srv_src->encoding, "srv")) {
+    fprintf(stderr, "Empty.srv source not encoded as srv\n");
+    return 1;
+  }
+  return 0;
 }

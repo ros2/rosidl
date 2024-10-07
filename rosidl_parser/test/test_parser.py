@@ -193,12 +193,12 @@ def test_message_parser_annotations(message_idl_file: IdlFile) -> None:
 
     assert len(structure.annotations) == 2
     assert structure.annotations[0].name == 'verbatim'
-    assert len(structure.annotations[0].value) == 2
-    assert 'language' in structure.annotations[0].value
-    assert structure.annotations[0].value['language'] == 'comment'
-    assert 'text' in structure.annotations[0].value
-    assert structure.annotations[0].value['text'] == \
-        'Documentation of MyMessage.Adjacent string literal.'
+    assert len(structure.annotations[0].value) == 2  # type: ignore[arg-type]
+    assert 'language' in structure.annotations[0].value  # type: ignore[operator]
+    assert structure.annotations[0].value['language'] == 'comment'  # type: ignore[index]
+    assert 'text' in structure.annotations[0].value  # type: ignore[operator]
+    text = structure.annotations[0].value['text']  # type: ignore[index]
+    assert text == 'Documentation of MyMessage.Adjacent string literal.'
 
     assert structure.annotations[1].name == 'transfer_mode'
     assert structure.annotations[1].value == 'SHMEM_REF'
@@ -207,9 +207,9 @@ def test_message_parser_annotations(message_idl_file: IdlFile) -> None:
     assert structure.has_any_member_with_annotation('autoid') is False
 
     assert structure.members[2].annotations[0].name == 'default'
-    assert len(structure.members[2].annotations[0].value) == 1
-    assert 'value' in structure.members[2].annotations[0].value
-    assert structure.members[2].annotations[0].value['value'] == 123
+    assert len(structure.members[2].annotations[0].value) == 1  # type: ignore[arg-type]
+    assert 'value' in structure.members[2].annotations[0].value    # type: ignore[operator]
+    assert structure.members[2].annotations[0].value['value'] == 123  # type: ignore[index]
     assert structure.has_any_member_with_annotation('default')
 
     assert len(structure.members[3].annotations) == 2
@@ -219,11 +219,11 @@ def test_message_parser_annotations(message_idl_file: IdlFile) -> None:
     assert structure.has_any_member_with_annotation('key')
 
     assert structure.members[3].annotations[1].name == 'range'
-    assert len(structure.members[3].annotations[1].value) == 2
-    assert 'min' in structure.members[3].annotations[1].value
-    assert structure.members[3].annotations[1].value['min'] == -10
-    assert 'max' in structure.members[3].annotations[1].value
-    assert structure.members[3].annotations[1].value['max'] == 10
+    assert len(structure.members[3].annotations[1].value) == 2  # type: ignore[arg-type]
+    assert 'min' in structure.members[3].annotations[1].value  # type: ignore[operator]
+    assert structure.members[3].annotations[1].value['min'] == -10    # type: ignore[index]
+    assert 'max' in structure.members[3].annotations[1].value  # type: ignore[operator]
+    assert structure.members[3].annotations[1].value['max'] == 10    # type: ignore[index]
     assert structure.has_any_member_with_annotation('range')
 
     assert isinstance(structure.members[32].type, BasicType)

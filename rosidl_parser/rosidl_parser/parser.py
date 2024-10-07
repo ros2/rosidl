@@ -68,7 +68,7 @@ if TYPE_CHECKING:
     from rosidl_parser.definition import BasicTypeValues
 
 
-AbstractTypeAlias = Union[AbstractNestableType, BoundedSequence, BoundedWString]
+AbstractTypeAlias = Union[AbstractNestableType, BoundedSequence, UnboundedSequence]
 
 grammar_file = os.path.join(os.path.dirname(__file__), 'grammar.lark')
 with open(grammar_file, mode='r', encoding='utf-8') as h:
@@ -144,7 +144,7 @@ def extract_content_from_ast(tree: ParseTree) -> IdlContent:
         assert isinstance(child, Tree)
         assert 'type_declarator' == child.data
         assert len(child.children) == 2
-        abstract_type: Union[Array, AbstractTypeAlias] = get_abstract_type(child.children[0])
+        abstract_type = get_abstract_type(child.children[0])
         child = child.children[1]
         assert isinstance(child, Tree)
         assert 'any_declarators' == child.data
@@ -152,12 +152,12 @@ def extract_content_from_ast(tree: ParseTree) -> IdlContent:
         child = child.children[0]
         assert isinstance(child, Tree)
         identifier = get_first_identifier_value(child)
-        abstract_type = get_abstract_type_optionally_as_array(
+        abstract_type_array = get_abstract_type_optionally_as_array(
             abstract_type, child)
         if identifier in typedefs:
-            assert typedefs[identifier] == abstract_type
+            assert typedefs[identifier] == abstract_type_array
         else:
-            typedefs[identifier] = abstract_type
+            typedefs[identifier] = abstract_type_array
 
     struct_defs = list(tree.find_data('struct_def'))
     if len(struct_defs) == 1:
@@ -297,10 +297,13 @@ def resolve_typedefed_names(structure: Structure, typedefs: Dict[Any, Union[Arra
                 if isinstance(typedefed_type.value_type, NamedType):
                     assert typedefed_type.value_type.name in typedefs, \
                         'Unknown named type: ' + typedefed_type.value_type.name
-                    typedefed_type.value_type = \
-                        typedefs[typedefed_type.value_type.name]
+                    
+                    typedef = typedefs[typedefed_type.value_type.name]
+                    assert isinstance(typedef, AbstractNestableType)
+                    typedefed_type.value_type = typedef
 
             if isinstance(member.type, AbstractNestedType):
+                assert isinstance(typedefed_type, AbstractNestableType)
                 member.type.value_type = typedefed_type
             else:
                 member.type = typedefed_type
@@ -379,13 +382,14 @@ def get_abstract_type_optionally_as_array(
     child = declarator.children[0]
     assert isinstance(child, Tree)
     if child.data == 'array_declarator':
+        assert isinstance(abstract_type, AbstractNestableType)
         fixed_array_sizes = list(child.find_data('fixed_array_size'))
         assert len(fixed_array_sizes) == 1, \
             'Unsupported multidimensional array: ' + str(declarator)
         positive_int_const = next(
             fixed_array_sizes[0].find_data('positive_int_const'))
         size = get_positive_int_const(positive_int_const)
-        abstract_type = Array(abstract_type, size)
+        return Array(abstract_type, size)
     return abstract_type
 
 
@@ -397,6 +401,7 @@ def add_message_members(msg: Message, tree: ParseTree) -> None:
         type_specs = list(member.find_data('type_spec'))
         type_spec = type_specs[-1]
         abstract_type = get_abstract_type_from_type_spec(type_spec)
+        assert isinstance(abstract_type, AbstractNestableType)
         declarators = member.find_data('declarator')
         annotations = get_annotations(member)
         for declarator in declarators:
@@ -479,6 +484,7 @@ def get_abstract_type(tree: Branch[Token]) -> AbstractTypeAlias:
             type_specs = list(child.find_data('type_spec'))
             type_spec = type_specs[-1]
             basetype = get_abstract_type_from_type_spec(type_spec)
+            assert isinstance(basetype, AbstractNestableType)
             positive_int_consts = list(child.find_data('positive_int_const'))
             if positive_int_consts:
                 path = _find_path(child, positive_int_consts[0])

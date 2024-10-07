@@ -18,6 +18,6 @@ import pytest
 
 @pytest.mark.linter
 @pytest.mark.xmllint
-def test_xmllint() -> None:
+def test_xmllint():
     rc = main(argv=[])
     assert rc == 0, 'Found errors'

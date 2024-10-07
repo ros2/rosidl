@@ -11,8 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pathlib import Path
-from typing import cast, ClassVar, List, Optional
 
 from rosidl_cli.extensions import Extension
 from rosidl_cli.extensions import load_extensions
@@ -30,16 +28,13 @@ class TranslateCommandExtension(Extension):
     * `translate`
     """
 
-    input_format: ClassVar[str]
-    output_format: ClassVar[str]
-
     def translate(
         self,
-        package_name: str,
-        interface_files: List[str],
-        include_paths: List[str],
-        output_path: Path
-    ) -> List[str]:
+        package_name,
+        interface_files,
+        include_paths,
+        output_path
+    ):
         """
         Translate interface definition files.
 
@@ -62,10 +57,8 @@ class TranslateCommandExtension(Extension):
         raise NotImplementedError()
 
 
-def load_translate_extensions(*, specs: Optional[List[str]], strict: bool
-                              ) -> List[TranslateCommandExtension]:
+def load_translate_extensions(**kwargs):
     """Load extensions for interface definition translation."""
-    extensions = load_extensions(
-        'rosidl_cli.command.translate.extensions', specs=specs, strict=strict
+    return load_extensions(
+        'rosidl_cli.command.translate.extensions', **kwargs
     )
-    return cast(List[TranslateCommandExtension], extensions)

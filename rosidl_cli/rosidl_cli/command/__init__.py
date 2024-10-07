@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
+
 
 class Command:
     """
@@ -22,8 +24,8 @@ class Command:
     * `add_arguments`
     """
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: argparse.ArgumentParser) -> None:
         pass
 
-    def main(self, *, parser, args):
+    def main(self, *, args: argparse.Namespace) -> None:
         raise NotImplementedError()

@@ -17,9 +17,10 @@ import json
 import os
 import pathlib
 import tempfile
+from typing import Generator, List, Tuple
 
 
-def package_name_from_interface_file_path(path):
+def package_name_from_interface_file_path(path: pathlib.Path) -> str:
     """
     Derive ROS package name from a ROS interface definition file path.
 
@@ -29,7 +30,7 @@ def package_name_from_interface_file_path(path):
     return pathlib.Path(os.path.abspath(path)).parents[1].name
 
 
-def dependencies_from_include_paths(include_paths):
+def dependencies_from_include_paths(include_paths: List[str]) -> List[str]:
     """
     Collect dependencies' ROS interface definition files from include paths.
 
@@ -45,7 +46,7 @@ def dependencies_from_include_paths(include_paths):
     })
 
 
-def interface_path_as_tuple(path):
+def interface_path_as_tuple(path: str) -> Tuple[pathlib.Path, pathlib.Path]:
     """
     Express interface definition file path as an (absolute prefix, relative path) tuple.
 
@@ -61,18 +62,20 @@ def interface_path_as_tuple(path):
     """
     path_as_string = str(path)
     if ':' not in path_as_string:
-        prefix = pathlib.Path.cwd()
+        prefix_path = pathlib.Path.cwd()
     else:
         prefix, _, path = path_as_string.rpartition(':')
-        prefix = pathlib.Path(os.path.abspath(prefix))
-    path = pathlib.Path(path)
-    if path.is_absolute():
+        prefix_path = pathlib.Path(os.path.abspath(prefix))
+    path_as_path = pathlib.Path(path)
+    if path_as_path.is_absolute():
         raise ValueError('Interface definition file path '
-                         f"'{path}' cannot be absolute")
-    return prefix, path
+                         f"'{path_as_path}' cannot be absolute")
+    return prefix_path, path_as_path
 
 
-def idl_tuples_from_interface_files(interface_files):
+def idl_tuples_from_interface_files(
+    interface_files: List[str]
+) -> List[str]:
     """
     Express ROS interface definition file paths as IDL tuples.
 
@@ -80,9 +83,9 @@ def idl_tuples_from_interface_files(interface_files):
     which to resolve it followed by a colon ':'. This function then applies
     the same logic as `interface_path_as_tuple`.
     """
-    idl_tuples = []
-    for path in interface_files:
-        prefix, path = interface_path_as_tuple(path)
+    idl_tuples: List[str] = []
+    for interface_path in interface_files:
+        prefix, path = interface_path_as_tuple(interface_path)
         idl_tuples.append(f'{prefix}:{path.as_posix()}')
     return idl_tuples
 
@@ -90,12 +93,12 @@ def idl_tuples_from_interface_files(interface_files):
 @contextlib.contextmanager
 def legacy_generator_arguments_file(
     *,
-    package_name,
-    interface_files,
-    include_paths,
-    templates_path,
-    output_path
-):
+    package_name: str,
+    interface_files: List[str],
+    include_paths: List[str],
+    templates_path: str,
+    output_path: str
+) -> Generator[str, None, None]:
     """
     Generate a temporary rosidl generator arguments file.
 
@@ -138,10 +141,10 @@ def legacy_generator_arguments_file(
 
 def generate_visibility_control_file(
     *,
-    package_name,
-    template_path,
-    output_path
-):
+    package_name: str,
+    template_path: str,
+    output_path: str
+) -> None:
     """
     Generate a visibility control file from a template.
 

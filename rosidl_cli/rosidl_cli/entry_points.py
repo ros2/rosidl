@@ -33,6 +33,8 @@ def get_entry_points(group_name: str, *, specs: Optional[List[str]] = None, stri
     """
     if specs is not None:
         specs_set = set(specs)
+    else:
+        specs_set = None
     entry_points_impl = importlib_metadata.entry_points()
     # Select does not exist until python 3.10
     if sys.version_info >= (3, 10):

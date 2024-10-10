@@ -18,7 +18,7 @@ from rosidl_adapter.parser import BaseType
 from rosidl_adapter.parser import InvalidResourceName
 
 
-def test_base_type_constructor():
+def test_base_type_constructor() -> None:
     primitive_types = [
         'bool',
         'byte',
@@ -73,7 +73,7 @@ def test_base_type_constructor():
         BaseType('pkg/Foo Bar')
 
 
-def test_base_type_methods():
+def test_base_type_methods() -> None:
     assert BaseType('bool').is_primitive_type()
     assert not BaseType('pkg/Foo').is_primitive_type()
 

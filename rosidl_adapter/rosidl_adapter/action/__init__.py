@@ -12,11 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from pathlib import Path
+
 from rosidl_adapter.parser import parse_action_string
-from rosidl_adapter.resource import expand_template
+from rosidl_adapter.resource import ActionData, expand_template
 
 
-def convert_action_to_idl(package_dir, package_name, input_file, output_dir):
+def convert_action_to_idl(package_dir: Path, package_name: str, input_file: Path,
+                          output_dir: Path) -> Path:
     assert package_dir.is_absolute()
     assert not input_file.is_absolute()
     assert input_file.suffix == '.action'
@@ -30,7 +33,7 @@ def convert_action_to_idl(package_dir, package_name, input_file, output_dir):
     output_file = output_dir / input_file.with_suffix('.idl').name
     abs_output_file = output_file.absolute()
     print(f'Writing output file: {abs_output_file}')
-    data = {
+    data: ActionData = {
         'pkg_name': package_name,
         'relative_input_file': input_file.as_posix(),
         'action': action,

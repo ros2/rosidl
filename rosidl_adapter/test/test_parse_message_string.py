@@ -19,7 +19,7 @@ from rosidl_adapter.parser import InvalidResourceName
 from rosidl_adapter.parser import parse_message_string
 
 
-def test_parse_message_string():
+def test_parse_message_string() -> None:
     msg_spec = parse_message_string('pkg', 'Foo', '')
     assert msg_spec.base_type.pkg_name == 'pkg'
     assert msg_spec.base_type.type == 'Foo'

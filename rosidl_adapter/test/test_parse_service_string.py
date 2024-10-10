@@ -19,7 +19,7 @@ from rosidl_adapter.parser import InvalidServiceSpecification
 from rosidl_adapter.parser import parse_service_string
 
 
-def test_parse_service_string():
+def test_parse_service_string() -> None:
     with pytest.raises(InvalidServiceSpecification):
         parse_service_string('pkg', 'Foo', '')
 

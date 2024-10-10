@@ -12,10 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import fnmatch
 import os
 import re
 import sys
 import textwrap
+import yaml
 
 PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR = '/'
 COMMENT_DELIMITER = '#'
@@ -470,6 +472,21 @@ def parse_message_string(pkg_name, msg_name, message_string):
     # replace tabs with spaces
     message_string = message_string.replace('\t', ' ')
 
+    # Try to load type bounds config file from the environment
+    fixed_size_config = None
+    type_fixed_size_file = None
+    try:
+        type_fixed_size_file = os.environ['ROS2_TYPE_FIXED_SIZE_FILE']
+    except KeyError:
+        pass
+
+    if type_fixed_size_file:
+        try:
+            with open(type_fixed_size_file, 'r', encoding='utf-8') as config_file:
+                fixed_size_config = yaml.safe_load(config_file)
+        except IOError as exc:
+            print(f'Cannot open {type_fixed_size_file}. {exc}')
+
     current_comments = []
     message_comments, lines = extract_file_level_comments(message_string)
     for line in lines:
@@ -542,6 +559,15 @@ def parse_message_string(pkg_name, msg_name, message_string):
         comment_lines += current_comments
         current_comments = []
 
+        # Add fixed_size annotations if configured in file
+        for based_type in ['string']:
+            __add_fixed_size_annotations(
+                pkg_name=pkg_name,
+                msg_name=msg_name,
+                last_element=last_element,
+                field_base_type=based_type,
+                fixed_size_config=fixed_size_config)
+
     msg = MessageSpecification(pkg_name, msg_name, fields, constants)
     msg.annotations['comment'] = message_comments
 
@@ -553,6 +579,58 @@ def parse_message_string(pkg_name, msg_name, message_string):
         process_comments(constant)
 
     return msg
+
+
+def __add_fixed_size_annotations(pkg_name, msg_name, last_element, field_base_type, fixed_size_config):
+    elem_based_type = str(last_element.type).split('[')[0]
+    if fixed_size_config is None or field_base_type != elem_based_type:
+        return
+
+    fixed_size = None
+    skip_field = False
+    field_full_name = f'{pkg_name}/{msg_name}/{last_element.name}'
+
+    # Check if config for strings
+    if field_base_type not in fixed_size_config:
+        skip_field = True
+
+    # Check if field is blocklisted
+    elif 'skip' in fixed_size_config[field_base_type]:
+        for elem in fixed_size_config[field_base_type]['skip']:
+            if fnmatch.fnmatch(field_full_name, elem):
+                skip_field = True
+                break
+
+    # Check for specific config for field
+    if not skip_field:
+
+        # Check if config for package
+        if pkg_name not in fixed_size_config[field_base_type]:
+            pass
+
+        # Check if config for type
+        elif msg_name not in fixed_size_config[field_base_type][pkg_name]:
+            pass
+
+        # Check if config for field
+        elif str(last_element.name) in fixed_size_config[field_base_type][pkg_name][msg_name]:
+            fixed_size = fixed_size_config[field_base_type][pkg_name][msg_name][str(last_element.name)]
+
+        # Load default fixed_size if present
+        if fixed_size is None and 'default_fixed_size' in fixed_size_config[field_base_type]:
+            fixed_size = fixed_size_config[field_base_type]['default_fixed_size']
+
+    if fixed_size is not None:
+        if fixed_size % 4 != 0:
+            print(
+                f'ERROR: Configured fixed size for {field_full_name} is {fixed_size}: ' +
+                'NOT a multiple of 4.'
+            )
+            sys.exit(1)
+        last_element.annotations.setdefault(
+            'cdr_plain',
+            f'@cdr_plain(fixed_size={fixed_size})'
+        )
 
 
 def process_comments(instance):

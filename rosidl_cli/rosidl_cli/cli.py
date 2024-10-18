@@ -14,18 +14,13 @@
 
 import argparse
 import signal
-from typing import Any, List, Union
 
 from rosidl_cli.command.generate import GenerateCommand
 from rosidl_cli.command.translate import TranslateCommand
 from rosidl_cli.common import get_first_line_doc
 
 
-def add_subparsers(
-    parser: argparse.ArgumentParser,
-    cli_name: str,
-    commands: List[Union[GenerateCommand, TranslateCommand]]
-) -> argparse._SubParsersAction[argparse.ArgumentParser]:
+def add_subparsers(parser, cli_name, commands):
     """
     Create argparse subparser for each command.
 
@@ -68,7 +63,7 @@ def add_subparsers(
     return subparser
 
 
-def main() -> Union[str, signal.Signals, Any]:
+def main():
     script_name = 'rosidl'
     description = f'{script_name} is an extensible command-line tool ' \
         'for ROS interface generation.'
@@ -79,8 +74,7 @@ def main() -> Union[str, signal.Signals, Any]:
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
 
-    commands: List[Union[GenerateCommand, TranslateCommand]] = \
-        [GenerateCommand(), TranslateCommand()]
+    commands = [GenerateCommand(), TranslateCommand()]
 
     # add arguments for command extension(s)
     add_subparsers(

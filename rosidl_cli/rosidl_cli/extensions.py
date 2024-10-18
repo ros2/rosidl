@@ -14,19 +14,10 @@
 
 import logging
 import re
-from typing import Any, Dict, Final, List, Optional, Tuple, TYPE_CHECKING, Union
 
 from rosidl_cli.entry_points import load_entry_points
 
-import yaml  # type: ignore[import]
-
-if TYPE_CHECKING:
-    from typing import TypedDict
-    from typing_extensions import NotRequired
-
-    class LoadExtensionsArg(TypedDict):
-        specs: NotRequired[Optional[List[str]]]
-        strict: NotRequired[bool]
+import yaml
 
 
 logger = logging.getLogger(__name__)
@@ -35,18 +26,18 @@ logger = logging.getLogger(__name__)
 class Extension:
     """A generic extension point."""
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name):
         self.__name = name
 
     @property
-    def name(self) -> str:
+    def name(self):
         return self.__name
 
 
-SPECS_PATTERN: Final = re.compile(r'^(\w+)(?:\[(.+)\])?$')
+SPECS_PATTERN = re.compile(r'^(\w+)(?:\[(.+)\])?$')
 
 
-def parse_extension_specification(spec: str) -> Tuple[Union[str, Any], Union[Dict[Any, Any], Any]]:
+def parse_extension_specification(spec):
     """
     Parse extension specification.
 
@@ -73,18 +64,18 @@ def parse_extension_specification(spec: str) -> Tuple[Union[str, Any], Union[Dic
     return name, kwargs
 
 
-def load_extensions(group_name: str, *, specs: Optional[List[str]] = None,
-                    strict: bool = False) -> List[Extension]:
+def load_extensions(group_name, *, specs=None, strict=False):
     """
     Load extensions for a specific group.
 
-    :param group_name: the name of the extension group
-    :param specs: an optional collection of extension specs
+    :param str group_name: the name of the extension group
+    :param list specs: an optional collection of extension specs
       (see :py:meth:`parse_extension_specification` for spec format)
-    :param strict: whether to raise or warn on error
+    :param bool strict: whether to raise or warn on error
     :returns: a list of :py:class:`Extension` instances
+    :rtype: list
     """
-    extensions: List[Extension] = []
+    extensions = []
 
     if specs is not None:
         kwargs = dict(map(

@@ -28,6 +28,7 @@ include_directives = set()
 
 #include <algorithm>
 #include <array>
+#include <limits>
 #include <memory>
 #include <string>
 #include <vector>

@@ -21,19 +21,19 @@ from typing import Callable
 from typing import Dict
 from typing import List
 from typing import Literal
-from typing import Union
 from typing import Optional
 from typing import TYPE_CHECKING
+from typing import Union
 
 from lark import Lark
 from lark.lexer import Token
 from lark.tree import Branch
+from lark.tree import ParseTree
 from lark.tree import pydot__tree_to_png
 from lark.tree import Tree
-from lark.tree import ParseTree
 
-from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractNestableType
+from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractType
 from rosidl_parser.definition import Action
 from rosidl_parser.definition import ACTION_FEEDBACK_SUFFIX
@@ -282,7 +282,8 @@ def extract_content_from_ast(tree: ParseTree) -> IdlContent:
     return content
 
 
-def resolve_typedefed_names(structure: Structure, typedefs: Dict[Any, Union[Array, AbstractTypeAlias]]) -> None:
+def resolve_typedefed_names(structure: Structure,
+                            typedefs: Dict[Any, Union[Array, AbstractTypeAlias]]) -> None:
     for member in structure.members:
         type_ = member.type
         if isinstance(type_, AbstractNestedType):
@@ -297,7 +298,7 @@ def resolve_typedefed_names(structure: Structure, typedefs: Dict[Any, Union[Arra
                 if isinstance(typedefed_type.value_type, NamedType):
                     assert typedefed_type.value_type.name in typedefs, \
                         'Unknown named type: ' + typedefed_type.value_type.name
-                    
+
                     typedef = typedefs[typedefed_type.value_type.name]
                     assert isinstance(typedef, AbstractNestableType)
                     typedefed_type.value_type = typedef
@@ -351,7 +352,7 @@ def _find_path(node: ParseTree, target: ParseTree) -> List[ParseTree]:
         tail = _find_path(c, target)
         if tail is not None:
             return [node] + tail
-    raise ValueError(f"No path found between {node} and {target}")
+    raise ValueError(f'No path found between {node} and {target}')
 
 
 def get_abstract_type_from_const_expr(const_expr: ParseTree, value: Union[str, int, float, bool]

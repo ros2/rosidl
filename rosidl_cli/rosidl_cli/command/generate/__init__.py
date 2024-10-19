@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import argparse
 import pathlib
 
 from rosidl_cli.command import Command
@@ -25,7 +24,7 @@ class GenerateCommand(Command):
 
     name = 'generate'
 
-    def add_arguments(self, parser: argparse.ArgumentParser) -> None:
+    def add_arguments(self, parser):
         parser.add_argument(
             '-o', '--output-path', metavar='PATH',
             type=pathlib.Path, default=None,
@@ -51,7 +50,7 @@ class GenerateCommand(Command):
                   "If prefixed by another path followed by a colon ':', "
                   'path resolution is performed against such path.'))
 
-    def main(self, *, args: argparse.Namespace) -> None:
+    def main(self, *, args):
         generate(
             package_name=args.package_name,
             interface_files=args.interface_files,

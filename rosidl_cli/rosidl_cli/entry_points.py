@@ -12,39 +12,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import importlib.metadata as importlib_metadata
 import logging
-import sys
-from typing import Any, Dict, List, Optional, Tuple, Union
+
+try:
+    import importlib.metadata as importlib_metadata
+except ModuleNotFoundError:
+    import importlib_metadata
 
 
 logger = logging.getLogger(__name__)
 
 
-def get_entry_points(group_name: str, *, specs: Optional[List[str]] = None, strict: bool = False
-                     ) -> Dict[str, importlib_metadata.EntryPoint]:
+def get_entry_points(group_name, *, specs=None, strict=False):
     """
     Get entry points from a specific group.
 
-    :param group_name: the name of the entry point group
-    :param specs: an optional collection of entry point names to retrieve
-    :param strict: whether to raise or warn on error
+    :param str group_name: the name of the entry point group
+    :param list specs: an optional collection of entry point names to retrieve
+    :param bool strict: whether to raise or warn on error
     :returns: mapping from entry point names to ``EntryPoint`` instances
+    :rtype: dict
     """
     if specs is not None:
-        specs_set = set(specs)
+        specs = set(specs)
     entry_points_impl = importlib_metadata.entry_points()
-    # Select does not exist until python 3.10
-    if sys.version_info >= (3, 10):
+    if hasattr(entry_points_impl, 'select'):
         groups = entry_points_impl.select(group=group_name)
     else:
-        groups: Union[Tuple[importlib_metadata.EntryPoint, ...],
-                      List[importlib_metadata.EntryPoint]] = entry_points_impl.get(group_name, [])
-
-    entry_points: Dict[str, importlib_metadata.EntryPoint] = {}
+        groups = entry_points_impl.get(group_name, [])
+    entry_points = {}
     for entry_point in groups:
         name = entry_point.name
-        if specs_set and name not in specs_set:
+        if specs and name not in specs:
             continue
         if name in entry_points:
             msg = (f"Found duplicate entry point '{name}': "
@@ -54,8 +53,8 @@ def get_entry_points(group_name: str, *, specs: Optional[List[str]] = None, stri
             logger.warning(msg)
             continue
         entry_points[name] = entry_point
-    if specs_set:
-        pending = specs_set - set(entry_points)
+    if specs:
+        pending = specs - set(entry_points)
         if pending:
             msg = 'Some specs could not be met: '
             msg += ', '.join(map(str, pending))
@@ -65,22 +64,21 @@ def get_entry_points(group_name: str, *, specs: Optional[List[str]] = None, stri
     return entry_points
 
 
-def load_entry_points(group_name: str, *, specs: Optional[List[str]],
-                      strict: bool = False,
-                      ) -> Dict[str, Any]:
+def load_entry_points(group_name, *, strict=False, **kwargs):
     """
     Load entry points for a specific group.
 
     See :py:meth:`get_entry_points` for further reference on
     additional keyword arguments.
 
-    :param group_name: the name of the entry point group
-    :param strict: whether to raise or warn on error
+    :param str group_name: the name of the entry point group
+    :param bool strict: whether to raise or warn on error
     :returns: mapping from entry point name to loaded entry point
+    :rtype: dict
     """
-    loaded_entry_points: Dict[str, Any] = {}
+    loaded_entry_points = {}
     for name, entry_point in get_entry_points(
-        group_name, strict=strict, specs=specs
+        group_name, strict=strict, **kwargs
     ).items():
         try:
             loaded_entry_points[name] = entry_point.load()

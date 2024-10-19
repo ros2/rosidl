@@ -397,6 +397,8 @@ def get_abstract_type_optionally_as_array(
         positive_int_const = next(
             fixed_array_sizes[0].find_data('positive_int_const'))
         size = get_positive_int_const(positive_int_const)
+        if isinstance(size, str):
+            raise ValueError('Arrays only support Literal Sizes not constants')
         return Array(abstract_type, size)
     return abstract_type
 
@@ -423,6 +425,8 @@ def add_message_members(msg: Message, tree: ParseTree) -> None:
                 positive_int_const = next(
                     fixed_array_sizes[0].find_data('positive_int_const'))
                 size = get_positive_int_const(positive_int_const)
+                if isinstance(size, str):
+                    raise ValueError('Arrays only support Literal Sizes not constants')
                 member_abstract_type: Union[Array, AbstractTypeAlias] = \
                     Array(abstract_type, size)
             else:
@@ -500,6 +504,8 @@ def get_abstract_type(tree: Branch[Token]) -> AbstractTypeAlias:
                     positive_int_consts.pop(0)
             if positive_int_consts:
                 maximum_size = get_positive_int_const(positive_int_consts[-1])
+                if isinstance(maximum_size, str):
+                    raise ValueError('BoundedSequence only support Literal Sizes not constants')
                 return BoundedSequence(basetype, maximum_size)
             else:
                 return UnboundedSequence(basetype)
@@ -511,6 +517,8 @@ def get_abstract_type(tree: Branch[Token]) -> AbstractTypeAlias:
                 assert child_child.data == 'positive_int_const'
                 maximum_size = get_positive_int_const(child_child)
                 if 'string_type' == child.data:
+                    if isinstance(maximum_size, str):
+                        raise ValueError('BoundedString only support Literal Sizes not constants')
                     assert maximum_size > 0
                     return BoundedString(maximum_size=maximum_size)
                 if 'wide_string_type' == child.data:
@@ -529,7 +537,7 @@ def get_abstract_type(tree: Branch[Token]) -> AbstractTypeAlias:
     assert False, 'Unsupported tree: ' + str(tree)
 
 
-def get_positive_int_const(positive_int_const: ParseTree) -> int:
+def get_positive_int_const(positive_int_const: ParseTree) -> Union[int, str]:
     assert positive_int_const.data == 'positive_int_const'
     # TODO support arbitrary expressions
     try:
@@ -550,7 +558,7 @@ def get_positive_int_const(positive_int_const: ParseTree) -> int:
         pass
     else:
         # TODO ensure that identifier resolves to a positive integer
-        return int(identifier_token.value)
+        return str(identifier_token.value)
 
     assert False, 'Unsupported tree: ' + str(positive_int_const)
 

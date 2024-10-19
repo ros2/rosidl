@@ -506,10 +506,10 @@ def get_abstract_type(tree: Branch[Token]) -> AbstractTypeAlias:
 
         if child.data in ('string_type', 'wide_string_type'):
             if len(child.children) == 1:
-                child = child.children[0]
-                assert isinstance(child, Tree)
-                assert child.data == 'positive_int_const'
-                maximum_size = get_positive_int_const(child)
+                child_child = child.children[0]
+                assert isinstance(child_child, Tree)
+                assert child_child.data == 'positive_int_const'
+                maximum_size = get_positive_int_const(child_child)
                 if 'string_type' == child.data:
                     assert maximum_size > 0
                     return BoundedString(maximum_size=maximum_size)

@@ -338,22 +338,28 @@ def _find_tokens(token_type: Optional[Literal['IDENTIFIER']]) -> Callable[[Branc
 def get_module_identifier_values(tree: ParseTree, target: ParseTree) -> List[Any]:
     """Get all module names between a tree node and a specific target node."""
     path = _find_path(tree, target)
-    modules = [n for n in path if n is not None and n.data == 'module_dcl']
+    modules = [n for n in path if n.data == 'module_dcl']
     return [
         get_first_identifier_value(n) for n in modules]
 
 
 def _find_path(node: ParseTree, target: ParseTree) -> List[ParseTree]:
+    path = _find_path_recursive(node, target)
+    if path is None:
+        raise ValueError(f'No path found between {node} and {target}')
+    return path
+
+
+def _find_path_recursive(node: ParseTree, target: ParseTree) -> Optional[List[ParseTree]]:
     if node == target:
         return [node]
     for c in node.children:
         if not isinstance(c, Tree):
             continue
-        tail = _find_path(c, target)
+        tail = _find_path_recursive(c, target)
         if tail is not None:
             return [node] + tail
     return None
-    raise ValueError(f'No path found between {node} and {target}')
 
 
 def get_abstract_type_from_const_expr(const_expr: ParseTree, value: Union[str, int, float, bool]
@@ -544,7 +550,7 @@ def get_positive_int_const(positive_int_const: ParseTree) -> int:
         pass
     else:
         # TODO ensure that identifier resolves to a positive integer
-        return int(identifier_token.value)
+        return identifier_token.value
 
     assert False, 'Unsupported tree: ' + str(positive_int_const)
 

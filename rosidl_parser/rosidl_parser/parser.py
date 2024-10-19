@@ -68,7 +68,7 @@ if TYPE_CHECKING:
     from rosidl_parser.definition import BasicTypeValues
 
 
-AbstractTypeAlias = Union[AbstractNestableType, BoundedSequence, UnboundedSequence]
+AbstractTypeAlias = Union[AbstractNestableType, BasicType, BoundedSequence, UnboundedSequence]
 
 grammar_file = os.path.join(os.path.dirname(__file__), 'grammar.lark')
 with open(grammar_file, mode='r', encoding='utf-8') as h:
@@ -352,6 +352,7 @@ def _find_path(node: ParseTree, target: ParseTree) -> List[ParseTree]:
         tail = _find_path(c, target)
         if tail is not None:
             return [node] + tail
+    return None
     raise ValueError(f'No path found between {node} and {target}')
 
 
@@ -402,7 +403,6 @@ def add_message_members(msg: Message, tree: ParseTree) -> None:
         type_specs = list(member.find_data('type_spec'))
         type_spec = type_specs[-1]
         abstract_type = get_abstract_type_from_type_spec(type_spec)
-        assert isinstance(abstract_type, AbstractNestableType)
         declarators = member.find_data('declarator')
         annotations = get_annotations(member)
         for declarator in declarators:
@@ -410,13 +410,14 @@ def add_message_members(msg: Message, tree: ParseTree) -> None:
             child = declarator.children[0]
             assert isinstance(child, Tree)
             if child.data == 'array_declarator':
+                assert isinstance(abstract_type, AbstractNestableType)
                 fixed_array_sizes = list(child.find_data('fixed_array_size'))
                 assert len(fixed_array_sizes) == 1, \
                     'Unsupported multidimensional array: ' + str(member)
                 positive_int_const = next(
                     fixed_array_sizes[0].find_data('positive_int_const'))
                 size = get_positive_int_const(positive_int_const)
-                member_abstract_type: Union[Array, AbstractNestableType] = \
+                member_abstract_type: Union[Array, AbstractTypeAlias] = \
                     Array(abstract_type, size)
             else:
                 member_abstract_type = abstract_type

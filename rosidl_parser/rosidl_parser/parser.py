@@ -550,7 +550,7 @@ def get_positive_int_const(positive_int_const: ParseTree) -> int:
         pass
     else:
         # TODO ensure that identifier resolves to a positive integer
-        return identifier_token.value
+        return int(identifier_token.value)
 
     assert False, 'Unsupported tree: ' + str(positive_int_const)
 

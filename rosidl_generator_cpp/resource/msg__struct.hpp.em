@@ -123,7 +123,7 @@ def generate_default_string(membset):
                     # For more info, see https://github.com/ros2/rosidl/issues/309
                     # TODO(jacobperron): Investigate reason for build warnings on Windows
                     # TODO(jacobperron): Write test case for this path of execution
-                    strlist.append('std::fill<typename %s::iterator, %s>(this->%s.begin(), this->%s.end(), %s);' % (msg_type_to_cpp(member.type), msg_type_only_to_cpp(member.type), member.name, member.name, member.default_value[0]))
+                    strlist.append('std::fill<typename %s::iterator, %s>(this->%s.begin(), this->%s.end(), %s);' % (msg_type_to_cpp(member), msg_type_only_to_cpp(member), member.name, member.name, member.default_value[0]))
                 else:
                     for index, val in enumerate(member.default_value):
                         strlist.append('this->%s[%d] = %s;' % (member.name, index, val))
@@ -141,12 +141,12 @@ def generate_zero_string(membset, fill_args):
             if member.num_prealloc > 0:
                 strlist.append('this->%s.resize(%d);' % (member.name, member.num_prealloc))
             if member.zero_need_array_override:
-                strlist.append('this->%s.fill(%s{%s});' % (member.name, msg_type_only_to_cpp(member.type), fill_args))
+                strlist.append('this->%s.fill(%s{%s});' % (member.name, msg_type_only_to_cpp(member.real_member), fill_args))
             else:
                 # Specifying type for std::fill because of MSVC 14.12 warning about casting 'const int' to smaller types (C4244)
                 # For more info, see https://github.com/ros2/rosidl/issues/309
                 # TODO(jacobperron): Investigate reason for build warnings on Windows
-                strlist.append('std::fill<typename %s::iterator, %s>(this->%s.begin(), this->%s.end(), %s);' % (msg_type_to_cpp(member.type), msg_type_only_to_cpp(member.type), member.name, member.name, member.zero_value[0]))
+                strlist.append('std::fill<typename %s::iterator, %s>(this->%s.begin(), this->%s.end(), %s);' % (msg_type_to_cpp(member.real_member), msg_type_only_to_cpp(member.real_member), member.name, member.name, member.zero_value[0]))
         else:
             strlist.append('this->%s = %s;' % (member.name, member.zero_value))
     return strlist
@@ -247,7 +247,7 @@ non_defaulted_zero_initialized_members = [
   // field types and members
 @[for member in message.structure.members]@
   using _@(member.name)_type =
-    @(msg_type_to_cpp(member.type));
+    @(msg_type_to_cpp(member));
   _@(member.name)_type @(member.name);
 @[end for]@
 
@@ -255,7 +255,7 @@ non_defaulted_zero_initialized_members = [
   // setters for named parameter idiom
 @[  for member in message.structure.members]@
   Type & set__@(member.name)(
-    const @(msg_type_to_cpp(member.type)) & _arg)
+    const @(msg_type_to_cpp(member)) & _arg)
   {
     this->@(member.name) = _arg;
     return *this;

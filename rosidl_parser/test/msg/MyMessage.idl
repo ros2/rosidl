@@ -41,6 +41,7 @@ module rosidl_parser {
       uint32 uint32_value;
       int64 int64_value;
       uint64 uint64_value;
+      @cdr_plain(fixed_size=64)
       string string_value;
       string<5> bounded_string_value;
       wstring wstring_value;

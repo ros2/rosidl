@@ -27,7 +27,6 @@ from typing import Union
 
 from lark import Lark
 from lark.lexer import Token
-from lark.tree import ParseTree
 from lark.tree import pydot__tree_to_png
 from lark.tree import Tree
 
@@ -67,14 +66,16 @@ if TYPE_CHECKING:
     from typing_extensions import TypeAlias
     from typing import TypeVar
 
-    # Definition taken from lark.tree to here since rhel's lark version does not have Branch.
+    # Definitions taken from lark.tree to here since rhel's lark version does not have Branch.
     _Leaf_T = TypeVar('_Leaf_T')
-    Branch: 'TypeAlias' = Union[_Leaf_T, 'Tree[_Leaf_T]']
+    Branch: TypeAlias = Union[_Leaf_T, 'Tree[_Leaf_T]']
+    ParseTree: TypeAlias = Tree[Token]
 
     from rosidl_parser.definition import BasicTypeValues
 
 try:
     from lark.tree import Branch
+    from lark.tree import ParseTree
 except ImportError:
     pass
 
@@ -112,14 +113,14 @@ def parse_idl_string(idl_string: str, png_file: Optional[str] = None) -> IdlCont
     return content
 
 
-def get_ast_from_idl_string(idl_string: str) -> ParseTree:
+def get_ast_from_idl_string(idl_string: str) -> 'ParseTree':
     global _parser
     if _parser is None:
         _parser = Lark(grammar, start='specification', maybe_placeholders=False)
     return _parser.parse(idl_string)
 
 
-def extract_content_from_ast(tree: ParseTree) -> IdlContent:
+def extract_content_from_ast(tree: 'ParseTree') -> IdlContent:
     content = IdlContent()
 
     include_directives = tree.find_data('include_directive')
@@ -321,13 +322,13 @@ def resolve_typedefed_names(structure: Structure,
                 member.type = typedefed_type
 
 
-def get_first_identifier_value(tree: ParseTree) -> Any:
+def get_first_identifier_value(tree: 'ParseTree') -> Any:
     """Get the value of the first identifier token for a node."""
     identifier_token = next(tree.scan_values(_find_tokens('IDENTIFIER')))
     return identifier_token.value
 
 
-def get_child_identifier_value(tree: ParseTree) -> Any:
+def get_child_identifier_value(tree: 'ParseTree') -> Any:
     """Get the value of the first child identifier token for a node."""
     for c in tree.children:
         if not isinstance(c, Token):
@@ -346,7 +347,7 @@ def _find_tokens(token_type: Optional[Literal['IDENTIFIER']]) -> Callable[['Bran
     return find
 
 
-def get_module_identifier_values(tree: ParseTree, target: ParseTree) -> List[Any]:
+def get_module_identifier_values(tree: 'ParseTree', target: 'ParseTree') -> List[Any]:
     """Get all module names between a tree node and a specific target node."""
     path = _find_path(tree, target)
     modules = [n for n in path if n.data == 'module_dcl']
@@ -354,14 +355,14 @@ def get_module_identifier_values(tree: ParseTree, target: ParseTree) -> List[Any
         get_first_identifier_value(n) for n in modules]
 
 
-def _find_path(node: ParseTree, target: ParseTree) -> List[ParseTree]:
+def _find_path(node: 'ParseTree', target: 'ParseTree') -> List['ParseTree']:
     path = _find_path_recursive(node, target)
     if path is None:
         raise ValueError(f'No path found between {node} and {target}')
     return path
 
 
-def _find_path_recursive(node: ParseTree, target: ParseTree) -> Optional[List[ParseTree]]:
+def _find_path_recursive(node: 'ParseTree', target: 'ParseTree') -> Optional[List['ParseTree']]:
     if node == target:
         return [node]
     for c in node.children:
@@ -373,7 +374,7 @@ def _find_path_recursive(node: ParseTree, target: ParseTree) -> Optional[List[Pa
     return None
 
 
-def get_abstract_type_from_const_expr(const_expr: ParseTree, value: Union[str, int, float, bool]
+def get_abstract_type_from_const_expr(const_expr: 'ParseTree', value: Union[str, int, float, bool]
                                       ) -> Union[BoundedString, BoundedWString, BasicType]:
     assert len(const_expr.children) == 1
     child = const_expr.children[0]
@@ -395,7 +396,7 @@ def get_abstract_type_from_const_expr(const_expr: ParseTree, value: Union[str, i
 
 def get_abstract_type_optionally_as_array(
     abstract_type: AbstractTypeAlias,
-    declarator: ParseTree
+    declarator: 'ParseTree'
 ) -> Union[Array, AbstractTypeAlias]:
     assert len(declarator.children) == 1
     child = declarator.children[0]
@@ -414,7 +415,7 @@ def get_abstract_type_optionally_as_array(
     return abstract_type
 
 
-def add_message_members(msg: Message, tree: ParseTree) -> None:
+def add_message_members(msg: Message, tree: 'ParseTree') -> None:
     members = tree.find_data('member')
     for member in members:
         # the find_data methods seems to traverse the tree in post order
@@ -466,7 +467,7 @@ BASE_TYPE_SPEC_TO_IDL_TYPE: Dict[str, 'BasicTypeValues'] = {
 }
 
 
-def get_abstract_type_from_type_spec(type_spec: ParseTree) -> AbstractTypeAlias:
+def get_abstract_type_from_type_spec(type_spec: 'ParseTree') -> AbstractTypeAlias:
     assert len(type_spec.children) == 1
     child = type_spec.children[0]
     return get_abstract_type(child)
@@ -548,7 +549,7 @@ def get_abstract_type(tree: 'Branch[Token]') -> AbstractTypeAlias:
     assert False, 'Unsupported tree: ' + str(tree)
 
 
-def get_positive_int_const(positive_int_const: ParseTree) -> Union[int, str]:
+def get_positive_int_const(positive_int_const: 'ParseTree') -> Union[int, str]:
     assert positive_int_const.data == 'positive_int_const'
     # TODO support arbitrary expressions
     try:
@@ -574,7 +575,7 @@ def get_positive_int_const(positive_int_const: ParseTree) -> Union[int, str]:
     assert False, 'Unsupported tree: ' + str(positive_int_const)
 
 
-def get_annotations(tree: ParseTree) -> List[Annotation]:
+def get_annotations(tree: 'ParseTree') -> List[Annotation]:
     annotations: List[Annotation] = []
     for c in tree.children:
         if not isinstance(c, Tree):
@@ -666,7 +667,7 @@ def get_const_expr_value(const_expr: 'Branch[Token]') -> Union[str, int, float, 
         assert False, 'Unsupported tree: ' + str(const_expr)
 
 
-def get_decimal_literal_value(decimal_literal: ParseTree) -> int:
+def get_decimal_literal_value(decimal_literal: 'ParseTree') -> int:
     value = ''
     for child in decimal_literal.children:
         if isinstance(child, Token):
@@ -676,7 +677,7 @@ def get_decimal_literal_value(decimal_literal: ParseTree) -> int:
     return int(value)
 
 
-def get_floating_pt_literal_value(floating_pt_literal: ParseTree) -> float:
+def get_floating_pt_literal_value(floating_pt_literal: 'ParseTree') -> float:
     value = ''
     for child in floating_pt_literal.children:
         if isinstance(child, Token):
@@ -686,7 +687,7 @@ def get_floating_pt_literal_value(floating_pt_literal: ParseTree) -> float:
     return float(value)
 
 
-def get_fixed_pt_literal_value(fixed_pt_literal: ParseTree) -> float:
+def get_fixed_pt_literal_value(fixed_pt_literal: 'ParseTree') -> float:
     value = ''
     for child in fixed_pt_literal.children:
         if isinstance(child, Token):
@@ -696,7 +697,8 @@ def get_fixed_pt_literal_value(fixed_pt_literal: ParseTree) -> float:
     return float(value)
 
 
-def get_string_literals_value(string_literals: ParseTree, *, allow_unicode: bool = False) -> str:
+def get_string_literals_value(string_literals: 'ParseTree', *,
+                              allow_unicode: bool = False) -> str:
     assert len(string_literals.children) > 0
     value = ''
     for string_literal in string_literals.children:

@@ -68,7 +68,8 @@ if TYPE_CHECKING:
 
     from rosidl_parser.definition import BasicTypeValues
 
-    # Definitions taken from lark.tree to here since old lark version does not have Branch ot ParseTree.
+    # Definitions taken from lark.tree
+    # Since lark version's used by Windows and rhel does not have Branch or ParseTree.
     _Leaf_T = TypeVar('_Leaf_T')
     Branch: TypeAlias = Union[_Leaf_T, 'Tree[_Leaf_T]']
     ParseTree: TypeAlias = Tree[Token]

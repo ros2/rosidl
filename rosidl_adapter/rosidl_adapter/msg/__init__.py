@@ -12,11 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from rosidl_adapter.parser import parse_message_string
-from rosidl_adapter.resource import expand_template
+from pathlib import Path
+from typing import Final, Optional, Union
+
+from rosidl_adapter.parser import BaseType, parse_message_string, Type
+from rosidl_adapter.resource import expand_template, MsgData
 
 
-def convert_msg_to_idl(package_dir, package_name, input_file, output_dir):
+def convert_msg_to_idl(package_dir: Path, package_name: str, input_file: Path,
+                       output_dir: Path) -> Path:
     assert package_dir.is_absolute()
     assert not input_file.is_absolute()
     assert input_file.suffix == '.msg'
@@ -30,7 +34,7 @@ def convert_msg_to_idl(package_dir, package_name, input_file, output_dir):
     output_file = output_dir / input_file.with_suffix('.idl').name
     abs_output_file = output_file.absolute()
     print(f'Writing output file: {abs_output_file}')
-    data = {
+    data: MsgData = {
         'pkg_name': package_name,
         'relative_input_file': input_file.as_posix(),
         'msg': msg,
@@ -40,7 +44,7 @@ def convert_msg_to_idl(package_dir, package_name, input_file, output_dir):
     return output_file
 
 
-MSG_TYPE_TO_IDL = {
+MSG_TYPE_TO_IDL: Final = {
     'bool': 'boolean',
     'byte': 'octet',
     'char': 'uint8',
@@ -59,7 +63,7 @@ MSG_TYPE_TO_IDL = {
 }
 
 
-def to_idl_literal(idl_type, value):
+def to_idl_literal(idl_type: str, value: str) -> str:
     if idl_type[-1] == ']' or idl_type.startswith('sequence<'):
         content = repr(tuple(value)).replace('\\', r'\\').replace('"', r'\"')
         return f'"{content}"'
@@ -73,24 +77,24 @@ def to_idl_literal(idl_type, value):
     return value
 
 
-def string_to_idl_string_literal(string):
+def string_to_idl_string_literal(string: str) -> str:
     """Convert string to character literal as described in IDL 4.2 section  7.2.6.3 ."""
     estr = string.encode().decode('unicode_escape')
     estr = estr.replace('"', r'\"')
     return '"{0}"'.format(estr)
 
 
-def string_to_idl_wstring_literal(string):
+def string_to_idl_wstring_literal(string: str) -> str:
     return string_to_idl_string_literal(string)
 
 
-def get_include_file(base_type):
+def get_include_file(base_type: BaseType) -> Optional[str]:
     if base_type.is_primitive_type():
         return None
     return f'{base_type.pkg_name}/msg/{base_type.type}.idl'
 
 
-def get_idl_type(type_):
+def get_idl_type(type_: Union[str, Type]) -> str:
     if isinstance(type_, str):
         identifier = MSG_TYPE_TO_IDL[type_]
     elif type_.is_primitive_type():

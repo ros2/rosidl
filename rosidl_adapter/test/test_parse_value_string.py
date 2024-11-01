@@ -19,11 +19,11 @@ from rosidl_adapter.parser import parse_value_string
 from rosidl_adapter.parser import Type
 
 
-def test_parse_value_string_primitive():
+def test_parse_value_string_primitive() -> None:
     parse_value_string(Type('bool'), '1')
 
 
-def test_parse_value_string():
+def test_parse_value_string() -> None:
     with pytest.raises(InvalidValue):
         parse_value_string(Type('bool[]'), '1')
 
@@ -57,6 +57,6 @@ def test_parse_value_string():
     assert value
 
 
-def test_parse_value_string_not_implemented():
+def test_parse_value_string_not_implemented() -> None:
     with pytest.raises(NotImplementedError):
         parse_value_string(Type('pkg/Foo[]'), '')

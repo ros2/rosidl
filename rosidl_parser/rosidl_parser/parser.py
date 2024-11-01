@@ -66,19 +66,12 @@ if TYPE_CHECKING:
     from typing_extensions import TypeAlias
     from typing import TypeVar
 
-    # Definitions taken from lark.tree to here since rhel's lark version does not have Branch.
+    from rosidl_parser.definition import BasicTypeValues
+
+    # Definitions taken from lark.tree to here since old lark version does not have Branch ot ParseTree.
     _Leaf_T = TypeVar('_Leaf_T')
     Branch: TypeAlias = Union[_Leaf_T, 'Tree[_Leaf_T]']
     ParseTree: TypeAlias = Tree[Token]
-
-    from rosidl_parser.definition import BasicTypeValues
-
-try:
-    from lark.tree import Branch
-    from lark.tree import ParseTree
-except ImportError:
-    pass
-
 
 AbstractTypeAlias = Union[AbstractNestableType, BasicType, BoundedSequence, UnboundedSequence]
 

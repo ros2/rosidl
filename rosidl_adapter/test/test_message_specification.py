@@ -20,7 +20,7 @@ from rosidl_adapter.parser import MessageSpecification
 from rosidl_adapter.parser import Type
 
 
-def test_message_specification_constructor():
+def test_message_specification_constructor() -> None:
     msg_spec = MessageSpecification('pkg', 'Foo', [], [])
     assert msg_spec.base_type.pkg_name == 'pkg'
     assert msg_spec.base_type.type == 'Foo'
@@ -28,13 +28,13 @@ def test_message_specification_constructor():
     assert len(msg_spec.constants) == 0
 
     with pytest.raises(TypeError):
-        MessageSpecification('pkg', 'Foo', None, [])
+        MessageSpecification('pkg', 'Foo', None, [])  # type: ignore[arg-type]
     with pytest.raises(TypeError):
-        MessageSpecification('pkg', 'Foo', [], None)
+        MessageSpecification('pkg', 'Foo', [], None)  # type: ignore[arg-type]
     with pytest.raises(TypeError):
-        MessageSpecification('pkg', 'Foo', ['field'], [])
+        MessageSpecification('pkg', 'Foo', ['field'], [])  # type: ignore[list-item]
     with pytest.raises(TypeError):
-        MessageSpecification('pkg', 'Foo', [], ['constant'])
+        MessageSpecification('pkg', 'Foo', [], ['constant'])  # type: ignore[list-item]
 
     field = Field(Type('bool'), 'foo', '1')
     constant = Constant('bool', 'BAR', '1')
@@ -50,7 +50,7 @@ def test_message_specification_constructor():
         MessageSpecification('pkg', 'Foo', [], [constant, constant])
 
 
-def test_message_specification_methods():
+def test_message_specification_methods() -> None:
     field = Field(Type('bool'), 'foo', '1')
     constant = Constant('bool', 'BAR', '1')
     msg_spec = MessageSpecification('pkg', 'Foo', [field], [constant])

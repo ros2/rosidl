@@ -23,7 +23,7 @@ from rosidl_adapter.parser import parse_message_file
 from rosidl_adapter.parser import parse_message_string
 
 
-def test_parse_message_string_with_unicode_comments():
+def test_parse_message_string_with_unicode_comments() -> None:
     # Similar to `test_parse_message_string.py` but we only care about the comments part.
     msg_spec = parse_message_string('pkg', 'Foo', '#comment ڭ with ڮ some گ unicode ڰ sprinkles\
             \n \n  # ♔ ♕ ♖ ♗ ♘ ♙ ♚ ♛ ♜ ♝ ♞ ♟')
@@ -34,7 +34,7 @@ def test_parse_message_string_with_unicode_comments():
         parse_message_string('pkg', 'Foo', 'bool  # comment ✌✌')
 
 
-def test_parse_message_file_with_unicode_comments():
+def test_parse_message_file_with_unicode_comments() -> None:
     # Like `test_parse_message_file.py` but with a unicode comment line.
     path = tempfile.mkdtemp(prefix='test_parse_message_file_with_unicode_comments_')
     try:
@@ -61,7 +61,7 @@ def test_parse_message_file_with_unicode_comments():
         shutil.rmtree(path)
 
 
-def test_extract_message_unicode_comments():
+def test_extract_message_unicode_comments() -> None:
     # Like `test_extract_message_commnets.py` but with several unicode symbols as comments.
     # multi line file-level comment
     msg_spec = parse_message_string('pkg', 'Foo', '# ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶\n'

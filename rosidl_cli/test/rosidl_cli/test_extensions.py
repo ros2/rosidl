@@ -17,7 +17,7 @@ import pytest
 from rosidl_cli.extensions import parse_extension_specification
 
 
-def test_extension_specification_parsing():
+def test_extension_specification_parsing() -> None:
     with pytest.raises(ValueError):
         parse_extension_specification('bad[')
 

@@ -73,8 +73,8 @@ if TYPE_CHECKING:
     # Definitions taken from lark.tree
     # Since lark version's used by Windows and rhel does not have Branch or ParseTree.
     _Leaf_T = TypeVar('_Leaf_T')
-    Branch: TypeAlias = Union[_Leaf_T, 'Tree[_Leaf_T]']
-    ParseTree: TypeAlias = Tree[Token]
+    Branch: TypeAlias = Union[_Leaf_T, Tree]
+    ParseTree: TypeAlias = Tree
 
 AbstractTypeAlias = Union[AbstractNestableType, BasicType, BoundedSequence, UnboundedSequence]
 
@@ -126,7 +126,8 @@ def extract_content_from_ast(tree: 'ParseTree') -> IdlContent:
         assert isinstance(child, Tree)
         assert child.data in ('h_char_sequence', 'q_char_sequence')
         include_token = next(child.scan_values(_find_tokens(None)))
-        content.elements.append(Include(include_token.value))
+        # Type ignore around lark-parser typing bugging in old version
+        content.elements.append(Include(include_token.value))  # type: ignore[attr-defined]
 
     constants: Dict[str, List[Constant]] = {}
     const_dcls = tree.find_data('const_dcl')
@@ -321,7 +322,8 @@ def resolve_typedefed_names(structure: Structure,
 def get_first_identifier_value(tree: 'ParseTree') -> Any:
     """Get the value of the first identifier token for a node."""
     identifier_token = next(tree.scan_values(_find_tokens('IDENTIFIER')))
-    return identifier_token.value
+    # Type ignore around lark-parser typing bugging in old version
+    return identifier_token.value  # type: ignore[attr-defined]
 
 
 def get_child_identifier_value(tree: 'ParseTree') -> Any:
@@ -334,8 +336,10 @@ def get_child_identifier_value(tree: 'ParseTree') -> Any:
     return None
 
 
-def _find_tokens(token_type: Optional[Literal['IDENTIFIER']]) -> Callable[['Branch[Token]'], bool]:
-    def find(t: 'Branch[Token]') -> bool:
+def _find_tokens(
+    token_type: Optional[Literal['IDENTIFIER']]
+) -> Callable[['Branch[Union[str, Token]]'], bool]:
+    def find(t: 'Branch[Union[str, Token]]') -> bool:
         if isinstance(t, Token):
             if token_type is None or t.type == token_type:
                 return True
@@ -469,7 +473,7 @@ def get_abstract_type_from_type_spec(type_spec: 'ParseTree') -> AbstractTypeAlia
     return get_abstract_type(child)
 
 
-def get_abstract_type(tree: 'Branch[Token]') -> AbstractTypeAlias:
+def get_abstract_type(tree: 'Branch[Union[str, Token]]') -> AbstractTypeAlias:
     assert isinstance(tree, Tree)
     if 'simple_type_spec' == tree.data:
         assert len(tree.children) == 1
@@ -566,7 +570,8 @@ def get_positive_int_const(positive_int_const: 'ParseTree') -> Union[int, str]:
         pass
     else:
         # TODO ensure that identifier resolves to a positive integer
-        return str(identifier_token.value)
+        # Type ignore around lark-parser typing bugging in old version
+        return str(identifier_token.value)  # type: ignore[attr-defined]
 
     assert False, 'Unsupported tree: ' + str(positive_int_const)
 
@@ -598,7 +603,7 @@ def get_annotations(tree: 'ParseTree') -> List[Annotation]:
     return annotations
 
 
-def get_const_expr_value(const_expr: 'Branch[Token]') -> Union[str, int, float, bool]:
+def get_const_expr_value(const_expr: 'Branch[Union[str, Token]]') -> Union[str, int, float, bool]:
     assert isinstance(const_expr, Tree)
     # TODO support arbitrary expressions
     expr = list(const_expr.find_data('primary_expr'))
@@ -703,7 +708,7 @@ def get_string_literals_value(string_literals: 'ParseTree', *,
     return value
 
 
-def get_string_literal_value(string_literal: 'Branch[Token]', *,
+def get_string_literal_value(string_literal: 'Branch[Union[str, Token]]', *,
                              allow_unicode: bool = False) -> str:
     assert isinstance(string_literal, Tree)
     if len(string_literal.children) == 0:
@@ -725,7 +730,7 @@ def get_string_literal_value(string_literal: 'Branch[Token]', *,
 
     regex = _get_escape_sequences_regex(allow_unicode=allow_unicode)
     str_value = regex.sub(_decode_escape_sequence, value)
-    # unescape double quote and backslash if preceeded by a backslash
+    # unescape double quote and backslash if preceded by a backslash
     i = 0
     while i < len(str_value):
         if str_value[i] == '\\':
@@ -754,4 +759,4 @@ def _get_escape_sequences_regex(*, allow_unicode: bool) -> Pattern[str]:
 
 
 def _decode_escape_sequence(match: Match[str]) -> str:
-    return codecs.decode(match.group(0), 'unicode-escape')
+    return codecs.decode(match.group(0), 'unicode-escape')  # type: ignore

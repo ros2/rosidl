@@ -21,7 +21,9 @@ from typing import Callable
 from typing import Dict
 from typing import List
 from typing import Literal
+from typing import Match
 from typing import Optional
+from typing import Pattern
 from typing import TYPE_CHECKING
 from typing import Union
 
@@ -733,7 +735,7 @@ def get_string_literal_value(string_literal: 'Branch[Token]', *,
     return str_value
 
 
-def _get_escape_sequences_regex(*, allow_unicode: bool) -> re.Pattern[str]:
+def _get_escape_sequences_regex(*, allow_unicode: bool) -> Pattern[str]:
     # IDL Table 7-9: Escape sequences
     pattern = '('
     # newline, horizontal tab, vertical tab, backspace, carriage return,
@@ -751,5 +753,5 @@ def _get_escape_sequences_regex(*, allow_unicode: bool) -> re.Pattern[str]:
     return re.compile(pattern)
 
 
-def _decode_escape_sequence(match: re.Match[str]) -> str:
+def _decode_escape_sequence(match: Match[str]) -> str:
     return codecs.decode(match.group(0), 'unicode-escape')

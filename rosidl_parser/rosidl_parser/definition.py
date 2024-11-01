@@ -17,6 +17,7 @@ from typing import Dict
 from typing import Final
 from typing import Iterable
 from typing import List
+from typing import Literal
 from typing import Optional
 from typing import Set
 from typing import Tuple
@@ -95,7 +96,7 @@ BASIC_TYPES: Final = (
 )
 
 if TYPE_CHECKING:
-    from typing import Literal, TypeAlias
+    from typing_extensions import TypeAlias
     SignedNonexplicitIntegerTypeValues = Literal['short', 'long', 'long long']
     UnsignedNonexplicitIntegerTypeValues = Literal['unsigned short', 'unsigned long',
                                                    'unsigned long long']
@@ -108,7 +109,7 @@ if TYPE_CHECKING:
     BooleanValue = Literal['boolean']
     OctetValue = Literal['octet']
 
-    SignedExplicitIntegerTypeValues = Literal['int8', 'int16', 'int32' 'int64']
+    SignedExplicitIntegerTypeValues = Literal['int8', 'int16', 'int32', 'int64']
     UnsignedExplicitIntegerTypeValues = Literal['uint8', 'uint16', 'uint32', 'uint64']
 
     ExplicitIntegerTypeValues = Union[SignedExplicitIntegerTypeValues,
@@ -299,7 +300,7 @@ class BoundedWString(AbstractWString):
 
     __slots__ = ('maximum_size', )
 
-    def __init__(self, maximum_size: int) -> None:
+    def __init__(self, maximum_size: Union[int, str]) -> None:
         """
         Create a BoundedWString.
 
@@ -803,7 +804,7 @@ class IdlLocator:
 
     __slots__ = ('basepath', 'relative_path')
 
-    def __init__(self, basepath: str, relative_path: str) -> None:
+    def __init__(self, basepath: pathlib.Path, relative_path: pathlib.Path) -> None:
         """
         Create an IdlLocator.
 

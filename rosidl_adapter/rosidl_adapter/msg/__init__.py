@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from rosidl_adapter.parser import parse_message_string
+from rosidl_adapter.parser import parse_message_string, DEFAULT_ALLOW_LEGACY_FIELD_NAMES
 from rosidl_adapter.resource import expand_template
 
 
-def convert_msg_to_idl(package_dir, package_name, input_file, output_dir):
+def convert_msg_to_idl(package_dir, package_name, input_file, output_dir, *, allow_legacy_field_naming=DEFAULT_ALLOW_LEGACY_FIELD_NAMES):
+
     assert package_dir.is_absolute()
     assert not input_file.is_absolute()
     assert input_file.suffix == '.msg'
@@ -25,7 +26,7 @@ def convert_msg_to_idl(package_dir, package_name, input_file, output_dir):
     print(f'Reading input file: {abs_input_file}')
     abs_input_file = package_dir / input_file
     content = abs_input_file.read_text(encoding='utf-8')
-    msg = parse_message_string(package_name, input_file.stem, content)
+    msg = parse_message_string(package_name, input_file.stem, content, allow_legacy_field_naming=allow_legacy_field_naming)
 
     output_file = output_dir / input_file.with_suffix('.idl').name
     abs_output_file = output_file.absolute()

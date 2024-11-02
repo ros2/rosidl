@@ -30,11 +30,13 @@
 # @public
 #
 function(rosidl_adapt_interfaces idl_var arguments_file)
-  cmake_parse_arguments(ARG "" "TARGET" ""
-    ${ARGN})
+  set(options ALLOW_LEGACY_FIELD_NAMES)
+  set(oneValueArgs TARGET)
+  set(multiValueArgs "")
+  cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
   if(ARG_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "rosidl_adapt_interfaces() called with unused "
-      "arguments: ${ARG_UNPARSED_ARGUMENTS}")
+      "arguments: ${ARG_UNPARSED_ARGUMENTS}. ALLOW_LEGACY? '${ARG_ALLOW_LEGACY_FIELD_NAMES}'")
   endif()
 
   find_package(ament_cmake_core REQUIRED)  # for get_executable_path
@@ -48,6 +50,11 @@ function(rosidl_adapt_interfaces idl_var arguments_file)
     --arguments-file "${arguments_file}"
     --output-dir "${CMAKE_CURRENT_BINARY_DIR}/rosidl_adapter/${PROJECT_NAME}"
     --output-file "${idl_output}")
+  if(ARG_ALLOW_LEGACY_FIELD_NAMES)
+    list(APPEND cmd --allow-legacy-field-naming)
+    MESSAGE(WARNING Allowing legacy arguments.)
+  endif()
+
   execute_process(
     COMMAND ${cmd}
     OUTPUT_QUIET

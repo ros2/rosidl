@@ -114,12 +114,6 @@ enum
   rosidl_runtime_c__type_description__FieldType__FIELD_TYPE_DOUBLE = 11
 };
 
-/// Constant 'FIELD_TYPE_LONG_DOUBLE'.
-enum
-{
-  rosidl_runtime_c__type_description__FieldType__FIELD_TYPE_LONG_DOUBLE = 12
-};
-
 /// Constant 'FIELD_TYPE_CHAR'.
 /**
   * Char and WChar Types
@@ -267,12 +261,6 @@ enum
   rosidl_runtime_c__type_description__FieldType__FIELD_TYPE_DOUBLE_ARRAY = 59
 };
 
-/// Constant 'FIELD_TYPE_LONG_DOUBLE_ARRAY'.
-enum
-{
-  rosidl_runtime_c__type_description__FieldType__FIELD_TYPE_LONG_DOUBLE_ARRAY = 60
-};
-
 /// Constant 'FIELD_TYPE_CHAR_ARRAY'.
 enum
 {
@@ -402,12 +390,6 @@ enum
   rosidl_runtime_c__type_description__FieldType__FIELD_TYPE_DOUBLE_BOUNDED_SEQUENCE = 107
 };
 
-/// Constant 'FIELD_TYPE_LONG_DOUBLE_BOUNDED_SEQUENCE'.
-enum
-{
-  rosidl_runtime_c__type_description__FieldType__FIELD_TYPE_LONG_DOUBLE_BOUNDED_SEQUENCE = 108
-};
-
 /// Constant 'FIELD_TYPE_CHAR_BOUNDED_SEQUENCE'.
 enum
 {
@@ -535,12 +517,6 @@ enum
 enum
 {
   rosidl_runtime_c__type_description__FieldType__FIELD_TYPE_DOUBLE_UNBOUNDED_SEQUENCE = 155
-};
-
-/// Constant 'FIELD_TYPE_LONG_DOUBLE_UNBOUNDED_SEQUENCE'.
-enum
-{
-  rosidl_runtime_c__type_description__FieldType__FIELD_TYPE_LONG_DOUBLE_UNBOUNDED_SEQUENCE = 156
 };
 
 /// Constant 'FIELD_TYPE_CHAR_UNBOUNDED_SEQUENCE'.

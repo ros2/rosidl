@@ -30,7 +30,6 @@
 // sequence types for all basic types
 ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(float, float)
 ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(double, double)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(long_double, long double)
 ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(char, signed char)
 ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(wchar, uint16_t)
 ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(boolean, bool)

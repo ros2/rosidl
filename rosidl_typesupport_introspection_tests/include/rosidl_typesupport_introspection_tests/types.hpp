@@ -27,7 +27,6 @@ namespace rosidl_typesupport_introspection_tests
 // match with their C equivalents.
 using rosidl_typesupport_introspection_cpp::ROS_TYPE_FLOAT;
 using rosidl_typesupport_introspection_cpp::ROS_TYPE_DOUBLE;
-using rosidl_typesupport_introspection_cpp::ROS_TYPE_LONG_DOUBLE;
 using rosidl_typesupport_introspection_cpp::ROS_TYPE_CHAR;
 using rosidl_typesupport_introspection_cpp::ROS_TYPE_WCHAR;
 using rosidl_typesupport_introspection_cpp::ROS_TYPE_BOOLEAN;

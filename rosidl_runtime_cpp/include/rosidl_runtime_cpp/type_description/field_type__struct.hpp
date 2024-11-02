@@ -142,8 +142,6 @@ struct FieldType_
     10u;
   static constexpr uint8_t FIELD_TYPE_DOUBLE =
     11u;
-  static constexpr uint8_t FIELD_TYPE_LONG_DOUBLE =
-    12u;
   static constexpr uint8_t FIELD_TYPE_CHAR =
     13u;
   static constexpr uint8_t FIELD_TYPE_WCHAR =
@@ -186,8 +184,6 @@ struct FieldType_
     58u;
   static constexpr uint8_t FIELD_TYPE_DOUBLE_ARRAY =
     59u;
-  static constexpr uint8_t FIELD_TYPE_LONG_DOUBLE_ARRAY =
-    60u;
   static constexpr uint8_t FIELD_TYPE_CHAR_ARRAY =
     61u;
   static constexpr uint8_t FIELD_TYPE_WCHAR_ARRAY =
@@ -230,8 +226,6 @@ struct FieldType_
     106u;
   static constexpr uint8_t FIELD_TYPE_DOUBLE_BOUNDED_SEQUENCE =
     107u;
-  static constexpr uint8_t FIELD_TYPE_LONG_DOUBLE_BOUNDED_SEQUENCE =
-    108u;
   static constexpr uint8_t FIELD_TYPE_CHAR_BOUNDED_SEQUENCE =
     109u;
   static constexpr uint8_t FIELD_TYPE_WCHAR_BOUNDED_SEQUENCE =
@@ -274,8 +268,6 @@ struct FieldType_
     154u;
   static constexpr uint8_t FIELD_TYPE_DOUBLE_UNBOUNDED_SEQUENCE =
     155u;
-  static constexpr uint8_t FIELD_TYPE_LONG_DOUBLE_UNBOUNDED_SEQUENCE =
-    156u;
   static constexpr uint8_t FIELD_TYPE_CHAR_UNBOUNDED_SEQUENCE =
     157u;
   static constexpr uint8_t FIELD_TYPE_WCHAR_UNBOUNDED_SEQUENCE =
@@ -387,8 +379,6 @@ constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FLOAT;
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_DOUBLE;
 template<typename ContainerAllocator>
-constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_LONG_DOUBLE;
-template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_CHAR;
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_WCHAR;
@@ -430,8 +420,6 @@ template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FLOAT_ARRAY;
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_DOUBLE_ARRAY;
-template<typename ContainerAllocator>
-constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_LONG_DOUBLE_ARRAY;
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_CHAR_ARRAY;
 template<typename ContainerAllocator>
@@ -475,8 +463,6 @@ constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FLOAT_BOUNDED_SEQUE
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_DOUBLE_BOUNDED_SEQUENCE;
 template<typename ContainerAllocator>
-constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_LONG_DOUBLE_BOUNDED_SEQUENCE;
-template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_CHAR_BOUNDED_SEQUENCE;
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_WCHAR_BOUNDED_SEQUENCE;
@@ -518,8 +504,6 @@ template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FLOAT_UNBOUNDED_SEQUENCE;
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_DOUBLE_UNBOUNDED_SEQUENCE;
-template<typename ContainerAllocator>
-constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_LONG_DOUBLE_UNBOUNDED_SEQUENCE;
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_CHAR_UNBOUNDED_SEQUENCE;
 template<typename ContainerAllocator>

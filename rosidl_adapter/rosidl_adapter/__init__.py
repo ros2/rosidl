@@ -12,12 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from rosidl_adapter.parser import DEFAULT_ALLOW_LEGACY_FIELD_NAMES
 
-def convert_to_idl(package_dir, package_name, interface_file, output_dir):
+def convert_to_idl(package_dir, package_name, interface_file, output_dir, *, allow_legacy_field_naming=DEFAULT_ALLOW_LEGACY_FIELD_NAMES):
     if interface_file.suffix == '.msg':
         from rosidl_adapter.msg import convert_msg_to_idl
+
         return convert_msg_to_idl(
-            package_dir, package_name, interface_file, output_dir / 'msg')
+            package_dir, package_name, interface_file, output_dir / 'msg', allow_legacy_field_naming=allow_legacy_field_naming)
 
     if interface_file.suffix == '.srv':
         from rosidl_adapter.srv import convert_srv_to_idl

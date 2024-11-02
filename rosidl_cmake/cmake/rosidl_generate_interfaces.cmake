@@ -52,7 +52,7 @@
 #
 macro(rosidl_generate_interfaces target)
   cmake_parse_arguments(_ARG
-    "ADD_LINTER_TESTS;SKIP_INSTALL;SKIP_GROUP_MEMBERSHIP_CHECK"
+    "ADD_LINTER_TESTS;SKIP_INSTALL;SKIP_GROUP_MEMBERSHIP_CHECK;ALLOW_LEGACY_FIELD_NAMES"
     "LIBRARY_NAME" "DEPENDENCIES"
     ${ARGN})
   if(NOT _ARG_UNPARSED_ARGUMENTS)
@@ -127,9 +127,21 @@ macro(rosidl_generate_interfaces target)
         PACKAGE_NAME "${PROJECT_NAME}"
         NON_IDL_TUPLES "${_non_idl_tuples}"
       )
+      set(_rosidl_apt_interfaces_opts)
+      if(_ARG_ALLOW_LEGACY_FIELD_NAMES)
+        set(_rosidl_apt_interfaces_opts ALLOW_LEGACY_FIELD_NAMES)
+        #list(APPEND _arg ALLOW_LEGACY_FIELD_NAMES)
+        message(WARNING "Allowing legacy field names")
+      else()
+        message(FATAL_ERROR NO Legacy field names)
+      endif()
+
+      #${_rosidl_apt_interfaces_opts}
+
       rosidl_adapt_interfaces(
         _idl_adapter_tuples
         "${_adapter_arguments_file}"
+        ${_rosidl_apt_interfaces_opts}
         TARGET ${target}
       )
     endif()

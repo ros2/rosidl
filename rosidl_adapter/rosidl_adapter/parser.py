@@ -36,6 +36,8 @@ ACTION_GOAL_SERVICE_SUFFIX = '_Goal'
 ACTION_RESULT_SERVICE_SUFFIX = '_Result'
 ACTION_FEEDBACK_MESSAGE_SUFFIX = '_Feedback'
 
+DEFAULT_ALLOW_LEGACY_FIELD_NAMES=True
+
 PRIMITIVE_TYPES = [
     'bool',
     'byte',
@@ -345,15 +347,16 @@ class Constant:
 
 class Field:
 
-    def __init__(self, type_, name, default_value_string=None):
+    def __init__(self, type_, name, default_value_string=None, *, allow_legacy_field_naming=DEFAULT_ALLOW_LEGACY_FIELD_NAMES):
         if not isinstance(type_, Type):
             raise TypeError(
                 "the field type '%s' must be a 'Type' instance" % type_)
         self.type = type_
-        if not is_valid_field_name(name):
-            raise NameError(
-                "'{}' is an invalid field name. It should have the pattern '{}'".format(
-                    name, VALID_FIELD_NAME_PATTERN.pattern))
+        if not allow_legacy_field_naming:
+            if not is_valid_field_name(name):
+                raise NameError(
+                    "'{}' is an invalid field name. It should have the pattern '{}'".format(
+                        name, VALID_FIELD_NAME_PATTERN.pattern))
         self.name = name
         if default_value_string is None:
             self.default_value = None
@@ -462,7 +465,7 @@ def extract_file_level_comments(message_string):
     return file_level_comments, file_content
 
 
-def parse_message_string(pkg_name, msg_name, message_string):
+def parse_message_string(pkg_name, msg_name, message_string, *, allow_legacy_field_naming=DEFAULT_ALLOW_LEGACY_FIELD_NAMES):
     fields = []
     constants = []
     last_element = None  # either a field or a constant
@@ -518,7 +521,9 @@ def parse_message_string(pkg_name, msg_name, message_string):
             try:
                 fields.append(Field(
                     Type(type_string, context_package_name=pkg_name),
-                    field_name, default_value_string))
+                    field_name, default_value_string,
+                    allow_legacy_field_naming=allow_legacy_field_naming),
+                    )
             except Exception as err:
                 print(
                     "Error processing '{line}' of '{pkg}/{msg}': '{err}'".format(

@@ -21,6 +21,7 @@ from typing import List
 
 
 from rosidl_adapter import convert_to_idl
+from rosidl_adapter.parser import DEFAULT_ALLOW_LEGACY_FIELD_NAMES
 
 
 def main(argv: List[str] = sys.argv[1:]) -> None:
@@ -39,6 +40,10 @@ def main(argv: List[str] = sys.argv[1:]) -> None:
         '--output-file', required=True,
         help='The output file containing the tuples for the generated .idl '
              'files')
+    legacy_field_name_action = "store_true" if not DEFAULT_ALLOW_LEGACY_FIELD_NAMES else "store_false"
+    parser.add_argument(
+        '--allow-legacy-field-naming', required=False, action=legacy_field_name_action,
+        help='Allow legacy ROS1 style field names that use PascalCase, camelCase, and Pascal_With_Underscores')
     args = parser.parse_args(argv)
     output_dir = pathlib.Path(args.output_dir)
     output_file = pathlib.Path(args.output_file)
@@ -53,7 +58,8 @@ def main(argv: List[str] = sys.argv[1:]) -> None:
         basepath, relative_path = non_idl_tuple.rsplit(':', 1)
         abs_idl_file = convert_to_idl(
             pathlib.Path(basepath), args.package_name,
-            pathlib.Path(relative_path), output_dir)
+            pathlib.Path(relative_path), output_dir,
+            allow_legacy_field_naming=args.allow_legacy_field_naming)
         idl_tuples.append((output_dir, abs_idl_file.relative_to(output_dir)))
 
     output_file.parent.mkdir(exist_ok=True)

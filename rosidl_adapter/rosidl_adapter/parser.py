@@ -38,6 +38,8 @@ ACTION_GOAL_SERVICE_SUFFIX: Final = '_Goal'
 ACTION_RESULT_SERVICE_SUFFIX: Final = '_Result'
 ACTION_FEEDBACK_MESSAGE_SUFFIX: Final = '_Feedback'
 
+DEFAULT_ALLOW_LEGACY_FIELD_NAMES: bool = True
+
 PRIMITIVE_TYPES: Final = [
     'bool',
     'byte',
@@ -69,7 +71,7 @@ VALID_PACKAGE_NAME_PATTERN: Final = re.compile(
     '$')
 VALID_FIELD_NAME_PATTERN: Final = VALID_PACKAGE_NAME_PATTERN
 # relaxed patterns used for compatibility with ROS 1 messages
-# VALID_FIELD_NAME_PATTERN = re.compile('^[A-Za-z][A-Za-z0-9_]*$')
+RELAXED_FIELD_NAME_PATTERN: Final = re.compile('^[A-Za-z][A-Za-z0-9_]*$')
 VALID_MESSAGE_NAME_PATTERN: Final = re.compile('^[A-Z][A-Za-z0-9]*$')
 # relaxed patterns used for compatibility with ROS 1 messages
 # VALID_MESSAGE_NAME_PATTERN = re.compile('^[A-Za-z][A-Za-z0-9]*$')
@@ -84,6 +86,9 @@ if TYPE_CHECKING:
         comment: List[str]
         unit: str
 
+# By default, ROS 2 does not allow legacy field names.
+# https://docs.ros.org/en/rolling/Concepts/Basic/About-Interfaces.html#field-names
+DEFAULT_ALLOW_LEGACY_FIELD_NAMES=False
 
 class InvalidSpecification(Exception):
     pass
@@ -127,8 +132,16 @@ def is_valid_package_name(name: str) -> bool:
         raise InvalidResourceName(name)
     return m is not None and m.group(0) == name
 
+def is_valid_legacy_field_name(name):
+    try:
+        m = RELAXED_FIELD_NAME_PATTERN.match(name)
+    except TypeError:
+        raise InvalidResourceName(name)
+    return m is not None and m.group(0) == name
 
-def is_valid_field_name(name: str) -> bool:
+def is_valid_field_name(name: str, *, allow_legacy_field_naming: bool=DEFAULT_ALLOW_LEGACY_FIELD_NAMES) -> bool:
+    if allow_legacy_field_naming:
+        return is_valid_legacy_field_name(name)
     try:
         m = VALID_FIELD_NAME_PATTERN.match(name)
     except TypeError:
@@ -362,12 +375,12 @@ class Constant:
 class Field:
 
     def __init__(self, type_: 'Type', name: str,
-                 default_value_string: Optional[str] = None) -> None:
+                 default_value_string: Optional[str] = None, *, allow_legacy_field_naming: bool=DEFAULT_ALLOW_LEGACY_FIELD_NAMES) -> None:
         if not isinstance(type_, Type):
             raise TypeError(
                 "the field type '%s' must be a 'Type' instance" % type_)
         self.type = type_
-        if not is_valid_field_name(name):
+        if not is_valid_field_name(name, allow_legacy_field_naming=allow_legacy_field_naming):
             raise NameError(
                 "'{}' is an invalid field name. It should have the pattern '{}'".format(
                     name, VALID_FIELD_NAME_PATTERN.pattern))
@@ -481,7 +494,7 @@ def extract_file_level_comments(message_string: str) -> Tuple[List[str], List[st
 
 
 def parse_message_string(pkg_name: str, msg_name: str,
-                         message_string: str) -> MessageSpecification:
+                         message_string: str, *, allow_legacy_field_naming: bool=DEFAULT_ALLOW_LEGACY_FIELD_NAMES) -> MessageSpecification:
     fields: List[Field] = []
     constants: List[Constant] = []
     last_element: Union[Field, Constant, None] = None  # either a field or a constant
@@ -537,7 +550,8 @@ def parse_message_string(pkg_name: str, msg_name: str,
             try:
                 fields.append(Field(
                     Type(type_string, context_package_name=pkg_name),
-                    field_name, optional_default_value_string))
+                    field_name, optional_default_value_string,
+                    allow_legacy_field_naming=allow_legacy_field_naming))
             except Exception as err:
                 print(
                     "Error processing '{line}' of '{pkg}/{msg}': '{err}'".format(

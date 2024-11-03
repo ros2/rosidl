@@ -36,8 +36,6 @@ ACTION_GOAL_SERVICE_SUFFIX = '_Goal'
 ACTION_RESULT_SERVICE_SUFFIX = '_Result'
 ACTION_FEEDBACK_MESSAGE_SUFFIX = '_Feedback'
 
-DEFAULT_ALLOW_LEGACY_FIELD_NAMES=True
-
 PRIMITIVE_TYPES = [
     'bool',
     'byte',
@@ -69,12 +67,15 @@ VALID_PACKAGE_NAME_PATTERN = re.compile(
     '$')
 VALID_FIELD_NAME_PATTERN = VALID_PACKAGE_NAME_PATTERN
 # relaxed patterns used for compatibility with ROS 1 messages
-# VALID_FIELD_NAME_PATTERN = re.compile('^[A-Za-z][A-Za-z0-9_]*$')
+RELAXED_FIELD_NAME_PATTERN = re.compile('^[A-Za-z][A-Za-z0-9_]*$')
 VALID_MESSAGE_NAME_PATTERN = re.compile('^[A-Z][A-Za-z0-9]*$')
 # relaxed patterns used for compatibility with ROS 1 messages
 # VALID_MESSAGE_NAME_PATTERN = re.compile('^[A-Za-z][A-Za-z0-9]*$')
 VALID_CONSTANT_NAME_PATTERN = re.compile('^[A-Z]([A-Z0-9_]?[A-Z0-9]+)*$')
 
+# By default, ROS 2 does not allow legacy field names.
+# https://docs.ros.org/en/rolling/Concepts/Basic/About-Interfaces.html#field-names
+DEFAULT_ALLOW_LEGACY_FIELD_NAMES=False
 
 class InvalidSpecification(Exception):
     pass
@@ -117,8 +118,16 @@ def is_valid_package_name(name):
         raise InvalidResourceName(name)
     return m is not None and m.group(0) == name
 
+def is_valid_legacy_field_name(name):
+    try:
+        m = RELAXED_FIELD_NAME_PATTERN.match(name)
+    except TypeError:
+        raise InvalidResourceName(name)
+    return m is not None and m.group(0) == name
 
-def is_valid_field_name(name):
+def is_valid_field_name(name, allow_legacy_field_names=DEFAULT_ALLOW_LEGACY_FIELD_NAMES):
+    if allow_legacy_field_names:
+        return is_valid_legacy_field_name(name)
     try:
         m = VALID_FIELD_NAME_PATTERN.match(name)
     except TypeError:
@@ -353,7 +362,7 @@ class Field:
                 "the field type '%s' must be a 'Type' instance" % type_)
         self.type = type_
         if not allow_legacy_field_naming:
-            if not is_valid_field_name(name):
+            if not is_valid_field_name(name, allow_legacy_field_name=allow_legacy_field_naming):
                 raise NameError(
                     "'{}' is an invalid field name. It should have the pattern '{}'".format(
                         name, VALID_FIELD_NAME_PATTERN.pattern))

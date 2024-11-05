@@ -125,8 +125,8 @@ def is_valid_legacy_field_name(name):
         raise InvalidResourceName(name)
     return m is not None and m.group(0) == name
 
-def is_valid_field_name(name, allow_legacy_field_names=DEFAULT_ALLOW_LEGACY_FIELD_NAMES):
-    if allow_legacy_field_names:
+def is_valid_field_name(name, allow_legacy_field_naming=DEFAULT_ALLOW_LEGACY_FIELD_NAMES):
+    if allow_legacy_field_naming:
         return is_valid_legacy_field_name(name)
     try:
         m = VALID_FIELD_NAME_PATTERN.match(name)
@@ -361,11 +361,10 @@ class Field:
             raise TypeError(
                 "the field type '%s' must be a 'Type' instance" % type_)
         self.type = type_
-        if not allow_legacy_field_naming:
-            if not is_valid_field_name(name, allow_legacy_field_name=allow_legacy_field_naming):
-                raise NameError(
-                    "'{}' is an invalid field name. It should have the pattern '{}'".format(
-                        name, VALID_FIELD_NAME_PATTERN.pattern))
+        if not is_valid_field_name(name, allow_legacy_field_naming=allow_legacy_field_naming):
+            raise NameError(
+                "'{}' is an invalid field name. It should have the pattern '{}'".format(
+                    name, VALID_FIELD_NAME_PATTERN.pattern))
         self.name = name
         if default_value_string is None:
             self.default_value = None

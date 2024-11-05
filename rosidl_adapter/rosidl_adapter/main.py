@@ -39,7 +39,7 @@ def main(argv=sys.argv[1:]):
         '--output-file', required=True,
         help='The output file containing the tuples for the generated .idl '
              'files')
-    legacy_field_name_action = "store_true" if DEFAULT_ALLOW_LEGACY_FIELD_NAMES else "store_false"
+    legacy_field_name_action = "store_true" if not DEFAULT_ALLOW_LEGACY_FIELD_NAMES else "store_false"
     parser.add_argument(
         '--allow-legacy-field-naming', required=False, action=legacy_field_name_action,
         help='Allow legacy ROS1 style field names that use PascalCase, camelCase, and Pascal_With_Underscores')

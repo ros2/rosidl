@@ -2,6 +2,9 @@
 Changelog for package rosidl_typesupport_introspection_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.9.0 (2024-10-03)
 ------------------
 

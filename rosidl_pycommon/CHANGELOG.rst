@@ -2,6 +2,11 @@
 Changelog for package rosidl_pycommon
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add test_xmllint to rosidl_pycommon. (`#833 <https://github.com/ros2/rosidl/issues/833>`_)
+* Contributors: Chris Lalancette
+
 4.9.0 (2024-10-03)
 ------------------
 * Add types `rosidl_pycommon` (`#824 <https://github.com/ros2/rosidl/issues/824>`_)

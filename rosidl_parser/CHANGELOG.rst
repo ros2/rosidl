@@ -2,6 +2,11 @@
 Changelog for package rosidl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add types to definition.py in `rosidl_parser` (`#791 <https://github.com/ros2/rosidl/issues/791>`_)
+* Contributors: Michael Carlstrom
+
 4.9.0 (2024-10-03)
 ------------------
 

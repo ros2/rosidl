@@ -2,6 +2,11 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Types for rosidl_adapter (`#828 <https://github.com/ros2/rosidl/issues/828>`_)
+* Contributors: Michael Carlstrom
+
 4.9.0 (2024-10-03)
 ------------------
 * Support empy3 and empy4 (`#821 <https://github.com/ros2/rosidl/issues/821>`_)

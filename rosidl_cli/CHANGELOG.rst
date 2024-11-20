@@ -2,6 +2,11 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Rosidl cli types with `specs_set` fix (`#831 <https://github.com/ros2/rosidl/issues/831>`_)
+* Contributors: Chris Lalancette, Michael Carlstrom
+
 4.9.0 (2024-10-03)
 ------------------
 

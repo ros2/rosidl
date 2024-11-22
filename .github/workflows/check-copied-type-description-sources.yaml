@@ -9,14 +9,14 @@ jobs:
     outputs:
       needs_verification: ${{ steps.needs_verification.outputs.changed }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Check fingerprint changed
-      uses: tj-actions/changed-files@v41
+      uses: tj-actions/changed-files@v44
       id: changed-fingerprint
       with:
         files: scripts/type_description.fingerprint
     - name: Check type description sources changed
-      uses: tj-actions/changed-files@v41
+      uses: tj-actions/changed-files@v44
       id: changed-copied-sources
       with:
         files: |

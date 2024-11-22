@@ -18,7 +18,7 @@ from rosidl_generator_type_description import serialize_individual_type_descript
 from rosidl_parser import definition
 
 
-def test_field_type_serializer():
+def test_field_type_serializer() -> None:
     # Sanity check for the more complex capacity/string_capacity types and nesting
     string_limit = 12
     array_size = 22
@@ -55,7 +55,7 @@ def test_field_type_serializer():
     assert result == expected
 
 
-def test_nested_type_serializer():
+def test_nested_type_serializer() -> None:
     namespaced_type = definition.NamespacedType(['my_pkg', 'msg'], 'TestThing')
     referenced_type = definition.NamespacedType(['other_pkg', 'msg'], 'RefThing')
     nested_referenced_type = definition.UnboundedSequence(referenced_type)

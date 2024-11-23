@@ -34,24 +34,24 @@ def test_field_type_serializer() -> None:
     assert result == expected
 
     bounded_sequence_limit = 32
-    test_type = definition.BoundedSequence(definition.UnboundedString(), bounded_sequence_limit)
+    test_type2 = definition.BoundedSequence(definition.UnboundedString(), bounded_sequence_limit)
     expected = {
         'type_id': 113,
         'capacity': bounded_sequence_limit,
         'string_capacity': 0,
         'nested_type_name': '',
     }
-    result = serialize_field_type(test_type)
+    result = serialize_field_type(test_type2)
     assert result == expected
 
-    test_type = definition.BoundedWString(string_limit)
+    test_type3 = definition.BoundedWString(string_limit)
     expected = {
         'type_id': 22,
         'capacity': 0,
         'string_capacity': string_limit,
         'nested_type_name': '',
     }
-    result = serialize_field_type(test_type)
+    result = serialize_field_type(test_type3)
     assert result == expected
 
 

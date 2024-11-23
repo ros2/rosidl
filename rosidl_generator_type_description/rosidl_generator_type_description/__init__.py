@@ -18,7 +18,7 @@ import json
 from pathlib import Path
 import re
 import sys
-from typing import Dict, Final, List, Set, Tuple, TYPE_CHECKING, TypedDict
+from typing import Dict, Final, List, Set, Tuple, TYPE_CHECKING, TypedDict, Union
 
 from rosidl_parser import definition
 from rosidl_parser.parser import parse_idl_file
@@ -378,6 +378,11 @@ FIELD_TYPE_ID_TO_NAME: Final = {
 }
 
 
+FIELD_VALUE_STRING_TYPES: Final = (definition.UnboundedString,
+                                   definition.BoundedString,
+                                   definition.BoundedWString,
+                                   definition.UnboundedWString)
+
 def field_type_type_name(ftype: definition.AbstractType) -> str:
     value_type = ftype
     name_suffix = ''
@@ -388,7 +393,7 @@ def field_type_type_name(ftype: definition.AbstractType) -> str:
 
     if isinstance(value_type, definition.BasicType):
         value_type_name = FIELD_VALUE_TYPE_NAMES[value_type.typename]
-    elif isinstance(value_type, definition.AbstractGenericString):
+    elif isinstance(value_type, FIELD_VALUE_STRING_TYPES):
         value_type_name = FIELD_VALUE_TYPE_NAMES[type(value_type)]
     elif (
         isinstance(value_type, definition.NamespacedType) or
@@ -407,25 +412,19 @@ def field_type_type_id(ftype: definition.AbstractType) -> int:
 
 def field_type_capacity(ftype: definition.AbstractType) -> int:
     if isinstance(ftype, definition.AbstractNestedType):
-        if ftype.has_maximum_size():
-            try:
-                return ftype.maximum_size
-            except AttributeError:
-                return ftype.size
+        if isinstance(ftype, definition.Array):
+            return ftype.size
     return 0
 
 
-def field_type_string_capacity(ftype: definition.AbstractType) -> int:
+def field_type_string_capacity(ftype: definition.AbstractType) -> Union[int, str]:
     value_type = ftype
     if isinstance(ftype, definition.AbstractNestedType):
         value_type = ftype.value_type
 
     if isinstance(value_type, definition.AbstractGenericString):
-        if value_type.has_maximum_size():
-            try:
-                return value_type.maximum_size
-            except AttributeError:
-                return value_type.size
+        if isinstance(value_type, (definition.BoundedString, definition.BoundedWString)):
+            return value_type.maximum_size
     return 0
 
 
@@ -443,7 +442,7 @@ def field_type_nested_type_name(ftype: definition.AbstractType, joiner: str = '/
 class SerializeFieldTypeDict(TypedDict):
     type_id: int
     capacity: int
-    string_capacity: int
+    string_capacity: Union[int, str]
     nested_type_name: str
 
 

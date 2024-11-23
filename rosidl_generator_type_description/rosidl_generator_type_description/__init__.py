@@ -415,6 +415,8 @@ def field_type_capacity(ftype: definition.AbstractType) -> int:
     if isinstance(ftype, definition.AbstractNestedType):
         if isinstance(ftype, definition.Array):
             return ftype.size
+        elif isinstance(ftype, definition.BoundedSequence):
+            return ftype.maximum_size
     return 0
 
 

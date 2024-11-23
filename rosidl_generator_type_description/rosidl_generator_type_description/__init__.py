@@ -463,13 +463,16 @@ class SerializeFieldDict(TypedDict):
 
 
 def serialize_field(member: definition.Member) -> SerializeFieldDict:
+    default_value = ''
+    if member.has_annotation('default'):
+        annotation_value = member.get_annotation_value('default')
+        if isinstance(annotation_value, dict):
+            default_value = annotation_value['value']
+
     return {
         'name': member.name,
         'type': serialize_field_type(member.type),
-        'default_value':
-            str(member.get_annotation_value('default')['value'])
-            if member.has_annotation('default') else ''
-    }
+        'default_value': default_value}
 
 
 class SerializeIndividualTypeDescriptionDict(TypedDict):

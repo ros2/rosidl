@@ -467,7 +467,7 @@ def serialize_field(member: definition.Member) -> SerializeFieldDict:
     if member.has_annotation('default'):
         annotation_value = member.get_annotation_value('default')
         if isinstance(annotation_value, dict):
-            default_value = annotation_value['value']
+            default_value = str(annotation_value['value'])
 
     return {
         'name': member.name,

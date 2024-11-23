@@ -383,6 +383,7 @@ FIELD_VALUE_STRING_TYPES: Final = (definition.UnboundedString,
                                    definition.BoundedWString,
                                    definition.UnboundedWString)
 
+
 def field_type_type_name(ftype: definition.AbstractType) -> str:
     value_type = ftype
     name_suffix = ''

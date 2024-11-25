@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>rosidl_runtime_c</name>
-  <version>3.1.5</version>
+  <version>3.1.6</version>
   <description>Provides definitions, initialization and finalization functions, and macros for getting and working with rosidl typesupport types in C.</description>
   <maintainer email="michel@ekumenlabs.com">Michel Hidalgo</maintainer>
   <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>

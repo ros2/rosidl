@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>rosidl_typesupport_introspection_c</name>
-  <version>3.1.5</version>
+  <version>3.1.6</version>
   <description>
     Generate the message type support for dynamic message construction in C.
   </description>

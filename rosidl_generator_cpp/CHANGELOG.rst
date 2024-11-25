@@ -2,6 +2,9 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.9.1 (2024-11-20)
 ------------------
 

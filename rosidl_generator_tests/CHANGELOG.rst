@@ -2,6 +2,9 @@
 Changelog for package rosidl_generator_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.9.1 (2024-11-20)
 ------------------
 

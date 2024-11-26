@@ -143,7 +143,7 @@ rosidl_runtime_c__type_description__Field__get_type_description_sources(
   static bool constructed = false;
   if (!constructed) {
     sources[0] = *rosidl_runtime_c__type_description__Field__get_individual_type_description_source(NULL),
-    sources[0] = *rosidl_runtime_c__type_description__FieldType__get_individual_type_description_source(NULL);
+    sources[1] = *rosidl_runtime_c__type_description__FieldType__get_individual_type_description_source(NULL);
     constructed = true;
   }
   return &source_sequence;

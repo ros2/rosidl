@@ -266,7 +266,7 @@ rosidl_runtime_c__type_description__FieldType__get_individual_type_description_s
   static const rosidl_runtime_c__type_description__TypeSource source = {
     {rosidl_runtime_c__type_description__FieldType__TYPE_NAME, 41, 41},
     {msg_encoding, 3, 3},
-    {toplevel_type_raw_source, 6162, 6162},
+    {toplevel_type_raw_source, 5982, 5982},
   };
   return &source;
 }

@@ -3,6 +3,9 @@
 // with input from type_description_interfaces:msg/Field.idl
 // generated code does not contain a copyright notice
 
+// IWYU pragma: private, include "type_description_interfaces/msg/field.h"
+
+
 #ifndef ROSIDL_RUNTIME_C__TYPE_DESCRIPTION__FIELD__FUNCTIONS_H_
 #define ROSIDL_RUNTIME_C__TYPE_DESCRIPTION__FIELD__FUNCTIONS_H_
 
@@ -57,7 +60,7 @@ rosidl_runtime_c__type_description__Field__fini(rosidl_runtime_c__type_descripti
  */
 ROSIDL_GENERATOR_C_PUBLIC
 rosidl_runtime_c__type_description__Field *
-rosidl_runtime_c__type_description__Field__create();
+rosidl_runtime_c__type_description__Field__create(void);
 
 /// Destroy msg/Field message.
 /**

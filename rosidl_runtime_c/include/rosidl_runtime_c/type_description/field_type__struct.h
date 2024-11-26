@@ -3,6 +3,9 @@
 // with input from type_description_interfaces:msg/FieldType.idl
 // generated code does not contain a copyright notice
 
+// IWYU pragma: private, include "type_description_interfaces/msg/field_type.h"
+
+
 #ifndef ROSIDL_RUNTIME_C__TYPE_DESCRIPTION__FIELD_TYPE__STRUCT_H_
 #define ROSIDL_RUNTIME_C__TYPE_DESCRIPTION__FIELD_TYPE__STRUCT_H_
 

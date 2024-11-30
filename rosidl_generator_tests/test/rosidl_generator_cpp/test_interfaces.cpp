@@ -41,6 +41,8 @@
 #include "rosidl_generator_tests/msg/multi_nested.hpp"
 #include "rosidl_generator_tests/msg/nested.hpp"
 #include "rosidl_generator_tests/msg/small_constant.hpp"
+#include "rosidl_generator_tests/msg/nan_value_constant.hpp"
+#include "rosidl_generator_tests/msg/nan_value_default.hpp"
 #include "rosidl_generator_tests/msg/strings.hpp"
 #include "rosidl_generator_tests/msg/unbounded_sequences.hpp"
 #include "rosidl_generator_tests/msg/w_strings.hpp"
@@ -483,6 +485,11 @@ TEST(Test_messages, constants_assign) {
   ASSERT_EQ(x, rosidl_generator_tests::msg::SmallConstant::FLOAT32_CONST);
 }
 
+TEST(Test_messages, nan_constants) {
+  ASSERT_TRUE(std::isnan(rosidl_generator_tests::msg::NanValueConstant::FLOAT32_NAN));
+  ASSERT_TRUE(std::isnan(rosidl_generator_tests::msg::NanValueConstant::FLOAT64_NAN));
+}
+
 // Defaults
 TEST(Test_messages, defaults) {
   rosidl_generator_tests::msg::Defaults message;
@@ -499,6 +506,12 @@ TEST(Test_messages, defaults) {
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, uint32_value, 60000ul, UINT32_MAX);
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, int64_value, -40000000, INT64_MAX);
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, uint64_value, 50000000ull, UINT64_MAX);
+}
+
+TEST(Test_messages, nan_defaults) {
+  rosidl_generator_tests::msg::NanValueDefault nan_val_default;
+  ASSERT_TRUE(std::isnan(nan_val_default.float32_nan));
+  ASSERT_TRUE(std::isnan(nan_val_default.float64_nan));
 }
 
 // String array with default values

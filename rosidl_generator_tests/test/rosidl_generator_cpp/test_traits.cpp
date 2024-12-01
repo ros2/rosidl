@@ -105,10 +105,8 @@ unbounded_sequence_of_wstrings: []
   /*{
     test_msgs::idl::IdlOnlyTypes msg;
     msg.wchar_value = u'ö';
-    msg.long_double_value = 1.125;
     EXPECT_STREQ(
       R"(wchar_value: "\u00f6"
-long_double_value: 1.12500
 )",
       to_yaml(
         msg).c_str());
@@ -116,7 +114,6 @@ long_double_value: 1.12500
     msg.wchar_value = u'貓';
     EXPECT_STREQ(
       R"(wchar_value: "\u8c93"
-long_double_value: 1.12500
 )",
       to_yaml(
         msg).c_str());

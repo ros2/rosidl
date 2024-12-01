@@ -3,6 +3,9 @@
 // with input from type_description_interfaces:msg/IndividualTypeDescription.idl
 // generated code does not contain a copyright notice
 
+// IWYU pragma: private, include "type_description_interfaces/msg/individual_type_description.h"
+
+
 #ifndef ROSIDL_RUNTIME_C__TYPE_DESCRIPTION__INDIVIDUAL_TYPE_DESCRIPTION__STRUCT_H_
 #define ROSIDL_RUNTIME_C__TYPE_DESCRIPTION__INDIVIDUAL_TYPE_DESCRIPTION__STRUCT_H_
 

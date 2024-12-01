@@ -113,7 +113,7 @@ rosidl_runtime_c__type_description__TypeSource__copy(
 }
 
 rosidl_runtime_c__type_description__TypeSource *
-rosidl_runtime_c__type_description__TypeSource__create()
+rosidl_runtime_c__type_description__TypeSource__create(void)
 {
   rcutils_allocator_t allocator = rcutils_get_default_allocator();
   rosidl_runtime_c__type_description__TypeSource * msg = (rosidl_runtime_c__type_description__TypeSource *)allocator.allocate(sizeof(rosidl_runtime_c__type_description__TypeSource), allocator.state);

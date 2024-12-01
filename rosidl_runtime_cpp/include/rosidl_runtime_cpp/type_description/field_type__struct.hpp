@@ -3,6 +3,9 @@
 // with input from type_description_interfaces:msg/FieldType.idl
 // generated code does not contain a copyright notice
 
+// IWYU pragma: private, include "type_description_interfaces/msg/field_type.hpp"
+
+
 #ifndef ROSIDL_RUNTIME_CPP__TYPE_DESCRIPTION__FIELD_TYPE__STRUCT_HPP_
 #define ROSIDL_RUNTIME_CPP__TYPE_DESCRIPTION__FIELD_TYPE__STRUCT_HPP_
 
@@ -142,8 +145,6 @@ struct FieldType_
     10u;
   static constexpr uint8_t FIELD_TYPE_DOUBLE =
     11u;
-  static constexpr uint8_t FIELD_TYPE_LONG_DOUBLE =
-    12u;
   static constexpr uint8_t FIELD_TYPE_CHAR =
     13u;
   static constexpr uint8_t FIELD_TYPE_WCHAR =
@@ -186,8 +187,6 @@ struct FieldType_
     58u;
   static constexpr uint8_t FIELD_TYPE_DOUBLE_ARRAY =
     59u;
-  static constexpr uint8_t FIELD_TYPE_LONG_DOUBLE_ARRAY =
-    60u;
   static constexpr uint8_t FIELD_TYPE_CHAR_ARRAY =
     61u;
   static constexpr uint8_t FIELD_TYPE_WCHAR_ARRAY =
@@ -230,8 +229,6 @@ struct FieldType_
     106u;
   static constexpr uint8_t FIELD_TYPE_DOUBLE_BOUNDED_SEQUENCE =
     107u;
-  static constexpr uint8_t FIELD_TYPE_LONG_DOUBLE_BOUNDED_SEQUENCE =
-    108u;
   static constexpr uint8_t FIELD_TYPE_CHAR_BOUNDED_SEQUENCE =
     109u;
   static constexpr uint8_t FIELD_TYPE_WCHAR_BOUNDED_SEQUENCE =
@@ -274,8 +271,6 @@ struct FieldType_
     154u;
   static constexpr uint8_t FIELD_TYPE_DOUBLE_UNBOUNDED_SEQUENCE =
     155u;
-  static constexpr uint8_t FIELD_TYPE_LONG_DOUBLE_UNBOUNDED_SEQUENCE =
-    156u;
   static constexpr uint8_t FIELD_TYPE_CHAR_UNBOUNDED_SEQUENCE =
     157u;
   static constexpr uint8_t FIELD_TYPE_WCHAR_UNBOUNDED_SEQUENCE =
@@ -362,184 +357,431 @@ using FieldType =
   rosidl_runtime_cpp::type_description::FieldType_<std::allocator<void>>;
 
 // constant definitions
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_NOT_SET;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_NESTED_TYPE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT8;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT8;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT16;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT16;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT32;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT32;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT64;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT64;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FLOAT;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_DOUBLE;
-template<typename ContainerAllocator>
-constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_LONG_DOUBLE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_CHAR;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_WCHAR;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BOOLEAN;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BYTE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_STRING;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_WSTRING;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FIXED_STRING;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FIXED_WSTRING;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BOUNDED_STRING;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BOUNDED_WSTRING;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_NESTED_TYPE_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT8_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT8_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT16_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT16_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT32_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT32_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT64_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT64_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FLOAT_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_DOUBLE_ARRAY;
-template<typename ContainerAllocator>
-constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_LONG_DOUBLE_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_CHAR_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_WCHAR_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BOOLEAN_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BYTE_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_STRING_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_WSTRING_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FIXED_STRING_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FIXED_WSTRING_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BOUNDED_STRING_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BOUNDED_WSTRING_ARRAY;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_NESTED_TYPE_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT8_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT8_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT16_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT16_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT32_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT32_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT64_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT64_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FLOAT_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_DOUBLE_BOUNDED_SEQUENCE;
-template<typename ContainerAllocator>
-constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_LONG_DOUBLE_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_CHAR_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_WCHAR_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BOOLEAN_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BYTE_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_STRING_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_WSTRING_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FIXED_STRING_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FIXED_WSTRING_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BOUNDED_STRING_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BOUNDED_WSTRING_BOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_NESTED_TYPE_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT8_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT8_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT16_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT16_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT32_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT32_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_INT64_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_UINT64_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FLOAT_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_DOUBLE_UNBOUNDED_SEQUENCE;
-template<typename ContainerAllocator>
-constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_LONG_DOUBLE_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_CHAR_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_WCHAR_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BOOLEAN_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BYTE_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_STRING_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_WSTRING_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FIXED_STRING_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_FIXED_WSTRING_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BOUNDED_STRING_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
+#if __cplusplus < 201703L
+// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
 constexpr uint8_t FieldType_<ContainerAllocator>::FIELD_TYPE_BOUNDED_WSTRING_UNBOUNDED_SEQUENCE;
+#endif  // __cplusplus < 201703L
 
 }  // namespace type_description
 

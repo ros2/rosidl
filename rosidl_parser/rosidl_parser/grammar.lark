@@ -226,11 +226,9 @@ base_type_spec.2: integer_type
 // (24)
 floating_pt_type.2: floating_pt_type_float
   | floating_pt_type_double
-  | floating_pt_type_long_double
 // separate rules to identify the floating point type
 floating_pt_type_float: "float"
 floating_pt_type_double: "double"
-floating_pt_type_long_double: "long" "double"
 
 // (25)
 integer_type.2: signed_int

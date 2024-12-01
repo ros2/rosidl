@@ -31,8 +31,6 @@ enum rosidl_typesupport_introspection_c_field_types
   rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT = 1,
   /// Equivalent to double in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE = 2,
-  /// Equivalent to long double in C types.
-  rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE = 3,
   /// Equivalent to unsigned char in C types.
   rosidl_typesupport_introspection_c__ROS_TYPE_CHAR = 4,
   /// Equivalent to char16_t in C types.

@@ -2,6 +2,9 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.9.2 (2024-11-25)
+------------------
+
 4.9.1 (2024-11-20)
 ------------------
 * Types for rosidl_adapter (`#828 <https://github.com/ros2/rosidl/issues/828>`_)

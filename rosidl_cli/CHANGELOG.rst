@@ -2,6 +2,9 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.9.2 (2024-11-25)
+------------------
+
 4.9.1 (2024-11-20)
 ------------------
 * Rosidl cli types with `specs_set` fix (`#831 <https://github.com/ros2/rosidl/issues/831>`_)

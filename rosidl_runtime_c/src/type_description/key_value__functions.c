@@ -93,7 +93,7 @@ rosidl_runtime_c__type_description__KeyValue__copy(
 }
 
 rosidl_runtime_c__type_description__KeyValue *
-rosidl_runtime_c__type_description__KeyValue__create()
+rosidl_runtime_c__type_description__KeyValue__create(void)
 {
   rcutils_allocator_t allocator = rcutils_get_default_allocator();
   rosidl_runtime_c__type_description__KeyValue * msg = (rosidl_runtime_c__type_description__KeyValue *)allocator.allocate(sizeof(rosidl_runtime_c__type_description__KeyValue), allocator.state);

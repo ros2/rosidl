@@ -59,13 +59,6 @@ inline void value_to_yaml(double value, std::ostream & out)
   out.flags(flags);
 }
 
-inline void value_to_yaml(long double value, std::ostream & out)
-{
-  auto flags = out.flags();
-  out << std::showpoint << value;
-  out.flags(flags);
-}
-
 inline void value_to_yaml(uint8_t value, std::ostream & out)
 {
   out << +value;

@@ -28,8 +28,6 @@ namespace rosidl_typesupport_introspection_cpp
 const uint8_t ROS_TYPE_FLOAT = rosidl_typesupport_introspection_c__ROS_TYPE_FLOAT;
 /// Equivalent to double in C++ types.
 const uint8_t ROS_TYPE_DOUBLE = rosidl_typesupport_introspection_c__ROS_TYPE_DOUBLE;
-/// Equivalent to long double in C++ types.
-const uint8_t ROS_TYPE_LONG_DOUBLE = rosidl_typesupport_introspection_c__ROS_TYPE_LONG_DOUBLE;
 /// Equivalent to unsigned char in C++ types.
 const uint8_t ROS_TYPE_CHAR = rosidl_typesupport_introspection_c__ROS_TYPE_CHAR;
 /// Equivalent to char16_t in C++ types.

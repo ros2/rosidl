@@ -46,7 +46,6 @@ NONEXPLICIT_INTEGER_TYPES: Final = (
 FLOATING_POINT_TYPES: Final = (  # rule (24)
     'float',
     'double',
-    'long double',
 )
 CHARACTER_TYPES: Final = (
     'char',  # rule (34)
@@ -104,7 +103,7 @@ if TYPE_CHECKING:
     NonexplicitIntegerTypeValues = Union[SignedNonexplicitIntegerTypeValues,
                                          UnsignedNonexplicitIntegerTypeValues]
 
-    FloatingPointTypeValues = Literal['float', 'double', 'long double']
+    FloatingPointTypeValues = Literal['float', 'double']
     CharacterTypeValues = Literal['char', 'wchar']
     BooleanValue = Literal['boolean']
     OctetValue = Literal['octet']

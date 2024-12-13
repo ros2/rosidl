@@ -20,7 +20,7 @@ from ament_index_python import get_package_share_directory
 import fastjsonschema
 
 
-def test_type_hash():
+def test_type_hash() -> None:
     """Test all rosidl_generator_type_description output files against defined schemas."""
     schema_path = (
         Path(get_package_share_directory('rosidl_generator_type_description')) / 'resource' /

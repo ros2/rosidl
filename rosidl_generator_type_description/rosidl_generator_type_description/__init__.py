@@ -524,7 +524,7 @@ class FullTypeDescriptionDict(TypedDict):
 
 def extract_full_type_description(
     output_type_name: str,
-    type_map: dict[str, SerializeIndividualTypeDescriptionDict]
+    type_map: Dict[str, SerializeIndividualTypeDescriptionDict]
 ) -> FullTypeDescriptionDict:
     # Traverse reference graph to narrow down the references for the output type
     output_type = type_map[output_type_name]

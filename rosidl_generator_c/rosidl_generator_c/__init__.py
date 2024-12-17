@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from math import isnan
 
 from typing import List
 
@@ -211,10 +212,16 @@ def basic_value_to_c(type_, value):
         return f'{value}ull'
 
     if 'float' == type_.typename:
-        return f'{value}f'
+        if isnan(float(value)):
+            return 'nanf(\"\")'
+        else:
+            return f'{value}f'
 
     if 'double' == type_.typename:
-        return f'{value}l'
+        if isnan(float(value)):
+            return 'nan(\"\")'
+        else:
+            return f'{value}l'
 
     assert False, "unknown basic type '%s'" % type_
 

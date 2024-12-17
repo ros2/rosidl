@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from ast import literal_eval
+from math import isnan
 from typing import List
 
 from rosidl_parser.definition import AbstractGenericString
@@ -195,6 +196,11 @@ def primitive_value_to_cpp(type_, value):
 
     if type_.typename == 'boolean':
         return 'true' if value else 'false'
+
+    if type_.typename in ['double', 'long double', 'float']:
+        # Handle special floating types here.
+        if isnan(float(value)):
+            return f'std::numeric_limits<{type_.typename}>::quiet_NaN()'
 
     if type_.typename in [
         'short', 'unsigned short',

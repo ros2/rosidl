@@ -2,8 +2,8 @@
 Changelog for package rosidl_typesupport_introspection_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.6.5 (2024-12-18)
+------------------
 * Suppress false positive warnings from gcc. (`#811 <https://github.com/ros2/rosidl/issues/811>`_) (`#827 <https://github.com/ros2/rosidl/issues/827>`_)
   This is one of the last warnings that is preventing us
   from getting to yellow in release builds.

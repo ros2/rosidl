@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>rosidl_generator_type_description</name>
-  <version>4.6.4</version>
+  <version>4.6.5</version>
   <description>Generate hashes and descriptions of ROS 2 interface types, per REP-2011.</description>
 
   <maintainer email="me@emersonknapp.com">Emerson Knapp</maintainer>

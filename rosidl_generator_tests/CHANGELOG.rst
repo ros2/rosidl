@@ -2,6 +2,9 @@
 Changelog for package rosidl_generator_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.6.4 (2024-09-06)
 ------------------
 * Silence one more gcc false-positive. (`#814 <https://github.com/ros2/rosidl/issues/814>`_) (`#817 <https://github.com/ros2/rosidl/issues/817>`_)

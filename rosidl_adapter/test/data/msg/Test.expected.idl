@@ -19,7 +19,7 @@ module test_msgs {
       @verbatim (language="comment", text=
         "combined styles" "\n"
         "combined styles, part 2")
-      uint8 char_value;
+      char char_value;
 
       float float32_value;
 

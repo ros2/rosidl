@@ -20,7 +20,7 @@ module test_msgs {
       @verbatim (language="comment", text=
         "5" "\n"
         "6")
-      uint8 char_value;
+      char char_value;
 
       float float32_value;
 

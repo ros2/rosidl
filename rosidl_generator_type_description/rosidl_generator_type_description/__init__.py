@@ -412,11 +412,11 @@ def field_type_type_id(ftype: definition.AbstractType) -> int:
 
 
 def field_type_capacity(ftype: definition.AbstractType) -> int:
-    if isinstance(ftype, definition.AbstractNestedType):
-        if isinstance(ftype, definition.Array):
-            return ftype.size
-        elif isinstance(ftype, definition.BoundedSequence):
-            return ftype.maximum_size
+    if isinstance(ftype, definition.Array):
+        return ftype.size
+    elif isinstance(ftype, definition.BoundedSequence): 
+        return ftype.maximum_size
+
     return 0
 
 
@@ -425,9 +425,9 @@ def field_type_string_capacity(ftype: definition.AbstractType) -> Union[int, str
     if isinstance(ftype, definition.AbstractNestedType):
         value_type = ftype.value_type
 
-    if isinstance(value_type, definition.AbstractGenericString):
-        if isinstance(value_type, (definition.BoundedString, definition.BoundedWString)):
-            return value_type.maximum_size
+    if isinstance(value_type, (definition.BoundedString, definition.BoundedWString)):
+        return value_type.maximum_size
+
     return 0
 
 

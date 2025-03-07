@@ -101,7 +101,8 @@ TEMPLATE(
   toplevel_type_description=toplevel_type_description,
   implicit_type_descriptions=implicit_type_descriptions,
   hash_lookup=hash_lookup,
-  type_source_file=type_source_file)
+  type_source_file=type_source_file,
+  unique_prefix=interface_path.stem)
 }@
 @[end if]@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

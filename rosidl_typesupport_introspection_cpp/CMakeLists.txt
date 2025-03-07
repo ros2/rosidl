@@ -13,8 +13,8 @@ endif()
 
 find_package(ament_cmake_python REQUIRED)
 find_package(ament_cmake_ros REQUIRED)
-find_package(rosidl_runtime_cpp REQUIRED)
-find_package(rosidl_typesupport_introspection_c REQUIRED)
+find_package(rosidl_runtime_cpp 4 REQUIRED)
+find_package(rosidl_typesupport_introspection_c 4 REQUIRED)
 
 ament_export_dependencies(rosidl_runtime_cpp rosidl_typesupport_introspection_c)
 

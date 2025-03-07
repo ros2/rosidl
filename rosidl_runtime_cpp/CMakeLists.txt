@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 project(rosidl_runtime_cpp)
 
 find_package(ament_cmake REQUIRED)
-find_package(rosidl_runtime_c REQUIRED)
+find_package(rosidl_runtime_c 4 REQUIRED)
 
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE

@@ -22,11 +22,11 @@ if(BUILD_TESTING)
     add_compile_options(-Wno-gnu-zero-variadic-macro-arguments)
   endif()
 
-  find_package(rosidl_cmake REQUIRED)
-  find_package(rosidl_generator_c REQUIRED)
-  find_package(rosidl_generator_cpp REQUIRED)
-  find_package(rosidl_typesupport_introspection_c REQUIRED)
-  find_package(rosidl_typesupport_introspection_cpp REQUIRED)
+  find_package(rosidl_cmake 4 REQUIRED)
+  find_package(rosidl_generator_c 4 REQUIRED)
+  find_package(rosidl_generator_cpp 4 REQUIRED)
+  find_package(rosidl_typesupport_introspection_c 4 REQUIRED)
+  find_package(rosidl_typesupport_introspection_cpp 4 REQUIRED)
   find_package(test_interface_files REQUIRED)
 
   # Drop BoundedPlainSequences as BoundedSequences
@@ -43,7 +43,7 @@ if(BUILD_TESTING)
 
   find_package(rcutils REQUIRED)
   find_package(rcpputils REQUIRED)
-  find_package(rosidl_typesupport_interface REQUIRED)
+  find_package(rosidl_typesupport_interface 4 REQUIRED)
 
   add_library(${PROJECT_NAME}_library INTERFACE)
   target_include_directories(${PROJECT_NAME}_library INTERFACE include/)

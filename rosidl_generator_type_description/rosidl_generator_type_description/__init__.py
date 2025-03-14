@@ -201,6 +201,7 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
         }
         rel_path = Path(*top_type_name.split('/')[1:])
         json_path = output_dir / rel_path.with_suffix('.json')
+        json_path.parent.mkdir(parents=True, exist_ok=True)
         with json_path.open('w', encoding='utf-8') as json_file:
             json_file.write(json.dumps(json_content, indent=2))
         generated_files.append(json_path)

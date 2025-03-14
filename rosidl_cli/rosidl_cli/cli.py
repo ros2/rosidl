@@ -17,6 +17,7 @@ import signal
 from typing import Any, List, Union
 
 from rosidl_cli.command.generate import GenerateCommand
+from rosidl_cli.command.hash import HashCommand
 from rosidl_cli.command.translate import TranslateCommand
 from rosidl_cli.common import get_first_line_doc
 
@@ -79,8 +80,8 @@ def main() -> Union[str, signal.Signals, Any]:
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
 
-    commands: List[Union[GenerateCommand, TranslateCommand]] = \
-        [GenerateCommand(), TranslateCommand()]
+    commands: List[Union[GenerateCommand, TranslateCommand, HashCommand]] = \
+        [GenerateCommand(), TranslateCommand(), HashCommand()]
 
     # add arguments for command extension(s)
     add_subparsers(

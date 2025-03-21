@@ -26,7 +26,7 @@ def add_subparsers(
     parser: argparse.ArgumentParser,
     cli_name: str,
     commands: List[Union[GenerateCommand, TranslateCommand]]
-) -> argparse._SubParsersAction[argparse.ArgumentParser]:
+) -> argparse._SubParsersAction:
     """
     Create argparse subparser for each command.
 

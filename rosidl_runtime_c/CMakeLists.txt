@@ -20,7 +20,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros_core REQUIRED)
 find_package(rcutils REQUIRED)
-find_package(rosidl_typesupport_interface REQUIRED)
+find_package(rosidl_typesupport_interface 4 REQUIRED)
 
 file(GLOB type_description_sources "src/type_description/*.c")
 file(GLOB type_description_includes "include/rosidl_runtime_c/type_description/*.h")

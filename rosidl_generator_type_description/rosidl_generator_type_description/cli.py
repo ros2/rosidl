@@ -12,20 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pathlib
 import os
+import pathlib
 
 from ament_index_python import get_package_share_directory
 from rosidl_cli.command.hash.extensions import HashCommandExtension
 from rosidl_cli.command.helpers import (
     generator_arguments_file,
     legacy_generator_arguments,
-    split_idl_interface_files,
     package_name_from_interface_file_path,
+    split_idl_interface_files,
 )
 from rosidl_cli.command.translate.api import translate
 
 from rosidl_generator_type_description import generate_type_hash
+
 
 def package_paths_from_include_paths(include_paths):
     """
@@ -40,6 +41,7 @@ def package_paths_from_include_paths(include_paths):
             for path in pathlib.Path(include_path).glob('**/*.idl')
         }
     )
+
 
 class HashTypeDescription(HashCommandExtension):
     def generate_type_hashes(
@@ -74,6 +76,6 @@ class HashTypeDescription(HashCommandExtension):
                 templates_path=templates_path,
                 output_path=output_path,
             ),
-            include_paths= include_path_tuples
+            include_paths=include_path_tuples
         ) as path_to_arguments_file:
             return generate_type_hash(path_to_arguments_file)

@@ -17,7 +17,11 @@ import pathlib
 from ament_index_python import get_package_share_directory
 
 from rosidl_cli.command.generate.extensions import GenerateCommandExtension
-from rosidl_cli.command.helpers import generate_visibility_control_file, legacy_generator_arguments_file, split_idl_interface_files
+from rosidl_cli.command.helpers import (
+    generate_visibility_control_file,
+    legacy_generator_arguments_file,
+    split_idl_interface_files
+)
 from rosidl_cli.command.translate.api import translate
 
 from rosidl_typesupport_introspection_c import generate_c

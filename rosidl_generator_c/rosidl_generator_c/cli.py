@@ -16,6 +16,7 @@ import pathlib
 
 from ament_index_python import get_package_share_directory
 from rosidl_cli.command.generate.extensions import GenerateCommandExtension
+from rosidl_cli.command.hash.api import generate_type_hashes
 from rosidl_cli.command.helpers import (
     build_type_description_tuples,
     generate_visibility_control_file,
@@ -25,7 +26,6 @@ from rosidl_cli.command.helpers import (
     split_idl_interface_files
 )
 from rosidl_cli.command.translate.api import translate
-from rosidl_cli.command.hash.api import generate_type_hashes
 
 from rosidl_generator_c import generate_c
 
@@ -65,7 +65,9 @@ class GenerateC(GenerateCommandExtension):
                 output_path=output_path
             )
 
-        type_description_tuples = build_type_description_tuples(idl_interface_files, type_description_files)
+        type_description_tuples = build_type_description_tuples(
+            idl_interface_files, type_description_files
+        )
 
         # Generate visibility control file
         visibility_control_file_template_path = \
@@ -80,9 +82,10 @@ class GenerateC(GenerateCommandExtension):
         )
         generated_files.append(visibility_control_file_path)
 
-
-        ros_interface_files = [str(ros_interface_file_from_idl(idl_file)) for idl_file in idl_interface_files]
-
+        ros_interface_files = [
+            str(ros_interface_file_from_idl(idl_file))
+            for idl_file in idl_interface_files
+        ]
 
         # Generate code
         with generator_arguments_file(

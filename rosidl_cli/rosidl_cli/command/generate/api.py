@@ -15,7 +15,7 @@
 import inspect
 import os
 import pathlib
-from typing import List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from .extensions import GenerateCommandExtension, load_type_extensions, load_typesupport_extensions
 
@@ -88,7 +88,7 @@ def generate(
     else:
         os.makedirs(output_path, exist_ok=True)
 
-    def extra_kwargs(func: callable, **kwargs):
+    def extra_kwargs(func: Callable, **kwargs: Any) -> Dict[str, Any]:
         matched_kwargs = {}
         signature = inspect.signature(func)
         for name, value in kwargs.items():
@@ -117,7 +117,10 @@ def generate(
                 extension.generate(
                     package_name, interface_files, include_paths,
                     output_path=output_path / extension.name,
-                    **extra_kwargs(extension.generate, type_description_files=type_description_files)
+                    **extra_kwargs(
+                        extension.generate,
+                        type_description_files=type_description_files
+                    )
                 )
             )
-        return generated_files
+    return generated_files

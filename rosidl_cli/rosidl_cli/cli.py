@@ -25,7 +25,7 @@ from rosidl_cli.common import get_first_line_doc
 def add_subparsers(
     parser: argparse.ArgumentParser,
     cli_name: str,
-    commands: List[Union[GenerateCommand, TranslateCommand]]
+    commands: List[Union[GenerateCommand, HashCommand, TranslateCommand]]
 ) -> argparse._SubParsersAction:
     """
     Create argparse subparser for each command.

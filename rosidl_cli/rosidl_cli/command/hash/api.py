@@ -66,6 +66,3 @@ def generate_type_hashes(
         ))
 
     return generated_hashes
-
-
-

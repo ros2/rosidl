@@ -11,12 +11,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Check fingerprint changed
-      uses: tj-actions/changed-files@v44
+      uses: tj-actions/changed-files@v46
       id: changed-fingerprint
       with:
         files: scripts/type_description.fingerprint
     - name: Check type description sources changed
-      uses: tj-actions/changed-files@v44
+      uses: tj-actions/changed-files@v46
       id: changed-copied-sources
       with:
         files: |

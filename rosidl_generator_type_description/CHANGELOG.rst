@@ -2,6 +2,14 @@
 Changelog for package rosidl_generator_type_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.10.0 (2025-04-24)
+-------------------
+
+4.9.4 (2025-04-18)
+------------------
+* Switch to ament_cmake_ros_core package (`#856 <https://github.com/ros2/rosidl/issues/856>`_)
+* Contributors: Michael Carroll
+
 4.9.3 (2024-12-20)
 ------------------
 

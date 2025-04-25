@@ -2,6 +2,14 @@
 Changelog for package rosidl_generator_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.10.0 (2025-04-24)
+-------------------
+
+4.9.4 (2025-04-18)
+------------------
+* Add name and data_type traits for actions (`#848 <https://github.com/ros2/rosidl/issues/848>`_)
+* Contributors: Nathan Wiebe Neufeldt
+
 4.9.3 (2024-12-20)
 ------------------
 

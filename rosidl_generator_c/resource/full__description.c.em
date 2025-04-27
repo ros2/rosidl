@@ -2,6 +2,7 @@
 @{
 from collections import OrderedDict
 from rosidl_generator_c import escape_string
+from rosidl_generator_c import escape_utf8
 from rosidl_generator_c import idl_structure_type_to_c_include_prefix
 from rosidl_generator_c import type_hash_to_c_definition
 from rosidl_parser.definition import NamespacedType
@@ -23,13 +24,12 @@ def static_seq_n(varname, n):
 def static_seq(varname, values):
   """Statically define a runtime Sequence or String type."""
   if values:
-    return f'{{{varname}, {len(values)}, {len(values)}}}'
+    if isinstance(values, str):
+      utf8_values = values.encode('utf-8')
+      return f'{{{varname}, {len(utf8_values)}, {len(utf8_values)}}}'
+    else:
+      return f'{{{varname}, {len(values)}, {len(values)}}}'
   return '{NULL, 0, 0}'
-
-def utf8_encode(value_string):
-  from rosidl_generator_c import escape_string
-  # Slice removes the b'' from the representation.
-  return escape_string(repr(value_string.encode('utf-8'))[2:-1])
 
 implicit_type_names = set(td['type_description']['type_name'] for td, _ in implicit_type_descriptions)
 includes = OrderedDict()
@@ -98,7 +98,7 @@ ref_tds = msg['referenced_type_descriptions']
 @[  for field in itype_description['fields']]@
 static char @(td_c_typename)__FIELD_NAME__@(field['name'])[] = "@(field['name'])";
 @[    if field['default_value']]@
-static char @(td_c_typename)__DEFAULT_VALUE__@(field['name'])[] = "@(utf8_encode(field['default_value']))";
+static char @(td_c_typename)__DEFAULT_VALUE__@(field['name'])[] = "@(escape_utf8(escape_string(field['default_value'])))";
 @[    end if]@
 @[  end for]@
 
@@ -167,9 +167,9 @@ c_typename = typename_to_c(ref_td['type_name'])
 @[if raw_source_content]@
 static char toplevel_type_raw_source[] =@
 @[  for line in raw_source_content.splitlines()[:-1]]
-  "@(utf8_encode(line))\n"@
+  "@(escape_utf8(escape_string(line)))\n"@
 @[  end for]
-  "@(utf8_encode(raw_source_content.splitlines()[-1]))";
+  "@(escape_utf8(escape_string(raw_source_content.splitlines()[-1])))";
 @[end if]@
 
 static char @(toplevel_encoding)_encoding[] = "@(toplevel_encoding)";

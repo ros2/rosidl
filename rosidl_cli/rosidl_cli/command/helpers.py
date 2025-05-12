@@ -17,10 +17,6 @@ import json
 import os
 import pathlib
 import tempfile
-<<<<<<< HEAD
-=======
-from typing import Any, Dict, Generator, List, Tuple
->>>>>>> c9a3084 (rosidl_cli: Add type description support (#857))
 
 
 def package_name_from_interface_file_path(path):
@@ -114,7 +110,7 @@ def build_type_description_tuples(idl_interface_files, type_description_files):
     return type_description_tuples
 
 
-def ros_interface_file_from_idl(idl_file: str) -> pathlib.Path:
+def ros_interface_file_from_idl(idl_file):
     """
     Return the absolute path of the ROS interface file generated from the given IDL file.
 
@@ -127,7 +123,7 @@ def ros_interface_file_from_idl(idl_file: str) -> pathlib.Path:
 
 
 @contextlib.contextmanager
-def generator_arguments_file(**kwargs) -> Generator[str, None, None]:
+def generator_arguments_file(**kwargs):
     """
     Create a temporary file containing generator arguments.
 
@@ -150,21 +146,12 @@ def generator_arguments_file(**kwargs) -> Generator[str, None, None]:
 
 def legacy_generator_arguments(
     *,
-<<<<<<< HEAD
     package_name,
     interface_files,
     include_paths,
     templates_path,
     output_path
 ):
-=======
-    package_name: str,
-    interface_files: List[str],
-    include_paths: List[str],
-    templates_path: str,
-    output_path: str,
-) -> Dict[str, Any]:
->>>>>>> c9a3084 (rosidl_cli: Add type description support (#857))
     """
     Return a dict containing the generator arguments for the legacy ROSIDL generator.
 
@@ -179,7 +166,7 @@ def legacy_generator_arguments(
       generator script this arguments are for
     :param output_path: Path to the output directory for generated code
     """
-    arguments: Dict[str, Any] = {}
+    arguments = {}
     arguments['package_name'] = package_name
     arguments['output_dir'] = os.path.abspath(output_path)
     arguments['template_dir'] = os.path.abspath(templates_path)
@@ -194,12 +181,12 @@ def legacy_generator_arguments(
 @contextlib.contextmanager
 def legacy_generator_arguments_file(
     *,
-    package_name: str,
-    interface_files: List[str],
-    include_paths: List[str],
-    templates_path: str,
-    output_path: str
-) -> Generator[str, None, None]:
+    package_name,
+    interface_files,
+    include_paths,
+    templates_path,
+    output_path
+):
     """
     Create a temporary file containing legacy arguments only.
 

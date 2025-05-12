@@ -26,20 +26,12 @@ class GenerateCommandExtension(Extension):
 
     def generate(
         self,
-<<<<<<< HEAD
         package_name,
         interface_files,
         include_paths,
-        output_path
+        output_path,
+        type_description_files
     ):
-=======
-        package_name: str,
-        interface_files: List[str],
-        include_paths: List[str],
-        output_path: Path,
-        type_description_files: Optional[List[str]] = None
-    ) -> List[str]:
->>>>>>> c9a3084 (rosidl_cli: Add type description support (#857))
         """
         Generate source code.
 

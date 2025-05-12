@@ -15,37 +15,20 @@
 import inspect
 import os
 import pathlib
-<<<<<<< HEAD
-
-from .extensions import load_type_extensions
-from .extensions import load_typesupport_extensions
-=======
-from typing import Any, Callable, Dict, List, Optional
 
 from .extensions import GenerateCommandExtension, load_type_extensions, load_typesupport_extensions
->>>>>>> c9a3084 (rosidl_cli: Add type description support (#857))
 
 
 def generate(
     *,
-<<<<<<< HEAD
     package_name,
     interface_files,
     include_paths=None,
     output_path=None,
     types=None,
-    typesupports=None
+    typesupports=None,
+    type_description_files=None
 ):
-=======
-    package_name: str,
-    interface_files: List[str],
-    include_paths: Optional[List[str]] = None,
-    output_path: Optional[pathlib.Path] = None,
-    types: Optional[List[str]] = None,
-    typesupports: Optional[List[str]] = None,
-    type_description_files: Optional[List[str]] = None
-) -> List[List[str]]:
->>>>>>> c9a3084 (rosidl_cli: Add type description support (#857))
     """
     Generate source code from interface definition files.
 
@@ -104,7 +87,7 @@ def generate(
     else:
         os.makedirs(output_path, exist_ok=True)
 
-    def extra_kwargs(func: Callable, **kwargs: Any) -> Dict[str, Any]:
+    def extra_kwargs(func, **kwargs):
         matched_kwargs = {}
         signature = inspect.signature(func)
         for name, value in kwargs.items():

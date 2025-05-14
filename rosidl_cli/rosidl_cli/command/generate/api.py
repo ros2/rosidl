@@ -16,7 +16,7 @@ import inspect
 import os
 import pathlib
 
-from .extensions import GenerateCommandExtension, load_type_extensions, load_typesupport_extensions
+from .extensions import load_type_extensions, load_typesupport_extensions
 
 
 def generate(

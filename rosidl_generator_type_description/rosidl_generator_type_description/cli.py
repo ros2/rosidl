@@ -12,38 +12,49 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import pathlib
 
 from ament_index_python import get_package_share_directory
-from rosidl_cli.command.generate.extensions import GenerateCommandExtension
-from rosidl_cli.command.hash.api import generate_type_hashes
+from rosidl_cli.command.hash.extensions import HashCommandExtension
 from rosidl_cli.command.helpers import (
-    build_type_description_tuples,
-    generate_visibility_control_file,
     generator_arguments_file,
     legacy_generator_arguments,
+    package_name_from_interface_file_path,
     split_idl_interface_files,
 )
 from rosidl_cli.command.translate.api import translate
 
-from rosidl_generator_cpp import generate_cpp
+from rosidl_generator_type_description import generate_type_hash
 
 
-class GenerateCpp(GenerateCommandExtension):
+def package_paths_from_include_paths(include_paths):
+    """
+    Collect package paths, typically share paths, from include paths.
 
-    def generate(
+    Package paths are absolute paths prefixed by the name of package followed by a colon ':'.
+    """
+    return list(
+        {
+            f'{package_name_from_interface_file_path(path)}:{path.parents[1]}'
+            for include_path in map(os.path.abspath, include_paths)
+            for path in pathlib.Path(include_path).glob('**/*.idl')
+        }
+    )
+
+
+class HashTypeDescription(HashCommandExtension):
+    def generate_type_hashes(
         self,
         package_name,
         interface_files,
         include_paths,
         output_path,
-        type_description_files=None
     ):
         package_share_path = \
-            pathlib.Path(get_package_share_directory('rosidl_generator_cpp'))
+            pathlib.Path(get_package_share_directory('rosidl_generator_type_description'))
         templates_path = package_share_path / 'resource'
 
-        # Normalize interface definition format to .idl
         idl_interface_files, non_idl_interface_files = split_idl_interface_files(interface_files)
         if non_idl_interface_files:
             idl_interface_files.extend(translate(
@@ -54,31 +65,7 @@ class GenerateCpp(GenerateCommandExtension):
                 output_path=output_path / 'tmp',
             ))
 
-        if not type_description_files:
-            type_description_files = generate_type_hashes(
-                package_name=package_name,
-                interface_files=idl_interface_files,
-                include_paths=include_paths,
-                output_path=output_path
-            )
-
-        type_description_tuples = build_type_description_tuples(
-            idl_interface_files, type_description_files
-        )
-
-        generated_files = []
-        # Generate visibility control file
-        visibility_control_file_template_path = \
-            templates_path / 'rosidl_generator_cpp__visibility_control.hpp.in'
-        visibility_control_file_path = \
-            output_path / 'msg' / 'rosidl_generator_cpp__visibility_control.hpp'
-
-        generate_visibility_control_file(
-            package_name=package_name,
-            template_path=visibility_control_file_template_path,
-            output_path=visibility_control_file_path
-        )
-        generated_files.append(visibility_control_file_path)
+        include_path_tuples = package_paths_from_include_paths(include_paths)
 
         # Generate code
         with generator_arguments_file(
@@ -87,8 +74,8 @@ class GenerateCpp(GenerateCommandExtension):
                 interface_files=idl_interface_files,
                 include_paths=include_paths,
                 templates_path=templates_path,
-                output_path=output_path
+                output_path=output_path,
             ),
-            type_description_tuples=type_description_tuples,
+            include_paths=include_path_tuples
         ) as path_to_arguments_file:
-            return generate_cpp(path_to_arguments_file)
+            return generate_type_hash(path_to_arguments_file)

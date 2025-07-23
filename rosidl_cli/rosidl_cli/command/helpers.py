@@ -17,7 +17,7 @@ import json
 import os
 import pathlib
 import tempfile
-from typing import Generator, List, Tuple
+from typing import Any, Dict, Generator, List, Tuple
 
 
 def package_name_from_interface_file_path(path: pathlib.Path) -> str:
@@ -90,17 +90,73 @@ def idl_tuples_from_interface_files(
     return idl_tuples
 
 
+def build_type_description_tuples(idl_interface_files, type_description_files):
+    """
+    Create type description tuples from IDL interface files and type descriptions.
+
+    :param idl_interface_files: List of IDL interface files either with or without prefix
+    :param type_description_files: List of type description files
+    :return: List of type description tuples of the form 'idl_file_path:type_description_file'
+    """
+    def get_type_description_file(idl_file, type_description_files):
+        for type_description_file in type_description_files:
+            if pathlib.Path(idl_file).stem == pathlib.Path(type_description_file).stem:
+                return type_description_file
+
+    type_description_tuples = []
+    for idl_file in idl_interface_files:
+        type_description_file = get_type_description_file(idl_file, type_description_files)
+        if type_description_file is None:
+            raise ValueError(f'Type description file not found for {idl_file}')
+        _, path = interface_path_as_tuple(idl_file)
+        type_description_tuples.append(f'{path}:{type_description_file}')
+    return type_description_tuples
+
+
+def ros_interface_file_from_idl(idl_file: str) -> pathlib.Path:
+    """
+    Return the absolute path of the ROS interface file generated from the given IDL file.
+
+    :param idl_file: The IDL file to generate the ROS interface file from.
+        Can be prefix:relative/path/to/file.idl or relative/path/to/file.idl
+    :return: The absolute path of the ROS interface file generated from the given IDL file.
+    """
+    prefix, path = interface_path_as_tuple(idl_file)
+    return (prefix / path).absolute()
+
+
 @contextlib.contextmanager
-def legacy_generator_arguments_file(
+def generator_arguments_file(**kwargs) -> Generator[str, None, None]:
+    """
+    Create a temporary file containing generator arguments.
+
+    :param kwargs: Generator arguments to be written to the file.
+    :yields: Path to the temporary file containing the generator arguments.
+    """
+    # NOTE(hidmic): named temporary files cannot be opened twice on Windows,
+    # so close it and manually remove it when leaving the context
+    with tempfile.NamedTemporaryFile(mode='w', delete=False) as tmp:
+        tmp.write(json.dumps(kwargs))
+    path_to_file = os.path.abspath(tmp.name)
+    try:
+        yield path_to_file
+    finally:
+        try:
+            os.unlink(path_to_file)
+        except FileNotFoundError:
+            pass
+
+
+def legacy_generator_arguments(
     *,
     package_name: str,
     interface_files: List[str],
     include_paths: List[str],
     templates_path: str,
-    output_path: str
-) -> Generator[str, None, None]:
+    output_path: str,
+) -> Dict[str, Any]:
     """
-    Generate a temporary rosidl generator arguments file.
+    Return a dict containing the generator arguments for the legacy ROSIDL generator.
 
     :param package_name: Name of the ROS package for which to generate code
     :param interface_files: Relative paths to ROS interface definition files,
@@ -113,30 +169,43 @@ def legacy_generator_arguments_file(
       generator script this arguments are for
     :param output_path: Path to the output directory for generated code
     """
-    idl_tuples = idl_tuples_from_interface_files(interface_files)
-    interface_dependencies = dependencies_from_include_paths(include_paths)
-    output_path = os.path.abspath(output_path)
-    templates_path = os.path.abspath(templates_path)
-    # NOTE(hidmic): named temporary files cannot be opened twice on Windows,
-    # so close it and manually remove it when leaving the context
-    with tempfile.NamedTemporaryFile(mode='w', delete=False) as tmp:
-        tmp.write(json.dumps({
-            'package_name': package_name,
-            'output_dir': output_path,
-            'template_dir': templates_path,
-            'idl_tuples': idl_tuples,
-            'ros_interface_dependencies': interface_dependencies,
-            # TODO(hidmic): re-enable output file caching
-            'target_dependencies': []
-        }))
-    path_to_file = os.path.abspath(tmp.name)
-    try:
-        yield path_to_file
-    finally:
-        try:
-            os.unlink(path_to_file)
-        except FileNotFoundError:
-            pass
+    arguments: Dict[str, Any] = {}
+    arguments['package_name'] = package_name
+    arguments['output_dir'] = os.path.abspath(output_path)
+    arguments['template_dir'] = os.path.abspath(templates_path)
+    arguments['idl_tuples'] = idl_tuples_from_interface_files(interface_files)
+    arguments['ros_interface_dependencies'] = dependencies_from_include_paths(include_paths)
+    # TODO(hidmic): re-enable output file caching
+    arguments['target_dependencies'] = []
+
+    return arguments
+
+
+@contextlib.contextmanager
+def legacy_generator_arguments_file(
+    *,
+    package_name: str,
+    interface_files: List[str],
+    include_paths: List[str],
+    templates_path: str,
+    output_path: str
+) -> Generator[str, None, None]:
+    """
+    Create a temporary file containing legacy arguments only.
+
+    This context manager is kept for backwards compatibility only, use
+    `generator_arguments_file` instead.
+    """
+    with generator_arguments_file(
+        **legacy_generator_arguments(
+            package_name=package_name,
+            interface_files=interface_files,
+            include_paths=include_paths,
+            templates_path=templates_path,
+            output_path=output_path
+        )
+    ) as path_to_arguments_file:
+        yield path_to_arguments_file
 
 
 def generate_visibility_control_file(
@@ -165,3 +234,15 @@ def generate_visibility_control_file(
 
     with open(output_path, 'w') as fd:
         fd.write(content)
+
+
+def split_idl_interface_files(interface_files):
+    """Split interface files into IDL and non-IDL files."""
+    idl_interface_files = []
+    non_idl_interface_files = []
+    for path in interface_files:
+        if not path.endswith('.idl'):
+            non_idl_interface_files.append(path)
+        else:
+            idl_interface_files.append(path)
+    return idl_interface_files, non_idl_interface_files

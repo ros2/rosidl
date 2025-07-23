@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>rosidl_runtime_c</name>
-  <version>4.9.3</version>
+  <version>5.0.0</version>
   <description>Provides definitions, initialization and finalization functions, and macros for getting and working with rosidl typesupport types in C.</description>
 
   <maintainer email="aditya.pande@openrobotics.org">Aditya Pande</maintainer>
@@ -17,7 +17,8 @@
   <author email="michel@ekumenlabs.com">Michel Hidalgo</author>
   <author email="william@osrfoundation.org">William Woodall</author>
 
-  <buildtool_depend>ament_cmake_ros</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_ros_core</buildtool_depend>
 
   <build_depend>rosidl_typesupport_interface</build_depend>
 
@@ -27,6 +28,7 @@
 
   <depend>rcutils</depend>
 
+  <test_depend>ament_cmake_gtest</test_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
   <test_depend>performance_test_fixture</test_depend>

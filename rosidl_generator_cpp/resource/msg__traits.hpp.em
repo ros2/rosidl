@@ -222,20 +222,6 @@ inline std::string to_yaml(const @(message.structure.namespaced_type.name) & msg
 namespace rosidl_generator_traits
 {
 
-[[deprecated("use @(message_namespace)::to_block_style_yaml() instead")]]
-inline void to_yaml(
-  const @(message_typename) & msg,
-  std::ostream & out, size_t indentation = 0)
-{
-  @(message_namespace)::to_block_style_yaml(msg, out, indentation);
-}
-
-[[deprecated("use @(message_namespace)::to_yaml() instead")]]
-inline std::string to_yaml(const @(message_typename) & msg)
-{
-  return @(message_namespace)::to_yaml(msg);
-}
-
 template<>
 inline const char * data_type<@(message_typename)>()
 {

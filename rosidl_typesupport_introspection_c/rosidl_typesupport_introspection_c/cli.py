@@ -17,8 +17,11 @@ import pathlib
 from ament_index_python import get_package_share_directory
 
 from rosidl_cli.command.generate.extensions import GenerateCommandExtension
-from rosidl_cli.command.helpers import generate_visibility_control_file
-from rosidl_cli.command.helpers import legacy_generator_arguments_file
+from rosidl_cli.command.helpers import (
+    generate_visibility_control_file,
+    legacy_generator_arguments_file,
+    split_idl_interface_files
+)
 from rosidl_cli.command.translate.api import translate
 
 from rosidl_typesupport_introspection_c import generate_c
@@ -42,13 +45,7 @@ class GenerateIntrospectionCTypesupport(GenerateCommandExtension):
         templates_path = package_share_path / 'resource'
 
         # Normalize interface definition format to .idl
-        idl_interface_files = []
-        non_idl_interface_files = []
-        for path in interface_files:
-            if not path.endswith('.idl'):
-                non_idl_interface_files.append(path)
-            else:
-                idl_interface_files.append(path)
+        idl_interface_files, non_idl_interface_files = split_idl_interface_files(interface_files)
         if non_idl_interface_files:
             idl_interface_files.extend(translate(
                 package_name=package_name,

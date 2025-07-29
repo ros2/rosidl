@@ -15,14 +15,13 @@
 #ifndef INTROSPECTION_LIBRARIES_UNDER_TEST_HPP_
 #define INTROSPECTION_LIBRARIES_UNDER_TEST_HPP_
 
-#include <cstddef>
-
 #include <rcutils/macros.h>
 
 #include <rosidl_typesupport_interface/macros.h>
 #include <rosidl_typesupport_introspection_c/message_introspection.h>
 #include <rosidl_typesupport_introspection_c/service_introspection.h>
 
+#include <cstddef>
 #include <memory>
 
 #include <rosidl_typesupport_introspection_cpp/message_introspection.hpp>

@@ -134,7 +134,7 @@ def test_message_parser_structure(message_idl_file: IdlFile) -> None:
     structure = messages[0].structure
     assert structure.namespaced_type.namespaces == ['rosidl_parser', 'msg']
     assert structure.namespaced_type.name == 'MyMessage'
-    assert len(structure.members) == 45
+    assert len(structure.members) == 46
 
     assert isinstance(structure.members[0].type, BasicType)
     assert structure.members[0].type.typename == 'int16'
@@ -303,6 +303,12 @@ def test_message_parser_annotations(message_idl_file: IdlFile) -> None:
     assert structure.members[44].name == 'fixed_int_only'
     assert len(structure.members[44].annotations) == 1
     assert structure.members[44].annotations[0].name == 'default'
+
+    assert isinstance(structure.members[45].type, BasicType)
+    assert structure.members[45].type.typename == 'int32'
+    assert structure.members[45].name == 'optional_int'
+    assert len(structure.members[45].annotations) == 1
+    assert structure.members[45].annotations[0].name == 'optional'
 
 
 @pytest.fixture(scope='module')

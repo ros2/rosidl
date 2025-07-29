@@ -1,0 +1,17 @@
+module rosidl_generator_tests {
+  module msg {
+    struct OptionalIdl {
+        @optional float optional_float;
+
+        @default ( value=32.0 )
+        @optional
+        float default_optional_float;
+
+        // @optional
+        // string optional_string;
+
+        // @optional
+        // short optional_short_array[3];
+    };
+  };
+};

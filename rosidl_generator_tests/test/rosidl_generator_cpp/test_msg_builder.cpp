@@ -14,11 +14,14 @@
 
 #include <gtest/gtest.h>
 
+#include <optional>
+
 #include "rosidl_generator_tests/msg/detail/arrays__builder.hpp"
 #include "rosidl_generator_tests/msg/detail/basic_types__builder.hpp"
 #include "rosidl_generator_tests/msg/detail/empty__builder.hpp"
 #include "rosidl_generator_tests/msg/detail/multi_nested__builder.hpp"
 #include "rosidl_generator_tests/msg/detail/nested__builder.hpp"
+#include "rosidl_generator_tests/msg/detail/optional_idl__builder.hpp"
 
 TEST(Test_msg_initialization, build) {
   ::rosidl_generator_tests::msg::BasicTypes basic =
@@ -200,4 +203,16 @@ TEST(Test_msg_initialization, build) {
   rosidl_generator_tests::msg::Empty empty =
     rosidl_generator_tests::build<rosidl_generator_tests::msg::Empty>();
   ASSERT_EQ(0, empty.structure_needs_at_least_one_member);
+
+  rosidl_generator_tests::msg::OptionalIdl optional =
+    rosidl_generator_tests::build<rosidl_generator_tests::msg::OptionalIdl>()
+    .optional_float(0.1f)
+    .default_optional_float(2.0);
+    // .optional_short_array({{-100, -200, -100}});
+    // .optional_string("init");
+
+  ASSERT_EQ(0.1f, optional.optional_float);
+  ASSERT_EQ(2.0, optional.default_optional_float);
+  // ASSERT_EQ({-100, -200, -100}, optional.default_optional_float);
+  // ASSERT_EQ("init", optional.optional_string)
 }

@@ -17,9 +17,11 @@
 #include <cstring>
 
 #include <string>
+#include <optional>
 
 #include "rosidl_generator_tests/msg/defaults.hpp"
 #include "rosidl_generator_tests/msg/bounded_sequences.hpp"
+#include "rosidl_generator_tests/msg/optional_idl.hpp"
 
 template<typename Callable>
 struct ScopeExit
@@ -169,6 +171,14 @@ TEST(Test_msg_initialization, defaults_only_constructor) {
   ASSERT_EQ(0L, basic.int32_value);
   ASSERT_EQ(0UL, basic.uint32_value);
   ASSERT_EQ(0LL, basic.int64_value);
+}
+
+TEST(Test_msg_initialization, optional_msg_initialization) {
+  rosidl_generator_tests::msg::OptionalIdl optional_msg;
+  ASSERT_EQ(std::nullopt, optional_msg.optional_float);
+  ASSERT_EQ(32.0, optional_msg.default_optional_float);
+  // ASSERT_EQ(std::nullopt, optional_msg.optional_short_array);
+  // ASSERT_EQ(std::nullopt, optional_msg.optional_string);
 }
 
 // This is a test to ensure that when the user passes SKIP to the constructor,

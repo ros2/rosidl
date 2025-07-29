@@ -2,8 +2,8 @@
 Changelog for package rosidl_pycommon
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+5.0.1 (2025-07-29)
+------------------
 * fix setuptools deprecation (`#880 <https://github.com/ros2/rosidl/issues/880>`_)
 * Contributors: mosfet80
 

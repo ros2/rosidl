@@ -2,8 +2,8 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+5.0.1 (2025-07-29)
+------------------
 * fix setuptools deprecations (`#877 <https://github.com/ros2/rosidl/issues/877>`_)
 * Contributors: mosfet80
 

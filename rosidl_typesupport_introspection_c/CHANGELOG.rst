@@ -2,8 +2,8 @@
 Changelog for package rosidl_typesupport_introspection_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+5.0.1 (2025-07-29)
+------------------
 * Uniform cmake minVersion (`#849 <https://github.com/ros2/rosidl/issues/849>`_)
 * Contributors: mosfet80
 

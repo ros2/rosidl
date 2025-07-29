@@ -2,6 +2,11 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix setuptools deprecations (`#877 <https://github.com/ros2/rosidl/issues/877>`_)
+* Contributors: mosfet80
+
 5.0.0 (2025-07-01)
 ------------------
 * rosidl_cli: Add type description support (`#857 <https://github.com/ros2/rosidl/issues/857>`_)

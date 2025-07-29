@@ -281,13 +281,15 @@ non_defaulted_zero_initialized_members = [
 @[ else]@
   static constexpr @(MSG_TYPE_TO_CPP[constant.type.typename]) @(constant.name) =
 @[  if isinstance(constant.type, BasicType)]@
-@[   if constant.type.typename in (*INTEGER_TYPES, *CHARACTER_TYPES, BOOLEAN_TYPE, OCTET_TYPE)]@
+@[   if constant.type.typename in (*INTEGER_TYPES, *CHARACTER_TYPES, BOOLEAN_TYPE)]@
     @(int(constant.value))@
 @[    if constant.type.typename in UNSIGNED_INTEGER_TYPES]@
 u@
 @[    end if]@
 @[   elif constant.type.typename == 'float']@
     @(constant.value)f@
+@[   elif constant.type.typename == OCTET_TYPE]@
+    std::byte{@(constant.value)}@
 @[   else]@
     @(constant.value)@
 @[   end if];

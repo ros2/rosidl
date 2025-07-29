@@ -93,7 +93,7 @@ inline void to_flow_style_yaml(
   {
 @[    if isinstance(member.type, BasicType)]@
     out << "@(member.name): ";
-@[      if member.type.typename in ('octet', 'char', 'wchar')]@
+@[      if member.type.typename in ('char', 'wchar')]@
     rosidl_generator_traits::character_value_to_yaml(msg.@(member.name), out);
 @[      else]@
     rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
@@ -112,7 +112,7 @@ inline void to_flow_style_yaml(
       size_t pending_items = msg.@(member.name).size();
       for (auto item : msg.@(member.name)) {
 @[      if isinstance(member.type.value_type, BasicType)]@
-@[        if member.type.value_type.typename in ('octet', 'char', 'wchar')]@
+@[        if member.type.value_type.typename in ('char', 'wchar')]@
         rosidl_generator_traits::character_value_to_yaml(item, out);
 @[        else]@
         rosidl_generator_traits::value_to_yaml(item, out);
@@ -158,7 +158,7 @@ inline void to_block_style_yaml(
     }
 @[    if isinstance(member.type, BasicType)]@
     out << "@(member.name): ";
-@[      if member.type.typename in ('octet', 'char', 'wchar')]@
+@[      if member.type.typename in ('char', 'wchar')]@
     rosidl_generator_traits::character_value_to_yaml(msg.@(member.name), out);
 @[      else]@
     rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
@@ -182,7 +182,7 @@ inline void to_block_style_yaml(
         }
 @[      if isinstance(member.type.value_type, BasicType)]@
         out << "- ";
-@[        if member.type.value_type.typename in ('octet', 'char', 'wchar')]@
+@[        if member.type.value_type.typename in ('char', 'wchar')]@
         rosidl_generator_traits::character_value_to_yaml(item, out);
 @[        else]@
         rosidl_generator_traits::value_to_yaml(item, out);

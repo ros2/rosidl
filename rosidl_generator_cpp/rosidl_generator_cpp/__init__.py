@@ -55,7 +55,7 @@ def prefix_with_bom_if_necessary(content: str) -> str:
 
 MSG_TYPE_TO_CPP = {
     'boolean': 'bool',
-    'octet': 'unsigned char',  # TODO change to std::byte with C++17
+    'octet': 'std::byte',
     'char': 'unsigned char',
     'wchar': 'char16_t',
     'float': 'float',
@@ -196,11 +196,13 @@ def primitive_value_to_cpp(type_, value):
     if type_.typename == 'boolean':
         return 'true' if value else 'false'
 
+    if type_.typename == 'octet':
+        return f'std::byte{{{value}}}'
+
     if type_.typename in [
         'short', 'unsigned short',
         'char', 'wchar',
         'double', 'long double',
-        'octet',
         'int8', 'uint8',
         'int16', 'uint16',
     ]:

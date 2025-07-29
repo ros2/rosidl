@@ -46,6 +46,14 @@ inline void character_value_to_yaml(char16_t value, std::ostream & out)
   out.flags(flags);
 }
 
+inline void value_to_yaml(std::byte value, std::ostream & out)
+{
+  auto flags = out.flags();
+  out << "0x" << std::hex << std::setw(2) << std::setfill('0') << \
+    std::to_integer<int>(value);
+  out.flags(flags);
+}
+
 inline void value_to_yaml(float value, std::ostream & out)
 {
   auto flags = out.flags();

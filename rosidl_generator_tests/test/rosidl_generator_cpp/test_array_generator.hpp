@@ -45,6 +45,37 @@ void test_vector_fill(
 }
 
 /**
+ * Helper function to generate a test pattern for byte type.
+ * Minimum and maximum values for the type and distributed values in the middle.
+ * @param C Container (vector, array, etc) to be filled
+ * @param size How many elements to fill in. Must size<=container_size
+ * @param min Minimum value in the range to fill.
+ * @param max Maximum value in the range to fill.
+ */
+template<
+  typename C,
+  typename std::enable_if<
+    std::is_same<typename C::value_type, std::byte>::value
+  >::type * = nullptr
+>
+void test_vector_fill(
+  C * container, size_t size,
+  typename C::value_type min, typename C::value_type max)
+{
+  if (size > 0 && min < max) {
+    int step = (std::to_integer<int>(max) - std::to_integer<int>(min)) / static_cast<int>(size);
+
+    (*container)[0] = min;
+    for (size_t i = 1; i < size - 1; i++) {
+      int val = std::to_integer<int>(min) + i * step;
+      (*container)[i] = static_cast<std::byte>(val);
+    }
+    (*container)[size - 1] = max;
+  }
+}
+
+
+/**
  * Helper function to generate a test pattern for integer number types.
  * The template type parameter must be an integer number type.
  * Mininum and maximum values for the type and distributed values in the middle.

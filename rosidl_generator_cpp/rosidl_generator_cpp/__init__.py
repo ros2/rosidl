@@ -14,6 +14,7 @@
 
 from ast import literal_eval
 from typing import List
+from typing import Optional
 from typing import Union
 
 from rosidl_parser.definition import AbstractGenericString
@@ -273,15 +274,15 @@ def create_init_alloc_and_member_lists(message: Message):
     # a single member of the class.
     class Member:
 
-        def __init__(self, name):
+        def __init__(self, name: str):
             self.name = name
-            self.default_value = None
-            self.zero_value = None
+            self.default_value: Optional[str] = None
+            self.zero_value: Optional[str] = None
             self.zero_need_array_override = False
-            self.type = None
+            self.type: Optional[AbstractType] = None
             self.num_prealloc = 0
 
-        def same_default_and_zero_value(self, other):
+        def same_default_and_zero_value(self, other) -> bool:
             return self.default_value == other.default_value and \
                 self.zero_value == other.zero_value
 
@@ -292,10 +293,10 @@ def create_init_alloc_and_member_lists(message: Message):
     # value).
     class CommonMemberSet:
 
-        def __init__(self):
-            self.members = []
+        def __init__(self) -> None:
+            self.members: list[Member] = []
 
-        def add_member(self, member):
+        def add_member(self, member: Member) -> bool:
             if not self.members or self.members[-1].same_default_and_zero_value(member):
                 self.members.append(member)
                 return True
@@ -308,17 +309,14 @@ def create_init_alloc_and_member_lists(message: Message):
     #                initializion in the allocator constructor
     #   member_list - The list of members that we will generate initialization code
     #                 for in the body of the constructors
-    init_list = []
-    alloc_list = []
-    member_list = []
+    init_list: list[str] = []
+    alloc_list: list[str] = []
+    member_list: list[CommonMemberSet] = []
     for field in message.structure.members:
         member = Member(field.name)
         member.type = field.type
-        if field.has_annotation(OPTIONAL_ANNOTATION) and not field.has_annotation('default'):
-            # Use existing logic for default
-            member.default_value = value_to_cpp(field.type, None)
 
-        elif isinstance(field.type, Array):
+        if isinstance(field.type, Array):
             alloc_list.append(field.name + '(_alloc)')
             if isinstance(field.type.value_type, BasicType) or \
                     isinstance(field.type.value_type, AbstractGenericString):
@@ -361,5 +359,9 @@ def create_init_alloc_and_member_lists(message: Message):
                 commonset = CommonMemberSet()
                 commonset.add_member(member)
                 member_list.append(commonset)
+
+        # Override default if optional
+        if field.has_annotation(OPTIONAL_ANNOTATION) and not field.has_annotation('default'):
+            member.default_value = value_to_cpp(field.type, None)
 
     return init_list, alloc_list, member_list

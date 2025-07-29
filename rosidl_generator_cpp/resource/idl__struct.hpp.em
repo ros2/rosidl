@@ -30,6 +30,7 @@ include_directives = set()
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 

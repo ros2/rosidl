@@ -15,6 +15,8 @@
 #ifndef INTROSPECTION_LIBRARIES_UNDER_TEST_HPP_
 #define INTROSPECTION_LIBRARIES_UNDER_TEST_HPP_
 
+#include <cstddef>
+
 #include <rcutils/macros.h>
 
 #include <rosidl_typesupport_interface/macros.h>

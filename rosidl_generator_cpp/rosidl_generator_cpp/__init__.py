@@ -360,8 +360,8 @@ def create_init_alloc_and_member_lists(message: Message):
                 commonset.add_member(member)
                 member_list.append(commonset)
 
-        # Override default if optional
-        if field.has_annotation(OPTIONAL_ANNOTATION) and not field.has_annotation('default'):
-            member.default_value = value_to_cpp(field.type, None)
+        # Override zero_value if optional
+        if field.has_annotation(OPTIONAL_ANNOTATION):
+            member.zero_value = value_to_cpp(field.type, None)
 
     return init_list, alloc_list, member_list

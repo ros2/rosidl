@@ -94,15 +94,13 @@ inline void to_flow_style_yaml(
   // member: @(member.name)
   do {
 @[    if member.has_annotation(OPTIONAL_ANNOTATION)]@
-    @(msg_type_to_cpp(member.type)) value;
+    auto value = msg.@(member.name).value();
     if (msg.@(member.name) == std::nullopt) {
       out << "@(member.name): null";
 @[    if i < len(message.structure.members) - 1]@
       out << ", ";
 @[    end if]@
       break;
-    } else {
-      value = msg.@(member.name).value();
     }
 @[    else]@
     auto value = msg.@(member.name);
@@ -173,12 +171,10 @@ inline void to_block_style_yaml(
       out << std::string(indentation, ' ');
     }
 @[    if member.has_annotation(OPTIONAL_ANNOTATION)]@
-    @(msg_type_to_cpp(member.type)) value;
+    auto value = msg.@(member.name).value();
     if (msg.@(member.name) == std::nullopt) {
       out << "@(member.name): null\n";
       break;
-    } else {
-      value = msg.@(member.name).value();
     }
 @[    else]@
     auto value = msg.@(member.name);

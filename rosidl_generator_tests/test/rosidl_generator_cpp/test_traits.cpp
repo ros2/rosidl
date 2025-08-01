@@ -255,12 +255,17 @@ alignment_check: 0
 )",
       yaml.c_str());
   }
+}
 
+TEST(Test_rosidl_generator_traits, optional_msgs) {
   {
     const rosidl_generator_tests::msg::OptionalIdl optional_msg;
     EXPECT_STREQ(
-      "optional_float: std::nullopt\ndefault_optional_float: 32.0000\n",
+      "optional_float: null\ndefault_optional_float: 32.0000\n",
       to_yaml(optional_msg).c_str());
+    EXPECT_STREQ(
+      "{optional_float: null, default_optional_float: 32.0000}",
+      to_yaml(optional_msg, true).c_str());
   }
 }
 

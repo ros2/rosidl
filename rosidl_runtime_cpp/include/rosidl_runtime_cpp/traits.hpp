@@ -20,7 +20,6 @@
 #include <iomanip>
 #include <iosfwd>
 #include <string>
-#include <optional>
 #include <type_traits>
 
 namespace rosidl_generator_traits
@@ -149,16 +148,6 @@ inline void value_to_yaml(const std::u16string & value, std::ostream & out)
   }
   out.flags(flags);
   out << "\"";
-}
-
-template<typename T>
-inline void value_to_yaml(const std::optional<T> value, std::ostream & out)
-{
-  if (value.has_value()) {
-    value_to_yaml(value.value(), out);
-  } else {
-    out << "std::nullopt";
-  }
 }
 
 template<typename T>

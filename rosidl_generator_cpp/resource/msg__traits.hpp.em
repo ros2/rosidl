@@ -1,5 +1,6 @@
 @# Included from rosidl_generator_cpp/resource/idl__traits.hpp.em
 @{
+from rosidl_generator_cpp import msg_type_to_cpp
 from rosidl_parser.definition import ACTION_FEEDBACK_SUFFIX
 from rosidl_parser.definition import ACTION_GOAL_SUFFIX
 from rosidl_parser.definition import ACTION_RESULT_SUFFIX
@@ -13,6 +14,7 @@ from rosidl_parser.definition import EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import UnboundedSequence
+from rosidl_parser.definition import OPTIONAL_ANNOTATION
 
 message_namespace = '::'.join(message.structure.namespaced_type.namespaces)
 message_typename = '::'.join(message.structure.namespaced_type.namespaced_name())
@@ -90,27 +92,41 @@ inline void to_flow_style_yaml(
 
 @[    end if]@
   // member: @(member.name)
-  {
+  do {
+@[    if member.has_annotation(OPTIONAL_ANNOTATION)]@
+    @(msg_type_to_cpp(member.type)) value;
+    if (msg.@(member.name) == std::nullopt) {
+      out << "@(member.name): null";
+@[    if i < len(message.structure.members) - 1]@
+      out << ", ";
+@[    end if]@
+      break;
+    } else {
+      value = msg.@(member.name).value();
+    }
+@[    else]@
+    auto value = msg.@(member.name);
+@[    end if]@
 @[    if isinstance(member.type, BasicType)]@
     out << "@(member.name): ";
 @[      if member.type.typename in ('octet', 'char', 'wchar')]@
-    rosidl_generator_traits::character_value_to_yaml(msg.@(member.name), out);
+    rosidl_generator_traits::character_value_to_yaml(value, out);
 @[      else]@
-    rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
+    rosidl_generator_traits::value_to_yaml(value, out);
 @[      end if]@
 @[    elif isinstance(member.type, AbstractGenericString)]@
     out << "@(member.name): ";
-    rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
+    rosidl_generator_traits::value_to_yaml(value, out);
 @[    elif isinstance(member.type, NamespacedType)]@
     out << "@(member.name): ";
-    to_flow_style_yaml(msg.@(member.name), out);
+    to_flow_style_yaml(value, out);
 @[    elif isinstance(member.type, (AbstractSequence, Array))]@
-    if (msg.@(member.name).size() == 0) {
+    if (value.size() == 0) {
       out << "@(member.name): []";
     } else {
       out << "@(member.name): [";
-      size_t pending_items = msg.@(member.name).size();
-      for (auto item : msg.@(member.name)) {
+      size_t pending_items = value.size();
+      for (auto item : value) {
 @[      if isinstance(member.type.value_type, BasicType)]@
 @[        if member.type.value_type.typename in ('octet', 'char', 'wchar')]@
         rosidl_generator_traits::character_value_to_yaml(item, out);
@@ -132,7 +148,7 @@ inline void to_flow_style_yaml(
 @[    if i < len(message.structure.members) - 1]@
     out << ", ";
 @[    end if]@
-  }
+  } while (false);
 @[  end for]@
   out << "}";
 @[end if]@
@@ -152,31 +168,42 @@ inline void to_block_style_yaml(
 
 @[    end if]@
   // member: @(member.name)
-  {
+  do {
     if (indentation > 0) {
       out << std::string(indentation, ' ');
     }
+@[    if member.has_annotation(OPTIONAL_ANNOTATION)]@
+    @(msg_type_to_cpp(member.type)) value;
+    if (msg.@(member.name) == std::nullopt) {
+      out << "@(member.name): null\n";
+      break;
+    } else {
+      value = msg.@(member.name).value();
+    }
+@[    else]@
+    auto value = msg.@(member.name);
+@[    end if]@
 @[    if isinstance(member.type, BasicType)]@
     out << "@(member.name): ";
 @[      if member.type.typename in ('octet', 'char', 'wchar')]@
-    rosidl_generator_traits::character_value_to_yaml(msg.@(member.name), out);
+    rosidl_generator_traits::character_value_to_yaml(value, out);
 @[      else]@
-    rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
+    rosidl_generator_traits::value_to_yaml(value, out);
 @[      end if]@
     out << "\n";
 @[    elif isinstance(member.type, AbstractGenericString)]@
     out << "@(member.name): ";
-    rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
+    rosidl_generator_traits::value_to_yaml(value, out);
     out << "\n";
 @[    elif isinstance(member.type, NamespacedType)]@
     out << "@(member.name):\n";
-    to_block_style_yaml(msg.@(member.name), out, indentation + 2);
+    to_block_style_yaml(value, out, indentation + 2);
 @[    elif isinstance(member.type, (AbstractSequence, Array))]@
-    if (msg.@(member.name).size() == 0) {
+    if (value.size() == 0) {
       out << "@(member.name): []\n";
     } else {
       out << "@(member.name):\n";
-      for (auto item : msg.@(member.name)) {
+      for (auto item : value) {
         if (indentation > 0) {
           out << std::string(indentation, ' ');
         }
@@ -199,7 +226,7 @@ inline void to_block_style_yaml(
       }
     }
 @[    end if]@
-  }
+  } while(false);
 @[  end for]@
 @[end if]@
 }  // NOLINT(readability/fn_size)

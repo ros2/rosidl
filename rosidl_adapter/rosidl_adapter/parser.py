@@ -530,7 +530,6 @@ def parse_message_string(pkg_name: str, msg_name: str,
             if not line:
                 continue
 
-        # TODO multiline optionals
         annotation_index = line.rfind(OPTIONAL_ANNOTATION)
         if annotation_index >= 0:
             if is_optional:

@@ -33,6 +33,7 @@
 
 #include "test_array_generator.hpp"
 
+#include "rosidl_runtime_cpp/deprecated_helper_byte.hpp"
 #include "rosidl_generator_tests/msg/arrays.hpp"
 #include "rosidl_generator_tests/msg/basic_types.hpp"
 #include "rosidl_generator_tests/msg/bounded_sequences.hpp"

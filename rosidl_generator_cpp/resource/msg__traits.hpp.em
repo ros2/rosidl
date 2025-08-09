@@ -13,6 +13,7 @@ from rosidl_parser.definition import EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import UnboundedSequence
+from rosidl_parser.definition import OCTET_TYPE
 
 message_namespace = '::'.join(message.structure.namespaced_type.namespaces)
 message_typename = '::'.join(message.structure.namespaced_type.namespaced_name())
@@ -95,6 +96,8 @@ inline void to_flow_style_yaml(
     out << "@(member.name): ";
 @[      if member.type.typename in ('char', 'wchar')]@
     rosidl_generator_traits::character_value_to_yaml(msg.@(member.name), out);
+@[      elif member.type.typename == OCTET_TYPE]@
+    rosidl_generator_traits::byte_value_to_yaml(msg.@(member.name), out);
 @[      else]@
     rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
 @[      end if]@
@@ -114,6 +117,8 @@ inline void to_flow_style_yaml(
 @[      if isinstance(member.type.value_type, BasicType)]@
 @[        if member.type.value_type.typename in ('char', 'wchar')]@
         rosidl_generator_traits::character_value_to_yaml(item, out);
+@[      elif member.type.value_type.typename == OCTET_TYPE]@
+        rosidl_generator_traits::byte_value_to_yaml(item, out);
 @[        else]@
         rosidl_generator_traits::value_to_yaml(item, out);
 @[        end if]@
@@ -160,6 +165,8 @@ inline void to_block_style_yaml(
     out << "@(member.name): ";
 @[      if member.type.typename in ('char', 'wchar')]@
     rosidl_generator_traits::character_value_to_yaml(msg.@(member.name), out);
+@[      elif member.type.typename == OCTET_TYPE]@
+    rosidl_generator_traits::byte_value_to_yaml(msg.@(member.name), out);
 @[      else]@
     rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
 @[      end if]@
@@ -184,6 +191,8 @@ inline void to_block_style_yaml(
         out << "- ";
 @[        if member.type.value_type.typename in ('char', 'wchar')]@
         rosidl_generator_traits::character_value_to_yaml(item, out);
+@[      elif member.type.value_type.typename == OCTET_TYPE]@
+        rosidl_generator_traits::byte_value_to_yaml(item, out);
 @[        else]@
         rosidl_generator_traits::value_to_yaml(item, out);
 @[        end if]@

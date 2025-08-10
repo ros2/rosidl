@@ -56,7 +56,7 @@ def prefix_with_bom_if_necessary(content: str) -> str:
 MSG_TYPE_TO_CPP = {
     'boolean': 'bool',
     'octet': 'unsigned char',  # TODO change to std::byte with C++17
-    'char': 'unsigned char',
+    'char': 'unsigned char',  # TODO change to char8_t with C++20
     'wchar': 'char16_t',
     'float': 'float',
     'double': 'double',
@@ -197,10 +197,14 @@ def primitive_value_to_cpp(type_, value):
         return 'true' if value else 'false'
 
     if type_.typename in [
+        'char', 'octet'
+    ]:
+        return f'static_cast<unsigned char>({value})'
+
+    if type_.typename in [
         'short', 'unsigned short',
-        'char', 'wchar',
+        'wchar',
         'double', 'long double',
-        'octet',
         'int8', 'uint8',
         'int16', 'uint16',
     ]:
@@ -343,3 +347,44 @@ def create_init_alloc_and_member_lists(message):
                 member_list.append(commonset)
 
     return init_list, alloc_list, member_list
+
+
+def generate_default_string(membset: list) -> list[str]:
+    strlist: list[str] = []
+    for member in membset.members:
+        if member.default_value is not None:
+            if member.num_prealloc > 0:
+                strlist.append('this->%s.resize(%d);' % (member.name, member.num_prealloc))
+            if isinstance(member.default_value, list):
+                if all(v == member.default_value[0] for v in member.default_value):
+                    strlist.append(
+                        'std::fill(this->%s.begin(), this->%s.end(), %s);' % (
+                            member.name,
+                            member.name,
+                            member.default_value[0]
+                            )
+                        )
+                else:
+                    for index, val in enumerate(member.default_value):
+                        strlist.append('this->%s[%d] = %s;' % (member.name, index, val))
+            else:
+                strlist.append('this->%s = %s;' % (member.name, member.default_value))
+
+    return strlist
+
+
+def generate_zero_string(membset: list, fill_args: str) -> list[str]:
+    strlist: list[str] = []
+    for member in membset.members:
+        if isinstance(member.zero_value, list):
+            if member.num_prealloc > 0:
+                strlist.append('this->%s.resize(%d);' % (member.name, member.num_prealloc))
+            if member.zero_need_array_override:
+                strlist.append('this->%s.fill(%s{%s});' % (
+                    member.name, msg_type_only_to_cpp(member.type), fill_args))
+            else:
+                strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (
+                    member.name, member.name, member.zero_value[0]))
+        else:
+            strlist.append('this->%s = %s;' % (member.name, member.zero_value))
+    return strlist

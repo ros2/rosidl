@@ -19,12 +19,14 @@ from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import AbstractString
+from rosidl_parser.definition import AbstractType
 from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
 from rosidl_parser.definition import FLOATING_POINT_TYPES
 from rosidl_parser.definition import NamespacedType
+from rosidl_parser.definition import OCTET_TYPE
 from rosidl_parser.definition import UnboundedSequence
 from rosidl_pycommon import generate_files
 
@@ -55,8 +57,8 @@ def prefix_with_bom_if_necessary(content: str) -> str:
 
 MSG_TYPE_TO_CPP = {
     'boolean': 'bool',
-    'octet': 'rosidl_runtime_cpp::DeprecatedHelperByte',  # TODO: No Earlier than M Turtle switch to std::byte
-    'char': 'unsigned char',  # TODO: Should be 8char_t in C++ 20
+    'octet': 'rosidl_runtime_cpp::DeprecatedHelperByte',  # TODO: M Turtle+ switch to std::byte
+    'char': 'unsigned char',  # TODO: Should be char8_t in C++ 20
     'wchar': 'char16_t',
     'float': 'float',
     'double': 'double',
@@ -103,6 +105,38 @@ def msg_type_only_to_cpp(type_):
     return cpp_type
 
 
+def is_in_process_of_deprecation(type_: AbstractType) -> bool:
+    """Return true if type_ is octet or a container of octet."""
+    if isinstance(type_, BasicType) and type_.typename == OCTET_TYPE:
+        return True
+    elif (isinstance(type_, AbstractNestedType) and
+          isinstance(type_.value_type, BasicType) and
+          type_.value_type.typename == OCTET_TYPE):
+        return True
+    else:
+        return False
+
+
+def special_typename_for_deprecation(type_: AbstractType) -> str:
+    """Return special deprecation helper names."""
+    ALLOC_TYPE = 'unsigned char'
+
+    if isinstance(type_, BasicType) and type_.typename == OCTET_TYPE:
+        return 'rosidl_runtime_cpp::DeprecatedHelperByte'
+    elif isinstance(type_, UnboundedSequence):
+        return ('rosidl_runtime_cpp::DeprecatedHelperVector<typename '
+                'std::allocator_traits<ContainerAllocator>::template '
+                f'rebind_alloc<{ALLOC_TYPE}>>')
+    elif isinstance(type_, BoundedSequence):
+        return (f'rosidl_runtime_cpp::DeprecatedHelperBoundedVector<{type_.maximum_size}, '
+                'typename std::allocator_traits'
+                f'<ContainerAllocator>::template rebind_alloc<{ALLOC_TYPE}>>')
+    elif isinstance(type_, Array):
+        return f'rosidl_runtime_cpp::DeprecatedHelperArray<{type_.size}>'
+    else:
+        assert False, f'type: {type_} should not be called.'
+
+
 def msg_type_to_cpp(type_):
     """
     Convert a message type into the C++ declaration, along with the array type.
@@ -114,6 +148,9 @@ def msg_type_to_cpp(type_):
     @param type_: The message type
     @type type_: rosidl_parser.Type
     """
+    if is_in_process_of_deprecation(type_):
+        return special_typename_for_deprecation(type_)
+
     cpp_type = msg_type_only_to_cpp(type_)
 
     if isinstance(type_, AbstractNestedType):
@@ -197,7 +234,8 @@ def primitive_value_to_cpp(type_, value):
         return 'true' if value else 'false'
 
     if type_.typename == 'octet':
-        return f'std::byte{{{value}}}'
+        return str(value)
+        # return f'std::byte{{{value}}}'
 
     if type_.typename in [
         'short', 'unsigned short',

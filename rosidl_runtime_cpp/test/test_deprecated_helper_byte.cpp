@@ -14,7 +14,6 @@
 
 #include <gtest/gtest.h>
 
-#include <vector>
 #include "rosidl_runtime_cpp/deprecated_helper_byte.hpp"
 
 
@@ -27,18 +26,17 @@ TEST(rosidl_generator_cpp, deprecated_helper_byte_getter_setter) {
   rosidl_runtime_cpp::DeprecatedHelperByte v;
 
   v = std::byte{1};
-  ASSERT_EQ(v, std::byte{1});
+  ASSERT_EQ(static_cast<std::byte>(v), std::byte{1});
   ASSERT_EQ(v, 1);
-  ASSERT_EQ(v, 257);
   v = 3;
-  ASSERT_EQ(v, std::byte{3});
+  ASSERT_EQ(static_cast<std::byte>(v), std::byte{3});
   ASSERT_EQ(v, 3);
 
   v = std::byte{10};
   unsigned char c = v;
   ASSERT_EQ(c, 10);
 
-  std::byte d = v;
+  std::byte d = static_cast<std::byte>(v);
   ASSERT_EQ(d, std::byte{10});
 
   auto e = v;
@@ -50,8 +48,8 @@ TEST(rosidl_generator_cpp, deprecated_helper_byte_equal) {
   rosidl_runtime_cpp::DeprecatedHelperByte g = std::byte{10};
   ASSERT_EQ(10, f);
   ASSERT_EQ(f, 10);
-  ASSERT_EQ(std::byte{10}, g);
-  ASSERT_EQ(g, std::byte{10});
+  ASSERT_EQ(std::byte{10}, static_cast<std::byte>(g));
+  ASSERT_EQ(static_cast<std::byte>(g), std::byte{10});
   ASSERT_EQ(f, g);
 }
 
@@ -60,12 +58,14 @@ TEST(rosidl_generator_cpp, deprecated_helper_byte_not_equal) {
   rosidl_runtime_cpp::DeprecatedHelperByte g = std::byte{10};
   ASSERT_NE(9, f);
   ASSERT_NE(f, 9);
-  ASSERT_NE(std::byte{11}, g);
-  ASSERT_NE(g, std::byte{11});
+  ASSERT_NE(std::byte{11}, static_cast<std::byte>(g));
+  ASSERT_NE(static_cast<std::byte>(g), std::byte{11});
   ASSERT_NE(f, g);
 }
 
 TEST(rosidl_generator_cpp, deprecated_helper_byte_to_integer) {
+  rosidl_runtime_cpp::DeprecatedHelperByte g = std::byte{10};
+  ASSERT_EQ(std::to_integer<int>(static_cast<std::byte>(g)), 10);
 }
 
 TEST(rosidl_generator_cpp, deprecated_helper_byte_function_input) {
@@ -76,30 +76,19 @@ TEST(rosidl_generator_cpp, deprecated_helper_byte_function_input) {
 
   ASSERT_EQ(from_deprecated_helper_byte(a), 10);
   ASSERT_EQ(from_unsigned_char(a), 10);
-  ASSERT_EQ(from_byte(a), std::byte{10});
+  ASSERT_EQ(from_byte(static_cast<std::byte>(a)), std::byte{10});
 }
 
-TEST(rosidl_generator_cpp, deprecated_helper_byte_containers) {
-  std::vector<rosidl_runtime_cpp::DeprecatedHelperByte> a = {1, 2, 3};
-  std::vector<rosidl_runtime_cpp::DeprecatedHelperByte> b = {std::byte{1}, std::byte{2}, std::byte{3}};
-  ASSERT_EQ(a, b);
+TEST(rosidl_generator_cpp, deprecated_helper_byte_shifts) {
+  rosidl_runtime_cpp::DeprecatedHelperByte v = std::byte{1};
+  ASSERT_EQ(v << 3, 8);
+  v <<= 3;
+  ASSERT_EQ(v, 8);
 
-  std::vector<unsigned char> c = {1, 2, 3};
-  std::vector<std::byte> d = {std::byte{1}, std::byte{2}, std::byte{3}};
-  ASSERT_EQ(a, c);
-  ASSERT_EQ(b, d);
+  rosidl_runtime_cpp::DeprecatedHelperByte g = std::byte{2};
+  ASSERT_EQ(static_cast<std::byte>(g) << 3, std::byte{16});
+  static_cast<std::byte&>(g) <<= 3;
+  ASSERT_EQ(static_cast<std::byte>(g), std::byte{16});
 }
 
-// TEST(rosidl_generator_cpp, deprecated_helper_byte_shifts) {
-//   rosidl_runtime_cpp::DeprecatedHelperByte v = std::byte{1};
-//   ASSERT_EQ(v << 3, 8);
-
-//   ASSERT_EQ(v <<= 3, 8);
-//   ASSERT_EQ(v, 8);
-// }
-
-
-// TEST(rosidl_generator_cpp, deprecated_helper_byte_operators_implemented) {
-//   rosidl_runtime_cpp::DeprecatedHelperByte v;
-// }
 #pragma GCC diagnostic pop

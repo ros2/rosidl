@@ -349,7 +349,11 @@ u@
     (void)other;
 @[end if]@
 @[for member in message.structure.members]@
+@[  if isinstance(member.type, BasicType) and member.type.typename == OCTET_TYPE]@
+    if (static_cast<std::byte>(this->@(member.name)) != static_cast<std::byte>(other.@(member.name))) {
+@[  else]@
     if (this->@(member.name) != other.@(member.name)) {
+@[  end if]@
       return false;
     }
 @[end for]@

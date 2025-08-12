@@ -47,12 +47,6 @@ inline void value_to_yaml(std::byte value, std::ostream & out)
   out.flags(flags);
 }
 
-// For now have a specialized name until DeprecatedHelperByte is removed
-inline void byte_value_to_yaml(std::byte value, std::ostream & out)
-{
-  value_to_yaml(value, out);
-}
-
 inline void value_to_yaml(float value, std::ostream & out)
 {
   auto flags = out.flags();

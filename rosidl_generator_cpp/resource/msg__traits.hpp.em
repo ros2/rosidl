@@ -97,7 +97,7 @@ inline void to_flow_style_yaml(
 @[      if member.type.typename in ('char', 'wchar')]@
     rosidl_generator_traits::character_value_to_yaml(msg.@(member.name), out);
 @[      elif member.type.typename == OCTET_TYPE]@
-    rosidl_generator_traits::byte_value_to_yaml(msg.@(member.name), out);
+    rosidl_generator_traits::value_to_yaml(static_cast<std::byte>(msg.@(member.name)), out);
 @[      else]@
     rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
 @[      end if]@
@@ -118,7 +118,7 @@ inline void to_flow_style_yaml(
 @[        if member.type.value_type.typename in ('char', 'wchar')]@
         rosidl_generator_traits::character_value_to_yaml(item, out);
 @[      elif member.type.value_type.typename == OCTET_TYPE]@
-        rosidl_generator_traits::byte_value_to_yaml(item, out);
+        rosidl_generator_traits::value_to_yaml(static_cast<std::byte>(item), out);
 @[        else]@
         rosidl_generator_traits::value_to_yaml(item, out);
 @[        end if]@
@@ -166,7 +166,7 @@ inline void to_block_style_yaml(
 @[      if member.type.typename in ('char', 'wchar')]@
     rosidl_generator_traits::character_value_to_yaml(msg.@(member.name), out);
 @[      elif member.type.typename == OCTET_TYPE]@
-    rosidl_generator_traits::byte_value_to_yaml(msg.@(member.name), out);
+    rosidl_generator_traits::value_to_yaml(static_cast<std::byte>(msg.@(member.name)), out);
 @[      else]@
     rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
 @[      end if]@
@@ -192,7 +192,7 @@ inline void to_block_style_yaml(
 @[        if member.type.value_type.typename in ('char', 'wchar')]@
         rosidl_generator_traits::character_value_to_yaml(item, out);
 @[      elif member.type.value_type.typename == OCTET_TYPE]@
-        rosidl_generator_traits::byte_value_to_yaml(item, out);
+        rosidl_generator_traits::value_to_yaml(static_cast<std::byte>(item), out);
 @[        else]@
         rosidl_generator_traits::value_to_yaml(item, out);
 @[        end if]@

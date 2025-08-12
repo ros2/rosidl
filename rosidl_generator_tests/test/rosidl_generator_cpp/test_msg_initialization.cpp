@@ -48,7 +48,7 @@ make_scope_exit(Callable callable)
 TEST(Test_msg_initialization, no_arg_constructor) {
   rosidl_generator_tests::msg::Defaults def;
   ASSERT_TRUE(def.bool_value);
-  ASSERT_EQ(std::byte{50}, def.byte_value);
+  ASSERT_EQ(std::byte{50}, static_cast<std::byte>(def.byte_value));
   ASSERT_EQ(100, def.char_value);
   ASSERT_EQ(1.125f, def.float32_value);
   ASSERT_EQ(1.125, def.float64_value);
@@ -63,7 +63,7 @@ TEST(Test_msg_initialization, no_arg_constructor) {
 
   rosidl_generator_tests::msg::BasicTypes basic;
   ASSERT_FALSE(basic.bool_value);
-  ASSERT_EQ(std::byte{0}, basic.byte_value);
+  ASSERT_EQ(std::byte{0}, static_cast<std::byte>(basic.byte_value));
   ASSERT_EQ(0, basic.char_value);
   ASSERT_EQ(0.0f, basic.float32_value);
   ASSERT_EQ(0.0, basic.float64_value);
@@ -80,7 +80,7 @@ TEST(Test_msg_initialization, all_constructor) {
   rosidl_generator_tests::msg::Defaults def(
     rosidl_runtime_cpp::MessageInitialization::ALL);
   ASSERT_TRUE(def.bool_value);
-  ASSERT_EQ(std::byte{50}, def.byte_value);
+  ASSERT_EQ(std::byte{50}, static_cast<std::byte>(def.byte_value));
   ASSERT_EQ(100, def.char_value);
   ASSERT_EQ(1.125f, def.float32_value);
   ASSERT_EQ(1.125, def.float64_value);
@@ -95,7 +95,7 @@ TEST(Test_msg_initialization, all_constructor) {
 
   rosidl_generator_tests::msg::BasicTypes basic;
   ASSERT_FALSE(basic.bool_value);
-  ASSERT_EQ(std::byte{0}, basic.byte_value);
+  ASSERT_EQ(std::byte{0}, static_cast<std::byte>(basic.byte_value));
   ASSERT_EQ(0, basic.char_value);
   ASSERT_EQ(0.0f, basic.float32_value);
   ASSERT_EQ(0.0, basic.float64_value);
@@ -112,7 +112,7 @@ TEST(Test_msg_initialization, zero_constructor) {
   rosidl_generator_tests::msg::Defaults def(
     rosidl_runtime_cpp::MessageInitialization::ZERO);
   ASSERT_FALSE(def.bool_value);
-  ASSERT_EQ(std::byte{0}, def.byte_value);
+  ASSERT_EQ(std::byte{0}, static_cast<std::byte>(def.byte_value));
   ASSERT_EQ(0, def.char_value);
   ASSERT_EQ(0.0f, def.float32_value);
   ASSERT_EQ(0.0, def.float64_value);
@@ -127,7 +127,7 @@ TEST(Test_msg_initialization, zero_constructor) {
 
   rosidl_generator_tests::msg::BasicTypes basic;
   ASSERT_FALSE(basic.bool_value);
-  ASSERT_EQ(std::byte{0}, basic.byte_value);
+  ASSERT_EQ(std::byte{0}, static_cast<std::byte>(basic.byte_value));
   ASSERT_EQ(0, basic.char_value);
   ASSERT_EQ(0.0f, basic.float32_value);
   ASSERT_EQ(0.0, basic.float64_value);
@@ -144,7 +144,7 @@ TEST(Test_msg_initialization, defaults_only_constructor) {
   rosidl_generator_tests::msg::Defaults def(
     rosidl_runtime_cpp::MessageInitialization::DEFAULTS_ONLY);
   ASSERT_TRUE(def.bool_value);
-  ASSERT_EQ(std::byte{50}, def.byte_value);
+  ASSERT_EQ(std::byte{50}, static_cast<std::byte>(def.byte_value));
   ASSERT_EQ(100, def.char_value);
   ASSERT_EQ(1.125f, def.float32_value);
   ASSERT_EQ(1.125, def.float64_value);
@@ -159,7 +159,7 @@ TEST(Test_msg_initialization, defaults_only_constructor) {
 
   rosidl_generator_tests::msg::BasicTypes basic;
   ASSERT_FALSE(basic.bool_value);
-  ASSERT_EQ(std::byte{0}, basic.byte_value);
+  ASSERT_EQ(std::byte{0}, static_cast<std::byte>(basic.byte_value));
   ASSERT_EQ(0, basic.char_value);
   ASSERT_EQ(0.0f, basic.float32_value);
   ASSERT_EQ(0.0, basic.float64_value);

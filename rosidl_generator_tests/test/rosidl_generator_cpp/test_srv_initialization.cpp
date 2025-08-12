@@ -24,7 +24,7 @@ TEST(Test_srv_initialization, no_arg_request_constructor) {
 
   rosidl_generator_tests::srv::BasicTypes::Request basic_types;
   EXPECT_EQ(false, basic_types.bool_value);
-  EXPECT_EQ(std::byte{0}, basic_types.byte_value);
+  EXPECT_EQ(std::byte{0}, static_cast<std::byte>(basic_types.byte_value));
   EXPECT_EQ(0, basic_types.char_value);
   EXPECT_EQ(0.0F, basic_types.float32_value);
   EXPECT_EQ(0.0, basic_types.float64_value);
@@ -44,7 +44,7 @@ TEST(Test_srv_initialization, no_arg_response_constructor) {
 
   rosidl_generator_tests::srv::BasicTypes::Response basic_types;
   EXPECT_EQ(false, basic_types.bool_value);
-  EXPECT_EQ(std::byte{0}, basic_types.byte_value);
+  EXPECT_EQ(std::byte{0}, static_cast<std::byte>(basic_types.byte_value));
   EXPECT_EQ(0, basic_types.char_value);
   EXPECT_EQ(0.0f, basic_types.float32_value);
   EXPECT_EQ(0.0, basic_types.float64_value);

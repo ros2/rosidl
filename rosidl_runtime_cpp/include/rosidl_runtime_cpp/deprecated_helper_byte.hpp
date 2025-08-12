@@ -16,8 +16,8 @@
 #define ROSIDL_RUNTIME_CPP__DEPRECATED_HELPER_BYTE_HPP_
 
 #include <cstdint>
-#include <iostream>
 #include <cstddef>
+#include <utility>
 
 namespace rosidl_runtime_cpp
 {
@@ -34,127 +34,32 @@ struct DeprecatedHelperByte
   : b(value) {}
 
   // Getter
-  [[deprecated("Get std::byte instead")]]
-  constexpr operator unsigned char() const noexcept
+
+  // TODO: make constexpr in C++23 if the deprecation process is still going
+  // Can't be constexpr yet since reinterpret_cast is not constexpr
+  [[deprecated("Use static_cast<std::byte&> instead")]]
+  operator unsigned char&() noexcept
   {
-    return static_cast<unsigned char>(b);
+    return *reinterpret_cast<unsigned char*>(&b);
   }
 
-  constexpr operator std::byte() const noexcept
+  // Used for comparisons with const int
+  [[deprecated("Use static_cast<std::byte> instead")]]
+  constexpr operator unsigned char() const noexcept
+  {
+    return std::to_integer<unsigned char>(b);
+  }
+
+  // To avoid collisions with unsigned char 
+  // Explicit needing a static_cast<> until unsigned char is removed.
+  explicit constexpr operator std::byte&() noexcept
   {
     return b;
   }
 
-  // Setter
-  [[deprecated("Set std::byte instead")]]
-  constexpr DeprecatedHelperByte & operator=(unsigned char value) noexcept
+  explicit constexpr operator std::byte() const noexcept
   {
-    b = std::byte{value};
-    return *this;
-  }
-
-  constexpr DeprecatedHelperByte & operator=(std::byte value) noexcept
-  {
-    b = value;
-    return *this;
-  }
-
-  // Comparisons
-  // Equals
-  friend constexpr bool operator==(
-    const DeprecatedHelperByte & lhs,
-    const DeprecatedHelperByte & rhs) noexcept
-  {
-    return lhs.b == rhs.b;
-  }
-
-  friend constexpr bool operator==(
-    const DeprecatedHelperByte & lhs,
-    const std::byte & rhs) noexcept
-  {
-    return lhs.b == rhs;
-  }
-
-  friend constexpr bool operator==(
-    const std::byte & lhs,
-    const DeprecatedHelperByte & rhs) noexcept
-  {
-    return lhs == rhs.b;
-  }
-
-  [[deprecated("Check Comparison with std::byte instead")]]
-  friend constexpr bool operator==(
-    const DeprecatedHelperByte & lhs,
-    int rhs) noexcept
-  {
-    return lhs.b == std::byte{static_cast<unsigned char>(rhs)};
-  }
-
-  [[deprecated("Check Comparison with std::byte instead")]]
-  friend constexpr bool operator==(
-    int lhs,
-    const DeprecatedHelperByte & rhs) noexcept
-  {
-    return std::byte{static_cast<unsigned char>(lhs)} == rhs.b;
-  }
-
-  // Not Equals
-  friend constexpr bool operator!=(
-    const DeprecatedHelperByte & lhs,
-    const DeprecatedHelperByte & rhs) noexcept
-  {
-    return lhs.b != rhs.b;
-  }
-  friend constexpr bool operator!=(
-    const DeprecatedHelperByte & lhs,
-    const std::byte & rhs) noexcept
-  {
-    return lhs.b != rhs;
-  }
-
-  friend constexpr bool operator!=(
-    const std::byte & lhs,
-    const DeprecatedHelperByte & rhs) noexcept
-  {
-    return lhs != rhs.b;
-  }
-
-  [[deprecated("Check Comparison with std::byte instead")]]
-  friend constexpr bool operator!=(
-    const DeprecatedHelperByte & lhs,
-    int rhs) noexcept
-  {
-    return lhs.b != std::byte{static_cast<unsigned char>(rhs)};
-  }
-
-  [[deprecated("Check Comparison with std::byte instead")]]
-  friend constexpr bool operator!=(
-    int lhs,
-    const DeprecatedHelperByte & rhs) noexcept
-  {
-    return std::byte{static_cast<unsigned char>(lhs)} != rhs.b;
-  }
-
-  // Byte supported operations
-
-  // to_integer
-  template<class IntegerType>
-  constexpr IntegerType to_integer() noexcept
-  {
-    return std::to_integer<IntegerType>(b);
-  }
-
-  // Bit shifts
-  template<class IntegerType>
-  constexpr std::byte operator<<=(IntegerType shift) noexcept
-  {
-    return b = b << shift;
-  }
-
-  template<class IntegerType>
-  constexpr std::byte operator>>=(IntegerType shift) noexcept
-  {
-    return b = b >> shift;
+    return b;
   }
 
 private:

@@ -2,6 +2,9 @@
 Changelog for package rosidl_typesupport_introspection_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+5.0.1 (2025-07-29)
+------------------
+
 5.0.0 (2025-07-01)
 ------------------
 * fix cmake <3.10 deprecation (`#875 <https://github.com/ros2/rosidl/issues/875>`_)

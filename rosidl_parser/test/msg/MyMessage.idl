@@ -81,6 +81,10 @@ module rosidl_parser {
       float fixed_frac_only;
       @default ( value=7d )
       float fixed_int_only;
+
+      // Optional test
+      @optional
+      int32 optional_int;
     };
   };
 };

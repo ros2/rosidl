@@ -50,6 +50,9 @@ module test_msgs {
       @verbatim (language="comment", text=
         "8")
       boolean ok;
+
+      @optional
+      boolean optional_bool;
     };
   };
 };

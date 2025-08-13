@@ -92,11 +92,20 @@ TEST(rosidl_generator_cpp, deprecated_helper_array_data) {
   rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{};
   dep_array.fill(std::byte{9});
 
-  std::byte * data_ptr = dep_array.data();
-  EXPECT_EQ(*data_ptr, std::byte{9});
+  auto data_ptr = dep_array.data();
+  EXPECT_EQ(static_cast<std::byte>(*data_ptr), std::byte{9});
 
   data_ptr[2] = std::byte{15};
   EXPECT_EQ(static_cast<std::byte>(dep_array[2]), std::byte{15});
+
+  unsigned char * char_data_ptr = dep_array.data();
+  char_data_ptr[1] = 10;
+
+  auto byte_data_ptr = static_cast<std::byte *>(dep_array.data());
+  byte_data_ptr[0] = std::byte{3};
+  EXPECT_EQ(char_data_ptr[0], 3);
+  EXPECT_EQ(char_data_ptr[1], 10);
+  EXPECT_EQ(char_data_ptr[2], 15);
 }
 
 TEST(rosidl_generator_cpp, deprecated_helper_array_begin_end) {

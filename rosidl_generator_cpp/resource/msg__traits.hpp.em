@@ -113,12 +113,15 @@ inline void to_flow_style_yaml(
     } else {
       out << "@(member.name): [";
       size_t pending_items = msg.@(member.name).size();
+@[      if isinstance(member.type.value_type, BasicType) and member.type.value_type.typename == OCTET_TYPE]@
+      for (size_t i = 0; i < msg.@(member.name).size(); i++) {
+        auto item = static_cast<std::byte>(msg.@(member.name)[i]);
+@[      else]@
       for (auto item : msg.@(member.name)) {
+@[      end if]@
 @[      if isinstance(member.type.value_type, BasicType)]@
 @[        if member.type.value_type.typename in ('char', 'wchar')]@
         rosidl_generator_traits::character_value_to_yaml(item, out);
-@[      elif member.type.value_type.typename == OCTET_TYPE]@
-        rosidl_generator_traits::value_to_yaml(static_cast<std::byte>(item), out);
 @[        else]@
         rosidl_generator_traits::value_to_yaml(item, out);
 @[        end if]@
@@ -183,7 +186,12 @@ inline void to_block_style_yaml(
       out << "@(member.name): []\n";
     } else {
       out << "@(member.name):\n";
+@[      if isinstance(member.type.value_type, BasicType) and member.type.value_type.typename == OCTET_TYPE]@
+      for (size_t i = 0; i < msg.@(member.name).size(); i++) {
+        auto item = static_cast<std::byte>(msg.@(member.name)[i]);
+@[      else]@
       for (auto item : msg.@(member.name)) {
+@[      end if]@
         if (indentation > 0) {
           out << std::string(indentation, ' ');
         }
@@ -191,8 +199,6 @@ inline void to_block_style_yaml(
         out << "- ";
 @[        if member.type.value_type.typename in ('char', 'wchar')]@
         rosidl_generator_traits::character_value_to_yaml(item, out);
-@[      elif member.type.value_type.typename == OCTET_TYPE]@
-        rosidl_generator_traits::value_to_yaml(static_cast<std::byte>(item), out);
 @[        else]@
         rosidl_generator_traits::value_to_yaml(item, out);
 @[        end if]@

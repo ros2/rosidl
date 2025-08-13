@@ -23,7 +23,7 @@
 #include <cstring>
 #include <utility>
 
-#include "byte_ref.hpp"
+#include "byte_conversion_helpers.hpp"
 #include "deprecated_helper_byte.hpp"
 
 // // For testing
@@ -111,6 +111,7 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
 
   // Element Access
 
+  // at
   constexpr detail::ByteRef at(std::size_t pos)
   {
     return detail::ByteRef{ByteArray::at(pos)};
@@ -121,6 +122,7 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
     return DeprecatedHelperByte{ByteArray::at(pos)};
   }
 
+  // operator[]
   constexpr detail::ByteRef operator[](std::size_t pos)
   {
     return detail::ByteRef{ByteArray::operator[](pos)};
@@ -131,38 +133,71 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
     return DeprecatedHelperByte{ByteArray::operator[](pos)};
   }
 
+  // front
+  constexpr detail::ByteRef front()
+  {
+    return detail::ByteRef{ByteArray::front()};
+  }
+
+  constexpr DeprecatedHelperByte front() const
+  {
+    return DeprecatedHelperByte{ByteArray::front()};
+  }
+
+  // back
+  constexpr detail::ByteRef back()
+  {
+    return detail::ByteRef{ByteArray::back()};
+  }
+
+  constexpr DeprecatedHelperByte back() const
+  {
+    return DeprecatedHelperByte{ByteArray::back()};
+  }
+
+  // data()
+  constexpr detail::BytePtr data()
+  {
+    return detail::BytePtr{ByteArray::data()};
+  }
+
+  constexpr detail::ConstBytePtr data() const
+  {
+    return detail::ConstBytePtr{ByteArray::data()};
+  }
+
   // Iterators
 
   // begin, cbegin
-  constexpr DeprecatedHelperByte * begin() noexcept
+  constexpr detail::BytePtr begin() noexcept
   {
-    return reinterpret_cast<DeprecatedHelperByte *>(ByteArray::begin());
+    return detail::BytePtr{ByteArray::begin()};
   }
 
-  constexpr const DeprecatedHelperByte * begin() const noexcept
+  constexpr detail::ConstBytePtr begin() const noexcept
   {
-    return reinterpret_cast<const DeprecatedHelperByte *>(ByteArray::begin());
+    return detail::ConstBytePtr{ByteArray::begin()};
   }
 
-  constexpr const DeprecatedHelperByte * cbegin() const noexcept
+  constexpr detail::ConstBytePtr cbegin() const noexcept
   {
-    return reinterpret_cast<const DeprecatedHelperByte *>(ByteArray::cbegin());
+    return detail::ConstBytePtr{ByteArray::cbegin()};
   }
 
   // end, cend
-  constexpr DeprecatedHelperByte * end() noexcept
+  constexpr detail::BytePtr end() noexcept
   {
-    return reinterpret_cast<DeprecatedHelperByte *>(ByteArray::end());
+    return detail::BytePtr{ByteArray::end()};
   }
 
-  constexpr const DeprecatedHelperByte * end() const noexcept
+  constexpr detail::ConstBytePtr end() const noexcept
   {
-    return reinterpret_cast<const DeprecatedHelperByte *>(ByteArray::end());
+    return detail::ConstBytePtr{ByteArray::end()};
   }
 
-  constexpr const DeprecatedHelperByte * cend() const noexcept
+  constexpr detail::ConstBytePtr cend() const noexcept
   {
-    return reinterpret_cast<const DeprecatedHelperByte *>(ByteArray::cend());
+    return detail::ConstBytePtr{ByteArray::cend()};
   }
 
   // Operations

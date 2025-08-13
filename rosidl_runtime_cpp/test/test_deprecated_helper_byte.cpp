@@ -87,7 +87,7 @@ TEST(rosidl_generator_cpp, deprecated_helper_byte_shifts) {
 
   rosidl_runtime_cpp::DeprecatedHelperByte g = std::byte{2};
   ASSERT_EQ(static_cast<std::byte>(g) << 3, std::byte{16});
-  static_cast<std::byte&>(g) <<= 3;
+  static_cast<std::byte &>(g) <<= 3;
   ASSERT_EQ(static_cast<std::byte>(g), std::byte{16});
 }
 

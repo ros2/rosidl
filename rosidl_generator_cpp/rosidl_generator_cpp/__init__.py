@@ -30,6 +30,9 @@ from rosidl_parser.definition import OCTET_TYPE
 from rosidl_parser.definition import UnboundedSequence
 from rosidl_pycommon import generate_files
 
+# UCHAR_ALLOC_TYPE = 'unsigned char'
+UCHAR_ALLOC_TYPE = 'std::byte'
+
 
 def generate_cpp(generator_arguments_file) -> List[str]:
     mapping = {
@@ -119,18 +122,16 @@ def is_in_process_of_deprecation(type_: AbstractType) -> bool:
 
 def special_typename_for_deprecation(type_: AbstractType) -> str:
     """Return special deprecation helper names."""
-    ALLOC_TYPE = 'unsigned char'
-
     if isinstance(type_, BasicType) and type_.typename == OCTET_TYPE:
         return 'rosidl_runtime_cpp::DeprecatedHelperByte'
     elif isinstance(type_, UnboundedSequence):
         return ('rosidl_runtime_cpp::DeprecatedHelperVector<typename '
                 'std::allocator_traits<ContainerAllocator>::template '
-                f'rebind_alloc<{ALLOC_TYPE}>>')
+                f'rebind_alloc<{UCHAR_ALLOC_TYPE}>>')
     elif isinstance(type_, BoundedSequence):
         return (f'rosidl_runtime_cpp::DeprecatedHelperBoundedVector<{type_.maximum_size}, '
                 'typename std::allocator_traits'
-                f'<ContainerAllocator>::template rebind_alloc<{ALLOC_TYPE}>>')
+                f'<ContainerAllocator>::template rebind_alloc<{UCHAR_ALLOC_TYPE}>>')
     elif isinstance(type_, Array):
         return f'rosidl_runtime_cpp::DeprecatedHelperArray<{type_.size}>'
     else:
@@ -234,8 +235,8 @@ def primitive_value_to_cpp(type_, value):
         return 'true' if value else 'false'
 
     if type_.typename == 'octet':
-        return str(value)
-        # return f'std::byte{{{value}}}'
+        # return str(value)
+        return f'std::byte{{{value}}}'
 
     if type_.typename in [
         'short', 'unsigned short',

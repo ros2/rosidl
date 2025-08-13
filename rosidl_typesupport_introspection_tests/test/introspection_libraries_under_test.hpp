@@ -934,8 +934,7 @@ struct Example<rosidl_typesupport_introspection_tests::msg::BoundedSequences>
     auto message =
       std::make_unique<rosidl_typesupport_introspection_tests::msg::BoundedSequences>();
     message->bool_values.push_back(true);
-    // message->byte_values.push_back(std::byte{0x1B});
-    message->byte_values.push_back(0x1B);
+    message->byte_values.push_back(std::byte{0x1B});
     message->char_values.push_back('z');
     message->float32_values.push_back(12.34f);
     message->float64_values.push_back(1.234);
@@ -1029,8 +1028,7 @@ struct Example<rosidl_typesupport_introspection_tests::msg::UnboundedSequences>
     auto message =
       std::make_unique<rosidl_typesupport_introspection_tests::msg::UnboundedSequences>();
     message->bool_values.push_back(true);
-    // message->byte_values.push_back(std::byte{0x1B});
-    message->byte_values.push_back(0x1B);
+    message->byte_values.push_back(std::byte{0x1B});
     message->char_values.push_back('z');
     message->float32_values.push_back(12.34f);
     message->float64_values.push_back(1.234);
@@ -1082,8 +1080,7 @@ struct Example<rosidl_typesupport_introspection_tests::srv::Arrays>
     using MessageT =
       rosidl_typesupport_introspection_tests::srv::Arrays::Response;
     auto message = std::make_unique<MessageT>();
-    // message->byte_values[1] = std::byte{0xAB};
-    message->byte_values[1] = 0xAB;
+    message->byte_values[1] = std::byte{0xAB};
     message->char_values[0] = 'b';
     message->int8_values[2] = 123;
     return message;

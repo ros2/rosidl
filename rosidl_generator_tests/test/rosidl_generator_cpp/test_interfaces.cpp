@@ -220,12 +220,9 @@ void test_message_bounded(rosidl_generator_tests::msg::BoundedSequences message)
   TEST_BOUNDED_SEQUENCE_TYPES(
     message, char_values, unsigned char, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  // TEST_BOUNDED_SEQUENCE_TYPES(
-  //   message, byte_values, std::byte, SEQUENCE_SIZE, \
-  //   std::byte{0}, std::byte{UINT8_MAX})
   TEST_BOUNDED_SEQUENCE_TYPES(
-    message, byte_values, unsigned char, SEQUENCE_SIZE, \
-    0, UINT8_MAX)
+    message, byte_values, std::byte, SEQUENCE_SIZE, \
+    std::byte{0}, std::byte{UINT8_MAX})
   TEST_BOUNDED_SEQUENCE_TYPES(
     message, float32_values, float, SEQUENCE_SIZE, \
     FLT_MIN, FLT_MAX)
@@ -289,12 +286,9 @@ void test_message_unbounded(rosidl_generator_tests::msg::UnboundedSequences mess
   TEST_UNBOUNDED_SEQUENCE_TYPES(
     message, char_values, unsigned char, SEQUENCE_SIZE, \
     0, UINT8_MAX)
-  // TEST_UNBOUNDED_SEQUENCE_TYPES(
-  //   message, byte_values, std::byte, SEQUENCE_SIZE, \
-  //   std::byte{0}, std::byte{UINT8_MAX})
   TEST_UNBOUNDED_SEQUENCE_TYPES(
-    message, byte_values, unsigned char, SEQUENCE_SIZE, \
-    0, UINT8_MAX)
+    message, byte_values, std::byte, SEQUENCE_SIZE, \
+    std::byte{0}, std::byte{UINT8_MAX})
   TEST_UNBOUNDED_SEQUENCE_TYPES(
     message, float32_values, float, SEQUENCE_SIZE, \
     FLT_MIN, FLT_MAX)
@@ -346,12 +340,9 @@ void test_message_arrays(rosidl_generator_tests::msg::Arrays message)
   TEST_ARRAY_TYPES(
     message, char_values, unsigned char, ARRAY_SIZE, \
     0, UINT8_MAX)
-  // TEST_ARRAY_TYPES(
-  //   message, byte_values, std::byte, ARRAY_SIZE, \
-  //   std::byte{0}, std::byte{UINT8_MAX})
   TEST_ARRAY_TYPES(
-    message, byte_values, unsigned char, ARRAY_SIZE, \
-    0, UINT8_MAX)
+    message, byte_values, std::byte, ARRAY_SIZE, \
+    std::byte{0}, std::byte{UINT8_MAX})
   TEST_ARRAY_TYPES(
     message, float32_values, float, ARRAY_SIZE, \
     FLT_MIN, FLT_MAX)

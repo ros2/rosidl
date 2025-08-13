@@ -18,71 +18,16 @@
 #include <cstdint>
 #include <iostream>
 #include <cstddef>
+#include <memory>
 #include <vector>
 
 
 namespace rosidl_runtime_cpp
 {
-
-  template <typename Allocator = std::allocator<unsigned char>>
-  using DeprecatedHelperVector = std::vector<unsigned char, Allocator>;
-
-// struct DeprecatedHelperVector
-// {
-//   // Constructor
-//   constexpr DeprecatedHelperVector() noexcept = default;
-
-//   [[deprecated("Initialize with std::byte instead")]]
-//   constexpr DeprecatedHelperVector(unsigned char value) noexcept  // NOLINT(runtime/explicit)
-//   : b(value) {}
-
-//   constexpr DeprecatedHelperVector(std::byte value) noexcept  // NOLINT(runtime/explicit)
-//   : b(std::to_integer<unsigned char>(value)) {}
-
-//   // Getter
-//   [[deprecated("Use static_cast<std::byte&> instead")]]
-//   constexpr operator unsigned char&() noexcept
-//   {
-//     return b;
-//   }
-
-//   // Used for comparisons with const int
-//   [[deprecated("Use static_cast<std::byte> instead")]]
-//   constexpr operator unsigned char() const noexcept
-//   {
-//     return b;
-//   }
-
-//   // To avoid collisions with unsigned char 
-//   // Explicit needing a static_cast<> until unsigned char is removed.
-//   explicit constexpr operator std::byte&() noexcept
-//   {
-//     return reinterpret_cast<std::byte&>(b);
-//   }
-
-//   explicit constexpr operator std::byte() const noexcept
-//   {
-//     return std::byte{b};
-//   }
-
-//   // Setter
-//   [[deprecated("Set std::byte instead")]]
-//   constexpr DeprecatedHelperVector & operator=(unsigned char value) noexcept
-//   {
-//     b = std::move(value);
-//     return *this;
-//   }
-
-//   constexpr DeprecatedHelperVector & operator=(std::byte value) noexcept
-//   {
-//     b = std::to_integer<unsigned char>(value);
-//     return *this;
-//   }
-
-
-// private:
-//   unsigned char b{};
-// };
+// using T = unsigned char;
+using T = std::byte;
+template<typename Allocator = std::allocator<T>>
+using DeprecatedHelperVector = std::vector<T, Allocator>;
 }  // namespace rosidl_runtime_cpp
 
 #endif  // ROSIDL_RUNTIME_CPP__DEPRECATED_HELPER_VECTOR_HPP_

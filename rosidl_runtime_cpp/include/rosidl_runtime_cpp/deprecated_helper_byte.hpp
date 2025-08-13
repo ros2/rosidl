@@ -35,12 +35,12 @@ struct DeprecatedHelperByte
 
   // Getter
 
-  // TODO: make constexpr in C++23 if the deprecation process is still going
+  // TODO(invinciblermc): make constexpr in C++23 if the deprecation process is still going
   // Can't be constexpr yet since reinterpret_cast is not constexpr
-  [[deprecated("Use static_cast<std::byte&> instead")]]
-  operator unsigned char&() noexcept
+  [[deprecated("Use static_cast<std::byte &> instead")]]
+  operator unsigned char &() noexcept
   {
-    return *reinterpret_cast<unsigned char*>(&b);
+    return *reinterpret_cast<unsigned char *>(&b);
   }
 
   // Used for comparisons with const int
@@ -50,9 +50,9 @@ struct DeprecatedHelperByte
     return std::to_integer<unsigned char>(b);
   }
 
-  // To avoid collisions with unsigned char 
+  // To avoid collisions with unsigned char
   // Explicit needing a static_cast<> until unsigned char is removed.
-  explicit constexpr operator std::byte&() noexcept
+  explicit constexpr operator std::byte & () noexcept
   {
     return b;
   }

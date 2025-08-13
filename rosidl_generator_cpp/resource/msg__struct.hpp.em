@@ -123,7 +123,10 @@ def generate_default_string(membset):
                     # For more info, see https://github.com/ros2/rosidl/issues/309
                     # TODO(jacobperron): Investigate reason for build warnings on Windows
                     # TODO(jacobperron): Write test case for this path of execution
-                    strlist.append('std::fill<typename %s::iterator, %s>(this->%s.begin(), this->%s.end(), %s);' % (msg_type_to_cpp(member.type), msg_type_only_to_cpp(member.type), member.name, member.name, member.default_value[0]))
+                    if 'std::byte' in member.default_value[0]:
+                        strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (member.name, member.name, member.default_value[0]))
+                    else:
+                        strlist.append('std::fill<typename %s::iterator, %s>(this->%s.begin(), this->%s.end(), %s);' % (msg_type_to_cpp(member.type), msg_type_only_to_cpp(member.type), member.name, member.name, member.default_value[0]))
                 else:
                     for index, val in enumerate(member.default_value):
                         strlist.append('this->%s[%d] = %s;' % (member.name, index, val))
@@ -146,7 +149,10 @@ def generate_zero_string(membset, fill_args):
                 # Specifying type for std::fill because of MSVC 14.12 warning about casting 'const int' to smaller types (C4244)
                 # For more info, see https://github.com/ros2/rosidl/issues/309
                 # TODO(jacobperron): Investigate reason for build warnings on Windows
-                strlist.append('std::fill<typename %s::iterator, %s>(this->%s.begin(), this->%s.end(), %s);' % (msg_type_to_cpp(member.type), msg_type_only_to_cpp(member.type), member.name, member.name, member.zero_value[0]))
+                if 'std::byte' in member.zero_value[0]:
+                    strlist.append('std::fill(this->%s.begin(), this->%s.end(), %s);' % (member.name, member.name, member.zero_value[0]))
+                else:
+                    strlist.append('std::fill<typename %s::iterator, %s>(this->%s.begin(), this->%s.end(), %s);' % (msg_type_to_cpp(member.type), msg_type_only_to_cpp(member.type), member.name, member.name, member.zero_value[0]))
         else:
             strlist.append('this->%s = %s;' % (member.name, member.zero_value))
     return strlist

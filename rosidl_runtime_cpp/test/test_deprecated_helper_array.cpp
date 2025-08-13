@@ -76,57 +76,57 @@ TEST(rosidl_generator_cpp, deprecated_helper_array_operator_index) {
   EXPECT_EQ(dep_array[1], 10);
 }
 
-// TEST(rosidl_generator_cpp, deprecated_helper_array_at) {
-//   rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{};
-//   dep_array.fill(std::byte{7});
+TEST(rosidl_generator_cpp, deprecated_helper_array_at) {
+  rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{};
+  dep_array.fill(std::byte{7});
 
-//   EXPECT_EQ(static_cast<std::byte>(dep_array.at(0)), std::byte{7});
-//   EXPECT_EQ(static_cast<std::byte>(dep_array.at(2)), std::byte{7});
+  EXPECT_EQ(static_cast<std::byte>(dep_array.at(0)), std::byte{7});
+  EXPECT_EQ(static_cast<std::byte>(dep_array.at(2)), std::byte{7});
 
-//   dep_array.at(1) = std::byte{11};
-//   EXPECT_EQ(static_cast<std::byte>(dep_array.at(1)), std::byte{11});
-//   EXPECT_THROW(dep_array.at(3), std::out_of_range);
-// }
+  dep_array.at(1) = std::byte{11};
+  EXPECT_EQ(static_cast<std::byte>(dep_array.at(1)), std::byte{11});
+  EXPECT_THROW(dep_array.at(3), std::out_of_range);
+}
 
-// TEST(rosidl_generator_cpp, deprecated_helper_array_data) {
-//   rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{};
-//   dep_array.fill(std::byte{9});
+TEST(rosidl_generator_cpp, deprecated_helper_array_data) {
+  rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{};
+  dep_array.fill(std::byte{9});
 
-//   std::byte * data_ptr = dep_array.data();
-//   EXPECT_EQ(*data_ptr, std::byte{9});
+  std::byte * data_ptr = dep_array.data();
+  EXPECT_EQ(*data_ptr, std::byte{9});
 
-//   data_ptr[2] = std::byte{15};
-//   EXPECT_EQ(static_cast<std::byte>(dep_array[2]), std::byte{15});
-// }
+  data_ptr[2] = std::byte{15};
+  EXPECT_EQ(static_cast<std::byte>(dep_array[2]), std::byte{15});
+}
 
-// TEST(rosidl_generator_cpp, deprecated_helper_array_begin_end) {
-//   rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{};
-//   dep_array.fill(std::byte{3});
+TEST(rosidl_generator_cpp, deprecated_helper_array_begin_end) {
+  rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{};
+  dep_array.fill(std::byte{3});
 
-//   auto it = dep_array.begin();
-//   auto end_it = dep_array.end();
+  auto it = dep_array.begin();
+  auto end_it = dep_array.end();
 
-//   EXPECT_NE(it, end_it);
-//   EXPECT_EQ(static_cast<std::byte>(*it), std::byte{3});
+  EXPECT_NE(it, end_it);
+  EXPECT_EQ(static_cast<std::byte>(*it), std::byte{3});
 
-//   int count = 0;
-//   for (auto iter = dep_array.begin(); iter != dep_array.end(); ++iter) {
-//     EXPECT_EQ(static_cast<std::byte>(*iter), std::byte{3});
-//     ++count;
-//   }
-//   EXPECT_EQ(count, 3);
-// }
+  int count = 0;
+  for (auto iter = dep_array.begin(); iter != dep_array.end(); ++iter) {
+    EXPECT_EQ(static_cast<std::byte>(*iter), std::byte{3});
+    ++count;
+  }
+  EXPECT_EQ(count, 3);
+}
 
-// TEST(rosidl_generator_cpp, deprecated_helper_array_cbegin_cend) {
-//   rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{};
-//   dep_array.fill(std::byte{4});
+TEST(rosidl_generator_cpp, deprecated_helper_array_cbegin_cend) {
+  rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{};
+  dep_array.fill(std::byte{4});
 
-//   auto cit = dep_array.cbegin();
-//   auto cend_it = dep_array.cend();
+  auto cit = dep_array.cbegin();
+  auto cend_it = dep_array.cend();
 
-//   EXPECT_NE(cit, cend_it);
-//   EXPECT_EQ(static_cast<std::byte>(*cit), std::byte{4});
-// }
+  EXPECT_NE(cit, cend_it);
+  EXPECT_EQ(static_cast<std::byte>(*cit), std::byte{4});
+}
 
 TEST(rosidl_generator_cpp, deprecated_helper_array_empty) {
   rosidl_runtime_cpp::DeprecatedHelperArray<0> empty_array{};
@@ -136,21 +136,21 @@ TEST(rosidl_generator_cpp, deprecated_helper_array_empty) {
   EXPECT_FALSE(non_empty_array.empty());
 }
 
-// TEST(rosidl_generator_cpp, deprecated_helper_array_front_back) {
-//   rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{};
-//   dep_array[0] = std::byte{7};
-//   dep_array[1] = std::byte{8};
-//   dep_array[2] = std::byte{9};
+TEST(rosidl_generator_cpp, deprecated_helper_array_front_back) {
+  rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{};
+  dep_array[0] = std::byte{7};
+  dep_array[1] = std::byte{8};
+  dep_array[2] = std::byte{9};
 
-//   EXPECT_EQ(static_cast<std::byte>(dep_array.front()), std::byte{7});
-//   EXPECT_EQ(static_cast<std::byte>(dep_array.back()), std::byte{9});
+  EXPECT_EQ(static_cast<std::byte>(dep_array.front()), std::byte{7});
+  EXPECT_EQ(static_cast<std::byte>(dep_array.back()), std::byte{9});
 
-//   dep_array.front() = std::byte{10};
-//   dep_array.back() = std::byte{11};
+  dep_array.front() = std::byte{10};
+  dep_array.back() = std::byte{11};
 
-//   EXPECT_EQ(static_cast<std::byte>(dep_array[0]), std::byte{10});
-//   EXPECT_EQ(static_cast<std::byte>(dep_array[2]), std::byte{11});
-// }
+  EXPECT_EQ(static_cast<std::byte>(dep_array[0]), std::byte{10});
+  EXPECT_EQ(static_cast<std::byte>(dep_array[2]), std::byte{11});
+}
 
 TEST(rosidl_generator_cpp, deprecated_helper_array_swap) {
   rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array1{};

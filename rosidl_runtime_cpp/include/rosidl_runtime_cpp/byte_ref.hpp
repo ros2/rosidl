@@ -20,6 +20,9 @@
 namespace rosidl_runtime_cpp
 {
 
+namespace detail
+{
+
 struct ByteRef
 {
   constexpr ByteRef(std::byte & b)  // NOLINT(runtime/explicit)
@@ -57,11 +60,20 @@ private:
   std::byte & ref;
 };
 
-// struct ConstByteRef {
-//   const std::byte *p;
-//   operator DeprecatedHelperByte() const noexcept { return DeprecatedHelperByte{*p}; }
+// struct ConstByteRef
+// {
+// const std::byte &ref;
+
+// constexpr ConstByteRef(const std::byte &b) noexcept : ref(b) {}
+
+// constexpr operator std::byte() const noexcept { return ref; }
+
+// constexpr operator unsigned char() const noexcept {
+//     return std::to_integer<unsigned char>(ref);
+// }
 // };
 
+}  // namespace detail
 }  // namespace rosidl_runtime_cpp
 
 #endif  // ROSIDL_RUNTIME_CPP__BYTE_REF_HPP_

@@ -111,9 +111,9 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
 
   // Element Access
 
-  constexpr ByteRef at(std::size_t pos)
+  constexpr detail::ByteRef at(std::size_t pos)
   {
-    return ByteRef{ByteArray::at(pos)};
+    return detail::ByteRef{ByteArray::at(pos)};
   }
 
   constexpr DeprecatedHelperByte at(std::size_t pos) const
@@ -121,9 +121,9 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
     return DeprecatedHelperByte{ByteArray::at(pos)};
   }
 
-  constexpr ByteRef operator[](std::size_t pos)
+  constexpr detail::ByteRef operator[](std::size_t pos)
   {
-    return ByteRef{ByteArray::operator[](pos)};
+    return detail::ByteRef{ByteArray::operator[](pos)};
   }
 
   constexpr DeprecatedHelperByte operator[](std::size_t pos) const

@@ -102,7 +102,7 @@ struct BytePtr
 
   // TODO(invinciblermc)
   // Make constexpr bit_cast in C++20
-  [[deprecated("Assign a std::byte *")]]
+  [[deprecated("Construct with std::byte *")]]
   BytePtr(unsigned char * p)  // NOLINT(runtime/explicit)
   : ptr(reinterpret_cast<std::byte *>(p)) {}
 

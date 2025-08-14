@@ -81,9 +81,9 @@ TEST(rosidl_generator_cpp, deprecated_helper_array_at) {
   dep_array.fill(std::byte{7});
 
   EXPECT_EQ(static_cast<std::byte>(dep_array.at(0)), std::byte{7});
-  EXPECT_EQ(static_cast<std::byte>(dep_array.at(2)), std::byte{7});
+  EXPECT_EQ(dep_array.at(2), 7);
 
-  dep_array.at(1) = std::byte{11};
+  dep_array.at(1) = 11;
   EXPECT_EQ(static_cast<std::byte>(dep_array.at(1)), std::byte{11});
   EXPECT_THROW(dep_array.at(3), std::out_of_range);
 }
@@ -203,6 +203,22 @@ TEST(rosidl_generator_cpp, deprecated_helper_array_tuple_element) {
 
   using B = std::tuple_element<0, std::array<std::byte, 10>>::type;
   static_assert(std::is_same_v<B, std::byte>);
+}
+
+TEST(rosidl_generator_cpp, deprecated_helper_convert) {
+  rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{1, 2, 3};
+  std::array<std::byte, 3> byte_array = dep_array;
+  std::array<unsigned char, 3> uchar_array = dep_array;
+
+  EXPECT_EQ(byte_array, dep_array);
+  EXPECT_EQ(uchar_array, dep_array);
+}
+
+
+TEST(rosidl_generator_cpp, deprecated_helper_array_function) {
+  rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{1, 2, 3};
+
+
 }
 
 #pragma GCC diagnostic pop

@@ -106,6 +106,13 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
     return *this;
   }
 
+  // Getter
+
+  [[deprecated("Convert to std::array<std::byte, N> instead")]]
+  constexpr operator UCharArray & () noexcept
+  {
+    return to_uchar_array_ref(*this);
+  }
 
   // Implicitly-defined Member Functions
 
@@ -200,6 +207,38 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
     return detail::ConstBytePtr{ByteArray::cend()};
   }
 
+  // rbegin, crbegin
+  constexpr detail::BytePtr rbegin() noexcept
+  {
+    return detail::BytePtr{ByteArray::rbegin()};
+  }
+
+  constexpr detail::ConstBytePtr rbegin() const noexcept
+  {
+    return detail::ConstBytePtr{ByteArray::rbegin()};
+  }
+
+  constexpr detail::ConstBytePtr crbegin() const noexcept
+  {
+    return detail::ConstBytePtr{ByteArray::crbegin()};
+  }
+
+  // rend, crend
+  constexpr detail::BytePtr rend() noexcept
+  {
+    return detail::BytePtr{ByteArray::rend()};
+  }
+
+  constexpr detail::ConstBytePtr rend() const noexcept
+  {
+    return detail::ConstBytePtr{ByteArray::rend()};
+  }
+
+  constexpr detail::ConstBytePtr crend() const noexcept
+  {
+    return detail::ConstBytePtr{ByteArray::crend()};
+  }
+
   // Operations
 
   [[deprecated("Switch to calling fill with std::byte")]]
@@ -215,6 +254,10 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
   }
 
   // Non-member Functions
+
+  // Comparisons defined below
+
+
 
   // Equals
 
@@ -260,31 +303,171 @@ private:
   }
 };
 
+// Helper
 template<std::size_t N>
-constexpr bool operator==(
-  const std::array<std::byte, N> & lhs,
-  const std::array<unsigned char, N> & rhs)
+constexpr std::array<std::byte, N> to_byte_array(std::array<unsigned char, N> arr)
 {
-  for (std::size_t i = 0; i < N; ++i) {
-    if (std::byte{rhs[i]} != lhs[i]) {
-      return false;
-    }
+  std::array<std::byte, N> byte_array{};
+
+  for (std::size_t i = 0; i < N; i++)
+  {
+    byte_array[i] = std::byte{arr[i]};
   }
-  return true;
+  return byte_array;
 }
 
+// ==
 template<std::size_t N>
+[[deprecated("Do comparisons with std::array<std::byte, N>")]]
 constexpr bool operator==(
   const std::array<unsigned char, N> & lhs,
   const std::array<std::byte, N> & rhs)
 {
-  return operator==(rhs, lhs);
+  return to_byte_array(lhs) == rhs;
+}
+
+template<std::size_t N>
+[[deprecated("Do comparisons with std::array<std::byte, N>")]]
+constexpr bool operator==(
+  const std::array<std::byte, N> & lhs,
+  const std::array<unsigned char, N> & rhs)
+{
+  return lhs == to_byte_array(rhs);
+}
+
+// !=
+template<std::size_t N>
+[[deprecated("Do comparisons with std::array<std::byte, N>")]]
+constexpr bool operator!=(
+  const std::array<unsigned char, N> & lhs,
+  const std::array<std::byte, N> & rhs)
+{
+  return to_byte_array(lhs) != rhs;
+}
+
+template<std::size_t N>
+[[deprecated("Do comparisons with std::array<std::byte, N>")]]
+constexpr bool operator!=(
+  const std::array<std::byte, N> & lhs,
+  const std::array<unsigned char, N> & rhs)
+{
+  return lhs != to_byte_array(rhs);
+}
+
+// <
+template<std::size_t N>
+[[deprecated("Do comparisons with std::array<std::byte, N>")]]
+constexpr bool operator<(
+  const std::array<unsigned char, N> & lhs,
+  const std::array<std::byte, N> & rhs)
+{
+  return to_byte_array(lhs) < rhs;
+}
+
+template<std::size_t N>
+[[deprecated("Do comparisons with std::array<std::byte, N>")]]
+constexpr bool operator<(
+  const std::array<std::byte, N> & lhs,
+  const std::array<unsigned char, N> & rhs)
+{
+  return lhs < to_byte_array(rhs);
+}
+
+// <=
+template<std::size_t N>
+[[deprecated("Do comparisons with std::array<std::byte, N>")]]
+constexpr bool operator<=(
+  const std::array<unsigned char, N> & lhs,
+  const std::array<std::byte, N> & rhs)
+{
+  return to_byte_array(lhs) <= rhs;
+}
+
+template<std::size_t N>
+[[deprecated("Do comparisons with std::array<std::byte, N>")]]
+constexpr bool operator<=(
+  const std::array<std::byte, N> & lhs,
+  const std::array<unsigned char, N> & rhs)
+{
+  return lhs <= to_byte_array(rhs);
+}
+
+// >
+template<std::size_t N>
+[[deprecated("Do comparisons with std::array<std::byte, N>")]]
+constexpr bool operator>(
+  const std::array<unsigned char, N> & lhs,
+  const std::array<std::byte, N> & rhs)
+{
+  return to_byte_array(lhs) > rhs;
+}
+
+template<std::size_t N>
+[[deprecated("Do comparisons with std::array<std::byte, N>")]]
+constexpr bool operator>(
+  const std::array<std::byte, N> & lhs,
+  const std::array<unsigned char, N> & rhs)
+{
+  return lhs > to_byte_array(rhs);
+}
+
+// >=
+template<std::size_t N>
+[[deprecated("Do comparisons with std::array<std::byte, N>")]]
+constexpr bool operator>=(
+  const std::array<unsigned char, N> & lhs,
+  const std::array<std::byte, N> & rhs)
+{
+  return to_byte_array(lhs) >= rhs;
+}
+
+template<std::size_t N>
+[[deprecated("Do comparisons with std::array<std::byte, N>")]]
+constexpr bool operator>=(
+  const std::array<std::byte, N> & lhs,
+  const std::array<unsigned char, N> & rhs)
+{
+  return lhs >= to_byte_array(rhs);
 }
 
 }  // namespace rosidl_runtime_cpp
 
 namespace std
 {
+
+template<std::size_t I, std::size_t N>
+constexpr rosidl_runtime_cpp::detail::ByteRef
+get(rosidl_runtime_cpp::DeprecatedHelperArray<N> & arr) noexcept
+{
+  static_assert(I < N, "Index out of range for DeprecatedHelperArray");
+  return rosidl_runtime_cpp::detail::ByteRef{arr[I]};
+}
+
+template<std::size_t I, std::size_t N>
+constexpr rosidl_runtime_cpp::detail::ConstByteRef
+get(const rosidl_runtime_cpp::DeprecatedHelperArray<N> & arr) noexcept
+{
+  static_assert(I < N, "Index out of range for DeprecatedHelperArray");
+  return rosidl_runtime_cpp::detail::ConstByteRef{arr[I]};
+}
+
+template<std::size_t I, std::size_t N>
+constexpr rosidl_runtime_cpp::detail::ByteRef
+get(rosidl_runtime_cpp::DeprecatedHelperArray<N> && arr) noexcept
+{
+  static_assert(I < N, "Index out of range for DeprecatedHelperArray");
+  return rosidl_runtime_cpp::detail::ByteRef{arr[I]};
+}
+
+template<std::size_t I, std::size_t N>
+constexpr rosidl_runtime_cpp::detail::ConstByteRef
+get(const rosidl_runtime_cpp::DeprecatedHelperArray<N> && arr) noexcept
+{
+  static_assert(I < N, "Index out of range for DeprecatedHelperArray");
+  return rosidl_runtime_cpp::detail::ConstByteRef{arr[I]};
+}
+
+// tuple_element
 template<std::size_t I, std::size_t N>
 struct tuple_element<I, rosidl_runtime_cpp::DeprecatedHelperArray<N>>
 {

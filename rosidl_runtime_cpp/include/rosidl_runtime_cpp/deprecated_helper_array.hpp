@@ -36,6 +36,35 @@
 
 // }  // namespace rosidl_runtime_cpp
 
+
+// Anonymous namespace for private Helpers
+namespace
+{
+template<std::size_t N>
+constexpr std::array<unsigned  char, N> & to_uchar_array_ref(std::array<std::byte, N> & in)
+{
+  return reinterpret_cast<std::array<unsigned char, N> &>(in);
+}
+
+template<std::size_t N>
+constexpr std::array<std::byte, N> & to_byte_array_ref(std::array<unsigned  char, N> & in)
+{
+  return reinterpret_cast<std::array<std::byte, N> &>(in);
+}
+
+template<std::size_t N>
+constexpr std::array<std::byte, N> to_byte_array(std::array<unsigned char, N> arr)
+{
+  std::array<std::byte, N> byte_array{};
+
+  for (std::size_t i = 0; i < N; i++) {
+    byte_array[i] = std::byte{arr[i]};
+  }
+  return byte_array;
+}
+}  // namespace
+
+
 namespace rosidl_runtime_cpp
 {
 
@@ -109,7 +138,7 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
   // Getter
 
   [[deprecated("Convert to std::array<std::byte, N> instead")]]
-  constexpr operator UCharArray & () noexcept
+  constexpr operator UCharArray &() noexcept
   {
     return to_uchar_array_ref(*this);
   }
@@ -257,8 +286,6 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
 
   // Comparisons defined below
 
-
-
   // Equals
 
   // Implicitly-defined member functions
@@ -290,31 +317,7 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
   // Operations
   using ByteArray::fill;
   using ByteArray::swap;
-
-private:
-  // Helper Functions
-  constexpr UCharArray & to_uchar_array_ref(ByteArray & in)
-  {
-    return reinterpret_cast<UCharArray &>(in);
-  }
-  constexpr ByteArray & to_byte_array_ref(UCharArray & in)
-  {
-    return reinterpret_cast<ByteArray &>(in);
-  }
 };
-
-// Helper
-template<std::size_t N>
-constexpr std::array<std::byte, N> to_byte_array(std::array<unsigned char, N> arr)
-{
-  std::array<std::byte, N> byte_array{};
-
-  for (std::size_t i = 0; i < N; i++)
-  {
-    byte_array[i] = std::byte{arr[i]};
-  }
-  return byte_array;
-}
 
 // ==
 template<std::size_t N>

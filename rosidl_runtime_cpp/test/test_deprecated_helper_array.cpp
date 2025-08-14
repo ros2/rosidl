@@ -217,8 +217,6 @@ TEST(rosidl_generator_cpp, deprecated_helper_convert) {
 
 TEST(rosidl_generator_cpp, deprecated_helper_array_function) {
   rosidl_runtime_cpp::DeprecatedHelperArray<3> dep_array{1, 2, 3};
-
-
 }
 
 #pragma GCC diagnostic pop

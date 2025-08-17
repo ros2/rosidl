@@ -53,7 +53,7 @@ constexpr std::array<std::byte, N> & to_byte_array_ref(std::array<unsigned  char
 }
 
 template<std::size_t N>
-constexpr std::array<std::byte, N> to_byte_array(std::array<unsigned char, N> arr)
+constexpr std::array<std::byte, N> to_byte_array(const std::array<unsigned char, N> & arr)
 {
   std::array<std::byte, N> byte_array{};
 
@@ -276,7 +276,7 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
     ByteArray::fill(std::byte{value});
   }
 
-  [[deprecated("Switch to calling fill with std::array<std::byte, N>&")]]
+  [[deprecated("Switch to calling swap with std::array<std::byte, N>&")]]
   constexpr void swap(UCharArray & other)
   {
     ByteArray::swap(to_byte_array_ref(other));
@@ -324,7 +324,7 @@ template<std::size_t N>
 [[deprecated("Do comparisons with std::array<std::byte, N>")]]
 constexpr bool operator==(
   const std::array<unsigned char, N> & lhs,
-  const std::array<std::byte, N> & rhs)
+  const DeprecatedHelperArray<N> & rhs)
 {
   return to_byte_array(lhs) == rhs;
 }
@@ -332,7 +332,7 @@ constexpr bool operator==(
 template<std::size_t N>
 [[deprecated("Do comparisons with std::array<std::byte, N>")]]
 constexpr bool operator==(
-  const std::array<std::byte, N> & lhs,
+  const DeprecatedHelperArray<N> & lhs,
   const std::array<unsigned char, N> & rhs)
 {
   return lhs == to_byte_array(rhs);
@@ -343,7 +343,7 @@ template<std::size_t N>
 [[deprecated("Do comparisons with std::array<std::byte, N>")]]
 constexpr bool operator!=(
   const std::array<unsigned char, N> & lhs,
-  const std::array<std::byte, N> & rhs)
+  const DeprecatedHelperArray<N> & rhs)
 {
   return to_byte_array(lhs) != rhs;
 }
@@ -351,7 +351,7 @@ constexpr bool operator!=(
 template<std::size_t N>
 [[deprecated("Do comparisons with std::array<std::byte, N>")]]
 constexpr bool operator!=(
-  const std::array<std::byte, N> & lhs,
+  const DeprecatedHelperArray<N> & lhs,
   const std::array<unsigned char, N> & rhs)
 {
   return lhs != to_byte_array(rhs);
@@ -362,7 +362,7 @@ template<std::size_t N>
 [[deprecated("Do comparisons with std::array<std::byte, N>")]]
 constexpr bool operator<(
   const std::array<unsigned char, N> & lhs,
-  const std::array<std::byte, N> & rhs)
+  const DeprecatedHelperArray<N> & rhs)
 {
   return to_byte_array(lhs) < rhs;
 }
@@ -370,7 +370,7 @@ constexpr bool operator<(
 template<std::size_t N>
 [[deprecated("Do comparisons with std::array<std::byte, N>")]]
 constexpr bool operator<(
-  const std::array<std::byte, N> & lhs,
+  const DeprecatedHelperArray<N> & lhs,
   const std::array<unsigned char, N> & rhs)
 {
   return lhs < to_byte_array(rhs);
@@ -381,7 +381,7 @@ template<std::size_t N>
 [[deprecated("Do comparisons with std::array<std::byte, N>")]]
 constexpr bool operator<=(
   const std::array<unsigned char, N> & lhs,
-  const std::array<std::byte, N> & rhs)
+  const DeprecatedHelperArray<N> & rhs)
 {
   return to_byte_array(lhs) <= rhs;
 }
@@ -389,7 +389,7 @@ constexpr bool operator<=(
 template<std::size_t N>
 [[deprecated("Do comparisons with std::array<std::byte, N>")]]
 constexpr bool operator<=(
-  const std::array<std::byte, N> & lhs,
+  const DeprecatedHelperArray<N> & lhs,
   const std::array<unsigned char, N> & rhs)
 {
   return lhs <= to_byte_array(rhs);
@@ -400,7 +400,7 @@ template<std::size_t N>
 [[deprecated("Do comparisons with std::array<std::byte, N>")]]
 constexpr bool operator>(
   const std::array<unsigned char, N> & lhs,
-  const std::array<std::byte, N> & rhs)
+  const DeprecatedHelperArray<N> & rhs)
 {
   return to_byte_array(lhs) > rhs;
 }
@@ -408,7 +408,7 @@ constexpr bool operator>(
 template<std::size_t N>
 [[deprecated("Do comparisons with std::array<std::byte, N>")]]
 constexpr bool operator>(
-  const std::array<std::byte, N> & lhs,
+  const DeprecatedHelperArray<N> & lhs,
   const std::array<unsigned char, N> & rhs)
 {
   return lhs > to_byte_array(rhs);
@@ -419,7 +419,7 @@ template<std::size_t N>
 [[deprecated("Do comparisons with std::array<std::byte, N>")]]
 constexpr bool operator>=(
   const std::array<unsigned char, N> & lhs,
-  const std::array<std::byte, N> & rhs)
+  const DeprecatedHelperArray<N> & rhs)
 {
   return to_byte_array(lhs) >= rhs;
 }
@@ -427,7 +427,7 @@ constexpr bool operator>=(
 template<std::size_t N>
 [[deprecated("Do comparisons with std::array<std::byte, N>")]]
 constexpr bool operator>=(
-  const std::array<std::byte, N> & lhs,
+  const DeprecatedHelperArray<N> & lhs,
   const std::array<unsigned char, N> & rhs)
 {
   return lhs >= to_byte_array(rhs);

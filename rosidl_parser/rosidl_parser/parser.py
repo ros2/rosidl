@@ -451,7 +451,6 @@ def add_message_members(msg: Message, tree: 'ParseTree') -> None:
 BASE_TYPE_SPEC_TO_IDL_TYPE: Dict[str, 'BasicTypeValues'] = {
     'floating_pt_type_float': 'float',
     'floating_pt_type_double': 'double',
-    'floating_pt_type_long_double': 'long double',
     'char_type': 'char',
     'wide_char_type': 'wchar',
     'boolean_type': 'boolean',

@@ -114,7 +114,7 @@ rosidl_runtime_c__type_description__Field__copy(
 }
 
 rosidl_runtime_c__type_description__Field *
-rosidl_runtime_c__type_description__Field__create()
+rosidl_runtime_c__type_description__Field__create(void)
 {
   rcutils_allocator_t allocator = rcutils_get_default_allocator();
   rosidl_runtime_c__type_description__Field * msg = (rosidl_runtime_c__type_description__Field *)allocator.allocate(sizeof(rosidl_runtime_c__type_description__Field), allocator.state);

@@ -62,7 +62,6 @@ def prefix_with_bom_if_necessary(content: str) -> str:
 BASIC_IDL_TYPES_TO_C = {
     'float': 'float',
     'double': 'double',
-    'long double': 'long double',
     'char': 'signed char',
     'wchar': 'uint16_t',
     'boolean': 'bool',

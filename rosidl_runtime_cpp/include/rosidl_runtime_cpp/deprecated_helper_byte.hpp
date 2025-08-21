@@ -35,8 +35,8 @@ struct DeprecatedHelperByte
 
   // Getter
 
-  // TODO(invinciblermc): make constexpr in C++23 if the deprecation process is still going
-  // Can't be constexpr yet since reinterpret_cast is not constexpr
+  // TODO(invinciblermc)
+  // Make constexpr bit_cast in C++20
   [[deprecated("Use static_cast<std::byte &> instead")]]
   operator unsigned char &() noexcept
   {

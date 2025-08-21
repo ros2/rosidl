@@ -34,14 +34,13 @@ struct ByteRef
   ByteRef(unsigned char & b)  // NOLINT(runtime/explicit)
   : ref(reinterpret_cast<std::byte &>(b)) {}
 
-  // Assignment from std::byte
+  // =
   constexpr ByteRef & operator=(std::byte b)
   {
     ref = b;
     return *this;
   }
 
-  // Assignment from unsigned char
   [[deprecated("Assign to with std::byte")]]
   constexpr ByteRef & operator=(unsigned char c)
   {
@@ -49,13 +48,11 @@ struct ByteRef
     return *this;
   }
 
-  // Conversion to std::byte
   constexpr operator std::byte() const
   {
     return ref;
   }
 
-  // Conversion to unsigned char
   [[deprecated("Return a std::byte")]]
   constexpr operator unsigned char() const
   {
@@ -68,7 +65,6 @@ private:
 
 struct ConstByteRef
 {
-  // Construct from const std::byte reference
   constexpr ConstByteRef(const std::byte & b) noexcept  // NOLINT(runtime/explicit)
   : ref(b) {}
 
@@ -116,13 +112,13 @@ struct BytePtr
     return ByteRef{ptr[i]};
   }
 
-  // Pointer arithmetic
+  // Pointer math
   constexpr BytePtr & operator++() {++ptr; return *this;}
   constexpr BytePtr operator++(int) {BytePtr tmp = *this; ++(*this); return tmp;}
   constexpr BytePtr & operator--() {--ptr; return *this;}
   constexpr BytePtr operator--(int) {BytePtr tmp = *this; --(*this); return tmp;}
 
-  // Conversion to raw pointers
+  // *
   explicit constexpr operator std::byte *() const {return ptr;}
 
   // TODO(invinciblermc)

@@ -86,7 +86,6 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
   using ByteArray = std::array<std::byte, N>;
   using UCharArray = std::array<unsigned char, N>;
 
-
   // Member Functions
   // Constructor
   [[deprecated("Use std::array<std::byte, N> instead of unsigned char array")]]
@@ -282,8 +281,6 @@ struct DeprecatedHelperArray : std::array<std::byte, N>
     ByteArray::swap(to_byte_array_ref(other));
   }
 
-  // Non-member Functions
-
   // Comparisons defined below
 
   // Equals
@@ -437,6 +434,8 @@ constexpr bool operator>=(
 
 namespace std
 {
+
+// Non-member Functions
 
 template<std::size_t I, std::size_t N>
 constexpr rosidl_runtime_cpp::detail::ByteRef

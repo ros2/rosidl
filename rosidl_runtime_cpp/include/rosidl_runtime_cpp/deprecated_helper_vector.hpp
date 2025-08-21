@@ -25,9 +25,13 @@
 namespace rosidl_runtime_cpp
 {
 // using T = unsigned char;
-using T = std::byte;
-template<typename Allocator = std::allocator<T>>
-using DeprecatedHelperVector = std::vector<T, Allocator>;
+// using T = std::byte;
+// template<typename Allocator = std::allocator<T>>
+// using DeprecatedHelperVector = std::vector<T, Allocator>;
+
+template<typename Allocator = std::allocator<std::byte>>
+struct DeprecatedHelperVector : std::vector<std::byte, Allocator>
+{};
 }  // namespace rosidl_runtime_cpp
 
 #endif  // ROSIDL_RUNTIME_CPP__DEPRECATED_HELPER_VECTOR_HPP_

@@ -30,14 +30,14 @@ TEST(rosidl_generator_cpp, byte_ref) {
   byte_ref = 3;
 
   ASSERT_EQ(byte_ref, 3);
-  ASSERT_EQ(byte_ref, std::byte{3});
+  ASSERT_EQ(static_cast<std::byte>(byte_ref), std::byte{3});
 
   byte_ref = std::byte{4};
 
   ASSERT_EQ(byte_ref, 4);
-  ASSERT_EQ(byte_ref, std::byte{4});
+  ASSERT_EQ(static_cast<std::byte>(byte_ref), std::byte{4});
 
-  std::byte bb = byte_ref;
+  std::byte bb = static_cast<std::byte>(byte_ref);
   unsigned char uchar = byte_ref;
 
   ASSERT_EQ(bb, std::byte{4});
@@ -49,9 +49,9 @@ TEST(rosidl_generator_cpp, const_byte_ref) {
   rosidl_runtime_cpp::detail::ConstByteRef const_ref{b};
 
   EXPECT_EQ(const_ref, 5);
-  EXPECT_EQ(const_ref, std::byte{5});
+  EXPECT_EQ(static_cast<std::byte>(const_ref), std::byte{5});
 
-  std::byte bb = const_ref;
+  std::byte bb = static_cast<std::byte>(const_ref);
   unsigned char uchar = const_ref;
 
   EXPECT_EQ(bb, std::byte{5});
@@ -70,18 +70,18 @@ TEST(rosidl_generator_cpp, byte_ptr) {
   std::byte byte_2{25};
   byte_ptr = &byte_2;
   EXPECT_EQ(*byte_ptr, 25);
-  EXPECT_EQ(*byte_ptr, std::byte{25});
+  EXPECT_EQ(static_cast<std::byte>(*byte_ptr), std::byte{25});
 
   unsigned char uchar2 = 13;
   byte_ptr = &uchar2;
   EXPECT_EQ(*byte_ptr, 13);
-  EXPECT_EQ(*byte_ptr, std::byte{13});
+  EXPECT_EQ(static_cast<std::byte>(*byte_ptr), std::byte{13});
 
   *byte_ptr = 100;
   EXPECT_EQ(*byte_ptr, 100);
   EXPECT_EQ(uchar2, 100);
 
-  std::byte bb = *byte_ptr;
+  std::byte bb = static_cast<std::byte>(*byte_ptr);
   EXPECT_EQ(bb, std::byte{100});
 
   unsigned char uchar = *byte_ptr;
@@ -102,9 +102,9 @@ TEST(rosidl_generator_cpp, const_byte_ptr) {
   const std::byte b{200};
   rosidl_runtime_cpp::detail::ConstBytePtr const_byte_ptr{&b};
   EXPECT_EQ(*const_byte_ptr, 200);
-  EXPECT_EQ(*const_byte_ptr, std::byte{200});
+  EXPECT_EQ(static_cast<std::byte>(*const_byte_ptr), std::byte{200});
 
-  std::byte bb = *const_byte_ptr;
+  std::byte bb = static_cast<std::byte>(*const_byte_ptr);
   EXPECT_EQ(bb, std::byte{200});
 
   unsigned char uchar = *const_byte_ptr;

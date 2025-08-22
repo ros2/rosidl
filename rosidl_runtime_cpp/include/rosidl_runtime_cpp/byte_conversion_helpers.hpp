@@ -48,7 +48,7 @@ struct ByteRef
     return *this;
   }
 
-  constexpr operator std::byte() const
+  explicit constexpr operator std::byte() const
   {
     return ref;
   }
@@ -74,17 +74,17 @@ struct ConstByteRef
   ConstByteRef(const unsigned char & b) noexcept  // NOLINT(runtime/explicit)
   : ref(reinterpret_cast<const std::byte &>(b)) {}
 
+  // Conversion to std::byte
+  explicit constexpr operator std::byte() const noexcept
+  {
+    return ref;
+  }
+
   // Conversion to unsigned char
   [[deprecated("Use static_cast<std::byte> instead")]]
   constexpr operator unsigned char() const noexcept
   {
     return std::to_integer<unsigned char>(ref);
-  }
-
-  // Conversion to std::byte
-  constexpr operator std::byte() const noexcept
-  {
-    return ref;
   }
 
 private:

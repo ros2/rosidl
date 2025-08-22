@@ -77,6 +77,11 @@ if(BUILD_TESTING)
     target_link_libraries(test_bounded_vector ${PROJECT_NAME})
   endif()
 
+  ament_add_gtest(test_byte_container_mixin test/test_byte_container_mixin.cpp)
+  if(TARGET test_byte_container_mixin)
+    target_link_libraries(test_byte_container_mixin ${PROJECT_NAME})
+  endif()
+
   ament_add_gtest(test_byte_conversion_helper test/test_byte_conversion_helper.cpp)
   if(TARGET test_byte_conversion_helper)
     target_link_libraries(test_byte_conversion_helper ${PROJECT_NAME})

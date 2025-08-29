@@ -21,6 +21,7 @@ from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
 from rosidl_parser.definition import BoundedString
 from rosidl_parser.definition import BoundedWString
+from rosidl_parser.definition import Enum
 from rosidl_parser.definition import IdlFile
 from rosidl_parser.definition import IdlLocator
 from rosidl_parser.definition import Include
@@ -92,6 +93,21 @@ def test_message_parser_includes(message_idl_file: IdlFile) -> None:
     assert includes[1].locator == 'pkgname/msg/OtherMessage.idl'
 
 
+def test_message_parser_enums(message_idl_file: IdlFile) -> None:
+    enums = message_idl_file.content.get_elements_of_type(Enum)
+    assert len(enums) == 1
+    assert enums[0].namespaced_type.name == 'MyEnum'
+    assert len(enums[0].annotations) == 1
+    assert enums[0].annotations[0].name == 'verbatim'
+    assert enums[0].annotations[0].value['language'] == 'comment'
+    text = enums[0].annotations[0].value['text']
+    assert text == 'Documentation of MyEnum.Define an enum.'
+    assert len(enums[0].enumerators) == 3
+    assert enums[0].enumerators[0].name == 'FIRST_ENUM'
+    assert enums[0].enumerators[1].name == 'SECOND_ENUM'
+    assert enums[0].enumerators[2].name == 'THIRD_ENUM'
+
+
 def test_message_parser_structure(message_idl_file: IdlFile) -> None:
     messages = message_idl_file.content.get_elements_of_type(Message)
     assert len(messages) == 1
@@ -134,7 +150,7 @@ def test_message_parser_structure(message_idl_file: IdlFile) -> None:
     structure = messages[0].structure
     assert structure.namespaced_type.namespaces == ['rosidl_parser', 'msg']
     assert structure.namespaced_type.name == 'MyMessage'
-    assert len(structure.members) == 46
+    assert len(structure.members) == 47
 
     assert isinstance(structure.members[0].type, BasicType)
     assert structure.members[0].type.typename == 'int16'
@@ -309,6 +325,14 @@ def test_message_parser_annotations(message_idl_file: IdlFile) -> None:
     assert structure.members[45].name == 'optional_int'
     assert len(structure.members[45].annotations) == 1
     assert structure.members[45].annotations[0].name == 'optional'
+
+    assert isinstance(structure.members[46].type, Enum)
+    assert structure.members[46].name == 'my_enum'
+    assert structure.members[46].type.namespaced_type.name == 'MyEnum'
+    assert len(structure.members[46].type.enumerators) == 3
+    assert structure.members[46].type.enumerators[0].name == 'FIRST_ENUM'
+    assert structure.members[46].type.enumerators[1].name == 'SECOND_ENUM'
+    assert structure.members[46].type.enumerators[2].name == 'THIRD_ENUM'
 
 
 @pytest.fixture(scope='module')

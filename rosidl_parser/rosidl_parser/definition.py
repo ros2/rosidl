@@ -533,6 +533,40 @@ class Annotatable:
         return bool(annotations)
 
 
+class Enumerator(Annotatable):
+    """An enumerator in an enum."""
+
+    __slots__ = ('name')
+
+    def __init__(self, name: str):
+        """
+        Create an Enumerator.
+
+        :param name: the name of the enumerator
+        """
+        super().__init__()
+        self.name = name
+
+
+class Enum(Annotatable):
+    """An enum type containing a list of enumerators."""
+
+    __slots__ = ('namespaced_type', 'enumerators')
+
+    def __init__(self, namespaced_type: NamespacedType,
+                 enumerators: Optional[List['Enumerator']] = None) -> None:
+        """
+        Create an Enum.
+
+        :param namespaced_type: the namespaced type identifying the enum
+        :param list enumerators: the enumerators of the enum
+        """
+        super().__init__()
+        assert isinstance(namespaced_type, NamespacedType)
+        self.namespaced_type = namespaced_type
+        self.enumerators = enumerators or []
+
+
 class Member(Annotatable):
     """A member of a structure."""
 
@@ -819,7 +853,7 @@ class IdlLocator:
         return self.basepath / self.relative_path
 
 
-IdlContentElement: 'TypeAlias' = Union[Include, Message, Service, Action]
+IdlContentElement: 'TypeAlias' = Union[Include, Message, Service, Action, Enum]
 IdlContentElementT = TypeVar('IdlContentElementT', bound=IdlContentElement)
 
 

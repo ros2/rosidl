@@ -10,19 +10,18 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.
 
-# Base Metaclasses
+# Base Classes
+from abc import ABC
 from abc import ABCMeta
 from abc import abstractmethod
-from collections.abc import MutableMapping
 from typing import Any
 from typing import ClassVar
 from typing import Generic
 from typing import TypeVar
 
 
-class MessageAbstractMeta(ABCMeta):
+class MessageTypeSupportMeta(ABCMeta):
 
     _CREATE_ROS_MESSAGE: ClassVar[Any]
     _CONVERT_FROM_PY: ClassVar[Any]
@@ -34,23 +33,37 @@ class MessageAbstractMeta(ABCMeta):
     @abstractmethod
     def __import_type_support__(cls) -> None: ...
 
+
+class BaseMessage(ABC, metaclass=MessageTypeSupportMeta):
+    
+    @abstractmethod
+    def __repr__(self) -> str: ...
+
+    @abstractmethod
+    def __eq__(self, other: object) -> bool: ...
+
     @classmethod
     @abstractmethod
-    def __prepare__(metacls, name: str, bases: tuple[type[Any], ...], /, **kwds: Any
-                    ) -> MutableMapping[str, object]: ...
+    def get_fields_and_field_types(cls) -> dict[str, str]: ...
 
 
 RequestT = TypeVar('RequestT')
 ResponseT = TypeVar('ResponseT')
 
 
-class ServiceAbstractMeta(ABCMeta, Generic[RequestT, ResponseT]):
+class ServiceTypeSupportMeta(ABCMeta):
 
     _TYPE_SUPPORT: ClassVar[Any]
 
     @classmethod
     @abstractmethod
     def __import_type_support__(cls) -> None: ...
+
+
+class BaseService(ABC, Generic[RequestT, ResponseT], metaclass=ServiceTypeSupportMeta):
+    
+    Request: type[RequestT]
+    Response: type[ResponseT]
 
 
 GoalT = TypeVar('GoalT')
@@ -58,10 +71,17 @@ ResultT = TypeVar('ResultT')
 FeedbackT = TypeVar('FeedbackT')
 
 
-class ActionAbstractMeta(ABCMeta, Generic[GoalT, ResultT, FeedbackT]):
+class ActionTypeSupportMeta(ABCMeta):
 
     _TYPE_SUPPORT: ClassVar[Any]
 
     @classmethod
     @abstractmethod
     def __import_type_support__(cls) -> None: ...
+
+
+class BaseAction(ABC, Generic[GoalT, ResultT, FeedbackT], metaclass=ActionTypeSupportMeta):
+
+    Goal: type[GoalT]
+    Result: type[ResultT]
+    Feedback: type[FeedbackT]

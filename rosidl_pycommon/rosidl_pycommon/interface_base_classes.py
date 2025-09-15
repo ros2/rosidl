@@ -37,6 +37,8 @@ class MessageTypeSupportMeta(ABCMeta):
 
 class BaseMessage(ABC, metaclass=MessageTypeSupportMeta):
 
+    __slots__ = ()
+
     @abstractmethod
     def __repr__(self) -> str: ...
 

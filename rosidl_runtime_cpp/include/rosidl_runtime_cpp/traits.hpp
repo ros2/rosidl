@@ -16,6 +16,7 @@
 #define ROSIDL_RUNTIME_CPP__TRAITS_HPP_
 
 #include <codecvt>
+#include <cstdint>
 #include <iomanip>
 #include <iosfwd>
 #include <string>

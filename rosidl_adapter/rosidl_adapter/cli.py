@@ -70,6 +70,11 @@ def convert_files_to_idl(
 
 class TranslateToIDL(TranslateCommandExtension):
 
+    if TYPE_CHECKING:
+
+        @property
+        def conversion_function(self) -> 'ConversionFunctionType': ...
+
     output_format = 'idl'
 
     def translate(
@@ -79,7 +84,7 @@ class TranslateToIDL(TranslateCommandExtension):
         include_paths: List[str],
         output_path: Path
     ) -> List[str]:
-        translated_interface_files = []
+        translated_interface_files: list[str] = []
         for interface_file_str in interface_files:
             prefix, interface_file = interface_path_as_tuple(interface_file_str)
             output_dir = output_path / interface_file.parent

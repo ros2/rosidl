@@ -136,8 +136,13 @@ ROSIDL_GENERATOR_C_PUBLIC
 const rosidl_service_type_support_t * get_service_typesupport_handle_function(
   const rosidl_service_type_support_t * handle, const char * identifier);
 
+<<<<<<< HEAD
 /// Get the service type support given a provided action and package.
 /*
+=======
+/// Get the service type support given a provided service and package.
+/**
+>>>>>>> e25eb4e (Fix copy/paste errors in type support docs (#906))
  * \param PkgName Name of the package that contains the service
  * \param SrvSubfolder name of the subfolder (for example: srv)
  * \param SrvName service name

@@ -24,6 +24,7 @@ setup(
             'completion/rosidl-argcomplete.zsh'
         ]),
     ],
+    package_data={'': ['py.typed']},
     zip_safe=False,
     author='Michel Hidalgo',
     author_email='michel@ekumenlabs.com',

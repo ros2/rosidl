@@ -8,6 +8,8 @@ module test_msgs {
     module Test_Constants {
       @optional
       const float INLINE_CONSTANT = 32.0;
+      @optional
+      const string OPTIONAL_STRING_CONST = "@optional";
     };
     @verbatim (language="comment", text=
       "msg level doc")
@@ -54,6 +56,10 @@ module test_msgs {
       @optional
       @default (value=32.0)
       float inline_default_optional;
+
+      @optional
+      @default (value="@optional")
+      string optional_default_string;
     };
   };
 };

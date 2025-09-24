@@ -530,8 +530,7 @@ def parse_message_string(pkg_name: str, msg_name: str,
             if not line:
                 continue
 
-        annotation_index = line.rfind(OPTIONAL_ANNOTATION)
-        if annotation_index >= 0:
+        if line.startswith(OPTIONAL_ANNOTATION):
             if is_optional:
                 raise MultipleOptionalAnnotations(
                     f'Already declared @optional. Error detected with {line}.')

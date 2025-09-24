@@ -22,3 +22,6 @@ float32 multiline_optional
 @optional float32 inline_optional
 @optional float32 inline_default_optional 32.0
 @optional float32 INLINE_CONSTANT=32.0
+
+@optional string optional_default_string @optional
+@optional string OPTIONAL_STRING_CONST=@optional

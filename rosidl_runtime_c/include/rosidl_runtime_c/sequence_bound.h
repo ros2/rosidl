@@ -65,7 +65,7 @@ const rosidl_runtime_c__Sequence__bound * get_sequence_bound_handle_function(
   const rosidl_runtime_c__Sequence__bound * handle, const char * identifier);
 
 <<<<<<< HEAD
-/// Get the sequence bounds given a provided action and package.
+/// Get the sequence bounds given a provided message and package.
 /*
 =======
 /// Get the sequence bounds given a provided message and package.

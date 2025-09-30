@@ -24,7 +24,7 @@
 # the search will prefer /usr/bin/python3 over /usr/bin/python3.11.  And that
 # latter functionality is only available in CMake 3.20 or later, so we need
 # at least that version.
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.27) # Required by option DEPENDS_EXPLICIT_ONLY of add_custom_command
 cmake_policy(SET CMP0094 NEW)
 set(Python3_FIND_UNVERSIONED_NAMES FIRST)
 
@@ -88,6 +88,7 @@ add_custom_command(
   DEPENDS ${target_dependencies}
   COMMENT "Generating type hashes for ROS interfaces"
   VERBATIM
+  DEPENDS_EXPLICIT_ONLY
 )
 
 set(_target "${rosidl_generate_interfaces_TARGET}__rosidl_generator_type_description")

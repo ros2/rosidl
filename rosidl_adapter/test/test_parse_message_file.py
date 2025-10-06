@@ -21,7 +21,7 @@ import pytest
 from rosidl_adapter.parser import parse_message_file
 
 
-def test_parse_message_file():
+def test_parse_message_file() -> None:
     path = tempfile.mkdtemp(prefix='test_parse_message_file_')
     try:
         filename = os.path.join(path, 'Foo.msg')

@@ -15,20 +15,20 @@
 from rosidl_cli.common import get_first_line_doc
 
 
-def test_getting_first_line_from_no_docstring():
+def test_getting_first_line_from_no_docstring() -> None:
     func = test_getting_first_line_from_no_docstring
     line = get_first_line_doc(func)
     assert line == ''
 
 
-def test_getting_first_line_from_docstring():
+def test_getting_first_line_from_docstring() -> None:
     """Check it gets the first line."""
     func = test_getting_first_line_from_docstring
     line = get_first_line_doc(func)
     assert line == 'Check it gets the first line'
 
 
-def test_getting_first_line_from_multiline_docstring():
+def test_getting_first_line_from_multiline_docstring() -> None:
     """
     Check it really gets the first non-empty line.
 

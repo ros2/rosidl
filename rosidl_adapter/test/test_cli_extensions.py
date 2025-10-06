@@ -15,13 +15,15 @@
 import filecmp
 import pathlib
 
+from pytest import CaptureFixture
 from rosidl_cli.command.translate.api import translate
 
 
 DATA_PATH = pathlib.Path(__file__).parent / 'data'
 
 
-def test_translation_extensions(tmp_path, capsys):
+def test_translation_extensions(tmp_path: pathlib.Path,
+                                capsys: CaptureFixture[str]) -> None:
     # NOTE(hidmic): pytest and empy do not play along,
     # the latter expects some proxy will stay in sys.stdout
     # and the former insists in overwriting it

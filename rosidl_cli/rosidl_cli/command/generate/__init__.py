@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
 import pathlib
 
 from rosidl_cli.command import Command
@@ -24,7 +25,7 @@ class GenerateCommand(Command):
 
     name = 'generate'
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: argparse.ArgumentParser) -> None:
         parser.add_argument(
             '-o', '--output-path', metavar='PATH',
             type=pathlib.Path, default=None,
@@ -39,6 +40,10 @@ class GenerateCommand(Command):
             dest='typesupports', action='append', default=[],
             help='Target type supports for generation.')
         parser.add_argument(
+            '-td', '--type-description-file', metavar='PATH',
+            dest='type_description_files', action='append', default=[],
+            help='Target type descriptions for generation.')
+        parser.add_argument(
             '-I', '--include-path', type=pathlib.Path, metavar='PATH',
             dest='include_paths', action='append', default=[],
             help='Paths to include dependency interface definition files from.')
@@ -50,12 +55,13 @@ class GenerateCommand(Command):
                   "If prefixed by another path followed by a colon ':', "
                   'path resolution is performed against such path.'))
 
-    def main(self, *, args):
+    def main(self, *, args: argparse.Namespace) -> None:
         generate(
             package_name=args.package_name,
             interface_files=args.interface_files,
             include_paths=args.include_paths,
             output_path=args.output_path,
             types=args.types,
-            typesupports=args.typesupports
+            typesupports=args.typesupports,
+            type_description_files=args.type_description_files
         )

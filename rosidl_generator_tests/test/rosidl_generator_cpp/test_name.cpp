@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <gtest/gtest.h>
+#include "rosidl_generator_tests/action/fibonacci.hpp"
 #include "rosidl_generator_tests/msg/empty.hpp"
 #include "rosidl_generator_tests/msg/strings.hpp"
 #include "rosidl_generator_tests/srv/basic_types.hpp"
@@ -27,6 +28,15 @@ TEST(Test_rosidl_generator_traits, check_msg_name) {
     rosidl_generator_traits::name<rosidl_generator_tests::msg::Empty>());
 }
 
+TEST(Test_rosidl_generator_traits, check_msg_data_type) {
+  ASSERT_STREQ(
+    "rosidl_generator_tests::msg::Strings",
+    rosidl_generator_traits::data_type<rosidl_generator_tests::msg::Strings>());
+  ASSERT_STREQ(
+    "rosidl_generator_tests::msg::Empty",
+    rosidl_generator_traits::data_type<rosidl_generator_tests::msg::Empty>());
+}
+
 TEST(Test_rosidl_generator_traits, check_srv_name) {
   ASSERT_STREQ(
     "rosidl_generator_tests/srv/BasicTypes",
@@ -34,4 +44,25 @@ TEST(Test_rosidl_generator_traits, check_srv_name) {
   ASSERT_STREQ(
     "rosidl_generator_tests/srv/Empty",
     rosidl_generator_traits::name<rosidl_generator_tests::srv::Empty>());
+}
+
+TEST(Test_rosidl_generator_traits, check_srv_data_type) {
+  ASSERT_STREQ(
+    "rosidl_generator_tests::srv::BasicTypes",
+    rosidl_generator_traits::data_type<rosidl_generator_tests::srv::BasicTypes>());
+  ASSERT_STREQ(
+    "rosidl_generator_tests::srv::Empty",
+    rosidl_generator_traits::data_type<rosidl_generator_tests::srv::Empty>());
+}
+
+TEST(Test_rosidl_generator_traits, check_action_name) {
+  ASSERT_STREQ(
+    "rosidl_generator_tests/action/Fibonacci",
+    rosidl_generator_traits::name<rosidl_generator_tests::action::Fibonacci>());
+}
+
+TEST(Test_rosidl_generator_traits, check_action_data_type) {
+  ASSERT_STREQ(
+    "rosidl_generator_tests::action::Fibonacci",
+    rosidl_generator_traits::data_type<rosidl_generator_tests::action::Fibonacci>());
 }

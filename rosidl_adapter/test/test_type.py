@@ -17,7 +17,7 @@ import pytest
 from rosidl_adapter.parser import Type
 
 
-def test_type_constructor():
+def test_type_constructor() -> None:
     type_ = Type('bool')
     assert type_.pkg_name is None
     assert type_.type == 'bool'
@@ -63,7 +63,7 @@ def test_type_constructor():
         Type('bool[<=0]')
 
 
-def test_type_methods():
+def test_type_methods() -> None:
     assert Type('bool[5]') != 23
 
     assert Type('pkg/Foo') == Type('pkg/Foo')

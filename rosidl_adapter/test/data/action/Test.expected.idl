@@ -50,6 +50,9 @@ module test_msgs {
       @verbatim (language="comment", text=
         "ok docs")
       boolean ok;
+
+      @optional
+      boolean optional_bool;
     };
     @verbatim (language="comment", text=
       "feedback definition" "\n"

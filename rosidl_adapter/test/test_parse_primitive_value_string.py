@@ -19,14 +19,14 @@ from rosidl_adapter.parser import parse_primitive_value_string
 from rosidl_adapter.parser import Type
 
 
-def test_parse_primitive_value_string_invalid():
+def test_parse_primitive_value_string_invalid() -> None:
     with pytest.raises(ValueError):
         parse_primitive_value_string(Type('pkg/Foo'), '')
     with pytest.raises(ValueError):
         parse_primitive_value_string(Type('bool[]'), '')
 
 
-def test_parse_primitive_value_string_bool():
+def test_parse_primitive_value_string_bool() -> None:
     valid_bool_string_values = {
         'true': True,
         'TrUe': True,
@@ -47,7 +47,7 @@ def test_parse_primitive_value_string_bool():
         parse_primitive_value_string(Type('bool'), 'true ')
 
 
-def test_parse_primitive_value_string_integer():
+def test_parse_primitive_value_string_integer() -> None:
     integer_types = {
         'byte': [8, True],
         'char': [8, True],
@@ -85,7 +85,7 @@ def test_parse_primitive_value_string_integer():
                 Type(integer_type), str(upper_bound + 1))
 
 
-def test_parse_primitive_value_string_hex():
+def test_parse_primitive_value_string_hex() -> None:
     integer_types = {
         'byte': [8, True],
         'char': [8, True],
@@ -123,7 +123,7 @@ def test_parse_primitive_value_string_hex():
                 Type(integer_type), hex(upper_bound + 1))
 
 
-def test_parse_primitive_value_string_oct():
+def test_parse_primitive_value_string_oct() -> None:
     integer_types = {
         'byte': [8, True],
         'char': [8, True],
@@ -161,7 +161,7 @@ def test_parse_primitive_value_string_oct():
                 Type(integer_type), oct(upper_bound + 1))
 
 
-def test_parse_primitive_value_string_bin():
+def test_parse_primitive_value_string_bin() -> None:
     integer_types = {
         'byte': [8, True],
         'char': [8, True],
@@ -199,7 +199,7 @@ def test_parse_primitive_value_string_bin():
                 Type(integer_type), bin(upper_bound + 1))
 
 
-def test_parse_primitive_value_string_float():
+def test_parse_primitive_value_string_float() -> None:
     for float_type in ['float32', 'float64']:
         value = parse_primitive_value_string(
             Type(float_type), '0')
@@ -216,7 +216,7 @@ def test_parse_primitive_value_string_float():
                 Type(float_type), 'value')
 
 
-def test_parse_primitive_value_string_string():
+def test_parse_primitive_value_string_string() -> None:
     value = parse_primitive_value_string(
         Type('string'), 'foo')
     assert value == 'foo'
@@ -286,7 +286,7 @@ def test_parse_primitive_value_string_string():
     assert value == '"foo"'
 
 
-def test_parse_primitive_value_wstring_string():
+def test_parse_primitive_value_wstring_string() -> None:
     value = parse_primitive_value_string(
         Type('wstring'), 'foo')
     assert value == 'foo'
@@ -356,10 +356,10 @@ def test_parse_primitive_value_wstring_string():
     assert value == '"foo"'
 
 
-def test_parse_primitive_value_string_unknown():
+def test_parse_primitive_value_string_unknown() -> None:
     class CustomType(Type):
 
-        def is_primitive_type(self):
+        def is_primitive_type(self) -> bool:
             return True
     type_ = CustomType('pkg/Foo')
 

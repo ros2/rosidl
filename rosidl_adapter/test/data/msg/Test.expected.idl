@@ -5,6 +5,12 @@
 
 module test_msgs {
   module msg {
+    module Test_Constants {
+      @optional
+      const float INLINE_CONSTANT = 32.0;
+      @optional
+      const string OPTIONAL_STRING_CONST = "@optional";
+    };
     @verbatim (language="comment", text=
       "msg level doc")
     struct Test {
@@ -40,6 +46,20 @@ module test_msgs {
       int64 int64_value;
 
       uint64 uint64_value;
+
+      @optional
+      float multiline_optional;
+
+      @optional
+      float inline_optional;
+
+      @optional
+      @default (value=32.0)
+      float inline_default_optional;
+
+      @optional
+      @default (value="@optional")
+      string optional_default_string;
     };
   };
 };

@@ -2,6 +2,37 @@
 Changelog for package rosidl_generator_tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+5.1.0 (2025-10-05)
+------------------
+
+5.0.1 (2025-07-29)
+------------------
+
+5.0.0 (2025-07-01)
+------------------
+* fix cmake <3.10 deprecation (`#875 <https://github.com/ros2/rosidl/issues/875>`_)
+* Contributors: mosfet80
+
+4.10.0 (2025-04-24)
+-------------------
+
+4.9.4 (2025-04-18)
+------------------
+* Add name and data_type traits for actions (`#848 <https://github.com/ros2/rosidl/issues/848>`_)
+* Contributors: Nathan Wiebe Neufeldt
+
+4.9.3 (2024-12-20)
+------------------
+
+4.9.2 (2024-11-25)
+------------------
+
+4.9.1 (2024-11-20)
+------------------
+
+4.9.0 (2024-10-03)
+------------------
+
 4.8.1 (2024-06-25)
 ------------------
 * Silence one more gcc false-positive. (`#814 <https://github.com/ros2/rosidl/issues/814>`_)

@@ -21,7 +21,7 @@ from rosidl_adapter.parser import is_valid_message_name
 from rosidl_adapter.parser import is_valid_package_name
 
 
-def test_is_valid_package_name():
+def test_is_valid_package_name() -> None:
     for valid_package_name in [
             'foo', 'foo_bar']:
         assert is_valid_package_name(valid_package_name)
@@ -29,10 +29,10 @@ def test_is_valid_package_name():
             '_foo', 'foo_', 'foo__bar', 'foo-bar']:
         assert not is_valid_package_name(invalid_package_name)
     with pytest.raises(InvalidResourceName):
-        is_valid_package_name(None)
+        is_valid_package_name(None)  # type: ignore[arg-type]
 
 
-def test_is_valid_field_name():
+def test_is_valid_field_name() -> None:
     for valid_field_name in [
             'foo', 'foo_bar']:
         is_valid_field_name(valid_field_name)
@@ -40,10 +40,10 @@ def test_is_valid_field_name():
             '_foo', 'foo_', 'foo__bar', 'foo-bar']:
         assert not is_valid_field_name(invalid_field_name)
     with pytest.raises(InvalidResourceName):
-        is_valid_field_name(None)
+        is_valid_field_name(None)  # type: ignore[arg-type]
 
 
-def test_is_valid_message_name():
+def test_is_valid_message_name() -> None:
     for valid_message_name in [
             'Foo', 'FooBar']:
         assert is_valid_message_name(valid_message_name)
@@ -51,10 +51,10 @@ def test_is_valid_message_name():
             '0foo', '_Foo', 'Foo_', 'Foo_Bar']:
         assert not is_valid_message_name(invalid_message_name)
     with pytest.raises(InvalidResourceName):
-        is_valid_message_name(None)
+        is_valid_message_name(None)  # type: ignore[arg-type]
 
 
-def test_is_valid_constant_name():
+def test_is_valid_constant_name() -> None:
     for valid_constant_name in [
             'FOO', 'FOO_BAR']:
         assert is_valid_constant_name(valid_constant_name)
@@ -62,4 +62,4 @@ def test_is_valid_constant_name():
             '_FOO', 'FOO_', 'FOO__BAR', 'Foo']:
         assert not is_valid_constant_name(invalid_constant_name)
     with pytest.raises(InvalidResourceName):
-        is_valid_constant_name(None)
+        is_valid_constant_name(None)  # type: ignore[arg-type]

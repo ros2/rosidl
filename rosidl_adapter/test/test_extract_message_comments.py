@@ -15,7 +15,7 @@
 from rosidl_adapter.parser import parse_message_string
 
 
-def test_extract_message_comments():
+def test_extract_message_comments() -> None:
     # multi line file-level comment
     msg_spec = parse_message_string('pkg', 'Foo', '# comment 1\n#\n# comment 2\nbool value')
     assert len(msg_spec.annotations) == 1

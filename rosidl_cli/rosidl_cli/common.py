@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-def get_first_line_doc(any_type):
+def get_first_line_doc(any_type: object) -> str:
     if any_type.__doc__:
         for line in any_type.__doc__.splitlines():
             line = line.strip()

@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import annotations
+
 # Base Classes
 from abc import ABC
 from abc import ABCMeta
@@ -19,7 +21,13 @@ from abc import abstractmethod
 from typing import Any
 from typing import ClassVar
 from typing import Generic
+from typing import TYPE_CHECKING
 from typing import TypeVar
+
+
+if TYPE_CHECKING:
+    from action_msgs.srv._cancel_goal import CancelGoal
+    from action_msgs.msg._goal_status_array import GoalStatusArray
 
 
 class MessageTypeSupportMeta(ABCMeta):
@@ -69,9 +77,24 @@ class BaseService(ABC, Generic[RequestT, ResponseT], metaclass=ServiceTypeSuppor
     Response: type[ResponseT]
 
 
+SendGoalServiceT = TypeVar('SendGoalServiceT')
+GetResultServiceT = TypeVar('GetResultServiceT')
+FeedbackMessageT = TypeVar('FeedbackMessageT')
+
+
+class BaseImpl(ABC, Generic[SendGoalServiceT, GetResultServiceT, FeedbackMessageT]):
+
+    SendGoalService: type[SendGoalServiceT]
+    GetResultService: type[GetResultServiceT]
+    FeedbackMessage: type[FeedbackMessageT]
+    CancelGoalService: type[CancelGoal]
+    GoalStatusMessage: type[GoalStatusArray]
+
+
 GoalT = TypeVar('GoalT')
 ResultT = TypeVar('ResultT')
 FeedbackT = TypeVar('FeedbackT')
+ImplT = TypeVar('ImplT', bound=BaseImpl[Any, Any, Any])
 
 
 class ActionTypeSupportMeta(ABCMeta):
@@ -83,8 +106,10 @@ class ActionTypeSupportMeta(ABCMeta):
     def __import_type_support__(cls) -> None: ...
 
 
-class BaseAction(ABC, Generic[GoalT, ResultT, FeedbackT], metaclass=ActionTypeSupportMeta):
+class BaseAction(ABC, Generic[GoalT, ResultT, FeedbackT, ImplT], metaclass=ActionTypeSupportMeta):
 
     Goal: type[GoalT]
     Result: type[ResultT]
     Feedback: type[FeedbackT]
+
+    Impl: type[ImplT]

@@ -84,8 +84,8 @@ macro(rosidl_auto_generate_interfaces)
     ${PROJECT_NAME}
     ${${PROJECT_NAME}_interface_files}
   )
-  if(${PROJECT_NAME}_FOUND_BUILD_DEPENDS)
-    list(APPEND _rosidl_args DEPENDENCIES ${${PROJECT_NAME}_FOUND_BUILD_DEPENDS})
+  if(${PROJECT_NAME}_BUILD_DEPENDS)
+    list(APPEND _rosidl_args DEPENDENCIES ${${PROJECT_NAME}_BUILD_DEPENDS})
   endif()
   rosidl_generate_interfaces(${_rosidl_args})
   ament_export_dependencies(rosidl_default_runtime)

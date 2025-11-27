@@ -24,11 +24,20 @@
 # :param TARGETS: list of targets in same package that should be linked against
 #   same package's interface typesupport library so they can use the generated code of interfaces.
 # :type TARGETS: list of strings
+# :param LIBRARY_NAME: the base name of the library, specific generators might
+#   append their own suffix (passed to rosidl_generate_interfaces)
+# :type LIBRARY_NAME: string
+# :param ADD_LINTER_TESTS: if set lint the interface files using
+#   the ``ament_lint`` package (passed to rosidl_generate_interfaces)
+# :type ADD_LINTER_TESTS: option
+# :param SKIP_INSTALL: if set skip installing the interface files
+#   (passed to rosidl_generate_interfaces)
+# :type SKIP_INSTALL: option
 #
 # @public
 #
 macro(rosidl_auto_generate_interfaces)
-  cmake_parse_arguments(_ARG "" "" "TARGETS" ${ARGN})
+  cmake_parse_arguments(_ARG "ADD_LINTER_TESTS;SKIP_INSTALL" "LIBRARY_NAME" "TARGETS" ${ARGN})
   if(_ARG_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "rosidl_auto_generate_interfaces called with unused arguments: ${_ARG_UNPARSED_ARGUMENTS}")
   endif()
@@ -79,13 +88,22 @@ macro(rosidl_auto_generate_interfaces)
     return()
   endif()
 
-  # Only forward DEPENDENCIES if present to avoid passing empty args
+  # Build arguments for rosidl_generate_interfaces
   set(_rosidl_args
     ${PROJECT_NAME}
     ${${PROJECT_NAME}_interface_files}
   )
   if(${PROJECT_NAME}_BUILD_DEPENDS)
     list(APPEND _rosidl_args DEPENDENCIES ${${PROJECT_NAME}_BUILD_DEPENDS})
+  endif()
+  if(_ARG_LIBRARY_NAME)
+    list(APPEND _rosidl_args LIBRARY_NAME ${_ARG_LIBRARY_NAME})
+  endif()
+  if(_ARG_ADD_LINTER_TESTS)
+    list(APPEND _rosidl_args ADD_LINTER_TESTS)
+  endif()
+  if(_ARG_SKIP_INSTALL)
+    list(APPEND _rosidl_args SKIP_INSTALL)
   endif()
   rosidl_generate_interfaces(${_rosidl_args})
   ament_export_dependencies(rosidl_default_runtime)

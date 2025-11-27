@@ -13,13 +13,18 @@
 # limitations under the License.
 
 #
-# Generate code from msg/srv/action interface files.
+# Automatically generate code from msg/srv/action interface files.
+#
+# This macro provides a simplified interface to rosidl_generate_interfaces()
+# by automatically:
+# - Discovering interface files in msg/, srv/, and action/ directories
+# - Using ${PROJECT_NAME}_BUILD_DEPENDS from package.xml as dependencies
+# - Exporting rosidl_default_runtime as a dependency
 #
 # Requires that the package declares all of the following in `package.xml`:
-# - runtime dependency on `rosidl_default_runtime`
-# - buildtool dependency on `rosidl_default_generators`
-# - membership in group `rosidl_interface_packages`
-# If any is missing, the macro fails with a hint message.
+# - exec_depend on `rosidl_default_runtime`
+# - buildtool_depend on `rosidl_default_generators`
+# - member_of_group `rosidl_interface_packages`
 #
 # :param TARGETS: list of targets in same package that should be linked against
 #   same package's interface typesupport library so they can use the generated code of interfaces.

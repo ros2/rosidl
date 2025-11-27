@@ -41,25 +41,25 @@ macro(rosidl_auto_generate_interfaces)
   # Validate required <exec_depend> tags
   if(NOT rosidl_default_runtime IN_LIST ${PROJECT_NAME}_EXEC_DEPENDS)
     message(FATAL_ERROR
-      "rosidl_auto_generate_interfaces: '${PROJECT_NAME}' must declare an exec_depend on 'rosidl_default_runtime' to use generated interfaces at runtime.\n"
-      "Hint:\n"
-      "  - package.xml: add <exec_depend>rosidl_default_runtime</exec_depend>\n")
+      "Packages installing interfaces must include "
+      "'<exec_depend>rosidl_default_runtime</exec_depend>' "
+      "in their package.xml")
   endif()
 
   # Validate required <buildtool_depend> tags
   if(NOT rosidl_default_generators IN_LIST ${PROJECT_NAME}_BUILDTOOL_DEPENDS)
     message(FATAL_ERROR
-      "rosidl_auto_generate_interfaces: '${PROJECT_NAME}' must declare a buildtool dependency on 'rosidl_default_generators' to generate interfaces.\n"
-      "Hint:\n"
-      "  - package.xml: add <buildtool_depend>rosidl_default_generators</buildtool_depend>\n")
+      "Packages installing interfaces must include "
+      "'<buildtool_depend>rosidl_default_generators</buildtool_depend>' "
+      "in their package.xml")
   endif()
 
   # Validate required <member_of_group> tags
   if(NOT rosidl_interface_packages IN_LIST ${PROJECT_NAME}_MEMBER_OF_GROUPS)
     message(FATAL_ERROR
-      "rosidl_auto_generate_interfaces: '${PROJECT_NAME}' should join a `rosidl_interface_packages` group so tools can discover interface packages.\n"
-      "Hint:\n"
-      "  - package.xml: add <member_of_group>rosidl_interface_packages</member_of_group>\n")
+      "Packages installing interfaces must include "
+      "'<member_of_group>rosidl_interface_packages</member_of_group>' "
+      "in their package.xml")
   endif()
 
   set(${PROJECT_NAME}_interface_files "")

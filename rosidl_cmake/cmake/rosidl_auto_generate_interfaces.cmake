@@ -17,7 +17,7 @@
 #
 # This macro provides a simplified interface to rosidl_generate_interfaces()
 # by automatically:
-# - Discovering interface files in msg/, srv/, and action/ directories
+# - Discovering interface files (.msg, .srv, .action, .idl) in msg/, srv/, and action/ directories
 # - Using ${PROJECT_NAME}_BUILD_DEPENDS from package.xml as dependencies
 # - Exporting rosidl_default_runtime as a dependency
 #
@@ -84,8 +84,11 @@ macro(rosidl_auto_generate_interfaces)
     "${CMAKE_CURRENT_SOURCE_DIR}"
     CONFIGURE_DEPENDS
     "msg/*.msg"
+    "msg/*.idl"
     "srv/*.srv"
+    "srv/*.idl"
     "action/*.action"
+    "action/*.idl"
   )
 
   if(NOT ${PROJECT_NAME}_interface_files)

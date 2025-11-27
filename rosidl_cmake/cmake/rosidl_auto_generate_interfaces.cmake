@@ -29,6 +29,9 @@
 # :param TARGETS: list of targets in same package that should be linked against
 #   same package's interface typesupport library so they can use the generated code of interfaces.
 # :type TARGETS: list of strings
+# :param TYPESUPPORT: the typesupport package to use for linking TARGETS.
+#   Defaults to "rosidl_typesupport_cpp". Use "rosidl_typesupport_c" for C projects.
+# :type TYPESUPPORT: string
 # :param LIBRARY_NAME: the base name of the library, specific generators might
 #   append their own suffix (passed to rosidl_generate_interfaces)
 # :type LIBRARY_NAME: string
@@ -42,9 +45,14 @@
 # @public
 #
 macro(rosidl_auto_generate_interfaces)
-  cmake_parse_arguments(_ARG "ADD_LINTER_TESTS;SKIP_INSTALL" "LIBRARY_NAME" "TARGETS" ${ARGN})
+  cmake_parse_arguments(_ARG "ADD_LINTER_TESTS;SKIP_INSTALL" "TYPESUPPORT;LIBRARY_NAME" "TARGETS" ${ARGN})
   if(_ARG_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "rosidl_auto_generate_interfaces called with unused arguments: ${_ARG_UNPARSED_ARGUMENTS}")
+  endif()
+
+  # Set default typesupport if not specified
+  if(NOT _ARG_TYPESUPPORT)
+    set(_ARG_TYPESUPPORT "rosidl_typesupport_cpp")
   endif()
 
   # Ensure package.xml is parsed so *_DEPENDS variables are available

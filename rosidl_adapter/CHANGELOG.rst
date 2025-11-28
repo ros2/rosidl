@@ -2,6 +2,9 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+5.1.1 (2025-11-11)
+------------------
+
 5.1.0 (2025-10-05)
 ------------------
 * Fix @optional for string literals (`#905 <https://github.com/ros2/rosidl/issues/905>`_)

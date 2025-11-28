@@ -2,6 +2,11 @@
 Changelog for package rosidl_pycommon
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+5.1.1 (2025-11-11)
+------------------
+* Add BaseImpl (`#912 <https://github.com/ros2/rosidl/issues/912>`_)
+* Contributors: Michael Carlstrom
+
 5.1.0 (2025-10-05)
 ------------------
 * Export typing Information (`#903 <https://github.com/ros2/rosidl/issues/903>`_)

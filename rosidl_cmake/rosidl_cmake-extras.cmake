@@ -30,6 +30,7 @@ endmacro()
 find_package(rosidl_adapter)  # not required, being used when available
 
 include("${rosidl_cmake_DIR}/rosidl_generate_interfaces.cmake")
+include("${rosidl_cmake_DIR}/rosidl_auto_generate_interfaces.cmake")
 include("${rosidl_cmake_DIR}/rosidl_get_typesupport_target.cmake")
 include("${rosidl_cmake_DIR}/rosidl_target_interfaces.cmake")
 include("${rosidl_cmake_DIR}/rosidl_write_generator_arguments.cmake")

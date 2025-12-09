@@ -2,6 +2,9 @@
 Changelog for package rosidl_typesupport_introspection_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.6.7 (2025-12-09)
+------------------
+
 4.6.6 (2025-08-05)
 ------------------
 * rosidl_cli: Add type description support (backport `#857 <https://github.com/ros2/rosidl/issues/857>`_) (`#867 <https://github.com/ros2/rosidl/issues/867>`_)

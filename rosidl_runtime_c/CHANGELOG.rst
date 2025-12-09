@@ -2,6 +2,11 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.1.8 (2025-12-09)
+------------------
+* Fix copy/paste errors in type support docs (backport `#906 <https://github.com/ros2/rosidl/issues/906>`_) (`#909 <https://github.com/ros2/rosidl/issues/909>`_)
+* Contributors: mergify[bot]
+
 3.1.7 (2025-07-16)
 ------------------
 * Add an ament_cmake_gtest dependency to rosidl_runtime_c. (`#865 <https://github.com/ros2/rosidl/issues/865>`_) (`#874 <https://github.com/ros2/rosidl/issues/874>`_)

@@ -2,6 +2,11 @@
 Changelog for package rosidl_adapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.9.6 (2025-12-09)
+------------------
+* Uniform cmake minVersion (`#849 <https://github.com/ros2/rosidl/issues/849>`_) (`#879 <https://github.com/ros2/rosidl/issues/879>`_)
+* Contributors: mergify[bot]
+
 4.9.5 (2025-07-07)
 ------------------
 

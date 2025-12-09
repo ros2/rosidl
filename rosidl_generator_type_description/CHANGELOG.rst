@@ -2,6 +2,12 @@
 Changelog for package rosidl_generator_type_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.9.6 (2025-12-09)
+------------------
+* Add missing dependency on ament_cmake_pytest (`#914 <https://github.com/ros2/rosidl/issues/914>`_) (`#915 <https://github.com/ros2/rosidl/issues/915>`_)
+* Uniform cmake minVersion (`#849 <https://github.com/ros2/rosidl/issues/849>`_) (`#879 <https://github.com/ros2/rosidl/issues/879>`_)
+* Contributors: mergify[bot]
+
 4.9.5 (2025-07-07)
 ------------------
 * rosidl_cli: Add type description support (`#857 <https://github.com/ros2/rosidl/issues/857>`_) (`#866 <https://github.com/ros2/rosidl/issues/866>`_)

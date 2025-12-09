@@ -2,6 +2,11 @@
 Changelog for package rosidl_pycommon
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.9.6 (2025-12-09)
+------------------
+* fix setuptools deprecation (`#880 <https://github.com/ros2/rosidl/issues/880>`_) (`#892 <https://github.com/ros2/rosidl/issues/892>`_)
+* Contributors: mergify[bot]
+
 4.9.5 (2025-07-07)
 ------------------
 

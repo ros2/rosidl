@@ -2,6 +2,12 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.9.6 (2025-12-09)
+------------------
+* remove importlib-metadata (`#917 <https://github.com/ros2/rosidl/issues/917>`_) (`#919 <https://github.com/ros2/rosidl/issues/919>`_)
+* fix setuptools deprecations (`#877 <https://github.com/ros2/rosidl/issues/877>`_) (`#895 <https://github.com/ros2/rosidl/issues/895>`_)
+* Contributors: mergify[bot]
+
 4.9.5 (2025-07-07)
 ------------------
 * rosidl_cli: Add type description support (`#857 <https://github.com/ros2/rosidl/issues/857>`_) (`#866 <https://github.com/ros2/rosidl/issues/866>`_)

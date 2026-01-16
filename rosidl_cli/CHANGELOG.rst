@@ -2,6 +2,19 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+5.1.2 (2025-12-09)
+------------------
+* remove importlib-metadata (`#917 <https://github.com/ros2/rosidl/issues/917>`_)
+* Contributors: Michael Carlstrom
+
+5.1.1 (2025-11-11)
+------------------
+
+5.1.0 (2025-10-05)
+------------------
+* Export typing Information (`#903 <https://github.com/ros2/rosidl/issues/903>`_)
+* Contributors: Michael Carlstrom
+
 5.0.1 (2025-07-29)
 ------------------
 * fix setuptools deprecations (`#877 <https://github.com/ros2/rosidl/issues/877>`_)

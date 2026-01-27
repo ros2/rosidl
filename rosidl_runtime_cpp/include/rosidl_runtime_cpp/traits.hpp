@@ -186,6 +186,9 @@ struct is_action_result : std::false_type {};
 template<typename T>
 struct is_action_feedback : std::false_type {};
 
+template<typename T>
+struct MessageTraits {};
+
 }  // namespace rosidl_generator_traits
 
 #endif  // ROSIDL_RUNTIME_CPP__TRAITS_HPP_

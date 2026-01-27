@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 #include <string>
+#include <tuple>
 
 // the idl file is commented out in the test_interface_files package
 // #include "rosidl_generator_tests/idl/idl_only_types.hpp"
@@ -32,6 +33,7 @@ using rosidl_generator_traits::is_message;
 using rosidl_generator_traits::is_service;
 using rosidl_generator_traits::is_service_request;
 using rosidl_generator_traits::is_service_response;
+using rosidl_generator_traits::MessageTraits;
 using rosidl_generator_tests::msg::to_yaml;
 
 TEST(Test_rosidl_generator_traits, to_yaml_default_style) {
@@ -447,3 +449,83 @@ static_assert(streq(name<rosidl_generator_tests::srv::Empty>(),
 "rosidl_generator_tests/srv/Empty"));
 static_assert(streq(data_type<rosidl_generator_tests::srv::Empty>(),
 "rosidl_generator_tests::srv::Empty"));
+
+// Compile-time tests for member count and member names in MessageTraits
+using MessageTraitsDefaults = MessageTraits<rosidl_generator_tests::msg::Defaults>;
+static_assert(MessageTraitsDefaults::member_count == 13,
+              "Unexpected number of members for Defaults message");
+static_assert(MessageTraitsDefaults::member_names[0] == "bool_value",
+              "Unexpected member name for Defaults::bool_value");
+static_assert(MessageTraitsDefaults::member_names[1] == "byte_value",
+              "Unexpected member name for Defaults::byte_value");
+static_assert(MessageTraitsDefaults::member_names[2] == "char_value",
+              "Unexpected member name for Defaults::char_value");
+static_assert(MessageTraitsDefaults::member_names[3] == "float32_value",
+              "Unexpected member name for Defaults::float32_value");
+static_assert(MessageTraitsDefaults::member_names[4] == "float64_value",
+              "Unexpected member name for Defaults::float64_value");
+static_assert(MessageTraitsDefaults::member_names[5] == "int8_value",
+              "Unexpected member name for Defaults::int8_value");
+static_assert(MessageTraitsDefaults::member_names[6] == "uint8_value",
+              "Unexpected member name for Defaults::uint8_value");
+static_assert(MessageTraitsDefaults::member_names[7] == "int16_value",
+              "Unexpected member name for Defaults::int16_value");
+static_assert(MessageTraitsDefaults::member_names[8] == "uint16_value",
+              "Unexpected member name for Defaults::uint16_value");
+static_assert(MessageTraitsDefaults::member_names[9] == "int32_value",
+              "Unexpected member name for Defaults::int32_value");
+static_assert(MessageTraitsDefaults::member_names[10] == "uint32_value",
+              "Unexpected member name for Defaults::uint32_value");
+static_assert(MessageTraitsDefaults::member_names[11] == "int64_value",
+              "Unexpected member name for Defaults::int64_value");
+static_assert(MessageTraitsDefaults::member_names[12] == "uint64_value",
+              "Unexpected member name for Defaults::uint64_value");
+
+TEST(Test_rosidl_generator_traits, structured_binding_support)
+{
+  rosidl_generator_tests::msg::Defaults msg;
+  auto [bool_value, byte_value, char_value, float32_value, float64_value, int8_value, uint8_value,
+    int16_value, uint16_value, int32_value, uint32_value, int64_value, uint64_value] = msg;
+
+  ASSERT_TRUE(bool_value);
+  ASSERT_EQ(50, byte_value);
+  ASSERT_EQ(100, char_value);
+  ASSERT_EQ(1.125f, float32_value);
+  ASSERT_EQ(1.125, float64_value);
+  ASSERT_EQ(-50, int8_value);
+  ASSERT_EQ(200, uint8_value);
+  ASSERT_EQ(-1000, int16_value);
+  ASSERT_EQ(2000, uint16_value);
+  ASSERT_EQ(-30000L, int32_value);
+  ASSERT_EQ(60000UL, uint32_value);
+  ASSERT_EQ(-40000000LL, int64_value);
+  ASSERT_EQ(50000000ULL, uint64_value);
+
+  // Structured binding without & are copies and should not be modifiable
+  bool_value = false;
+  ASSERT_TRUE(msg.bool_value);
+
+  // Test with references
+  auto & [bool_ref, byte_ref, char_ref, float32_ref, float64_ref, int8_ref, uint8_ref, int16_ref,
+    uint16_ref, int32_ref, uint32_ref, int64_ref, uint64_ref] = msg;
+
+  // Now the structural binding returns modifiable references
+  bool_ref = false;
+  ASSERT_FALSE(msg.bool_value);
+}
+
+TEST(Test_rosidl_generator_traits, as_tuple_ref)
+{
+  rosidl_generator_tests::msg::Defaults msg;
+
+  // Check initial value
+  ASSERT_EQ(-1000, msg.int16_value);
+
+  // Default-initialize all fields via tuple reference
+  std::apply([&msg](auto & ... field) {
+      ((field = {}), ...);
+    }, as_tuple_ref(msg));
+
+  // Check that field has been modified
+  ASSERT_EQ(0, msg.int16_value);
+}

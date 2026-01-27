@@ -223,13 +223,13 @@ namespace rosidl_generator_traits
 {
 
 template<>
-inline const char * data_type<@(message_typename)>()
+constexpr const char * data_type<@(message_typename)>()
 {
   return "@(message_typename)";
 }
 
 template<>
-inline const char * name<@(message_typename)>()
+constexpr const char * name<@(message_typename)>()
 {
   return "@(message_fully_qualified_name)";
 }

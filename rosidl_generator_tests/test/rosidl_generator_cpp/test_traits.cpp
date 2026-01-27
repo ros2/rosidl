@@ -26,6 +26,8 @@
 #include "rosidl_generator_tests/msg/w_strings.hpp"
 #include "rosidl_generator_tests/srv/empty.hpp"
 
+using rosidl_generator_traits::name;
+using rosidl_generator_traits::data_type;
 using rosidl_generator_traits::is_message;
 using rosidl_generator_traits::is_service;
 using rosidl_generator_traits::is_service_request;
@@ -431,3 +433,14 @@ TEST(Test_rosidl_generator_traits, is_service) {
   EXPECT_FALSE(is_service_request<ServiceEvent>());
   EXPECT_FALSE(is_service_response<ServiceEvent>());
 }
+
+constexpr bool streq(const char* a, const char* b) {
+    while (*a && (*a == *b)) {
+        ++a;
+        ++b;
+    }
+    return *a == *b;
+}
+
+static_assert(streq(name<rosidl_generator_tests::srv::Empty>(), "rosidl_generator_tests/srv/Empty"));
+static_assert(streq(data_type<rosidl_generator_tests::srv::Empty>(), "rosidl_generator_tests::srv::Empty"));

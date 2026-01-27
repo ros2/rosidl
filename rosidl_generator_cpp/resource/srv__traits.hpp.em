@@ -29,13 +29,13 @@ namespace rosidl_generator_traits
 {
 
 template<>
-inline const char * data_type<@(service_typename)>()
+constexpr const char * data_type<@(service_typename)>()
 {
   return "@(service_typename)";
 }
 
 template<>
-inline const char * name<@(service_typename)>()
+constexpr const char * name<@(service_typename)>()
 {
   return "@(service_fully_qualified_name)";
 }

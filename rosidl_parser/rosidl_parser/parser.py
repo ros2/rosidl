@@ -83,16 +83,24 @@ with open(grammar_file, mode='r', encoding='utf-8') as h:
     grammar = h.read()
 
 _parser: Optional[Lark] = None
+_idl_cache: Dict[str, IdlFile] = {}
 
 
 def parse_idl_file(locator: IdlLocator, png_file: Optional[str] = None) -> IdlFile:
+    abs_path = str(locator.get_absolute_path())
+    if png_file is None and abs_path in _idl_cache:
+        return _idl_cache[abs_path]
+
     string = locator.get_absolute_path().read_text(encoding='utf-8')
     try:
         content = parse_idl_string(string, png_file=png_file)
     except Exception as e:
         print(str(e), str(locator.get_absolute_path()), file=sys.stderr)
         raise
-    return IdlFile(locator, content)
+    result = IdlFile(locator, content)
+    if png_file is None:
+        _idl_cache[abs_path] = result
+    return result
 
 
 def parse_idl_string(idl_string: str, png_file: Optional[str] = None) -> IdlContent:

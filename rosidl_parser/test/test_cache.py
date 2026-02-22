@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import pathlib
 import time
 
 import pytest
@@ -136,3 +137,72 @@ def test_cleanup_removes_oldest(cache_dir):
 
     assert not old_entry.exists()
     assert new_entry.exists()
+
+
+def test_idl_file_cache_round_trip(cache_dir):
+    from rosidl_parser.definition import (
+        Array,
+        BasicType,
+        BoundedSequence,
+        BoundedString,
+        Constant,
+        IdlContent,
+        IdlFile,
+        IdlLocator,
+        Include,
+        Member,
+        Message,
+        NamespacedType,
+        Structure,
+        UnboundedSequence,
+        UnboundedString,
+    )
+
+    locator = IdlLocator(pathlib.Path('/base'), pathlib.Path('msg/Test.idl'))
+    content = IdlContent()
+
+    ns_type = NamespacedType(['test_pkg', 'msg'], 'TestMessage')
+    structure = Structure(ns_type, members=[
+        Member(BasicType('int32'), 'field_a'),
+        Member(BasicType('boolean'), 'field_b'),
+        Member(UnboundedString(), 'field_c'),
+        Member(BoundedString(100), 'field_d'),
+        Member(Array(BasicType('double'), 5), 'field_e'),
+        Member(BoundedSequence(BasicType('uint8'), 10), 'field_f'),
+        Member(UnboundedSequence(BasicType('int64')), 'field_g'),
+        Member(NamespacedType(['other_pkg', 'msg'], 'OtherType'), 'field_h'),
+    ])
+    msg = Message(structure)
+    msg.constants = [
+        Constant('MY_CONST', BasicType('int32'), 42),
+    ]
+
+    content.elements.append(Include('other_pkg/msg/OtherType.idl'))
+    content.elements.append(msg)
+
+    idl_file = IdlFile(locator, content)
+
+    save_object_to_cache('idl_key', 'sub', idl_file)
+    restored = restore_object_from_cache('idl_key', 'sub')
+
+    assert restored is not None
+    assert isinstance(restored, IdlFile)
+    assert str(restored.locator.basepath) == '/base'
+    assert str(restored.locator.relative_path) == 'msg/Test.idl'
+    assert len(restored.content.elements) == 2
+    assert isinstance(restored.content.elements[0], Include)
+    assert restored.content.elements[0].locator == 'other_pkg/msg/OtherType.idl'
+    msg_r = restored.content.elements[1]
+    assert isinstance(msg_r, Message)
+    assert msg_r.structure.namespaced_type.name == 'TestMessage'
+    assert len(msg_r.structure.members) == 8
+    assert isinstance(msg_r.structure.members[0].type, BasicType)
+    assert msg_r.structure.members[0].type.typename == 'int32'
+    assert isinstance(msg_r.structure.members[4].type, Array)
+    assert msg_r.structure.members[4].type.size == 5
+    assert isinstance(msg_r.structure.members[5].type, BoundedSequence)
+    assert msg_r.structure.members[5].type.maximum_size == 10
+    assert isinstance(msg_r.structure.members[6].type, UnboundedSequence)
+    assert len(msg_r.constants) == 1
+    assert msg_r.constants[0].name == 'MY_CONST'
+    assert msg_r.constants[0].value == 42

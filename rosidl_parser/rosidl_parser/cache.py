@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import hashlib
+import importlib.metadata
 import json
 import os
 import pathlib
@@ -206,6 +207,13 @@ def cleanup_cache_if_needed(subdirectory: str):
             debug_print(f'[rosidl cache] Removed old cache entry: {entry["path"].name}')
         except (OSError, PermissionError) as e:
             debug_print(f'[rosidl cache] Failed to remove cache entry: {e}')
+
+
+def get_package_version(package_name: str) -> str:
+    try:
+        return importlib.metadata.version(package_name)
+    except importlib.metadata.PackageNotFoundError:
+        return 'unknown'
 
 
 def compute_cache_key(*args) -> Optional[str]:

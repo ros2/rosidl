@@ -22,6 +22,7 @@ import rosidl_parser.cache as cache_module
 from rosidl_parser.cache import cleanup_cache_if_needed
 from rosidl_parser.cache import compute_cache_key
 from rosidl_parser.cache import get_cache_config
+from rosidl_parser.cache import get_package_version
 from rosidl_parser.cache import restore_files_from_cache
 from rosidl_parser.cache import restore_object_from_cache
 from rosidl_parser.cache import save_files_to_cache
@@ -206,3 +207,13 @@ def test_idl_file_cache_round_trip(cache_dir):
     assert len(msg_r.constants) == 1
     assert msg_r.constants[0].name == 'MY_CONST'
     assert msg_r.constants[0].value == 42
+
+
+def test_package_version_in_cache_key(cache_dir):
+    version = get_package_version('pytest')
+    assert version != 'unknown'
+    assert '.' in version
+    assert get_package_version('nonexistent_package_xyz') == 'unknown'
+    key1 = compute_cache_key('data', '1.0.0')
+    key2 = compute_cache_key('data', '2.0.0')
+    assert key1 != key2

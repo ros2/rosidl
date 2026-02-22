@@ -33,6 +33,7 @@ from lark.tree import pydot__tree_to_png
 from lark.tree import Tree
 
 from rosidl_parser.cache import compute_cache_key
+from rosidl_parser.cache import get_package_version
 from rosidl_parser.cache import restore_object_from_cache
 from rosidl_parser.cache import save_object_to_cache
 from rosidl_parser.definition import AbstractNestableType
@@ -90,7 +91,8 @@ _parser: Optional[Lark] = None
 
 def parse_idl_file(locator: IdlLocator, png_file: Optional[str] = None) -> IdlFile:
     string = locator.get_absolute_path().read_text(encoding='utf-8')
-    cache_key = None if png_file is not None else compute_cache_key(string)
+    cache_key = None if png_file is not None else compute_cache_key(
+        string, get_package_version('rosidl_parser'))
     if cache_key:
         cached_result = restore_object_from_cache(cache_key, 'idl_parse')
         if cached_result is not None:

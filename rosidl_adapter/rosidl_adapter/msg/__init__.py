@@ -15,12 +15,12 @@
 from pathlib import Path
 from typing import Final, Optional, Union
 
-from rosidl_adapter.parser import BaseType, parse_message_string, Type
+from rosidl_adapter.parser import BaseType, parse_message_string, Type, DEFAULT_ALLOW_LEGACY_FIELD_NAMES
 from rosidl_adapter.resource import expand_template, MsgData
 
 
 def convert_msg_to_idl(package_dir: Path, package_name: str, input_file: Path,
-                       output_dir: Path) -> Path:
+                       output_dir: Path, *, allow_legacy_field_naming: bool=DEFAULT_ALLOW_LEGACY_FIELD_NAMES) -> Path:
     assert package_dir.is_absolute()
     assert not input_file.is_absolute()
     assert input_file.suffix == '.msg'
@@ -29,7 +29,7 @@ def convert_msg_to_idl(package_dir: Path, package_name: str, input_file: Path,
     print(f'Reading input file: {abs_input_file}')
     abs_input_file = package_dir / input_file
     content = abs_input_file.read_text(encoding='utf-8')
-    msg = parse_message_string(package_name, input_file.stem, content)
+    msg = parse_message_string(package_name, input_file.stem, content, allow_legacy_field_naming=allow_legacy_field_naming)
 
     output_file = output_dir / input_file.with_suffix('.idl').name
     abs_output_file = output_file.absolute()

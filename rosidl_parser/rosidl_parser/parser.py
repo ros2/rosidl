@@ -65,10 +65,10 @@ from rosidl_parser.definition import UnboundedWString
 from rosidl_parser.definition import ValueType
 
 if TYPE_CHECKING:
-    from typing_extensions import TypeAlias
     from typing import TypeVar
 
     from rosidl_parser.definition import BasicTypeValues
+    from typing_extensions import TypeAlias
 
     # Definitions taken from lark.tree
     # Since lark version's used by Windows and rhel does not have Branch or ParseTree.

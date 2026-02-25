@@ -27,7 +27,6 @@ from rosidl_adapter.srv import convert_srv_to_idl
 from rosidl_cli.command.helpers import interface_path_as_tuple
 from rosidl_cli.command.translate.extensions import TranslateCommandExtension
 
-
 if TYPE_CHECKING:
     from typing_extensions import TypeAlias
 

@@ -26,6 +26,38 @@ from typing import TYPE_CHECKING
 from typing import TypeVar
 from typing import Union
 
+if TYPE_CHECKING:
+    from typing_extensions import TypeAlias
+
+    SignedNonexplicitIntegerTypeValues = Literal['short', 'long', 'long long']
+    UnsignedNonexplicitIntegerTypeValues = Literal['unsigned short', 'unsigned long',
+                                                   'unsigned long long']
+
+    NonexplicitIntegerTypeValues = Union[SignedNonexplicitIntegerTypeValues,
+                                         UnsignedNonexplicitIntegerTypeValues]
+
+    FloatingPointTypeValues = Literal['float', 'double', 'long double']
+    CharacterTypeValues = Literal['char', 'wchar']
+    BooleanValue = Literal['boolean']
+    OctetValue = Literal['octet']
+
+    SignedExplicitIntegerTypeValues = Literal['int8', 'int16', 'int32', 'int64']
+    UnsignedExplicitIntegerTypeValues = Literal['uint8', 'uint16', 'uint32', 'uint64']
+
+    ExplicitIntegerTypeValues = Union[SignedExplicitIntegerTypeValues,
+                                      UnsignedExplicitIntegerTypeValues]
+
+    SignedIntegerTypeValues = Union[SignedNonexplicitIntegerTypeValues,
+                                    SignedExplicitIntegerTypeValues]
+    UnsignedIntegerTypeValues = Union[UnsignedNonexplicitIntegerTypeValues,
+                                      UnsignedExplicitIntegerTypeValues]
+    IntegerTypeValues = Union[SignedIntegerTypeValues, UnsignedIntegerTypeValues]
+
+    BasicTypeValues = Union[IntegerTypeValues, FloatingPointTypeValues,
+                            CharacterTypeValues, BooleanValue,
+                            OctetValue]
+
+
 # Basic types as defined by the IDL specification
 
 # 7.4.1.4.4.2 Basic Types
@@ -94,36 +126,6 @@ BASIC_TYPES: Final = (
     BOOLEAN_TYPE,
     OCTET_TYPE,
 )
-
-if TYPE_CHECKING:
-    from typing_extensions import TypeAlias
-    SignedNonexplicitIntegerTypeValues = Literal['short', 'long', 'long long']
-    UnsignedNonexplicitIntegerTypeValues = Literal['unsigned short', 'unsigned long',
-                                                   'unsigned long long']
-
-    NonexplicitIntegerTypeValues = Union[SignedNonexplicitIntegerTypeValues,
-                                         UnsignedNonexplicitIntegerTypeValues]
-
-    FloatingPointTypeValues = Literal['float', 'double', 'long double']
-    CharacterTypeValues = Literal['char', 'wchar']
-    BooleanValue = Literal['boolean']
-    OctetValue = Literal['octet']
-
-    SignedExplicitIntegerTypeValues = Literal['int8', 'int16', 'int32', 'int64']
-    UnsignedExplicitIntegerTypeValues = Literal['uint8', 'uint16', 'uint32', 'uint64']
-
-    ExplicitIntegerTypeValues = Union[SignedExplicitIntegerTypeValues,
-                                      UnsignedExplicitIntegerTypeValues]
-
-    SignedIntegerTypeValues = Union[SignedNonexplicitIntegerTypeValues,
-                                    SignedExplicitIntegerTypeValues]
-    UnsignedIntegerTypeValues = Union[UnsignedNonexplicitIntegerTypeValues,
-                                      UnsignedExplicitIntegerTypeValues]
-    IntegerTypeValues = Union[SignedIntegerTypeValues, UnsignedIntegerTypeValues]
-
-    BasicTypeValues = Union[IntegerTypeValues, FloatingPointTypeValues,
-                            CharacterTypeValues, BooleanValue,
-                            OctetValue]
 
 EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME: Final = 'structure_needs_at_least_one_member'
 

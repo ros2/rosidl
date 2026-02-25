@@ -24,10 +24,9 @@ from typing import Generic
 from typing import TYPE_CHECKING
 from typing import TypeVar
 
-
 if TYPE_CHECKING:
-    from action_msgs.srv._cancel_goal import CancelGoal
     from action_msgs.msg._goal_status_array import GoalStatusArray
+    from action_msgs.srv._cancel_goal import CancelGoal
 
 
 class MessageTypeSupportMeta(ABCMeta):

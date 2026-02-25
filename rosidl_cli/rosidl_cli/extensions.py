@@ -18,10 +18,11 @@ from typing import Any, Dict, Final, List, Optional, Tuple, TYPE_CHECKING, Union
 
 from rosidl_cli.entry_points import load_entry_points
 
-import yaml  # type: ignore[import]
+import yaml
 
 if TYPE_CHECKING:
     from typing import TypedDict
+
     from typing_extensions import NotRequired
 
     class LoadExtensionsArg(TypedDict):

@@ -18,6 +18,16 @@ import sys
 import textwrap
 from typing import Final, Iterable, List, Optional, Tuple, TYPE_CHECKING, TypedDict, Union
 
+if TYPE_CHECKING:
+    from typing_extensions import TypeAlias
+
+    PrimitiveType: TypeAlias = Union[bool, float, int, str]
+
+    class Annotations(TypedDict, total=False):
+        comment: List[str]
+        unit: str
+        optional: bool
+
 PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR: Final = '/'
 ANNOTATION_DELIMITER: Final = '@'
 OPTIONAL_ANNOTATION: Final = ANNOTATION_DELIMITER + 'optional'
@@ -76,16 +86,6 @@ VALID_MESSAGE_NAME_PATTERN: Final = re.compile('^[A-Z][A-Za-z0-9]*$')
 # relaxed patterns used for compatibility with ROS 1 messages
 # VALID_MESSAGE_NAME_PATTERN = re.compile('^[A-Za-z][A-Za-z0-9]*$')
 VALID_CONSTANT_NAME_PATTERN: Final = re.compile('^[A-Z]([A-Z0-9_]?[A-Z0-9]+)*$')
-
-if TYPE_CHECKING:
-    from typing_extensions import TypeAlias
-
-    PrimitiveType: TypeAlias = Union[bool, float, int, str]
-
-    class Annotations(TypedDict, total=False):
-        comment: List[str]
-        unit: str
-        optional: bool
 
 
 class InvalidSpecification(Exception):

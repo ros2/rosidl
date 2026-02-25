@@ -18,7 +18,7 @@ from typing import Any, Dict, Final, List, Optional, Tuple, TYPE_CHECKING, Union
 
 from rosidl_cli.entry_points import load_entry_points
 
-import yaml
+import yaml  # type: ignore[import]
 
 if TYPE_CHECKING:
     from typing import TypedDict

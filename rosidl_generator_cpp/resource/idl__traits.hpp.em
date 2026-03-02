@@ -38,6 +38,8 @@ include_directives = set()
 #include <type_traits>
 #include <utility>
 
+#include <nlohmann/json.hpp>
+
 #include "@(include_base)__struct.hpp"
 #include "rosidl_runtime_cpp/traits.hpp"
 

@@ -215,6 +215,21 @@ inline std::string to_yaml(const @(message.structure.namespaced_type.name) & msg
   return out.str();
 }
 
+
+// Macro that generates a to_json and from_json from a class and fields,
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(
+  @(message.structure.namespaced_type.name),
+@[  for i, member in enumerate(message.structure.members)]@
+@[    if i != (len(message.structure.members) - 1)]@
+  @(member.name),
+@[    else]@
+  @(member.name)
+@[    end if]@
+@[  end for]@
+)
+
+// Generic to_json_string/from_json_string defined in rosidl_runtime_cpp/traits.hpp
+
 template<typename T, std::enable_if_t<std::is_same_v<std::decay_t<T>, @(message_typename)>, int> = 0>
 constexpr auto as_tuple_ref(T && msg)
 {

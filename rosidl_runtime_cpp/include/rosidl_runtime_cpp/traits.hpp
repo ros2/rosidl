@@ -21,6 +21,8 @@
 #include <iosfwd>
 #include <string>
 #include <type_traits>
+#include <nlohmann/json.hpp>
+
 
 namespace rosidl_generator_traits
 {
@@ -148,6 +150,20 @@ inline void value_to_yaml(const std::u16string & value, std::ostream & out)
   }
   out.flags(flags);
   out << "\"";
+}
+
+template<typename T>
+inline T from_json_string(const std::string & json_string)
+{
+  const T msg = nlohmann::json::parse(json_string);
+  return msg;
+}
+
+template<typename T>
+inline std::string to_json_string(const T & msg)
+{
+  nlohmann::json j = msg;
+  return j.dump(2);
 }
 
 template<typename T>

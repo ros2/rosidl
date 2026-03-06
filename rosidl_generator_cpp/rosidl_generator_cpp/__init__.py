@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from ast import literal_eval
+from copy import copy
 from typing import List
 
 from rosidl_parser.definition import AbstractGenericString
@@ -75,7 +76,7 @@ MSG_TYPE_TO_CPP = {
                'std::allocator_traits<ContainerAllocator>::template rebind_alloc<char16_t>>',
 }
 
-MSG_TYPE_TO_CPP_CONVERSION = MSG_TYPE_TO_CPP
+MSG_TYPE_TO_CPP_CONVERSION = copy(MSG_TYPE_TO_CPP)
 MSG_TYPE_TO_CPP_CONVERSION['octet'] = 'rosidl_runtime_cpp::ByteConverter'
 
 

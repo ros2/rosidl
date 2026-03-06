@@ -24,7 +24,7 @@ TEST(Test_msg_initialization, build) {
   ::rosidl_generator_tests::msg::BasicTypes basic =
     ::rosidl_generator_tests::build<::rosidl_generator_tests::msg::BasicTypes>()
     .bool_value(true)
-    .byte_value(5)
+    .byte_value(std::byte{5})
     .char_value(10)
     .float32_value(0.1125f)
     .float64_value(0.01125)
@@ -57,7 +57,7 @@ TEST(Test_msg_initialization, build) {
   {
     rosidl_generator_tests::build<rosidl_generator_tests::msg::BasicTypes>()
     .bool_value(false)
-    .byte_value(10)
+    .byte_value(std::byte{10})
     .char_value(20)
     .float32_value(0.225f)
     .float64_value(0.0225)
@@ -90,7 +90,7 @@ TEST(Test_msg_initialization, build) {
   rosidl_generator_tests::msg::Arrays arrays =
     rosidl_generator_tests::build<rosidl_generator_tests::msg::Arrays>()
     .bool_values({{true, false, true}})
-    .byte_values({{5, 10, 5}})
+    .byte_values({{std::byte{5}, std::byte{10}, std::byte{5}}})
     .char_values({{10, 20, 10}})
     .float32_values({{0.1125f, 0.225f, 0.1125f}})
     .float64_values({{0.01125, 0.0225, 0.01125}})
@@ -107,7 +107,7 @@ TEST(Test_msg_initialization, build) {
     .constants_values({{constants, constants, constants}})
     .defaults_values({{defaults, defaults, defaults}})
     .bool_values_default({{false, true, false}})
-    .byte_values_default({{10, 5, 10}})
+    .byte_values_default({{std::byte{10}, std::byte{5}, std::byte{10}}})
     .char_values_default({{20, 10, 20}})
     .float32_values_default({{0.225f, 0.1125f, 0.225f}})
     .float64_values_default({{0.0225, 0.01125, 0.0225}})

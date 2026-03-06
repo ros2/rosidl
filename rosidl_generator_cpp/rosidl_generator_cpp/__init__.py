@@ -55,7 +55,7 @@ def prefix_with_bom_if_necessary(content: str) -> str:
 
 MSG_TYPE_TO_CPP = {
     'boolean': 'bool',
-    'octet': 'rosidl_runtime_cpp::ByteConverter',  # TODO change to std::byte with C++17
+    'octet': 'std::byte',
     'char': 'unsigned char',  # TODO change to char8_t with C++20
     'wchar': 'char16_t',
     'float': 'float',
@@ -75,6 +75,9 @@ MSG_TYPE_TO_CPP = {
                'std::allocator_traits<ContainerAllocator>::template rebind_alloc<char16_t>>',
 }
 
+MSG_TYPE_TO_CPP_CONVERSION = MSG_TYPE_TO_CPP
+MSG_TYPE_TO_CPP_CONVERSION['octet'] = 'rosidl_runtime_cpp::ByteConverter'
+
 
 def msg_type_only_to_cpp(type_):
     """
@@ -89,11 +92,11 @@ def msg_type_only_to_cpp(type_):
     if isinstance(type_, AbstractNestedType):
         type_ = type_.value_type
     if isinstance(type_, BasicType):
-        cpp_type = MSG_TYPE_TO_CPP[type_.typename]
+        cpp_type = MSG_TYPE_TO_CPP_CONVERSION[type_.typename]
     elif isinstance(type_, AbstractString):
-        cpp_type = MSG_TYPE_TO_CPP['string']
+        cpp_type = MSG_TYPE_TO_CPP_CONVERSION['string']
     elif isinstance(type_, AbstractWString):
-        cpp_type = MSG_TYPE_TO_CPP['wstring']
+        cpp_type = MSG_TYPE_TO_CPP_CONVERSION['wstring']
     elif isinstance(type_, NamespacedType):
         typename = '::'.join(type_.namespaced_name())
         cpp_type = typename + '_<ContainerAllocator>'
@@ -196,10 +199,11 @@ def primitive_value_to_cpp(type_, value):
     if type_.typename == 'boolean':
         return 'true' if value else 'false'
 
-    if type_.typename in [
-        'char', 'octet'
-    ]:
+    if type_.typename == 'char':
         return f'static_cast<unsigned char>({value})'
+
+    if type_.typename == 'octet':
+        return f'std::byte{{{value}}}'
 
     if type_.typename in [
         'short', 'unsigned short',

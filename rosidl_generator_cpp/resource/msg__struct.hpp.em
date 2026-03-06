@@ -4,7 +4,7 @@ from rosidl_generator_cpp import create_init_alloc_and_member_lists
 from rosidl_generator_cpp import escape_string
 from rosidl_generator_cpp import escape_wstring
 from rosidl_generator_cpp import msg_type_to_cpp
-from rosidl_generator_cpp import MSG_TYPE_TO_CPP
+from rosidl_generator_cpp import MSG_TYPE_TO_CPP_CONVERSION
 from rosidl_generator_cpp import generate_zero_string
 from rosidl_generator_cpp import generate_default_string
 from rosidl_parser.definition import AbstractNestedType
@@ -235,11 +235,11 @@ non_defaulted_zero_initialized_members = [
 #endif
 @[ end if]@
 @[ if isinstance(constant.type, AbstractString)]@
-  static const @(MSG_TYPE_TO_CPP['string']) @(constant.name);
+  static const @(MSG_TYPE_TO_CPP_CONVERSION['string']) @(constant.name);
 @[ elif isinstance(constant.type, AbstractWString)]@
-  static const @(MSG_TYPE_TO_CPP['wstring']) @(constant.name);
+  static const @(MSG_TYPE_TO_CPP_CONVERSION['wstring']) @(constant.name);
 @[ else]@
-  static constexpr @(MSG_TYPE_TO_CPP[constant.type.typename]) @(constant.name) =
+  static constexpr @(MSG_TYPE_TO_CPP_CONVERSION[constant.type.typename]) @(constant.name) =
 @[  if isinstance(constant.type, BasicType)]@
 @[   if constant.type.typename in (*INTEGER_TYPES, *CHARACTER_TYPES, BOOLEAN_TYPE)]@
     @(int(constant.value))@
@@ -338,17 +338,17 @@ using @(message.structure.namespaced_type.name) =
 @[ end if]@
 @[ if isinstance(c.type, AbstractString)]@
 template<typename ContainerAllocator>
-const @(MSG_TYPE_TO_CPP['string'])
+const @(MSG_TYPE_TO_CPP_CONVERSION['string'])
 @(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name) = "@(escape_string(c.value))";
 @[ elif isinstance(c.type, AbstractWString)]@
 template<typename ContainerAllocator>
-const @(MSG_TYPE_TO_CPP['wstring'])
+const @(MSG_TYPE_TO_CPP_CONVERSION['wstring'])
 @(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name) = u"@(escape_wstring(c.value))";
 @[ else ]@
 #if __cplusplus < 201703L
 // static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
 template<typename ContainerAllocator>
-constexpr @(MSG_TYPE_TO_CPP[c.type.typename]) @(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name);
+constexpr @(MSG_TYPE_TO_CPP_CONVERSION[c.type.typename]) @(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name);
 #endif  // __cplusplus < 201703L
 @[ end if]@
 @[ if c.name in msvc_common_macros]@

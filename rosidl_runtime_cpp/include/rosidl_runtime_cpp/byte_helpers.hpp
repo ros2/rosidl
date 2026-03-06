@@ -104,12 +104,14 @@ struct ByteVector : public std::vector<ByteConverter, Alloc>
     return *reinterpret_cast<const std::vector<std::byte> *>(this);
   }
 
-  [[deprecated("Implicit conversion to std::vector<unsigned char> is deprecated use as std::vector<std::byte>")]]
+  [[deprecated("Implicit conversion to std::vector<unsigned char> is deprecated"
+               "use as std::vector<std::byte>")]]
   operator std::vector<unsigned char> &() {
     return *reinterpret_cast<std::vector<unsigned char> *>(this);
   }
 
-  [[deprecated("Implicit conversion to std::vector<unsigned char> is deprecated use as std::vector<std::byte>")]]
+  [[deprecated("Implicit conversion to std::vector<unsigned char> is deprecated"
+               "use as std::vector<std::byte>")]]
   operator const std::vector<unsigned char> &() const {
     return *reinterpret_cast<const std::vector<unsigned char> *>(this);
   }

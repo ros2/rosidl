@@ -55,7 +55,7 @@ def prefix_with_bom_if_necessary(content: str) -> str:
 
 MSG_TYPE_TO_CPP = {
     'boolean': 'bool',
-    'octet': 'unsigned char',  # TODO change to std::byte with C++17
+    'octet': 'rosidl_runtime_cpp::ByteConverter',  # TODO change to std::byte with C++17
     'char': 'unsigned char',  # TODO change to char8_t with C++20
     'wchar': 'char16_t',
     'float': 'float',

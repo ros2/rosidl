@@ -1,4 +1,4 @@
-// Copyright 2017 Open Source Robotics Foundation, Inc.
+// Copyright 2026 Open Source Robotics Foundation, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -60,6 +60,11 @@ struct ByteConverter
 
   constexpr operator std::byte() const noexcept {return value;}
 
+  // template conversion to any integral type
+  template<typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
+  [[deprecated("Using as integral type is deprecated use as std::byte")]]
+  constexpr operator T() const noexcept {return static_cast<T>(value);}
+
   constexpr bool operator==(const ByteConverter & other) const noexcept
   {
     return value == other.value;
@@ -71,7 +76,6 @@ struct ByteConverter
 };
 
 // Equality converted
-
 template<typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
 constexpr bool operator==(const ByteConverter & lhs, T rhs) noexcept
 {
@@ -89,7 +93,6 @@ constexpr bool operator!=(T lhs, const ByteConverter & rhs) noexcept {return !(l
 
 
 // Converter for Vectors
-
 template<typename Alloc = std::allocator<ByteConverter>>
 struct ByteVector : public std::vector<ByteConverter, Alloc>
 {
@@ -105,20 +108,32 @@ struct ByteVector : public std::vector<ByteConverter, Alloc>
   }
 
   [[deprecated("Implicit conversion to std::vector<unsigned char> is deprecated"
-               "use as std::vector<std::byte>")]]
+               " use as std::vector<std::byte>")]]
   operator std::vector<unsigned char> &() {
     return *reinterpret_cast<std::vector<unsigned char> *>(this);
   }
 
   [[deprecated("Implicit conversion to std::vector<unsigned char> is deprecated"
-               "use as std::vector<std::byte>")]]
+               " use as std::vector<std::byte>")]]
   operator const std::vector<unsigned char> &() const {
     return *reinterpret_cast<const std::vector<unsigned char> *>(this);
+  }
+
+  // template conversion to any integral vector
+  template<typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
+  [[deprecated("Using as template std::vector<integtral type> is deprecated"
+               " use as std::vector<std::byte>")]]
+  operator std::vector<T>() const {
+    std::vector<T> out;
+    out.reserve(this->size());
+    for (auto & b : *this) {
+      out.push_back(static_cast<T>(b));
+    }
+    return out;
   }
 };
 
 // Converter for Array
-
 template<size_t N>
 struct ByteArray : public std::array<ByteConverter, N>
 {
@@ -141,10 +156,21 @@ struct ByteArray : public std::array<ByteConverter, N>
   operator const std::array<unsigned char, N> &() const {
     return reinterpret_cast<const std::array<unsigned char, N> &>(*this);
   }
+
+  // template conversion to any integral array
+  template<typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
+  [[deprecated("Using as template std::array<intregral type> is deprecated"
+               " use as std::array<std::byte>")]]
+  operator std::array<T, N>() const {
+    std::array<T, N> out{};
+    for (size_t i = 0; i < N; ++i) {
+      out[i] = static_cast<T>((*this)[i]);
+    }
+    return out;
+  }
 };
 
 // Container Conversion equality checks
-
 template<typename ContainerA, typename ContainerB,
   typename = std::enable_if_t<
     (std::is_same_v<typename ContainerA::value_type, ByteConverter>||

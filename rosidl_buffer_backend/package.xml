@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>rosidl_buffer_backend</name>
+  <version>5.1.2</version>
+  <description>Buffer backend interface for ROS2 buffer types</description>
+  
+  <maintainer email="cyc@nvidia.com">CY Chen</maintainer>
+  
+  <license>Apache License 2.0</license>
+
+  <author email="cyc@nvidia.com">CY Chen</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rmw</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

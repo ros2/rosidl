@@ -13,7 +13,16 @@ from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
 from rosidl_parser.definition import NamespacedType
+from rosidl_parser.definition import UnboundedSequence
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
+
+buffer_field_names = set()
+for m in message.structure.members:
+    if (isinstance(m.type, UnboundedSequence) and
+            isinstance(m.type.value_type, BasicType) and
+            m.type.value_type.typename == 'uint8'):
+        buffer_field_names.add(m.name)
+any_buffer_field = len(buffer_field_names) > 0
 
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
@@ -35,6 +44,8 @@ header_files = [
     'rosidl_typesupport_introspection_cpp/message_type_support_decl.hpp',
     'rosidl_typesupport_introspection_cpp/visibility_control.h',
 ]
+if any_buffer_field:
+    header_files.append('rosidl_buffer/buffer.hpp')
 }@
 @[for header_file in header_files]@
 @[    if header_file in include_directives]@
@@ -85,39 +96,88 @@ elif isinstance(member.type.value_type, AbstractWString):
 elif isinstance(member.type.value_type, NamespacedType):
     type_ = '::'.join(member.type.value_type.namespaced_name())
 }@
+@[    if member.name in buffer_field_names]@
 size_t size_function__@(message.structure.namespaced_type.name)__@(member.name)(const void * untyped_member)
 {
-@[    if isinstance(member.type, Array)]@
-  (void)untyped_member;
-  return @(member.type.size);
-@[    else]@
-  const auto * member = reinterpret_cast<const std::vector<@(type_)> *>(untyped_member);
+  const auto * member = reinterpret_cast<const rosidl::Buffer<uint8_t> *>(untyped_member);
   return member->size();
-@[    end if]@
 }
 
-@[    if not is_vector_bool(member)]@
 const void * get_const_function__@(message.structure.namespaced_type.name)__@(member.name)(const void * untyped_member, size_t index)
 {
-@[      if isinstance(member.type, Array)]@
   const auto & member =
-    *reinterpret_cast<const std::array<@(type_), @(member.type.size)> *>(untyped_member);
-@[      else]@
-  const auto & member =
-    *reinterpret_cast<const std::vector<@(type_)> *>(untyped_member);
-@[      end if]@
+    *reinterpret_cast<const rosidl::Buffer<uint8_t> *>(untyped_member);
+  member.throw_if_not_cpu_backend();
   return &member[index];
 }
 
 void * get_function__@(message.structure.namespaced_type.name)__@(member.name)(void * untyped_member, size_t index)
 {
+  auto & member =
+    *reinterpret_cast<rosidl::Buffer<uint8_t> *>(untyped_member);
+  member.throw_if_not_cpu_backend();
+  return &member[index];
+}
+
+void fetch_function__@(message.structure.namespaced_type.name)__@(member.name)(
+  const void * untyped_member, size_t index, void * untyped_value)
+{
+  const auto & item = *reinterpret_cast<const uint8_t *>(
+    get_const_function__@(message.structure.namespaced_type.name)__@(member.name)(untyped_member, index));
+  auto & value = *reinterpret_cast<uint8_t *>(untyped_value);
+  value = item;
+}
+
+void assign_function__@(message.structure.namespaced_type.name)__@(member.name)(
+  void * untyped_member, size_t index, const void * untyped_value)
+{
+  auto & item = *reinterpret_cast<uint8_t *>(
+    get_function__@(message.structure.namespaced_type.name)__@(member.name)(untyped_member, index));
+  const auto & value = *reinterpret_cast<const uint8_t *>(untyped_value);
+  item = value;
+}
+
+void resize_function__@(message.structure.namespaced_type.name)__@(member.name)(void * untyped_member, size_t size)
+{
+  auto * member =
+    reinterpret_cast<rosidl::Buffer<uint8_t> *>(untyped_member);
+  member->throw_if_not_cpu_backend();
+  member->resize(size);
+}
+@[    else]@
+size_t size_function__@(message.structure.namespaced_type.name)__@(member.name)(const void * untyped_member)
+{
 @[      if isinstance(member.type, Array)]@
+  (void)untyped_member;
+  return @(member.type.size);
+@[      else]@
+  const auto * member = reinterpret_cast<const std::vector<@(type_)> *>(untyped_member);
+  return member->size();
+@[      end if]@
+}
+
+@[      if not is_vector_bool(member)]@
+const void * get_const_function__@(message.structure.namespaced_type.name)__@(member.name)(const void * untyped_member, size_t index)
+{
+@[        if isinstance(member.type, Array)]@
+  const auto & member =
+    *reinterpret_cast<const std::array<@(type_), @(member.type.size)> *>(untyped_member);
+@[        else]@
+  const auto & member =
+    *reinterpret_cast<const std::vector<@(type_)> *>(untyped_member);
+@[        end if]@
+  return &member[index];
+}
+
+void * get_function__@(message.structure.namespaced_type.name)__@(member.name)(void * untyped_member, size_t index)
+{
+@[        if isinstance(member.type, Array)]@
   auto & member =
     *reinterpret_cast<std::array<@(type_), @(member.type.size)> *>(untyped_member);
-@[      else]@
+@[        else]@
   auto & member =
     *reinterpret_cast<std::vector<@(type_)> *>(untyped_member);
-@[      end if]@
+@[        end if]@
   return &member[index];
 }
 
@@ -138,7 +198,7 @@ void assign_function__@(message.structure.namespaced_type.name)__@(member.name)(
   const auto & value = *reinterpret_cast<const @(type_) *>(untyped_value);
   item = value;
 }
-@[    else]@
+@[      else]@
 void fetch_function__@(message.structure.namespaced_type.name)__@(member.name)(
   const void * untyped_member, size_t index, void * untyped_value)
 {
@@ -154,17 +214,18 @@ void assign_function__@(message.structure.namespaced_type.name)__@(member.name)(
   const auto & value = *reinterpret_cast<const @(type_) *>(untyped_value);
   member[index] = value;
 }
-@[    end if]@
+@[      end if]@
 
-@[    if isinstance(member.type, AbstractSequence)]@
+@[      if isinstance(member.type, AbstractSequence)]@
 void resize_function__@(message.structure.namespaced_type.name)__@(member.name)(void * untyped_member, size_t size)
 {
   auto * member =
     reinterpret_cast<std::vector<@(type_)> *>(untyped_member);
   member->resize(size);
 }
-
+@[      end if]@
 @[    end if]@
+
 @[  end if]@
 @[end for]@
 static const ::rosidl_typesupport_introspection_cpp::MessageMember @(message.structure.namespaced_type.name)_message_member_array[@(len(message.structure.members))] = {
@@ -230,7 +291,9 @@ for index, member in enumerate(message.structure.members):
     # void(void *, size_t, const void *) assign_function
     print('    %s,  // assign(index, value) function pointer' % ('assign_function__%s' % function_suffix if isinstance(member.type, AbstractNestedType) else 'nullptr'))
     # void(void *, size_t) resize_function
-    print('    %s  // resize(index) function pointer' % ('resize_function__%s' % function_suffix if isinstance(member.type, AbstractSequence) else 'nullptr'))
+    print('    %s,  // resize(index) function pointer' % ('resize_function__%s' % function_suffix if isinstance(member.type, AbstractSequence) else 'nullptr'))
+    # bool is_rosidl_buffer_
+    print('    %s  // is_rosidl_buffer' % ('true' if member.name in buffer_field_names else 'false'))
 
     if index < len(message.structure.members) - 1:
         print('  },')
@@ -251,7 +314,12 @@ static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(message.st
 @[  end if]@
   @(message.structure.namespaced_type.name)_message_member_array,  // message members
   @(message.structure.namespaced_type.name)_init_function,  // function to initialize message memory (memory has to be allocated)
-  @(message.structure.namespaced_type.name)_fini_function  // function to terminate message instance (will not free memory)
+  @(message.structure.namespaced_type.name)_fini_function,  // function to terminate message instance (will not free memory)
+@[  if any_buffer_field]@
+  true  // has_buffer_fields_
+@[  else]@
+  false  // has_buffer_fields_
+@[  end if]@
 };
 
 static const rosidl_message_type_support_t @(message.structure.namespaced_type.name)_message_type_support_handle = {

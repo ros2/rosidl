@@ -34,6 +34,7 @@ include_directives = set()
 #include <vector>
 
 #include "rosidl_runtime_cpp/bounded_vector.hpp"
+#include "rosidl_buffer/buffer.hpp"
 #include "rosidl_runtime_cpp/message_initialization.hpp"
 
 @#######################################################################

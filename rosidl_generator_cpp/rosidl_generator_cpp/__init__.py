@@ -118,9 +118,17 @@ def msg_type_to_cpp(type_):
 
     if isinstance(type_, AbstractNestedType):
         if isinstance(type_, UnboundedSequence):
-            return \
-                ('std::vector<%s, typename std::allocator_traits<ContainerAllocator>::template ' +
-                 'rebind_alloc<%s>>') % (cpp_type, cpp_type)
+            # Only use Buffer for uint8[] - all other unbounded sequences remain as std::vector
+            if isinstance(type_.value_type, BasicType) and type_.value_type.typename == 'uint8':
+                return \
+                    ('rosidl::Buffer<%s, typename std::allocator_traits' +
+                     '<ContainerAllocator>::template rebind_alloc<%s>>') % (
+                        cpp_type, cpp_type)
+            else:
+                return \
+                    ('std::vector<%s, typename std::allocator_traits' +
+                     '<ContainerAllocator>::template rebind_alloc<%s>>') % (
+                        cpp_type, cpp_type)
         elif isinstance(type_, BoundedSequence):
             return \
                 ('rosidl_runtime_cpp::BoundedVector<%s, %u, typename std::allocator_traits' +

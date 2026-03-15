@@ -29,6 +29,7 @@
   <build_export_depend>rosidl_cmake</build_export_depend>
   <build_export_depend>rosidl_runtime_c</build_export_depend>
   <build_export_depend>rosidl_runtime_cpp</build_export_depend>
+  <build_export_depend>rosidl_buffer</build_export_depend>
 
   <build_depend>rosidl_runtime_cpp</build_depend>
   <build_depend>rosidl_typesupport_introspection_c</build_depend>

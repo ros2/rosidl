@@ -143,7 +143,8 @@ def generate_files(
         cache_key = compute_cache_key(
             locator.get_absolute_path(),
             *[template_basepath / tf for tf in sorted(mapping.keys())],
-            cache_context
+            cache_context,
+            type_description_info
         )
         if cache_key:
             output_files = restore_files_from_cache(cache_key, generator_name, output_dir)

@@ -217,3 +217,31 @@ def test_package_version_in_cache_key(cache_dir):
     key1 = compute_cache_key('data', '1.0.0')
     key2 = compute_cache_key('data', '2.0.0')
     assert key1 != key2
+
+
+def test_cache_key_changes_with_type_description(cache_dir):
+    """Cache key must change when type_description_info changes."""
+    type_desc_v1 = {
+        'type_description': {
+            'type_name': 'pkg/msg/Foo',
+            'fields': [{'name': 'x', 'type': 'int32'}],
+        },
+        'type_hash': 'RIHS01_aaaa',
+    }
+    type_desc_v2 = {
+        'type_description': {
+            'type_name': 'pkg/msg/Foo',
+            'fields': [
+                {'name': 'x', 'type': 'int32'},
+                {'name': 'y', 'type': 'float64'},
+            ],
+        },
+        'type_hash': 'RIHS01_bbbb',
+    }
+    context = {'package_name': 'pkg', 'generator_name': 'gen'}
+    key1 = compute_cache_key('idl_content', context, type_desc_v1)
+    key2 = compute_cache_key('idl_content', context, type_desc_v2)
+    key_none = compute_cache_key('idl_content', context, None)
+    assert key1 != key2
+    assert key1 != key_none
+    assert key2 != key_none

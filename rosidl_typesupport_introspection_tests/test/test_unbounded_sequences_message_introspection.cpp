@@ -59,6 +59,7 @@ TYPED_TEST(UnboundedSequencesMessageIntrospectionTest, MessageDescriptorIsCorrec
     get_message_size(message_descriptor),
     sizeof(UnboundedSequencesMessageT));
   ASSERT_EQ(get_member_count(message_descriptor), 32u);
+  EXPECT_TRUE(message_descriptor->has_buffer_fields_);
 
   {
     auto * member_descriptor = get_member_descriptor(message_descriptor, 0u);
@@ -108,6 +109,7 @@ TYPED_TEST(UnboundedSequencesMessageIntrospectionTest, MessageDescriptorIsCorrec
     EXPECT_STREQ(get_member_name(member_descriptor), "uint8_values");
     EXPECT_TRUE(is_base_type_member(member_descriptor, ROS_TYPE_UINT8));
     EXPECT_TRUE(has_sequence_structure(member_descriptor));
+    EXPECT_TRUE(member_descriptor->is_rosidl_buffer_);
   }
 
   {
@@ -234,6 +236,7 @@ TYPED_TEST(UnboundedSequencesMessageIntrospectionTest, MessageDescriptorIsCorrec
     EXPECT_STREQ(get_member_name(member_descriptor), "uint8_values_default");
     EXPECT_TRUE(is_base_type_member(member_descriptor, ROS_TYPE_UINT8));
     EXPECT_TRUE(has_sequence_structure(member_descriptor));
+    EXPECT_TRUE(member_descriptor->is_rosidl_buffer_);
   }
 
   {

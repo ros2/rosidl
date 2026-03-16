@@ -39,6 +39,7 @@
     sequence->data = data; \
     sequence->size = size; \
     sequence->capacity = size; \
+    sequence->is_rosidl_buffer = false; \
     return true; \
   } \
  \
@@ -46,6 +47,14 @@
     rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence * sequence) \
   { \
     if (!sequence) { \
+      return; \
+    } \
+    if (sequence->is_rosidl_buffer) { \
+      /* data points to an rosidl_buffer::Buffer — do not free it here */ \
+      sequence->data = NULL; \
+      sequence->size = 0; \
+      sequence->capacity = 0; \
+      sequence->is_rosidl_buffer = false; \
       return; \
     } \
     if (sequence->data) { \
@@ -100,6 +109,7 @@
     } \
     memcpy(output->data, input->data, sizeof(TYPE_NAME) * input->size); \
     output->size = input->size; \
+    output->is_rosidl_buffer = input->is_rosidl_buffer; \
     return true; \
   }
 

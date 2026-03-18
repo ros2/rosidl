@@ -22,6 +22,7 @@ from rosidl_generator_c import idl_structure_type_to_c_include_prefix
 from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_generator_c import interface_path_to_string
 from rosidl_generator_c import value_to_c
+from rosidl_generator_c import get_deprecation_from_member
 }@
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 @# Collect necessary include directives for all members
@@ -174,7 +175,12 @@ typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_t
   ///
 @[    end if]@
 @[  end for]@
+@[  if get_deprecation_from_member(member)]@
+  @(get_deprecation_from_member(member))
+  DEPRECATED_@(member.name.upper()) @(idl_declaration_to_c(member.type, member.name));
+@[  else]@
   @(idl_declaration_to_c(member.type, member.name));
+@[  end if]@
 @[end for]@
 } @(idl_structure_type_to_c_typename(message.structure.namespaced_type));
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

@@ -24,6 +24,7 @@ from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import CHARACTER_TYPES
+from rosidl_parser.definition import Member
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import OCTET_TYPE
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
@@ -247,3 +248,24 @@ def type_hash_to_c_definition(hash_string, *, indent=2):
     result += ' ' * indent
     result += '}}'
     return result
+
+
+def get_deprecation_from_member(member: Member) -> str:
+    if member.has_annotation('deprecated'):
+        deprecation_annotation = member.get_annotation_value('deprecated')
+        if not isinstance(deprecation_annotation, dict):
+            assert False, f'deprecation_annotation is not proper type: {deprecation_annotation}'
+
+        text = deprecation_annotation['text']
+
+        # TODO: Verify I didn't miss any
+        return (
+            '#if defined(_MSC_VER)\n'
+            f'#define DEPRECATED_{member.name.upper()} __declspec(deprecated("{text}"))\n'
+            '#elif defined(__GNUC__) || defined(__clang__)\n'
+            f'#define DEPRECATED_{member.name.upper()} __attribute__((deprecated("{text}")))\n'
+            '#else\n'
+            f'#define DEPRECATED_{member.name.upper()}\n'
+            '#endif'
+        )
+    return ''

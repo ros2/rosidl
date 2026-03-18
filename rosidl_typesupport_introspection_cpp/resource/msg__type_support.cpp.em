@@ -168,15 +168,15 @@ void resize_function__@(message.structure.namespaced_type.name)__@(member.name)(
 @[    end if]@
 @[  end if]@
 @[end for]@
+@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
+DISABLE_DEPRECATED_PUSH
+@[end if]@
 static const ::rosidl_typesupport_introspection_cpp::MessageMember @(message.structure.namespaced_type.name)_message_member_array[@(len(message.structure.members))] = {
 @{
 for index, member in enumerate(message.structure.members):
     type_ = member.type
     if isinstance(type_, AbstractNestedType):
         type_ = type_.value_type
-
-    if member.has_annotation('deprecated'):
-        print('    DISABLE_DEPRECATED_PUSH')
 
     print('  {')
 
@@ -240,12 +240,11 @@ for index, member in enumerate(message.structure.members):
         print('  },')
     else:
         print('  }')
-
-    if member.has_annotation('deprecated'):
-        print('    DISABLE_DEPRECATED_POP')
-
 }@
 };
+@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
+DISABLE_DEPRECATED_POP
+@[end if]@
 
 static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(message.structure.namespaced_type.name)_message_members = {
   "@('::'.join([package_name] + list(interface_path.parents[0].parts)))",  // message namespace

@@ -175,7 +175,7 @@ typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_t
   ///
 @[    end if]@
 @[  end for]@
-@[  if get_deprecation_from_member(member)]@
+@[  if member.has_annotation('deprecated')]@
   @(get_deprecation_from_member(member))
   DEPRECATED_@(member.name.upper()) @(idl_declaration_to_c(member.type, member.name));
 @[  else]@

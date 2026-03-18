@@ -24,6 +24,7 @@ header_files = [
     'cstddef',  # providing offsetof()
     'string',
     'vector',
+    'rosidl_runtime_c/deprecation.h',
     'rosidl_runtime_c/message_type_support_struct.h',
     'rosidl_typesupport_cpp/message_type_support.hpp',
     'rosidl_typesupport_interface/macros.h',
@@ -174,6 +175,9 @@ for index, member in enumerate(message.structure.members):
     if isinstance(type_, AbstractNestedType):
         type_ = type_.value_type
 
+    if member.has_annotation('deprecated'):
+        print('    DISABLE_DEPRECATED_PUSH')
+
     print('  {')
 
     # const char * name_
@@ -236,6 +240,10 @@ for index, member in enumerate(message.structure.members):
         print('  },')
     else:
         print('  }')
+
+    if member.has_annotation('deprecated'):
+        print('    DISABLE_DEPRECATED_POP')
+
 }@
 };
 

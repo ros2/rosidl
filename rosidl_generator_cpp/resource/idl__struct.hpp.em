@@ -33,6 +33,7 @@ include_directives = set()
 #include <string>
 #include <vector>
 
+#include "rosidl_runtime_c/deprecation.h"
 #include "rosidl_runtime_cpp/bounded_vector.hpp"
 #include "rosidl_runtime_cpp/message_initialization.hpp"
 

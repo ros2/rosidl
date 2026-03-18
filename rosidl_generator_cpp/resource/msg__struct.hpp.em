@@ -128,6 +128,9 @@ non_defaulted_zero_initialized_members = [
     if (m.members[0].zero_value or m.members[0].zero_need_array_override) and not m.members[0].default_value
 ]
 }@
+@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
+    DISABLE_DEPRECATED_PUSH
+@[end if]
 @[if default_value_members]@
     if (rosidl_runtime_cpp::MessageInitialization::ALL == _init ||
       rosidl_runtime_cpp::MessageInitialization::DEFAULTS_ONLY == _init)
@@ -160,6 +163,9 @@ non_defaulted_zero_initialized_members = [
 @[  end for]@
     }
 @[end if]@
+@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
+    DISABLE_DEPRECATED_POP
+@[end if]
   }
 
   explicit @(message.structure.namespaced_type.name)_(const ContainerAllocator & _alloc, rosidl_runtime_cpp::MessageInitialization _init = rosidl_runtime_cpp::MessageInitialization::ALL)
@@ -167,6 +173,9 @@ non_defaulted_zero_initialized_members = [
   : @(',\n    '.join(alloc_list))
 @[end if]@
   {
+@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
+    DISABLE_DEPRECATED_PUSH
+@[end if]
 @[if not member_list]@
     (void)_init;
 @[end if]@
@@ -203,6 +212,9 @@ non_defaulted_zero_initialized_members = [
 @[  end for]@
     }
 @[end if]@
+@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
+    DISABLE_DEPRECATED_POP
+@[end if]
   }
 
   // field types and members
@@ -224,7 +236,13 @@ non_defaulted_zero_initialized_members = [
   Type & set__@(member.name)(
     const @(msg_type_to_cpp(member.type)) & _arg)
   {
+@[      if member.has_annotation('deprecated')]@
+    DISABLE_DEPRECATED_PUSH
+@[      end if]@
     this->@(member.name) = _arg;
+@[      if member.has_annotation('deprecated')]@
+    DISABLE_DEPRECATED_POP
+@[      end if]@
     return *this;
   }
 @[  end for]@
@@ -314,9 +332,15 @@ u@
     (void)other;
 @[end if]@
 @[for member in message.structure.members]@
+@[  if member.has_annotation('deprecated')]@
+    DISABLE_DEPRECATED_PUSH
+@[  end if]@
     if (this->@(member.name) != other.@(member.name)) {
       return false;
     }
+@[  if member.has_annotation('deprecated')]@
+    DISABLE_DEPRECATED_POP
+@[  end if]@
 @[end for]@
     return true;
   }

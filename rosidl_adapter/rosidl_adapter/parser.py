@@ -83,6 +83,7 @@ if TYPE_CHECKING:
     class Annotations(TypedDict, total=False):
         comment: List[str]
         unit: str
+        deprecated: bool
 
 
 class InvalidSpecification(Exception):
@@ -575,7 +576,7 @@ def parse_message_string(pkg_name: str, msg_name: str,
 
 def process_comments(instance: Union[MessageSpecification, Field, Constant]) -> None:
     if 'comment' in instance.annotations:
-        lines = instance.annotations['comment']
+        lines: List[str] = instance.annotations['comment']
 
         # look for a unit in brackets
         # the unit should not contains a comma since it might be a range
@@ -587,6 +588,16 @@ def process_comments(instance: Union[MessageSpecification, Field, Constant]) -> 
             # remove the unit from the comment
             for i, line in enumerate(lines):
                 lines[i] = line.replace(matches[0][0], '')
+
+        # look for @deprecated directive in comment lines
+        deprecated_pattern = r'^\s*@deprecated\s*$'
+        new_lines: List[str] = []
+        for line in lines:
+            if re.match(deprecated_pattern, line):
+                instance.annotations['deprecated'] = True
+            else:
+                new_lines.append(line)
+        lines = new_lines
 
         # remove empty leading lines
         while lines and lines[0] == '':

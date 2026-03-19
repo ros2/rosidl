@@ -22,7 +22,12 @@ from rosidl_generator_c import idl_structure_type_to_c_include_prefix
 from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_generator_c import interface_path_to_string
 from rosidl_generator_c import value_to_c
+
+has_deprecated_members = any(m.has_annotation('deprecated') for m in message.structure.members)
 }@
+@[if has_deprecated_members]@
+#include "rosidl_runtime_c/deprecated.h"
+@[end if]@
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 @# Collect necessary include directives for all members
 @{
@@ -174,6 +179,9 @@ typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_t
   ///
 @[    end if]@
 @[  end for]@
+@[  if member.has_annotation('deprecated')]@
+  ROSIDL_DEPRECATED_MSG("field '@(member.name)' is deprecated")
+@[  end if]@
   @(idl_declaration_to_c(member.type, member.name));
 @[end for]@
 } @(idl_structure_type_to_c_typename(message.structure.namespaced_type));

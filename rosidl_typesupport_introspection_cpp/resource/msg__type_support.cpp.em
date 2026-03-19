@@ -206,6 +206,8 @@ for index, member in enumerate(message.structure.members):
         print('    ::rosidl_typesupport_introspection_cpp::get_message_type_support_handle<%s>(),  // members of sub message' % '::'.join(type_.namespaced_name()))
     # bool is_key_
     print('    %s,  // is key' % ('true' if member.has_annotation('key') else 'false'))
+    # bool is_deprecated_
+    print('    %s,  // is deprecated' % ('true' if member.has_annotation('deprecated') else 'false'))
     # bool is_array_
     print('    %s,  // is array' % ('true' if isinstance(member.type, AbstractNestedType) else 'false'))
     # size_t array_size_

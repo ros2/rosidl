@@ -41,6 +41,8 @@ typedef struct rosidl_typesupport_introspection_c__MessageMember_s
   const rosidl_message_type_support_t * members_;
   /// True if this field is annotated as `@key`, false otherwise.
   bool is_key_;
+  /// True if this field is annotated as `@deprecated`, false otherwise.
+  bool is_deprecated_;
   /// True if this field is an array type, false if it is any other type. An
   /// array has the same value for / type_id_.
   bool is_array_;

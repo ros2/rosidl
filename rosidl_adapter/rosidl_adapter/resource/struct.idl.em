@@ -87,6 +87,9 @@ else:
 @[    if 'unit' in field.annotations]@
       @@unit (value=@(string_to_idl_string_literal(field.annotations['unit'])))
 @[    end if]@
+@[    if field.annotations.get('deprecated', False)]@
+      @@deprecated
+@[    end if]@
 @{
 idl_type = get_idl_type(field.type)
 }@

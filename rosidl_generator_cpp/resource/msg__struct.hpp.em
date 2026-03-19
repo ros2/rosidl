@@ -246,6 +246,9 @@ non_defaulted_zero_initialized_members = [
 
   // field types and members
 @[for member in message.structure.members]@
+@[  if member.has_annotation('deprecated')]@
+  [[deprecated("field '@(member.name)' is deprecated")]]
+@[  end if]@
   using _@(member.name)_type =
     @(msg_type_to_cpp(member.type));
   _@(member.name)_type @(member.name);
@@ -254,6 +257,9 @@ non_defaulted_zero_initialized_members = [
 @[if len(message.structure.members) != 1 or message.structure.members[0].name != EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME]@
   // setters for named parameter idiom
 @[  for member in message.structure.members]@
+@[    if member.has_annotation('deprecated')]@
+  [[deprecated("field '@(member.name)' is deprecated")]]
+@[    end if]@
   Type & set__@(member.name)(
     const @(msg_type_to_cpp(member.type)) & _arg)
   {

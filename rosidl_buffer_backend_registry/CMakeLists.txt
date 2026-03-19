@@ -15,12 +15,10 @@ find_package(ament_cmake REQUIRED)
 find_package(rosidl_buffer_backend REQUIRED)
 find_package(rmw REQUIRED)
 find_package(rosidl_runtime_cpp REQUIRED)
-find_package(rosidl_typesupport_fastrtps_cpp REQUIRED)
 find_package(pluginlib REQUIRED)
 
 # Library
 add_library(${PROJECT_NAME} SHARED
-  src/buffer_backend_loader.cpp
   src/buffer_backend_registry.cpp
 )
 
@@ -37,7 +35,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   rosidl_buffer_backend::rosidl_buffer_backend
   rmw::rmw
   rosidl_runtime_cpp::rosidl_runtime_cpp
-  rosidl_typesupport_fastrtps_cpp::rosidl_typesupport_fastrtps_cpp
   pluginlib::pluginlib
 )
 
@@ -59,7 +56,7 @@ install(
 
 # Export dependencies
 ament_export_targets(${PROJECT_NAME} HAS_LIBRARY_TARGET)
-ament_export_dependencies(rosidl_buffer_backend rmw rosidl_runtime_cpp rosidl_typesupport_fastrtps_cpp pluginlib)
+ament_export_dependencies(rosidl_buffer_backend rmw rosidl_runtime_cpp pluginlib)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

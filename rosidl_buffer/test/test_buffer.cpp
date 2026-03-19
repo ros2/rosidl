@@ -70,13 +70,22 @@ TEST(TestBuffer, copy_construction) {
   }
 }
 
-// Test move construction
+// Test move construction — moved-from buffer must be valid and empty
 TEST(TestBuffer, move_construction) {
   Buffer<uint8_t> buffer1(3, 100);
   Buffer<uint8_t> buffer2(std::move(buffer1));
 
   EXPECT_EQ(3u, buffer2.size());
   EXPECT_EQ("cpu", buffer2.get_backend_type());
+
+  // Moved-from buffer is in a valid, empty state (not null)
+  EXPECT_EQ(0u, buffer1.size());
+  EXPECT_TRUE(buffer1.empty());
+  EXPECT_EQ("cpu", buffer1.get_backend_type());
+  // Must not crash — moved-from buffer is usable
+  buffer1.push_back(42);
+  EXPECT_EQ(1u, buffer1.size());
+  EXPECT_EQ(42, buffer1[0]);
 }
 
 // Test copy assignment
@@ -93,13 +102,21 @@ TEST(TestBuffer, copy_assignment) {
   }
 }
 
-// Test move assignment
+// Test move assignment — moved-from buffer must be valid and empty
 TEST(TestBuffer, move_assignment) {
   Buffer<uint8_t> buffer1(3, 100);
   Buffer<uint8_t> buffer2;
   buffer2 = std::move(buffer1);
 
   EXPECT_EQ(3u, buffer2.size());
+
+  // Moved-from buffer is in a valid, empty state (not null)
+  EXPECT_EQ(0u, buffer1.size());
+  EXPECT_TRUE(buffer1.empty());
+  EXPECT_EQ("cpu", buffer1.get_backend_type());
+  buffer1.push_back(7);
+  EXPECT_EQ(1u, buffer1.size());
+  EXPECT_EQ(7, buffer1[0]);
 }
 
 // Test element access via operator[]

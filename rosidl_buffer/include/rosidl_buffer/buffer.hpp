@@ -107,30 +107,32 @@ public:
 
   /// Copy constructor (deep copy via clone())
   Buffer(const Buffer & other)
-  : impl_(other.impl_ ? other.impl_->clone() : nullptr)
+  : impl_(other.impl_->clone())
   {
   }
 
-  /// Move constructor
+  /// Move constructor — the moved-from buffer is left in a valid, empty state.
   Buffer(Buffer && other) noexcept
   : impl_(std::move(other.impl_))
   {
+    other.impl_ = std::make_unique<CpuBufferImpl<T>>();
   }
 
   /// Copy assignment (deep copy via clone())
   Buffer & operator=(const Buffer & other)
   {
     if (this != &other) {
-      impl_ = other.impl_ ? other.impl_->clone() : nullptr;
+      impl_ = other.impl_->clone();
     }
     return *this;
   }
 
-  /// Move assignment
+  /// Move assignment — the moved-from buffer is left in a valid, empty state.
   Buffer & operator=(Buffer && other) noexcept
   {
     if (this != &other) {
       impl_ = std::move(other.impl_);
+      other.impl_ = std::make_unique<CpuBufferImpl<T>>();
     }
     return *this;
   }
@@ -139,7 +141,7 @@ public:
   /// This must come before vector assignment to resolve ambiguity with {{...}} syntax
   Buffer & operator=(std::initializer_list<T> init)
   {
-    impl_ = std::make_unique<CpuBufferImpl<T>>();
+    throw_if_not_cpu_backend();
     get_cpu_impl()->get_storage() = init;
     return *this;
   }
@@ -150,7 +152,7 @@ public:
     typename std::enable_if<std::is_same<U, std::vector<T>>::value, int>::type = 0>
   Buffer & operator=(const U & vec)
   {
-    impl_ = std::make_unique<CpuBufferImpl<T>>();
+    throw_if_not_cpu_backend();
     get_cpu_impl()->get_storage() = vec;
     return *this;
   }
@@ -161,7 +163,7 @@ public:
     typename std::enable_if<std::is_same<U, std::vector<T>>::value, int>::type = 0>
   Buffer & operator=(U && vec)
   {
-    impl_ = std::make_unique<CpuBufferImpl<T>>();
+    throw_if_not_cpu_backend();
     get_cpu_impl()->get_storage() = std::move(vec);
     return *this;
   }
@@ -277,10 +279,10 @@ public:
   // ========== Capacity ==========
 
   /// Works for all backends (delegates to BufferImplBase::size()).
-  bool empty() const {return !impl_ || impl_->size() == 0;}
+  bool empty() const {return impl_->size() == 0;}
 
   /// Works for all backends (delegates to BufferImplBase::size()).
-  size_t size() const {return impl_ ? impl_->size() : 0;}
+  size_t size() const {return impl_->size();}
 
   void reserve(size_t new_cap)
   {
@@ -466,7 +468,7 @@ public:
   /// source of truth for its own backend type.
   std::string get_backend_type() const
   {
-    return impl_ ? impl_->get_backend_type() : "cpu";
+    return impl_->get_backend_type();
   }
 
   /// Get the implementation pointer (for serialization) - returns raw pointer

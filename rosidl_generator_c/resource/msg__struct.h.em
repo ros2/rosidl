@@ -30,6 +30,11 @@ from rosidl_generator_c import get_deprecation_from_member
 from collections import OrderedDict
 includes = OrderedDict()
 for member in message.structure.members:
+    if (member.has_annotation('deprecated')):
+      includes.setdefault(
+        'rosidl_runtime_c/deprecation.h', []
+      )
+
     if isinstance(member.type, AbstractSequence) and isinstance(member.type.value_type, BasicType):
         member_names = includes.setdefault(
             'rosidl_runtime_c/primitives_sequence.h', [])
@@ -177,10 +182,8 @@ typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_t
 @[  end for]@
 @[  if member.has_annotation('deprecated')]@
   @(get_deprecation_from_member(member))
-  DEPRECATED_@(member.name.upper()) @(idl_declaration_to_c(member.type, member.name));
-@[  else]@
-  @(idl_declaration_to_c(member.type, member.name));
 @[  end if]@
+  @(idl_declaration_to_c(member.type, member.name));
 @[end for]@
 } @(idl_structure_type_to_c_typename(message.structure.namespaced_type));
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

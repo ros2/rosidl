@@ -15,13 +15,22 @@
 #ifndef ROSIDL_RUNTIME_C__DEPRECATION_H_
 #define ROSIDL_RUNTIME_C__DEPRECATION_H_
 
+// Can be removed in C23
+#if defined(_MSC_VER)
+  #define ROSIDL_DEPRECATED(text) __declspec(deprecated(text))
+#elif defined(__GNUC__) || defined(__clang__)
+  #define ROSIDL_DEPRECATED(text) __attribute__((deprecated(text)))
+#else
+  #define ROSIDL_DEPRECATED(text)
+#endif
+
 #if defined(_MSC_VER)
   #define DISABLE_DEPRECATED_PUSH __pragma(warning(push)) \
-                                   __pragma(warning(disable: 4996))
+    __pragma(warning(disable: 4996))
   #define DISABLE_DEPRECATED_POP  __pragma(warning(pop))
 #elif defined(__clang__) || defined(__GNUC__)
   #define DISABLE_DEPRECATED_PUSH _Pragma("GCC diagnostic push") \
-                                   _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+    _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
   #define DISABLE_DEPRECATED_POP  _Pragma("GCC diagnostic pop")
 #else
   #define DISABLE_DEPRECATED_PUSH

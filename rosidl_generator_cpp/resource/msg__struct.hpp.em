@@ -113,7 +113,7 @@ struct @(message.structure.namespaced_type.name)_
 init_list, alloc_list, member_list = create_init_alloc_and_member_lists(message)
 }@
 @[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
-    DISABLE_DEPRECATED_PUSH
+  DISABLE_DEPRECATED_PUSH
 @[end if]
   explicit @(message.structure.namespaced_type.name)_(rosidl_runtime_cpp::MessageInitialization _init = rosidl_runtime_cpp::MessageInitialization::ALL)
 @[if init_list]@
@@ -164,13 +164,7 @@ non_defaulted_zero_initialized_members = [
     }
 @[end if]@
   }
-@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
-    DISABLE_DEPRECATED_POP
-@[end if]
 
-@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
-    DISABLE_DEPRECATED_PUSH
-@[end if]
   explicit @(message.structure.namespaced_type.name)_(const ContainerAllocator & _alloc, rosidl_runtime_cpp::MessageInitialization _init = rosidl_runtime_cpp::MessageInitialization::ALL)
 @[if alloc_list]@
   : @(',\n    '.join(alloc_list))
@@ -214,7 +208,7 @@ non_defaulted_zero_initialized_members = [
 @[end if]@
   }
 @[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
-    DISABLE_DEPRECATED_POP
+  DISABLE_DEPRECATED_POP
 @[end if]
 
   // field types and members

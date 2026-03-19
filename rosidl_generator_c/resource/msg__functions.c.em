@@ -240,6 +240,9 @@ bool
   }
 @[for member in message.structure.members]@
   // @(member.name)
+@[  if member.has_annotation('deprecated')]@
+  DISABLE_DEPRECATED_PUSH
+@[end if]@
 @[  if isinstance(member.type, Array)]@
   for (size_t i = 0; i < @(member.type.size); ++i) {
 @[     if isinstance(member.type.value_type, (AbstractGenericString, NamespacedType))]@
@@ -271,6 +274,9 @@ bool
     return false;
   }
 @[  end if]@
+@[  if member.has_annotation('deprecated')]@
+  DISABLE_DEPRECATED_POP
+@[end if]@
 @[end for]@
   return true;
 }
@@ -285,6 +291,9 @@ bool
   }
 @[for member in message.structure.members]@
   // @(member.name)
+@[  if member.has_annotation('deprecated')]@
+  DISABLE_DEPRECATED_PUSH
+@[end if]@
 @[  if isinstance(member.type, Array)]@
   for (size_t i = 0; i < @(member.type.size); ++i) {
 @[     if isinstance(member.type.value_type, (AbstractGenericString, NamespacedType))]@
@@ -312,6 +321,9 @@ bool
 @[  else]@
   output->@(member.name) = input->@(member.name);
 @[  end if]@
+@[  if member.has_annotation('deprecated')]@
+  DISABLE_DEPRECATED_POP
+@[end if]@
 @[end for]@
   return true;
 }

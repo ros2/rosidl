@@ -259,13 +259,5 @@ def get_deprecation_from_member(member: Member) -> str:
         text = deprecation_annotation['text']
 
         # TODO: Verify I didn't miss any
-        return (
-            '#if defined(_MSC_VER)\n'
-            f'#define DEPRECATED_{member.name.upper()} __declspec(deprecated("{text}"))\n'
-            '#elif defined(__GNUC__) || defined(__clang__)\n'
-            f'#define DEPRECATED_{member.name.upper()} __attribute__((deprecated("{text}")))\n'
-            '#else\n'
-            f'#define DEPRECATED_{member.name.upper()}\n'
-            '#endif'
-        )
+        return f'ROSIDL_DEPRECATED("{text}")'
     return ''

@@ -39,6 +39,12 @@ namespace rosidl_buffer_backend_registry
 
 /// Singleton registry for discovering and managing buffer backend plugins.
 /// Uses pluginlib for dynamic plugin discovery and loading.
+///
+/// Thread-safety model: load_plugins() is guarded by std::call_once and
+/// register_backend() is mutex-protected, so initialization is thread-safe.
+/// After load_plugins() completes, the backends map is effectively immutable
+/// and all read-only accessors (get_backend, get_backend_names, etc.) are
+/// safe for concurrent use without additional synchronization.
 class BufferBackendRegistry
 {
 public:
@@ -47,24 +53,22 @@ public:
   static BufferBackendRegistry & get_instance();
 
   /// Get a registered backend by name (e.g., "cpu", "cuda").
-  /// Returns nullptr if backend not found.
-  /// Thread-safe after initial load_plugins() call.
+  /// @return The backend, or nullptr if not found.
   ROSIDL_BUFFER_BACKEND_REGISTRY_PUBLIC
   std::shared_ptr<rosidl::BufferBackend> get_backend(const std::string & name);
 
   /// Manually register a backend (for built-in backends or testing).
-  /// Thread-safe.
+  /// Thread-safe (mutex-protected).
   ROSIDL_BUFFER_BACKEND_REGISTRY_PUBLIC
   void register_backend(const std::string & name, std::shared_ptr<rosidl::BufferBackend> backend);
 
   /// Load all available backend plugins via pluginlib.
   /// Called automatically on first get_backend() if not already loaded.
-  /// Thread-safe (uses call_once).
+  /// Thread-safe (guarded by std::call_once).
   ROSIDL_BUFFER_BACKEND_REGISTRY_PUBLIC
   void load_plugins();
 
   /// Get names of all registered backends.
-  /// Thread-safe after initial load_plugins() call.
   ROSIDL_BUFFER_BACKEND_REGISTRY_PUBLIC
   std::vector<std::string> get_backend_names() const;
 
@@ -107,8 +111,8 @@ public:
     const std::vector<std::string> & a,
     const std::vector<std::string> & b);
 
-  /// Clear all global state including backends and serialization maps.
-  /// Called automatically in destructor to prevent plugin cleanup issues.
+  /// Clear all backends and release plugin instances.
+  /// Called automatically in destructor before ClassLoader is destroyed.
   ROSIDL_BUFFER_BACKEND_REGISTRY_PUBLIC
   void clear_global_state();
 

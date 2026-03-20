@@ -40,19 +40,26 @@ def test_deprecated_annotation_on_field() -> None:
 
 
 def test_deprecated_annotation_standalone() -> None:
-    """Test that '# @deprecated' placed before a non-first field sets the field annotation."""
-    # A '@deprecated' line before a field (after some other content) is attached to that field.
-    # When it is the very first non-empty line it becomes a message-level comment, so we
-    # use a sentinel preceding field to ensure it attaches to the target.
+    """Test that '# @deprecated' placed before a field sets the field annotation."""
+    # Test the format: two regular fields, then # @deprecated followed by deprecated field
     msg_string = (
-        'int32 sentinel_field\n'
+        'geometry_msgs/Pose pose_stamped\n'
+        'float64 distance_meters\n'
         '# @deprecated\n'
-        'int32 old_field\n'
+        'uint8 distance_cm\n'
     )
     msg_spec = parse_message_string('pkg', 'Foo', msg_string)
-    assert len(msg_spec.fields) == 2
-    field = msg_spec.fields[1]
-    assert field.name == 'old_field'
+    assert len(msg_spec.fields) == 3
+
+    # First two fields are not deprecated
+    assert msg_spec.fields[0].name == 'pose_stamped'
+    assert msg_spec.fields[0].annotations.get('deprecated') is None
+    assert msg_spec.fields[1].name == 'distance_meters'
+    assert msg_spec.fields[1].annotations.get('deprecated') is None
+
+    # Third field is deprecated
+    field = msg_spec.fields[2]
+    assert field.name == 'distance_cm'
     assert field.annotations.get('deprecated') is True
     # Comment should be empty or absent after stripping the @deprecated line
     comment_lines = field.annotations.get('comment', [])

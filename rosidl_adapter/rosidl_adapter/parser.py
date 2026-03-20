@@ -617,6 +617,9 @@ def process_comments(instance: Union[MessageSpecification, Field, Constant]) -> 
         if lines:
             text = '\n'.join(lines)
             instance.annotations['comment'] = textwrap.dedent(text).split('\n')
+        else:
+            # Set empty comment list when all lines were filtered (e.g., @deprecated)
+            instance.annotations['comment'] = []
 
 
 def parse_value_string(type_: Type, value_string: str) -> Union['PrimitiveType',

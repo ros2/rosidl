@@ -314,12 +314,7 @@ static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(message.st
 @[  end if]@
   @(message.structure.namespaced_type.name)_message_member_array,  // message members
   @(message.structure.namespaced_type.name)_init_function,  // function to initialize message memory (memory has to be allocated)
-  @(message.structure.namespaced_type.name)_fini_function,  // function to terminate message instance (will not free memory)
-@[  if any_buffer_field]@
-  true  // has_buffer_fields_
-@[  else]@
-  false  // has_buffer_fields_
-@[  end if]@
+  @(message.structure.namespaced_type.name)_fini_function  // function to terminate message instance (will not free memory)
 };
 
 static const rosidl_message_type_support_t @(message.structure.namespaced_type.name)_message_type_support_handle = {

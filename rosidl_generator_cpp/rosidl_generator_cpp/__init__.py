@@ -396,5 +396,7 @@ def get_deprecation_from_member(member: Member) -> str:
         deprecation_annotation = member.get_annotation_value('deprecated')
         if not isinstance(deprecation_annotation, dict):
             assert False, f'deprecation_annotation is not proper type: {deprecation_annotation}'
-        return f'[[deprecated("{deprecation_annotation['text']}")]]'
+
+        text = deprecation_annotation['text']
+        return f'[[deprecated("{text}")]]'
     return ''

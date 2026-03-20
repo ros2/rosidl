@@ -257,7 +257,5 @@ def get_deprecation_from_member(member: Member) -> str:
             assert False, f'deprecation_annotation is not proper type: {deprecation_annotation}'
 
         text = deprecation_annotation['text']
-
-        # TODO: Verify I didn't miss any
         return f'ROSIDL_DEPRECATED("{text}")'
     return ''

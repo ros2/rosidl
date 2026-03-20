@@ -110,8 +110,6 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMembers_s
   void (* init_function)(void *, rosidl_runtime_cpp::MessageInitialization);
   /// The function used to clean up the interface's in-memory representation
   void (* fini_function)(void *);
-  /// True if any member has is_rosidl_buffer_ == true.
-  bool has_buffer_fields_;
 } MessageMembers;
 
 }  // namespace rosidl_typesupport_introspection_cpp

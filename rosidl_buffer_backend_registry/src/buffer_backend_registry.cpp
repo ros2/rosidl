@@ -14,6 +14,7 @@
 
 #include "rosidl_buffer_backend_registry/buffer_backend_registry.hpp"
 
+#include <algorithm>
 #include <mutex>
 #include <stdexcept>
 
@@ -124,8 +125,8 @@ std::vector<std::string> BufferBackendRegistry::get_backend_names() const
 {
   std::vector<std::string> names;
   names.reserve(backends_.size());
-  for (const auto & pair : backends_) {
-    names.push_back(pair.first);
+  for (const auto & [name, _] : backends_) {
+    names.push_back(name);
   }
   return names;
 }
@@ -137,24 +138,17 @@ std::vector<std::string> BufferBackendRegistry::get_backend_types()
     load_plugins();
   }
 
-  std::vector<std::string> backend_types;
+  std::set<std::string> types_set;
+  // CPU is always implicitly available (Buffer<T> defaults to CpuBufferImpl)
+  types_set.insert("cpu");
 
-  // Always include CPU backend
-  backend_types.push_back("cpu");
-
-  // Get additional backends from loaded plugins
-  for (const auto & pair : backends_) {
-    auto & backend = pair.second;
+  for (const auto & [_, backend] : backends_) {
     if (backend) {
-      std::string backend_type = backend->get_backend_type();
-      // Avoid duplicating CPU if it's in the registry
-      if (backend_type != "cpu") {
-        backend_types.push_back(backend_type);
-      }
+      types_set.insert(backend->get_backend_type());
     }
   }
 
-  return backend_types;
+  return {types_set.begin(), types_set.end()};
 }
 
 std::unordered_map<std::string, std::string> BufferBackendRegistry::get_all_aux_info()
@@ -165,9 +159,9 @@ std::unordered_map<std::string, std::string> BufferBackendRegistry::get_all_aux_
   }
 
   std::unordered_map<std::string, std::string> aux_info;
-  for (const auto & pair : backends_) {
-    if (pair.second) {
-      aux_info[pair.first] = pair.second->get_backend_aux_info();
+  for (const auto & [name, backend] : backends_) {
+    if (backend) {
+      aux_info[name] = backend->get_backend_aux_info();
     }
   }
   return aux_info;
@@ -176,9 +170,9 @@ std::unordered_map<std::string, std::string> BufferBackendRegistry::get_all_aux_
 void BufferBackendRegistry::notify_endpoint_created(
   const rmw_topic_endpoint_info_t & endpoint_info)
 {
-  for (const auto & pair : backends_) {
-    if (pair.second) {
-      pair.second->on_creating_endpoint(endpoint_info);
+  for (const auto & [_, backend] : backends_) {
+    if (backend) {
+      backend->on_creating_endpoint(endpoint_info);
     }
   }
 }
@@ -190,9 +184,7 @@ std::unordered_map<std::string, bool> BufferBackendRegistry::notify_endpoint_dis
   const std::unordered_map<std::string, std::string> & endpoint_supported_backends)
 {
   std::unordered_map<std::string, bool> backend_compatibility;
-  for (const auto & pair : backends_) {
-    const auto & backend_name = pair.first;
-    const auto & backend = pair.second;
+  for (const auto & [backend_name, backend] : backends_) {
     if (!backend) {
       backend_compatibility[backend_name] = false;
       backend_endpoint_groups[backend_name] = {};
@@ -210,14 +202,10 @@ bool BufferBackendRegistry::backends_compatible(
   const std::vector<std::string> & a,
   const std::vector<std::string> & b)
 {
-  for (const auto & backend_a : a) {
-    for (const auto & backend_b : b) {
-      if (backend_a == backend_b) {
-        return true;
-      }
-    }
-  }
-  return false;
+  return std::any_of(
+    a.begin(), a.end(), [&b](const std::string & entry) {
+      return std::find(b.begin(), b.end(), entry) != b.end();
+    });
 }
 
 std::vector<std::string> BufferBackendRegistry::get_common_backends(
@@ -225,20 +213,11 @@ std::vector<std::string> BufferBackendRegistry::get_common_backends(
   const std::vector<std::string> & b)
 {
   std::vector<std::string> common;
-  for (const auto & backend_a : a) {
-    for (const auto & backend_b : b) {
-      if (backend_a == backend_b) {
-        bool already_added = false;
-        for (const auto & c : common) {
-          if (c == backend_a) {
-            already_added = true;
-            break;
-          }
-        }
-        if (!already_added) {
-          common.push_back(backend_a);
-        }
-      }
+  for (const auto & entry : a) {
+    if (std::find(b.begin(), b.end(), entry) != b.end() &&
+      std::find(common.begin(), common.end(), entry) == common.end())
+    {
+      common.push_back(entry);
     }
   }
   return common;
@@ -246,12 +225,9 @@ std::vector<std::string> BufferBackendRegistry::get_common_backends(
 
 void BufferBackendRegistry::clear_global_state()
 {
-  // CRITICAL: Clear backends_ map to release shared_ptr to plugin instances
+  // Clear backends_ map to release shared_ptr to plugin instances
   // before ClassLoader is destroyed.
   backends_.clear();
-
-  // Note: Global serialization maps in rosidl_typesupport_fastrtps_cpp are cleared
-  // by rmw_shutdown() which is called before this destructor runs.
 }
 
 }  // namespace rosidl_buffer_backend_registry

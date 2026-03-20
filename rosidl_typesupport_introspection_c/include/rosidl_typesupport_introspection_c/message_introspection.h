@@ -103,8 +103,6 @@ typedef struct rosidl_typesupport_introspection_c__MessageMembers_s
   void (* init_function)(void *, enum rosidl_runtime_c__message_initialization);
   /// The function used to clean up the interface's in-memory representation
   void (* fini_function)(void *);
-  /// True if any member has is_rosidl_buffer_ == true.
-  bool has_buffer_fields_;
 } rosidl_typesupport_introspection_c__MessageMembers;
 
 #endif  // ROSIDL_TYPESUPPORT_INTROSPECTION_C__MESSAGE_INTROSPECTION_H_

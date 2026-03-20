@@ -24,6 +24,19 @@ macro(_rosidl_cmake_register_package_hook)
       "rosidl_cmake_package_hook.cmake")
 
     find_package(ament_cmake_export_dependencies QUIET REQUIRED)
+
+    _rosidl_cmake_aggregate_target_register_package_hook()
+  endif()
+endmacro()
+
+# register ament_package() hook for the aggregate interface target once
+macro(_rosidl_cmake_aggregate_target_register_package_hook)
+  if(NOT DEFINED _ROSIDL_CMAKE_AGGREGATE_TARGET_PACKAGE_HOOK_REGISTERED)
+    set(_ROSIDL_CMAKE_AGGREGATE_TARGET_PACKAGE_HOOK_REGISTERED TRUE)
+
+    find_package(ament_cmake_core QUIET REQUIRED)
+    ament_register_extension("ament_package" "rosidl_cmake"
+      "rosidl_cmake_aggregate_target_package_hook.cmake")
   endif()
 endmacro()
 

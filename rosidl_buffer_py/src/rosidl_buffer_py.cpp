@@ -24,16 +24,15 @@
 
 namespace py = pybind11;
 
-/// Minimal Python wrapper around rosidl::Buffer<uint8_t>.
+/// Thin Python wrapper around rosidl::Buffer<uint8_t>.
 ///
-/// This class exists solely to:
-///   1. Provide a Python type for isinstance checks in generated message code
-///   2. Hold shared_ptr ownership so the C++ buffer stays alive
-///   3. Expose the few properties/methods the pipeline needs
+/// This wrapper exists to:
+///   1. Hold shared_ptr ownership so the C++ buffer stays alive
+///   2. Expose only the narrow API that Python users and the pipeline need
 ///
 /// Users never construct this directly.  Backend factory functions
-/// (e.g. demo_buffer.DemoBuffer) create the underlying C++ Buffer and
-/// return it via _take_buffer_from_ptr.
+/// (e.g. DemoBuffer.from_cpu()) create the underlying C++ Buffer
+/// and return it via _take_buffer_from_ptr.
 class PyBuffer
 {
 public:
@@ -46,24 +45,29 @@ public:
 
   std::string get_backend_type() const {return buffer_->get_backend_type();}
 
+  /// Copy buffer contents to Python bytes (all backends).
+  /// Used by rosidl_runtime_py (message_to_ordereddict, message_to_yaml)
+  /// to serialize buffer data to dicts, YAML, and CSV.
   py::bytes to_bytes() const
   {
-    if (buffer_->get_backend_type() == "cpu") {
-      return py::bytes(
-        reinterpret_cast<const char *>(buffer_->data()),
-        buffer_->size());
-    }
     std::vector<uint8_t> vec = buffer_->to_vector();
     return py::bytes(
       reinterpret_cast<const char *>(vec.data()),
       vec.size());
   }
 
+  /// Convert to array.array('B') — the rclpy CPU storage type.
+  py::object to_array() const
+  {
+    py::module_ array_mod = py::module_::import("array");
+    return array_mod.attr("array")("B", to_bytes());
+  }
+
   rosidl::Buffer<uint8_t> * get_raw_buffer() {return buffer_.get();}
 
   std::string repr() const
   {
-    return "rosidl_buffer.Buffer(size=" + std::to_string(buffer_->size()) +
+    return "Buffer(size=" + std::to_string(buffer_->size()) +
            ", backend='" + buffer_->get_backend_type() + "')";
   }
 
@@ -77,24 +81,25 @@ PYBIND11_MODULE(_rosidl_buffer_py, m)
 
   py::class_<PyBuffer>(m, "Buffer")
   .def("__len__", &PyBuffer::size)
-  .def("to_bytes", &PyBuffer::to_bytes,
-    "Copy buffer contents to Python bytes (handles non-CPU backends via to_vector)")
   .def_property_readonly("backend_type", &PyBuffer::get_backend_type,
-    "Backend type identifier (e.g. 'cpu', 'demo', 'cuda')")
+    "Backend type identifier (e.g. 'cpu')")
+  .def("to_bytes", &PyBuffer::to_bytes,
+    "Copy buffer contents to Python bytes.")
+  .def("to_array", &PyBuffer::to_array,
+    "Convert to array.array('B') — the rclpy CPU storage type.")
   .def("__repr__", &PyBuffer::repr)
   ;
 
-  m.def("is_buffer", [](py::object obj) -> bool {
-      return py::isinstance<PyBuffer>(obj);
-    }, "Check if the given object is an rosidl_buffer.Buffer");
+  // Internal helpers for generated _msg_support.c (plain C code).
+  // These use uintptr_t because the C caller cannot unwrap pybind11 types.
 
   m.def("_get_buffer_ptr", [](PyBuffer & buf) -> uintptr_t {
       return reinterpret_cast<uintptr_t>(buf.get_raw_buffer());
-    }, "Get the raw C++ Buffer pointer as an integer (internal use only)");
+    });
 
   m.def("_take_buffer_from_ptr", [](uintptr_t ptr) -> PyBuffer {
       auto * buf = reinterpret_cast<rosidl::Buffer<uint8_t> *>(ptr);
       auto shared_buf = std::shared_ptr<rosidl::Buffer<uint8_t>>(buf);
       return PyBuffer(shared_buf);
-    }, "Take ownership of a heap-allocated Buffer* and return a Python Buffer (internal use only)");
+    });
 }

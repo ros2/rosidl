@@ -77,10 +77,10 @@ public:
   ROSIDL_BUFFER_BACKEND_REGISTRY_PUBLIC
   std::vector<std::string> get_backend_types();
 
-  /// Collect aux info from all registered backends.
-  /// @return Map of backend name to aux info string.
+  /// Collect backend metadata from all registered backends.
+  /// @return Map of backend name to backend metadata string.
   ROSIDL_BUFFER_BACKEND_REGISTRY_PUBLIC
-  std::unordered_map<std::string, std::string> get_all_aux_info();
+  std::unordered_map<std::string, std::string> get_all_backend_metadata();
 
   /// Notify all backends that a local endpoint is being created.
   ROSIDL_BUFFER_BACKEND_REGISTRY_PUBLIC
@@ -90,7 +90,7 @@ public:
   /// @param endpoint_info Information about the discovered endpoint.
   /// @param existing_endpoints List of existing endpoints for grouping decisions.
   /// @param backend_endpoint_groups In/out parameter for backend-specific grouping information.
-  /// @param endpoint_supported_backends Backend aux info from the discovered endpoint.
+  /// @param endpoint_supported_backends Backend metadata from the discovered endpoint.
   /// @return Map of backend name to compatibility boolean.
   ROSIDL_BUFFER_BACKEND_REGISTRY_PUBLIC
   std::unordered_map<std::string, bool> notify_endpoint_discovered(

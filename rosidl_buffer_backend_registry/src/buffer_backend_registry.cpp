@@ -151,20 +151,20 @@ std::vector<std::string> BufferBackendRegistry::get_backend_types()
   return {types_set.begin(), types_set.end()};
 }
 
-std::unordered_map<std::string, std::string> BufferBackendRegistry::get_all_aux_info()
+std::unordered_map<std::string, std::string> BufferBackendRegistry::get_all_backend_metadata()
 {
   // Ensure plugins are loaded
   if (!plugins_loaded_) {
     load_plugins();
   }
 
-  std::unordered_map<std::string, std::string> aux_info;
+  std::unordered_map<std::string, std::string> backend_metadata;
   for (const auto & [name, backend] : backends_) {
     if (backend) {
-      aux_info[name] = backend->get_backend_aux_info();
+      backend_metadata[name] = backend->get_backend_metadata();
     }
   }
-  return aux_info;
+  return backend_metadata;
 }
 
 void BufferBackendRegistry::notify_endpoint_created(

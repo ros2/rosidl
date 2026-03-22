@@ -9,7 +9,6 @@ from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import NamespacedType
-from rosidl_parser.definition import UnboundedSequence
 from rosidl_generator_c import basetype_to_c
 from rosidl_generator_c import idl_structure_type_sequence_to_c_typename
 from rosidl_generator_c import idl_structure_type_to_c_include_prefix
@@ -26,15 +25,7 @@ array_typename = idl_structure_type_sequence_to_c_typename(
 @# Collect necessary include directives for all members
 @{
 from collections import OrderedDict
-from rosidl_parser.definition import UnboundedSequence
 includes = OrderedDict()
-
-# Check if this message has any uint8[] buffer fields (for is_rosidl_buffer-aware fini)
-has_buffer_fields = False
-for member in message.structure.members:
-    if isinstance(member.type, UnboundedSequence) and isinstance(member.type.value_type, BasicType) and member.type.value_type.typename == 'uint8':
-        has_buffer_fields = True
-        break
 
 for member in message.structure.members:
     if isinstance(member.type, AbstractSequence) and isinstance(member.type.value_type, BasicType):
@@ -79,7 +70,6 @@ for member in message.structure.members:
 @[    end for]@
 @[end if]@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-@# Buffer-backed uint8[] fields use the is_rosidl_buffer flag on the sequence struct.
 
 @#######################################################################
 @# message functions
@@ -233,19 +223,8 @@ for member in message.structure.members:
             lines.append('  %s__fini(&msg->%s[i]);' % (basetype_to_c(member.type.value_type), member.name))
             lines.append('}')
     elif isinstance(member.type, AbstractSequence):
-        if isinstance(member.type, UnboundedSequence) and isinstance(member.type.value_type, BasicType) and member.type.value_type.typename == 'uint8':
-            lines.append('if (msg->%s.is_rosidl_buffer) {' % member.name)
-            lines.append('  // Buffer-backed: data is a borrowed pointer, do not free')
-            lines.append('  msg->%s.data = NULL;' % member.name)
-            lines.append('  msg->%s.size = 0;' % member.name)
-            lines.append('  msg->%s.capacity = 0;' % member.name)
-            lines.append('  msg->%s.is_rosidl_buffer = false;' % member.name)
-            lines.append('} else {')
-            lines.append('  %s__fini(&msg->%s);' % (idl_type_to_c(member.type), member.name))
-            lines.append('}')
-        else:
-            # finalize the dynamic array
-            lines.append('%s__fini(&msg->%s);' % (idl_type_to_c(member.type), member.name))
+        # finalize the dynamic array
+        lines.append('%s__fini(&msg->%s);' % (idl_type_to_c(member.type), member.name))
     elif not isinstance(member.type, BasicType):
         # finalize non-array sub messages and strings
         lines.append('%s__fini(&msg->%s);' % (basetype_to_c(member.type), member.name))

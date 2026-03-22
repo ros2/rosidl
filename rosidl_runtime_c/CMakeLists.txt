@@ -20,6 +20,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros_core REQUIRED)
 find_package(rcutils REQUIRED)
+find_package(rosidl_buffer REQUIRED)
 find_package(rosidl_typesupport_interface REQUIRED)
 
 file(GLOB type_description_sources "src/type_description/*.c")
@@ -40,6 +41,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 target_link_libraries(${PROJECT_NAME} PUBLIC
   rcutils::rcutils
+  rosidl_buffer::rosidl_buffer
   rosidl_typesupport_interface::rosidl_typesupport_interface
 )
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
@@ -55,7 +57,7 @@ if(BUILD_TESTING AND NOT RCUTILS_DISABLE_FAULT_INJECTION)
   target_compile_definitions(${PROJECT_NAME} PUBLIC RCUTILS_ENABLE_FAULT_INJECTION)
 endif()
 
-ament_export_dependencies(rcutils rosidl_typesupport_interface)
+ament_export_dependencies(rcutils rosidl_buffer rosidl_typesupport_interface)
 
 # Export old-style CMake variables
 ament_export_include_directories("include/${PROJECT_NAME}")

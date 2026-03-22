@@ -38,9 +38,9 @@ public:
   /// Get the backend type name
   virtual std::string get_backend_type() const = 0;
 
-  /// Get the backend aux info string
+  /// Get the backend metadata string.
   /// This is used by the backend to pass backend-specific information to other endpoints.
-  virtual std::string get_backend_aux_info() const
+  virtual std::string get_backend_metadata() const
   {
     return "";
   }
@@ -75,7 +75,7 @@ public:
   /// Returns {compatible, groups of endpoint GID hashes}.
   /// @param endpoint_info Information about the discovered endpoint
   /// @param existing_endpoints List of existing endpoints for grouping decisions
-  /// @param endpoint_supported_backends Map of backend type to aux info string
+  /// @param endpoint_supported_backends Map of backend type to backend metadata string
   ///        for the discovered endpoint
   virtual std::pair<bool, std::vector<std::set<uint32_t>>> on_discovering_endpoint(
     const rmw_topic_endpoint_info_t & endpoint_info,

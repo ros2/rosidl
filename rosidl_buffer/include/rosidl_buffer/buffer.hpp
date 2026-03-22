@@ -55,74 +55,74 @@ public:
 
   /// Default constructor creates CPU buffer
   Buffer()
-  : impl_(std::make_unique<CpuBufferImpl<T>>())
   {
+    set_impl(std::make_unique<CpuBufferImpl<T, Allocator>>());
   }
 
   /// Construct with a backend implementation (set once at construction).
   /// This is the only way to set a non-CPU backend; there is no post-
   /// construction setter, which avoids race conditions with concurrent reads.
   explicit Buffer(std::unique_ptr<BufferImplBase<T>> impl)
-  : impl_(std::move(impl))
   {
-    if (!impl_) {
+    if (!impl) {
       throw std::invalid_argument("Buffer implementation must not be null");
     }
+    set_impl(std::move(impl));
   }
 
   /// Construct with initial size (CPU backend)
   explicit Buffer(size_t count)
-  : impl_(std::make_unique<CpuBufferImpl<T>>())
   {
-    get_cpu_impl()->get_storage().resize(count);
+    set_impl(std::make_unique<CpuBufferImpl<T, Allocator>>());
+    cpu_impl_->get_storage().resize(count);
   }
 
   /// Construct with initial size and value (CPU backend)
   Buffer(size_t count, const T & value)
-  : impl_(std::make_unique<CpuBufferImpl<T>>())
   {
-    get_cpu_impl()->get_storage().assign(count, value);
+    set_impl(std::make_unique<CpuBufferImpl<T, Allocator>>());
+    cpu_impl_->get_storage().assign(count, value);
   }
 
   /// Construct from std::vector (copy) - for backward compatibility
-  Buffer(const std::vector<T> & vec)  // NOLINT(runtime/explicit) - intentionally implicit
-  : impl_(std::make_unique<CpuBufferImpl<T>>())
+  Buffer(const std::vector<T, Allocator> & vec)  // NOLINT(runtime/explicit)
   {
-    get_cpu_impl()->get_storage() = vec;
+    set_impl(std::make_unique<CpuBufferImpl<T, Allocator>>());
+    cpu_impl_->get_storage() = vec;
   }
 
   /// Construct from std::vector (move) - for backward compatibility
-  Buffer(std::vector<T> && vec)  // NOLINT(runtime/explicit) - intentionally implicit
-  : impl_(std::make_unique<CpuBufferImpl<T>>())
+  Buffer(std::vector<T, Allocator> && vec)  // NOLINT(runtime/explicit) - intentionally implicit
   {
-    get_cpu_impl()->get_storage() = std::move(vec);
+    set_impl(std::make_unique<CpuBufferImpl<T, Allocator>>());
+    cpu_impl_->get_storage() = std::move(vec);
   }
 
   /// Construct from initializer list - for backward compatibility
   Buffer(std::initializer_list<T> init)
-  : impl_(std::make_unique<CpuBufferImpl<T>>())
   {
-    get_cpu_impl()->get_storage() = init;
+    set_impl(std::make_unique<CpuBufferImpl<T, Allocator>>());
+    cpu_impl_->get_storage() = init;
   }
 
   /// Copy constructor (deep copy via clone())
   Buffer(const Buffer & other)
-  : impl_(other.impl_->clone())
   {
+    set_impl(other.impl_->clone());
   }
 
   /// Move constructor — the moved-from buffer is left in a valid, empty state.
   Buffer(Buffer && other) noexcept
-  : impl_(std::move(other.impl_))
   {
-    other.impl_ = std::make_unique<CpuBufferImpl<T>>();
+    set_impl(std::move(other.impl_));
+    other.set_impl(std::make_unique<CpuBufferImpl<T, Allocator>>());
   }
 
   /// Copy assignment (deep copy via clone())
   Buffer & operator=(const Buffer & other)
   {
     if (this != &other) {
-      impl_ = other.impl_->clone();
+      set_impl(other.impl_->clone());
     }
     return *this;
   }
@@ -131,8 +131,8 @@ public:
   Buffer & operator=(Buffer && other) noexcept
   {
     if (this != &other) {
-      impl_ = std::move(other.impl_);
-      other.impl_ = std::make_unique<CpuBufferImpl<T>>();
+      set_impl(std::move(other.impl_));
+      other.set_impl(std::make_unique<CpuBufferImpl<T, Allocator>>());
     }
     return *this;
   }
@@ -142,29 +142,29 @@ public:
   Buffer & operator=(std::initializer_list<T> init)
   {
     throw_if_not_cpu_backend();
-    get_cpu_impl()->get_storage() = init;
+    cpu_impl_->get_storage() = init;
     return *this;
   }
 
   /// Assignment from std::vector (copy) - for backward compatibility
   /// Uses SFINAE to avoid ambiguity with initializer lists
-  template<typename U = std::vector<T>,
-    typename std::enable_if<std::is_same<U, std::vector<T>>::value, int>::type = 0>
+  template<typename U = std::vector<T, Allocator>,
+    typename std::enable_if<std::is_same<U, std::vector<T, Allocator>>::value, int>::type = 0>
   Buffer & operator=(const U & vec)
   {
     throw_if_not_cpu_backend();
-    get_cpu_impl()->get_storage() = vec;
+    cpu_impl_->get_storage() = vec;
     return *this;
   }
 
   /// Assignment from std::vector (move) - for backward compatibility
   /// Uses SFINAE to avoid ambiguity with initializer lists
-  template<typename U = std::vector<T>,
-    typename std::enable_if<std::is_same<U, std::vector<T>>::value, int>::type = 0>
+  template<typename U = std::vector<T, Allocator>,
+    typename std::enable_if<std::is_same<U, std::vector<T, Allocator>>::value, int>::type = 0>
   Buffer & operator=(U && vec)
   {
     throw_if_not_cpu_backend();
-    get_cpu_impl()->get_storage() = std::move(vec);
+    cpu_impl_->get_storage() = std::move(vec);
     return *this;
   }
 
@@ -414,32 +414,36 @@ public:
 
   // ========== Conversion Operators ==========
 
-  /// Implicit conversion to std::vector<T>& (CPU only).
+  /// Implicit conversion to std::vector<T, Allocator>& (CPU only).
   /// Provides backward compatibility with existing code.
   /// @throws std::runtime_error if backend is not CPU.
-  operator std::vector<T> &()
+  operator std::vector<T, Allocator> &()
   {
     throw_if_not_cpu_backend();
-    return get_cpu_impl()->get_storage();
+    return cpu_impl_->get_storage();
   }
 
-  operator const std::vector<T> &() const
+  operator const std::vector<T, Allocator> &() const
   {
     throw_if_not_cpu_backend();
-    return get_cpu_impl()->get_storage();
+    return cpu_impl_->get_storage();
   }
 
-  /// Escape hatch: Explicit conversion to std::vector<T> (all backends).
+  /// Escape hatch: Explicit conversion to std::vector<T, Allocator> (all backends).
   /// For non-CPU backends, this triggers a copy to CPU memory.
   /// @return A std::vector containing a copy of the buffer data.
-  std::vector<T> to_vector() const
+  std::vector<T, Allocator> to_vector() const
   {
-    if (get_backend_type() == "cpu") {
-      return get_cpu_impl()->get_storage();
+    if (cpu_impl_) {
+      return cpu_impl_->get_storage();
+    }
+    auto cpu_copy = impl_->to_cpu();
+    auto * cpu = static_cast<CpuBufferImpl<T> *>(cpu_copy.get());
+    if constexpr (std::is_same_v<Allocator, std::allocator<T>>) {
+      return std::move(cpu->get_storage());
     } else {
-      auto cpu_impl_ptr = impl_->to_cpu();
-      auto * cpu_impl = static_cast<CpuBufferImpl<T> *>(cpu_impl_ptr.get());
-      return cpu_impl->get_storage();
+      auto & src = cpu->get_storage();
+      return std::vector<T, Allocator>(src.begin(), src.end());
     }
   }
 
@@ -450,8 +454,8 @@ public:
     if (size() != other.size()) {
       return false;
     }
-    if (get_backend_type() == "cpu" && other.get_backend_type() == "cpu") {
-      return get_cpu_impl()->get_storage() == other.get_cpu_impl()->get_storage();
+    if (cpu_impl_ && other.cpu_impl_) {
+      return cpu_impl_->get_storage() == other.cpu_impl_->get_storage();
     }
     return to_vector() == other.to_vector();
   }
@@ -479,10 +483,10 @@ public:
   /// @throws std::runtime_error if backend is not CPU.
   void throw_if_not_cpu_backend() const
   {
-    const std::string bt = get_backend_type();
-    if (bt != "cpu") {
+    if (!cpu_impl_) {
       throw std::runtime_error(
-              "Operation requires CPU backend. Current backend: " + bt +
+              "Operation requires CPU backend. Current backend: " +
+              impl_->get_backend_type() +
               ". Use to_vector() for explicit conversion to CPU.");
     }
   }
@@ -492,10 +496,21 @@ private:
   /// The implementation is the sole source of truth for the backend type.
   std::unique_ptr<BufferImplBase<T>> impl_;
 
-  /// Get CPU implementation (assumes throw_if_not_cpu_backend() was called)
-  CpuBufferImpl<T> * get_cpu_impl() const
+  /// Cached pointer for type-safe CPU backend detection.
+  /// Set by set_impl() via dynamic_cast; null for non-CPU backends.
+  CpuBufferImpl<T, Allocator> * cpu_impl_ = nullptr;
+
+  /// Set the implementation and update the cached CPU pointer.
+  void set_impl(std::unique_ptr<BufferImplBase<T>> impl)
   {
-    return static_cast<CpuBufferImpl<T> *>(impl_.get());
+    impl_ = std::move(impl);
+    cpu_impl_ = dynamic_cast<CpuBufferImpl<T, Allocator> *>(impl_.get());
+  }
+
+  /// Get CPU implementation (assumes throw_if_not_cpu_backend() was called)
+  CpuBufferImpl<T, Allocator> * get_cpu_impl() const
+  {
+    return cpu_impl_;
   }
 };
 

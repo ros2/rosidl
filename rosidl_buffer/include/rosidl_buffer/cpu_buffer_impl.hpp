@@ -26,17 +26,17 @@ namespace rosidl
 
 /// CPU buffer implementation wrapping std::vector.
 /// Provides the reference implementation for CPU memory buffers.
-template<typename T>
+template<typename T, typename Allocator = std::allocator<T>>
 class CpuBufferImpl : public BufferImplBase<T>
 {
 public:
   CpuBufferImpl() = default;
 
   /// Get mutable reference to underlying std::vector.
-  std::vector<T> & get_storage() {return storage_;}
+  std::vector<T, Allocator> & get_storage() {return storage_;}
 
   /// Get const reference to underlying std::vector.
-  const std::vector<T> & get_storage() const {return storage_;}
+  const std::vector<T, Allocator> & get_storage() const {return storage_;}
 
   // ========== BufferImplBase overrides ==========
 
@@ -51,13 +51,13 @@ public:
 
   std::unique_ptr<BufferImplBase<T>> clone() const override
   {
-    auto copy = std::make_unique<CpuBufferImpl<T>>();
+    auto copy = std::make_unique<CpuBufferImpl<T, Allocator>>();
     copy->storage_ = storage_;
     return copy;
   }
 
 private:
-  std::vector<T> storage_;
+  std::vector<T, Allocator> storage_;
 };
 
 }  // namespace rosidl

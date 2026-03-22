@@ -43,6 +43,24 @@ TEST(TestCHelpers, throw_if_not_cpu_throws_for_non_cpu_backend) {
   EXPECT_THROW(rosidl_buffer_uint8_throw_if_not_cpu(&buf), std::runtime_error);
 }
 
+// -- rosidl_buffer_uint8_destroy --
+
+TEST(TestCHelpers, destroy_null_is_noop) {
+  EXPECT_NO_THROW(rosidl_buffer_uint8_destroy(nullptr));
+}
+
+TEST(TestCHelpers, destroy_cpu_buffer) {
+  auto * buf = new Buffer<uint8_t>({1, 2, 3, 4, 5});
+  EXPECT_EQ(buf->size(), 5u);
+  rosidl_buffer_uint8_destroy(buf);
+}
+
+TEST(TestCHelpers, destroy_non_cpu_buffer) {
+  auto * buf = new Buffer<uint8_t>(std::make_unique<NonCpuBufferImpl<uint8_t>>(10));
+  EXPECT_EQ(buf->get_backend_type(), "non_cpu_test");
+  rosidl_buffer_uint8_destroy(buf);
+}
+
 int main(int argc, char ** argv)
 {
   testing::InitGoogleTest(&argc, argv);

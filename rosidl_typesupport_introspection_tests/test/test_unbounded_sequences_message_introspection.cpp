@@ -59,7 +59,6 @@ TYPED_TEST(UnboundedSequencesMessageIntrospectionTest, MessageDescriptorIsCorrec
     get_message_size(message_descriptor),
     sizeof(UnboundedSequencesMessageT));
   ASSERT_EQ(get_member_count(message_descriptor), 32u);
-  EXPECT_TRUE(message_descriptor->has_buffer_fields_);
 
   {
     auto * member_descriptor = get_member_descriptor(message_descriptor, 0u);

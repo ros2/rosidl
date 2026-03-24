@@ -136,7 +136,6 @@ template_prefix_path: List[pathlib.Path] = []
 
 
 def get_template_path(template_name: str) -> pathlib.Path:
-    global template_prefix_path
     for basepath in template_prefix_path:
         template_path = basepath / template_name
         if template_path.exists():
@@ -159,7 +158,6 @@ def expand_template(
         template_basepath = template_path.parent
         template_name = template_path.name
 
-    global template_prefix_path
     template_prefix_path.append(template_basepath)
     template_path = get_template_path(template_name)
 
@@ -237,7 +235,6 @@ def _add_helper_functions(data: Dict[str, Any]) -> None:
 
 
 def _expand_template(template_name: str, **kwargs: Any) -> None:
-    global interpreter
     template_path = get_template_path(template_name)
     _add_helper_functions(kwargs)
     if interpreter is None:

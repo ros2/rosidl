@@ -26,12 +26,14 @@
 #include <array>
 #include <cfloat>
 #include <climits>
+#include <cstddef>
 #include <cstdint>
 #include <string>
 #include <vector>
 
 #include "test_array_generator.hpp"
 
+#include "rosidl_runtime_cpp/deprecated_helper_byte.hpp"
 #include "rosidl_generator_tests/msg/arrays.hpp"
 #include "rosidl_generator_tests/msg/basic_types.hpp"
 #include "rosidl_generator_tests/msg/bounded_sequences.hpp"
@@ -151,6 +153,13 @@ TEST(Test_rosidl_generator_traits, has_bounded_size) {
   Message.FieldName = FinalValue; \
   ASSERT_EQ(FinalValue, Message.FieldName);
 
+#define TEST_BASIC_TYPE_DEPRECATED_FIELD_ASSIGNMENT(Message, FieldName, InitialValue, FinalValue, \
+    NewType) \
+  Message.FieldName = InitialValue; \
+  ASSERT_EQ(InitialValue, static_cast<NewType>(Message.FieldName)); \
+  Message.FieldName = FinalValue; \
+  ASSERT_EQ(FinalValue, static_cast<NewType>(Message.FieldName));
+
 #define TEST_STRING_FIELD_ASSIGNMENT(Message, FieldName, InitialValue, FinalValue) \
   Message.FieldName = InitialValue; \
   ASSERT_STREQ(InitialValue, Message.FieldName.c_str()); \
@@ -168,7 +177,8 @@ void test_message_basic_types(rosidl_generator_tests::msg::BasicTypes message)
 #ifdef __linux__
 #pragma GCC diagnostic pop
 #endif
-  TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, byte_value, 0, 255)
+  TEST_BASIC_TYPE_DEPRECATED_FIELD_ASSIGNMENT(message, byte_value, std::byte{0}, std::byte{255},
+    std::byte)
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, char_value, 0, UINT8_MAX)
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, float32_value, FLT_MIN, FLT_MAX)
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, float64_value, DBL_MIN, DBL_MAX)
@@ -211,8 +221,8 @@ void test_message_bounded(rosidl_generator_tests::msg::BoundedSequences message)
     message, char_values, unsigned char, SEQUENCE_SIZE, \
     0, UINT8_MAX)
   TEST_BOUNDED_SEQUENCE_TYPES(
-    message, byte_values, uint8_t, SEQUENCE_SIZE, \
-    0, UINT8_MAX)
+    message, byte_values, std::byte, SEQUENCE_SIZE, \
+    std::byte{0}, std::byte{UINT8_MAX})
   TEST_BOUNDED_SEQUENCE_TYPES(
     message, float32_values, float, SEQUENCE_SIZE, \
     FLT_MIN, FLT_MAX)
@@ -277,8 +287,8 @@ void test_message_unbounded(rosidl_generator_tests::msg::UnboundedSequences mess
     message, char_values, unsigned char, SEQUENCE_SIZE, \
     0, UINT8_MAX)
   TEST_UNBOUNDED_SEQUENCE_TYPES(
-    message, byte_values, uint8_t, SEQUENCE_SIZE, \
-    0, UINT8_MAX)
+    message, byte_values, std::byte, SEQUENCE_SIZE, \
+    std::byte{0}, std::byte{UINT8_MAX})
   TEST_UNBOUNDED_SEQUENCE_TYPES(
     message, float32_values, float, SEQUENCE_SIZE, \
     FLT_MIN, FLT_MAX)
@@ -331,8 +341,8 @@ void test_message_arrays(rosidl_generator_tests::msg::Arrays message)
     message, char_values, unsigned char, ARRAY_SIZE, \
     0, UINT8_MAX)
   TEST_ARRAY_TYPES(
-    message, byte_values, uint8_t, ARRAY_SIZE, \
-    0, UINT8_MAX)
+    message, byte_values, std::byte, ARRAY_SIZE, \
+    std::byte{0}, std::byte{UINT8_MAX})
   TEST_ARRAY_TYPES(
     message, float32_values, float, ARRAY_SIZE, \
     FLT_MIN, FLT_MAX)
@@ -463,7 +473,7 @@ TEST(Test_messages, unbounded_sequence_unbounded) {
 TEST(Test_messages, constants) {
   rosidl_generator_tests::msg::Constants message;
   ASSERT_EQ(true, message.BOOL_CONST);
-  ASSERT_EQ(50, message.BYTE_CONST);
+  ASSERT_EQ(std::byte{50}, static_cast<std::byte>(message.BYTE_CONST));
   ASSERT_EQ(100, message.CHAR_CONST);
   ASSERT_EQ(1.125f, message.FLOAT32_CONST);
   ASSERT_EQ(1.125, message.FLOAT64_CONST);
@@ -487,7 +497,8 @@ TEST(Test_messages, constants_assign) {
 TEST(Test_messages, defaults) {
   rosidl_generator_tests::msg::Defaults message;
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, bool_value, true, false);
-  TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, byte_value, 50, 255);
+  TEST_BASIC_TYPE_DEPRECATED_FIELD_ASSIGNMENT(message, byte_value, std::byte{50}, std::byte{255},
+    std::byte);
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, char_value, 100, UINT8_MAX);
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, float32_value, 1.125f, FLT_MAX);
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, float64_value, 1.125, DBL_MAX);

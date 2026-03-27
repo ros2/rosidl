@@ -13,6 +13,7 @@ from rosidl_parser.definition import EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import UnboundedSequence
+from rosidl_parser.definition import OCTET_TYPE
 
 message_namespace = '::'.join(message.structure.namespaced_type.namespaces)
 message_typename = '::'.join(message.structure.namespaced_type.namespaced_name())
@@ -93,8 +94,10 @@ inline void to_flow_style_yaml(
   {
 @[    if isinstance(member.type, BasicType)]@
     out << "@(member.name): ";
-@[      if member.type.typename in ('octet', 'char', 'wchar')]@
+@[      if member.type.typename in ('char', 'wchar')]@
     rosidl_generator_traits::character_value_to_yaml(msg.@(member.name), out);
+@[      elif member.type.typename == OCTET_TYPE]@
+    rosidl_generator_traits::value_to_yaml(static_cast<std::byte>(msg.@(member.name)), out);
 @[      else]@
     rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
 @[      end if]@
@@ -110,9 +113,14 @@ inline void to_flow_style_yaml(
     } else {
       out << "@(member.name): [";
       size_t pending_items = msg.@(member.name).size();
+@[      if isinstance(member.type.value_type, BasicType) and member.type.value_type.typename == OCTET_TYPE]@
+      for (size_t i = 0; i < msg.@(member.name).size(); i++) {
+        auto item = static_cast<std::byte>(msg.@(member.name)[i]);
+@[      else]@
       for (auto item : msg.@(member.name)) {
+@[      end if]@
 @[      if isinstance(member.type.value_type, BasicType)]@
-@[        if member.type.value_type.typename in ('octet', 'char', 'wchar')]@
+@[        if member.type.value_type.typename in ('char', 'wchar')]@
         rosidl_generator_traits::character_value_to_yaml(item, out);
 @[        else]@
         rosidl_generator_traits::value_to_yaml(item, out);
@@ -158,8 +166,10 @@ inline void to_block_style_yaml(
     }
 @[    if isinstance(member.type, BasicType)]@
     out << "@(member.name): ";
-@[      if member.type.typename in ('octet', 'char', 'wchar')]@
+@[      if member.type.typename in ('char', 'wchar')]@
     rosidl_generator_traits::character_value_to_yaml(msg.@(member.name), out);
+@[      elif member.type.typename == OCTET_TYPE]@
+    rosidl_generator_traits::value_to_yaml(static_cast<std::byte>(msg.@(member.name)), out);
 @[      else]@
     rosidl_generator_traits::value_to_yaml(msg.@(member.name), out);
 @[      end if]@
@@ -176,13 +186,18 @@ inline void to_block_style_yaml(
       out << "@(member.name): []\n";
     } else {
       out << "@(member.name):\n";
+@[      if isinstance(member.type.value_type, BasicType) and member.type.value_type.typename == OCTET_TYPE]@
+      for (size_t i = 0; i < msg.@(member.name).size(); i++) {
+        auto item = static_cast<std::byte>(msg.@(member.name)[i]);
+@[      else]@
       for (auto item : msg.@(member.name)) {
+@[      end if]@
         if (indentation > 0) {
           out << std::string(indentation, ' ');
         }
 @[      if isinstance(member.type.value_type, BasicType)]@
         out << "- ";
-@[        if member.type.value_type.typename in ('octet', 'char', 'wchar')]@
+@[        if member.type.value_type.typename in ('char', 'wchar')]@
         rosidl_generator_traits::character_value_to_yaml(item, out);
 @[        else]@
         rosidl_generator_traits::value_to_yaml(item, out);

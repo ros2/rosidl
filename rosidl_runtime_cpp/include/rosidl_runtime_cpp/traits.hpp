@@ -16,6 +16,7 @@
 #define ROSIDL_RUNTIME_CPP__TRAITS_HPP_
 
 #include <codecvt>
+#include <cstddef>
 #include <cstdint>
 #include <iomanip>
 #include <iosfwd>
@@ -38,11 +39,11 @@ inline void character_value_to_yaml(unsigned char value, std::ostream & out)
   out.flags(flags);
 }
 
-inline void character_value_to_yaml(char16_t value, std::ostream & out)
+inline void value_to_yaml(std::byte value, std::ostream & out)
 {
   auto flags = out.flags();
-  out << "\"\\u" << std::hex << std::setw(4) << std::setfill('0') << \
-    static_cast<uint_least16_t>(value) << "\"";
+  out << "0x" << std::hex << std::setw(2) << std::setfill('0') << \
+    std::to_integer<int>(value);
   out.flags(flags);
 }
 

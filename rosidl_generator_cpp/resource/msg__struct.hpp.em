@@ -241,13 +241,15 @@ non_defaulted_zero_initialized_members = [
 @[ else]@
   static constexpr @(MSG_TYPE_TO_CPP[constant.type.typename]) @(constant.name) =
 @[  if isinstance(constant.type, BasicType)]@
-@[   if constant.type.typename in (*INTEGER_TYPES, *CHARACTER_TYPES, BOOLEAN_TYPE, OCTET_TYPE)]@
+@[   if constant.type.typename in (*INTEGER_TYPES, *CHARACTER_TYPES, BOOLEAN_TYPE)]@
     @(int(constant.value))@
 @[    if constant.type.typename in UNSIGNED_INTEGER_TYPES]@
 u@
 @[    end if]@
 @[   elif constant.type.typename == 'float']@
     @(constant.value)f@
+@[   elif constant.type.typename == OCTET_TYPE]@
+    std::byte{@(constant.value)}@
 @[   else]@
     @(constant.value)@
 @[   end if];
@@ -307,7 +309,11 @@ u@
     (void)other;
 @[end if]@
 @[for member in message.structure.members]@
+@[  if isinstance(member.type, BasicType) and member.type.typename == OCTET_TYPE]@
+    if (static_cast<std::byte>(this->@(member.name)) != static_cast<std::byte>(other.@(member.name))) {
+@[  else]@
     if (this->@(member.name) != other.@(member.name)) {
+@[  end if]@
       return false;
     }
 @[end for]@

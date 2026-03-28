@@ -127,7 +127,7 @@ if(BUILD_TESTING)
   target_link_libraries(test_descriptions_c
     ${c_generator_target}
     rosidl_runtime_c::rosidl_runtime_c
-    ${type_description_interfaces_TARGETS}
+    type_description_interfaces::type_description_interfaces
   )
 
   ament_add_pytest_test(test_hash_generator test/rosidl_generator_type_description

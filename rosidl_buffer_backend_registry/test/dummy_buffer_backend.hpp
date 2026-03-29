@@ -93,6 +93,16 @@ public:
     return "dummy";
   }
 
+  const rosidl_message_type_support_t * get_descriptor_type_support() const override
+  {
+    return nullptr;
+  }
+
+  std::shared_ptr<void> create_empty_descriptor() const override
+  {
+    return nullptr;
+  }
+
   std::shared_ptr<void> create_descriptor_with_endpoint(
     const std::shared_ptr<void> & impl,
     const rmw_topic_endpoint_info_t & endpoint_info) const override

@@ -21,35 +21,22 @@
 #include "dummy_buffer_backend.hpp"
 
 using rosidl_buffer_backend_registry::BufferBackendRegistry;
-using rosidl_buffer_backend_registry::test::DummyBufferBackend;
 using rosidl_buffer_backend_registry::test::DummyBufferImpl;
 
-// Test getting singleton instance
-TEST(TestBufferBackendRegistry, get_instance) {
-  auto & registry1 = BufferBackendRegistry::get_instance();
-  auto & registry2 = BufferBackendRegistry::get_instance();
+// Test registries are ordinary context-owned objects.
+TEST(TestBufferBackendRegistry, independent_instances) {
+  auto registry1 = std::make_unique<BufferBackendRegistry>();
+  auto registry2 = std::make_unique<BufferBackendRegistry>();
 
-  // Should be the same instance
-  EXPECT_EQ(&registry1, &registry2);
+  ASSERT_NE(nullptr, registry1);
+  ASSERT_NE(nullptr, registry2);
+  EXPECT_NE(registry1.get(), registry2.get());
 }
 
-// Test registering and getting a backend
-TEST(TestBufferBackendRegistry, register_and_get_backend) {
-  auto & registry = BufferBackendRegistry::get_instance();
-
-  auto dummy_backend = std::make_shared<DummyBufferBackend>();
-  registry.register_backend("dummy_test", dummy_backend);
-
-  auto retrieved = registry.get_backend("dummy_test");
-  ASSERT_NE(nullptr, retrieved);
-  EXPECT_EQ(dummy_backend.get(), retrieved.get());
-}
-
-// Test getting non-existent backend
-TEST(TestBufferBackendRegistry, get_nonexistent_backend) {
-  auto & registry = BufferBackendRegistry::get_instance();
-
-  auto backend = registry.get_backend("nonexistent_backend_12345");
+// Test creating a non-existent backend instance
+TEST(TestBufferBackendRegistry, create_nonexistent_backend_instance) {
+  BufferBackendRegistry registry;
+  auto backend = registry.create_backend_instance("nonexistent_backend_12345");
   EXPECT_EQ(nullptr, backend);
 }
 

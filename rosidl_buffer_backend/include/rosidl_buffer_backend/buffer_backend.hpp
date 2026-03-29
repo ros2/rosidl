@@ -70,8 +70,9 @@ public:
   /// Create a BufferImpl from descriptor with endpoint awareness.
   /// @param descriptor Non-owning, type-erased descriptor message pointer (read-only).
   /// @param endpoint_info Endpoint info for the peer.
-  /// @return Type-erased BufferImplBase pointer.
-  virtual std::shared_ptr<void> from_descriptor_with_endpoint(
+  /// @return Type-erased unique pointer to a newly created BufferImplBase instance.
+  ///         The custom deleter ensures correct destruction across the plugin boundary.
+  virtual std::unique_ptr<void, void (*)(void *)> from_descriptor_with_endpoint(
     const void * descriptor,
     const rmw_topic_endpoint_info_t & endpoint_info) const = 0;
 

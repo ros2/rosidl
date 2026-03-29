@@ -36,8 +36,9 @@ struct BufferDescriptorOps
   /// Create buffer impl from descriptor with endpoint awareness.
   /// Input pointer (`descriptor`) is a non-owning, type-erased backend descriptor
   /// message (read-only).
-  /// Return value is a type-erased `BufferImplBase<T>` instance.
-  std::function<std::shared_ptr<void>(const void *,
+  /// Return value is a type-erased unique pointer to a newly created
+  /// `BufferImplBase<T>` instance.
+  std::function<std::unique_ptr<void, void (*)(void *)>(const void *,
     const rmw_topic_endpoint_info_t &)> from_descriptor_with_endpoint;
 };
 

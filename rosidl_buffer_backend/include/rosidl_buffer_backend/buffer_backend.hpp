@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "rmw/topic_endpoint_info.h"
+#include "rosidl_runtime_c/message_type_support_struct.h"
 
 namespace rosidl
 {
@@ -44,6 +45,14 @@ public:
   {
     return "";
   }
+
+  /// Get the descriptor message type support handle for this backend.
+  /// This must return a rosidl_typesupport_fastrtps_cpp handle.
+  virtual const rosidl_message_type_support_t * get_descriptor_type_support() const = 0;
+
+  /// Create an empty descriptor message instance for this backend.
+  /// The returned object must match get_descriptor_type_support().
+  virtual std::shared_ptr<void> create_empty_descriptor() const = 0;
 
   /// Create a descriptor message with endpoint awareness.
   /// @param impl Type-erased BufferImplBase pointer.

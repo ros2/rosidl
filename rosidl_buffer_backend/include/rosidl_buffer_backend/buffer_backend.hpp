@@ -30,6 +30,12 @@
 namespace rosidl
 {
 
+/// Upper bound (in bytes) on the serialized size of any buffer backend
+/// descriptor message. Backends must ensure that every descriptor produced
+/// by create_descriptor_with_endpoint() serializes to no more than this
+/// many bytes.
+inline constexpr size_t kMaxBufferDescriptorSize = 4096;
+
 /// Abstract interface for vendor-specific buffer backend implementations.
 class BufferBackend
 {
@@ -62,7 +68,8 @@ public:
   /// @return Type-erased descriptor message, or nullptr if the backend cannot
   ///         handle this endpoint (e.g., the peer does not support this backend).
   ///         Returning nullptr signals the serialization layer to fall back to
-  ///         CPU-based serialization.
+  ///         CPU-based serialization. The descriptor must not exceed
+  ///         kMaxBufferDescriptorSize bytes.
   virtual std::shared_ptr<void> create_descriptor_with_endpoint(
     const void * impl,
     const rmw_topic_endpoint_info_t & endpoint_info) const = 0;

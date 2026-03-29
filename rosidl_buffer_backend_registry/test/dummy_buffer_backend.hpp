@@ -104,20 +104,18 @@ public:
   }
 
   std::shared_ptr<void> create_descriptor_with_endpoint(
-    const std::shared_ptr<void> & impl,
+    const void * impl,
     const rmw_topic_endpoint_info_t & endpoint_info) const override
   {
-    // Return nullptr - not used in these tests
     (void)impl;
     (void)endpoint_info;
     return nullptr;
   }
 
   std::shared_ptr<void> from_descriptor_with_endpoint(
-    const std::shared_ptr<void> & descriptor,
+    const void * descriptor,
     const rmw_topic_endpoint_info_t & endpoint_info) const override
   {
-    // Return nullptr - not used in these tests
     (void)descriptor;
     (void)endpoint_info;
     return nullptr;

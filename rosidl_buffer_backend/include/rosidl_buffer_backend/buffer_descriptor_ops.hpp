@@ -27,15 +27,17 @@ namespace rosidl
 struct BufferDescriptorOps
 {
   /// Create descriptor with endpoint awareness.
-  /// Input pointer (`impl`) is a type-erased `BufferImplBase<T>` instance.
+  /// Input pointer (`impl`) is a non-owning, read-only, type-erased
+  /// `BufferImplBase<T>` instance.
   /// Return value is a type-erased backend descriptor message instance.
-  std::function<std::shared_ptr<void>(const std::shared_ptr<void> &,
+  std::function<std::shared_ptr<void>(const void *,
     const rmw_topic_endpoint_info_t &)> create_descriptor_with_endpoint;
 
   /// Create buffer impl from descriptor with endpoint awareness.
-  /// Input pointer (`descriptor`) is a type-erased backend descriptor message.
+  /// Input pointer (`descriptor`) is a non-owning, type-erased backend descriptor
+  /// message (read-only).
   /// Return value is a type-erased `BufferImplBase<T>` instance.
-  std::function<std::shared_ptr<void>(const std::shared_ptr<void> &,
+  std::function<std::shared_ptr<void>(const void *,
     const rmw_topic_endpoint_info_t &)> from_descriptor_with_endpoint;
 };
 

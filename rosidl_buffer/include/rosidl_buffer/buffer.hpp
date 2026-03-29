@@ -475,9 +475,11 @@ public:
     return impl_->get_backend_type();
   }
 
-  /// Get the implementation pointer (for serialization) - returns raw pointer
-  /// for read-only access
+  /// Get the implementation pointer (read-only).
   const BufferImplBase<T> * get_impl() const {return impl_.get();}
+
+  /// Get the implementation pointer (mutable, e.g. for descriptor creation).
+  BufferImplBase<T> * get_impl() {return impl_.get();}
 
   /// Throw exception if not CPU backend.
   /// @throws std::runtime_error if backend is not CPU.

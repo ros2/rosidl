@@ -55,22 +55,24 @@ public:
   virtual std::shared_ptr<void> create_empty_descriptor() const = 0;
 
   /// Create a descriptor message with endpoint awareness.
-  /// @param impl Type-erased BufferImplBase pointer.
+  /// @param impl Non-owning, type-erased BufferImplBase pointer (read-only).
+  ///        Backends that need internal bookkeeping (e.g. IPC handle setup,
+  ///        memory pinning) should use `mutable` members in their impl class.
   /// @param endpoint_info Endpoint info for the peer.
   /// @return Type-erased descriptor message, or nullptr if the backend cannot
   ///         handle this endpoint (e.g., the peer does not support this backend).
   ///         Returning nullptr signals the serialization layer to fall back to
   ///         CPU-based serialization.
   virtual std::shared_ptr<void> create_descriptor_with_endpoint(
-    const std::shared_ptr<void> & impl,
+    const void * impl,
     const rmw_topic_endpoint_info_t & endpoint_info) const = 0;
 
   /// Create a BufferImpl from descriptor with endpoint awareness.
-  /// @param descriptor Type-erased descriptor message pointer.
+  /// @param descriptor Non-owning, type-erased descriptor message pointer (read-only).
   /// @param endpoint_info Endpoint info for the peer.
   /// @return Type-erased BufferImplBase pointer.
   virtual std::shared_ptr<void> from_descriptor_with_endpoint(
-    const std::shared_ptr<void> & descriptor,
+    const void * descriptor,
     const rmw_topic_endpoint_info_t & endpoint_info) const = 0;
 
   /// Hook invoked when creating a local endpoint.

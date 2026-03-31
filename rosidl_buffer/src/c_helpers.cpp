@@ -14,6 +14,7 @@
 
 #include "rosidl_buffer/c_helpers.h"
 #include "rosidl_buffer/buffer.hpp"
+#include <cstdint>
 
 extern "C" {
 

@@ -93,10 +93,16 @@ PYBIND11_MODULE(_rosidl_buffer_py, m)
   // Internal helpers for generated _msg_support.c (plain C code).
   // These use uintptr_t because the C caller cannot unwrap pybind11 types.
 
+  // Returns a raw pointer to the underlying Buffer. Ownership is not
+  // transferred; the PyBuffer retains ownership and the pointer is only
+  // valid for the lifetime of this PyBuffer (borrow semantics).
   m.def("_get_buffer_ptr", [](PyBuffer & buf) -> uintptr_t {
       return reinterpret_cast<uintptr_t>(buf.get_raw_buffer());
     });
 
+  // Takes ownership of a heap-allocated Buffer<uint8_t>. The pointer
+  // must have been allocated with `new` so that the default `delete`
+  // deleter is valid. Ownership is transferred to the returned PyBuffer.
   m.def("_take_buffer_from_ptr", [](uintptr_t ptr) -> PyBuffer {
       auto * buf = reinterpret_cast<rosidl::Buffer<uint8_t> *>(ptr);
       auto shared_buf = std::shared_ptr<rosidl::Buffer<uint8_t>>(buf);

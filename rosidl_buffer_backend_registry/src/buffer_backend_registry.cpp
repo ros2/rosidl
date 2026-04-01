@@ -49,17 +49,17 @@ void BufferBackendRegistry::load_plugins()
   try {
     auto declared_classes = loader_->getDeclaredClasses();
     if (declared_classes.empty()) {
-      RCUTILS_LOG_INFO_NAMED(
+      RCUTILS_LOG_DEBUG_NAMED(
         "rosidl_buffer_backend_registry",
         "No buffer backend plugins found");
     } else {
-      RCUTILS_LOG_INFO_NAMED(
+      RCUTILS_LOG_DEBUG_NAMED(
         "rosidl_buffer_backend_registry",
         "Discovered %zu buffer backend plugin(s)",
         declared_classes.size());
       for (const auto & class_name : declared_classes) {
         plugin_backend_classes_.push_back(class_name);
-        RCUTILS_LOG_INFO_NAMED(
+        RCUTILS_LOG_DEBUG_NAMED(
           "rosidl_buffer_backend_registry",
           "Discovered buffer backend plugin class: %s",
           class_name.c_str());

@@ -26,7 +26,6 @@ array_typename = idl_structure_type_sequence_to_c_typename(
 @{
 from collections import OrderedDict
 includes = OrderedDict()
-
 for member in message.structure.members:
     if isinstance(member.type, AbstractSequence) and isinstance(member.type.value_type, BasicType):
         member_names = includes.setdefault(

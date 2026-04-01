@@ -12,6 +12,7 @@ endif()
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rosidl_buffer REQUIRED)
 find_package(rosidl_buffer_backend REQUIRED)
 find_package(rmw REQUIRED)
 find_package(rosidl_runtime_cpp REQUIRED)
@@ -74,6 +75,7 @@ if(BUILD_TESTING)
     )
     target_link_libraries(test_buffer_backend_registry
       ${PROJECT_NAME}
+      rosidl_buffer::rosidl_buffer
       rosidl_buffer_backend::rosidl_buffer_backend
       rmw::rmw
       rosidl_runtime_cpp::rosidl_runtime_cpp

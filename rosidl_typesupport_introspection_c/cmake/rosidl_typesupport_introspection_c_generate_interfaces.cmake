@@ -22,6 +22,7 @@ find_package(rosidl_cmake REQUIRED)
 find_package(rosidl_runtime_c REQUIRED)
 find_package(rosidl_typesupport_interface REQUIRED)
 find_package(rosidl_typesupport_introspection_c REQUIRED)
+find_package(rosidl_buffer REQUIRED)
 
 set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_introspection_c/${PROJECT_NAME}")
@@ -152,7 +153,8 @@ target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} PUBL
 target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} PUBLIC
   rosidl_runtime_c::rosidl_runtime_c
   rosidl_typesupport_interface::rosidl_typesupport_interface
-  rosidl_typesupport_introspection_c::rosidl_typesupport_introspection_c)
+  rosidl_typesupport_introspection_c::rosidl_typesupport_introspection_c
+  rosidl_buffer::rosidl_buffer)
 
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   target_link_libraries(

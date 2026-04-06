@@ -25,6 +25,8 @@
     TYPE_NAME * data; /*!< The pointer to an array of STRUCT_NAME */ \
     size_t size; /*!< The number of valid items in data */ \
     size_t capacity; /*!< The number of allocated items in data */ \
+    bool is_rosidl_buffer; /*!< When true, data points to an rosidl::Buffer<T>* */ \
+    bool owns_rosidl_buffer; /*!< When true, Sequence__fini will destroy the Buffer */ \
   } rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence;
 
 // sequence types for all basic types

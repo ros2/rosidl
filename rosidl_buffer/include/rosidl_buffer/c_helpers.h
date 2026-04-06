@@ -22,9 +22,26 @@ extern "C" {
 #endif
 
 /// Throw std::runtime_error if the buffer is not CPU-backed.
-/// @param buffer_ptr Opaque pointer to an rosidl::Buffer<uint8_t>
+/**
+ * \param[in] buffer_ptr Opaque pointer to an rosidl::Buffer<uint8_t>
+ */
 ROSIDL_BUFFER_PUBLIC
 void rosidl_buffer_uint8_throw_if_not_cpu(const void * buffer_ptr);
+
+/// Destroy a heap-allocated rosidl::Buffer<uint8_t>.
+/**
+ * This is the canonical destruction function for Buffer pointers that were
+ * created with `new rosidl::Buffer<uint8_t>()` during deserialization.
+ * The virtual destructor chain in BufferImplBase ensures backend-specific
+ * cleanup (e.g. GPU memory) happens automatically.
+ *
+ * Safe to call with NULL (no-op).
+ *
+ * \param[in] buffer_ptr Opaque pointer to a heap-allocated rosidl::Buffer<uint8_t>,
+ *   or NULL.
+ */
+ROSIDL_BUFFER_PUBLIC
+void rosidl_buffer_uint8_destroy(void * buffer_ptr);
 
 #ifdef __cplusplus
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>rosidl_buffer_py</name>
+  <version>5.1.2</version>
+  <description>
+    Python bindings for rosidl::Buffer, providing a Buffer class that
+    supports vendor-specific memory backends (CPU, GPU, custom) for rclpy users.
+  </description>
+
+  <maintainer email="cyc@nvidia.com">CY Chen</maintainer>
+
+  <license>Apache License 2.0</license>
+
+  <author email="cyc@nvidia.com">CY Chen</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+
+  <depend>rosidl_buffer</depend>
+
+  <build_depend>pybind11</build_depend>
+  <build_depend>python3-dev</build_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <member_of_group>rosidl_runtime_packages</member_of_group>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

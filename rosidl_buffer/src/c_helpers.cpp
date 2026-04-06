@@ -26,4 +26,11 @@ void rosidl_buffer_uint8_throw_if_not_cpu(const void * buffer_ptr)
   buf->throw_if_not_cpu_backend();
 }
 
+void rosidl_buffer_uint8_destroy(void * buffer_ptr)
+{
+  if (buffer_ptr) {
+    delete static_cast<rosidl::Buffer<uint8_t> *>(buffer_ptr);
+  }
+}
+
 }  // extern "C"

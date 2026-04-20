@@ -52,8 +52,12 @@ public:
     return "";
   }
 
-  /// Get the descriptor message type support handle for this backend.
-  /// This must return a rosidl_typesupport_fastrtps_cpp handle.
+  /// Get the message type support handle for this backend's descriptor type.
+  /// Implementations should return the generic aggregate handle, typically via
+  /// `rosidl_typesupport_cpp::get_message_type_support_handle<YourDescriptor>()`.
+  /// The consuming RMW resolves this aggregate to the concrete per-typesupport
+  /// library handle it needs at runtime (e.g. rosidl_typesupport_fastrtps_cpp),
+  /// so the plugin itself stays RMW-agnostic.
   virtual const rosidl_message_type_support_t * get_descriptor_type_support() const = 0;
 
   /// Create an empty descriptor message instance for this backend.

@@ -346,6 +346,153 @@ TEST(TestBuffer, shrink_to_fit) {
   EXPECT_LE(buffer.capacity(), 100u);
 }
 
+// Test member swap between two Buffers (CPU)
+TEST(TestBuffer, swap_member_buffer_buffer) {
+  Buffer<uint8_t> a{1, 2, 3};
+  Buffer<uint8_t> b{10, 20};
+
+  const uint8_t * a_data_before = a.data();
+  const uint8_t * b_data_before = b.data();
+
+  a.swap(b);
+
+  EXPECT_EQ(2u, a.size());
+  EXPECT_EQ(10, a[0]);
+  EXPECT_EQ(20, a[1]);
+
+  EXPECT_EQ(3u, b.size());
+  EXPECT_EQ(1, b[0]);
+  EXPECT_EQ(2, b[1]);
+  EXPECT_EQ(3, b[2]);
+
+  // std::vector::swap semantics: underlying storage pointers are swapped,
+  // not the elements copied — so data pointers should swap identities.
+  EXPECT_EQ(b_data_before, a.data());
+  EXPECT_EQ(a_data_before, b.data());
+}
+
+// Test self-swap is a no-op
+TEST(TestBuffer, swap_member_self) {
+  Buffer<uint8_t> a{1, 2, 3};
+  a.swap(a);
+  EXPECT_EQ(3u, a.size());
+  EXPECT_EQ(1, a[0]);
+  EXPECT_EQ(2, a[1]);
+  EXPECT_EQ(3, a[2]);
+}
+
+// Test member swap: Buffer with std::vector
+TEST(TestBuffer, swap_member_buffer_vector) {
+  Buffer<uint8_t> buf{1, 2, 3};
+  std::vector<uint8_t> vec{100, 101};
+
+  buf.swap(vec);
+
+  EXPECT_EQ(2u, buf.size());
+  EXPECT_EQ(100, buf[0]);
+  EXPECT_EQ(101, buf[1]);
+
+  EXPECT_EQ(3u, vec.size());
+  EXPECT_EQ(1, vec[0]);
+  EXPECT_EQ(2, vec[1]);
+  EXPECT_EQ(3, vec[2]);
+}
+
+// Test vector::swap(Buffer) works via implicit conversion operator
+TEST(TestBuffer, swap_vector_member_with_buffer) {
+  Buffer<uint8_t> buf{1, 2, 3};
+  std::vector<uint8_t> vec{100, 101};
+
+  // std::vector::swap takes vector&, Buffer's operator std::vector<T,A>&()
+  // provides the needed implicit conversion.
+  vec.swap(buf);
+
+  EXPECT_EQ(2u, buf.size());
+  EXPECT_EQ(100, buf[0]);
+  EXPECT_EQ(101, buf[1]);
+
+  EXPECT_EQ(3u, vec.size());
+  EXPECT_EQ(1, vec[0]);
+  EXPECT_EQ(2, vec[1]);
+  EXPECT_EQ(3, vec[2]);
+}
+
+// Test non-member swap resolved via ADL (the "using std::swap" idiom)
+TEST(TestBuffer, swap_non_member_adl_buffer_buffer) {
+  Buffer<uint8_t> a{1, 2, 3};
+  Buffer<uint8_t> b{10, 20};
+
+  using std::swap;
+  swap(a, b);   // should resolve to rosidl::swap via ADL
+
+  EXPECT_EQ(2u, a.size());
+  EXPECT_EQ(10, a[0]);
+  EXPECT_EQ(3u, b.size());
+  EXPECT_EQ(1, b[0]);
+}
+
+// Test non-member ADL swap: Buffer <-> std::vector (both directions)
+TEST(TestBuffer, swap_non_member_adl_mixed) {
+  Buffer<uint8_t> buf{1, 2, 3};
+  std::vector<uint8_t> vec{100, 101};
+
+  using std::swap;
+  swap(buf, vec);   // rosidl::swap(Buffer&, std::vector&)
+
+  EXPECT_EQ(2u, buf.size());
+  EXPECT_EQ(100, buf[0]);
+  EXPECT_EQ(3u, vec.size());
+  EXPECT_EQ(1, vec[0]);
+
+  swap(vec, buf);   // rosidl::swap(std::vector&, Buffer&)
+
+  EXPECT_EQ(3u, buf.size());
+  EXPECT_EQ(1, buf[0]);
+  EXPECT_EQ(2u, vec.size());
+  EXPECT_EQ(100, vec[0]);
+}
+
+// Test that std::swap (qualified) still works on Buffers via move fallback.
+// This does not use our specialized swap, but should still be correct
+// because Buffer has a noexcept move ctor and move assignment.
+TEST(TestBuffer, swap_qualified_std_swap) {
+  Buffer<uint8_t> a{1, 2, 3};
+  Buffer<uint8_t> b{10, 20};
+
+  std::swap(a, b);
+
+  EXPECT_EQ(2u, a.size());
+  EXPECT_EQ(10, a[0]);
+  EXPECT_EQ(3u, b.size());
+  EXPECT_EQ(1, b[0]);
+}
+
+// Test std::is_nothrow_swappable_v reports true, matching std::vector.
+TEST(TestBuffer, swap_is_noexcept) {
+  static_assert(
+    std::is_nothrow_swappable_v<Buffer<uint8_t>>,
+    "rosidl::Buffer should be nothrow-swappable to match std::vector");
+  SUCCEED();
+}
+
+// Test swap used by generic STL algorithm (via ADL internally).
+TEST(TestBuffer, swap_used_by_std_algorithm) {
+  std::vector<Buffer<uint8_t>> buffers;
+  buffers.emplace_back(std::initializer_list<uint8_t>{3});
+  buffers.emplace_back(std::initializer_list<uint8_t>{1});
+  buffers.emplace_back(std::initializer_list<uint8_t>{2});
+
+  std::sort(
+    buffers.begin(), buffers.end(),
+    [](const Buffer<uint8_t> & lhs, const Buffer<uint8_t> & rhs) {
+      return lhs[0] < rhs[0];
+    });
+
+  EXPECT_EQ(1, buffers[0][0]);
+  EXPECT_EQ(2, buffers[1][0]);
+  EXPECT_EQ(3, buffers[2][0]);
+}
+
 // Test implicit conversion to std::vector&
 TEST(TestBuffer, implicit_conversion_to_vector) {
   Buffer<uint8_t> buffer;

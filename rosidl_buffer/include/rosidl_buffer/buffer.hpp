@@ -412,6 +412,19 @@ public:
     get_cpu_impl()->get_storage().emplace_back(std::forward<Args>(args)...);
   }
 
+  void swap(Buffer & other) noexcept
+  {
+    throw_if_not_cpu_backend();
+    other.throw_if_not_cpu_backend();
+    cpu_impl_->get_storage().swap(other.cpu_impl_->get_storage());
+  }
+
+  void swap(std::vector<T, Allocator> & vec) noexcept
+  {
+    throw_if_not_cpu_backend();
+    cpu_impl_->get_storage().swap(vec);
+  }
+
   // ========== Conversion Operators ==========
 
   /// Implicit conversion to std::vector<T, Allocator>& (CPU only).
@@ -543,6 +556,24 @@ template<typename T, typename Allocator>
 bool operator!=(const Buffer<T, Allocator> & lhs, const std::vector<T, Allocator> & rhs)
 {
   return !(lhs == rhs);
+}
+
+template<typename T, typename Allocator>
+void swap(Buffer<T, Allocator> & lhs, Buffer<T, Allocator> & rhs) noexcept
+{
+  lhs.swap(rhs);
+}
+
+template<typename T, typename Allocator>
+void swap(Buffer<T, Allocator> & lhs, std::vector<T, Allocator> & rhs) noexcept
+{
+  lhs.swap(rhs);
+}
+
+template<typename T, typename Allocator>
+void swap(std::vector<T, Allocator> & lhs, Buffer<T, Allocator> & rhs) noexcept
+{
+  rhs.swap(lhs);
 }
 
 }  // namespace rosidl

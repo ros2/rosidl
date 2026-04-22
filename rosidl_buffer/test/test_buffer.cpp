@@ -194,6 +194,72 @@ TEST(TestBuffer, iterators) {
   EXPECT_EQ(6, const_sum);
 }
 
+// Test reverse iterators
+TEST(TestBuffer, reverse_iterators) {
+  Buffer<uint8_t> buffer{1, 2, 3, 4, 5};
+
+  std::vector<uint8_t> reversed;
+  for (auto it = buffer.rbegin(); it != buffer.rend(); ++it) {
+    reversed.push_back(*it);
+  }
+  ASSERT_EQ(5u, reversed.size());
+  EXPECT_EQ(5, reversed[0]);
+  EXPECT_EQ(4, reversed[1]);
+  EXPECT_EQ(3, reversed[2]);
+  EXPECT_EQ(2, reversed[3]);
+  EXPECT_EQ(1, reversed[4]);
+
+  // rbegin/rend are mutable
+  *buffer.rbegin() = 99;
+  EXPECT_EQ(99, buffer.back());
+}
+
+// Test const reverse iterators via crbegin/crend
+TEST(TestBuffer, const_reverse_iterators) {
+  Buffer<uint8_t> buffer{10, 20, 30};
+  const Buffer<uint8_t> & cbuffer = buffer;
+
+  std::vector<uint8_t> reversed;
+  for (auto it = cbuffer.rbegin(); it != cbuffer.rend(); ++it) {
+    reversed.push_back(*it);
+  }
+  EXPECT_EQ(30, reversed[0]);
+  EXPECT_EQ(20, reversed[1]);
+  EXPECT_EQ(10, reversed[2]);
+
+  // crbegin/crend
+  reversed.clear();
+  for (auto it = buffer.crbegin(); it != buffer.crend(); ++it) {
+    reversed.push_back(*it);
+  }
+  EXPECT_EQ(30, reversed[0]);
+  EXPECT_EQ(20, reversed[1]);
+  EXPECT_EQ(10, reversed[2]);
+
+  // Type check: crbegin returns const_reverse_iterator
+  static_assert(
+    std::is_same_v<
+      decltype(buffer.crbegin()),
+      Buffer<uint8_t>::const_reverse_iterator>,
+    "crbegin must return const_reverse_iterator");
+  static_assert(
+    std::is_same_v<
+      decltype(buffer.crend()),
+      Buffer<uint8_t>::const_reverse_iterator>,
+    "crend must return const_reverse_iterator");
+}
+
+// Test reverse iterators work with std::reverse
+TEST(TestBuffer, reverse_iterators_with_std_reverse) {
+  Buffer<uint8_t> buffer{1, 2, 3, 4, 5};
+  std::reverse(buffer.begin(), buffer.end());
+  EXPECT_EQ(5, buffer[0]);
+  EXPECT_EQ(4, buffer[1]);
+  EXPECT_EQ(3, buffer[2]);
+  EXPECT_EQ(2, buffer[3]);
+  EXPECT_EQ(1, buffer[4]);
+}
+
 // Test resize
 TEST(TestBuffer, resize) {
   Buffer<uint8_t> buffer(5, 10);
@@ -265,6 +331,96 @@ TEST(TestBuffer, emplace_back) {
   EXPECT_EQ(2u, buffer.size());
   EXPECT_EQ(0xFF, buffer[0]);
   EXPECT_EQ(0x00, buffer[1]);
+}
+
+// Test emplace_back returns reference
+TEST(TestBuffer, emplace_back_returns_reference) {
+  Buffer<std::string> buffer;
+  std::string & ref = buffer.emplace_back("hello");
+  EXPECT_EQ("hello", ref);
+  EXPECT_EQ(&ref, &buffer.back());
+
+  ref = "modified";
+  EXPECT_EQ("modified", buffer.back());
+
+  static_assert(
+    std::is_same_v<
+      decltype(buffer.emplace_back("x")),
+      std::string &>,
+    "emplace_back must return reference");
+}
+
+// Test positional emplace at begin/middle/end
+TEST(TestBuffer, emplace_positional) {
+  Buffer<std::string> buffer;
+  buffer.push_back("b");
+  buffer.push_back("d");
+
+  auto it_begin = buffer.emplace(buffer.begin(), "a");
+  EXPECT_EQ("a", *it_begin);
+  EXPECT_EQ(buffer.begin(), it_begin);
+
+  auto it_mid = buffer.emplace(buffer.begin() + 2, "c");
+  EXPECT_EQ("c", *it_mid);
+
+  auto it_end = buffer.emplace(buffer.end(), "e");
+  EXPECT_EQ("e", *it_end);
+
+  ASSERT_EQ(5u, buffer.size());
+  EXPECT_EQ("a", buffer[0]);
+  EXPECT_EQ("b", buffer[1]);
+  EXPECT_EQ("c", buffer[2]);
+  EXPECT_EQ("d", buffer[3]);
+  EXPECT_EQ("e", buffer[4]);
+}
+
+// Test erase single element — beginning, middle, end
+TEST(TestBuffer, erase_single) {
+  Buffer<uint8_t> buffer{1, 2, 3, 4, 5};
+
+  // Erase middle: returns iterator to the element that followed it.
+  auto it = buffer.erase(buffer.begin() + 2);
+  ASSERT_EQ(4u, buffer.size());
+  EXPECT_EQ(4, *it);
+  EXPECT_EQ(1, buffer[0]);
+  EXPECT_EQ(2, buffer[1]);
+  EXPECT_EQ(4, buffer[2]);
+  EXPECT_EQ(5, buffer[3]);
+
+  // Erase beginning
+  it = buffer.erase(buffer.begin());
+  EXPECT_EQ(2, *it);
+  EXPECT_EQ(3u, buffer.size());
+  EXPECT_EQ(2, buffer[0]);
+
+  // Erase last — returned iterator equals end()
+  it = buffer.erase(buffer.end() - 1);
+  EXPECT_EQ(buffer.end(), it);
+  EXPECT_EQ(2u, buffer.size());
+}
+
+// Test erase range
+TEST(TestBuffer, erase_range) {
+  Buffer<uint8_t> buffer{1, 2, 3, 4, 5, 6};
+
+  // Erase middle range [2, 4) -> removes 3, 4
+  auto it = buffer.erase(buffer.begin() + 2, buffer.begin() + 4);
+  ASSERT_EQ(4u, buffer.size());
+  EXPECT_EQ(5, *it);
+  EXPECT_EQ(1, buffer[0]);
+  EXPECT_EQ(2, buffer[1]);
+  EXPECT_EQ(5, buffer[2]);
+  EXPECT_EQ(6, buffer[3]);
+
+  // Empty range is a no-op
+  auto it2 = buffer.erase(buffer.begin() + 1, buffer.begin() + 1);
+  EXPECT_EQ(4u, buffer.size());
+  EXPECT_EQ(2, *it2);
+
+  // Erase all
+  auto it3 = buffer.erase(buffer.begin(), buffer.end());
+  EXPECT_EQ(0u, buffer.size());
+  EXPECT_EQ(buffer.end(), it3);
 }
 
 // Test assign with count and value
@@ -491,6 +647,56 @@ TEST(TestBuffer, swap_used_by_std_algorithm) {
   EXPECT_EQ(1, buffers[0][0]);
   EXPECT_EQ(2, buffers[1][0]);
   EXPECT_EQ(3, buffers[2][0]);
+}
+
+// ========== Group 3: operator<=> and comparisons ==========
+
+// Test equality between Buffers
+TEST(TestBuffer, equality_buffer_buffer) {
+  Buffer<uint8_t> a{1, 2, 3};
+  Buffer<uint8_t> b{1, 2, 3};
+  Buffer<uint8_t> c{1, 2, 4};
+  Buffer<uint8_t> d{1, 2};
+
+  EXPECT_EQ(a, b);
+  EXPECT_NE(a, c);
+  EXPECT_NE(a, d);
+}
+
+// Test equality between Buffer and std::vector (both directions)
+TEST(TestBuffer, equality_buffer_vector) {
+  Buffer<uint8_t> buf{1, 2, 3};
+  std::vector<uint8_t> vec_eq{1, 2, 3};
+  std::vector<uint8_t> vec_neq{1, 2, 4};
+
+  EXPECT_EQ(buf, vec_eq);
+  EXPECT_EQ(vec_eq, buf);
+
+  EXPECT_NE(buf, vec_neq);
+  EXPECT_NE(vec_neq, buf);
+}
+
+// ========== Group 4: max_size, get_allocator ==========
+
+TEST(TestBuffer, max_size) {
+  Buffer<uint8_t> buffer;
+  // max_size is implementation-defined but must be > 0 and >= size().
+  EXPECT_GT(buffer.max_size(), 0u);
+  buffer.resize(16);
+  EXPECT_GE(buffer.max_size(), buffer.size());
+}
+
+TEST(TestBuffer, get_allocator) {
+  Buffer<uint8_t> buffer;
+  auto alloc = buffer.get_allocator();
+  // std::allocator<uint8_t> instances always compare equal.
+  EXPECT_EQ(alloc, std::allocator<uint8_t>{});
+
+  static_assert(
+    std::is_same_v<
+      decltype(buffer.get_allocator()),
+      Buffer<uint8_t>::allocator_type>,
+    "get_allocator must return allocator_type");
 }
 
 // Test implicit conversion to std::vector&
@@ -748,6 +954,11 @@ TEST(TestBufferNonCpu, modifiers_throw) {
   EXPECT_THROW(buffer.push_back(1), std::runtime_error);
   EXPECT_THROW(buffer.pop_back(), std::runtime_error);
   EXPECT_THROW(buffer.emplace_back(1), std::runtime_error);
+
+  using ConstIt = Buffer<uint8_t>::const_iterator;
+  EXPECT_THROW(buffer.erase(ConstIt{}), std::runtime_error);
+  EXPECT_THROW(buffer.erase(ConstIt{}, ConstIt{}), std::runtime_error);
+  EXPECT_THROW(buffer.emplace(ConstIt{}, 1), std::runtime_error);
 }
 
 TEST(TestBufferNonCpu, capacity_throws) {
@@ -757,6 +968,23 @@ TEST(TestBufferNonCpu, capacity_throws) {
   EXPECT_THROW(buffer.reserve(10), std::runtime_error);
   EXPECT_THROW(buffer.capacity(), std::runtime_error);
   EXPECT_THROW(buffer.shrink_to_fit(), std::runtime_error);
+  EXPECT_THROW(buffer.max_size(), std::runtime_error);
+  EXPECT_THROW(buffer.get_allocator(), std::runtime_error);
+}
+
+TEST(TestBufferNonCpu, reverse_iterators_throw) {
+  auto impl = std::make_unique<NonCpuBufferImpl<uint8_t>>(4);
+  Buffer<uint8_t> buffer(std::move(impl));
+
+  EXPECT_THROW(buffer.rbegin(), std::runtime_error);
+  EXPECT_THROW(buffer.rend(), std::runtime_error);
+  EXPECT_THROW(buffer.crbegin(), std::runtime_error);
+  EXPECT_THROW(buffer.crend(), std::runtime_error);
+
+  auto impl2 = std::make_unique<NonCpuBufferImpl<uint8_t>>(4);
+  const Buffer<uint8_t> cbuffer(std::move(impl2));
+  EXPECT_THROW(cbuffer.rbegin(), std::runtime_error);
+  EXPECT_THROW(cbuffer.rend(), std::runtime_error);
 }
 
 TEST(TestBufferNonCpu, implicit_conversion_throws) {
@@ -781,6 +1009,62 @@ TEST(TestBufferNonCpu, to_vector_works) {
 
   std::vector<uint8_t> vec = buffer.to_vector();
   EXPECT_EQ(3u, vec.size());
+}
+
+// ========== Non-CPU swap death tests ==========
+//
+// Every swap entry point is declared noexcept to match std::vector::swap's
+// noexcept contract and preserve std::is_nothrow_swappable_v<Buffer>.
+// Calling swap on a non-CPU backend is therefore a precondition violation:
+// throw_if_not_cpu_backend() throws a std::runtime_error which escapes the
+// noexcept function and invokes std::terminate().
+
+TEST(TestBufferNonCpuDeathTest, member_swap_buffer_terminates) {
+  ::testing::FLAGS_gtest_death_test_style = "threadsafe";
+  auto impl_a = std::make_unique<NonCpuBufferImpl<uint8_t>>(4);
+  Buffer<uint8_t> a(std::move(impl_a));
+  Buffer<uint8_t> b{1, 2, 3};
+  EXPECT_DEATH({a.swap(b);}, "CPU backend");
+}
+
+TEST(TestBufferNonCpuDeathTest, member_swap_buffer_other_side_terminates) {
+  ::testing::FLAGS_gtest_death_test_style = "threadsafe";
+  Buffer<uint8_t> a{1, 2, 3};
+  auto impl_b = std::make_unique<NonCpuBufferImpl<uint8_t>>(4);
+  Buffer<uint8_t> b(std::move(impl_b));
+  EXPECT_DEATH({a.swap(b);}, "CPU backend");
+}
+
+TEST(TestBufferNonCpuDeathTest, member_swap_vector_terminates) {
+  ::testing::FLAGS_gtest_death_test_style = "threadsafe";
+  auto impl = std::make_unique<NonCpuBufferImpl<uint8_t>>(4);
+  Buffer<uint8_t> buf(std::move(impl));
+  std::vector<uint8_t> vec{1, 2, 3};
+  EXPECT_DEATH({buf.swap(vec);}, "CPU backend");
+}
+
+TEST(TestBufferNonCpuDeathTest, free_swap_buffer_buffer_terminates) {
+  ::testing::FLAGS_gtest_death_test_style = "threadsafe";
+  auto impl_a = std::make_unique<NonCpuBufferImpl<uint8_t>>(4);
+  Buffer<uint8_t> a(std::move(impl_a));
+  Buffer<uint8_t> b{1, 2, 3};
+  EXPECT_DEATH({using std::swap; swap(a, b);}, "CPU backend");
+}
+
+TEST(TestBufferNonCpuDeathTest, free_swap_buffer_vector_terminates) {
+  ::testing::FLAGS_gtest_death_test_style = "threadsafe";
+  auto impl = std::make_unique<NonCpuBufferImpl<uint8_t>>(4);
+  Buffer<uint8_t> buf(std::move(impl));
+  std::vector<uint8_t> vec{1, 2, 3};
+  EXPECT_DEATH({using std::swap; swap(buf, vec);}, "CPU backend");
+}
+
+TEST(TestBufferNonCpuDeathTest, free_swap_vector_buffer_terminates) {
+  ::testing::FLAGS_gtest_death_test_style = "threadsafe";
+  auto impl = std::make_unique<NonCpuBufferImpl<uint8_t>>(4);
+  Buffer<uint8_t> buf(std::move(impl));
+  std::vector<uint8_t> vec{1, 2, 3};
+  EXPECT_DEATH({using std::swap; swap(vec, buf);}, "CPU backend");
 }
 
 int main(int argc, char ** argv)

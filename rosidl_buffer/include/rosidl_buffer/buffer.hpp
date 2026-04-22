@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <initializer_list>
+#include <iterator>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -48,10 +49,12 @@ public:
   using difference_type = std::ptrdiff_t;
   using reference = T &;
   using const_reference = const T &;
-  using pointer = T *;
-  using const_pointer = const T *;
-  using iterator = T *;
-  using const_iterator = const T *;
+  using pointer = typename std::vector<T, Allocator>::pointer;
+  using const_pointer = typename std::vector<T, Allocator>::const_pointer;
+  using iterator = typename std::vector<T, Allocator>::iterator;
+  using const_iterator = typename std::vector<T, Allocator>::const_iterator;
+  using reverse_iterator = typename std::vector<T, Allocator>::reverse_iterator;
+  using const_reverse_iterator = typename std::vector<T, Allocator>::const_reverse_iterator;
 
   /// Default constructor creates CPU buffer
   Buffer()
@@ -240,40 +243,67 @@ public:
   iterator begin()
   {
     throw_if_not_cpu_backend();
-    return get_cpu_impl()->get_storage().data();
+    return get_cpu_impl()->get_storage().begin();
   }
 
   const_iterator begin() const
   {
     throw_if_not_cpu_backend();
-    return get_cpu_impl()->get_storage().data();
+    return get_cpu_impl()->get_storage().begin();
   }
 
   const_iterator cbegin() const
   {
     throw_if_not_cpu_backend();
-    return get_cpu_impl()->get_storage().data();
+    return get_cpu_impl()->get_storage().cbegin();
   }
 
   iterator end()
   {
     throw_if_not_cpu_backend();
-    auto & s = get_cpu_impl()->get_storage();
-    return s.data() + s.size();
+    return get_cpu_impl()->get_storage().end();
   }
 
   const_iterator end() const
   {
     throw_if_not_cpu_backend();
-    auto & s = get_cpu_impl()->get_storage();
-    return s.data() + s.size();
+    return get_cpu_impl()->get_storage().end();
   }
 
   const_iterator cend() const
   {
     throw_if_not_cpu_backend();
-    auto & s = get_cpu_impl()->get_storage();
-    return s.data() + s.size();
+    return get_cpu_impl()->get_storage().cend();
+  }
+
+  reverse_iterator rbegin()
+  {
+    return reverse_iterator(end());
+  }
+
+  const_reverse_iterator rbegin() const
+  {
+    return const_reverse_iterator(end());
+  }
+
+  const_reverse_iterator crbegin() const
+  {
+    return const_reverse_iterator(cend());
+  }
+
+  reverse_iterator rend()
+  {
+    return reverse_iterator(begin());
+  }
+
+  const_reverse_iterator rend() const
+  {
+    return const_reverse_iterator(begin());
+  }
+
+  const_reverse_iterator crend() const
+  {
+    return const_reverse_iterator(cbegin());
   }
 
   // ========== Capacity ==========
@@ -283,6 +313,12 @@ public:
 
   /// Works for all backends (delegates to BufferImplBase::size()).
   size_t size() const {return impl_->size();}
+
+  size_t max_size() const
+  {
+    throw_if_not_cpu_backend();
+    return get_cpu_impl()->get_storage().max_size();
+  }
 
   void reserve(size_t new_cap)
   {
@@ -300,6 +336,12 @@ public:
   {
     throw_if_not_cpu_backend();
     get_cpu_impl()->get_storage().shrink_to_fit();
+  }
+
+  allocator_type get_allocator() const
+  {
+    throw_if_not_cpu_backend();
+    return get_cpu_impl()->get_storage().get_allocator();
   }
 
   // ========== Modifiers (CPU only) ==========
@@ -326,47 +368,32 @@ public:
   iterator insert(const_iterator pos, const T & value)
   {
     throw_if_not_cpu_backend();
-    auto & s = get_cpu_impl()->get_storage();
-    auto offset = pos - s.data();
-    auto it = s.insert(s.begin() + offset, value);
-    return s.data() + (it - s.begin());
+    return get_cpu_impl()->get_storage().insert(pos, value);
   }
 
   iterator insert(const_iterator pos, T && value)
   {
     throw_if_not_cpu_backend();
-    auto & s = get_cpu_impl()->get_storage();
-    auto offset = pos - s.data();
-    auto it = s.insert(s.begin() + offset, std::move(value));
-    return s.data() + (it - s.begin());
+    return get_cpu_impl()->get_storage().insert(pos, std::move(value));
   }
 
   iterator insert(const_iterator pos, size_t count, const T & value)
   {
     throw_if_not_cpu_backend();
-    auto & s = get_cpu_impl()->get_storage();
-    auto offset = pos - s.data();
-    auto it = s.insert(s.begin() + offset, count, value);
-    return s.data() + (it - s.begin());
+    return get_cpu_impl()->get_storage().insert(pos, count, value);
   }
 
   template<typename InputIt>
   iterator insert(const_iterator pos, InputIt first, InputIt last)
   {
     throw_if_not_cpu_backend();
-    auto & s = get_cpu_impl()->get_storage();
-    auto offset = pos - s.data();
-    auto it = s.insert(s.begin() + offset, first, last);
-    return s.data() + (it - s.begin());
+    return get_cpu_impl()->get_storage().insert(pos, first, last);
   }
 
   iterator insert(const_iterator pos, std::initializer_list<T> ilist)
   {
     throw_if_not_cpu_backend();
-    auto & s = get_cpu_impl()->get_storage();
-    auto offset = pos - s.data();
-    auto it = s.insert(s.begin() + offset, ilist);
-    return s.data() + (it - s.begin());
+    return get_cpu_impl()->get_storage().insert(pos, ilist);
   }
 
   void clear()
@@ -406,10 +433,29 @@ public:
   }
 
   template<typename ... Args>
-  void emplace_back(Args && ... args)
+  iterator emplace(const_iterator pos, Args && ... args)
   {
     throw_if_not_cpu_backend();
-    get_cpu_impl()->get_storage().emplace_back(std::forward<Args>(args)...);
+    return get_cpu_impl()->get_storage().emplace(pos, std::forward<Args>(args)...);
+  }
+
+  template<typename ... Args>
+  reference emplace_back(Args && ... args)
+  {
+    throw_if_not_cpu_backend();
+    return get_cpu_impl()->get_storage().emplace_back(std::forward<Args>(args)...);
+  }
+
+  iterator erase(const_iterator pos)
+  {
+    throw_if_not_cpu_backend();
+    return get_cpu_impl()->get_storage().erase(pos);
+  }
+
+  iterator erase(const_iterator first, const_iterator last)
+  {
+    throw_if_not_cpu_backend();
+    return get_cpu_impl()->get_storage().erase(first, last);
   }
 
   void swap(Buffer & other) noexcept

@@ -34,6 +34,7 @@ from rosidl_parser.definition import UnboundedWString
 from rosidl_parser.parser import get_ast_from_idl_string
 from rosidl_parser.parser import get_string_literals_value
 from rosidl_parser.parser import parse_idl_file
+from rosidl_parser.parser import parse_idl_string
 
 MESSAGE_IDL_LOCATOR = IdlLocator(
     pathlib.Path(__file__).parent, pathlib.Path('msg') / 'MyMessage.idl')
@@ -90,6 +91,35 @@ def test_message_parser_includes(message_idl_file: IdlFile) -> None:
     assert len(includes) == 2
     assert includes[0].locator == 'OtherMessage.idl'
     assert includes[1].locator == 'pkgname/msg/OtherMessage.idl'
+
+
+def test_message_parser_include_guard() -> None:
+    content = parse_idl_string("""
+#ifndef _ROSIDL_PARSER_MSG_GUARDED_IDL
+#define _ROSIDL_PARSER_MSG_GUARDED_IDL
+
+#include "OtherMessage.idl"
+
+module rosidl_parser {
+  module msg {
+    struct Guarded {
+      int32 value;
+    };
+  };
+};
+
+#endif  // _ROSIDL_PARSER_MSG_GUARDED_IDL
+""")
+
+    includes = content.get_elements_of_type(Include)
+    assert len(includes) == 1
+    assert includes[0].locator == 'OtherMessage.idl'
+
+    messages = content.get_elements_of_type(Message)
+    assert len(messages) == 1
+    assert messages[0].structure.namespaced_type.namespaces == [
+        'rosidl_parser', 'msg']
+    assert messages[0].structure.namespaced_type.name == 'Guarded'
 
 
 def test_message_parser_structure(message_idl_file: IdlFile) -> None:

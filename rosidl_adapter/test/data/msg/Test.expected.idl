@@ -2,6 +2,8 @@
 // with input from test_msgs/msg/Test.msg
 // generated code does not contain a copyright notice
 
+#ifndef TEST_MSGS_MSG_TEST_MSG
+#define TEST_MSGS_MSG_TEST_MSG
 
 module test_msgs {
   module msg {
@@ -63,3 +65,5 @@ module test_msgs {
     };
   };
 };
+
+#endif  // TEST_MSGS_MSG_TEST_MSG

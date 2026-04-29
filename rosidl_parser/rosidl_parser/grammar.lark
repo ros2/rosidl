@@ -3,7 +3,7 @@
 // 7.2.3 Identifiers
 // 7.2.6 Literals
 // 7.3 Preprocessing
-//   only #include is supported
+//   only #include and simple include guard directives are supported
 // 7.4.1 Building Block Core Data Types
 // 7.4.15.4.2 Applying Annotations
 //   Only supported on modules, structs, members, enums and enum identifiers
@@ -91,7 +91,15 @@ fixed_pt_literal: DECIMAL "d"i
 
 
 // 7.3 Preprocessing
+PREPROCESSOR_IDENTIFIER: (LETTER | "_") (LETTER | DIGIT | "_")*
+preprocessor_directive: include_directive
+  | ifndef_directive
+  | define_directive
+  | endif_directive
 include_directive: "#include" ("<" h_char_sequence ">" | "\"" q_char_sequence "\"")
+ifndef_directive: "#ifndef" PREPROCESSOR_IDENTIFIER
+define_directive: "#define" PREPROCESSOR_IDENTIFIER
+endif_directive: "#endif"
 // Preprocessor spec - 5.8 Header names
 h_char_sequence: /[^>]+/
 q_char_sequence: /[^"]+/
@@ -106,7 +114,7 @@ specification: definition+
 definition: module_dcl ";"
   | const_dcl ";"
   | type_dcl ";"
-  | include_directive
+  | preprocessor_directive
 
 // (3), 7.4.15.2
 module_dcl: annotation_appl* "module" IDENTIFIER "{" definition+ "}"

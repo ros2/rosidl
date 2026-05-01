@@ -86,6 +86,9 @@ VALID_MESSAGE_NAME_PATTERN: Final = re.compile('^[A-Z][A-Za-z0-9]*$')
 # relaxed patterns used for compatibility with ROS 1 messages
 # VALID_MESSAGE_NAME_PATTERN = re.compile('^[A-Za-z][A-Za-z0-9]*$')
 VALID_CONSTANT_NAME_PATTERN: Final = re.compile('^[A-Z]([A-Z0-9_]?[A-Z0-9]+)*$')
+VALID_CONSTANT_REFERENCE_PATTERN: Final = re.compile(
+    r'^(?P<msg>[A-Z][A-Za-z0-9]*)::(?P<const>[A-Z][A-Z0-9_]*)$'
+)
 
 
 class InvalidSpecification(Exception):
@@ -369,7 +372,8 @@ class Constant:
 class Field:
 
     def __init__(self, type_: 'Type', name: str,
-                 default_value_string: Optional[str] = None) -> None:
+                 default_value_string: Optional[str] = None,
+                 msg_constants: Optional[dict] = None) -> None:
         if not isinstance(type_, Type):
             raise TypeError(
                 "the field type '%s' must be a 'Type' instance" % type_)
@@ -383,7 +387,7 @@ class Field:
             self.default_value = None
         else:
             self.default_value = parse_value_string(
-                type_, default_value_string)
+                type_, default_value_string, msg_constants=msg_constants)
 
         self.annotations: 'Annotations' = {}
 
@@ -487,8 +491,15 @@ def extract_file_level_comments(message_string: str) -> Tuple[List[str], List[st
     return file_level_comments, file_content
 
 
+def parse_message_constants(pkg_name: str, msg_name: str, message_string: str) -> dict:
+    msg = parse_message_string(pkg_name, msg_name, message_string, constants_only=True)
+    return {constant.name: constant.value for constant in msg.constants}
+
+
 def parse_message_string(pkg_name: str, msg_name: str,
-                         message_string: str) -> MessageSpecification:
+                         message_string: str,
+                         msg_constants: Optional[dict] = None,
+                         constants_only: bool = False) -> MessageSpecification:
     fields: List[Field] = []
     constants: List[Constant] = []
     last_element: Union[Field, Constant, None] = None  # either a field or a constant
@@ -548,6 +559,11 @@ def parse_message_string(pkg_name: str, msg_name: str,
             raise InvalidFieldDefinition(line)
         index = rest.find(CONSTANT_SEPARATOR)
         if index == -1:
+            if constants_only:
+                current_comments = []
+                is_optional = False
+                continue
+
             # line contains a field
             field_name, _, default_value_string = rest.partition(' ')
             optional_default_value_string: Optional[str] = default_value_string.lstrip()
@@ -556,7 +572,8 @@ def parse_message_string(pkg_name: str, msg_name: str,
             try:
                 fields.append(Field(
                     Type(type_string, context_package_name=pkg_name),
-                    field_name, optional_default_value_string))
+                    field_name, optional_default_value_string,
+                    msg_constants=msg_constants))
             except Exception as err:
                 print(
                     "Error processing '{line}' of '{pkg}/{msg}': '{err}'".format(
@@ -630,9 +647,14 @@ def process_comments(instance: Union[MessageSpecification, Field, Constant]) -> 
             instance.annotations['comment'] = textwrap.dedent(text).split('\n')
 
 
-def parse_value_string(type_: Type, value_string: str) -> Union['PrimitiveType',
-                                                                List['PrimitiveType']]:
+def parse_value_string(type_: Type, value_string: str,
+                       msg_constants: Optional[dict] = None) -> Union['PrimitiveType',
+                                                                      List['PrimitiveType']]:
     if type_.is_primitive_type() and not type_.is_array:
+        if msg_constants is not None and \
+                type_.type not in ('string', 'wstring'):
+            value_string = resolve_constant_reference(
+                value_string.strip(), msg_constants)
         return parse_primitive_value_string(type_, value_string)
 
     if type_.is_primitive_type() and type_.is_array:
@@ -669,6 +691,10 @@ def parse_value_string(type_: Type, value_string: str) -> Union['PrimitiveType',
         for index, element_string in enumerate(value_strings):
             element_string = element_string.strip()
             try:
+                if msg_constants is not None and \
+                        type_.type not in ('string', 'wstring'):
+                    element_string = resolve_constant_reference(
+                        element_string, msg_constants)
                 base_type = Type(BaseType.__str__(type_))
                 value = parse_primitive_value_string(base_type, element_string)
             except InvalidValue as e:
@@ -831,6 +857,24 @@ def parse_primitive_value_string(type_: Type, value_string: str) -> 'PrimitiveTy
         return value_string
 
     assert False, "unknown primitive type '%s'" % primitive_type
+
+
+def resolve_constant_reference(reference: str, msg_constants: dict) -> str:
+    m = VALID_CONSTANT_REFERENCE_PATTERN.match(reference)
+    if m is None:
+        return reference
+    msg = m.group('msg')
+    const_name = m.group('const')
+    if msg not in msg_constants:
+        raise ValueError(
+            "Cannot resolve constant reference '%s': message type '%s' not "
+            'found.' % (reference, msg))
+    consts = msg_constants[msg]
+    if const_name not in consts:
+        raise ValueError(
+            "Cannot resolve constant reference '%s': constant '%s' not defined "
+            "in message type '%s'." % (reference, const_name, msg))
+    return str(consts[const_name])
 
 
 def validate_field_types(spec: Union[MessageSpecification,

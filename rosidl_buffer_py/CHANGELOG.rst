@@ -2,6 +2,9 @@
 Changelog for package rosidl_buffer_py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 5.2.0 (2026-04-24)
 ------------------
 

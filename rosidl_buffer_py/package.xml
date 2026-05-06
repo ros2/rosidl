@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>rosidl_buffer_py</name>
-  <version>5.2.0</version>
+  <version>5.3.0</version>
   <description>
     Python bindings for rosidl::Buffer, providing a Buffer class that
     supports vendor-specific memory backends (CPU, GPU, custom) for rclpy users.

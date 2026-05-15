@@ -95,8 +95,8 @@ def test_message_parser_includes(message_idl_file: IdlFile) -> None:
 
 def test_message_parser_include_guard() -> None:
     content = parse_idl_string("""
-#ifndef _ROSIDL_PARSER_MSG_GUARDED_IDL
-#define _ROSIDL_PARSER_MSG_GUARDED_IDL
+#ifndef ROSIDL_PARSER__MSG__GUARDED_IDL
+#define ROSIDL_PARSER__MSG__GUARDED_IDL
 
 #include "OtherMessage.idl"
 
@@ -108,7 +108,7 @@ module rosidl_parser {
   };
 };
 
-#endif  // _ROSIDL_PARSER_MSG_GUARDED_IDL
+#endif  // ROSIDL_PARSER__MSG__GUARDED_IDL
 """)
 
     includes = content.get_elements_of_type(Include)

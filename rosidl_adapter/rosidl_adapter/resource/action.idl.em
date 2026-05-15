@@ -6,10 +6,13 @@
 import re
 from rosidl_adapter.msg import get_include_file
 
-include_guard = re.sub(r'[^0-9A-Za-z]+', '_', f'{pkg_name}_{relative_input_file}')
-include_guard = include_guard.strip('_').upper()
-if not include_guard or not include_guard[0].isalpha():
-    include_guard = f'ROSIDL_{include_guard}'
+include_guard_parts = [
+    re.sub(r'[^0-9A-Za-z]+', '_', part).strip('_').upper()
+    for part in (pkg_name, *relative_input_file.parts)
+]
+assert all(include_guard_parts)
+include_guard = '__'.join(include_guard_parts)
+assert include_guard[0].isalpha()
 include_files = set()
 fields = action.goal.fields + action.result.fields + action.feedback.fields
 for field in fields:
@@ -20,12 +23,10 @@ for field in fields:
 #ifndef @(include_guard)
 #define @(include_guard)
 
-@[if include_files]@
 @[for include_file in sorted(include_files)]@
 #include "@(include_file)"
 @[end for]@
 
-@[end if]@
 module @(pkg_name) {
   module action {
 @{

@@ -3,7 +3,8 @@
 // 7.2.3 Identifiers
 // 7.2.6 Literals
 // 7.3 Preprocessing
-//   only #include and simple include guard directives are supported
+//   only #include and simple include guard directives
+//   (#ifndef / #define / #endif) are supported
 // 7.4.1 Building Block Core Data Types
 // 7.4.15.4.2 Applying Annotations
 //   Only supported on modules, structs, members, enums and enum identifiers

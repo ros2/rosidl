@@ -25,12 +25,18 @@ from rosidl_parser.parser import parse_idl_file
 
 # RIHS: ROS Interface Hashing Standard, per REP-2011
 # NOTE: These values and implementations must be updated if
-# - type_description_interfaces messsages change, or
+# - type_description_interfaces messages change, or
 # - the hashing algorithm for type descriptions changes
 # Both changes require an increment of the RIHS version
 RIHS01_PREFIX = 'RIHS01_'
 RIHS01_HASH_VALUE_SIZE = 32
-RIHS01_PATTERN = re.compile(r'RIHS([0-9a-f]{2})_([0-9a-f]{64})')
+RIHS02_PREFIX = 'RIHS02_'
+RIHS02_HASH_VALUE_SIZE = 16
+
+# Generic pattern for any RIHS version (version is two hex digits, hash is lowercase hex)
+RIHS_PATTERN = re.compile(r'^RIHS([0-9a-f]{2})_([0-9a-f]+)$')
+RIHS_VERSIONS = (1, 2)
+DEFAULT_RIHS_VERSION = 1
 
 # Used by code generators to create variable names
 GET_DESCRIPTION_FUNC = 'get_type_description'
@@ -95,6 +101,7 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
     output_dir = Path(args['output_dir'])
     idl_tuples = args['idl_tuples']
     include_paths = args.get('include_paths', [])
+    hash_version = args.get('hash_version', DEFAULT_RIHS_VERSION)
 
     # Lookup for directory containing dependency .json files
     include_map = {
@@ -180,7 +187,7 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
     for type_name, individual_type in individual_types.items():
         full_type_description = extract_full_type_description(type_name, serialized_type_lookup)
         full_types.append(full_type_description)
-        hash_lookup[type_name] = calculate_type_hash(full_type_description)
+        hash_lookup[type_name] = calculate_type_hash(full_type_description, version=hash_version)
 
     # Write JSON output for each full TypeDescription
     generated_files = []
@@ -211,11 +218,19 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
 
 def parse_rihs_string(rihs_str: str) -> Tuple[int, str]:
     """Parse RIHS string, return (version, value) tuple."""
-    match = RIHS01_PATTERN.match(rihs_str)
+    match = RIHS_PATTERN.match(rihs_str)
     if not match:
         raise ValueError(f'Type hash string {rihs_str} does not match expected RIHS format.')
-    version, value = match.group(1, 2)
-    return (int(version), value)
+    version = int(match.group(1), 16)
+    hex_value = match.group(2)
+    # Validate length per version
+    if version == 1 and len(hex_value) != 64:
+        raise ValueError(f'RIHS01 hash must be 64 hex chars, got {len(hex_value)}')
+    elif version == 2 and len(hex_value) != 32:
+        raise ValueError(f'RIHS02 hash must be 32 hex chars, got {len(hex_value)}')
+    elif version not in RIHS_VERSIONS:
+        raise ValueError(f'Version number {version} not allowed. Must be one of {RIHS_VERSIONS}.')
+    return (version, hex_value)
 
 
 # This mapping must match the constants defined in type_description_interfaces/msgs/FieldType.msg
@@ -465,7 +480,7 @@ def serialize_individual_type_description(
     }
 
 
-def calculate_type_hash(serialized_type_description):
+def calculate_type_hash(serialized_type_description, version=1):
     # Create a copy of the description, removing all default values
     hashable_dict = deepcopy(serialized_type_description)
     for field in hashable_dict['type_description']['fields']:
@@ -485,10 +500,17 @@ def calculate_type_hash(serialized_type_description):
         separators=(', ', ': '),
         sort_keys=False
     )
-    sha = hashlib.sha256()
-    sha.update(hashable_repr.encode('utf-8'))
-    type_hash = RIHS01_PREFIX + sha.hexdigest()
-    return type_hash
+
+    if version == 1:
+        sha = hashlib.sha256()
+        sha.update(hashable_repr.encode('utf-8'))
+        return RIHS01_PREFIX + sha.hexdigest()
+    elif version == 2:
+        h = hashlib.blake2s(digest_size=RIHS02_HASH_VALUE_SIZE)
+        h.update(hashable_repr.encode('utf-8'))
+        return RIHS02_PREFIX + h.hexdigest()
+    else:
+        raise ValueError(f'Version number {version} not allowed. Must be one of {RIHS_VERSIONS}.')
 
 
 def extract_full_type_description(output_type_name, type_map):

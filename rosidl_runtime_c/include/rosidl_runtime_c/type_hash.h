@@ -31,11 +31,24 @@ extern "C"
 #endif
 
 /// A ROS 2 interface type hash per REP-2011 RIHS standard.
+/**
+ * When \p version is 2, the second half of \p value will be zeroed
+ */
 typedef struct rosidl_type_hash_s
 {
   uint8_t version;
   uint8_t value[ROSIDL_TYPE_HASH_SIZE];
 } rosidl_type_hash_t;
+
+/// Get the expected byte length of the hash value for a given RIHS version.
+/**
+ * \param[in] version RIHS version (e.g., 1 for RIHS01, 2 for RIHS02)
+ * \return Expected value length in bytes.
+ * \return 0 if version is unknown.
+ */
+ROSIDL_GENERATOR_C_PUBLIC
+size_t
+rosidl_type_hash_get_value_size(uint8_t version);
 
 /// Get a new zero-initialized type hash structure.
 /**
@@ -70,7 +83,7 @@ rosidl_stringify_type_hash(
  * \param[out] hash_out Preallocated structure to be filled with parsed hash information.
  *   hash_out->version will be 0 if no version could be parsed,
  *   but if a version could be determined this field will be set even if an error is returned
- * \return RCTUILS_RET_INVALID_ARGUMENT on any null pointer argumunts, or malformed hash string.
+ * \return RCUTILS_RET_INVALID_ARGUMENT on any null pointer arguments, or malformed hash string.
  * \return RCUTILS_RET_OK otherwise
  */
 ROSIDL_GENERATOR_C_PUBLIC

@@ -301,7 +301,7 @@ def create_init_alloc_and_member_lists(message):
     #   init_list - The list of member variables that we will initialize using member
     #               initialization in the default constructor
     #   alloc_list - The list of member variables that we will initialize using member
-    #                initializion in the allocator constructor
+    #                initialization in the allocator constructor
     #   member_list - The list of members that we will generate initialization code
     #                 for in the body of the constructors
     init_list = []

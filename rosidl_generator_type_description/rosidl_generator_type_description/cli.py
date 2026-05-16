@@ -16,6 +16,7 @@ import os
 import pathlib
 
 from ament_index_python import get_package_share_directory
+from rosidl.rosidl_generator_type_description.rosidl_generator_type_description import DEFAULT_RIHS_VERSION
 from rosidl_cli.command.hash.extensions import HashCommandExtension
 from rosidl_cli.command.helpers import (
     generator_arguments_file,
@@ -50,6 +51,7 @@ class HashTypeDescription(HashCommandExtension):
         interface_files,
         include_paths,
         output_path,
+        hash_version=DEFAULT_RIHS_VERSION,
     ):
         package_share_path = \
             pathlib.Path(get_package_share_directory('rosidl_generator_type_description'))
@@ -78,4 +80,12 @@ class HashTypeDescription(HashCommandExtension):
             ),
             include_paths=include_path_tuples
         ) as path_to_arguments_file:
+            # If a non-default hash version is requested, inject it into the JSON
+            if hash_version != DEFAULT_RIHS_VERSION:
+                import json
+                with open(path_to_arguments_file, 'r') as f:
+                    args = json.load(f)
+                args['hash_version'] = hash_version
+                with open(path_to_arguments_file, 'w') as f:
+                    json.dump(args, f)
             return generate_type_hash(path_to_arguments_file)

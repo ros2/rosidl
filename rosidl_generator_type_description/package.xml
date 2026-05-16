@@ -10,6 +10,7 @@
   <license>Apache License 2.0</license>
 
   <author email="me@emersonknapp.com">Emerson Knapp</author>
+  <author email="vipetrone@unisa.it">Vincenzo Petrone</author>
 
   <buildtool_depend>ament_cmake_python</buildtool_depend>
   <buildtool_depend>ament_cmake_ros_core</buildtool_depend>

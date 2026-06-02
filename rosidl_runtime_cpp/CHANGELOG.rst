@@ -2,6 +2,9 @@
 Changelog for package rosidl_runtime_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.6.7 (2025-12-09)
 ------------------
 * Add missing cstdint include (`#864 <https://github.com/ros2/rosidl/issues/864>`_) (`#900 <https://github.com/ros2/rosidl/issues/900>`_)

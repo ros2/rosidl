@@ -2,6 +2,9 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.6.7 (2025-12-09)
 ------------------
 * fix setuptools deprecations (`#877 <https://github.com/ros2/rosidl/issues/877>`_) (`#896 <https://github.com/ros2/rosidl/issues/896>`_)

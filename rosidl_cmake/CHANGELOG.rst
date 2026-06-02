@@ -2,6 +2,13 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Create an aggregate target for rosidl generated interfaces targets (`#947 <https://github.com/ros2/rosidl/issues/947>`_) (`#949 <https://github.com/ros2/rosidl/issues/949>`_)
+  (cherry picked from commit e61e46df2d4111606eb5a1eb969bae23f97a8e01)
+  Co-authored-by: Emerson Knapp <537409+emersonknapp@users.noreply.github.com>
+* Contributors: mergify[bot]
+
 4.6.7 (2025-12-09)
 ------------------
 * Add `rosidl_auto_generate_inetrfaces` function (`#918 <https://github.com/ros2/rosidl/issues/918>`_) (`#921 <https://github.com/ros2/rosidl/issues/921>`_)

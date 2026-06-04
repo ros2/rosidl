@@ -98,6 +98,27 @@
     EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__are_equal(&input, &output)); \
     rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&output); \
     rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&input); \
+  } \
+ \
+  TEST(primitives_sequence_functions, test_ ## STRUCT_NAME ## _overflow) \
+  { \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence sequence; \
+    size_t overflow_size = (SIZE_MAX / sizeof(TYPE_NAME)) + 1u; \
+    if (overflow_size > 0u) { \
+      EXPECT_FALSE( \
+        rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init(&sequence, overflow_size)); \
+    } \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence input, output; \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init(&input, 1u)); \
+    EXPECT_TRUE(rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init(&output, 0u)); \
+    if (overflow_size > 0u) { \
+      input.size = overflow_size; \
+      EXPECT_FALSE( \
+        rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__copy(&input, &output)); \
+    } \
+    input.size = 1u; \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&output); \
+    rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(&input); \
   }
 
 TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(float, float)

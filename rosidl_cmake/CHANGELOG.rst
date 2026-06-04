@@ -2,8 +2,8 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.1.9 (2026-06-04)
+------------------
 * Create an aggregate target for rosidl generated interfaces targets (backports `#947 <https://github.com/ros2/rosidl/issues/947>`_) (`#950 <https://github.com/ros2/rosidl/issues/950>`_)
 * Contributors: mergify[bot]
 

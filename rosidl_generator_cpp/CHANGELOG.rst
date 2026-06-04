@@ -2,6 +2,9 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 3.1.8 (2025-12-09)
 ------------------
 * Add missing cstdint include (`#864 <https://github.com/ros2/rosidl/issues/864>`_) (`#901 <https://github.com/ros2/rosidl/issues/901>`_)

@@ -2,6 +2,11 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add integer overflow guards to rosidl sequence init and copy functions (`#970 <https://github.com/ros2/rosidl/issues/970>`_)
+* Contributors: Michael Carroll
+
 5.2.0 (2026-04-24)
 ------------------
 

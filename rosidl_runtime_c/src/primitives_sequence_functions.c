@@ -30,9 +30,6 @@
     } \
     TYPE_NAME * data = NULL; \
     if (size) { \
-      if (size > SIZE_MAX / sizeof(TYPE_NAME)) { \
-        return false; \
-      } \
       rcutils_allocator_t allocator = rcutils_get_default_allocator(); \
       data = allocator.allocate(sizeof(TYPE_NAME) * size, allocator.state); \
       if (!data) { \
@@ -92,9 +89,6 @@
       return false; \
     } \
     if (output->capacity < input->size) { \
-      if (input->size > SIZE_MAX / sizeof(TYPE_NAME)) { \
-        return false; \
-      } \
       rcutils_allocator_t allocator = rcutils_get_default_allocator(); \
       TYPE_NAME * data = (TYPE_NAME *)allocator.reallocate( \
         output->data, sizeof(TYPE_NAME) * input->size, allocator.state); \

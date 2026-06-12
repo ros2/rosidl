@@ -152,9 +152,6 @@ rosidl_runtime_c__String__Sequence__init(
   if (!sequence) {
     return false;
   }
-  if (size > SIZE_MAX / sizeof(rosidl_runtime_c__String)) {
-    return false;
-  }
   rosidl_runtime_c__String * data = NULL;
   if (size) {
     rcutils_allocator_t allocator = rcutils_get_default_allocator();
@@ -234,9 +231,6 @@ rosidl_runtime_c__String__Sequence__copy(
   rosidl_runtime_c__String__Sequence * output)
 {
   if (!input || !output) {
-    return false;
-  }
-  if (input->size > SIZE_MAX / sizeof(rosidl_runtime_c__String)) {
     return false;
   }
   if (output->capacity < input->size) {

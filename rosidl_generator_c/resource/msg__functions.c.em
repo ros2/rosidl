@@ -357,9 +357,6 @@ bool
   @(message_typename) * data = NULL;
 
   if (size) {
-    if (size > SIZE_MAX / sizeof(@(message_typename))) {
-      return false;
-    }
     data = (@(message_typename) *)allocator.zero_allocate(size, sizeof(@(message_typename)), allocator.state);
     if (!data) {
       return false;
@@ -465,9 +462,6 @@ bool
     return false;
   }
   if (output->capacity < input->size) {
-    if (input->size > SIZE_MAX / sizeof(@(message_typename))) {
-      return false;
-    }
     const size_t allocation_size =
       input->size * sizeof(@(message_typename));
     rcutils_allocator_t allocator = rcutils_get_default_allocator();

@@ -2,6 +2,15 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#972 <https://github.com/ros2/rosidl/issues/972>`_ from ros2/guard_sequence_overflow_jazzy
+  Add integer overflow guards to rosidl sequence init and copy functions
+* Add integer overflow guards to rosidl sequence init and copy functions
+  Check that target size multiplied by item size does not overflow SIZE_MAX.
+  This prevents undersized heap allocations when sequence length inputs are malicious or overflow.
+* Contributors: Michael Carroll, Skyler Medeiros
+
 4.6.8 (2026-06-02)
 ------------------
 

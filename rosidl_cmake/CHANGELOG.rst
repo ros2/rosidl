@@ -2,6 +2,9 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 4.6.8 (2026-06-02)
 ------------------
 * Create an aggregate target for rosidl generated interfaces targets (`#947 <https://github.com/ros2/rosidl/issues/947>`_) (`#949 <https://github.com/ros2/rosidl/issues/949>`_)

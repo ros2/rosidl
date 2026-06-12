@@ -2,8 +2,8 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+4.6.9 (2026-06-12)
+------------------
 * Merge pull request `#972 <https://github.com/ros2/rosidl/issues/972>`_ from ros2/guard_sequence_overflow_jazzy
   Add integer overflow guards to rosidl sequence init and copy functions
 * Add integer overflow guards to rosidl sequence init and copy functions

@@ -2,6 +2,9 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.9.7 (2026-07-02)
+------------------
+
 4.9.6 (2025-12-09)
 ------------------
 * Fix copy/paste errors in type support docs (`#906 <https://github.com/ros2/rosidl/issues/906>`_) (`#907 <https://github.com/ros2/rosidl/issues/907>`_)

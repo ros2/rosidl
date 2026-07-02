@@ -2,6 +2,9 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.9.7 (2026-07-02)
+------------------
+
 4.9.6 (2025-12-09)
 ------------------
 * remove importlib-metadata (`#917 <https://github.com/ros2/rosidl/issues/917>`_) (`#919 <https://github.com/ros2/rosidl/issues/919>`_)

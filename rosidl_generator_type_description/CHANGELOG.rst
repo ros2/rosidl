@@ -2,6 +2,9 @@
 Changelog for package rosidl_generator_type_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.9.7 (2026-07-02)
+------------------
+
 4.9.6 (2025-12-09)
 ------------------
 * Add missing dependency on ament_cmake_pytest (`#914 <https://github.com/ros2/rosidl/issues/914>`_) (`#915 <https://github.com/ros2/rosidl/issues/915>`_)

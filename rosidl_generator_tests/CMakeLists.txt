@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(rosidl_generator_tests)
 
-# Default to C++20
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 20)
-endif()
-
 # Default to C11
 if(NOT CMAKE_C_STANDARD)
   set(CMAKE_C_STANDARD 11)
@@ -20,6 +15,7 @@ find_package(ament_cmake REQUIRED)
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   find_package(ament_cmake_pytest REQUIRED)
+  find_package(ament_cmake_ros_core REQUIRED)
   find_package(ament_lint_auto REQUIRED)
   find_package(rosidl_cmake REQUIRED)
   find_package(rosidl_generator_cpp REQUIRED)
@@ -49,6 +45,8 @@ if(BUILD_TESTING)
       target_link_libraries(${test_name}
         ${cpp_generator_target}
         rosidl_runtime_cpp::rosidl_runtime_cpp
+        # Use the ROS default C++ standard (C++20)
+        ament_cmake_ros_core::ament_ros_cxx_standard
       )
     endif()
   endmacro()

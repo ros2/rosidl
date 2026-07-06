@@ -1,22 +1,20 @@
 cmake_minimum_required(VERSION 3.20)
 project(rosidl_buffer)
 
-# Default to C++20
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 20)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_ros_core REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
   src/c_helpers.cpp
 )
+
+# Use the ROS default C++ standard (C++20)
+target_link_libraries(${PROJECT_NAME} PRIVATE ament_cmake_ros_core::ament_ros_cxx_standard)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -52,12 +50,12 @@ if(BUILD_TESTING)
 
   ament_add_gtest(test_buffer test/test_buffer.cpp)
   if(TARGET test_buffer)
-    target_link_libraries(test_buffer ${PROJECT_NAME})
+    target_link_libraries(test_buffer ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
   endif()
 
   ament_add_gtest(test_c_helpers test/test_c_helpers.cpp)
   if(TARGET test_c_helpers)
-    target_link_libraries(test_c_helpers ${PROJECT_NAME})
+    target_link_libraries(test_c_helpers ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
   endif()
 endif()
 

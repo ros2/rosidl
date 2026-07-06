@@ -63,25 +63,21 @@ if(BUILD_TESTING)
   endif()
 
   find_package(ament_cmake_gtest REQUIRED)
-
-  # Default to C++20
-  if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 20)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-  endif()
+  find_package(ament_cmake_ros_core REQUIRED)
 
   if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options(-Wall -Wextra -Wpedantic)
   endif()
 
+  # Use the ROS default C++ standard (C++20) for the C++ test targets
   ament_add_gtest(test_bounded_vector test/test_bounded_vector.cpp)
   if(TARGET test_bounded_vector)
-    target_link_libraries(test_bounded_vector ${PROJECT_NAME})
+    target_link_libraries(test_bounded_vector ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
   endif()
 
   add_performance_test(benchmark_bounded_vector test/benchmark/benchmark_bounded_vector.cpp)
   if(TARGET benchmark_bounded_vector)
-    target_link_libraries(benchmark_bounded_vector ${PROJECT_NAME})
+    target_link_libraries(benchmark_bounded_vector ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
   endif()
 endif()
 

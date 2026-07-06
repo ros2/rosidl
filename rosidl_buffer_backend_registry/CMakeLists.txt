@@ -1,17 +1,13 @@
 cmake_minimum_required(VERSION 3.20)
 project(rosidl_buffer_backend_registry)
 
-# Default to C++20
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 20)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_ros_core REQUIRED)
 find_package(rosidl_buffer REQUIRED)
 find_package(rosidl_buffer_backend REQUIRED)
 find_package(rmw REQUIRED)
@@ -32,11 +28,15 @@ target_compile_definitions(${PROJECT_NAME}
   PRIVATE "ROSIDL_BUFFER_BACKEND_REGISTRY_BUILDING_DLL"
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-  rosidl_buffer_backend::rosidl_buffer_backend
-  rmw::rmw
-  rosidl_runtime_cpp::rosidl_runtime_cpp
-  pluginlib::pluginlib
+target_link_libraries(${PROJECT_NAME}
+  PUBLIC
+    rosidl_buffer_backend::rosidl_buffer_backend
+    rmw::rmw
+    rosidl_runtime_cpp::rosidl_runtime_cpp
+    pluginlib::pluginlib
+  # Use the ROS default C++ standard (C++20)
+  PRIVATE
+    ament_cmake_ros_core::ament_ros_cxx_standard
 )
 
 # Install headers
@@ -80,6 +80,7 @@ if(BUILD_TESTING)
       rmw::rmw
       rosidl_runtime_cpp::rosidl_runtime_cpp
       pluginlib::pluginlib
+      ament_cmake_ros_core::ament_ros_cxx_standard
     )
   endif()
 endif()

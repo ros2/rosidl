@@ -2,11 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 
 project(rosidl_typesupport_introspection_cpp)
 
-# Default to C++17
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -28,9 +23,13 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
-target_link_libraries(${PROJECT_NAME} PUBLIC
-  rosidl_runtime_cpp::rosidl_runtime_cpp
-  rosidl_typesupport_introspection_c::rosidl_typesupport_introspection_c
+target_link_libraries(${PROJECT_NAME}
+  PUBLIC
+    rosidl_runtime_cpp::rosidl_runtime_cpp
+    rosidl_typesupport_introspection_c::rosidl_typesupport_introspection_c
+  # Use the ROS default C++ standard (C++20)
+  PRIVATE
+    ament_cmake_ros_core::ament_ros_cxx_standard
 )
 
 # Export old-style CMake variables

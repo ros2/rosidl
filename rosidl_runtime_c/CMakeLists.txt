@@ -7,12 +7,6 @@ if(NOT CMAKE_C_STANDARD)
   set(CMAKE_C_STANDARD 11)
 endif()
 
-# Default to C++17
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -101,58 +95,55 @@ if(BUILD_TESTING)
 
   # For gtest
   enable_language(CXX)
-  # Default to C++17
-  if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 17)
-  endif()
 
   find_package(ament_cmake_gtest REQUIRED)
 
+  # Use the ROS default C++ standard (C++20) for the C++ test targets
   ament_add_gtest(test_message_type_support test/test_message_type_support.cpp)
   if(TARGET test_message_type_support)
-    target_link_libraries(test_message_type_support ${PROJECT_NAME})
+    target_link_libraries(test_message_type_support ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
   endif()
 
   ament_add_gtest(test_primitives_sequence_functions test/test_primitives_sequence_functions.cpp)
   if(TARGET test_primitives_sequence_functions)
-    target_link_libraries(test_primitives_sequence_functions ${PROJECT_NAME})
+    target_link_libraries(test_primitives_sequence_functions ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
   endif()
 
   ament_add_gtest(test_sequence_bound test/test_sequence_bound.cpp)
   if(TARGET test_sequence_bound)
-    target_link_libraries(test_sequence_bound ${PROJECT_NAME})
+    target_link_libraries(test_sequence_bound ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
   endif()
 
   ament_add_gtest(test_service_type_support test/test_service_type_support.cpp)
   if(TARGET test_service_type_support)
-    target_link_libraries(test_service_type_support ${PROJECT_NAME})
+    target_link_libraries(test_service_type_support ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
   endif()
 
   ament_add_gtest(test_string_functions test/test_string_functions.cpp)
   if(TARGET test_string_functions)
-    target_link_libraries(test_string_functions ${PROJECT_NAME})
+    target_link_libraries(test_string_functions ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
     target_compile_definitions(test_string_functions PUBLIC RCUTILS_ENABLE_FAULT_INJECTION)
   endif()
 
   ament_add_gtest(test_type_hash test/test_type_hash.cpp)
   if(TARGET test_type_hash)
-    target_link_libraries(test_type_hash ${PROJECT_NAME})
+    target_link_libraries(test_type_hash ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
   endif()
 
   ament_add_gtest(test_u16string_functions test/test_u16string_functions.cpp)
   if(TARGET test_u16string_functions)
-    target_link_libraries(test_u16string_functions ${PROJECT_NAME})
+    target_link_libraries(test_u16string_functions ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
     target_compile_definitions(test_u16string_functions PUBLIC RCUTILS_ENABLE_FAULT_INJECTION)
   endif()
 
   ament_add_gtest(test_type_description_utils test/test_type_description_utils.cpp)
   if(TARGET test_type_description_utils)
-    target_link_libraries(test_type_description_utils ${PROJECT_NAME})
+    target_link_libraries(test_type_description_utils ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
   endif()
 
   add_performance_test(benchmark_string_conversion test/benchmark/benchmark_string_conversion.cpp)
   if(TARGET benchmark_string_conversion)
-    target_link_libraries(benchmark_string_conversion ${PROJECT_NAME})
+    target_link_libraries(benchmark_string_conversion ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
   endif()
 endif()
 

@@ -956,9 +956,12 @@ TEST(TestBufferNonCpu, modifiers_throw) {
   EXPECT_THROW(buffer.emplace_back(1), std::runtime_error);
 
   using ConstIt = Buffer<uint8_t>::const_iterator;
-  EXPECT_THROW(buffer.erase(ConstIt{}), std::runtime_error);
-  EXPECT_THROW(buffer.erase(ConstIt{}, ConstIt{}), std::runtime_error);
-  EXPECT_THROW(buffer.emplace(ConstIt{}, 1), std::runtime_error);
+  std::vector<uint8_t> aux = {0, 1};
+  ConstIt it0 = aux.cbegin();
+  ConstIt it1 = aux.cbegin() + 1;
+  EXPECT_THROW(buffer.erase(it0), std::runtime_error);
+  EXPECT_THROW(buffer.erase(it0, it1), std::runtime_error);
+  EXPECT_THROW(buffer.emplace(it0, 1), std::runtime_error);
 }
 
 TEST(TestBufferNonCpu, capacity_throws) {

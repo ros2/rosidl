@@ -274,6 +274,13 @@ TEST(TestBuffer, resize) {
 }
 
 // Test resize with value
+// GCC 15 emits false-positive warnings from std::vector::resize with C++20 at -O3.
+// See https://github.com/ros2/rosidl/issues/979.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
 TEST(TestBuffer, resize_with_value) {
   Buffer<uint8_t> buffer(2, 5);
   buffer.resize(5, 99);
@@ -284,6 +291,9 @@ TEST(TestBuffer, resize_with_value) {
   EXPECT_EQ(99, buffer[2]);
   EXPECT_EQ(99, buffer[4]);
 }
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 // Test push_back
 TEST(TestBuffer, push_back) {

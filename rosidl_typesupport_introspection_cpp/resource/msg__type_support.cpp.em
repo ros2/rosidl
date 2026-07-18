@@ -33,6 +33,7 @@ header_files = [
     'cstddef',  # providing offsetof()
     'string',
     'vector',
+    'rosidl_runtime_c/deprecation.h',
     'rosidl_runtime_c/message_type_support_struct.h',
     'rosidl_typesupport_cpp/message_type_support.hpp',
     'rosidl_typesupport_interface/macros.h',
@@ -228,6 +229,9 @@ void resize_function__@(message.structure.namespaced_type.name)__@(member.name)(
 
 @[  end if]@
 @[end for]@
+@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
+DISABLE_DEPRECATED_PUSH
+@[end if]@
 static const ::rosidl_typesupport_introspection_cpp::MessageMember @(message.structure.namespaced_type.name)_message_member_array[@(len(message.structure.members))] = {
 @{
 for index, member in enumerate(message.structure.members):
@@ -301,6 +305,9 @@ for index, member in enumerate(message.structure.members):
         print('  }')
 }@
 };
+@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
+DISABLE_DEPRECATED_POP
+@[end if]@
 
 static const ::rosidl_typesupport_introspection_cpp::MessageMembers @(message.structure.namespaced_type.name)_message_members = {
   "@('::'.join([package_name] + list(interface_path.parents[0].parts)))",  // message namespace

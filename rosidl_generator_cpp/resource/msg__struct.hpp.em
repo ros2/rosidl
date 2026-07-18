@@ -7,6 +7,7 @@ from rosidl_generator_cpp import msg_type_to_cpp
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 from rosidl_generator_cpp import generate_zero_string
 from rosidl_generator_cpp import generate_default_string
+from rosidl_generator_cpp import get_deprecation_from_member
 from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractString
 from rosidl_parser.definition import AbstractWString
@@ -111,6 +112,9 @@ struct @(message.structure.namespaced_type.name)_
 # for a detailed explanation of the different _init parameters.
 init_list, alloc_list, member_list = create_init_alloc_and_member_lists(message)
 }@
+@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
+  DISABLE_DEPRECATED_PUSH
+@[end if]
   explicit @(message.structure.namespaced_type.name)_(rosidl_runtime_cpp::MessageInitialization _init = rosidl_runtime_cpp::MessageInitialization::ALL)
 @[if init_list]@
   : @(',\n    '.join(init_list))
@@ -203,21 +207,36 @@ non_defaulted_zero_initialized_members = [
     }
 @[end if]@
   }
+@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
+  DISABLE_DEPRECATED_POP
+@[end if]
 
   // field types and members
 @[for member in message.structure.members]@
   using _@(member.name)_type =
     @(msg_type_to_cpp(member.type));
+@[  if member.has_annotation('deprecated')]@
+  @(get_deprecation_from_member(member))
+@[  end if]@
   _@(member.name)_type @(member.name);
 @[end for]@
 
 @[if len(message.structure.members) != 1 or message.structure.members[0].name != EMPTY_STRUCTURE_REQUIRED_MEMBER_NAME]@
   // setters for named parameter idiom
 @[  for member in message.structure.members]@
+@[    if member.has_annotation('deprecated')]@
+  @(get_deprecation_from_member(member))
+@[    end if]@
   Type & set__@(member.name)(
     const @(msg_type_to_cpp(member.type)) & _arg)
   {
+@[      if member.has_annotation('deprecated')]@
+    DISABLE_DEPRECATED_PUSH
+@[      end if]@
     this->@(member.name) = _arg;
+@[      if member.has_annotation('deprecated')]@
+    DISABLE_DEPRECATED_POP
+@[      end if]@
     return *this;
   }
 @[  end for]@
@@ -307,9 +326,15 @@ u@
     (void)other;
 @[end if]@
 @[for member in message.structure.members]@
+@[  if member.has_annotation('deprecated')]@
+    DISABLE_DEPRECATED_PUSH
+@[  end if]@
     if (this->@(member.name) != other.@(member.name)) {
       return false;
     }
+@[  if member.has_annotation('deprecated')]@
+    DISABLE_DEPRECATED_POP
+@[  end if]@
 @[end for]@
     return true;
   }

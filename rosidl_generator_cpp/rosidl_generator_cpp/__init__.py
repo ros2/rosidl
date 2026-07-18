@@ -24,6 +24,7 @@ from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
 from rosidl_parser.definition import FLOATING_POINT_TYPES
+from rosidl_parser.definition import Member
 from rosidl_parser.definition import NamespacedType
 from rosidl_parser.definition import UnboundedSequence
 from rosidl_pycommon import generate_files
@@ -396,3 +397,14 @@ def generate_zero_string(membset: list, fill_args: str) -> list[str]:
         else:
             strlist.append('this->%s = %s;' % (member.name, member.zero_value))
     return strlist
+
+
+def get_deprecation_from_member(member: Member) -> str:
+    if (member.has_annotation('deprecated')):
+        deprecation_annotation = member.get_annotation_value('deprecated')
+        if not isinstance(deprecation_annotation, dict):
+            assert False, f'deprecation_annotation is not proper type: {deprecation_annotation}'
+
+        text = deprecation_annotation['text']
+        return f'[[deprecated("{text}")]]'
+    return ''

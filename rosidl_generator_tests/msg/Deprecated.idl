@@ -1,0 +1,9 @@
+module rosidl_generator_tests {
+  module msg {
+    struct Deprecated {
+        @deprecated ( text="Use new_x")
+        int32 x;
+        int32 new_x;
+    };
+  };
+};

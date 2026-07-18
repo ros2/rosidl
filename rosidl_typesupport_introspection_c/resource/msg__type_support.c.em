@@ -64,6 +64,11 @@ if any_buffer_field:
 from collections import OrderedDict
 includes = OrderedDict()
 for member in message.structure.members:
+    if (member.has_annotation('deprecated')):
+      includes.setdefault(
+        'rosidl_runtime_c/deprecation.h', []
+      )
+
     if isinstance(member.type, AbstractSequence) and isinstance(member.type.value_type, BasicType):
         member_names = includes.setdefault(
             'rosidl_runtime_c/primitives_sequence_functions.h', [])
@@ -280,6 +285,9 @@ bool @(function_prefix)__resize_function__@(message.structure.namespaced_type.na
 @[    end if]@
 @[  end if]@
 @[end for]@
+@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
+DISABLE_DEPRECATED_PUSH
+@[end if]@
 static rosidl_typesupport_introspection_c__MessageMember @(function_prefix)__@(message.structure.namespaced_type.name)_message_member_array[@(len(message.structure.members))] = {
 @{
 for index, member in enumerate(message.structure.members):
@@ -353,6 +361,9 @@ for index, member in enumerate(message.structure.members):
         print('  }')
 }@
 };
+@[if any(mem.has_annotation('deprecated') for mem in message.structure.members)]@
+DISABLE_DEPRECATED_POP
+@[end if]@
 
 static const rosidl_typesupport_introspection_c__MessageMembers @(function_prefix)__@(message.structure.namespaced_type.name)_message_members = {
   "@('__'.join([package_name] + list(interface_path.parents[0].parts)))",  // message namespace

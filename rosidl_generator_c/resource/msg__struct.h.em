@@ -22,6 +22,7 @@ from rosidl_generator_c import idl_structure_type_to_c_include_prefix
 from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_generator_c import interface_path_to_string
 from rosidl_generator_c import value_to_c
+from rosidl_generator_c import get_deprecation_from_member
 }@
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 @# Collect necessary include directives for all members
@@ -29,6 +30,11 @@ from rosidl_generator_c import value_to_c
 from collections import OrderedDict
 includes = OrderedDict()
 for member in message.structure.members:
+    if (member.has_annotation('deprecated')):
+      includes.setdefault(
+        'rosidl_runtime_c/deprecation.h', []
+      )
+
     if isinstance(member.type, AbstractSequence) and isinstance(member.type.value_type, BasicType):
         member_names = includes.setdefault(
             'rosidl_runtime_c/primitives_sequence.h', [])
@@ -174,6 +180,9 @@ typedef struct @(idl_structure_type_to_c_typename(message.structure.namespaced_t
   ///
 @[    end if]@
 @[  end for]@
+@[  if member.has_annotation('deprecated')]@
+  @(get_deprecation_from_member(member))
+@[  end if]@
   @(idl_declaration_to_c(member.type, member.name));
 @[end for]@
 } @(idl_structure_type_to_c_typename(message.structure.namespaced_type));

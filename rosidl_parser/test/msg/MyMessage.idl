@@ -85,6 +85,11 @@ module rosidl_parser {
       // Optional test
       @optional
       int32 optional_int;
+
+      // Deprecated test
+      @deprecated ( text="Use new_val instead")
+      int32 old_val;
+      int32 new_val;
     };
   };
 };

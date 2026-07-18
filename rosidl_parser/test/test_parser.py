@@ -134,7 +134,7 @@ def test_message_parser_structure(message_idl_file: IdlFile) -> None:
     structure = messages[0].structure
     assert structure.namespaced_type.namespaces == ['rosidl_parser', 'msg']
     assert structure.namespaced_type.name == 'MyMessage'
-    assert len(structure.members) == 46
+    assert len(structure.members) == 48
 
     assert isinstance(structure.members[0].type, BasicType)
     assert structure.members[0].type.typename == 'int16'
@@ -309,6 +309,17 @@ def test_message_parser_annotations(message_idl_file: IdlFile) -> None:
     assert structure.members[45].name == 'optional_int'
     assert len(structure.members[45].annotations) == 1
     assert structure.members[45].annotations[0].name == 'optional'
+
+    assert isinstance(structure.members[46].type, BasicType)
+    assert structure.members[46].type.typename == 'int32'
+    assert structure.members[46].name == 'old_val'
+    assert len(structure.members[46].annotations) == 1
+    assert structure.members[46].annotations[0].name == 'deprecated'
+    assert structure.members[46].annotations[0].value == {'text': 'Use new_val instead'}
+
+    assert isinstance(structure.members[47].type, BasicType)
+    assert structure.members[47].type.typename == 'int32'
+    assert structure.members[47].name == 'new_val'
 
 
 @pytest.fixture(scope='module')

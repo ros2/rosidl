@@ -86,9 +86,9 @@ def is_vector_bool(member):
 @[for member in message.structure.members]@
 @[  if isinstance(member.type, AbstractNestedType)]@
 @{
-from rosidl_generator_cpp import  MSG_TYPE_TO_CPP
+from rosidl_generator_cpp import  MSG_TYPE_TO_CPP_CONVERSION
 if isinstance(member.type.value_type, BasicType):
-    type_ = MSG_TYPE_TO_CPP[member.type.value_type.typename]
+    type_ = MSG_TYPE_TO_CPP_CONVERSION[member.type.value_type.typename]
 elif isinstance(member.type.value_type, AbstractString):
     type_ = 'std::string'
 elif isinstance(member.type.value_type, AbstractWString):

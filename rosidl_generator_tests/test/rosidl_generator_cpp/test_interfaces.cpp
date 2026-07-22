@@ -168,7 +168,7 @@ void test_message_basic_types(rosidl_generator_tests::msg::BasicTypes message)
 #ifdef __linux__
 #pragma GCC diagnostic pop
 #endif
-  TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, byte_value, 0, 255)
+  TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, byte_value, std::byte{0}, std::byte{255})
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, char_value, 0, UINT8_MAX)
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, float32_value, FLT_MIN, FLT_MAX)
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, float64_value, DBL_MIN, DBL_MAX)
@@ -487,7 +487,7 @@ TEST(Test_messages, constants_assign) {
 TEST(Test_messages, defaults) {
   rosidl_generator_tests::msg::Defaults message;
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, bool_value, true, false);
-  TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, byte_value, 50, 255);
+  TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, byte_value, std::byte{50}, std::byte{255});
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, char_value, 100, UINT8_MAX);
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, float32_value, 1.125f, FLT_MAX);
   TEST_BASIC_TYPE_FIELD_ASSIGNMENT(message, float64_value, 1.125, DBL_MAX);

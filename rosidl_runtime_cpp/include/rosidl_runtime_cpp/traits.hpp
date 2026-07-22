@@ -38,6 +38,11 @@ inline void character_value_to_yaml(unsigned char value, std::ostream & out)
   out.flags(flags);
 }
 
+inline void value_to_yaml(std::byte value, std::ostream & out)
+{
+  character_value_to_yaml(std::to_integer<unsigned char>(value), out);
+}
+
 inline void character_value_to_yaml(char16_t value, std::ostream & out)
 {
   auto flags = out.flags();

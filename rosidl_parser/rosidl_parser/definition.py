@@ -143,6 +143,8 @@ ACTION_GOAL_SERVICE_SUFFIX: Final = '_SendGoal'
 ACTION_RESULT_SERVICE_SUFFIX: Final = '_GetResult'
 ACTION_FEEDBACK_MESSAGE_SUFFIX: Final = '_FeedbackMessage'
 
+OPTIONAL_ANNOTATION: Final = 'optional'
+
 
 class AbstractType:
     """The abstract base class for all types."""

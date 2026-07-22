@@ -23,6 +23,7 @@
 #include "rosidl_generator_tests/msg/empty.hpp"
 #include "rosidl_generator_tests/msg/bounded_sequences.hpp"
 #include "rosidl_generator_tests/msg/nested.hpp"
+#include "rosidl_generator_tests/msg/optional_idl.hpp"
 #include "rosidl_generator_tests/msg/strings.hpp"
 #include "rosidl_generator_tests/msg/w_strings.hpp"
 #include "rosidl_generator_tests/srv/empty.hpp"
@@ -257,6 +258,18 @@ string_values_default:
 alignment_check: 0
 )",
       yaml.c_str());
+  }
+}
+
+TEST(Test_rosidl_generator_traits, optional_msgs) {
+  {
+    const rosidl_generator_tests::msg::OptionalIdl optional_msg;
+    EXPECT_STREQ(
+      "optional_float: null\ndefault_optional_float: 32.0000\n",
+      to_yaml(optional_msg).c_str());
+    EXPECT_STREQ(
+      "{optional_float: null, default_optional_float: 32.0000}",
+      to_yaml(optional_msg, true).c_str());
   }
 }
 

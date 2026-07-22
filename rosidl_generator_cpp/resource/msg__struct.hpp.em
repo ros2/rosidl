@@ -4,6 +4,7 @@ from rosidl_generator_cpp import create_init_alloc_and_member_lists
 from rosidl_generator_cpp import escape_string
 from rosidl_generator_cpp import escape_wstring
 from rosidl_generator_cpp import msg_type_to_cpp
+from rosidl_generator_cpp import member_to_cpp
 from rosidl_generator_cpp import MSG_TYPE_TO_CPP
 from rosidl_generator_cpp import generate_zero_string
 from rosidl_generator_cpp import generate_default_string
@@ -207,7 +208,7 @@ non_defaulted_zero_initialized_members = [
   // field types and members
 @[for member in message.structure.members]@
   using _@(member.name)_type =
-    @(msg_type_to_cpp(member.type));
+    @(member_to_cpp(member));
   _@(member.name)_type @(member.name);
 @[end for]@
 
@@ -215,7 +216,7 @@ non_defaulted_zero_initialized_members = [
   // setters for named parameter idiom
 @[  for member in message.structure.members]@
   Type & set__@(member.name)(
-    const @(msg_type_to_cpp(member.type)) & _arg)
+    const @(member_to_cpp(member)) & _arg)
   {
     this->@(member.name) = _arg;
     return *this;

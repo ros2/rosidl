@@ -129,14 +129,20 @@ inline void value_to_yaml(const std::string & value, std::ostream & out)
 inline void value_to_yaml(const std::u16string & value, std::ostream & out)
 {
   out << "\"";
+#if __cplusplus < 201703L
   std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> convert;
+#endif
   auto flags = out.flags();
   size_t index = 0;
   while (index < value.size()) {
     uint_least16_t character = static_cast<uint_least16_t>(value[index]);
     if (!(character & 0xff80)) {  // ASCII
+#if __cplusplus < 201703L
       std::string character_as_string = convert.to_bytes(character);
       out << std::hex << character_as_string.c_str();
+#else
+      out << static_cast<char>(character);
+#endif
     } else if (!(character & 0xff00)) {  // only 1 byte set
       out << "\\x" << std::hex << std::setw(2) << std::setfill('0') << \
         character;

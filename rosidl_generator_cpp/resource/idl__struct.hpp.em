@@ -21,20 +21,95 @@ header_guard_variable = '__'.join([x.upper() for x in include_parts]) + \
     '__STRUCT_HPP_'
 
 include_directives = set()
+
+# Scan all messages (including the ones implicitly defined by services and
+# actions) to only emit the includes their members and constants actually
+# need. This mirrors the TEMPLATE() expansion done below: services expand to
+# request/response/event messages, actions to goal/result/feedback(+message)
+# and two services.
+from rosidl_parser.definition import AbstractGenericString
+from rosidl_parser.definition import AbstractNestedType
+from rosidl_parser.definition import Action
+from rosidl_parser.definition import Array
+from rosidl_parser.definition import BasicType
+from rosidl_parser.definition import BoundedSequence
+from rosidl_parser.definition import Message
+from rosidl_parser.definition import Service
+from rosidl_parser.definition import UnboundedSequence
+
+all_messages = list(content.get_elements_of_type(Message))
+all_services = list(content.get_elements_of_type(Service))
+for action in content.get_elements_of_type(Action):
+    all_messages += [
+        action.goal, action.result, action.feedback, action.feedback_message]
+    all_services += [action.send_goal_service, action.get_result_service]
+for service in all_services:
+    all_messages += [
+        service.request_message, service.response_message,
+        service.event_message]
+
+need_algorithm = False
+need_array = False
+need_string = False
+need_vector = False
+need_bounded_vector = False
+need_buffer = False
+for msg in all_messages:
+    for constant in msg.constants:
+        if isinstance(constant.type, AbstractGenericString):
+            need_string = True
+    for member in msg.structure.members:
+        type_ = member.type
+        if isinstance(type_, Array):
+            need_array = True
+            # std::fill is emitted for zero/default initialization of arrays
+            # of primitive or string values
+            if isinstance(
+                type_.value_type, (BasicType, AbstractGenericString)
+            ):
+                need_algorithm = True
+        elif isinstance(type_, UnboundedSequence):
+            # unbounded uint8 sequences map to rosidl::Buffer,
+            # everything else to std::vector (see msg_type_to_cpp)
+            if (
+                isinstance(type_.value_type, BasicType) and
+                type_.value_type.typename == 'uint8'
+            ):
+                need_buffer = True
+            else:
+                need_vector = True
+        elif isinstance(type_, BoundedSequence):
+            need_bounded_vector = True
+        value_type = type_.value_type \
+            if isinstance(type_, AbstractNestedType) else type_
+        if isinstance(value_type, AbstractGenericString):
+            need_string = True
 }@
 
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
+@[if need_algorithm]@
 #include <algorithm>
+@[end if]@
+@[if need_array]@
 #include <array>
+@[end if]@
 #include <cstdint>
 #include <memory>
+@[if need_string]@
 #include <string>
+@[end if]@
+@[if need_vector]@
 #include <vector>
+@[end if]@
 
+@[if need_bounded_vector]@
 #include "rosidl_runtime_cpp/bounded_vector.hpp"
+@[end if]@
+@[if need_buffer]@
 #include "rosidl_buffer/buffer.hpp"
+@[end if]@
 #include "rosidl_runtime_cpp/message_initialization.hpp"
 
 @#######################################################################

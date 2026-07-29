@@ -14,11 +14,6 @@ target_link_libraries(${PROJECT_NAME} INTERFACE
   rosidl_runtime_c::rosidl_runtime_c
   rosidl_buffer::rosidl_buffer)
 
-if(MSVC)
-  target_compile_definitions(${PROJECT_NAME} INTERFACE
-  _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
-endif()
-
 # Export old-style CMake variables
 ament_export_include_directories("include/${PROJECT_NAME}")
 

@@ -24,11 +24,10 @@ include_directives = set()
 
 # Scan all messages (including the ones implicitly defined by services and
 # actions) to only emit the includes their members and constants actually
-# need. This mirrors the TEMPLATE() expansion done below: services expand to
-# request/response/event messages, actions to goal/result/feedback(+message)
-# and two services.
+# need.
 from rosidl_generator_cpp import CPPLINT_ALGORITHM_NAMES
 from rosidl_generator_cpp import get_all_messages
+from rosidl_generator_cpp import is_buffer_type
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import Array
@@ -64,12 +63,7 @@ for msg in all_messages:
             ):
                 need_algorithm = True
         elif isinstance(type_, UnboundedSequence):
-            # unbounded uint8 sequences map to rosidl::Buffer,
-            # everything else to std::vector (see msg_type_to_cpp)
-            if (
-                isinstance(type_.value_type, BasicType) and
-                type_.value_type.typename == 'uint8'
-            ):
+            if is_buffer_type(type_):
                 need_buffer = True
             else:
                 need_vector = True

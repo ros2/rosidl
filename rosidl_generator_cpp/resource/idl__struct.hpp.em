@@ -27,26 +27,16 @@ include_directives = set()
 # need. This mirrors the TEMPLATE() expansion done below: services expand to
 # request/response/event messages, actions to goal/result/feedback(+message)
 # and two services.
+from rosidl_generator_cpp import CPPLINT_ALGORITHM_NAMES
+from rosidl_generator_cpp import get_all_messages
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractNestedType
-from rosidl_parser.definition import Action
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
-from rosidl_parser.definition import Message
-from rosidl_parser.definition import Service
 from rosidl_parser.definition import UnboundedSequence
 
-all_messages = list(content.get_elements_of_type(Message))
-all_services = list(content.get_elements_of_type(Service))
-for action in content.get_elements_of_type(Action):
-    all_messages += [
-        action.goal, action.result, action.feedback, action.feedback_message]
-    all_services += [action.send_goal_service, action.get_result_service]
-for service in all_services:
-    all_messages += [
-        service.request_message, service.response_message,
-        service.event_message]
+all_messages = get_all_messages(content)
 
 need_algorithm = False
 need_array = False
@@ -60,6 +50,11 @@ for msg in all_messages:
             need_string = True
     for member in msg.structure.members:
         type_ = member.type
+        if member.name in CPPLINT_ALGORITHM_NAMES:
+            need_algorithm = True
+        if member.name == 'string':
+            # cpplint reads the bare word 'string' as std::string
+            need_string = True
         if isinstance(type_, Array):
             need_array = True
             # std::fill is emitted for zero/default initialization of arrays

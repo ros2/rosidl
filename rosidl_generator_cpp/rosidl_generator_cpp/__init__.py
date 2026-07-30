@@ -20,13 +20,24 @@ from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import AbstractString
 from rosidl_parser.definition import AbstractWString
+from rosidl_parser.definition import Action
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
 from rosidl_parser.definition import FLOATING_POINT_TYPES
+from rosidl_parser.definition import Message
 from rosidl_parser.definition import NamespacedType
+from rosidl_parser.definition import Service
 from rosidl_parser.definition import UnboundedSequence
 from rosidl_pycommon import generate_files
+
+# cpplint's 'build/include_what_you_use' check assumes that any '<name>(' is a
+# call to the STL algorithm of that name, so a member called e.g. 'transform'
+# makes it ask for <algorithm> even though the generated code only initializes
+# a member and declares a setter. Emit <algorithm> for those member names to
+# keep the generated headers lint clean.
+CPPLINT_ALGORITHM_NAMES = (
+    'copy', 'max', 'min', 'min_element', 'sort', 'transform')
 
 
 def generate_cpp(generator_arguments_file) -> List[str]:
@@ -51,6 +62,32 @@ def prefix_with_bom_if_necessary(content: str) -> str:
             'since it contain non-ASCII characters\n'
         content = prefix + content
     return content
+
+
+def get_all_messages(content) -> List[Message]:
+    """
+    Return every message defined by an IDL file.
+
+    This includes the messages implicitly defined by services (request,
+    response and event) and by actions (goal, result, feedback, feedback
+    message and the messages of the two implicit services), which mirrors the
+    set of structures the templates generate code for.
+
+    @param content: the content of an IDL file
+    @type content: rosidl_parser.definition.IdlContent
+    """
+    messages = list(content.get_elements_of_type(Message))
+    services = list(content.get_elements_of_type(Service))
+    for action in content.get_elements_of_type(Action):
+        messages += [
+            action.goal, action.result, action.feedback,
+            action.feedback_message]
+        services += [action.send_goal_service, action.get_result_service]
+    for service in services:
+        messages += [
+            service.request_message, service.response_message,
+            service.event_message]
+    return messages
 
 
 MSG_TYPE_TO_CPP = {

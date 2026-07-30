@@ -14,6 +14,8 @@
 @#  - content (IdlContent, list of elements, e.g. Messages or Services)
 @#######################################################################
 @{
+from rosidl_generator_cpp import CPPLINT_ALGORITHM_NAMES
+from rosidl_generator_cpp import get_all_messages
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
@@ -21,12 +23,22 @@ include_base = '/'.join(include_parts)
 header_guard_variable = '__'.join([x.upper() for x in include_parts]) + \
     '__BUILDER_HPP_'
 
+# the setter of a member is named after the member, see CPPLINT_ALGORITHM_NAMES
+need_algorithm = False
+for msg in get_all_messages(content):
+    for member in msg.structure.members:
+        if member.name in CPPLINT_ALGORITHM_NAMES:
+            need_algorithm = True
+
 include_directives = set()
 }@
 
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
+@[if need_algorithm]@
+#include <algorithm>
+@[end if]@
 #include <utility>
 
 #include "@(include_base)__struct.hpp"

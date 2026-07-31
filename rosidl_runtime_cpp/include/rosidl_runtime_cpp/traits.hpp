@@ -15,15 +15,31 @@
 #ifndef ROSIDL_RUNTIME_CPP__TRAITS_HPP_
 #define ROSIDL_RUNTIME_CPP__TRAITS_HPP_
 
-#include <codecvt>
+#include <cstddef>
 #include <cstdint>
-#include <iomanip>
-#include <iosfwd>
+#include <ostream>
 #include <string>
 #include <type_traits>
 
 namespace rosidl_generator_traits
 {
+
+namespace detail
+{
+
+/// Write \p width lowercase hex digits (most significant first) to \p out.
+inline void write_fixed_width_hex(
+  uint_least16_t value, size_t width, std::ostream & out)
+{
+  constexpr char hex_digits[] = "0123456789abcdef";
+  char buffer[sizeof(value) * 2];
+  for (size_t i = 0; i < width; ++i) {
+    buffer[width - 1 - i] = hex_digits[(value >> (4 * i)) & 0xFu];
+  }
+  out.write(buffer, static_cast<std::streamsize>(width));
+}
+
+}  // namespace detail
 
 inline void value_to_yaml(bool value, std::ostream & out)
 {
@@ -32,18 +48,15 @@ inline void value_to_yaml(bool value, std::ostream & out)
 
 inline void character_value_to_yaml(unsigned char value, std::ostream & out)
 {
-  auto flags = out.flags();
-  out << "0x" << std::hex << std::setw(2) << std::setfill('0') << \
-    static_cast<uint16_t>(value);
-  out.flags(flags);
+  out << "0x";
+  detail::write_fixed_width_hex(value, 2, out);
 }
 
 inline void character_value_to_yaml(char16_t value, std::ostream & out)
 {
-  auto flags = out.flags();
-  out << "\"\\u" << std::hex << std::setw(4) << std::setfill('0') << \
-    static_cast<uint_least16_t>(value) << "\"";
-  out.flags(flags);
+  out << "\"\\u";
+  detail::write_fixed_width_hex(static_cast<uint_least16_t>(value), 4, out);
+  out << "\"";
 }
 
 inline void value_to_yaml(float value, std::ostream & out)
@@ -129,24 +142,23 @@ inline void value_to_yaml(const std::string & value, std::ostream & out)
 inline void value_to_yaml(const std::u16string & value, std::ostream & out)
 {
   out << "\"";
-  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> convert;
-  auto flags = out.flags();
   size_t index = 0;
   while (index < value.size()) {
     uint_least16_t character = static_cast<uint_least16_t>(value[index]);
     if (!(character & 0xff80)) {  // ASCII
-      std::string character_as_string = convert.to_bytes(character);
-      out << std::hex << character_as_string.c_str();
+      // a NUL is dropped here, matching the historical c_str()-based behavior
+      if (character != 0u) {
+        out.put(static_cast<char>(character));
+      }
     } else if (!(character & 0xff00)) {  // only 1 byte set
-      out << "\\x" << std::hex << std::setw(2) << std::setfill('0') << \
-        character;
+      out << "\\x";
+      detail::write_fixed_width_hex(character, 2, out);
     } else {
-      out << "\\u" << std::hex << std::setw(4) << std::setfill('0') << \
-        character;
+      out << "\\u";
+      detail::write_fixed_width_hex(character, 4, out);
     }
     index += 1;
   }
-  out.flags(flags);
   out << "\"";
 }
 

@@ -418,9 +418,8 @@ public:
    * For a non-empty %BoundedVector, data() == &front().
    */
   template<
-    typename T,
+    typename T = Tp,
     typename std::enable_if<
-      !std::is_same<T, Tp>::value &&
       !std::is_same<T, bool>::value
     >::type * = nullptr
   >
@@ -431,9 +430,8 @@ public:
   }
 
   template<
-    typename T,
+    typename T = Tp,
     typename std::enable_if<
-      !std::is_same<T, Tp>::value &&
       !std::is_same<T, bool>::value
     >::type * = nullptr
   >

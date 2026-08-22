@@ -123,3 +123,20 @@ TEST(rosidl_generator_cpp, bounded_vector_forward_iterators) {
   ASSERT_THROW(v.insert(v.begin() + 1, l.begin(), l.end()), std::length_error);
   ASSERT_EQ(v, vv);
 }
+
+TEST(rosidl_generator_cpp, bounded_vector_data) {
+  rosidl_runtime_cpp::BoundedVector<int, 4> v{1, 2, 3};
+  ASSERT_EQ(v.data(), &v.front());
+  ASSERT_EQ(v.data()[0], 1);
+  ASSERT_EQ(v.data()[1], 2);
+  ASSERT_EQ(v.data()[2], 3);
+
+  // Const version
+  const auto & const_v = v;
+  ASSERT_EQ(const_v.data(), &const_v.front());
+  ASSERT_EQ(const_v.data()[0], 1);
+
+  // Check that BoundedVector<bool, N> compiles without issue
+  rosidl_runtime_cpp::BoundedVector<bool, 4> bool_v{true, false};
+  ASSERT_EQ(bool_v.size(), 2u);
+}

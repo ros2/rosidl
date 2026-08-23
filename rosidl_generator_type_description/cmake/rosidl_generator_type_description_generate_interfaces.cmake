@@ -18,7 +18,7 @@
 # /usr/bin/python3.10, /usr/bin/python3.11, and /usr/bin/python3, it will find
 # /usr/bin/python3.11, even if /usr/bin/python3 points to /usr/bin/python3.10.
 # The behavior we want is to prefer the "system" installed version unless the
-# user specifically tells us othewise through the Python3_EXECUTABLE hint.
+# user specifically tells us otherwise through the Python3_EXECUTABLE hint.
 # Setting CMP0094 to NEW means that the search will stop after the first
 # python version is found.  Setting Python3_FIND_UNVERSIONED_NAMES means that
 # the search will prefer /usr/bin/python3 over /usr/bin/python3.11.  And that
@@ -27,6 +27,8 @@
 cmake_minimum_required(VERSION 3.20)
 cmake_policy(SET CMP0094 NEW)
 set(Python3_FIND_UNVERSIONED_NAMES FIRST)
+
+option(ROSIDL_GENERATOR_USE_RIHS02 "Use RIHS02 (BLAKE2s-128) type hashes instead of RIHS01 (SHA256)" ON)
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
@@ -85,10 +87,20 @@ else()
 endif()
 
 # Create custom command and target to generate the hash output
+if(ROSIDL_GENERATOR_USE_RIHS02)
+  set(_hash_version_args "--hash-version" "2")
+else()
+  set(_hash_version_args "")
+endif()
+
+message(STATUS "ROSIDL_GENERATOR_USE_RIHS02 = ${ROSIDL_GENERATOR_USE_RIHS02}")
+message(STATUS "_hash_version_args = ${_hash_version_args}")
+
 add_custom_command(
   COMMAND Python3::Interpreter
   ARGS
   ${rosidl_generator_type_description_BIN}
+  ${_hash_version_args}
   --generator-arguments-file "${_generator_arguments_file}"
   OUTPUT ${_generated_files}
   DEPENDS ${target_dependencies}

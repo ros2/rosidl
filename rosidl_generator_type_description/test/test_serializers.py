@@ -91,3 +91,38 @@ def test_nested_type_serializer():
     result = serialize_individual_type_description(namespaced_type, members)
 
     assert result == expected
+
+
+def test_rihs02_hash():
+    from rosidl_generator_type_description import calculate_type_hash, parse_rihs_string
+    # Minimal type description
+    desc = {
+        'type_description': {
+            'type_name': 'test_msgs/msg/Basic',
+            'fields': [
+                {'name': 'value', 'type': {'type_id': 2, 'capacity': 0, 'string_capacity': 0, 'nested_type_name': ''}}
+            ]
+        },
+        'referenced_type_descriptions': []
+    }
+    hash_str = calculate_type_hash(desc, version=2)
+    assert hash_str.startswith('RIHS02_')
+    ver, val = parse_rihs_string(hash_str)
+    assert ver == 2
+    assert len(val) == 32
+
+
+def test_rihs01_hash_still_works():
+    from rosidl_generator_type_description import calculate_type_hash, parse_rihs_string
+    desc = {
+        'type_description': {
+            'type_name': 'test_msgs/msg/Basic',
+            'fields': []
+        },
+        'referenced_type_descriptions': []
+    }
+    hash_str = calculate_type_hash(desc, version=1)
+    assert hash_str.startswith('RIHS01_')
+    ver, val = parse_rihs_string(hash_str)
+    assert ver == 1
+    assert len(val) == 64

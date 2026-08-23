@@ -15,7 +15,6 @@
 from typing import List
 
 from rosidl_generator_type_description import parse_rihs_string
-from rosidl_generator_type_description import RIHS01_HASH_VALUE_SIZE
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import AbstractString
@@ -231,19 +230,17 @@ def escape_wstring(s):
 
 def type_hash_to_c_definition(hash_string, *, indent=2):
     """Generate empy for rosidl_type_hash_t instance with 8 bytes per line for readability."""
+    version, hex_value = parse_rihs_string(hash_string)   # Already handles both versions
+    num_bytes = len(hex_value) // 2
     bytes_per_row = 8
-    rows = 4
-    assert bytes_per_row * rows == RIHS01_HASH_VALUE_SIZE, 'This function is outdated.'
-    version, value = parse_rihs_string(hash_string)
-    assert version == 1, 'This function only knows how to generate RIHS01 definitions.'
+    rows = (num_bytes + bytes_per_row - 1) // bytes_per_row  # ceil division
 
     result = f'{{{version}, {{'
-    result += '\n'
     for row in range(rows):
-        result += ' ' * (indent + 1)
-        for i in range(row * bytes_per_row, (row + 1) * bytes_per_row):
-            result += f' 0x{value[i * 2]}{value[i * 2 + 1]},'
-        result += '\n'
-    result += ' ' * indent
-    result += '}}'
+        result += '\n' + ' ' * (indent + 1)
+        for col in range(bytes_per_row):
+            byte_idx = row * bytes_per_row + col
+            if byte_idx < num_bytes:
+                result += f' 0x{hex_value[byte_idx * 2]}{hex_value[byte_idx * 2 + 1]},'
+    result += '\n' + ' ' * indent + '}}'
     return result

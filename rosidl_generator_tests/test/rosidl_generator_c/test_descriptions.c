@@ -70,6 +70,7 @@ int test_description_linkage(void);
 int test_copied_type_description_struct_hashes(void);
 int test_source_defined(void);
 int test_same_name_types(void);
+int test_hash_string(void);
 
 int main(void)
 {
@@ -92,6 +93,11 @@ int main(void)
   printf("Testing same named types...\n");
   if (test_same_name_types()) {
     fprintf(stderr, "test_same_name_types() FAILED\n");
+    rc++;
+  }
+  printf("Testing rosidl_generator_tests description hash string/parse...\n");
+  if (test_hash_string()) {
+    fprintf(stderr, "test_hash_string() FAILED\n");
     rc++;
   }
 
@@ -166,6 +172,42 @@ int test_description_linkage(void)
   }
 
   return 0;
+}
+
+int test_copied_type_description_struct_hashes(void)
+{
+  #define runtimehash(x) rosidl_runtime_c__type_description__ ## x ## __get_type_hash(NULL)
+  #define msghash(x) type_description_interfaces__msg__ ## x ## __get_type_hash(NULL)
+  #define hashcompare(x) memcmp(runtimehash(x), msghash(x), sizeof(rosidl_type_hash_t))
+  int rc = 0;
+  if (hashcompare(Field)) {
+    fprintf(stderr, "Field hash NO MATCH\n");
+    rc++;
+  }
+  if (hashcompare(FieldType)) {
+    fprintf(stderr, "FieldType hash NO MATCH\n");
+    rc++;
+  }
+  if (hashcompare(IndividualTypeDescription)) {
+    fprintf(stderr, "IndividualTypeDescription hash NO MATCH\n");
+    rc++;
+  }
+  if (hashcompare(KeyValue)) {
+    fprintf(stderr, "KeyValue hash NO MATCH\n");
+    rc++;
+  }
+  if (hashcompare(TypeDescription)) {
+    fprintf(stderr, "TypeDescription hash NO MATCH\n");
+    rc++;
+  }
+  if (hashcompare(TypeSource)) {
+    fprintf(stderr, "TypeSource hash NO MATCH\n");
+    rc++;
+  }
+  #undef hashcompare
+  #undef msghash
+  #undef runtimehash
+  return rc;
 }
 
 int test_source_defined(void)
@@ -277,42 +319,6 @@ int test_source_defined(void)
   return 0;
 }
 
-int test_copied_type_description_struct_hashes(void)
-{
-  #define runtimehash(x) rosidl_runtime_c__type_description__ ## x ## __get_type_hash(NULL)
-  #define msghash(x) type_description_interfaces__msg__ ## x ## __get_type_hash(NULL)
-  #define hashcompare(x) memcmp(runtimehash(x), msghash(x), sizeof(rosidl_type_hash_t))
-  int rc = 0;
-  if (hashcompare(Field)) {
-    fprintf(stderr, "Field hash NO MATCH\n");
-    rc++;
-  }
-  if (hashcompare(FieldType)) {
-    fprintf(stderr, "FieldType hash NO MATCH\n");
-    rc++;
-  }
-  if (hashcompare(IndividualTypeDescription)) {
-    fprintf(stderr, "IndividualTypeDescription hash NO MATCH\n");
-    rc++;
-  }
-  if (hashcompare(KeyValue)) {
-    fprintf(stderr, "KeyValue hash NO MATCH\n");
-    rc++;
-  }
-  if (hashcompare(TypeDescription)) {
-    fprintf(stderr, "TypeDescription hash NO MATCH\n");
-    rc++;
-  }
-  if (hashcompare(TypeSource)) {
-    fprintf(stderr, "TypeSource hash NO MATCH\n");
-    rc++;
-  }
-  #undef hashcompare
-  #undef msghash
-  #undef runtimehash
-  return rc;
-}
-
 int test_same_name_types(void)
 {
   // Msg and srv with same name in this package
@@ -338,5 +344,68 @@ int test_same_name_types(void)
     fprintf(stderr, "Empty.srv source not encoded as srv\n");
     return 1;
   }
+  return 0;
+}
+
+int test_hash_string(void)
+{
+  // Get the type hash for the Empty message via its generated function.
+  const rosidl_type_hash_t * hash = rosidl_generator_tests__msg__Empty__get_type_hash(NULL);
+  if (!hash) {
+    fprintf(stderr, "Failed to get type hash for Empty\n");
+    return 1;
+  }
+
+  // 1) Stringify using the runtime allocator.
+  rcutils_allocator_t allocator = rcutils_get_default_allocator();
+  char * hash_str = NULL;
+  if (RCUTILS_RET_OK != rosidl_stringify_type_hash(hash, allocator, &hash_str)) {
+    fprintf(stderr, "Failed to stringify type hash\n");
+    return 1;
+  }
+  if (!hash_str) {
+    fprintf(stderr, "Stringified hash is null\n");
+    return 1;
+  }
+
+  // 2) Check prefix and total length.
+  const char *rihs01_prefix = "RIHS01_";
+  const char *rihs02_prefix = "RIHS02_";
+  size_t prefix_len;
+  size_t expected_total_len;
+  if (0 == strncmp(hash_str, rihs01_prefix, strlen(rihs01_prefix))) {
+    prefix_len = strlen(rihs01_prefix);
+    expected_total_len = prefix_len + 64;  // 32 bytes → 64 hex chars
+  } else if (0 == strncmp(hash_str, rihs02_prefix, strlen(rihs02_prefix))) {
+    prefix_len = strlen(rihs02_prefix);
+    expected_total_len = prefix_len + 32;  // 16 bytes → 32 hex chars
+  } else {
+    fprintf(stderr, "Unknown RIHS prefix: %s\n", hash_str);
+    allocator.deallocate(hash_str, allocator.state);
+    return 1;
+  }
+  if (strlen(hash_str) != expected_total_len) {
+    fprintf(stderr, "Hash string length mismatch: expected %zu, got %zu\n",
+            expected_total_len, strlen(hash_str));
+    allocator.deallocate(hash_str, allocator.state);
+    return 1;
+  }
+
+  // 3) Round‑trip: parse the string back.
+  rosidl_type_hash_t parsed_hash;
+  if (RCUTILS_RET_OK != rosidl_parse_type_hash_string(hash_str, &parsed_hash)) {
+    fprintf(stderr, "Failed to parse hash string: %s\n", hash_str);
+    allocator.deallocate(hash_str, allocator.state);
+    return 1;
+  }
+
+  // 4) Compare parsed hash with the original.
+  if (0 != memcmp(hash, &parsed_hash, sizeof(rosidl_type_hash_t))) {
+    fprintf(stderr, "Round‑tripped hash does not match original\n");
+    allocator.deallocate(hash_str, allocator.state);
+    return 1;
+  }
+
+  allocator.deallocate(hash_str, allocator.state);
   return 0;
 }

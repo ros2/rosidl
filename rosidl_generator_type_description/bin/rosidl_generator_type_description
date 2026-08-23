@@ -39,10 +39,24 @@ def main(argv=sys.argv[1:]):
         description='Generate hashable representations and hashes of ROS interfaces.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
+        '--hash-version',
+        type=int,
+        choices=(1,2),
+        default=1,
+        help='RIHS version to use (1=SHA256, 2=BLAKE2s-128)'
+    )
+    parser.add_argument(
         '--generator-arguments-file',
         required=True,
         help='The location of the file containing the generator arguments')
     args = parser.parse_args(argv)
+    # Read the JSON arguments file and add the hash version
+    import json
+    with open(args.generator_arguments_file, 'r') as f:
+        gen_args = json.load(f)
+    gen_args['hash_version'] = args.hash_version
+    with open(args.generator_arguments_file, 'w') as f:
+        json.dump(gen_args, f)
     generate_type_hash(args.generator_arguments_file)
 
 

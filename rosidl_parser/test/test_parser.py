@@ -494,6 +494,71 @@ def test_action_parser(action_idl_file: IdlFile) -> None:
         action.feedback.structure.namespaced_type.name
 
 
+def test_serialization_roundtrip() -> None:
+    from rosidl_parser.serialization import (
+        dict_to_idl_content,
+        idl_content_to_dict,
+        load_ast_json,
+        save_ast_json,
+    )
+    for loc in (MESSAGE_IDL_LOCATOR, SERVICE_IDL_LOCATOR, ACTION_IDL_LOCATOR):
+        idl_file = parse_idl_file(loc)
+        d = idl_content_to_dict(idl_file.content)
+        restored = dict_to_idl_content(d)
+        d2 = idl_content_to_dict(restored)
+        assert d == d2, f'Serialization roundtrip failed for {loc.relative_path}'
+
+
+def test_preparsed_ast_loading(tmp_path: pathlib.Path) -> None:
+    import time
+    from rosidl_parser.parser import clear_ast_cache
+    clear_ast_cache()
+
+    test_idl = tmp_path / 'Sample.idl'
+    test_idl.write_text("""
+module test_pkg {
+  module msg {
+    struct Sample {
+      int32 data;
+      string name;
+    };
+  };
+};
+""", encoding='utf-8')
+    locator = IdlLocator(tmp_path, pathlib.Path('Sample.idl'))
+
+    # Save AST to .idl.json
+    ast1 = parse_idl_file(locator)
+    json_path = tmp_path / 'Sample.idl.json'
+    from rosidl_parser.serialization import save_ast_json
+    save_ast_json(ast1.content, json_path)
+    assert json_path.exists(), 'Expected Sample.idl.json to be created'
+
+    # Clear in-memory cache and re-parse - should load from .idl.json
+    clear_ast_cache()
+    ast2 = parse_idl_file(locator)
+    assert isinstance(ast2.content.elements[0], Message)
+    assert ast2.content.elements[0].structure.namespaced_type.name == 'Sample'
+    assert ast2.content.elements[0].structure.members[0].name == 'data'
+    assert ast2.content.elements[0].structure.members[1].name == 'name'
+
+    # Modify IDL file mtime/content
+    time.sleep(0.01)
+    test_idl.write_text("""
+module test_pkg {
+  module msg {
+    struct Sample {
+      int64 modified_data;
+    };
+  };
+};
+""", encoding='utf-8')
+    clear_ast_cache()
+    ast3 = parse_idl_file(locator)
+    assert isinstance(ast3.content.elements[0], Message)
+    assert ast3.content.elements[0].structure.members[0].name == 'modified_data'
+
+
 def test_parse_idl_file_memoization(tmp_path: pathlib.Path) -> None:
     clear_ast_cache()
     # Create temporary IDL file

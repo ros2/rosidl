@@ -158,6 +158,18 @@ target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} PUBL
   rosidl_typesupport_introspection_c::rosidl_typesupport_introspection_c
   rosidl_buffer::rosidl_buffer)
 
+target_precompile_headers(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  PRIVATE
+    <stddef.h>
+    <rosidl_runtime_c/message_type_support_struct.h>
+    <rosidl_typesupport_interface/macros.h>
+    <rosidl_typesupport_introspection_c/field_types.h>
+    <rosidl_typesupport_introspection_c/identifier.h>
+    <rosidl_typesupport_introspection_c/message_introspection.h>
+    <rosidl_typesupport_introspection_c/service_introspection.h>
+    <rosidl_typesupport_introspection_c/visibility_control.h>
+)
+
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   target_link_libraries(
     ${rosidl_generate_interfaces_TARGET}${_target_suffix} PUBLIC

@@ -30,30 +30,37 @@ from typing import Union
 
 try:
     from rosidl_parser._standalone_parser import Lark_StandAlone as _StandaloneLark
-    from rosidl_parser._standalone_parser import Token
-    from rosidl_parser._standalone_parser import Tree
+    from rosidl_parser._standalone_parser import Token as _StandaloneToken
+    from rosidl_parser._standalone_parser import Tree as _StandaloneTree
 
-    if not hasattr(Tree, 'scan_values'):
+    if not hasattr(_StandaloneTree, 'scan_values'):
         def _scan_values(self, pred):
             for c in self.children:
-                if isinstance(c, Tree):
+                if isinstance(c, _StandaloneTree):
                     yield from c.scan_values(pred)
                 elif pred(c):
                     yield c
-        Tree.scan_values = _scan_values  # type: ignore[attr-defined]
+        _StandaloneTree.scan_values = _scan_values  # type: ignore[attr-defined]
 
     _HAVE_STANDALONE = True
 except ImportError:
-    from lark import Lark
-    from lark.lexer import Token
-    from lark.tree import Tree
-
+    _StandaloneLark = None  # type: ignore[assignment,misc]
+    _StandaloneToken = None  # type: ignore[assignment,misc]
+    _StandaloneTree = None  # type: ignore[assignment,misc]
     _HAVE_STANDALONE = False
 
 try:
+    from lark.lexer import Token as _LarkToken
     from lark.tree import pydot__tree_to_png
+    from lark.tree import Tree as _LarkTree
 except ImportError:
+    _LarkToken = None  # type: ignore[assignment,misc]
+    _LarkTree = None  # type: ignore[assignment,misc]
     pydot__tree_to_png = None
+
+# Tree and Token types to support both standalone parser and dynamic Lark fallback
+Tree = tuple(t for t in (_StandaloneTree, _LarkTree) if t is not None)  # type: ignore[assignment,misc]
+Token = tuple(t for t in (_StandaloneToken, _LarkToken) if t is not None)  # type: ignore[assignment,misc]
 
 from rosidl_parser.definition import AbstractNestableType
 from rosidl_parser.definition import AbstractNestedType
@@ -163,10 +170,16 @@ def get_ast_from_idl_string(idl_string: str) -> 'ParseTree':
         if _HAVE_STANDALONE:
             _parser = _StandaloneLark()
         else:
+            from lark import Lark
             grammar_file = os.path.join(os.path.dirname(__file__), 'grammar.lark')
             with open(grammar_file, mode='r', encoding='utf-8') as h:
                 grammar = h.read()
-            _parser = Lark(grammar, start='specification', maybe_placeholders=False)
+            _parser = Lark(
+                grammar,
+                parser='lalr',
+                start='specification',
+                maybe_placeholders=False,
+            )
     return _parser.parse(idl_string)
 
 

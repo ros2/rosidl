@@ -18,7 +18,6 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <exec_depend>python3-lark-parser</exec_depend>
   <exec_depend>rosidl_adapter</exec_depend> <!-- TODO(dirk-thomas) only for backward compatibilty -->
 
   <test_depend>ament_cmake_mypy</test_depend>

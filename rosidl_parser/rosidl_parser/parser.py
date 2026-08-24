@@ -28,10 +28,32 @@ from typing import Tuple
 from typing import TYPE_CHECKING
 from typing import Union
 
-from lark import Lark
-from lark.lexer import Token
-from lark.tree import pydot__tree_to_png
-from lark.tree import Tree
+try:
+    from rosidl_parser._standalone_parser import Lark_StandAlone as _StandaloneLark
+    from rosidl_parser._standalone_parser import Token
+    from rosidl_parser._standalone_parser import Tree
+
+    if not hasattr(Tree, 'scan_values'):
+        def _scan_values(self, pred):
+            for c in self.children:
+                if isinstance(c, Tree):
+                    yield from c.scan_values(pred)
+                elif pred(c):
+                    yield c
+        Tree.scan_values = _scan_values  # type: ignore[attr-defined]
+
+    _HAVE_STANDALONE = True
+except ImportError:
+    from lark import Lark
+    from lark.lexer import Token
+    from lark.tree import Tree
+
+    _HAVE_STANDALONE = False
+
+try:
+    from lark.tree import pydot__tree_to_png
+except ImportError:
+    pydot__tree_to_png = None
 
 from rosidl_parser.definition import AbstractNestableType
 from rosidl_parser.definition import AbstractNestedType
@@ -79,11 +101,7 @@ if TYPE_CHECKING:
 
 AbstractTypeAlias = Union[AbstractNestableType, BasicType, BoundedSequence, UnboundedSequence]
 
-grammar_file = os.path.join(os.path.dirname(__file__), 'grammar.lark')
-with open(grammar_file, mode='r', encoding='utf-8') as h:
-    grammar = h.read()
-
-_parser: Optional[Lark] = None
+_parser: Optional[Union['_StandaloneLark', 'Lark']] = None
 _idl_file_cache: Dict[Tuple[str, int], IdlFile] = {}
 _idl_string_cache: Dict[str, IdlContent] = {}
 
@@ -128,10 +146,11 @@ def parse_idl_string(idl_string: str, png_file: Optional[str] = None) -> IdlCont
 
     if png_file:
         os.makedirs(os.path.dirname(png_file), exist_ok=True)
-        try:
-            pydot__tree_to_png(tree, png_file)
-        except ImportError:
-            pass
+        if pydot__tree_to_png is not None:
+            try:
+                pydot__tree_to_png(tree, png_file)
+            except Exception:
+                pass
     elif png_file is None:
         _idl_string_cache[idl_string] = content
 
@@ -141,7 +160,13 @@ def parse_idl_string(idl_string: str, png_file: Optional[str] = None) -> IdlCont
 def get_ast_from_idl_string(idl_string: str) -> 'ParseTree':
     global _parser
     if _parser is None:
-        _parser = Lark(grammar, start='specification', maybe_placeholders=False)
+        if _HAVE_STANDALONE:
+            _parser = _StandaloneLark()
+        else:
+            grammar_file = os.path.join(os.path.dirname(__file__), 'grammar.lark')
+            with open(grammar_file, mode='r', encoding='utf-8') as h:
+                grammar = h.read()
+            _parser = Lark(grammar, start='specification', maybe_placeholders=False)
     return _parser.parse(idl_string)
 
 

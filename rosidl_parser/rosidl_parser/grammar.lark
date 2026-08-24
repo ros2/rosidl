@@ -9,6 +9,8 @@
 //   Only supported on modules, structs, members, enums and enum identifiers
 //
 // To regenerate _standalone_parser.py from this grammar:
+//   python3 -m rosidl_parser.generate_standalone_parser
+// or:
 //   python3 -m lark.tools.standalone -s specification grammar.lark -o _standalone_parser.py
 
 %import common.DIGIT

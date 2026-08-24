@@ -604,3 +604,23 @@ def test_standalone_parser_dynamic_parity() -> None:
         t_standalone = standalone_parser.parse(idl)
         assert t_dynamic.pretty() == t_standalone.pretty(), f'AST mismatch on: {idl}'
 
+
+def test_dynamic_lark_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
+    try:
+        import lark  # noqa: F401
+    except ImportError:
+        pytest.skip('Lark is not installed for fallback test')
+
+    import rosidl_parser.parser as p
+    # Simulate standalone parser being unavailable
+    monkeypatch.setattr(p, '_HAVE_STANDALONE', False)
+    monkeypatch.setattr(p, '_parser', None)
+
+    idl_str = 'module test { module msg { struct Foo { int32 x; }; }; };'
+    tree = p.get_ast_from_idl_string(idl_str)
+    assert tree.data == 'specification'
+    content = p.extract_content_from_ast(tree)
+    assert len(content.elements) == 1
+    assert content.elements[0].structure.namespaced_type.name == 'Foo'
+
+

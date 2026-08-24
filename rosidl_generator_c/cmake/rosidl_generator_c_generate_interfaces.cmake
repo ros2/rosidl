@@ -173,6 +173,21 @@ target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} PUBL
   rosidl_runtime_c::rosidl_runtime_c
   rosidl_typesupport_interface::rosidl_typesupport_interface
   rcutils::rcutils)
+
+target_precompile_headers(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+  PRIVATE
+    <assert.h>
+    <stdbool.h>
+    <stddef.h>
+    <stdint.h>
+    <stdlib.h>
+    <string.h>
+    <rcutils/allocator.h>
+    <rosidl_runtime_c/message_type_support_struct.h>
+    <rosidl_runtime_c/service_type_support_struct.h>
+    <rosidl_runtime_c/action_type_support_struct.h>
+    <rosidl_typesupport_interface/macros.h>
+)
 add_dependencies(
   ${rosidl_generate_interfaces_TARGET}${_target_suffix}
   ${rosidl_generate_interfaces_TARGET}__rosidl_generator_type_description)

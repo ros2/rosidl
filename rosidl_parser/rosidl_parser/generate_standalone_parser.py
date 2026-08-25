@@ -54,8 +54,26 @@ def generate_standalone_parser() -> None:
     code = out.getvalue()
 
     header = (
+        '# type: ignore\n'
+        '# flake8: noqa\n'
         '# SHA-256 of grammar.lark used to generate this file:\n'
         f'_GRAMMAR_SHA256 = {grammar_sha256!r}\n\n'
+    )
+    # Suppress Python 3.14 sre_parse / sre_constants deprecation warnings
+    sre_patch = (
+        'import warnings\n'
+        'with warnings.catch_warnings():\n'
+        '    warnings.simplefilter("ignore", DeprecationWarning)\n'
+        '    try:\n'
+        '        from re import _parser as sre_parse\n'
+        '        from re import _constants as sre_constants\n'
+        '    except ImportError:\n'
+        '        import sre_parse\n'
+        '        import sre_constants\n'
+    )
+    code = code.replace(
+        'import sre_parse\nimport sre_constants\n',
+        sre_patch
     )
     final_code = header + code
 

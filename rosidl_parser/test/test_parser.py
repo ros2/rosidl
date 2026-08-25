@@ -498,8 +498,6 @@ def test_serialization_roundtrip() -> None:
     from rosidl_parser.serialization import (
         dict_to_idl_content,
         idl_content_to_dict,
-        load_ast_json,
-        save_ast_json,
     )
     for loc in (MESSAGE_IDL_LOCATOR, SERVICE_IDL_LOCATOR, ACTION_IDL_LOCATOR):
         idl_file = parse_idl_file(loc)

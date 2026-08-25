@@ -14,7 +14,11 @@
 
 import json
 import pathlib
-from typing import Any, Dict, Union
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Union
 
 from rosidl_parser import definition
 

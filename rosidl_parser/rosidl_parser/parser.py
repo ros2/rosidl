@@ -28,10 +28,19 @@ from typing import Tuple
 from typing import TYPE_CHECKING
 from typing import Union
 
-from lark import Lark
-from lark.lexer import Token
-from lark.tree import pydot__tree_to_png
-from lark.tree import Tree
+try:
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', DeprecationWarning)
+        from lark import Lark
+        from lark.lexer import Token
+        from lark.tree import pydot__tree_to_png
+        from lark.tree import Tree
+except ImportError:
+    Lark = None
+    Token = None
+    pydot__tree_to_png = None
+    Tree = ()
 
 from rosidl_parser.definition import AbstractNestableType
 from rosidl_parser.definition import AbstractNestedType
@@ -64,6 +73,7 @@ from rosidl_parser.definition import UnboundedSequence
 from rosidl_parser.definition import UnboundedString
 from rosidl_parser.definition import UnboundedWString
 from rosidl_parser.definition import ValueType
+from rosidl_parser.serialization import load_ast_json
 
 if TYPE_CHECKING:
     from typing import TypeVar
@@ -78,9 +88,6 @@ if TYPE_CHECKING:
     ParseTree: TypeAlias = Tree
 
 AbstractTypeAlias = Union[AbstractNestableType, BasicType, BoundedSequence, UnboundedSequence]
-
-from rosidl_parser.serialization import load_ast_json
-from rosidl_parser.serialization import save_ast_json
 
 grammar_file = os.path.join(os.path.dirname(__file__), 'grammar.lark')
 with open(grammar_file, mode='r', encoding='utf-8') as h:

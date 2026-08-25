@@ -28,19 +28,13 @@ from typing import Tuple
 from typing import TYPE_CHECKING
 from typing import Union
 
-try:
-    import warnings
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore', DeprecationWarning)
-        from lark import Lark
-        from lark.lexer import Token
-        from lark.tree import pydot__tree_to_png
-        from lark.tree import Tree
-except ImportError:
-    Lark = None
-    Token = None
-    pydot__tree_to_png = None
-    Tree = ()
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter('ignore', DeprecationWarning)
+    from lark import Lark
+    from lark.lexer import Token
+    from lark.tree import pydot__tree_to_png
+    from lark.tree import Tree
 
 from rosidl_parser.definition import AbstractNestableType
 from rosidl_parser.definition import AbstractNestedType

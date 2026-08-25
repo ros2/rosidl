@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import inspect
 from io import StringIO
 import json
 import os
@@ -28,8 +29,26 @@ try:
 except ImportError:
     em_has_configuration = False
 
+from rosidl_parser.cache import compute_cache_key
+from rosidl_parser.cache import get_package_version
+from rosidl_parser.cache import restore_files_from_cache
+from rosidl_parser.cache import save_files_to_cache
 from rosidl_parser.definition import IdlLocator
 from rosidl_parser.parser import parse_idl_file
+
+
+def _get_caller_package_name() -> Optional[str]:
+    frame = inspect.currentframe()
+    try:
+        # Walk up: _get_caller_package_name -> generate_files -> caller
+        caller = frame.f_back.f_back if frame and frame.f_back else None
+        if caller is None:
+            return None
+        module = caller.f_globals.get('__name__', '')
+        # e.g. 'rosidl_generator_cpp' from 'rosidl_generator_cpp.__init__'
+        return module.split('.')[0] if module else None
+    finally:
+        del frame
 
 
 def convert_camel_case_to_lower_case_underscore(value: str) -> str:
@@ -72,6 +91,7 @@ def generate_files(
 
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
     generated_files: List[str] = []
+    output_dir = args['output_dir']
 
     type_description_files = {}
     for description_tuple in args.get('type_description_tuples', []):
@@ -102,12 +122,40 @@ def generate_files(
         type_source_file = ros_interface_files.get(type_source_key, locator.get_absolute_path())
         if not keep_case:
             idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)
+
+        output_mapping = {
+            template_file: os.path.join(str(idl_rel_path.parent), generated_filename % idl_stem)
+            for template_file, generated_filename in mapping.items()
+        }
+        generator_name = pathlib.Path(generator_arguments_file).stem
+        if generator_name.endswith('__arguments'):
+            generator_name = generator_name[:-len('__arguments')]
+        caller_pkg = _get_caller_package_name()
+        cache_context = {
+            'package_name': args['package_name'],
+            'generator_name': generator_name,
+            'rosidl_parser_version': get_package_version('rosidl_parser'),
+            'generator_version': get_package_version(caller_pkg or generator_name),
+            'output_mapping': output_mapping,
+        }
+        if additional_context:
+            cache_context.update(additional_context)
+        cache_key = compute_cache_key(
+            locator.get_absolute_path(),
+            *[template_basepath / tf for tf in sorted(mapping.keys())],
+            cache_context,
+            type_description_info
+        )
+        if cache_key:
+            output_files = restore_files_from_cache(cache_key, generator_name, output_dir)
+            if output_files:
+                generated_files.extend(output_files)
+                continue
+
         try:
             idl_file = parse_idl_file(locator)
-            for template_file, generated_filename in mapping.items():
-                generated_file = os.path.join(
-                    args['output_dir'], str(idl_rel_path.parent),
-                    generated_filename % idl_stem)
+            for template_file, rel_generated_file in output_mapping.items():
+                generated_file = os.path.join(output_dir, rel_generated_file)
                 generated_files.append(generated_file)
                 data = {
                     'package_name': args['package_name'],
@@ -123,6 +171,10 @@ def generate_files(
                     generated_file, minimum_timestamp=latest_target_timestamp,
                     template_basepath=template_basepath,
                     post_process_callback=post_process_callback)
+            if cache_key:
+                save_files_to_cache(
+                    cache_key, generator_name,
+                    list(output_mapping.values()), output_dir)
         except Exception as e:
             print(
                 'Error processing idl file: ' +

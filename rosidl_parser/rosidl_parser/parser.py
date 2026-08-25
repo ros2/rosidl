@@ -47,20 +47,26 @@ except ImportError:
     _StandaloneLark = None  # type: ignore[assignment,misc]
     _StandaloneToken = None  # type: ignore[assignment,misc]
     _StandaloneTree = None  # type: ignore[assignment,misc]
-    _HAVE_STANDALONE = False
-
-try:
-    from lark.lexer import Token as _LarkToken
-    from lark.tree import pydot__tree_to_png
-    from lark.tree import Tree as _LarkTree
-except ImportError:
-    _LarkToken = None  # type: ignore[assignment,misc]
-    _LarkTree = None  # type: ignore[assignment,misc]
+if _HAVE_STANDALONE:
+    Tree = _StandaloneTree  # type: ignore[assignment,misc]
+    Token = _StandaloneToken  # type: ignore[assignment,misc]
     pydot__tree_to_png = None
-
-# Tree and Token types to support both standalone parser and dynamic Lark fallback
-Tree = tuple(t for t in (_StandaloneTree, _LarkTree) if t is not None)  # type: ignore[assignment,misc]
-Token = tuple(t for t in (_StandaloneToken, _LarkToken) if t is not None)  # type: ignore[assignment,misc]
+else:
+    try:
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', DeprecationWarning)
+            from lark.lexer import Token as _LarkToken
+            from lark.tree import pydot__tree_to_png
+            from lark.tree import Tree as _LarkTree
+        Tree = _LarkTree  # type: ignore[assignment,misc]
+        Token = _LarkToken  # type: ignore[assignment,misc]
+    except ImportError:
+        _LarkToken = None  # type: ignore[assignment,misc]
+        _LarkTree = None  # type: ignore[assignment,misc]
+        pydot__tree_to_png = None
+        Tree = ()  # type: ignore[assignment,misc]
+        Token = ()  # type: ignore[assignment,misc]
 
 from rosidl_parser.definition import AbstractNestableType
 from rosidl_parser.definition import AbstractNestedType

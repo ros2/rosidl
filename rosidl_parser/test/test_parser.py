@@ -607,7 +607,12 @@ def test_standalone_parser_dynamic_parity() -> None:
 
 def test_dynamic_lark_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
     try:
-        import lark  # noqa: F401
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', DeprecationWarning)
+            from lark.lexer import Token as _LarkToken
+            from lark.tree import Tree as _LarkTree
+            import lark  # noqa: F401
     except ImportError:
         pytest.skip('Lark is not installed for fallback test')
 
@@ -615,12 +620,16 @@ def test_dynamic_lark_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
     # Simulate standalone parser being unavailable
     monkeypatch.setattr(p, '_HAVE_STANDALONE', False)
     monkeypatch.setattr(p, '_parser', None)
+    monkeypatch.setattr(p, 'Tree', _LarkTree)
+    monkeypatch.setattr(p, 'Token', _LarkToken)
 
     idl_str = 'module test { module msg { struct Foo { int32 x; }; }; };'
     tree = p.get_ast_from_idl_string(idl_str)
     assert tree.data == 'specification'
     content = p.extract_content_from_ast(tree)
     assert len(content.elements) == 1
-    assert content.elements[0].structure.namespaced_type.name == 'Foo'
+    elem = content.elements[0]
+    assert isinstance(elem, Message)
+    assert elem.structure.namespaced_type.name == 'Foo'
 
 

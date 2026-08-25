@@ -28,6 +28,12 @@ from typing import Tuple
 from typing import TYPE_CHECKING
 from typing import Union
 
+if TYPE_CHECKING:
+    from lark import Lark
+    from lark.lexer import Token
+    from lark.tree import pydot__tree_to_png
+    from lark.tree import Tree
+
 try:
     from rosidl_parser._standalone_parser import Lark_StandAlone as _StandaloneLark
     from rosidl_parser._standalone_parser import Token as _StandaloneToken
@@ -47,26 +53,29 @@ except ImportError:
     _StandaloneLark = None  # type: ignore[assignment,misc]
     _StandaloneToken = None  # type: ignore[assignment,misc]
     _StandaloneTree = None  # type: ignore[assignment,misc]
-if _HAVE_STANDALONE:
-    Tree = _StandaloneTree  # type: ignore[assignment,misc]
-    Token = _StandaloneToken  # type: ignore[assignment,misc]
-    pydot__tree_to_png = None
-else:
-    try:
-        import warnings
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', DeprecationWarning)
-            from lark.lexer import Token as _LarkToken
-            from lark.tree import pydot__tree_to_png
-            from lark.tree import Tree as _LarkTree
-        Tree = _LarkTree  # type: ignore[assignment,misc]
-        Token = _LarkToken  # type: ignore[assignment,misc]
-    except ImportError:
-        _LarkToken = None  # type: ignore[assignment,misc]
-        _LarkTree = None  # type: ignore[assignment,misc]
+    _HAVE_STANDALONE = False
+
+if not TYPE_CHECKING:
+    if _HAVE_STANDALONE:
+        Tree = _StandaloneTree
+        Token = _StandaloneToken
         pydot__tree_to_png = None
-        Tree = ()  # type: ignore[assignment,misc]
-        Token = ()  # type: ignore[assignment,misc]
+    else:
+        try:
+            import warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', DeprecationWarning)
+                from lark.lexer import Token as _LarkToken
+                from lark.tree import pydot__tree_to_png
+                from lark.tree import Tree as _LarkTree
+            Tree = _LarkTree
+            Token = _LarkToken
+        except ImportError:
+            _LarkToken = None
+            _LarkTree = None
+            pydot__tree_to_png = None
+            Tree = ()
+            Token = ()
 
 from rosidl_parser.definition import AbstractNestableType
 from rosidl_parser.definition import AbstractNestedType

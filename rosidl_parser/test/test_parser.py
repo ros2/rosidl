@@ -577,9 +577,13 @@ def test_standalone_parser_in_sync() -> None:
 
 def test_standalone_parser_dynamic_parity() -> None:
     try:
-        from lark import Lark
-        from rosidl_parser._standalone_parser import Lark_StandAlone
-    except ImportError:
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', DeprecationWarning)
+            from lark import Lark
+        import rosidl_parser._standalone_parser as sp
+        Lark_StandAlone = getattr(sp, 'Lark_StandAlone')
+    except (ImportError, AttributeError):
         pytest.skip('Lark or _standalone_parser not available for parity test')
 
     grammar_path = pathlib.Path(__file__).parent.parent / 'rosidl_parser' / 'grammar.lark'
@@ -631,5 +635,3 @@ def test_dynamic_lark_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
     elem = content.elements[0]
     assert isinstance(elem, Message)
     assert elem.structure.namespaced_type.name == 'Foo'
-
-

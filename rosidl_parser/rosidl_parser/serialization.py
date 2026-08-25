@@ -54,6 +54,12 @@ def type_to_dict(t: definition.AbstractType) -> Dict[str, Any]:
     raise ValueError(f'Unknown type: {t}')
 
 
+def dict_to_nestable_type(d: Dict[str, Any]) -> definition.AbstractNestableType:
+    val_type = dict_to_type(d)
+    assert isinstance(val_type, definition.AbstractNestableType)
+    return val_type
+
+
 def dict_to_type(d: Dict[str, Any]) -> definition.AbstractType:
     kind = d['type']
     if kind == 'BasicType':
@@ -71,12 +77,12 @@ def dict_to_type(d: Dict[str, Any]) -> definition.AbstractType:
     elif kind == 'UnboundedWString':
         return definition.UnboundedWString()
     elif kind == 'Array':
-        return definition.Array(dict_to_type(d['value_type']), d['size'])
+        return definition.Array(dict_to_nestable_type(d['value_type']), d['size'])
     elif kind == 'BoundedSequence':
         return definition.BoundedSequence(
-            dict_to_type(d['value_type']), d['maximum_size'])
+            dict_to_nestable_type(d['value_type']), d['maximum_size'])
     elif kind == 'UnboundedSequence':
-        return definition.UnboundedSequence(dict_to_type(d['value_type']))
+        return definition.UnboundedSequence(dict_to_nestable_type(d['value_type']))
     raise ValueError(f'Unknown type kind: {kind}')
 
 
@@ -191,7 +197,7 @@ def dict_to_action(d: Dict[str, Any]) -> definition.Action:
 
 
 def idl_content_to_dict(content: definition.IdlContent) -> Dict[str, Any]:
-    elements = []
+    elements: List[Dict[str, Any]] = []
     for el in content.elements:
         if isinstance(el, definition.Include):
             elements.append({'kind': 'Include', 'locator': el.locator})

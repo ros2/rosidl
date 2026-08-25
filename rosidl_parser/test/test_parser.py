@@ -537,10 +537,11 @@ module test_pkg {
     # Clear in-memory cache and re-parse - should load from .idl.json
     clear_ast_cache()
     ast2 = parse_idl_file(locator)
-    assert isinstance(ast2.content.elements[0], Message)
-    assert ast2.content.elements[0].structure.namespaced_type.name == 'Sample'
-    assert ast2.content.elements[0].structure.members[0].name == 'data'
-    assert ast2.content.elements[0].structure.members[1].name == 'name'
+    elem2 = ast2.content.elements[0]
+    assert isinstance(elem2, Message)
+    assert elem2.structure.namespaced_type.name == 'Sample'
+    assert elem2.structure.members[0].name == 'data'
+    assert elem2.structure.members[1].name == 'name'
 
     # Modify IDL file mtime/content
     time.sleep(0.01)
@@ -555,8 +556,9 @@ module test_pkg {
 """, encoding='utf-8')
     clear_ast_cache()
     ast3 = parse_idl_file(locator)
-    assert isinstance(ast3.content.elements[0], Message)
-    assert ast3.content.elements[0].structure.members[0].name == 'modified_data'
+    elem3 = ast3.content.elements[0]
+    assert isinstance(elem3, Message)
+    assert elem3.structure.members[0].name == 'modified_data'
 
 
 def test_parse_idl_file_memoization(tmp_path: pathlib.Path) -> None:

@@ -35,9 +35,9 @@ if TYPE_CHECKING:
     from lark.tree import Tree
 
 try:
-    from rosidl_parser._standalone_parser import Lark_StandAlone as _StandaloneLark
-    from rosidl_parser._standalone_parser import Token as _StandaloneToken
-    from rosidl_parser._standalone_parser import Tree as _StandaloneTree
+    from rosidl_parser._standalone_parser import Lark_StandAlone as _StandaloneLark  # type: ignore[attr-defined]  # noqa: E501
+    from rosidl_parser._standalone_parser import Token as _StandaloneToken  # type: ignore[attr-defined]
+    from rosidl_parser._standalone_parser import Tree as _StandaloneTree  # type: ignore[attr-defined]
 
     if not hasattr(_StandaloneTree, 'scan_values'):
         def _scan_values(self, pred):
@@ -57,9 +57,9 @@ except ImportError:
 
 if not TYPE_CHECKING:
     if _HAVE_STANDALONE:
-        Tree = _StandaloneTree
-        Token = _StandaloneToken
-        pydot__tree_to_png = None
+        Tree = _StandaloneTree  # noqa: F811
+        Token = _StandaloneToken  # noqa: F811
+        pydot__tree_to_png = None  # noqa: F811
     else:
         try:
             import warnings
@@ -68,14 +68,14 @@ if not TYPE_CHECKING:
                 from lark.lexer import Token as _LarkToken
                 from lark.tree import pydot__tree_to_png
                 from lark.tree import Tree as _LarkTree
-            Tree = _LarkTree
-            Token = _LarkToken
+            Tree = _LarkTree  # noqa: F811
+            Token = _LarkToken  # noqa: F811
         except ImportError:
             _LarkToken = None
             _LarkTree = None
             pydot__tree_to_png = None
-            Tree = ()
-            Token = ()
+            Tree = ()  # noqa: F811
+            Token = ()  # noqa: F811
 
 from rosidl_parser.definition import AbstractNestableType
 from rosidl_parser.definition import AbstractNestedType

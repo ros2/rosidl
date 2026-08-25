@@ -519,7 +519,9 @@ module test_pkg {
     clear_ast_cache()
     ast3 = parse_idl_file(locator)
     assert ast3 is not ast1
-    assert ast3.content.elements[0].structure.namespaced_type.name == 'TestMsg'
+    elem3 = ast3.content.elements[0]
+    assert isinstance(elem3, Message)
+    assert elem3.structure.namespaced_type.name == 'TestMsg'
 
     # Modify file mtime/content - should invalidate cache
     time.sleep(0.01)
@@ -534,7 +536,9 @@ module test_pkg {
 """, encoding='utf-8')
     ast4 = parse_idl_file(locator)
     assert ast4 is not ast3
-    struct = ast4.content.elements[0].structure
+    elem4 = ast4.content.elements[0]
+    assert isinstance(elem4, Message)
+    struct = elem4.structure
     assert struct.members[0].name == 'modified_data'
 
 

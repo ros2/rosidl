@@ -35,9 +35,11 @@ if TYPE_CHECKING:
     from lark.tree import Tree
 
 try:
-    from rosidl_parser._standalone_parser import Lark_StandAlone as _StandaloneLark  # type: ignore[attr-defined]  # noqa: E501
-    from rosidl_parser._standalone_parser import Token as _StandaloneToken  # type: ignore[attr-defined]
-    from rosidl_parser._standalone_parser import Tree as _StandaloneTree  # type: ignore[attr-defined]
+    from rosidl_parser._standalone_parser import (
+        Lark_StandAlone as _StandaloneLark,  # type: ignore[attr-defined]
+        Token as _StandaloneToken,  # type: ignore[attr-defined]
+        Tree as _StandaloneTree,  # type: ignore[attr-defined]
+    )
 
     if not hasattr(_StandaloneTree, 'scan_values'):
         def _scan_values(self, pred):

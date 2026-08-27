@@ -34,27 +34,31 @@ if TYPE_CHECKING:
     from lark.tree import pydot__tree_to_png
     from lark.tree import Tree
 
-try:
-    from rosidl_parser._standalone_parser import (
-        Lark_StandAlone as _StandaloneLark,  # type: ignore[attr-defined]
-        Token as _StandaloneToken,  # type: ignore[attr-defined]
-        Tree as _StandaloneTree,  # type: ignore[attr-defined]
-    )
+    _StandaloneLark: Any = None
+    _StandaloneToken: Any = None
+    _StandaloneTree: Any = None
 
-    if not hasattr(_StandaloneTree, 'scan_values'):
+try:
+    import rosidl_parser._standalone_parser as _standalone_parser
+
+    _StandaloneLark = getattr(_standalone_parser, 'Lark_StandAlone', None)
+    _StandaloneToken = getattr(_standalone_parser, 'Token', None)
+    _StandaloneTree = getattr(_standalone_parser, 'Tree', None)
+
+    if _StandaloneTree is not None and not hasattr(_StandaloneTree, 'scan_values'):
         def _scan_values(self, pred):
             for c in self.children:
                 if isinstance(c, _StandaloneTree):
                     yield from c.scan_values(pred)
                 elif pred(c):
                     yield c
-        _StandaloneTree.scan_values = _scan_values  # type: ignore[attr-defined]
+        setattr(_StandaloneTree, 'scan_values', _scan_values)
 
-    _HAVE_STANDALONE = True
+    _HAVE_STANDALONE = _StandaloneLark is not None and _StandaloneTree is not None
 except ImportError:
-    _StandaloneLark = None  # type: ignore[assignment,misc]
-    _StandaloneToken = None  # type: ignore[assignment,misc]
-    _StandaloneTree = None  # type: ignore[assignment,misc]
+    _StandaloneLark = None
+    _StandaloneToken = None
+    _StandaloneTree = None
     _HAVE_STANDALONE = False
 
 if not TYPE_CHECKING:
@@ -185,6 +189,7 @@ def get_ast_from_idl_string(idl_string: str) -> 'ParseTree':
     global _parser
     if _parser is None:
         if _HAVE_STANDALONE:
+            assert _StandaloneLark is not None
             _parser = _StandaloneLark()
         else:
             from lark import Lark

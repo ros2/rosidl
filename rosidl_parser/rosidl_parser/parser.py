@@ -28,10 +28,61 @@ from typing import Tuple
 from typing import TYPE_CHECKING
 from typing import Union
 
-from lark import Lark
-from lark.lexer import Token
-from lark.tree import pydot__tree_to_png
-from lark.tree import Tree
+if TYPE_CHECKING:
+    from typing import Any
+    from lark import Lark
+    from lark.lexer import Token
+    from lark.tree import pydot__tree_to_png
+    from lark.tree import Tree
+
+    _StandaloneLark: Any = None
+    _StandaloneToken: Any = None
+    _StandaloneTree: Any = None
+
+try:
+    import rosidl_parser._standalone_parser as _standalone_parser
+
+    _StandaloneLark = getattr(_standalone_parser, 'Lark_StandAlone', None)
+    _StandaloneToken = getattr(_standalone_parser, 'Token', None)
+    _StandaloneTree = getattr(_standalone_parser, 'Tree', None)
+
+    if _StandaloneTree is not None and not hasattr(_StandaloneTree, 'scan_values'):
+        def _scan_values(self, pred):
+            for c in self.children:
+                if isinstance(c, _StandaloneTree):
+                    yield from c.scan_values(pred)
+                elif pred(c):
+                    yield c
+        setattr(_StandaloneTree, 'scan_values', _scan_values)
+
+    _HAVE_STANDALONE = _StandaloneLark is not None and _StandaloneTree is not None
+except ImportError:
+    _StandaloneLark = None
+    _StandaloneToken = None
+    _StandaloneTree = None
+    _HAVE_STANDALONE = False
+
+if not TYPE_CHECKING:
+    if _HAVE_STANDALONE:
+        Tree = _StandaloneTree  # noqa: F811
+        Token = _StandaloneToken  # noqa: F811
+        pydot__tree_to_png = None  # noqa: F811
+    else:
+        try:
+            import warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', DeprecationWarning)
+                from lark.lexer import Token as _LarkToken
+                from lark.tree import pydot__tree_to_png
+                from lark.tree import Tree as _LarkTree
+            Tree = _LarkTree  # noqa: F811
+            Token = _LarkToken  # noqa: F811
+        except ImportError:
+            _LarkToken = None
+            _LarkTree = None
+            pydot__tree_to_png = None
+            Tree = ()  # noqa: F811
+            Token = ()  # noqa: F811
 
 from rosidl_parser.definition import AbstractNestableType
 from rosidl_parser.definition import AbstractNestedType
@@ -79,11 +130,7 @@ if TYPE_CHECKING:
 
 AbstractTypeAlias = Union[AbstractNestableType, BasicType, BoundedSequence, UnboundedSequence]
 
-grammar_file = os.path.join(os.path.dirname(__file__), 'grammar.lark')
-with open(grammar_file, mode='r', encoding='utf-8') as h:
-    grammar = h.read()
-
-_parser: Optional[Lark] = None
+_parser: Optional[Union['_StandaloneLark', 'Lark']] = None
 _idl_file_cache: Dict[Tuple[str, int], IdlFile] = {}
 _idl_string_cache: Dict[str, IdlContent] = {}
 
@@ -128,10 +175,11 @@ def parse_idl_string(idl_string: str, png_file: Optional[str] = None) -> IdlCont
 
     if png_file:
         os.makedirs(os.path.dirname(png_file), exist_ok=True)
-        try:
-            pydot__tree_to_png(tree, png_file)
-        except ImportError:
-            pass
+        if pydot__tree_to_png is not None:
+            try:
+                pydot__tree_to_png(tree, png_file)
+            except Exception:
+                pass
     elif png_file is None:
         _idl_string_cache[idl_string] = content
 
@@ -141,7 +189,20 @@ def parse_idl_string(idl_string: str, png_file: Optional[str] = None) -> IdlCont
 def get_ast_from_idl_string(idl_string: str) -> 'ParseTree':
     global _parser
     if _parser is None:
-        _parser = Lark(grammar, start='specification', maybe_placeholders=False)
+        if _HAVE_STANDALONE:
+            assert _StandaloneLark is not None
+            _parser = _StandaloneLark()
+        else:
+            from lark import Lark
+            grammar_file = os.path.join(os.path.dirname(__file__), 'grammar.lark')
+            with open(grammar_file, mode='r', encoding='utf-8') as h:
+                grammar = h.read()
+            _parser = Lark(
+                grammar,
+                parser='lalr',
+                start='specification',
+                maybe_placeholders=False,
+            )
     return _parser.parse(idl_string)
 
 

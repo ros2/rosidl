@@ -24,6 +24,7 @@ from typing import Literal
 from typing import Match
 from typing import Optional
 from typing import Pattern
+from typing import Tuple
 from typing import TYPE_CHECKING
 from typing import Union
 
@@ -83,19 +84,45 @@ with open(grammar_file, mode='r', encoding='utf-8') as h:
     grammar = h.read()
 
 _parser: Optional[Lark] = None
+_idl_file_cache: Dict[Tuple[str, int], IdlFile] = {}
+_idl_string_cache: Dict[str, IdlContent] = {}
+
+
+def clear_ast_cache() -> None:
+    """Clear the in-process AST cache."""
+    _idl_file_cache.clear()
+    _idl_string_cache.clear()
 
 
 def parse_idl_file(locator: IdlLocator, png_file: Optional[str] = None) -> IdlFile:
-    string = locator.get_absolute_path().read_text(encoding='utf-8')
+    abs_path = locator.get_absolute_path()
+    if png_file is None:
+        try:
+            mtime_ns = abs_path.stat().st_mtime_ns
+            cache_key = (str(abs_path), mtime_ns)
+            if cache_key in _idl_file_cache:
+                return _idl_file_cache[cache_key]
+        except OSError:
+            cache_key = None
+    else:
+        cache_key = None
+
+    string = abs_path.read_text(encoding='utf-8')
     try:
         content = parse_idl_string(string, png_file=png_file)
     except Exception as e:
-        print(str(e), str(locator.get_absolute_path()), file=sys.stderr)
+        print(str(e), str(abs_path), file=sys.stderr)
         raise
-    return IdlFile(locator, content)
+    idl_file = IdlFile(locator, content)
+    if cache_key is not None:
+        _idl_file_cache[cache_key] = idl_file
+    return idl_file
 
 
 def parse_idl_string(idl_string: str, png_file: Optional[str] = None) -> IdlContent:
+    if png_file is None and idl_string in _idl_string_cache:
+        return _idl_string_cache[idl_string]
+
     tree = get_ast_from_idl_string(idl_string)
     content = extract_content_from_ast(tree)
 
@@ -105,6 +132,8 @@ def parse_idl_string(idl_string: str, png_file: Optional[str] = None) -> IdlCont
             pydot__tree_to_png(tree, png_file)
         except ImportError:
             pass
+    elif png_file is None:
+        _idl_string_cache[idl_string] = content
 
     return content
 

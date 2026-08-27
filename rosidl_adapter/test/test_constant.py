@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import math
+
 import pytest
 
 from rosidl_adapter.parser import Constant
@@ -29,6 +31,11 @@ def test_constant_constructor() -> None:
 
     with pytest.raises(ValueError):
         Constant('bool', 'FOO', None)  # type: ignore[arg-type]
+
+    # NaN is case insensitive in python, so test a few variations.
+    for nan_string in ['nan', 'Nan', 'NaN', 'NAN', 'nan', 'Nan', 'NaN', 'NAN']:
+        value = Constant('float32', 'FOO', nan_string)
+        assert math.isnan(value.value)
 
 
 def test_constant_methods() -> None:

@@ -1,0 +1,2 @@
+float32 FLOAT32_NAN=NaN
+float64 FLOAT64_NAN=nan

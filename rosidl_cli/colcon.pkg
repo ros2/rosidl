@@ -1,0 +1,6 @@
+{
+    "hooks": [
+        "share/rosidl_cli/environment/rosidl-argcomplete.bash",
+        "share/rosidl_cli/environment/rosidl-argcomplete.zsh"
+    ]
+}

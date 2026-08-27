@@ -22,7 +22,8 @@
 #include "rosidl_buffer/c_helpers.h"
 #include "rosidl_runtime_c/primitives_sequence_functions.h"
 
-#define ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(STRUCT_NAME, TYPE_NAME) \
+#define ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS( \
+    STRUCT_NAME, TYPE_NAME, SUPPORTS_BUFFER) \
   bool rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init( \
     rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence * sequence, size_t size) \
   { \
@@ -90,6 +91,23 @@
     if (lhs->size != rhs->size) { \
       return false; \
     } \
+    if (lhs->is_rosidl_buffer || rhs->is_rosidl_buffer) { \
+      if (!(SUPPORTS_BUFFER)) { \
+        return false; \
+      } \
+      bool are_equal = false; \
+      rosidl_buffer_ret_t ret; \
+      if (lhs->is_rosidl_buffer && rhs->is_rosidl_buffer) { \
+        ret = rosidl_buffer_uint8_are_equal(lhs->data, rhs->data, &are_equal); \
+      } else if (lhs->is_rosidl_buffer) { \
+        ret = rosidl_buffer_uint8_equals_data( \
+          lhs->data, (const uint8_t *)rhs->data, rhs->size, &are_equal); \
+      } else { \
+        ret = rosidl_buffer_uint8_equals_data( \
+          rhs->data, (const uint8_t *)lhs->data, lhs->size, &are_equal); \
+      } \
+      return ROSIDL_BUFFER_RET_OK == ret && are_equal; \
+    } \
     for (size_t i = 0; i < lhs->size; ++i) { \
       if (lhs->data[i] != rhs->data[i]) { \
         return false; \
@@ -104,6 +122,28 @@
   { \
     if (!input || !output) { \
       return false; \
+    } \
+    if (input == output) { \
+      return true; \
+    } \
+    if (input->is_rosidl_buffer) { \
+      if (!(SUPPORTS_BUFFER)) { \
+        return false; \
+      } \
+      void * clone = NULL; \
+      if (ROSIDL_BUFFER_RET_OK != rosidl_buffer_uint8_clone(input->data, &clone)) { \
+        return false; \
+      } \
+      rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(output); \
+      output->data = (TYPE_NAME *)clone; \
+      output->size = input->size; \
+      output->capacity = input->capacity; \
+      output->is_rosidl_buffer = true; \
+      output->owns_rosidl_buffer = true; \
+      return true; \
+    } \
+    if (output->is_rosidl_buffer) { \
+      rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__fini(output); \
     } \
     if (output->capacity < input->size) { \
       if (input->size > SIZE_MAX / sizeof(TYPE_NAME)) { \
@@ -120,28 +160,28 @@
     } \
     memcpy(output->data, input->data, sizeof(TYPE_NAME) * input->size); \
     output->size = input->size; \
-    output->is_rosidl_buffer = input->is_rosidl_buffer; \
-    output->owns_rosidl_buffer = input->owns_rosidl_buffer; \
+    output->is_rosidl_buffer = false; \
+    output->owns_rosidl_buffer = false; \
     return true; \
   }
 
 
 // array functions for all basic types
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(float, float)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(double, double)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(long_double, long double)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(char, signed char)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(wchar, uint16_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(boolean, bool)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(octet, uint8_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint8, uint8_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int8, int8_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint16, uint16_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int16, int16_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint32, uint32_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int32, int32_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint64, uint64_t)
-ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int64, int64_t)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(float, float, false)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(double, double, false)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(long_double, long double, false)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(char, signed char, false)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(wchar, uint16_t, false)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(boolean, bool, false)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(octet, uint8_t, false)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint8, uint8_t, true)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int8, int8_t, false)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint16, uint16_t, false)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int16, int16_t, false)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint32, uint32_t, false)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int32, int32_t, false)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(uint64, uint64_t, false)
+ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(int64, int64_t, false)
 
 // emulate legacy API
 bool rosidl_runtime_c__bool__Sequence__init(

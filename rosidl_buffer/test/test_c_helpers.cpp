@@ -15,6 +15,7 @@
 #include <gtest/gtest.h>
 
 #include <cstdint>
+#include <cstring>
 #include <memory>
 #include <stdexcept>
 
@@ -59,6 +60,59 @@ TEST(TestCHelpers, destroy_non_cpu_buffer) {
   auto * buf = new Buffer<uint8_t>(std::make_unique<NonCpuBufferImpl<uint8_t>>(10));
   EXPECT_EQ(buf->get_backend_type(), "non_cpu_test");
   rosidl_buffer_uint8_destroy(buf);
+}
+
+TEST(TestCHelpers, create_clone_and_query_cpu_buffer) {
+  const uint8_t source[] = {1, 2, 3, 4};
+  void * buffer = nullptr;
+  ASSERT_EQ(
+    ROSIDL_BUFFER_RET_OK,
+    rosidl_buffer_uint8_create_cpu(source, sizeof(source), &buffer));
+  ASSERT_NE(buffer, nullptr);
+
+  size_t size = 0;
+  EXPECT_EQ(ROSIDL_BUFFER_RET_OK, rosidl_buffer_uint8_size(buffer, &size));
+  EXPECT_EQ(sizeof(source), size);
+
+  size_t required_size = 0;
+  EXPECT_EQ(
+    ROSIDL_BUFFER_RET_OK,
+    rosidl_buffer_uint8_backend_name(buffer, nullptr, 0, &required_size));
+  std::string backend(required_size, '\0');
+  EXPECT_EQ(
+    ROSIDL_BUFFER_RET_OK,
+    rosidl_buffer_uint8_backend_name(
+      buffer, backend.data(), backend.size(), &required_size));
+  EXPECT_STREQ("cpu", backend.c_str());
+
+  uint8_t copied[sizeof(source)] = {};
+  EXPECT_EQ(
+    ROSIDL_BUFFER_RET_OK,
+    rosidl_buffer_uint8_copy_to(buffer, copied, sizeof(copied)));
+  EXPECT_EQ(0, std::memcmp(source, copied, sizeof(source)));
+
+  void * clone = nullptr;
+  ASSERT_EQ(ROSIDL_BUFFER_RET_OK, rosidl_buffer_uint8_clone(buffer, &clone));
+  bool are_equal = false;
+  EXPECT_EQ(
+    ROSIDL_BUFFER_RET_OK,
+    rosidl_buffer_uint8_are_equal(buffer, clone, &are_equal));
+  EXPECT_TRUE(are_equal);
+
+  rosidl_buffer_uint8_destroy(clone);
+  rosidl_buffer_uint8_destroy(buffer);
+}
+
+TEST(TestCHelpers, rejects_invalid_arguments) {
+  EXPECT_EQ(
+    ROSIDL_BUFFER_RET_INVALID_ARGUMENT,
+    rosidl_buffer_uint8_create_cpu(nullptr, 1, nullptr));
+  EXPECT_EQ(
+    ROSIDL_BUFFER_RET_INVALID_ARGUMENT,
+    rosidl_buffer_uint8_clone(nullptr, nullptr));
+  EXPECT_EQ(
+    ROSIDL_BUFFER_RET_INVALID_ARGUMENT,
+    rosidl_buffer_uint8_size(nullptr, nullptr));
 }
 
 int main(int argc, char ** argv)

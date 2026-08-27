@@ -28,10 +28,13 @@ from typing import Tuple
 from typing import TYPE_CHECKING
 from typing import Union
 
-from lark import Lark
-from lark.lexer import Token
-from lark.tree import pydot__tree_to_png
-from lark.tree import Tree
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter('ignore', DeprecationWarning)
+    from lark import Lark
+    from lark.lexer import Token
+    from lark.tree import pydot__tree_to_png
+    from lark.tree import Tree
 
 from rosidl_parser.definition import AbstractNestableType
 from rosidl_parser.definition import AbstractNestedType
@@ -64,6 +67,7 @@ from rosidl_parser.definition import UnboundedSequence
 from rosidl_parser.definition import UnboundedString
 from rosidl_parser.definition import UnboundedWString
 from rosidl_parser.definition import ValueType
+from rosidl_parser.serialization import load_ast_json
 
 if TYPE_CHECKING:
     from typing import TypeVar
@@ -104,9 +108,25 @@ def parse_idl_file(locator: IdlLocator, png_file: Optional[str] = None) -> IdlFi
                 return _idl_file_cache[cache_key]
         except OSError:
             cache_key = None
+            mtime_ns = None
     else:
         cache_key = None
+        mtime_ns = None
 
+    # Check for pre-parsed AST JSON file alongside the IDL file
+    ast_json_path = abs_path.with_suffix(abs_path.suffix + '.json')
+    if png_file is None and ast_json_path.exists() and mtime_ns is not None:
+        try:
+            if ast_json_path.stat().st_mtime_ns >= mtime_ns:
+                content = load_ast_json(ast_json_path)
+                idl_file = IdlFile(locator, content)
+                if cache_key is not None:
+                    _idl_file_cache[cache_key] = idl_file
+                return idl_file
+        except Exception:
+            pass
+
+    # Fall back to parsing the IDL text
     string = abs_path.read_text(encoding='utf-8')
     try:
         content = parse_idl_string(string, png_file=png_file)

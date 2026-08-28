@@ -16,10 +16,15 @@ from rosidl_generator_c import idl_structure_type_to_c_typename
 from rosidl_generator_c import idl_type_to_c
 from rosidl_generator_c import interface_path_to_string
 from rosidl_generator_c import value_to_c
+from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 
 message_typename = idl_structure_type_to_c_typename(message.structure.namespaced_type)
 array_typename = idl_structure_type_sequence_to_c_typename(
     message.structure.namespaced_type)
+
+include_parts = [package_name] + list(interface_path.parents[0].parts) + [
+    'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
+include_base = '/'.join(include_parts)
 }@
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 @# Collect necessary include directives for all members
@@ -45,9 +50,11 @@ for member in message.structure.members:
     elif isinstance(type_, NamespacedType):
         include_prefix = idl_structure_type_to_c_include_prefix(
           type_, 'detail')
-        member_names = includes.setdefault(
-            include_prefix + '__functions.h', [])
-        member_names.append(member.name)
+        impl_header = include_prefix + '__functions_impl.h'
+        # Skip if this is the current message's implementation header
+        if impl_header != include_base + '__functions_impl.h':
+            member_names = includes.setdefault(impl_header, [])
+            member_names.append(member.name)
 }@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 @
@@ -76,203 +83,19 @@ for member in message.structure.members:
 bool
 @(message_typename)__init(@(message_typename) * msg)
 {
-  if (!msg) {
-    return false;
-  }
-@{
-label_prefix = 'abort_init_'
-last_label_index = 0
-lines = []
-abort_lines = []
-for member in message.structure.members:
-    lines.append('// ' + member.name)
-    if isinstance(member.type, Array):
-        if isinstance(member.type.value_type, BasicType):
-            if member.has_annotation('default'):
-                # set default value for each array element
-                for i, default_value in enumerate(literal_eval(member.get_annotation_value('default')['value'])):
-                    lines.append('msg->%s[%d] = %s;' % (member.name, i, value_to_c(member.type.value_type, default_value)))
-        elif isinstance(member.type.value_type, (AbstractGenericString, NamespacedType)):
-            # initialize each array element
-            lines.append('for (size_t i = 0; i < %d; ++i) {' % member.type.size)
-            lines.append('  if (!%s__init(&msg->%s[i])) {' % (basetype_to_c(member.type.value_type), member.name))
-            lines.append('    %s__fini(msg);' % message_typename)
-            lines.append('    return false;')
-            lines.append('  }')
-            lines.append('}')
-
-            if member.has_annotation('default'):
-                for i, default_value in enumerate(literal_eval(member.get_annotation_value('default')['value'])):
-                    if isinstance(member.type.value_type, AbstractGenericString):
-                        lines.append('{')
-                        lines.append(
-                            '  bool success = %s__assign(&msg->%s[%d], %s);' % \
-                            (basetype_to_c(member.type.value_type), member.name, i, value_to_c(member.type.value_type, default_value)))
-                        lines.append('  if (!success) {')
-                        lines.append('    goto %s%s;' % (label_prefix, last_label_index))
-                        abort_lines[0:0] = [
-                            '  %s__fini(&msg->%s[%d]);' % (basetype_to_c(member.type.value_type), member.name, i),
-                            '%s%d:' % (label_prefix, last_label_index),
-                        ]
-                        last_label_index += 1
-                        lines.append('  }')
-                        lines.append('}')
-
-    elif isinstance(member.type, AbstractSequence):
-        if not member.has_annotation('default'):
-            # initialize the dynamic array with a capacity of zero
-            lines.append('if (!%s__init(&msg->%s, 0)) {' % (idl_type_to_c(member.type), member.name))
-            lines.append('  %s__fini(msg);' % message_typename)
-            lines.append('  return false;')
-            lines.append('}')
-        else:
-            # initialize the dynamic array with the number of default values
-            lines.append('{')
-            lines.append('  bool success = %s__init(&msg->%s, %d);' % (idl_type_to_c(member.type), member.name, len(literal_eval(member.get_annotation_value('default')['value']))))
-            lines.append('  if (!success) {')
-            lines.append('    goto %s%d;' % (label_prefix, last_label_index))
-            abort_lines[0:0] = [
-                '  %s__fini(&msg->%s);' % (idl_type_to_c(member.type), member.name),
-                '%s%d:' % (label_prefix, last_label_index),
-            ]
-            last_label_index += 1
-            lines.append('  }')
-            lines.append('}')
-            # set default value for each array element
-            for i, default_value in enumerate(literal_eval(member.get_annotation_value('default')['value'])):
-                if isinstance(member.type.value_type, AbstractGenericString):
-                    lines.append('{')
-                    lines.append(
-                        '  bool success = %s__assign(&msg->%s.data[%d], %s);' % \
-                        (basetype_to_c(member.type.value_type), member.name, i, value_to_c(member.type.value_type, default_value)))
-                    lines.append('  if (!success) {')
-                    lines.append('    goto %s%s;' % (label_prefix, last_label_index))
-                    abort_lines[0:0] = [
-                        '  %s__fini(&msg->%s.data[%d]);' % (basetype_to_c(member.type.value_type), member.name, i),
-                        '%s%d:' % (label_prefix, last_label_index),
-                    ]
-                    last_label_index += 1
-                    lines.append('  }')
-                    lines.append('}')
-                else:
-                    lines.append('msg->%s.data[%d] = %s;' % (member.name, i, value_to_c(member.type.value_type, default_value)))
-
-    elif isinstance(member.type, NamespacedType):
-            # initialize the sub message
-            lines.append('if (!%s__init(&msg->%s)) {' % (basetype_to_c(member.type), member.name))
-            lines.append('  %s__fini(msg);' % message_typename)
-            lines.append('  return false;')
-            lines.append('}')
-        # no default value for nested messages yet
-
-    elif isinstance(member.type, AbstractGenericString):
-        lines.append('if (!%s__init(&msg->%s)) {' % (basetype_to_c(member.type), member.name))
-        lines.append('  %s__fini(msg);' % message_typename)
-        lines.append('  return false;')
-        lines.append('}')
-        if member.has_annotation('default'):
-            lines.append('{')
-            lines.append(
-                '  bool success = %s__assign(&msg->%s, %s);' % (
-                basetype_to_c(member.type), member.name,
-                value_to_c(member.type, member.get_annotation_value('default')['value'])))
-            lines.append('  if (!success) {')
-            lines.append('    goto %s%s;' % (label_prefix, last_label_index))
-            abort_lines[0:0] = [
-                '  %s__fini(&msg->%s);' % (basetype_to_c(member.type), member.name),
-                '%s%d:' % (label_prefix, last_label_index),
-            ]
-            last_label_index += 1
-            lines.append('  }')
-            lines.append('}')
-    elif isinstance(member.type, BasicType):
-        if member.has_annotation('default'):
-            # set default value of primitive type
-            lines.append('msg->%s = %s;' % (member.name, value_to_c(member.type, member.get_annotation_value('default')['value'])))
-
-for line in lines:
-    print('  ' + line)
-}@
-  return true;
-@{
-if abort_lines:
-    # remove lines before the first label since they are unreachable
-    while not abort_lines[0].startswith(label_prefix):
-        abort_lines.pop(0)
-    for line in abort_lines:
-        print(line)
-    print('  return false;')
-}@
+  return @(message_typename)__init_impl(msg);
 }
 
 void
 @(message_typename)__fini(@(message_typename) * msg)
 {
-  if (!msg) {
-    return;
-  }
-@{
-lines = []
-for member in message.structure.members:
-    lines.append('// ' + member.name)
-    if isinstance(member.type, Array):
-        if isinstance(member.type.value_type, (AbstractGenericString, NamespacedType)):
-            lines.append('for (size_t i = 0; i < %d; ++i) {' % member.type.size)
-            # initialize each array element
-            lines.append('  %s__fini(&msg->%s[i]);' % (basetype_to_c(member.type.value_type), member.name))
-            lines.append('}')
-    elif isinstance(member.type, AbstractSequence):
-        # finalize the dynamic array
-        lines.append('%s__fini(&msg->%s);' % (idl_type_to_c(member.type), member.name))
-    elif not isinstance(member.type, BasicType):
-        # finalize non-array sub messages and strings
-        lines.append('%s__fini(&msg->%s);' % (basetype_to_c(member.type), member.name))
-for line in lines:
-    print('  ' + line)
-}@
+  @(message_typename)__fini_impl(msg);
 }
 
 bool
 @(message_typename)__are_equal(const @(message_typename) * lhs, const @(message_typename) * rhs)
 {
-  if (!lhs || !rhs) {
-    return false;
-  }
-@[for member in message.structure.members]@
-  // @(member.name)
-@[  if isinstance(member.type, Array)]@
-  for (size_t i = 0; i < @(member.type.size); ++i) {
-@[     if isinstance(member.type.value_type, (AbstractGenericString, NamespacedType))]@
-    if (!@(basetype_to_c(member.type.value_type))__are_equal(
-        &(lhs->@(member.name)[i]), &(rhs->@(member.name)[i])))
-    {
-      return false;
-    }
-@[     else]@
-    if (lhs->@(member.name)[i] != rhs->@(member.name)[i]) {
-      return false;
-    }
-@[     end if]@
-  }
-@[  elif isinstance(member.type, AbstractSequence)]@
-  if (!@(idl_type_to_c(member.type))__are_equal(
-      &(lhs->@(member.name)), &(rhs->@(member.name))))
-  {
-    return false;
-  }
-@[  elif isinstance(member.type, (AbstractGenericString, NamespacedType))]@
-  if (!@(basetype_to_c(member.type))__are_equal(
-      &(lhs->@(member.name)), &(rhs->@(member.name))))
-  {
-    return false;
-  }
-@[  else]@
-  if (lhs->@(member.name) != rhs->@(member.name)) {
-    return false;
-  }
-@[  end if]@
-@[end for]@
-  return true;
+  return @(message_typename)__are_equal_impl(lhs, rhs);
 }
 
 bool
@@ -280,67 +103,19 @@ bool
   const @(message_typename) * input,
   @(message_typename) * output)
 {
-  if (!input || !output) {
-    return false;
-  }
-@[for member in message.structure.members]@
-  // @(member.name)
-@[  if isinstance(member.type, Array)]@
-  for (size_t i = 0; i < @(member.type.size); ++i) {
-@[     if isinstance(member.type.value_type, (AbstractGenericString, NamespacedType))]@
-    if (!@(basetype_to_c(member.type.value_type))__copy(
-        &(input->@(member.name)[i]), &(output->@(member.name)[i])))
-    {
-      return false;
-    }
-@[     else]@
-    output->@(member.name)[i] = input->@(member.name)[i];
-@[     end if]@
-  }
-@[  elif isinstance(member.type, AbstractSequence)]@
-  if (!@(idl_type_to_c(member.type))__copy(
-      &(input->@(member.name)), &(output->@(member.name))))
-  {
-    return false;
-  }
-@[  elif isinstance(member.type, (AbstractGenericString, NamespacedType))]@
-  if (!@(basetype_to_c(member.type))__copy(
-      &(input->@(member.name)), &(output->@(member.name))))
-  {
-    return false;
-  }
-@[  else]@
-  output->@(member.name) = input->@(member.name);
-@[  end if]@
-@[end for]@
-  return true;
+  return @(message_typename)__copy_impl(input, output);
 }
 
 @(message_typename) *
 @(message_typename)__create(void)
 {
-  rcutils_allocator_t allocator = rcutils_get_default_allocator();
-  @(message_typename) * msg = (@(message_typename) *)allocator.allocate(sizeof(@(message_typename)), allocator.state);
-  if (!msg) {
-    return NULL;
-  }
-  memset(msg, 0, sizeof(@(message_typename)));
-  bool success = @(message_typename)__init(msg);
-  if (!success) {
-    allocator.deallocate(msg, allocator.state);
-    return NULL;
-  }
-  return msg;
+  return @(message_typename)__create_impl();
 }
 
 void
 @(message_typename)__destroy(@(message_typename) * msg)
 {
-  rcutils_allocator_t allocator = rcutils_get_default_allocator();
-  if (msg) {
-    @(message_typename)__fini(msg);
-  }
-  allocator.deallocate(msg, allocator.state);
+  @(message_typename)__destroy_impl(msg);
 }
 
 
@@ -350,110 +125,31 @@ void
 bool
 @(array_typename)__init(@(array_typename) * array, size_t size)
 {
-  if (!array) {
-    return false;
-  }
-  rcutils_allocator_t allocator = rcutils_get_default_allocator();
-  @(message_typename) * data = NULL;
-
-  if (size) {
-    if (size > SIZE_MAX / sizeof(@(message_typename))) {
-      return false;
-    }
-    data = (@(message_typename) *)allocator.zero_allocate(size, sizeof(@(message_typename)), allocator.state);
-    if (!data) {
-      return false;
-    }
-    // initialize all array elements
-    size_t i;
-    for (i = 0; i < size; ++i) {
-      bool success = @(message_typename)__init(&data[i]);
-      if (!success) {
-        break;
-      }
-    }
-    if (i < size) {
-      // if initialization failed finalize the already initialized array elements
-      for (; i > 0; --i) {
-        @(message_typename)__fini(&data[i - 1]);
-      }
-      allocator.deallocate(data, allocator.state);
-      return false;
-    }
-  }
-  array->data = data;
-  array->size = size;
-  array->capacity = size;
-  return true;
+  return @(array_typename)__init_impl(array, size);
 }
 
 void
 @(array_typename)__fini(@(array_typename) * array)
 {
-  if (!array) {
-    return;
-  }
-  rcutils_allocator_t allocator = rcutils_get_default_allocator();
-
-  if (array->data) {
-    // ensure that data and capacity values are consistent
-    assert(array->capacity > 0);
-    // finalize all array elements
-    for (size_t i = 0; i < array->capacity; ++i) {
-      @(message_typename)__fini(&array->data[i]);
-    }
-    allocator.deallocate(array->data, allocator.state);
-    array->data = NULL;
-    array->size = 0;
-    array->capacity = 0;
-  } else {
-    // ensure that data, size, and capacity values are consistent
-    assert(0 == array->size);
-    assert(0 == array->capacity);
-  }
+  @(array_typename)__fini_impl(array);
 }
 
 @(array_typename) *
 @(array_typename)__create(size_t size)
 {
-  rcutils_allocator_t allocator = rcutils_get_default_allocator();
-  @(array_typename) * array = (@(array_typename) *)allocator.allocate(sizeof(@(array_typename)), allocator.state);
-  if (!array) {
-    return NULL;
-  }
-  bool success = @(array_typename)__init(array, size);
-  if (!success) {
-    allocator.deallocate(array, allocator.state);
-    return NULL;
-  }
-  return array;
+  return @(array_typename)__create_impl(size);
 }
 
 void
 @(array_typename)__destroy(@(array_typename) * array)
 {
-  rcutils_allocator_t allocator = rcutils_get_default_allocator();
-  if (array) {
-    @(array_typename)__fini(array);
-  }
-  allocator.deallocate(array, allocator.state);
+  @(array_typename)__destroy_impl(array);
 }
 
 bool
 @(array_typename)__are_equal(const @(array_typename) * lhs, const @(array_typename) * rhs)
 {
-  if (!lhs || !rhs) {
-    return false;
-  }
-  if (lhs->size != rhs->size) {
-    return false;
-  }
-  for (size_t i = 0; i < lhs->size; ++i) {
-    if (!@(message_typename)__are_equal(&(lhs->data[i]), &(rhs->data[i]))) {
-      return false;
-    }
-  }
-  return true;
+  return @(array_typename)__are_equal_impl(lhs, rhs);
 }
 
 bool
@@ -461,45 +157,5 @@ bool
   const @(array_typename) * input,
   @(array_typename) * output)
 {
-  if (!input || !output) {
-    return false;
-  }
-  if (output->capacity < input->size) {
-    if (input->size > SIZE_MAX / sizeof(@(message_typename))) {
-      return false;
-    }
-    const size_t allocation_size =
-      input->size * sizeof(@(message_typename));
-    rcutils_allocator_t allocator = rcutils_get_default_allocator();
-    @(message_typename) * data =
-      (@(message_typename) *)allocator.reallocate(
-      output->data, allocation_size, allocator.state);
-    if (!data) {
-      return false;
-    }
-    // If reallocation succeeded, memory may or may not have been moved
-    // to fulfill the allocation request, invalidating output->data.
-    output->data = data;
-    for (size_t i = output->capacity; i < input->size; ++i) {
-      if (!@(message_typename)__init(&output->data[i])) {
-        // If initialization of any new item fails, roll back
-        // all previously initialized items. Existing items
-        // in output are to be left unmodified.
-        for (; i-- > output->capacity; ) {
-          @(message_typename)__fini(&output->data[i]);
-        }
-        return false;
-      }
-    }
-    output->capacity = input->size;
-  }
-  output->size = input->size;
-  for (size_t i = 0; i < input->size; ++i) {
-    if (!@(message_typename)__copy(
-        &(input->data[i]), &(output->data[i])))
-    {
-      return false;
-    }
-  }
-  return true;
+  return @(array_typename)__copy_impl(input, output);
 }

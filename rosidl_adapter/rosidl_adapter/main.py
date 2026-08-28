@@ -21,6 +21,23 @@ from typing import List
 
 
 from rosidl_adapter import convert_to_idl
+from rosidl_adapter.parser import parse_message_constants
+
+
+def _collect_msg_constants(package_name: str, non_idl_tuples: list) -> dict:
+    msg_constants = {}
+    for non_idl_tuple in non_idl_tuples:
+        basepath, relative_path = non_idl_tuple.rsplit(':', 1)
+        msg_file = pathlib.Path(basepath) / relative_path
+        if msg_file.suffix != '.msg':
+            continue
+
+        constants = parse_message_constants(
+            package_name, msg_file.stem,
+            msg_file.read_text(encoding='utf-8'))
+        if constants:
+            msg_constants[msg_file.stem] = constants
+    return msg_constants
 
 
 def main(argv: List[str] = sys.argv[1:]) -> None:
@@ -46,6 +63,9 @@ def main(argv: List[str] = sys.argv[1:]) -> None:
     with open(args.arguments_file, 'r') as h:
         data = json.load(h)
 
+    msg_constants = _collect_msg_constants(
+        args.package_name, data['non_idl_tuples'])
+
     idl_tuples = []
     for non_idl_tuple in data['non_idl_tuples']:
         # only take the filastrst : for separation, since the first tuple
@@ -53,7 +73,8 @@ def main(argv: List[str] = sys.argv[1:]) -> None:
         basepath, relative_path = non_idl_tuple.rsplit(':', 1)
         abs_idl_file = convert_to_idl(
             pathlib.Path(basepath), args.package_name,
-            pathlib.Path(relative_path), output_dir)
+            pathlib.Path(relative_path), output_dir,
+            msg_constants=msg_constants)
         idl_tuples.append((output_dir, abs_idl_file.relative_to(output_dir)))
 
     output_file.parent.mkdir(exist_ok=True)

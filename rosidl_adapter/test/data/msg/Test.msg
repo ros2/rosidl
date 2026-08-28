@@ -25,3 +25,26 @@ float32 multiline_optional
 
 @optional string optional_default_string @optional
 @optional string OPTIONAL_STRING_CONST=@optional
+
+@key
+float32 multiline_key
+
+@key float32 inline_key
+@key float32 inline_default_key 32.0
+@key float32 INLINE_CONSTANT_KEY=32.0
+
+@key string key_default_string @key
+@key string KEY_STRING_CONST=@key
+
+@key
+@optional
+float32 multiline_optional_key
+
+@key @optional float32 inline_optional_key
+@optional @key float32 inline_default_optional_key 32.0
+@key @optional float32 INLINE_CONSTANT_OPTIONAL_KEY=32.0
+
+@optional
+@key string optional_key_default_string @key @optional
+@key
+@optional string KEY_OPTIONAL_STRING_CONST=@optional @key

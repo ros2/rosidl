@@ -19,18 +19,25 @@ import textwrap
 from typing import Final, Iterable, List, Optional, Tuple, TYPE_CHECKING, TypedDict, Union
 
 if TYPE_CHECKING:
+    from typing import Dict, Literal
     from typing_extensions import TypeAlias
 
     PrimitiveType: TypeAlias = Union[bool, float, int, str]
+    AnnotationType: TypeAlias = Literal['optional', 'key']
+    AnnotantionsDict: TypeAlias = Dict[AnnotationType, bool]
 
     class Annotations(TypedDict, total=False):
         comment: List[str]
         unit: str
         optional: bool
+        key: bool
 
 PACKAGE_NAME_MESSAGE_TYPE_SEPARATOR: Final = '/'
 ANNOTATION_DELIMITER: Final = '@'
-OPTIONAL_ANNOTATION: Final = ANNOTATION_DELIMITER + 'optional'
+OPTIONAL_ANNOTATION_TOKEN: Final['AnnotationType'] = 'optional'
+OPTIONAL_ANNOTATION: Final = ANNOTATION_DELIMITER + OPTIONAL_ANNOTATION_TOKEN
+KEY_ANNOTATION_TOKEN: Final['AnnotationType'] = 'key'
+KEY_ANNOTATION: Final = ANNOTATION_DELIMITER + KEY_ANNOTATION_TOKEN
 COMMENT_DELIMITER: Final = '#'
 CONSTANT_SEPARATOR: Final = '='
 ARRAY_UPPER_BOUND_TOKEN: Final = '<='
@@ -112,7 +119,7 @@ class UnknownMessageType(InvalidSpecification):
     pass
 
 
-class MultipleOptionalAnnotations(InvalidSpecification):
+class RepeatedAnnotation(InvalidSpecification):
     pass
 
 
@@ -492,7 +499,10 @@ def parse_message_string(pkg_name: str, msg_name: str,
     fields: List[Field] = []
     constants: List[Constant] = []
     last_element: Union[Field, Constant, None] = None  # either a field or a constant
-    is_optional = False
+    with_annotation: 'AnnotantionsDict' = {
+        OPTIONAL_ANNOTATION_TOKEN: False,
+        KEY_ANNOTATION_TOKEN: False
+    }
     # replace tabs with spaces
     message_string = message_string.replace('\t', ' ')
 
@@ -530,16 +540,21 @@ def parse_message_string(pkg_name: str, msg_name: str,
             if not line:
                 continue
 
-        if line.startswith(OPTIONAL_ANNOTATION):
-            if is_optional:
-                raise MultipleOptionalAnnotations(
-                    f'Already declared @optional. Error detected with {line}.')
+        # Loop to allow for arbitrary order
+        while line.startswith(ANNOTATION_DELIMITER):
+            for annotation, is_annotated in with_annotation.items():
+                annotation_token = ANNOTATION_DELIMITER + annotation
+                if not line.startswith(annotation_token):
+                    continue
+                if is_annotated:
+                    raise RepeatedAnnotation(
+                        f'Already declared {annotation_token}. Error detected with {line}.')
 
-            line = line[len(OPTIONAL_ANNOTATION):].lstrip()
-            is_optional = True
+                line = line[len(annotation_token):].lstrip()
+                with_annotation[annotation] = True
 
-            if not line:
-                continue
+        if not line:
+            continue
 
         type_string, _, rest = line.partition(' ')
         rest = rest.lstrip()
@@ -574,9 +589,10 @@ def parse_message_string(pkg_name: str, msg_name: str,
             last_element = constants[-1]
 
         # add "unused" comments to the field / constant
-        if is_optional:
-            last_element.annotations['optional'] = is_optional
-        is_optional = False
+        for annotation, is_annotated in with_annotation.items():
+            if is_annotated:
+                last_element.annotations[annotation] = is_annotated
+            with_annotation[annotation] = False
         comment_lines = last_element.annotations.setdefault(
             'comment', [])
         comment_lines += current_comments

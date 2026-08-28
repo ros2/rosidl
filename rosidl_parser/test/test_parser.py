@@ -95,6 +95,35 @@ def test_message_parser_includes(message_idl_file: IdlFile) -> None:
     assert includes[1].locator == 'pkgname/msg/OtherMessage.idl'
 
 
+def test_message_parser_include_guard() -> None:
+    content = parse_idl_string("""
+#ifndef ROSIDL_PARSER__MSG__GUARDED_IDL
+#define ROSIDL_PARSER__MSG__GUARDED_IDL
+
+#include "OtherMessage.idl"
+
+module rosidl_parser {
+  module msg {
+    struct Guarded {
+      int32 value;
+    };
+  };
+};
+
+#endif  // ROSIDL_PARSER__MSG__GUARDED_IDL
+""")
+
+    includes = content.get_elements_of_type(Include)
+    assert len(includes) == 1
+    assert includes[0].locator == 'OtherMessage.idl'
+
+    messages = content.get_elements_of_type(Message)
+    assert len(messages) == 1
+    assert messages[0].structure.namespaced_type.namespaces == [
+        'rosidl_parser', 'msg']
+    assert messages[0].structure.namespaced_type.name == 'Guarded'
+
+
 def test_message_parser_structure(message_idl_file: IdlFile) -> None:
     messages = message_idl_file.content.get_elements_of_type(Message)
     assert len(messages) == 1

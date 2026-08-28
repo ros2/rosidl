@@ -2,6 +2,8 @@
 // with input from test_msgs/action/Test.action
 // generated code does not contain a copyright notice
 
+#ifndef TEST_MSGS__ACTION__TEST_ACTION
+#define TEST_MSGS__ACTION__TEST_ACTION
 
 module test_msgs {
   module action {
@@ -64,3 +66,5 @@ module test_msgs {
     };
   };
 };
+
+#endif  // TEST_MSGS__ACTION__TEST_ACTION

@@ -24,7 +24,9 @@ include_directives = set()
 
 # Scan all messages (including the ones implicitly defined by services and
 # actions) to only emit the includes their members and constants actually
-# need.
+# need. This mirrors the TEMPLATE() expansion done below: services expand to
+# request/response/event messages, actions to goal/result/feedback(+message)
+# and two services.
 from rosidl_generator_cpp import CPPLINT_ALGORITHM_NAMES
 from rosidl_generator_cpp import get_all_messages
 from rosidl_generator_cpp import is_buffer_type

@@ -18,6 +18,7 @@ import pytest
 from rosidl_adapter.parser import BaseType
 from rosidl_adapter.parser import Field
 from rosidl_adapter.parser import MessageSpecification
+from rosidl_adapter.parser import parse_action_string
 from rosidl_adapter.parser import Type
 from rosidl_adapter.parser import UnknownMessageType
 from rosidl_adapter.parser import validate_field_types
@@ -37,3 +38,24 @@ def test_validate_field_types() -> None:
 
     known_msg_type.append(BaseType('pkg/Bar'))
     validate_field_types(msg_spec, known_msg_type)
+
+
+@pytest.mark.parametrize('action_string', [
+    '---\n---',
+    'bool goal\n---\nint8 result\n---\nstring feedback',
+])
+def test_validate_action_field_types(action_string: str) -> None:
+    spec = parse_action_string('pkg', 'Foo', action_string)
+    validate_field_types(spec, [])
+
+
+@pytest.mark.parametrize('section', [0, 1, 2], ids=['goal', 'result', 'feedback'])
+def test_validate_action_field_types_unknown_message(section: int) -> None:
+    sections = ['', '', '']
+    sections[section] = 'pkg/Bar field'
+    spec = parse_action_string('pkg', 'Foo', '\n---\n'.join(sections))
+
+    with pytest.raises(UnknownMessageType):
+        validate_field_types(spec, [])
+
+    validate_field_types(spec, [BaseType('pkg/Bar')])

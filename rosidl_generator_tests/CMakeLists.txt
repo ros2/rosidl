@@ -31,6 +31,7 @@ if(BUILD_TESTING)
     ${test_interface_files_MSG_FILES}
     ${test_interface_files_SRV_FILES}
     msg/BasicIdl.idl
+    msg/Comments.msg
     msg/SmallConstant.msg
     ADD_LINTER_TESTS
     SKIP_INSTALL
@@ -87,6 +88,9 @@ if(BUILD_TESTING)
     ${c_generator_target}
     rosidl_runtime_c::rosidl_runtime_c
   )
+  if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(test_compilation_c PRIVATE -Wall -Wextra -Werror -Wpedantic)
+  endif()
 
   add_executable(test_interfaces_c test/rosidl_generator_c/test_interfaces.c)
   ament_add_test(

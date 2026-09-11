@@ -1,7 +1,7 @@
 # rosidl
 
 ```rosidl``` is one of the ros_core packages.
-See [documentation](https://docs.ros.org/en/rolling/Concepts/About-Internal-Interfaces.html#the-rosidl-repository) for details of this package.
+See [documentation](https://docs.ros.org/en/lyrical/ROS-Framework/client-libraries/About-Internal-Interfaces/About-Internal-Interfaces.html#the-rosidl-repository) for details of this package.
 
 ## Packages
 

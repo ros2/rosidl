@@ -16,7 +16,11 @@
 #define ROSIDL_TYPESUPPORT_INTROSPECTION_TESTS__API_HPP_
 
 #include <rosidl_runtime_c/message_initialization.h>
+#include <rosidl_runtime_c/message_type_support_struct.h>
 #include <rosidl_typesupport_introspection_c/message_introspection.h>
+
+#include <cstddef>
+#include <cstdint>
 
 #include <rcpputils/shared_library.hpp>
 #include <rosidl_runtime_cpp/message_initialization.hpp>

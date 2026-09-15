@@ -17,6 +17,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <ios>
 #include <ostream>
 #include <string>
 #include <type_traits>

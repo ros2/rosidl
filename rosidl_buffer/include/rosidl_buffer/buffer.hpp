@@ -18,7 +18,6 @@
 #include <algorithm>
 #include <cstddef>
 #include <initializer_list>
-#include <iterator>
 #include <memory>
 #include <stdexcept>
 #include <string>

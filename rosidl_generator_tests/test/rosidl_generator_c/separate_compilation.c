@@ -16,7 +16,6 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-#include <string.h>
 
 #include "rosidl_generator_tests/msg/detail/defaults__struct.h"
 #include "rosidl_generator_tests/msg/detail/defaults__functions.h"

@@ -21,9 +21,6 @@
 
 #include "rosidl_runtime_c/message_initialization.h"
 #include "rosidl_runtime_c/message_type_support_struct.h"
-#include "rosidl_runtime_c/type_hash.h"
-
-#include "rosidl_typesupport_introspection_c/visibility_control.h"
 
 /// Structure used to describe a single field of an interface type.
 typedef struct rosidl_typesupport_introspection_c__MessageMember_s

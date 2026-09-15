@@ -15,11 +15,9 @@
 #ifndef ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__SERVICE_INTROSPECTION_HPP_
 #define ROSIDL_TYPESUPPORT_INTROSPECTION_CPP__SERVICE_INTROSPECTION_HPP_
 
-#include <cstddef>
-#include <cstdint>
-
-#include "rosidl_runtime_c/service_type_support_struct.h"
-#include "rosidl_runtime_c/visibility_control.h"
+// Not used here, but part of this header's API surface: consumers pair
+// ServiceMembers with the service type support it describes.
+#include "rosidl_runtime_c/service_type_support_struct.h"  // IWYU pragma: export
 
 #include "rosidl_typesupport_introspection_cpp/message_introspection.hpp"
 

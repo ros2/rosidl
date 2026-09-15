@@ -16,8 +16,12 @@
 #define ROSIDL_RUNTIME_CPP__BOUNDED_VECTOR_HPP_
 
 #include <algorithm>
+#include <cstddef>
+#include <initializer_list>
+#include <iterator>
 #include <memory>
 #include <stdexcept>
+#include <type_traits>
 #include <utility>
 #include <vector>
 

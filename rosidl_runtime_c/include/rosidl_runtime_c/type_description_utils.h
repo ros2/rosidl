@@ -22,12 +22,12 @@
 #ifndef ROSIDL_RUNTIME_C__TYPE_DESCRIPTION_UTILS_H_
 #define ROSIDL_RUNTIME_C__TYPE_DESCRIPTION_UTILS_H_
 
+#include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
-#include <string.h>
 
 #include <rosidl_runtime_c/visibility_control.h>
 
+#include <rcutils/allocator.h>
 #include <rcutils/types/rcutils_ret.h>
 #include <rcutils/types/hash_map.h>
 

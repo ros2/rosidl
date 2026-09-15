@@ -17,8 +17,6 @@
 
 #include <gtest/gtest.h>
 
-#include <type_traits>
-
 #include "rosidl_typesupport_introspection_tests/helpers.hpp"
 #include "rosidl_typesupport_introspection_tests/type_traits.hpp"
 

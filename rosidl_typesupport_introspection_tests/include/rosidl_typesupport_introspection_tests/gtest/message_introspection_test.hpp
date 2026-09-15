@@ -15,6 +15,11 @@
 #ifndef ROSIDL_TYPESUPPORT_INTROSPECTION_TESTS__GTEST__MESSAGE_INTROSPECTION_TEST_HPP_
 #define ROSIDL_TYPESUPPORT_INTROSPECTION_TESTS__GTEST__MESSAGE_INTROSPECTION_TEST_HPP_
 
+#include <gtest/gtest.h>
+
+#include <rosidl_runtime_c/message_type_support_struct.h>
+
+#include <functional>
 #include <memory>
 
 #include "rosidl_typesupport_introspection_tests/gtest/shared_library_test.hpp"

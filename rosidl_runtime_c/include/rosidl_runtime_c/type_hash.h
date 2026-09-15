@@ -19,6 +19,7 @@
 
 #include "rcutils/allocator.h"
 #include "rcutils/sha256.h"
+#include "rcutils/types/rcutils_ret.h"
 
 #include "rosidl_runtime_c/visibility_control.h"
 

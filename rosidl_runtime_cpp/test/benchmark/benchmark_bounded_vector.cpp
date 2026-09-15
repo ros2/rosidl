@@ -14,12 +14,12 @@
 
 #include <forward_list>
 #include <iterator>
-#include <utility>
 #include <sstream>
 #include <string>
 
 #include "rosidl_runtime_cpp/bounded_vector.hpp"
 
+#include "benchmark/benchmark.h"
 #include "performance_test_fixture/performance_test_fixture.hpp"
 
 using performance_test_fixture::PerformanceTest;

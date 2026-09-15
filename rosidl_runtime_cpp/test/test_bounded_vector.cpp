@@ -15,6 +15,7 @@
 #include <gtest/gtest.h>
 #include <utility>
 #include <sstream>
+#include <stdexcept>
 #include <iterator>
 #include <forward_list>
 

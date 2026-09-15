@@ -15,13 +15,20 @@
 #ifndef INTROSPECTION_LIBRARIES_UNDER_TEST_HPP_
 #define INTROSPECTION_LIBRARIES_UNDER_TEST_HPP_
 
+#include <rcutils/error_handling.h>
 #include <rcutils/macros.h>
 
+#include <rosidl_runtime_c/primitives_sequence_functions.h>
+#include <rosidl_runtime_c/string_functions.h>
+#include <rosidl_runtime_c/u16string_functions.h>
 #include <rosidl_typesupport_interface/macros.h>
 #include <rosidl_typesupport_introspection_c/message_introspection.h>
 #include <rosidl_typesupport_introspection_c/service_introspection.h>
 
+#include <cstdint>
+#include <functional>
 #include <memory>
+#include <stdexcept>
 
 #include <rosidl_typesupport_introspection_cpp/message_introspection.hpp>
 #include <rosidl_typesupport_introspection_cpp/service_introspection.hpp>

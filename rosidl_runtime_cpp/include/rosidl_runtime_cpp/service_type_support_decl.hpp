@@ -16,7 +16,6 @@
 #define ROSIDL_RUNTIME_CPP__SERVICE_TYPE_SUPPORT_DECL_HPP_
 
 #include <rosidl_runtime_c/service_type_support_struct.h>
-#include <rosidl_runtime_c/visibility_control.h>
 
 namespace rosidl_runtime_cpp
 {

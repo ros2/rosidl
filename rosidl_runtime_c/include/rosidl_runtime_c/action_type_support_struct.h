@@ -18,7 +18,6 @@
 #include "rosidl_runtime_c/message_type_support_struct.h"
 #include "rosidl_runtime_c/service_type_support_struct.h"
 #include "rosidl_runtime_c/type_hash.h"
-#include "rosidl_runtime_c/visibility_control.h"
 #include "rosidl_typesupport_interface/macros.h"
 
 #ifdef __cplusplus

@@ -12,9 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <string>
+
 #include "gtest/gtest.h"
 
+#include "rcutils/allocator.h"
 #include "rcutils/error_handling.h"
+#include "rcutils/types/rcutils_ret.h"
 #include "rosidl_runtime_c/type_hash.h"
 
 TEST(type_hash, init_zero_hash) {

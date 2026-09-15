@@ -18,10 +18,15 @@
 #include <rcutils/error_handling.h>
 #include <rcutils/macros.h>
 
+#include <rosidl_runtime_c/primitives_sequence.h>
 #include <rosidl_runtime_c/primitives_sequence_functions.h>
+#include <rosidl_runtime_c/string.h>
 #include <rosidl_runtime_c/string_functions.h>
+#include <rosidl_runtime_c/u16string.h>
 #include <rosidl_runtime_c/u16string_functions.h>
 
+#include <array>
+#include <cstddef>
 #include <stdexcept>
 #include <vector>
 

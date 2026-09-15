@@ -19,7 +19,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <rcutils/logging_macros.h>
+#include <rcutils/allocator.h>
+#include <rcutils/error_handling.h>
 #include <rcutils/repl_str.h>
 #include <rcutils/qsort.h>
 #include <rcutils/types/rcutils_ret.h>

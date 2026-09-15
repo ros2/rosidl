@@ -15,8 +15,6 @@
 #ifndef ROSIDL_TYPESUPPORT_INTROSPECTION_TESTS__FIXTURES_HPP_
 #define ROSIDL_TYPESUPPORT_INTROSPECTION_TESTS__FIXTURES_HPP_
 
-#include <memory>
-
 namespace rosidl_typesupport_introspection_tests
 {
 

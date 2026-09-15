@@ -15,8 +15,9 @@
 #ifndef ROSIDL_GENERATOR_CPP__TEST_ARRAY_GENERATOR_HPP_
 #define ROSIDL_GENERATOR_CPP__TEST_ARRAY_GENERATOR_HPP_
 
-#include <climits>
-#include <random>
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
 #include <string>
 #include <type_traits>
 

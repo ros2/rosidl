@@ -17,7 +17,8 @@
 
 #include <gtest/gtest.h>
 
-#include <string>
+#include <rosidl_runtime_c/message_type_support_struct.h>
+#include <rosidl_runtime_c/service_type_support_struct.h>
 
 #include "rosidl_typesupport_introspection_tests/gtest/shared_library_test.hpp"
 #include "rosidl_typesupport_introspection_tests/type_traits.hpp"

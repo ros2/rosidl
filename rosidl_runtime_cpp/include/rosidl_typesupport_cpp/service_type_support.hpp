@@ -16,10 +16,12 @@
 #define ROSIDL_TYPESUPPORT_CPP__SERVICE_TYPE_SUPPORT_HPP_
 
 #include <cstring>
+#include <new>
 #include <stdexcept>
 
+#include "rcutils/allocator.h"
+
 #include "rosidl_runtime_c/service_type_support_struct.h"
-#include "rosidl_runtime_c/visibility_control.h"
 
 namespace rosidl_typesupport_cpp
 {

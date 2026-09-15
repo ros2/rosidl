@@ -15,7 +15,7 @@
 #include "rosidl_buffer_backend_registry/buffer_backend_registry.hpp"
 
 #include <algorithm>
-#include <stdexcept>
+#include <exception>
 
 #include <pluginlib/class_loader.hpp>
 #include "rcutils/logging_macros.h"

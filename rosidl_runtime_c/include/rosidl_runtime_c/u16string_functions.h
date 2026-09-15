@@ -16,6 +16,7 @@
 #define ROSIDL_RUNTIME_C__U16STRING_FUNCTIONS_H_
 
 #include <stddef.h>
+#include <stdint.h>
 
 #include "rosidl_runtime_c/u16string.h"
 #include "rosidl_runtime_c/visibility_control.h"

@@ -16,7 +16,6 @@
 #define ROSIDL_TYPESUPPORT_CPP__ACTION_TYPE_SUPPORT_HPP_
 
 #include <rosidl_runtime_c/action_type_support_struct.h>
-#include <rosidl_runtime_c/visibility_control.h>
 
 namespace rosidl_typesupport_cpp
 {

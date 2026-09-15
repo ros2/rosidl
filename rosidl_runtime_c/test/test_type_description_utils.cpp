@@ -15,12 +15,14 @@
 #include <stdlib.h>
 #include <gtest/gtest.h>
 
+#include <rcutils/allocator.h>
 #include <rcutils/error_handling.h>
 #include <rcutils/types/rcutils_ret.h>
 #include <rcutils/types/hash_map.h>
 #include <rosidl_runtime_c/string_functions.h>
 
 #include <cstring>
+#include <string>
 
 #include "rosidl_runtime_c/type_description/field__functions.h"
 #include "rosidl_runtime_c/type_description/field__struct.h"

@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <stdint.h>
 #include <string.h>
 
 #include "rosidl_runtime_c/type_hash.h"
 
+#include "rcutils/allocator.h"
 #include "rcutils/error_handling.h"
+#include "rcutils/types/rcutils_ret.h"
 
 static const char RIHS01_PREFIX[] = "RIHS01_";
 // Hash representation is hex string, two characters per byte

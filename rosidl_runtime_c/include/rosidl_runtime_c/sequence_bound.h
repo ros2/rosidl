@@ -16,7 +16,6 @@
 #define ROSIDL_RUNTIME_C__SEQUENCE_BOUND_H_
 
 #include "rosidl_runtime_c/visibility_control.h"
-#include "rosidl_typesupport_interface/macros.h"
 
 #ifdef __cplusplus
 extern "C"

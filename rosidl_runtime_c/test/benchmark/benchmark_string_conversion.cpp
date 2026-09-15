@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cstddef>
 #include <string>
+
+#include "benchmark/benchmark.h"
 
 #include "rosidl_runtime_c/string_functions.h"
 #include "rosidl_runtime_c/u16string_functions.h"

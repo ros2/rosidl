@@ -15,6 +15,7 @@
 #ifndef ROSIDL_BUFFER__CPU_BUFFER_IMPL_HPP_
 #define ROSIDL_BUFFER__CPU_BUFFER_IMPL_HPP_
 
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <vector>

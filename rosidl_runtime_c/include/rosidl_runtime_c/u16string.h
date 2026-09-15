@@ -16,6 +16,7 @@
 #define ROSIDL_RUNTIME_C__U16STRING_H_
 
 #include <stddef.h>
+#include <stdint.h>
 
 #include "rosidl_runtime_c/primitives_sequence.h"
 

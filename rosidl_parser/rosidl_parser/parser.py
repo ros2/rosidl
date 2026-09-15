@@ -48,6 +48,8 @@ from rosidl_parser.definition import BoundedString
 from rosidl_parser.definition import BoundedWString
 from rosidl_parser.definition import Constant
 from rosidl_parser.definition import CONSTANT_MODULE_SUFFIX
+from rosidl_parser.definition import Enum
+from rosidl_parser.definition import Enumerator
 from rosidl_parser.definition import IdlContent
 from rosidl_parser.definition import IdlFile
 from rosidl_parser.definition import IdlLocator
@@ -175,6 +177,33 @@ def extract_content_from_ast(tree: 'ParseTree') -> IdlContent:
         module_comments.append(constant)
 
     typedefs: Dict[Any, Union[Array, AbstractTypeAlias]] = {}
+    enum_dcls = tree.find_data('enum_dcl')
+    for enum_dcl in enum_dcls:
+        annotations = get_annotations(enum_dcl)
+        module_identifiers = get_module_identifier_values(tree, enum_dcl)
+        enum_name = get_child_identifier_value(enum_dcl)
+
+        enumerators = []
+        enumerator_nodes = enum_dcl.find_data('enumerator')
+        for enumerator_node in enumerator_nodes:
+            enumerator_name = get_child_identifier_value(enumerator_node)
+            enumerator_annotations = get_annotations(enumerator_node)
+
+            enumerator = Enumerator(enumerator_name)
+            enumerator.annotations = enumerator_annotations
+            enumerators.append(enumerator)
+
+        enum_obj = Enum(
+            NamespacedType(
+                namespaces=module_identifiers,
+                name=enum_name
+            ),
+            enumerators=enumerators
+        )
+        enum_obj.annotations = annotations
+        content.elements.append(enum_obj)
+        typedefs[enum_name] = enum_obj
+
     typedef_dcls = tree.find_data('typedef_dcl')
     for typedef_dcl in typedef_dcls:
         assert len(typedef_dcl.children) == 1

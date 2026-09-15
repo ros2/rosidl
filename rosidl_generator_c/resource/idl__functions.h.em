@@ -19,12 +19,16 @@ from rosidl_generator_type_description import GET_DESCRIPTION_FUNC
 from rosidl_generator_type_description import GET_HASH_FUNC
 from rosidl_generator_type_description import GET_INDIVIDUAL_SOURCE_FUNC
 from rosidl_generator_type_description import GET_SOURCES_FUNC
+from rosidl_parser.definition import Action
+from rosidl_parser.definition import Service
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 header_guard_variable = '__'.join([x.upper() for x in include_parts]) + \
     '__FUNCTIONS_H_'
 include_base = '/'.join(include_parts)
+has_action = len(content.get_elements_of_type(Action)) > 0
+has_service = has_action or len(content.get_elements_of_type(Service)) > 0
 }@
 
 #ifndef @(header_guard_variable)
@@ -38,9 +42,13 @@ extern "C"
 #include <stdbool.h>
 #include <stdlib.h>
 
+@[if has_action]@
 #include "rosidl_runtime_c/action_type_support_struct.h"
+@[end if]@
 #include "rosidl_runtime_c/message_type_support_struct.h"
+@[if has_service]@
 #include "rosidl_runtime_c/service_type_support_struct.h"
+@[end if]@
 #include "rosidl_runtime_c/type_description/type_description__struct.h"
 #include "rosidl_runtime_c/type_description/type_source__struct.h"
 #include "rosidl_runtime_c/type_hash.h"

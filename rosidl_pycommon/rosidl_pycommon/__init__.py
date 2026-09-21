@@ -30,6 +30,7 @@ except ImportError:
 
 from rosidl_parser.definition import IdlLocator
 from rosidl_parser.parser import parse_idl_file
+from rosidl_parser.serialization import save_ast_json
 
 
 def convert_camel_case_to_lower_case_underscore(value: str) -> str:
@@ -104,6 +105,13 @@ def generate_files(
             idl_stem = convert_camel_case_to_lower_case_underscore(idl_stem)
         try:
             idl_file = parse_idl_file(locator)
+            ast_json_path = locator.get_absolute_path().with_suffix(
+                locator.get_absolute_path().suffix + '.json')
+            if not ast_json_path.exists():
+                try:
+                    save_ast_json(idl_file.content, ast_json_path)
+                except OSError:
+                    pass
             for template_file, generated_filename in mapping.items():
                 generated_file = os.path.join(
                     args['output_dir'], str(idl_rel_path.parent),

@@ -64,20 +64,6 @@ rosidl_buffer_ret_t rosidl_buffer_uint8_clone(
   }
 }
 
-rosidl_buffer_ret_t rosidl_buffer_uint8_size(
-  const void * buffer_ptr, size_t * size)
-{
-  if (!buffer_ptr || !size) {
-    return ROSIDL_BUFFER_RET_INVALID_ARGUMENT;
-  }
-  try {
-    *size = static_cast<const rosidl::Buffer<uint8_t> *>(buffer_ptr)->size();
-    return ROSIDL_BUFFER_RET_OK;
-  } catch (...) {
-    return ROSIDL_BUFFER_RET_ERROR;
-  }
-}
-
 rosidl_buffer_ret_t rosidl_buffer_uint8_backend_name(
   const void * buffer_ptr, char * output, size_t output_capacity, size_t * required_size)
 {

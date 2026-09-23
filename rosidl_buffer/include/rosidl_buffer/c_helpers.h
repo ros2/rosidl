@@ -43,10 +43,6 @@ rosidl_buffer_ret_t rosidl_buffer_uint8_clone(
   const void * source_ptr, void ** buffer_ptr);
 
 ROSIDL_BUFFER_PUBLIC
-rosidl_buffer_ret_t rosidl_buffer_uint8_size(
-  const void * buffer_ptr, size_t * size);
-
-ROSIDL_BUFFER_PUBLIC
 rosidl_buffer_ret_t rosidl_buffer_uint8_backend_name(
   const void * buffer_ptr, char * output, size_t output_capacity, size_t * required_size);
 

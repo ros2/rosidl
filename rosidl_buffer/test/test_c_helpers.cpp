@@ -70,10 +70,6 @@ TEST(TestCHelpers, create_clone_and_query_cpu_buffer) {
     rosidl_buffer_uint8_create_cpu(source, sizeof(source), &buffer));
   ASSERT_NE(buffer, nullptr);
 
-  size_t size = 0;
-  EXPECT_EQ(ROSIDL_BUFFER_RET_OK, rosidl_buffer_uint8_size(buffer, &size));
-  EXPECT_EQ(sizeof(source), size);
-
   size_t required_size = 0;
   EXPECT_EQ(
     ROSIDL_BUFFER_RET_OK,
@@ -110,9 +106,6 @@ TEST(TestCHelpers, rejects_invalid_arguments) {
   EXPECT_EQ(
     ROSIDL_BUFFER_RET_INVALID_ARGUMENT,
     rosidl_buffer_uint8_clone(nullptr, nullptr));
-  EXPECT_EQ(
-    ROSIDL_BUFFER_RET_INVALID_ARGUMENT,
-    rosidl_buffer_uint8_size(nullptr, nullptr));
 }
 
 int main(int argc, char ** argv)

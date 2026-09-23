@@ -158,7 +158,9 @@
       output->data = data; \
       output->capacity = input->size; \
     } \
-    memcpy(output->data, input->data, sizeof(TYPE_NAME) * input->size); \
+    if (input->size > 0) { \
+      memcpy(output->data, input->data, sizeof(TYPE_NAME) * input->size); \
+    } \
     output->size = input->size; \
     output->is_rosidl_buffer = false; \
     output->owns_rosidl_buffer = false; \

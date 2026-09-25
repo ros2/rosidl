@@ -53,10 +53,6 @@ endif()
 
 ament_export_dependencies(rcutils rosidl_buffer rosidl_typesupport_interface)
 
-# Export old-style CMake variables
-ament_export_include_directories("include/${PROJECT_NAME}")
-ament_export_libraries(${PROJECT_NAME})
-
 # Export modern CMake targets
 ament_export_targets(${PROJECT_NAME})
 

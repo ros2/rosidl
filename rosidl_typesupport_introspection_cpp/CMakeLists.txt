@@ -32,10 +32,6 @@ target_link_libraries(${PROJECT_NAME}
     ament_cmake_ros_core::ament_ros_cxx_standard
 )
 
-# Export old-style CMake variables
-ament_export_include_directories("include/${PROJECT_NAME}")
-ament_export_libraries(${PROJECT_NAME})
-
 # Export modern CMake targets
 ament_export_targets(${PROJECT_NAME})
 

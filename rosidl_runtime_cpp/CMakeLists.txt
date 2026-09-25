@@ -14,9 +14,6 @@ target_link_libraries(${PROJECT_NAME} INTERFACE
   rosidl_runtime_c::rosidl_runtime_c
   rosidl_buffer::rosidl_buffer)
 
-# Export old-style CMake variables
-ament_export_include_directories("include/${PROJECT_NAME}")
-
 # Export modern CMake targets
 ament_export_targets(${PROJECT_NAME})
 

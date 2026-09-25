@@ -41,7 +41,7 @@ setup(
     description='Command line tools for ROS interface generation.',
     long_description="""\
 The tooling provides a single command line script for ROS interface source code generation.""",
-    license='Apache License, Version 2.0',
+    license='Apache-2.0',
     entry_points={
         'console_scripts': [
             'rosidl = rosidl_cli.cli:main',

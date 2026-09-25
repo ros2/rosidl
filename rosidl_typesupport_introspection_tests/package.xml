@@ -10,7 +10,7 @@
   <maintainer email="dharini@openrobotics.org">Dharini Dutia</maintainer>
   <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>
 
-  <license>Apache 2.0 License</license>
+  <license>Apache-2.0</license>
 
   <author email="gbiggs@killbots.net">Geoffrey Biggs</author>
   <author email="michel@ekumenlabs.com">Michel Hidalgo</author>

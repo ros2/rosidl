@@ -20,7 +20,7 @@ setup(
     maintainer='Aditya Pande, Brandon Ong, Dharini Dutia, Shane Loretz',
     maintainer_email='aditya.pande@openrobotics.org, brandon@openrobotics.org, dharini@openrobotics.org, sloretz@openrobotics.org',  # noqa: E501
     description='Common Python functions used by rosidl packages.',
-    license='Apache License, Version 2.0',
+    license='Apache-2.0',
     extras_require={
         'test': [
             'pytest',

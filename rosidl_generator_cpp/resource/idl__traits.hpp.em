@@ -14,12 +14,19 @@
 @#  - content (IdlContent, list of elements, e.g. Messages or Services)
 @#######################################################################
 @{
+from rosidl_generator_cpp import get_all_messages
+from rosidl_generator_cpp import uses_buffer
 from rosidl_pycommon import convert_camel_case_to_lower_case_underscore
 include_parts = [package_name] + list(interface_path.parents[0].parts) + [
     'detail', convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 include_base = '/'.join(include_parts)
 header_guard_variable = '__'.join([x.upper() for x in include_parts]) + \
     '__TRAITS_HPP_'
+
+# The rosidl::Buffer trait specializations are only needed by the messages
+# actually using rosidl::Buffer, and the header they live in pulls in the
+# whole rosidl_buffer/buffer.hpp definition.
+need_buffer_traits = uses_buffer(get_all_messages(content))
 
 include_directives = set()
 }@
@@ -39,7 +46,9 @@ include_directives = set()
 #include <utility>
 
 #include "@(include_base)__struct.hpp"
+@[if need_buffer_traits]@
 #include "rosidl_runtime_cpp/buffer__traits.hpp"
+@[end if]@
 #include "rosidl_runtime_cpp/traits.hpp"
 
 @#######################################################################

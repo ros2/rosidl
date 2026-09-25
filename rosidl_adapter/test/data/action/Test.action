@@ -26,6 +26,11 @@ bool ok
 
 @optional
 bool optional_bool
+@key
+bool key_bool
+@optional
+@key
+bool optional_key_bool
 ---
 # feedback definition
 # more

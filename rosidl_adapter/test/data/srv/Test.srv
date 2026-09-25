@@ -24,3 +24,5 @@ string string_value
 
 bool ok
 @optional bool optional_bool
+@key bool key_bool
+@key @optional uint8 optional_key_int

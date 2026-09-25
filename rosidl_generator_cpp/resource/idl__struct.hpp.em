@@ -91,6 +91,7 @@ for msg in all_messages:
 #include <array>
 @[end if]@
 #include <cstdint>
+#include <limits>
 #include <memory>
 @[if need_string]@
 #include <string>

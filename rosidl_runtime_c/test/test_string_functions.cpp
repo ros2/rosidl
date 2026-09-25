@@ -117,7 +117,8 @@ TEST(string_functions, resize_assignn) {
   // Check assigning 0-length strings
   EXPECT_TRUE(rosidl_runtime_c__String__assignn(&s, &data[0], 0));
   EXPECT_EQ(s.size, 0u);
-  EXPECT_EQ(s.capacity, 1u);
+  // capacity should not change if not needed
+  EXPECT_EQ(s.capacity, s_size + 1u);
   EXPECT_EQ(s.data[0], 0);
 
   rosidl_runtime_c__String__fini(&s);

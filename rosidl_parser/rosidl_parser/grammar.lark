@@ -7,12 +7,15 @@
 // 7.4.1 Building Block Core Data Types
 // 7.4.15.4.2 Applying Annotations
 //   Only supported on modules, structs, members, enums and enum identifiers
+//
+// To regenerate _standalone_parser.py from this grammar:
+//   python3 -m rosidl_parser.generate_standalone_parser
+// or:
+//   python3 -m lark.tools.standalone -s specification grammar.lark -o _standalone_parser.py
 
-%import common.DECIMAL
 %import common.DIGIT
 %import common.FLOAT
 %import common.HEXDIGIT
-%import common.INT
 %import common.LETTER
 %import common.WS
 %ignore WS
@@ -23,7 +26,7 @@ _STRING_INNER: /.*?/
 _STRING_ESC_INNER: _STRING_INNER /(?<!\\)(\\\\)*?/
 
 ESCAPED_STRING : "\"" _STRING_ESC_INNER "\""
-ESCAPED_WIDE_STRING: "L\"" _STRING_ESC_INNER "\""
+ESCAPED_WIDE_STRING.2: "L\"" _STRING_ESC_INNER "\""
 
 
 // 7.2.2 Comments
@@ -42,10 +45,12 @@ IDENTIFIER: LETTER (LETTER | DIGIT | "_")*
 integer_literal: decimal_literal
   | octal_literal
   | hexadecimal_literal
-decimal_literal: DIGIT
-  | "1".."9" DIGIT+
-octal_literal: "0" "0".."7"+
-hexadecimal_literal: "0x"i HEXDIGIT+
+decimal_literal: DECIMAL_LITERAL
+DECIMAL_LITERAL: "0" | "1".."9" DIGIT*
+octal_literal: OCTAL_LITERAL
+OCTAL_LITERAL: "0" "0".."7"+
+hexadecimal_literal: HEXADECIMAL_LITERAL
+HEXADECIMAL_LITERAL: "0x"i HEXDIGIT+
 
 // 7.2.6.2 Character Literals
 character_literal: "'" CHAR "'"
@@ -86,8 +91,7 @@ wide_string_literal: ESCAPED_WIDE_STRING
 floating_pt_literal: FLOAT
 
 // 7.2.6.5 Fixed-Point Literals
-fixed_pt_literal: DECIMAL "d"i
-  | INT "d"i
+fixed_pt_literal: (FLOAT | DECIMAL_LITERAL) "d"i
 
 
 // 7.3 Preprocessing
@@ -150,8 +154,6 @@ and_expr: shift_expr
 
 // (11)
 shift_expr: add_expr
-  | shift_expr ">>" add_expr
-  | shift_expr "<<" add_expr
 
 // (12)
 add_expr: mult_expr

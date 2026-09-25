@@ -552,3 +552,86 @@ def test_parse_idl_string_memoization() -> None:
     clear_ast_cache()
     ast3 = parse_idl_string(idl_str)
     assert ast3 is not ast1
+
+
+def test_standalone_parser_in_sync() -> None:
+    import hashlib
+    grammar_path = pathlib.Path(__file__).parent.parent / 'rosidl_parser' / 'grammar.lark'
+    grammar_sha256 = hashlib.sha256(grammar_path.read_bytes()).hexdigest()
+
+    try:
+        from rosidl_parser import _standalone_parser
+    except ImportError:
+        pytest.skip('_standalone_parser is not available')
+
+    assert hasattr(_standalone_parser, '_GRAMMAR_SHA256'), (
+        '_standalone_parser.py does not contain _GRAMMAR_SHA256 metadata. '
+        'Please regenerate via: python3 -m rosidl_parser.generate_standalone_parser'
+    )
+    assert _standalone_parser._GRAMMAR_SHA256 == grammar_sha256, (
+        f'_standalone_parser.py ({_standalone_parser._GRAMMAR_SHA256}) is out of sync '
+        f'with grammar.lark ({grammar_sha256})! '
+        'Please regenerate via: python3 -m rosidl_parser.generate_standalone_parser'
+    )
+
+
+def test_standalone_parser_dynamic_parity() -> None:
+    try:
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', DeprecationWarning)
+            from lark import Lark
+        import rosidl_parser._standalone_parser as sp
+        Lark_StandAlone = getattr(sp, 'Lark_StandAlone')
+    except (ImportError, AttributeError):
+        pytest.skip('Lark or _standalone_parser not available for parity test')
+
+    grammar_path = pathlib.Path(__file__).parent.parent / 'rosidl_parser' / 'grammar.lark'
+    dynamic_parser = Lark(
+        grammar_path.read_text(encoding='utf-8'),
+        parser='lalr',
+        start=['specification'],
+        lexer='contextual',
+    )
+    standalone_parser = Lark_StandAlone()
+
+    sample_idls = [
+        'module test { module msg { struct Foo { int32 x; }; }; };',
+        'const string FOO = "bar";',
+        'const wstring FOO = L"bar";',
+        'module m { struct S { sequence<string<3>> nested; }; };',
+        'module m { struct S { @default(value=42) int32 x; }; };',
+    ]
+
+    for idl in sample_idls:
+        t_dynamic = dynamic_parser.parse(idl)
+        t_standalone = standalone_parser.parse(idl)
+        assert t_dynamic.pretty() == t_standalone.pretty(), f'AST mismatch on: {idl}'
+
+
+def test_dynamic_lark_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
+    try:
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', DeprecationWarning)
+            from lark.lexer import Token as _LarkToken
+            from lark.tree import Tree as _LarkTree
+            import lark  # noqa: F401
+    except ImportError:
+        pytest.skip('Lark is not installed for fallback test')
+
+    import rosidl_parser.parser as p
+    # Simulate standalone parser being unavailable
+    monkeypatch.setattr(p, '_HAVE_STANDALONE', False)
+    monkeypatch.setattr(p, '_parser', None)
+    monkeypatch.setattr(p, 'Tree', _LarkTree)
+    monkeypatch.setattr(p, 'Token', _LarkToken)
+
+    idl_str = 'module test { module msg { struct Foo { int32 x; }; }; };'
+    tree = p.get_ast_from_idl_string(idl_str)
+    assert tree.data == 'specification'
+    content = p.extract_content_from_ast(tree)
+    assert len(content.elements) == 1
+    elem = content.elements[0]
+    assert isinstance(elem, Message)
+    assert elem.structure.namespaced_type.name == 'Foo'

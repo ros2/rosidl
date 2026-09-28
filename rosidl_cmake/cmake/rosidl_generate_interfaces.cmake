@@ -301,8 +301,9 @@ macro(rosidl_generate_interfaces target)
       string(REGEX REPLACE ":([^:]*)$" "/\\1" _idl_file "${_idl_tuple}")
       get_filename_component(_parent_folders "${_idl_relpath}" DIRECTORY)
       install(
-        FILES ${_idl_file}
+        FILES ${_idl_file} "${_idl_file}.json"
         DESTINATION "share/${PROJECT_NAME}/${_parent_folders}"
+        OPTIONAL
       )
       file(TO_CMAKE_PATH "${_idl_relpath}" _idl_relpath)
       list(APPEND _rosidl_cmake_IDL_FILES "${_idl_relpath}")

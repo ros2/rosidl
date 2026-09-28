@@ -17,6 +17,7 @@
   <author email="michel@ekumenlabs.com">Michel Hidalgo</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>python3-lark-parser</buildtool_depend>
 
   <exec_depend>rosidl_adapter</exec_depend> <!-- TODO(dirk-thomas) only for backward compatibilty -->
 

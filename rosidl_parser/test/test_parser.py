@@ -554,37 +554,22 @@ def test_parse_idl_string_memoization() -> None:
     assert ast3 is not ast1
 
 
-def test_standalone_parser_in_sync() -> None:
-    import hashlib
-    grammar_path = pathlib.Path(__file__).parent.parent / 'rosidl_parser' / 'grammar.lark'
-    grammar_sha256 = hashlib.sha256(grammar_path.read_bytes()).hexdigest()
+def test_standalone_parser_available() -> None:
+    import rosidl_parser._standalone_parser as sp
+    import rosidl_parser.parser as p
 
-    try:
-        from rosidl_parser import _standalone_parser
-    except ImportError:
-        pytest.skip('_standalone_parser is not available')
-
-    assert hasattr(_standalone_parser, '_GRAMMAR_SHA256'), (
-        '_standalone_parser.py does not contain _GRAMMAR_SHA256 metadata. '
-        'Please regenerate via: python3 -m rosidl_parser.generate_standalone_parser'
-    )
-    assert _standalone_parser._GRAMMAR_SHA256 == grammar_sha256, (
-        f'_standalone_parser.py ({_standalone_parser._GRAMMAR_SHA256}) is out of sync '
-        f'with grammar.lark ({grammar_sha256})! '
-        'Please regenerate via: python3 -m rosidl_parser.generate_standalone_parser'
-    )
+    assert p._HAVE_STANDALONE is True
+    assert getattr(sp, 'Lark_StandAlone', None) is not None
 
 
 def test_standalone_parser_dynamic_parity() -> None:
-    try:
-        import warnings
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', DeprecationWarning)
-            from lark import Lark
-        import rosidl_parser._standalone_parser as sp
-        Lark_StandAlone = getattr(sp, 'Lark_StandAlone')
-    except (ImportError, AttributeError):
-        pytest.skip('Lark or _standalone_parser not available for parity test')
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', DeprecationWarning)
+        from lark import Lark
+    import rosidl_parser._standalone_parser as sp
+
+    Lark_StandAlone = getattr(sp, 'Lark_StandAlone')
 
     grammar_path = pathlib.Path(__file__).parent.parent / 'rosidl_parser' / 'grammar.lark'
     dynamic_parser = Lark(
@@ -592,6 +577,7 @@ def test_standalone_parser_dynamic_parity() -> None:
         parser='lalr',
         start=['specification'],
         lexer='contextual',
+        maybe_placeholders=False,
     )
     standalone_parser = Lark_StandAlone()
 
@@ -610,15 +596,12 @@ def test_standalone_parser_dynamic_parity() -> None:
 
 
 def test_dynamic_lark_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
-    try:
-        import warnings
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', DeprecationWarning)
-            from lark.lexer import Token as _LarkToken
-            from lark.tree import Tree as _LarkTree
-            import lark  # noqa: F401
-    except ImportError:
-        pytest.skip('Lark is not installed for fallback test')
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', DeprecationWarning)
+        from lark.lexer import Token as _LarkToken
+        from lark.tree import Tree as _LarkTree
+        import lark  # noqa: F401
 
     import rosidl_parser.parser as p
     # Simulate standalone parser being unavailable

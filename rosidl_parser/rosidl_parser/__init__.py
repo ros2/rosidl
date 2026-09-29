@@ -14,4 +14,7 @@
 
 import pkgutil
 
+# Allow rosidl_parser to span multiple directories on sys.path (e.g. if a tool or test
+# imports rosidl_parser from the source tree while the build-generated _standalone_parser.py
+# lives in the install tree).
 __path__ = pkgutil.extend_path(__path__, __name__)

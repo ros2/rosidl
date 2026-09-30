@@ -14,28 +14,49 @@ if(NOT _exported_typesupport_libraries STREQUAL "")
 
     if(NOT IS_ABSOLUTE "${_library}")
       # search for library target relative to this CMake file
-      set(_lib "NOTFOUND")
+      unset(_@PROJECT_NAME@_exported_typesupport_library)
+      unset(_@PROJECT_NAME@_exported_typesupport_library CACHE)
       find_library(
-        _lib NAMES "${_library}"
+        _@PROJECT_NAME@_exported_typesupport_library NAMES "${_library}"
         PATHS "${@PROJECT_NAME@_DIR}/../../../lib"
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH
       )
 
-      if(NOT _lib)
+      if(NOT _@PROJECT_NAME@_exported_typesupport_library)
+        unset(_@PROJECT_NAME@_exported_typesupport_library)
+        unset(_@PROJECT_NAME@_exported_typesupport_library CACHE)
+        set(_@PROJECT_NAME@_exported_typesupport_library_filenames
+          "${_library}"
+          "${CMAKE_SHARED_LIBRARY_PREFIX}${_library}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+          "${CMAKE_STATIC_LIBRARY_PREFIX}${_library}${CMAKE_STATIC_LIBRARY_SUFFIX}"
+        )
+        find_file(
+          _@PROJECT_NAME@_exported_typesupport_library
+          NAMES ${_@PROJECT_NAME@_exported_typesupport_library_filenames}
+          PATHS "${@PROJECT_NAME@_DIR}/../../../lib"
+          NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH
+        )
+        unset(_@PROJECT_NAME@_exported_typesupport_library_filenames)
+      endif()
+
+      if(NOT _@PROJECT_NAME@_exported_typesupport_library)
         # the library wasn't found
         message(FATAL_ERROR
           "Package '@PROJECT_NAME@' exports the typesupport library '${_library}' which couldn't be found")
-      elseif(NOT IS_ABSOLUTE "${_lib}")
+      elseif(NOT IS_ABSOLUTE "${_@PROJECT_NAME@_exported_typesupport_library}")
         # the found library must be an absolute path
         message(FATAL_ERROR
-          "Package '@PROJECT_NAME@' found the typesupport library '${_library}' at '${_lib}' "
+          "Package '@PROJECT_NAME@' found the typesupport library '${_library}' at '${_@PROJECT_NAME@_exported_typesupport_library}' "
           "which is not an absolute path")
-      elseif(NOT EXISTS "${_lib}")
+      elseif(NOT EXISTS "${_@PROJECT_NAME@_exported_typesupport_library}")
         # the found library must exist
-        message(FATAL_ERROR "Package '@PROJECT_NAME@' found the typesupport library '${_lib}' which doesn't exist")
+        message(FATAL_ERROR "Package '@PROJECT_NAME@' found the typesupport library '${_@PROJECT_NAME@_exported_typesupport_library}' which doesn't exist")
       else()
-        list(APPEND @PROJECT_NAME@_LIBRARIES${_suffix} ${_cfg} "${_lib}")
+        list(APPEND @PROJECT_NAME@_LIBRARIES${_suffix} ${_cfg} "${_@PROJECT_NAME@_exported_typesupport_library}")
       endif()
+
+      unset(_@PROJECT_NAME@_exported_typesupport_library)
+      unset(_@PROJECT_NAME@_exported_typesupport_library CACHE)
 
     else()
       if(NOT EXISTS "${_library}")

@@ -71,7 +71,7 @@ for member in message.structure.members:
 /**
 @[  for line in comments]@
 @[    if line]@
-  * @(line)
+  * @(line.replace('/*', '/ *').replace('*/', '* /'))
 @[    else]@
   *
 @[    end if]@
@@ -157,7 +157,7 @@ enum
 /**
 @[  for line in comments]@
 @[    if line]@
-  * @(line)
+  * @(line.replace('/*', '/ *').replace('*/', '* /'))
 @[    else]@
   *
 @[    end if]@

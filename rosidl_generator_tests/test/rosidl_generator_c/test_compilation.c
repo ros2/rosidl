@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "rosidl_generator_tests/msg/detail/comments__struct.h"
 #include "rosidl_generator_tests/msg/detail/constants__struct.h"
 #include "rosidl_generator_tests/msg/detail/constants__functions.h"
 
@@ -24,6 +25,16 @@ int main(int argc, char ** argv)
 {
   (void)argc;
   (void)argv;
+
+  rosidl_generator_tests__msg__Comments comments = {0};
+  if (comments.x != 0.0f || comments.undocumented != 0.0f ||
+    rosidl_generator_tests__msg__Comments__VALUE != 1 ||
+    rosidl_generator_tests__msg__Comments__ORDINARY != 2 ||
+    rosidl_generator_tests__msg__Comments__UNDOCUMENTED != 3)
+  {
+    fprintf(stderr, "wrong documented message or constants\n");
+    return 1;
+  }
 
   if (!rosidl_generator_tests__msg__Constants__BOOL_CONST) {
     fprintf(stderr, "wrong boolean constant\n");

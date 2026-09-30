@@ -37,3 +37,9 @@ TEMPLATE(
     include_directives=include_directives)
 }@
 
+@{
+TEMPLATE(
+    'msg__type_support.hpp.em',
+    package_name=package_name, message=service.event_message,
+    include_directives=include_directives)
+}@

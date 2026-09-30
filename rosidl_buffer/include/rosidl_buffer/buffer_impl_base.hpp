@@ -51,6 +51,16 @@ public:
   /// Create a deep copy of this buffer.
   /// @return New BufferImplBase instance with copied data
   virtual std::unique_ptr<BufferImplBase<T>> clone() const = 0;
+
+  /// Get a backend-specific, opaque descriptor for this buffer's storage,
+  /// without copying to CPU and without throwing. A CPU backend returns a
+  /// pointer to its own contiguous storage (interpretable via size()); a
+  /// device backend returns whatever handle its own matching consumer (an
+  /// RMW's serializer) knows how to interpret via get_backend_type(). This
+  /// is the non-throwing counterpart element access and resize lack for a
+  /// non-CPU backend, letting an introspection-typesupport consumer read a
+  /// device-backed member without forcing a CPU copy first.
+  virtual const void * descriptor() const = 0;
 };
 
 }  // namespace rosidl

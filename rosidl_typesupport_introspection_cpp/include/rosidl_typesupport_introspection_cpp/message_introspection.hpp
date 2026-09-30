@@ -87,6 +87,20 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember_s
   /// True if this field is an rosidl::Buffer<T> (e.g. uint8[] fields).
   /// Introspection accessors (except size_function) throw for non-CPU backends.
   bool is_rosidl_buffer_;
+  /// If is_rosidl_buffer_ is true, a pointer to a function that returns the
+  /// member's underlying rosidl::BufferImplBase<T>*, as a type-erased
+  /// const void*, WITHOUT throwing for a non-CPU backend -- unlike
+  /// get_function/get_const_function/resize_function above, which all call
+  /// throw_if_not_cpu_backend(). A caller that already knows the member is
+  /// buffer-backed uses this to reach the backend generically: call
+  /// rosidl::BufferBackend::get_backend_type() equivalent (the impl's own
+  /// get_backend_type()) to identify it, then hand the returned pointer to
+  /// a registered rosidl::BufferBackend plugin's create_descriptor_with_
+  /// endpoint(), which is the existing, already-designed mechanism for
+  /// producing a serializable descriptor -- this field only supplies the
+  /// non-throwing entry point into it that was missing. Null for any
+  /// member where is_rosidl_buffer_ is false.
+  const void * (* get_buffer_impl_function)(const void *);
 } MessageMember;
 
 /// Structure used to describe all fields of a single interface type.

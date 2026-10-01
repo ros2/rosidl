@@ -32,6 +32,8 @@ if(NOT TARGET Python3::Interpreter)
   find_package(Python3 REQUIRED COMPONENTS Interpreter)
 endif()
 
+find_package(rosidl_cmake REQUIRED)
+
 set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_type_description/${PROJECT_NAME}")
 set(_generated_files "")
 set(_generated_tuples "")
@@ -51,8 +53,7 @@ endforeach()
 set(_dependency_files "")
 set(_dependency_paths "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
-  set(_include_path "${${_pkg_name}_DIR}/..")
-  normalize_path(_include_path "${_include_path}")
+  rosidl_find_package_idl(_include_path "${_pkg_name}" ".")
   list(APPEND _dependency_paths "${_pkg_name}:${_include_path}")
 endforeach()
 

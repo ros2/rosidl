@@ -17,6 +17,8 @@
   <buildtool_export_depend>ament_cmake_core</buildtool_export_depend>
   <buildtool_export_depend>python3</buildtool_export_depend>
 
+  <build_export_depend>rosidl_cmake</build_export_depend>
+
   <exec_depend>ament_index_python</exec_depend>
   <exec_depend>rosidl_cli</exec_depend>
   <exec_depend>rosidl_parser</exec_depend>

@@ -44,6 +44,9 @@ _all_copied="$_all_copied $C_DETAIL_SUBPATH/*__struct.h $C_DETAIL_SUBPATH/*__fun
 
 # add copy notice
 sed -i '1s/^/\/\/ DO NOT EDIT MANUALLY - this copied file managed by copy_type_description_generated_sources.bash\n/' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
+# drop the "private header" pragma - the copies are public rosidl_runtime_c API,
+# and the header it points at is the one this copy exists to avoid depending on
+sed -i '/IWYU pragma: private/,+2d' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
 # remove unnecessary includes (before doing replacements)
 sed -i '/type_description_interfaces\/msg\/rosidl_generator_c__visibility_control.h/d' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
 sed -i '/#include "rosidl_runtime_c\/type_description\/type_description__struct.h/d' $C_INCLUDE_DEST/*.h $C_SRC_DEST/*.c
@@ -67,6 +70,8 @@ _all_copied="$_all_copied $CPP_DETAIL_SUBPATH/*__struct.hpp"
 pushd $CPP_INCLUDE_DEST
 # add copy notice
 sed -i '1s/^/\/\/ DO NOT EDIT MANUALLY - this copied file managed by copy_type_description_generated_sources.bash\n/' *.hpp
+# drop the "private header" pragma - the copies are public rosidl_runtime_cpp API
+sed -i '/IWYU pragma: private/,+2d' *.hpp
 # include guards
 sed -i -e 's/TYPE_DESCRIPTION_INTERFACES__MSG__DETAIL__/ROSIDL_RUNTIME_CPP__TYPE_DESCRIPTION__/g' *.hpp
 # pkg namespace

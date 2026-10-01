@@ -13,14 +13,16 @@
 # limitations under the License.
 
 from pathlib import Path
+from typing import Optional
 
 
 def convert_to_idl(package_dir: Path, package_name: str, interface_file: Path,
-                   output_dir: Path) -> Path:
+                   output_dir: Path, msg_constants: Optional[dict] = None) -> Path:
     if interface_file.suffix == '.msg':
         from rosidl_adapter.msg import convert_msg_to_idl
         return convert_msg_to_idl(
-            package_dir, package_name, interface_file, output_dir / 'msg')
+            package_dir, package_name, interface_file, output_dir / 'msg',
+            msg_constants=msg_constants)
 
     if interface_file.suffix == '.srv':
         from rosidl_adapter.srv import convert_srv_to_idl

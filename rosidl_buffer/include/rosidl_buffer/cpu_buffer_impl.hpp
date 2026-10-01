@@ -56,6 +56,8 @@ public:
     return copy;
   }
 
+  const void * descriptor() const override {return storage_.data();}
+
 private:
   std::vector<T, Allocator> storage_;
 };

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "gtest/gtest.h"
+#include "rosidl_buffer/buffer.hpp"
 #include "rosidl_runtime_c/primitives_sequence.h"
 #include "rosidl_runtime_c/primitives_sequence_functions.h"
 
@@ -142,3 +143,33 @@ TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(bool, bool)
 TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(byte, uint8_t)
 TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(float32, float)
 TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(float64, double)
+
+TEST(primitives_sequence_functions, uint8_buffer_copy_and_equality)
+{
+  rosidl_runtime_c__uint8__Sequence input;
+  ASSERT_TRUE(rosidl_runtime_c__uint8__Sequence__init(&input, 0));
+  input.data = reinterpret_cast<uint8_t *>(new rosidl::Buffer<uint8_t>({1, 2, 3}));
+  input.size = 3;
+  input.capacity = 3;
+  input.is_rosidl_buffer = true;
+  input.owns_rosidl_buffer = true;
+
+  rosidl_runtime_c__uint8__Sequence output;
+  ASSERT_TRUE(rosidl_runtime_c__uint8__Sequence__init(&output, 1));
+  ASSERT_TRUE(rosidl_runtime_c__uint8__Sequence__copy(&input, &output));
+  EXPECT_TRUE(output.is_rosidl_buffer);
+  EXPECT_TRUE(output.owns_rosidl_buffer);
+  EXPECT_NE(input.data, output.data);
+  EXPECT_TRUE(rosidl_runtime_c__uint8__Sequence__are_equal(&input, &output));
+
+  rosidl_runtime_c__uint8__Sequence cpu;
+  ASSERT_TRUE(rosidl_runtime_c__uint8__Sequence__init(&cpu, 3));
+  cpu.data[0] = 1;
+  cpu.data[1] = 2;
+  cpu.data[2] = 3;
+  EXPECT_TRUE(rosidl_runtime_c__uint8__Sequence__are_equal(&input, &cpu));
+
+  rosidl_runtime_c__uint8__Sequence__fini(&cpu);
+  rosidl_runtime_c__uint8__Sequence__fini(&output);
+  rosidl_runtime_c__uint8__Sequence__fini(&input);
+}

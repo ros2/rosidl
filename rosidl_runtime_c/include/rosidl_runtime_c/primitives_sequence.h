@@ -25,26 +25,34 @@
     TYPE_NAME * data; /*!< The pointer to an array of STRUCT_NAME */ \
     size_t size; /*!< The number of valid items in data */ \
     size_t capacity; /*!< The number of allocated items in data */ \
+  } rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence;
+
+#define ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(STRUCT_NAME, TYPE_NAME) \
+  typedef struct rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence \
+  { \
+    TYPE_NAME * data; /*!< The pointer to an array of STRUCT_NAME */ \
+    size_t size; /*!< The number of valid items in data */ \
+    size_t capacity; /*!< The number of allocated items in data */ \
     bool is_rosidl_buffer; /*!< When true, data points to an rosidl::Buffer<T>* */ \
     bool owns_rosidl_buffer; /*!< When true, Sequence__fini will destroy the Buffer */ \
   } rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence;
 
 // sequence types for all basic types
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(float, float)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(double, double)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(long_double, long double)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(char, signed char)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(wchar, uint16_t)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(boolean, bool)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(octet, uint8_t)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(uint8, uint8_t)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(int8, int8_t)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(uint16, uint16_t)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(int16, int16_t)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(uint32, uint32_t)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(int32, int32_t)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(uint64, uint64_t)
-ROSIDL_RUNTIME_C__PRIMITIVE_SEQUENCE(int64, int64_t)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(float, float)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(double, double)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(long_double, long double)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(char, signed char)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(wchar, uint16_t)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(boolean, bool)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(octet, uint8_t)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(uint8, uint8_t)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(int8, int8_t)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(uint16, uint16_t)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(int16, int16_t)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(uint32, uint32_t)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(int32, int32_t)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(uint64, uint64_t)
+ROSIDL_RUNTIME_C__BUFFER_PRIMITIVE_SEQUENCE(int64, int64_t)
 
 // emulate legacy API
 typedef rosidl_runtime_c__boolean__Sequence

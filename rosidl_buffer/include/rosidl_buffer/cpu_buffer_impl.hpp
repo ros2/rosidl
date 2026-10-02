@@ -56,6 +56,18 @@ public:
     return copy;
   }
 
+  /// Host storage, always addressable. An empty vector's `data()` may be null,
+  /// which `valid()` reports as unusable -- correct, since there is nothing to
+  /// address.
+  BufferMemory memory() const override
+  {
+    BufferMemory out;
+    out.kind = BufferMemory::Kind::host;
+    out.handle = const_cast<T *>(storage_.data());
+    out.size_bytes = storage_.size() * sizeof(T);
+    return out;
+  }
+
 private:
   std::vector<T, Allocator> storage_;
 };

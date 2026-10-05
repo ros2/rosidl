@@ -30,7 +30,7 @@
 #include <string>
 #include <vector>
 
-#include "test_array_generator.hpp"
+#include "./test_array_generator.hpp"
 
 #include "rosidl_generator_tests/msg/arrays.hpp"
 #include "rosidl_generator_tests/msg/basic_types.hpp"

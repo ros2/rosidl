@@ -23,7 +23,7 @@
 #include "rosidl_typesupport_introspection_tests/srv/arrays.h"
 #include "rosidl_typesupport_introspection_tests/srv/arrays.hpp"
 
-#include "introspection_libraries_under_test.hpp"
+#include "./introspection_libraries_under_test.hpp"
 
 namespace rosidl_typesupport_introspection_tests
 {

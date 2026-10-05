@@ -1,0 +1,31 @@
+# Copyright 2026 Open Source Robotics Foundation, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+[package]
+name = "rosidl_buffer_rs"
+version = "0.1.0"
+authors = ["Yuankun Zhu <yuankunz@nvidia.com>"]
+edition = "2021"
+rust-version = "1.88"
+license = "Apache-2.0"
+description = "Backend-neutral Rust buffers and bindings to rosidl::Buffer"
+links = "rosidl_buffer_rs_bridge"
+
+[dependencies]
+cxx = "=1.0.202"
+serde = { version = "1", optional = true }
+
+[build-dependencies]
+cxx-build = "=1.0.202"
+
+[dev-dependencies]
+quickcheck = "1"
+serde_json = "1"
+
+[features]
+default = []
+# Only for generating documentation without a ROS installation.
+use_ros_shim = []
+
+[package.metadata.docs.rs]
+features = ["use_ros_shim"]

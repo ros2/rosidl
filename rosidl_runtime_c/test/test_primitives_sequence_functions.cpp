@@ -144,7 +144,7 @@ TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(byte, uint8_t)
 TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(float32, float)
 TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(float64, double)
 
-TEST(primitives_sequence_functions, uint8_buffer_copy_and_equality)
+TEST(primitives_sequence_functions, rejects_opaque_buffer_copy_and_comparison)
 {
   rosidl_runtime_c__uint8__Sequence input;
   ASSERT_TRUE(rosidl_runtime_c__uint8__Sequence__init(&input, 0));
@@ -155,21 +155,23 @@ TEST(primitives_sequence_functions, uint8_buffer_copy_and_equality)
   input.owns_rosidl_buffer = true;
 
   rosidl_runtime_c__uint8__Sequence output;
-  ASSERT_TRUE(rosidl_runtime_c__uint8__Sequence__init(&output, 1));
-  ASSERT_TRUE(rosidl_runtime_c__uint8__Sequence__copy(&input, &output));
-  EXPECT_TRUE(output.is_rosidl_buffer);
-  EXPECT_TRUE(output.owns_rosidl_buffer);
-  EXPECT_NE(input.data, output.data);
-  EXPECT_TRUE(rosidl_runtime_c__uint8__Sequence__are_equal(&input, &output));
+  ASSERT_TRUE(rosidl_runtime_c__uint8__Sequence__init(&output, 3));
+  output.data[0] = 7;
+  const auto * opaque_pointer = input.data;
+  const auto * cpu_pointer = output.data;
+  EXPECT_FALSE(rosidl_runtime_c__uint8__Sequence__copy(&input, &output));
+  EXPECT_FALSE(rosidl_runtime_c__uint8__Sequence__copy(&output, &input));
+  EXPECT_EQ(input.data, opaque_pointer);
+  EXPECT_EQ(output.data, cpu_pointer);
+  EXPECT_EQ(output.data[0], 7);
+  EXPECT_TRUE(input.is_rosidl_buffer);
+  EXPECT_TRUE(input.owns_rosidl_buffer);
+  EXPECT_FALSE(output.is_rosidl_buffer);
+  EXPECT_FALSE(rosidl_runtime_c__uint8__Sequence__are_equal(&input, &output));
+  EXPECT_FALSE(rosidl_runtime_c__uint8__Sequence__are_equal(&output, &input));
+  EXPECT_FALSE(rosidl_runtime_c__uint8__Sequence__are_equal(&input, &input));
+  EXPECT_TRUE(rosidl_runtime_c__uint8__Sequence__copy(&input, &input));
 
-  rosidl_runtime_c__uint8__Sequence cpu;
-  ASSERT_TRUE(rosidl_runtime_c__uint8__Sequence__init(&cpu, 3));
-  cpu.data[0] = 1;
-  cpu.data[1] = 2;
-  cpu.data[2] = 3;
-  EXPECT_TRUE(rosidl_runtime_c__uint8__Sequence__are_equal(&input, &cpu));
-
-  rosidl_runtime_c__uint8__Sequence__fini(&cpu);
   rosidl_runtime_c__uint8__Sequence__fini(&output);
   rosidl_runtime_c__uint8__Sequence__fini(&input);
 }

@@ -66,6 +66,8 @@ extern "C"
  *
  * \brief Check for sequence equality.
  *
+ * Opaque buffer-backed sequences are not supported and return false.
+ *
  * param lhs a pointer to a sequence struct
  * param rhs a pointer to another sequence struct
  */
@@ -80,6 +82,9 @@ extern "C"
  * \def ROSIDL_RUNTIME_C__DECLARE_PRIMITIVE_SEQUENCE_COPY(STRUCT_NAME)
  *
  * \brief Copy the sequence.
+ *
+ * Copying from or into opaque buffer-backed storage returns false without
+ * changing the output. Copying a sequence to itself succeeds as a no-op.
  *
  * param input a pointer to the sequence to copy from
  * param output a pointer to an initialized sequence to copy to

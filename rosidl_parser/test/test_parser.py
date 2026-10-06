@@ -552,3 +552,61 @@ def test_parse_idl_string_memoization() -> None:
     clear_ast_cache()
     ast3 = parse_idl_string(idl_str)
     assert ast3 is not ast1
+
+
+def test_grammar_cache_available() -> None:
+    import rosidl_parser.parser as p
+
+    cache_file = p._find_grammar_cache_file()
+    assert cache_file is not None and cache_file.is_file()
+
+
+def test_grammar_cache_dynamic_parity() -> None:
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', DeprecationWarning)
+        from lark import Lark
+    import rosidl_parser.parser as p
+
+    cache_file = p._find_grammar_cache_file()
+    assert cache_file is not None and cache_file.is_file()
+
+    grammar_path = pathlib.Path(__file__).parent.parent / 'rosidl_parser' / 'grammar.lark'
+    dynamic_parser = Lark(
+        grammar_path.read_text(encoding='utf-8'),
+        parser='lalr',
+        start=['specification'],
+        lexer='contextual',
+        maybe_placeholders=False,
+    )
+    with open(cache_file, 'rb') as h_bin:
+        cached_parser = Lark.load(h_bin)
+
+    sample_idls = [
+        'module test { module msg { struct Foo { int32 x; }; }; };',
+        'const string FOO = "bar";',
+        'const wstring FOO = L"bar";',
+        'module m { struct S { sequence<string<3>> nested; }; };',
+        'module m { struct S { @default(value=42) int32 x; }; };',
+    ]
+
+    for idl in sample_idls:
+        t_dynamic = dynamic_parser.parse(idl)
+        t_cached = cached_parser.parse(idl)
+        assert t_dynamic.pretty() == t_cached.pretty(), f'AST mismatch on: {idl}'
+
+
+def test_dynamic_lark_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
+    import rosidl_parser.parser as p
+    # Simulate pre-compiled grammar cache being unavailable
+    monkeypatch.setattr(p, '_find_grammar_cache_file', lambda: None)
+    monkeypatch.setattr(p, '_parser', None)
+
+    idl_str = 'module test { module msg { struct Foo { int32 x; }; }; };'
+    tree = p.get_ast_from_idl_string(idl_str)
+    assert tree.data == 'specification'
+    content = p.extract_content_from_ast(tree)
+    assert len(content.elements) == 1
+    elem = content.elements[0]
+    assert isinstance(elem, Message)
+    assert elem.structure.namespaced_type.name == 'Foo'

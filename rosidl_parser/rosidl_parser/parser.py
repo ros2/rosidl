@@ -14,7 +14,6 @@
 
 import codecs
 import os
-import pathlib
 import re
 import sys
 from typing import Any
@@ -28,16 +27,62 @@ from typing import Pattern
 from typing import Tuple
 from typing import TYPE_CHECKING
 from typing import Union
-import warnings
 
-with warnings.catch_warnings():
-    warnings.simplefilter('ignore', DeprecationWarning)
+if TYPE_CHECKING:
     from lark import Lark
     from lark.lexer import Token
     from lark.tree import pydot__tree_to_png
     from lark.tree import Tree
 
-import rosidl_parser
+    _StandaloneLark: Any = None
+    _StandaloneToken: Any = None
+    _StandaloneTree: Any = None
+
+try:
+    import rosidl_parser._standalone_parser as _standalone_parser
+
+    _StandaloneLark = getattr(_standalone_parser, 'Lark_StandAlone', None)
+    _StandaloneToken = getattr(_standalone_parser, 'Token', None)
+    _StandaloneTree = getattr(_standalone_parser, 'Tree', None)
+
+    if _StandaloneTree is not None and not hasattr(_StandaloneTree, 'scan_values'):
+        def _scan_values(self, pred):
+            for c in self.children:
+                if isinstance(c, _StandaloneTree):
+                    yield from c.scan_values(pred)
+                elif pred(c):
+                    yield c
+        setattr(_StandaloneTree, 'scan_values', _scan_values)
+
+    _HAVE_STANDALONE = _StandaloneLark is not None and _StandaloneTree is not None
+except ImportError:
+    _StandaloneLark = None
+    _StandaloneToken = None
+    _StandaloneTree = None
+    _HAVE_STANDALONE = False
+
+if not TYPE_CHECKING:
+    if _HAVE_STANDALONE:
+        Tree = _StandaloneTree  # noqa: F811
+        Token = _StandaloneToken  # noqa: F811
+        pydot__tree_to_png = None  # noqa: F811
+    else:
+        try:
+            import warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', DeprecationWarning)
+                from lark.lexer import Token as _LarkToken
+                from lark.tree import pydot__tree_to_png
+                from lark.tree import Tree as _LarkTree
+            Tree = _LarkTree  # noqa: F811
+            Token = _LarkToken  # noqa: F811
+        except ImportError:
+            _LarkToken = None
+            _LarkTree = None
+            pydot__tree_to_png = None
+            Tree = ()  # noqa: F811
+            Token = ()  # noqa: F811
+
 from rosidl_parser.definition import AbstractNestableType
 from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractType
@@ -84,22 +129,9 @@ if TYPE_CHECKING:
 
 AbstractTypeAlias = Union[AbstractNestableType, BasicType, BoundedSequence, UnboundedSequence]
 
-_parser: Optional[Lark] = None
+_parser: Optional[Union['_StandaloneLark', 'Lark']] = None
 _idl_file_cache: Dict[Tuple[str, int], IdlFile] = {}
 _idl_string_cache: Dict[str, IdlContent] = {}
-
-
-def _find_grammar_cache_file() -> Optional[pathlib.Path]:
-    """Locate the pre-compiled grammar.lark.bin file across rosidl_parser.__path__."""
-    search_dirs = list(getattr(rosidl_parser, '__path__', []))
-    module_dir = os.path.dirname(__file__)
-    if module_dir not in search_dirs:
-        search_dirs.append(module_dir)
-    for directory in search_dirs:
-        candidate = pathlib.Path(directory) / 'grammar.lark.bin'
-        if candidate.is_file():
-            return candidate
-    return None
 
 
 def clear_ast_cache() -> None:
@@ -142,10 +174,11 @@ def parse_idl_string(idl_string: str, png_file: Optional[str] = None) -> IdlCont
 
     if png_file:
         os.makedirs(os.path.dirname(png_file), exist_ok=True)
-        try:
-            pydot__tree_to_png(tree, png_file)
-        except ImportError:
-            pass
+        if pydot__tree_to_png is not None:
+            try:
+                pydot__tree_to_png(tree, png_file)
+            except Exception:
+                pass
     elif png_file is None:
         _idl_string_cache[idl_string] = content
 
@@ -155,22 +188,18 @@ def parse_idl_string(idl_string: str, png_file: Optional[str] = None) -> IdlCont
 def get_ast_from_idl_string(idl_string: str) -> 'ParseTree':
     global _parser
     if _parser is None:
-        cache_file = _find_grammar_cache_file()
-        if cache_file is not None:
-            try:
-                with open(cache_file, 'rb') as h_bin:
-                    _parser = Lark.load(h_bin)
-            except Exception:
-                _parser = None
-        if _parser is None:
+        if _HAVE_STANDALONE:
+            assert _StandaloneLark is not None
+            _parser = _StandaloneLark()
+        else:
+            from lark import Lark
             grammar_file = os.path.join(os.path.dirname(__file__), 'grammar.lark')
             with open(grammar_file, mode='r', encoding='utf-8') as h:
                 grammar = h.read()
             _parser = Lark(
                 grammar,
                 parser='lalr',
-                start=['specification'],
-                lexer='contextual',
+                start='specification',
                 maybe_placeholders=False,
             )
     return _parser.parse(idl_string)

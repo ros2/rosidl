@@ -244,6 +244,8 @@ for index, member in enumerate(message.structure.members):
 
     print('  {')
 
+    # uint32_t abi_version_
+    print('    ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_MESSAGE_MEMBER_ABI_VERSION,  // MessageMember ABI generation')
     # const char * name_
     print('    "%s",  // name' % member.name)
     if isinstance(type_, BasicType):

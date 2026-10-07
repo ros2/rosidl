@@ -28,9 +28,38 @@
 namespace rosidl_typesupport_introspection_cpp
 {
 
+/// MessageMember's own ABI generation. Bumped whenever a field is added to
+/// MessageMember_s -- never reused, never bumped for anything else (a field
+/// reorder or removal is a bigger break this single counter cannot
+/// describe). A reader compares this against the version it was itself
+/// compiled against (this same constant) before trusting any field added at
+/// or after the generation that introduced it; see each such field's own
+/// doc comment for the version it requires.
+///
+/// Existed implicitly, unversioned, before generation 1: `is_rosidl_buffer_`
+/// (rosidl#942) is the first field this scheme was introduced to guard,
+/// which is why it starts the history at 1 rather than 0 -- there is no
+/// generation 0 consumer this field could ever report compatibility with.
+#define ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_MESSAGE_MEMBER_ABI_VERSION 2u
+
 /// Structure used to describe a single field of an interface type.
 typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember_s
 {
+  /// MessageMember's own ABI generation at the time this instance was
+  /// generated -- see ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_MESSAGE_MEMBER_
+  /// ABI_VERSION above. Deliberately the FIRST field, so its offset (0)
+  /// stays stable across every future growth of this struct: a reader
+  /// checking this field never needs to already trust the layout it exists
+  /// to validate. Any consumer reading a field added after generation 1
+  /// (is_rosidl_buffer_) -- starting with get_buffer_impl_function at
+  /// generation 2 -- MUST check this is >= the generation that field was
+  /// introduced at before trusting it; growth is append-only, so a reader
+  /// compiled against an older generation stays correct reading an instance
+  /// generated at a newer one, and only needs this check before reading a
+  /// field its own generation doesn't yet know about. Reading such a field
+  /// without checking risks the exact silent-overread class of bug this
+  /// field exists to make loud instead.
+  uint32_t abi_version_;
   /// The name of the field.
   const char * name_;
   /// The type of the field as a value of the field types enum,
@@ -86,8 +115,11 @@ typedef struct ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_PUBLIC MessageMember_s
   void (* resize_function)(void *, size_t size);
   /// True if this field is an rosidl::Buffer<T> (e.g. uint8[] fields).
   /// Introspection accessors (except size_function) throw for non-CPU backends.
+  /// Present since abi_version_ generation 1.
   bool is_rosidl_buffer_;
-  /// If is_rosidl_buffer_ is true, a pointer to a function that returns the
+  /// Present since abi_version_ generation 2 -- a reader must check
+  /// abi_version_ >= 2 before trusting this field on an instance it did not
+  /// generate itself. If is_rosidl_buffer_ is true, a pointer to a function that returns the
   /// member's underlying rosidl::BufferImplBase<T>*, as a type-erased
   /// const void*, WITHOUT throwing for a non-CPU backend -- unlike
   /// get_function/get_const_function/resize_function above, which all call

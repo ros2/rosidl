@@ -3,57 +3,12 @@
 
 //! Backend-neutral message storage.
 
-use std::ffi::c_void;
 use std::fmt;
 
-use crate::{
-    BoundedPrimitiveSequence, PrimitiveSequence, PrimitiveSequenceAlloc, SequenceExceedsBoundsError,
-};
+use crate::PrimitiveSequenceAlloc;
+use rosidl_runtime_rs::{BoundedSequence, Sequence, SequenceExceedsBoundsError};
 
-/// A buffer allocation or transfer failure.
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub enum BufferError {
-    /// A native buffer operation returned a failure code.
-    Native {
-        /// Operation that failed.
-        operation: &'static str,
-        /// Native return code.
-        code: i32,
-    },
-    /// Host allocation failed.
-    Allocation(std::string::String),
-    /// The native ABI does not support opaque storage for this element type.
-    UnsupportedElement,
-}
-
-impl fmt::Display for BufferError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::Native { operation, code } => write!(f, "{operation} failed (code {code})"),
-            Self::Allocation(message) => f.write_str(message),
-            Self::UnsupportedElement => f.write_str("opaque storage requires a uint8 sequence"),
-        }
-    }
-}
-impl std::error::Error for BufferError {}
-
-pub(crate) fn copy_to_host(pointer: *const c_void, len: usize) -> Result<Vec<u8>, BufferError> {
-    let mut values = Vec::new();
-    values
-        .try_reserve_exact(len)
-        .map_err(|error| BufferError::Allocation(error.to_string()))?;
-    values.resize(len, 0);
-    // SAFETY: the caller borrows a live native byte buffer; output owns len bytes.
-    let buffer = unsafe { &*pointer.cast::<crate::native::CxxBuffer>() };
-    let mut code = 0;
-    crate::native::ffi::copy_to_host(buffer, &mut values, &mut code).map_err(|_| {
-        BufferError::Native {
-            operation: "copy_to_host",
-            code,
-        }
-    })?;
-    Ok(values)
-}
+pub use rosidl_runtime_rs::BufferError;
 
 /// Owned sequence storage on a CPU or accelerator backend.
 ///
@@ -68,7 +23,7 @@ pub(crate) fn copy_to_host(pointer: *const c_void, len: usize) -> Result<Vec<u8>
 /// ```
 #[derive(Clone, Default, PartialEq)]
 pub struct Buffer<T: PrimitiveSequenceAlloc> {
-    sequence: PrimitiveSequence<T>,
+    sequence: Sequence<T>,
 }
 
 impl<T: PrimitiveSequenceAlloc> Buffer<T> {
@@ -110,17 +65,17 @@ impl<T: PrimitiveSequenceAlloc> Buffer<T> {
         })
     }
     /// Borrows the native transport sequence without transferring ownership.
-    pub fn as_sequence(&self) -> &PrimitiveSequence<T> {
+    pub fn as_sequence(&self) -> &Sequence<T> {
         &self.sequence
     }
     /// Transfers storage into its native transport sequence without copying.
-    pub fn into_sequence(self) -> PrimitiveSequence<T> {
+    pub fn into_sequence(self) -> Sequence<T> {
         self.sequence
     }
     /// Clones storage through the backend and reports allocation failures.
     pub fn try_clone(&self) -> Result<Self, BufferError> {
-        let mut sequence = PrimitiveSequence::default();
-        if !T::primitive_sequence_copy(&self.sequence, &mut sequence) {
+        let mut sequence = Sequence::default();
+        if !T::sequence_copy(&self.sequence, &mut sequence) {
             return Err(BufferError::Native {
                 operation: "clone",
                 code: -1,
@@ -129,9 +84,14 @@ impl<T: PrimitiveSequenceAlloc> Buffer<T> {
         Ok(Self { sequence })
     }
 }
-impl<T: PrimitiveSequenceAlloc> From<PrimitiveSequence<T>> for Buffer<T> {
-    fn from(sequence: PrimitiveSequence<T>) -> Self {
+impl<T: PrimitiveSequenceAlloc> From<Sequence<T>> for Buffer<T> {
+    fn from(sequence: Sequence<T>) -> Self {
         Self { sequence }
+    }
+}
+impl<T: PrimitiveSequenceAlloc> From<Buffer<T>> for Sequence<T> {
+    fn from(buffer: Buffer<T>) -> Self {
+        buffer.into_sequence()
     }
 }
 impl<T: PrimitiveSequenceAlloc> From<Vec<T>> for Buffer<T> {
@@ -179,9 +139,8 @@ impl<T: PrimitiveSequenceAlloc, const N: usize> BoundedBuffer<T, N> {
         self.0
     }
     /// Returns the native sequence without copying storage.
-    pub fn into_sequence(self) -> BoundedPrimitiveSequence<T, N> {
-        BoundedPrimitiveSequence::try_from_unbounded(self.0.into_sequence())
-            .expect("validated buffer bound")
+    pub fn into_sequence(self) -> BoundedSequence<T, N> {
+        BoundedSequence::try_from_unbounded(self.0.into_sequence()).expect("validated buffer bound")
     }
 }
 impl<T: PrimitiveSequenceAlloc, const N: usize> std::ops::Deref for BoundedBuffer<T, N> {
@@ -214,10 +173,10 @@ impl<T: PrimitiveSequenceAlloc, const N: usize> TryFrom<Vec<T>> for BoundedBuffe
         Ok(Self(values.into()))
     }
 }
-impl<T: PrimitiveSequenceAlloc, const N: usize> From<BoundedPrimitiveSequence<T, N>>
+impl<T: PrimitiveSequenceAlloc, const N: usize> From<BoundedSequence<T, N>>
     for BoundedBuffer<T, N>
 {
-    fn from(sequence: BoundedPrimitiveSequence<T, N>) -> Self {
+    fn from(sequence: BoundedSequence<T, N>) -> Self {
         Self(sequence.into_unbounded().into())
     }
 }

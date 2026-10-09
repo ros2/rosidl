@@ -7,7 +7,7 @@ pub use crate::{ffi, CxxBuffer};
 
 /// Transfer a C++ buffer into the native message sequence without copying.
 pub fn into_buffer(
-    buffer: cxx::UniquePtr<CxxBuffer>,
+    buffer: rosidl_runtime_rs::native::UniquePtr<CxxBuffer>,
 ) -> Result<crate::Buffer<u8>, crate::BufferError> {
     let size = buffer
         .as_ref()
@@ -23,59 +23,6 @@ pub fn into_buffer(
     }
     .expect("validated native buffer");
     Ok(sequence.into())
-}
-
-pub(crate) fn copy_sequence(
-    source: &crate::PrimitiveSequence<u8>,
-    target: &mut crate::PrimitiveSequence<u8>,
-) -> Option<bool> {
-    use crate::PrimitiveSequenceAlloc;
-
-    if !source.is_rosidl_buffer() && !target.is_rosidl_buffer() {
-        return None;
-    }
-    let replacement = if let Some(pointer) = source.rosidl_buffer_ptr() {
-        // SAFETY: source keeps the native byte buffer alive during cloning.
-        let buffer = unsafe { &*pointer.cast::<CxxBuffer>() };
-        let mut code = 0;
-        let Ok(clone) = ffi::clone_buffer(buffer, &mut code) else {
-            return Some(false);
-        };
-        let Ok(clone) = into_buffer(clone) else {
-            return Some(false);
-        };
-        clone.into_sequence()
-    } else {
-        let mut replacement = crate::PrimitiveSequence::default();
-        if !u8::primitive_sequence_copy(source, &mut replacement) {
-            return Some(false);
-        }
-        replacement
-    };
-    // Release the old owner only after the replacement is ready.
-    *target = replacement;
-    Some(true)
-}
-
-pub(crate) fn sequences_equal(
-    lhs: &crate::PrimitiveSequence<u8>,
-    rhs: &crate::PrimitiveSequence<u8>,
-) -> Option<bool> {
-    // SAFETY: each pointer is borrowed from a live native byte sequence.
-    let lhs_buffer = lhs
-        .rosidl_buffer_ptr()
-        .map(|pointer| unsafe { &*pointer.cast::<CxxBuffer>() });
-    let rhs_buffer = rhs
-        .rosidl_buffer_ptr()
-        .map(|pointer| unsafe { &*pointer.cast::<CxxBuffer>() });
-    let mut code = 0;
-    let result = match (lhs_buffer, rhs_buffer) {
-        (None, None) => return None,
-        (Some(lhs), Some(rhs)) => ffi::are_equal(lhs, rhs, &mut code),
-        (Some(lhs), None) => ffi::equals_data(lhs, rhs.as_slice(), &mut code),
-        (None, Some(rhs)) => ffi::equals_data(rhs, lhs.as_slice(), &mut code),
-    };
-    Some(result.unwrap_or(false))
 }
 
 #[cfg(test)]
@@ -104,22 +51,23 @@ mod tests {
 
     #[test]
     fn native_sequence_copy_replaces_cpu_and_native_storage() {
-        use crate::{PrimitiveSequence, PrimitiveSequenceAlloc};
+        use crate::PrimitiveSequence;
+        use rosidl_runtime_rs::SequenceAlloc;
 
         let source = into_buffer(ffi::create_cpu(&[2, 4, 6]).unwrap())
             .unwrap()
             .into_sequence();
         let mut target = PrimitiveSequence::from(&[9u8][..]);
-        assert!(u8::primitive_sequence_copy(&source, &mut target));
+        assert!(u8::sequence_copy(&source, &mut target));
         assert!(target.is_rosidl_buffer());
         assert_ne!(target.rosidl_buffer_ptr(), source.rosidl_buffer_ptr());
         assert_eq!(target, source);
-        assert!(u8::primitive_sequence_copy(&source, &mut target));
+        assert!(u8::sequence_copy(&source, &mut target));
         drop(source);
         assert_eq!(target.try_to_vec().unwrap(), [2, 4, 6]);
 
         let cpu = PrimitiveSequence::from(&[7u8, 8][..]);
-        assert!(u8::primitive_sequence_copy(&cpu, &mut target));
+        assert!(u8::sequence_copy(&cpu, &mut target));
         assert!(!target.is_rosidl_buffer());
         assert_eq!(target, cpu);
     }

@@ -16,9 +16,9 @@
 //! assert_eq!(buffer.backend_name().unwrap(), "cpu");
 //! ```
 //!
-//! The crate also provides bounded buffers and ABI-compatible primitive sequences.
-//! `rosidl_runtime_rs` re-exports these types, so existing imports and generated
-//! messages use the same types. Enable `serde` for serialization to host values.
+//! Buffers wrap the runtime's `Sequence<T>` directly. Primitive sequence names
+//! remain aliases; there is no second native storage representation.
+//! Enable `serde` for serialization to host values.
 //!
 //! # Building and testing
 //!
@@ -31,33 +31,16 @@
 //! colcon test --packages-select rosidl_buffer_rs
 //! ```
 
-#[cxx::bridge(namespace = "rosidl_buffer_rs")]
-pub mod ffi {
-    // SAFETY: references borrow live native objects, slices carry their bounds,
-    // and fallible C++ operations translate exceptions into Result.
-    unsafe extern "C++" {
-        include!("rosidl_buffer_rs/src/buffer_bridge.hpp");
-
-        type CxxBuffer;
-
-        fn size(self: &CxxBuffer) -> usize;
-        fn create_cpu(data: &[u8]) -> Result<UniquePtr<CxxBuffer>>;
-        fn clone_buffer(buffer: &CxxBuffer, error_code: &mut i32) -> Result<UniquePtr<CxxBuffer>>;
-        fn are_equal(lhs: &CxxBuffer, rhs: &CxxBuffer, error_code: &mut i32) -> Result<bool>;
-        fn equals_data(buffer: &CxxBuffer, data: &[u8], error_code: &mut i32) -> Result<bool>;
-        fn backend_name(buffer: &CxxBuffer, error_code: &mut i32) -> Result<String>;
-        fn copy_to_host(buffer: &CxxBuffer, output: &mut [u8], error_code: &mut i32) -> Result<()>;
-    }
-}
-
-pub use ffi::CxxBuffer;
+pub use rosidl_runtime_rs::{
+    native::{ffi, CxxBuffer},
+    BufferError,
+};
 
 mod buffer;
-pub use buffer::{BoundedBuffer, BoundedVec, Buffer, BufferError};
+pub use buffer::{BoundedBuffer, BoundedVec, Buffer};
 
-mod sequence;
-pub use sequence::{
-    BoundedPrimitiveSequence, PrimitiveSequence, PrimitiveSequenceIterator,
+pub use rosidl_runtime_rs::{
+    BoundedSequence as BoundedPrimitiveSequence, Sequence as PrimitiveSequence,
     SequenceExceedsBoundsError,
 };
 

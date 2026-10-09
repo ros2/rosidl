@@ -14,8 +14,7 @@ SPDX-License-Identifier: Apache-2.0
 
   <buildtool_depend version_gte="1.88">cargo</buildtool_depend>
   <buildtool_depend version_gte="1.88">rustc</buildtool_depend>
-  <depend>rosidl_buffer</depend>
-  <depend>rosidl_runtime_c</depend>
+  <depend>rosidl_runtime_rs</depend>
 
   <member_of_group>rosidl_runtime_packages</member_of_group>
   <export>

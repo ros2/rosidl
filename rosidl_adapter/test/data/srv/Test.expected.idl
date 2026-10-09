@@ -2,6 +2,8 @@
 // with input from test_msgs/srv/Test.srv
 // generated code does not contain a copyright notice
 
+#ifndef TEST_MSGS__SRV__TEST_SRV
+#define TEST_MSGS__SRV__TEST_SRV
 
 module test_msgs {
   module srv {
@@ -56,3 +58,5 @@ module test_msgs {
     };
   };
 };
+
+#endif  // TEST_MSGS__SRV__TEST_SRV

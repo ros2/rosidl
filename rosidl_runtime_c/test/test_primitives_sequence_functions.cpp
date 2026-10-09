@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "gtest/gtest.h"
+#include "rosidl_buffer/buffer.hpp"
 #include "rosidl_runtime_c/primitives_sequence.h"
 #include "rosidl_runtime_c/primitives_sequence_functions.h"
 
@@ -142,3 +143,35 @@ TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(bool, bool)
 TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(byte, uint8_t)
 TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(float32, float)
 TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(float64, double)
+
+TEST(primitives_sequence_functions, rejects_opaque_buffer_copy_and_comparison)
+{
+  rosidl_runtime_c__uint8__Sequence input;
+  ASSERT_TRUE(rosidl_runtime_c__uint8__Sequence__init(&input, 0));
+  input.data = reinterpret_cast<uint8_t *>(new rosidl::Buffer<uint8_t>({1, 2, 3}));
+  input.size = 3;
+  input.capacity = 3;
+  input.is_rosidl_buffer = true;
+  input.owns_rosidl_buffer = true;
+
+  rosidl_runtime_c__uint8__Sequence output;
+  ASSERT_TRUE(rosidl_runtime_c__uint8__Sequence__init(&output, 3));
+  output.data[0] = 7;
+  const auto * opaque_pointer = input.data;
+  const auto * cpu_pointer = output.data;
+  EXPECT_FALSE(rosidl_runtime_c__uint8__Sequence__copy(&input, &output));
+  EXPECT_FALSE(rosidl_runtime_c__uint8__Sequence__copy(&output, &input));
+  EXPECT_EQ(input.data, opaque_pointer);
+  EXPECT_EQ(output.data, cpu_pointer);
+  EXPECT_EQ(output.data[0], 7);
+  EXPECT_TRUE(input.is_rosidl_buffer);
+  EXPECT_TRUE(input.owns_rosidl_buffer);
+  EXPECT_FALSE(output.is_rosidl_buffer);
+  EXPECT_FALSE(rosidl_runtime_c__uint8__Sequence__are_equal(&input, &output));
+  EXPECT_FALSE(rosidl_runtime_c__uint8__Sequence__are_equal(&output, &input));
+  EXPECT_FALSE(rosidl_runtime_c__uint8__Sequence__are_equal(&input, &input));
+  EXPECT_TRUE(rosidl_runtime_c__uint8__Sequence__copy(&input, &input));
+
+  rosidl_runtime_c__uint8__Sequence__fini(&output);
+  rosidl_runtime_c__uint8__Sequence__fini(&input);
+}

@@ -90,6 +90,10 @@
     if (lhs->size != rhs->size) { \
       return false; \
     } \
+    if (lhs->is_rosidl_buffer || rhs->is_rosidl_buffer) { \
+      /* Opaque buffers require backend-aware comparison. */ \
+      return false; \
+    } \
     for (size_t i = 0; i < lhs->size; ++i) { \
       if (lhs->data[i] != rhs->data[i]) { \
         return false; \
@@ -105,6 +109,13 @@
     if (!input || !output) { \
       return false; \
     } \
+    if (input == output) { \
+      return true; \
+    } \
+    if (input->is_rosidl_buffer || output->is_rosidl_buffer) { \
+      /* Opaque buffers cannot be copied or reallocated as host storage. */ \
+      return false; \
+    } \
     if (output->capacity < input->size) { \
       if (input->size > SIZE_MAX / sizeof(TYPE_NAME)) { \
         return false; \
@@ -118,10 +129,12 @@
       output->data = data; \
       output->capacity = input->size; \
     } \
-    memcpy(output->data, input->data, sizeof(TYPE_NAME) * input->size); \
+    if (input->size > 0) { \
+      memcpy(output->data, input->data, sizeof(TYPE_NAME) * input->size); \
+    } \
     output->size = input->size; \
-    output->is_rosidl_buffer = input->is_rosidl_buffer; \
-    output->owns_rosidl_buffer = input->owns_rosidl_buffer; \
+    output->is_rosidl_buffer = false; \
+    output->owns_rosidl_buffer = false; \
     return true; \
   }
 

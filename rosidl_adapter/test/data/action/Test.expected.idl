@@ -53,6 +53,13 @@ module test_msgs {
 
       @optional
       boolean optional_bool;
+
+      @key
+      boolean key_bool;
+
+      @optional
+      @key
+      boolean optional_key_bool;
     };
     @verbatim (language="comment", text=
       "feedback definition" "\n"

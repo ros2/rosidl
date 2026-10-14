@@ -33,7 +33,8 @@ if(NOT _exported_typesupport_libraries STREQUAL "")
           "which is not an absolute path")
       elseif(NOT EXISTS "${_@PROJECT_NAME@_exported_typesupport_library}")
         # the found library must exist
-        message(FATAL_ERROR "Package '@PROJECT_NAME@' found the typesupport library '${_@PROJECT_NAME@_exported_typesupport_library}' which doesn't exist")
+        message(FATAL_ERROR
+          "Package '@PROJECT_NAME@' found the typesupport library '${_@PROJECT_NAME@_exported_typesupport_library}' which doesn't exist")
       else()
         list(APPEND @PROJECT_NAME@_LIBRARIES${_suffix} ${_cfg} "${_@PROJECT_NAME@_exported_typesupport_library}")
       endif()

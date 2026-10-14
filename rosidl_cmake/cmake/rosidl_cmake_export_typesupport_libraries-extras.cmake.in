@@ -23,23 +23,6 @@ if(NOT _exported_typesupport_libraries STREQUAL "")
       )
 
       if(NOT _@PROJECT_NAME@_exported_typesupport_library)
-        unset(_@PROJECT_NAME@_exported_typesupport_library)
-        unset(_@PROJECT_NAME@_exported_typesupport_library CACHE)
-        set(_@PROJECT_NAME@_exported_typesupport_library_filenames
-          "${_library}"
-          "${CMAKE_SHARED_LIBRARY_PREFIX}${_library}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-          "${CMAKE_STATIC_LIBRARY_PREFIX}${_library}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-        )
-        find_file(
-          _@PROJECT_NAME@_exported_typesupport_library
-          NAMES ${_@PROJECT_NAME@_exported_typesupport_library_filenames}
-          PATHS "${@PROJECT_NAME@_DIR}/../../../lib"
-          NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH
-        )
-        unset(_@PROJECT_NAME@_exported_typesupport_library_filenames)
-      endif()
-
-      if(NOT _@PROJECT_NAME@_exported_typesupport_library)
         # the library wasn't found
         message(FATAL_ERROR
           "Package '@PROJECT_NAME@' exports the typesupport library '${_library}' which couldn't be found")

@@ -28,14 +28,11 @@ from typing import Pattern
 from typing import Tuple
 from typing import TYPE_CHECKING
 from typing import Union
-import warnings
 
-with warnings.catch_warnings():
-    warnings.simplefilter('ignore', DeprecationWarning)
-    from lark import Lark
-    from lark.lexer import Token
-    from lark.tree import pydot__tree_to_png
-    from lark.tree import Tree
+from lark import Lark
+from lark.lexer import Token
+from lark.tree import pydot__tree_to_png
+from lark.tree import Tree
 
 import rosidl_parser
 from rosidl_parser.definition import AbstractNestableType

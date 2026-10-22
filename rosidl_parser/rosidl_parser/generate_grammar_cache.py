@@ -16,15 +16,12 @@ import argparse
 import pathlib
 import sys
 from typing import Optional
-import warnings
 
 
 def generate_grammar_cache(output_file: Optional[pathlib.Path] = None) -> None:
     """Generate a pre-compiled Lark parser cache (grammar.lark.bin) from grammar.lark."""
     try:
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', DeprecationWarning)
-            from lark import Lark
+        from lark import Lark
     except ImportError:
         print(
             "Error: 'lark' package is required to generate the grammar cache.\n"

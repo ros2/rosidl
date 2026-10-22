@@ -562,10 +562,7 @@ def test_grammar_cache_available() -> None:
 
 
 def test_grammar_cache_dynamic_parity() -> None:
-    import warnings
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore', DeprecationWarning)
-        from lark import Lark
+    from lark import Lark
     import rosidl_parser.parser as p
 
     cache_file = p._find_grammar_cache_file()

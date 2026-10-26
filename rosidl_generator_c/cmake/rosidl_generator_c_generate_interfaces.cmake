@@ -78,6 +78,13 @@ foreach(dep ${target_dependencies})
   endif()
 endforeach()
 
+# The generated code embeds the type descriptions of this package, which are
+# only generated at build time, so add them after the existence check
+foreach(_tuple ${${rosidl_generate_interfaces_TARGET}__DESCRIPTION_TUPLES})
+  string(REGEX REPLACE "^[^:]*:(.*)$" "\\1" _type_description_file "${_tuple}")
+  list(APPEND target_dependencies "${_type_description_file}")
+endforeach()
+
 get_target_property(_target_sources ${rosidl_generate_interfaces_TARGET} SOURCES)
 set(generator_arguments_file "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c__arguments.json")
 rosidl_write_generator_arguments(

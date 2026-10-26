@@ -21,16 +21,20 @@
 # :param pkg_name: Name of the package, assumed to have already been
 #   find_package'd.
 # :type pkg_name: string
-# :param idl_name: The filename of the idl file to look for.
+# :param idl_name: The filename of the idl file to look for, relative to
+#   the package's share directory, or "." for the share directory itself.
 # :type idl_name: string
 #
 # @public
 #
 function(rosidl_find_package_idl var pkg_name idl_file)
-  set(_candidates
-    "${${pkg_name}_DATADIR}/${idl_file}"
-    "${${pkg_name}_DIR}/../${idl_file}"
-  )
+  # Only consider DATADIR when it is set: unset, the candidate would be rooted
+  # at "/", which exists when looking up the share directory itself.
+  set(_candidates)
+  if(NOT "${${pkg_name}_DATADIR}" STREQUAL "")
+    list(APPEND _candidates "${${pkg_name}_DATADIR}/${idl_file}")
+  endif()
+  list(APPEND _candidates "${${pkg_name}_DIR}/../${idl_file}")
   foreach(_try ${_candidates})
     if(EXISTS "${_try}")
       normalize_path(_norm "${_try}")

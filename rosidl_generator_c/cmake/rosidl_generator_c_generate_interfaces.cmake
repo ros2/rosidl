@@ -187,7 +187,7 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   install(
     DIRECTORY ${_output_path}/
     DESTINATION "include/${PROJECT_NAME}/${PROJECT_NAME}"
-    PATTERN "*.h"
+    PATTERN "*.c" EXCLUDE
   )
 
   # Export old-style CMake variables

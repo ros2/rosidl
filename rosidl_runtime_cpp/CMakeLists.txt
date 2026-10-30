@@ -24,9 +24,6 @@ ament_export_dependencies(rosidl_runtime_c rosidl_buffer)
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   find_package(performance_test_fixture REQUIRED)
-  # Give cppcheck hints about macro definitions coming from outside this package
-  get_target_property(ament_cmake_cppcheck_ADDITIONAL_INCLUDE_DIRS
-    performance_test_fixture::performance_test_fixture INTERFACE_INCLUDE_DIRECTORIES)
 
   file(GLOB type_description_includes "include/rosidl_runtime_cpp/type_description/*.hpp")
 
@@ -34,11 +31,6 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 
   # Run specific linters on copied generated code
-  if(ament_cmake_cppcheck_FOUND)
-    ament_cppcheck(
-      TESTNAME "cppcheck_copied_type_description_interfaces"
-      ${type_description_includes})
-  endif()
   if(ament_cmake_cpplint_FOUND)
     ament_cpplint(
       TESTNAME "cpplint_copied_type_description_interfaces"

@@ -6,13 +6,10 @@
 #ifndef ROSIDL_RUNTIME_CPP__TYPE_DESCRIPTION__FIELD__STRUCT_HPP_
 #define ROSIDL_RUNTIME_CPP__TYPE_DESCRIPTION__FIELD__STRUCT_HPP_
 
-#include <algorithm>
-#include <array>
+#include <cstdint>
 #include <memory>
 #include <string>
-#include <vector>
 
-#include "rosidl_runtime_cpp/bounded_vector.hpp"
 #include "rosidl_runtime_cpp/message_initialization.hpp"
 
 

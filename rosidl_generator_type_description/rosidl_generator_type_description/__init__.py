@@ -22,6 +22,7 @@ from typing import List, Tuple
 
 from rosidl_parser import definition
 from rosidl_parser.parser import parse_idl_file
+from rosidl_parser.serialization import save_ast_json
 
 # RIHS: ROS Interface Hashing Standard, per REP-2011
 # NOTE: These values and implementations must be updated if
@@ -118,6 +119,15 @@ def generate_type_hash(generator_arguments_file: str) -> List[str]:
             print('Error processing idl file: ' +
                   str(locator.get_absolute_path()), file=sys.stderr)
             raise e
+
+        # Save pre-parsed AST JSON alongside the IDL file if not already present
+        ast_json_path = locator.get_absolute_path().with_suffix(
+            locator.get_absolute_path().suffix + '.json')
+        if not ast_json_path.exists():
+            try:
+                save_ast_json(idl_file.content, ast_json_path)
+            except OSError:
+                pass
 
         idl_rel_path = Path(idl_parts[1])
         generate_to_dir = (output_dir / idl_rel_path).parent

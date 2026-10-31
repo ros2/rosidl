@@ -55,6 +55,12 @@ set(_dependency_paths "")
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   rosidl_find_package_idl(_include_path "${_pkg_name}" ".")
   list(APPEND _dependency_paths "${_pkg_name}:${_include_path}")
+  # The generator reads the type descriptions of referenced types from the
+  # .json files installed next to the dependency's .idl files
+  foreach(_idl_file ${${_pkg_name}_IDL_FILES})
+    string(REGEX REPLACE "\\.idl$" ".json" _json_file "${_idl_file}")
+    list(APPEND _dependency_files "${_include_path}/${_json_file}")
+  endforeach()
 endforeach()
 
 # Export __DESCRIPTION_TUPLES variable for use by dependent generators

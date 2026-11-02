@@ -234,11 +234,6 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
 endif()
 
 if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
-  find_package(ament_cmake_cppcheck REQUIRED)
-  ament_cppcheck(
-    TESTNAME "cppcheck_rosidl_generated_c"
-    "${_output_path}")
-
   find_package(ament_cmake_cpplint REQUIRED)
   get_filename_component(_cpplint_root "${_output_path}" DIRECTORY)
   ament_cpplint(

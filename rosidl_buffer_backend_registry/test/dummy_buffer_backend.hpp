@@ -66,6 +66,8 @@ public:
     return cloned;
   }
 
+  const void * descriptor() const override {return data_.data();}
+
   std::vector<T> & get_data() {return data_;}
   const std::vector<T> & get_data() const {return data_;}
 

@@ -25,10 +25,38 @@
 #include <vector>
 
 #include "rosidl_buffer_backend/buffer_backend.hpp"
+#include "rosidl_buffer_backend_registry/buffer_backend_registry.hpp"
 #include "rmw/topic_endpoint_info.h"
 
 namespace rosidl_buffer_backend_registry
 {
+
+/// Find the first registered backend whose get_backend_type() matches a
+/// peer's advertised backend type string, never the class name, so
+/// callers resolving a peer's advertised backend into an instance need
+/// this rather than `create_backend_instance()` directly.
+///
+/// Instantiates every registered class name in turn and checks its
+/// `get_backend_type()` -- there is no cheaper way to ask pluginlib "which
+/// class reports this type" without loading it, since the type string is
+/// a property of the loaded C++ object, not of the plugin manifest.
+/// @param[in] registry Registry to search.
+/// @param[in] type Backend type string to match, as `get_backend_type()`
+///            returns it.
+/// @return The first matching backend instance, or `nullptr` if none of
+///         the registry's registered classes reports this type.
+inline std::shared_ptr<rosidl::BufferBackend> find_backend_by_type(
+  BufferBackendRegistry & registry,
+  const std::string & type)
+{
+  for (const auto & class_name : registry.get_backend_names()) {
+    auto backend = registry.create_backend_instance(class_name);
+    if (backend && backend->get_backend_type() == type) {
+      return backend;
+    }
+  }
+  return nullptr;
+}
 
 /// Collect metadata strings from every loaded backend instance.
 /// @param[in] backend_instances Map of backend name to backend instance.

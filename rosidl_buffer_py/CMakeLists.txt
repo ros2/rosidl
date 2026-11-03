@@ -34,8 +34,20 @@ install(TARGETS _rosidl_buffer_py
 )
 
 if(BUILD_TESTING)
+  find_package(ament_cmake_pytest REQUIRED)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
+
+  pybind11_add_module(_rosidl_buffer_test_utils test/buffer_test_utils.cpp)
+  target_link_libraries(_rosidl_buffer_test_utils PRIVATE
+    rosidl_buffer::rosidl_buffer
+    ament_cmake_ros_core::ament_ros_cxx_standard
+  )
+
+  ament_add_pytest_test(test_shared_ownership
+    test/test_shared_ownership.py
+    APPEND_ENV "PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}"
+  )
 endif()
 
 ament_package()

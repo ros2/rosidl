@@ -32,7 +32,7 @@ namespace py = pybind11;
 ///
 /// Users never construct this directly.  Backend factory functions
 /// (e.g. DemoBuffer.from_cpu()) create the underlying C++ Buffer
-/// and return it via _take_buffer_from_ptr.
+/// and return it via _share_buffer_from_capsule.
 class PyBuffer
 {
 public:
@@ -89,6 +89,23 @@ PYBIND11_MODULE(_rosidl_buffer_py, m)
     "Convert to array.array('B') — the rclpy CPU storage type.")
   .def("__repr__", &PyBuffer::repr)
   ;
+
+  // Native-extension contract: the capsule owns a heap-allocated shared_ptr
+  // holder, not a raw Buffer. Copy its control block; never consume the holder.
+  // Both extensions must use compatible C++ ABIs (see README.md).
+  m.def("_share_buffer_from_capsule", [](py::object capsule) -> PyBuffer {
+      constexpr const char * name = "rosidl_buffer.shared_buffer";
+      if (!PyCapsule_IsValid(capsule.ptr(), name)) {
+        throw py::value_error("expected a capsule named 'rosidl_buffer.shared_buffer'");
+      }
+      const auto * holder = static_cast<std::shared_ptr<rosidl::Buffer<uint8_t>> *>(
+        PyCapsule_GetPointer(capsule.ptr(), name));
+      if (!*holder) {
+        throw py::value_error("shared buffer capsule contains an empty shared_ptr");
+      }
+      // The temporary owns a reference even if Python result construction fails.
+      return PyBuffer(*holder);
+    }, py::arg("capsule"));
 
   // Internal helpers for generated _msg_support.c (plain C code).
   // These use uintptr_t because the C caller cannot unwrap pybind11 types.

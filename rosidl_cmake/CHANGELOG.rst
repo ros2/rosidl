@@ -2,6 +2,11 @@
 Changelog for package rosidl_cmake
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.9.9 (2026-11-03)
+------------------
+* fix(rosidl_cmake): prevent typesupport lookup cache collisions (`#1008 <https://github.com/ros2/rosidl/issues/1008>`_)
+* Contributors: Esteve Fernandez
+
 4.9.8 (2026-07-13)
 ------------------
 

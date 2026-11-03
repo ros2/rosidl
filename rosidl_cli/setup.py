@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='rosidl_cli',
-    version='5.3.1',
+    version='5.3.2',
     packages=find_packages(exclude=['test']),
     extras_require={
         'completion': ['argcomplete'],

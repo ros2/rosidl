@@ -2,6 +2,14 @@
 Changelog for package rosidl_generator_cpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+5.3.2 (2026-11-03)
+------------------
+* Remove custom ament_cppcheck usage. (`#1022 <https://github.com/ros2/rosidl/issues/1022>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1003 <https://github.com/ros2/rosidl/issues/1003>`_)
+* Skip redundant find_package(Python3) in generator extensions (`#984 <https://github.com/ros2/rosidl/issues/984>`_)
+* Optimize include headers (`#982 <https://github.com/ros2/rosidl/issues/982>`_)
+* Contributors: Alejandro Hernández Cordero, Chris Lalancette, Michael Carroll
+
 5.3.1 (2026-06-05)
 ------------------
 

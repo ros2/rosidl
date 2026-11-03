@@ -2,6 +2,11 @@
 Changelog for package rosidl_cli
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+5.3.2 (2026-11-03)
+------------------
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1003 <https://github.com/ros2/rosidl/issues/1003>`_)
+* Contributors: Michael Carroll
+
 5.3.1 (2026-06-05)
 ------------------
 

@@ -2,6 +2,13 @@
 Changelog for package rosidl_generator_type_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+5.3.2 (2026-11-03)
+------------------
+* Use rosidl_find_package_idl() to find .idl file paths (`#1013 <https://github.com/ros2/rosidl/issues/1013>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1003 <https://github.com/ros2/rosidl/issues/1003>`_)
+* Skip redundant find_package(Python3) in generator extensions (`#984 <https://github.com/ros2/rosidl/issues/984>`_)
+* Contributors: Michael Carroll, Nathan Wiebe Neufeldt
+
 5.3.1 (2026-06-05)
 ------------------
 

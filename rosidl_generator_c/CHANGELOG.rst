@@ -2,6 +2,15 @@
 Changelog for package rosidl_generator_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+5.3.2 (2026-11-03)
+------------------
+* Remove custom ament_cppcheck usage. (`#1022 <https://github.com/ros2/rosidl/issues/1022>`_)
+* rosidl: add precompiled headers (PCH) for generated C/C++ interface targets (`#988 <https://github.com/ros2/rosidl/issues/988>`_)
+* Handle comment delimiters in generated C headers (`#995 <https://github.com/ros2/rosidl/issues/995>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1003 <https://github.com/ros2/rosidl/issues/1003>`_)
+* Skip redundant find_package(Python3) in generator extensions (`#984 <https://github.com/ros2/rosidl/issues/984>`_)
+* Contributors: Chris Lalancette, Michael Carroll, Miko Parkkinen, William Woodall
+
 5.3.1 (2026-06-05)
 ------------------
 * Add integer overflow guards to rosidl sequence init and copy functions

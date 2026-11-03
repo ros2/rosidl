@@ -2,6 +2,13 @@
 Changelog for package rosidl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+5.3.2 (2026-11-03)
+------------------
+* rosidl_parser: pre-compile Lark grammar cache at build time using save/load (`#986 <https://github.com/ros2/rosidl/issues/986>`_)
+* Use the SPDX identifier Apache-2.0 in license declarations (`#1003 <https://github.com/ros2/rosidl/issues/1003>`_)
+* rosidl_parser: add in-process memoization for parse_idl_file and parse_idl_string (`#985 <https://github.com/ros2/rosidl/issues/985>`_)
+* Contributors: Michael Carroll, William Woodall
+
 5.3.1 (2026-06-05)
 ------------------
 

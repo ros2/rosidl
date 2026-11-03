@@ -2,6 +2,12 @@
 Changelog for package rosidl_buffer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+5.2.2 (2026-11-03)
+------------------
+* Remove tests in rosidl_buffer for unconventional cases (`#969 <https://github.com/ros2/rosidl/issues/969>`_) (`#1020 <https://github.com/ros2/rosidl/issues/1020>`_)
+* Avoid warnings from use of default constructed iterators (`#966 <https://github.com/ros2/rosidl/issues/966>`_) (`#967 <https://github.com/ros2/rosidl/issues/967>`_)
+* Contributors: mergify[bot]
+
 5.2.1 (2026-06-05)
 ------------------
 

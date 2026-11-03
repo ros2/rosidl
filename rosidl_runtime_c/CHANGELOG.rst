@@ -2,6 +2,9 @@
 Changelog for package rosidl_runtime_c
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.6.10 (2026-11-03)
+-------------------
+
 4.6.9 (2026-06-12)
 ------------------
 * Merge pull request `#972 <https://github.com/ros2/rosidl/issues/972>`_ from ros2/guard_sequence_overflow_jazzy

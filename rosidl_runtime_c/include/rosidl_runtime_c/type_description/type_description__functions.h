@@ -14,9 +14,7 @@ extern "C"
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "rosidl_runtime_c/action_type_support_struct.h"
 #include "rosidl_runtime_c/message_type_support_struct.h"
-#include "rosidl_runtime_c/service_type_support_struct.h"
 #include "rosidl_runtime_c/type_hash.h"
 #include "rosidl_runtime_c/visibility_control.h"
 
@@ -57,7 +55,7 @@ rosidl_runtime_c__type_description__TypeDescription__fini(rosidl_runtime_c__type
  */
 ROSIDL_GENERATOR_C_PUBLIC
 rosidl_runtime_c__type_description__TypeDescription *
-rosidl_runtime_c__type_description__TypeDescription__create();
+rosidl_runtime_c__type_description__TypeDescription__create(void);
 
 /// Destroy msg/TypeDescription message.
 /**

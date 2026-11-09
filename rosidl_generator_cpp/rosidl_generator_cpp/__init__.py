@@ -90,6 +90,35 @@ def get_all_messages(content) -> List[Message]:
     return messages
 
 
+def is_buffer_type(type_) -> bool:
+    """
+    Return True if the type is generated as a rosidl::Buffer.
+
+    Only unbounded uint8 sequences map to rosidl::Buffer, every other unbounded
+    sequence maps to std::vector (see msg_type_to_cpp).
+
+    @param type_: The message type
+    @type type_: rosidl_parser.Type
+    """
+    return (
+        isinstance(type_, UnboundedSequence) and
+        isinstance(type_.value_type, BasicType) and
+        type_.value_type.typename == 'uint8')
+
+
+def uses_buffer(messages) -> bool:
+    """
+    Return True if any of the messages has a member generated as a rosidl::Buffer.
+
+    @param messages: the messages to inspect
+    @type messages: iterable of rosidl_parser.definition.Message
+    """
+    return any(
+        is_buffer_type(member.type)
+        for message in messages
+        for member in message.structure.members)
+
+
 MSG_TYPE_TO_CPP = {
     'boolean': 'bool',
     'octet': 'unsigned char',  # TODO change to std::byte with C++17
@@ -156,7 +185,7 @@ def msg_type_to_cpp(type_):
     if isinstance(type_, AbstractNestedType):
         if isinstance(type_, UnboundedSequence):
             # Only use Buffer for uint8[] - all other unbounded sequences remain as std::vector
-            if isinstance(type_.value_type, BasicType) and type_.value_type.typename == 'uint8':
+            if is_buffer_type(type_):
                 return \
                     ('rosidl::Buffer<%s, typename std::allocator_traits' +
                      '<ContainerAllocator>::template rebind_alloc<%s>>') % (

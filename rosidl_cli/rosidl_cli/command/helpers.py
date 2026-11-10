@@ -86,6 +86,44 @@ def idl_tuples_from_interface_files(interface_files):
     return idl_tuples
 
 
+<<<<<<< HEAD
+=======
+def build_type_description_tuples(idl_interface_files, type_description_files):
+    """
+    Create type description tuples from IDL interface files and type descriptions.
+
+    :param idl_interface_files: List of IDL interface files either with or without prefix
+    :param type_description_files: List of type description files
+    :return: List of type description tuples of the form 'idl_file_path:type_description_file'
+    """
+    def get_type_description_file(idl_file, type_description_files):
+        for type_description_file in type_description_files:
+            if pathlib.Path(idl_file).stem == pathlib.Path(type_description_file).stem:
+                return type_description_file
+
+    type_description_tuples = []
+    for idl_file in idl_interface_files:
+        type_description_file = get_type_description_file(idl_file, type_description_files)
+        if type_description_file is None:
+            raise ValueError(f'Type description file not found for {idl_file}')
+        _, path = interface_path_as_tuple(idl_file)
+        type_description_tuples.append(f'{path.as_posix()}:{type_description_file}')
+    return type_description_tuples
+
+
+def ros_interface_file_from_idl(idl_file: str) -> pathlib.Path:
+    """
+    Return the absolute path of the ROS interface file generated from the given IDL file.
+
+    :param idl_file: The IDL file to generate the ROS interface file from.
+        Can be prefix:relative/path/to/file.idl or relative/path/to/file.idl
+    :return: The absolute path of the ROS interface file generated from the given IDL file.
+    """
+    prefix, path = interface_path_as_tuple(idl_file)
+    return (prefix / path).absolute()
+
+
+>>>>>>> b58428d (Use POSIX IDL keys for type-description tuples on Windows (#1023))
 @contextlib.contextmanager
 def legacy_generator_arguments_file(
     *,

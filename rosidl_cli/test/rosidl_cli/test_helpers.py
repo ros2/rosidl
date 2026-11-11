@@ -68,3 +68,11 @@ def test_legacy_generator_arguments_file(current_path):
             'bar:' + str(current_path / path_to_dep)
         ]
     assert not pathlib.Path(path).exists()
+
+
+def test_type_description_tuples_use_posix_idl_keys() -> None:
+    from rosidl_cli.command.helpers import build_type_description_tuples
+
+    result = build_type_description_tuples(
+        ['msg/Foo.idl'], ['descriptions/Foo.json'])
+    assert result == ['msg/Foo.idl:descriptions/Foo.json']

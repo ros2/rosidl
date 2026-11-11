@@ -51,6 +51,27 @@ public:
   /// Create a deep copy of this buffer.
   /// @return New BufferImplBase instance with copied data
   virtual std::unique_ptr<BufferImplBase<T>> clone() const = 0;
+
+  /// Get a backend-specific, opaque descriptor for this buffer's storage,
+  /// without copying to CPU and without throwing. A CPU backend returns a
+  /// pointer to its own contiguous storage (interpretable via size()); a
+  /// device backend returns whatever handle its own matching consumer (an
+  /// RMW's serializer) knows how to interpret via get_backend_type(). This
+  /// is the non-throwing counterpart element access and resize lack for a
+  /// non-CPU backend, letting an introspection-typesupport consumer read a
+  /// device-backed member without forcing a CPU copy first.
+  ///
+  /// Not pure virtual, deliberately: a pure virtual here would make every
+  /// existing BufferImplBase subclass outside this header -- any backend
+  /// implementation that predates this accessor -- fail to compile until
+  /// it adds an override, which is not "purely additive" by any reading. A
+  /// backend that does not override this returns nullptr, which a caller
+  /// reads the same way it already reads a backend it cannot negotiate a
+  /// shared type with: fall back to the existing to_cpu() path. A real
+  /// non-CPU backend that wants to participate in the zero-copy descriptor
+  /// path overrides this; one that does not keeps compiling and keeps
+  /// working exactly as it did before this accessor existed.
+  virtual const void * descriptor() const {return nullptr;}
 };
 
 }  // namespace rosidl

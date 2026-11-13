@@ -106,16 +106,20 @@ rosidl_runtime_c__U16String__assignn(
   if (n == SIZE_MAX) {
     return false;
   }
-  rcutils_allocator_t allocator = rcutils_get_default_allocator();
-  uint16_t * data = allocator.reallocate(str->data, (n + 1) * sizeof(uint16_t), allocator.state);
-  if (!data) {
-    return false;
+
+  if(str->capacity < n + 1) {
+    rcutils_allocator_t allocator = rcutils_get_default_allocator();
+    uint16_t * data = allocator.reallocate(str->data, (n + 1) * sizeof(uint16_t), allocator.state);
+    if (!data) {
+      return false;
+    }
+    str->data = data;
+    str->capacity = n + 1;
   }
-  memcpy(data, value, n * sizeof(uint16_t));
-  data[n] = 0;
-  str->data = data;
+
+  memcpy(str->data, value, n * sizeof(uint16_t));
+  str->data[n] = 0;
   str->size = n;
-  str->capacity = n + 1;
   return true;
 }
 

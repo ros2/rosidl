@@ -36,6 +36,7 @@ def generate_c(generator_arguments_file, disable_description_codegen: bool = Fal
         'idl__description.c.em': 'detail/%s__description.c',
         'idl__functions.c.em': 'detail/%s__functions.c',
         'idl__functions.h.em': 'detail/%s__functions.h',
+        'idl__functions_impl.h.em': 'detail/%s__functions_impl.h',
         'idl__struct.h.em': 'detail/%s__struct.h',
         'idl__type_support.c.em': 'detail/%s__type_support.c',
         'idl__type_support.h.em': 'detail/%s__type_support.h',

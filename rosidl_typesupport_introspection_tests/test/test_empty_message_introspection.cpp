@@ -18,7 +18,7 @@
 #include "rosidl_typesupport_introspection_tests/api.hpp"
 #include "rosidl_typesupport_introspection_tests/type_traits.hpp"
 
-#include "introspection_libraries_under_test.hpp"
+#include "./introspection_libraries_under_test.hpp"
 
 namespace rosidl_typesupport_introspection_tests
 {

@@ -28,7 +28,13 @@
 #include <climits>
 #include <cstdint>
 #include <string>
+#include <string_view>
+#include <type_traits>
 #include <vector>
+#include <version>
+#if defined(__cpp_lib_format)
+#include <format>
+#endif
 
 #include "test_array_generator.hpp"
 
@@ -41,6 +47,7 @@
 #include "rosidl_generator_tests/msg/multi_nested.hpp"
 #include "rosidl_generator_tests/msg/nested.hpp"
 #include "rosidl_generator_tests/msg/small_constant.hpp"
+#include "rosidl_generator_tests/msg/string_constants.hpp"
 #include "rosidl_generator_tests/msg/strings.hpp"
 #include "rosidl_generator_tests/msg/unbounded_sequences.hpp"
 #include "rosidl_generator_tests/msg/w_strings.hpp"
@@ -481,6 +488,31 @@ TEST(Test_messages, constants_assign) {
   float x = rosidl_generator_tests::msg::SmallConstant::FLOAT32_CONST;
 
   ASSERT_EQ(x, rosidl_generator_tests::msg::SmallConstant::FLOAT32_CONST);
+}
+
+TEST(Test_messages, string_constants) {
+  // string constants have an additional constexpr string_view constant with the suffix _VIEW
+  using rosidl_generator_tests::msg::StringConstants;
+  using rosidl_generator_tests::msg::Strings;
+
+  static_assert(
+    std::is_same_v<decltype(Strings::STRING_CONST_VIEW), const std::string_view>,
+    "STRING_CONST_VIEW is not a std::string_view");
+  static_assert(Strings::STRING_CONST_VIEW == "Hello world!", "unexpected STRING_CONST_VIEW");
+  static_assert(
+    StringConstants::FORMAT_CONST_VIEW == "/{}/image_raw", "unexpected FORMAT_CONST_VIEW");
+  static_assert(StringConstants::EMPTY_CONST_VIEW.empty(), "EMPTY_CONST_VIEW is not empty");
+
+  // the std::string constants are unchanged and hold the same value
+  ASSERT_EQ(std::string("Hello world!"), Strings::STRING_CONST);
+  ASSERT_EQ(Strings::STRING_CONST_VIEW, Strings::STRING_CONST);
+  ASSERT_EQ(StringConstants::FORMAT_CONST_VIEW, StringConstants::FORMAT_CONST);
+  ASSERT_TRUE(StringConstants::EMPTY_CONST.empty());
+
+#if defined(__cpp_lib_format)
+  // the view can be used as a compile time checked format string
+  ASSERT_EQ("/foo/image_raw", std::format(StringConstants::FORMAT_CONST_VIEW, "foo"));
+#endif
 }
 
 // Defaults

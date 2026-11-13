@@ -28,6 +28,22 @@ message_typename = '::'.join(message.structure.namespaced_type.namespaced_name()
 
 # Common Windows macros that may interfere with user defined constants
 msvc_common_macros = ('DELETE', 'ERROR', 'NO_ERROR')
+
+# String constants additionally get a constexpr std::(u16)string_view constant
+# named <NAME><STRING_VIEW_CONSTANT_SUFFIX>, make sure it can't clash with an
+# existing constant or member
+STRING_VIEW_CONSTANT_SUFFIX = '_VIEW'
+_existing_names = {c.name for c in message.constants} | \
+    {m.name for m in message.structure.members}
+for _constant in message.constants:
+    if not isinstance(_constant.type, (AbstractString, AbstractWString)):
+        continue
+    _view_name = _constant.name + STRING_VIEW_CONSTANT_SUFFIX
+    if _view_name in _existing_names:
+        raise ValueError(
+            "The string constant '%s' of '%s' requires the generated C++ constant '%s', "
+            'which clashes with an existing constant or member of the same name' %
+            (_constant.name, message_typename, _view_name))
 }@
 @
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -236,8 +252,12 @@ non_defaulted_zero_initialized_members = [
 @[ end if]@
 @[ if isinstance(constant.type, AbstractString)]@
   static const @(MSG_TYPE_TO_CPP['string']) @(constant.name);
+  static constexpr std::string_view @(constant.name)@(STRING_VIEW_CONSTANT_SUFFIX) =
+    "@(escape_string(constant.value))";
 @[ elif isinstance(constant.type, AbstractWString)]@
   static const @(MSG_TYPE_TO_CPP['wstring']) @(constant.name);
+  static constexpr std::u16string_view @(constant.name)@(STRING_VIEW_CONSTANT_SUFFIX) =
+    u"@(escape_wstring(constant.value))";
 @[ else]@
   static constexpr @(MSG_TYPE_TO_CPP[constant.type.typename]) @(constant.name) =
 @[  if isinstance(constant.type, BasicType)]@
@@ -337,17 +357,11 @@ using @(message.structure.namespaced_type.name) =
 @[ if isinstance(c.type, AbstractString)]@
 template<typename ContainerAllocator>
 const @(MSG_TYPE_TO_CPP['string'])
-@(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name) = "@(escape_string(c.value))";
+@(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name){@(c.name)@(STRING_VIEW_CONSTANT_SUFFIX)};
 @[ elif isinstance(c.type, AbstractWString)]@
 template<typename ContainerAllocator>
 const @(MSG_TYPE_TO_CPP['wstring'])
-@(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name) = u"@(escape_wstring(c.value))";
-@[ else ]@
-#if __cplusplus < 201703L
-// static constexpr member variable definitions are only needed in C++14 and below, deprecated in C++17
-template<typename ContainerAllocator>
-constexpr @(MSG_TYPE_TO_CPP[c.type.typename]) @(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name);
-#endif  // __cplusplus < 201703L
+@(message.structure.namespaced_type.name)_<ContainerAllocator>::@(c.name){@(c.name)@(STRING_VIEW_CONSTANT_SUFFIX)};
 @[ end if]@
 @[ if c.name in msvc_common_macros]@
 #if defined(_WIN32)

@@ -33,6 +33,7 @@ if(BUILD_TESTING)
     msg/BasicIdl.idl
     msg/Comments.msg
     msg/SmallConstant.msg
+    msg/StringConstants.msg
     ADD_LINTER_TESTS
     SKIP_INSTALL
   )

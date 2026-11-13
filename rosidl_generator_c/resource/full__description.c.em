@@ -69,7 +69,7 @@ type_name = referenced_type_description['type_name']
 c_typename = type_name.replace('/', '__')
 }@
 @[  if type_name not in full_type_names]@
-static const rosidl_type_hash_t @(c_typename)__EXPECTED_HASH = @(type_hash_to_c_definition(hash_lookup[type_name]));
+static const rosidl_type_hash_t @(unique_prefix)_@(c_typename)__EXPECTED_HASH = @(type_hash_to_c_definition(hash_lookup[type_name]));
 @[  end if]@
 @[end for]@
 #endif
@@ -78,7 +78,7 @@ static const rosidl_type_hash_t @(c_typename)__EXPECTED_HASH = @(type_hash_to_c_
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 @# Names for all types
 @[for itype_description in all_type_descriptions]@
-static char @(typename_to_c(itype_description['type_name']))__TYPE_NAME[] = "@(itype_description['type_name'])";
+static char @(unique_prefix)_@(typename_to_c(itype_description['type_name']))__TYPE_NAME[] = "@(itype_description['type_name'])";
 @[end for]@
 @#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -111,7 +111,7 @@ static rosidl_runtime_c__type_description__Field @(td_c_typename)__FIELDS[] = {
       rosidl_runtime_c__type_description__FieldType__@(FIELD_TYPE_ID_TO_NAME[field['type']['type_id']]),
       @(field['type']['capacity']),
       @(field['type']['string_capacity']),
-      @(static_seq(f"{typename_to_c(field['type']['nested_type_name'])}__TYPE_NAME", field['type']['nested_type_name'])),
+      @(static_seq(f"{unique_prefix}_{typename_to_c(field['type']['nested_type_name'])}__TYPE_NAME", field['type']['nested_type_name'])),
     },
     @(static_seq(f"{td_c_typename}__DEFAULT_VALUE__{field['name']}", field['default_value'])),
   },
@@ -124,7 +124,7 @@ static rosidl_runtime_c__type_description__Field @(td_c_typename)__FIELDS[] = {
 static rosidl_runtime_c__type_description__IndividualTypeDescription @(td_c_typename)__REFERENCED_TYPE_DESCRIPTIONS[] = {
 @[    for ref_td in ref_tds]@
   {
-    @(static_seq(f"{typename_to_c(ref_td['type_name'])}__TYPE_NAME", ref_td['type_name'])),
+    @(static_seq(f"{unique_prefix}_{typename_to_c(ref_td['type_name'])}__TYPE_NAME", ref_td['type_name'])),
     {NULL, 0, 0},
   },
 @[    end for]@
@@ -139,7 +139,7 @@ const rosidl_runtime_c__type_description__TypeDescription *
   static bool constructed = false;
   static const rosidl_runtime_c__type_description__TypeDescription description = {
     {
-      @(static_seq(f'{td_c_typename}__TYPE_NAME', td_typename)),
+      @(static_seq(f'{unique_prefix}_{td_c_typename}__TYPE_NAME', td_typename)),
       @(static_seq(f'{td_c_typename}__FIELDS', msg['type_description']['fields'])),
     },
     @(static_seq(f'{td_c_typename}__REFERENCED_TYPE_DESCRIPTIONS', ref_tds)),
@@ -150,7 +150,7 @@ const rosidl_runtime_c__type_description__TypeDescription *
 c_typename = typename_to_c(ref_td['type_name'])
 }@
 @[    if ref_td['type_name'] not in full_type_names]@
-    assert(0 == memcmp(&@(c_typename)__EXPECTED_HASH, @(c_typename)__@(GET_HASH_FUNC)(NULL), sizeof(rosidl_type_hash_t)));
+    assert(0 == memcmp(&@(unique_prefix)_@(c_typename)__EXPECTED_HASH, @(c_typename)__@(GET_HASH_FUNC)(NULL), sizeof(rosidl_type_hash_t)));
 @[    end if]@
     description.referenced_type_descriptions.data[@(idx)].fields = @(c_typename)__@(GET_DESCRIPTION_FUNC)(NULL)->type_description.fields;
 @[  end for]@
@@ -164,16 +164,16 @@ c_typename = typename_to_c(ref_td['type_name'])
 @#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 @# Define individual raw sources
 @[if raw_source_content]@
-static char toplevel_type_raw_source[] =@
+static char @(unique_prefix)_toplevel_type_raw_source[] =@
 @[  for line in raw_source_content.splitlines()[:-1]]
   "@(utf8_encode(line))\n"@
 @[  end for]
   "@(utf8_encode(raw_source_content.splitlines()[-1]))";
 @[end if]@
 
-static char @(toplevel_encoding)_encoding[] = "@(toplevel_encoding)";
+static char @(unique_prefix)_@(toplevel_encoding)_encoding[] = "@(toplevel_encoding)";
 @[if implicit_type_descriptions]@
-static char implicit_encoding[] = "implicit";
+static char @(unique_prefix)_implicit_encoding[] = "implicit";
 @[end if]@
 
 // Define all individual source functions
@@ -188,7 +188,7 @@ if td_typename in implicit_type_names:
   contents = None
 else:
   encoding = toplevel_encoding
-  contents_var = 'toplevel_type_raw_source'
+  contents_var = unique_prefix + '_toplevel_type_raw_source'
   contents = raw_source_content
 }@
 
@@ -198,8 +198,8 @@ const rosidl_runtime_c__type_description__TypeSource *
 {
   (void)type_support;
   static const rosidl_runtime_c__type_description__TypeSource source = {
-    @(static_seq(f'{td_c_typename}__TYPE_NAME', td_typename)),
-    @(static_seq(f'{encoding}_encoding', encoding)),
+    @(static_seq(f'{unique_prefix}_{td_c_typename}__TYPE_NAME', td_typename)),
+    @(static_seq(f'{unique_prefix}_{encoding}_encoding', encoding)),
     @(static_seq(contents_var, contents)),
   };
   return &source;

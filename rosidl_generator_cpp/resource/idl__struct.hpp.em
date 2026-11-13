@@ -41,6 +41,7 @@ all_messages = get_all_messages(content)
 need_algorithm = False
 need_array = False
 need_string = False
+need_string_view = False
 need_vector = False
 need_bounded_vector = False
 need_buffer = False
@@ -48,6 +49,8 @@ for msg in all_messages:
     for constant in msg.constants:
         if isinstance(constant.type, AbstractGenericString):
             need_string = True
+            # string constants get an additional constexpr <NAME>_VIEW constant
+            need_string_view = True
     for member in msg.structure.members:
         type_ = member.type
         if member.name in CPPLINT_ALGORITHM_NAMES:
@@ -94,6 +97,9 @@ for msg in all_messages:
 #include <memory>
 @[if need_string]@
 #include <string>
+@[end if]@
+@[if need_string_view]@
+#include <string_view>
 @[end if]@
 @[if need_vector]@
 #include <vector>

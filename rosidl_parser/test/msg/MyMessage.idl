@@ -13,6 +13,13 @@ module rosidl_parser {
       const string EMPTY_STRING_CONSTANT = "";
     };
 
+    @verbatim ( language="comment", text="Documentation of MyEnum." "Define an enum." )
+    enum MyEnum {
+      FIRST_ENUM,
+      SECOND_ENUM,
+      THIRD_ENUM
+    };
+
     @verbatim ( language="comment", text="Documentation of MyMessage." "Adjacent string literal." )
     @transfer_mode(SHMEM_REF)
     struct MyMessage {
@@ -85,6 +92,9 @@ module rosidl_parser {
       // Optional test
       @optional
       int32 optional_int;
+
+      // Enum field usage
+      MyEnum my_enum;
     };
   };
 };

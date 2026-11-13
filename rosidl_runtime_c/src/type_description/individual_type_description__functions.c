@@ -94,7 +94,7 @@ rosidl_runtime_c__type_description__IndividualTypeDescription__copy(
 }
 
 rosidl_runtime_c__type_description__IndividualTypeDescription *
-rosidl_runtime_c__type_description__IndividualTypeDescription__create()
+rosidl_runtime_c__type_description__IndividualTypeDescription__create(void)
 {
   rcutils_allocator_t allocator = rcutils_get_default_allocator();
   rosidl_runtime_c__type_description__IndividualTypeDescription * msg = (rosidl_runtime_c__type_description__IndividualTypeDescription *)allocator.allocate(sizeof(rosidl_runtime_c__type_description__IndividualTypeDescription), allocator.state);
@@ -131,6 +131,9 @@ rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence__init(ro
   rosidl_runtime_c__type_description__IndividualTypeDescription * data = NULL;
 
   if (size) {
+    if (size > SIZE_MAX / sizeof(rosidl_runtime_c__type_description__IndividualTypeDescription)) {
+      return false;
+    }
     data = (rosidl_runtime_c__type_description__IndividualTypeDescription *)allocator.zero_allocate(size, sizeof(rosidl_runtime_c__type_description__IndividualTypeDescription), allocator.state);
     if (!data) {
       return false;
@@ -236,6 +239,9 @@ rosidl_runtime_c__type_description__IndividualTypeDescription__Sequence__copy(
     return false;
   }
   if (output->capacity < input->size) {
+    if (input->size > SIZE_MAX / sizeof(rosidl_runtime_c__type_description__IndividualTypeDescription)) {
+      return false;
+    }
     const size_t allocation_size =
       input->size * sizeof(rosidl_runtime_c__type_description__IndividualTypeDescription);
     rcutils_allocator_t allocator = rcutils_get_default_allocator();

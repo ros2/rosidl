@@ -18,10 +18,6 @@ if(BUILD_TESTING)
 
   # For gtest
   enable_language(C CXX)
-  # Default to C11
-  if(NOT CMAKE_C_STANDARD)
-    set(CMAKE_C_STANDARD 11)
-  endif()
 
   find_package(ament_cmake_gtest REQUIRED)
   find_package(ament_cmake_ros_core REQUIRED)
@@ -30,10 +26,9 @@ if(BUILD_TESTING)
     add_compile_options(-Wall -Wextra -Wpedantic)
   endif()
 
-  # Use the ROS default C++ standard (C++20) for the C++ test targets
   ament_add_gtest(test_macros test/test_macros.cpp)
   if(TARGET test_macros)
-    target_link_libraries(test_macros ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
+    target_link_libraries(test_macros ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_defaults)
   endif()
 
 endif()

@@ -19,6 +19,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "rosidl_buffer/buffer.hpp"
@@ -1070,6 +1071,148 @@ TEST(TestBufferNonCpuDeathTest, free_swap_vector_buffer_terminates) {
   Buffer<uint8_t> buf(std::move(impl));
   std::vector<uint8_t> vec{1, 2, 3};
   EXPECT_DEATH({using std::swap; swap(vec, buf);}, ".*");
+}
+
+// ========== CPU backend detection ==========
+
+namespace
+{
+
+/// Stateful allocator so that std::vector<T, TaggedAllocator<T>> has a different
+/// layout from std::vector<T>; misidentifying one as the other is then observable.
+template<typename T>
+struct TaggedAllocator
+{
+  using value_type = T;
+
+  TaggedAllocator() = default;
+
+  template<typename U>
+  TaggedAllocator(const TaggedAllocator<U> &) noexcept {}  // NOLINT(runtime/explicit)
+
+  T * allocate(size_t n) {return std::allocator<T>{}.allocate(n);}
+  void deallocate(T * p, size_t n) noexcept {std::allocator<T>{}.deallocate(p, n);}
+
+  friend bool operator==(const TaggedAllocator &, const TaggedAllocator &) {return true;}
+  friend bool operator!=(const TaggedAllocator &, const TaggedAllocator &) {return false;}
+
+  uint64_t tag[4] = {};
+};
+
+/// A backend that calls itself "cpu" but is not a CpuBufferImpl.
+template<typename T>
+class CpuNamedBufferImpl : public BufferImplBase<T>
+{
+public:
+  explicit CpuNamedBufferImpl(std::vector<T> data)
+  : data_(std::move(data)) {}
+
+  std::string get_backend_type() const override {return "cpu";}
+  size_t size() const override {return data_.size();}
+
+  std::unique_ptr<BufferImplBase<T>> to_cpu() const override
+  {
+    auto cpu = std::make_unique<CpuBufferImpl<T>>();
+    cpu->get_storage() = data_;
+    return cpu;
+  }
+
+  std::unique_ptr<BufferImplBase<T>> clone() const override
+  {
+    return std::make_unique<CpuNamedBufferImpl<T>>(data_);
+  }
+
+private:
+  std::vector<T> data_;
+};
+
+/// A broken backend whose to_cpu() does not return CPU storage.
+template<typename T>
+class BadToCpuBufferImpl : public NonCpuBufferImpl<T>
+{
+public:
+  using NonCpuBufferImpl<T>::NonCpuBufferImpl;
+
+  std::unique_ptr<BufferImplBase<T>> to_cpu() const override
+  {
+    return std::make_unique<NonCpuBufferImpl<T>>(this->size());
+  }
+};
+
+}  // namespace
+
+// A CpuBufferImpl whose allocator differs from the Buffer's must not be treated as
+// the Buffer's CPU storage, even though it reports "cpu".
+TEST(TestBufferCpuDetection, cpu_impl_with_mismatched_allocator_is_not_cpu) {
+  auto impl = std::make_unique<CpuBufferImpl<int, TaggedAllocator<int>>>();
+  impl->get_storage().assign(3, 7);
+  Buffer<int> buffer(std::move(impl));
+
+  EXPECT_EQ("cpu", buffer.get_backend_type());
+  EXPECT_EQ(3u, buffer.size());
+  EXPECT_THROW(buffer.push_back(1), std::runtime_error);
+  EXPECT_THROW(buffer.data(), std::runtime_error);
+  EXPECT_THROW(
+    {std::vector<int> & ref = buffer; (void)ref;},
+    std::runtime_error);
+  // to_cpu() yields CpuBufferImpl<int, TaggedAllocator<int>>, which cannot be
+  // converted to std::vector<int>: this must throw rather than miscast.
+  EXPECT_THROW(buffer.to_vector(), std::runtime_error);
+
+  Buffer<int> moved(std::move(buffer));
+  EXPECT_THROW(moved.push_back(1), std::runtime_error);
+  EXPECT_NO_THROW(buffer.push_back(1));  // moved-from buffer is a fresh CPU buffer
+
+  Buffer<int> copied(moved);
+  EXPECT_THROW(copied.push_back(1), std::runtime_error);
+}
+
+// A third-party backend named "cpu" is not CpuBufferImpl storage; direct access
+// must throw and to_vector() must go through to_cpu().
+TEST(TestBufferCpuDetection, non_cpu_impl_named_cpu_is_not_cpu) {
+  Buffer<int> buffer(std::make_unique<CpuNamedBufferImpl<int>>(std::vector<int>{1, 2, 3}));
+
+  EXPECT_EQ("cpu", buffer.get_backend_type());
+  EXPECT_EQ(3u, buffer.size());
+  EXPECT_THROW(buffer.push_back(4), std::runtime_error);
+  EXPECT_THROW(buffer[0], std::runtime_error);
+  EXPECT_EQ((std::vector<int>{1, 2, 3}), buffer.to_vector());
+
+  Buffer<int> moved(std::move(buffer));
+  EXPECT_THROW(moved.push_back(4), std::runtime_error);
+  EXPECT_EQ((std::vector<int>{1, 2, 3}), moved.to_vector());
+}
+
+// A matching CpuBufferImpl passed in explicitly is detected as CPU, and stays CPU
+// through copy and move.
+TEST(TestBufferCpuDetection, explicit_cpu_impl_is_cpu) {
+  auto impl = std::make_unique<CpuBufferImpl<int, TaggedAllocator<int>>>();
+  impl->get_storage().assign(2, 5);
+  Buffer<int, TaggedAllocator<int>> buffer(std::move(impl));
+
+  EXPECT_NO_THROW(buffer.push_back(6));
+  EXPECT_EQ(3u, buffer.size());
+
+  Buffer<int, TaggedAllocator<int>> moved(std::move(buffer));
+  EXPECT_NO_THROW(moved.push_back(7));
+  Buffer<int, TaggedAllocator<int>> copied(moved);
+  EXPECT_NO_THROW(copied.push_back(8));
+  EXPECT_EQ(5u, copied.size());
+}
+
+// to_vector() on a non-CPU backend with a custom allocator converts from the
+// backend's default-allocator CPU copy.
+TEST(TestBufferCpuDetection, to_vector_converts_allocator) {
+  Buffer<int, TaggedAllocator<int>> buffer(std::make_unique<NonCpuBufferImpl<int>>(4));
+  std::vector<int, TaggedAllocator<int>> vec = buffer.to_vector();
+  EXPECT_EQ(4u, vec.size());
+}
+
+// A backend whose to_cpu() does not return CPU storage must make to_vector()
+// throw instead of miscasting the result.
+TEST(TestBufferCpuDetection, to_vector_rejects_non_cpu_to_cpu_result) {
+  Buffer<int> buffer(std::make_unique<BadToCpuBufferImpl<int>>(2));
+  EXPECT_THROW(buffer.to_vector(), std::runtime_error);
 }
 
 int main(int argc, char ** argv)

@@ -27,7 +27,10 @@
   <build_export_depend>rosidl_typesupport_interface</build_export_depend>
 
   <depend>rcutils</depend>
-  <depend>rosidl_buffer</depend>
+  <!-- Optional: only required when rosidl_buffer support is enabled
+    (ROSIDL_RUNTIME_C_USE_ROSIDL_BUFFER=OFF drops it). An unset variable
+    evaluates to an empty string, so the default build is unaffected. -->
+  <depend condition="$ROSIDL_RUNTIME_C_USE_ROSIDL_BUFFER != OFF">rosidl_buffer</depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
   <test_depend>ament_lint_auto</test_depend>

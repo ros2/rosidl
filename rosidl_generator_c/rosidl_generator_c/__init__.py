@@ -229,6 +229,18 @@ def escape_wstring(s):
     return escape_string(s)
 
 
+def escape_utf8(s):
+    result = ''
+    for c in s.encode('utf-8'):
+        if c < 0x80:
+            # ASCII characters are encoded as-is
+            result += chr(c)
+        else:
+            # Non-ASCII characters are encoded as UTF-8
+            result += '\\x%02x' % c
+    return result
+
+
 def type_hash_to_c_definition(hash_string, *, indent=2):
     """Generate empy for rosidl_type_hash_t instance with 8 bytes per line for readability."""
     bytes_per_row = 8

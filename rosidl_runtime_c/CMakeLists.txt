@@ -14,7 +14,16 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros_core REQUIRED)
 find_package(rcutils REQUIRED)
-find_package(rosidl_buffer REQUIRED)
+# rosidl_buffer is a C++20 package whose headers throw; C-only and
+# exception-free consumers (e.g. micro-ROS, Zephyr) cannot build or link
+# against it. Make it opt-out so rosidl_runtime_c can be built without it
+# (ros2/rosidl#1002). Default ON: no behavior change for normal builds.
+# Disable with -DROSIDL_RUNTIME_C_USE_ROSIDL_BUFFER=OFF and, for colcon,
+# ROSIDL_RUNTIME_C_USE_ROSIDL_BUFFER=OFF in the environment (see package.xml).
+option(ROSIDL_RUNTIME_C_USE_ROSIDL_BUFFER "Build rosidl_runtime_c with rosidl_buffer support" ON)
+if(ROSIDL_RUNTIME_C_USE_ROSIDL_BUFFER)
+  find_package(rosidl_buffer REQUIRED)
+endif()
 find_package(rosidl_typesupport_interface REQUIRED)
 
 file(GLOB type_description_sources "src/type_description/*.c")
@@ -35,9 +44,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 target_link_libraries(${PROJECT_NAME} PUBLIC
   rcutils::rcutils
-  rosidl_buffer::rosidl_buffer
   rosidl_typesupport_interface::rosidl_typesupport_interface
 )
+if(ROSIDL_RUNTIME_C_USE_ROSIDL_BUFFER)
+  target_link_libraries(${PROJECT_NAME} PUBLIC rosidl_buffer::rosidl_buffer)
+  target_compile_definitions(${PROJECT_NAME}
+    PRIVATE ROSIDL_RUNTIME_C_USE_ROSIDL_BUFFER)
+endif()
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
   set_target_properties(${PROJECT_NAME} PROPERTIES
     COMPILE_OPTIONS -Wall -Wextra -Wpedantic)
@@ -51,7 +64,11 @@ if(BUILD_TESTING AND NOT RCUTILS_DISABLE_FAULT_INJECTION)
   target_compile_definitions(${PROJECT_NAME} PUBLIC RCUTILS_ENABLE_FAULT_INJECTION)
 endif()
 
-ament_export_dependencies(rcutils rosidl_buffer rosidl_typesupport_interface)
+if(ROSIDL_RUNTIME_C_USE_ROSIDL_BUFFER)
+  ament_export_dependencies(rcutils rosidl_buffer rosidl_typesupport_interface)
+else()
+  ament_export_dependencies(rcutils rosidl_typesupport_interface)
+endif()
 
 # Export modern CMake targets
 ament_export_targets(${PROJECT_NAME})

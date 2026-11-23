@@ -142,3 +142,25 @@ TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(bool, bool)
 TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(byte, uint8_t)
 TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(float32, float)
 TEST_PRIMITIVE_SEQUENCE_FUNCTIONS(float64, double)
+
+// A sequence flagged as rosidl_buffer-backed must never be handed to the
+// C allocator on fini: only its bookkeeping is cleared. The non-null
+// sentinel data pointer is deliberately not allocator memory, so passing
+// it to free() would crash. owns_rosidl_buffer is false here, so no
+// Buffer destruction is attempted either (ros2/rosidl#1002).
+TEST(primitives_sequence_functions, test_uint8_fini_buffer_backed_sequence)
+{
+  rosidl_runtime_c__uint8__Sequence sequence;
+  EXPECT_TRUE(rosidl_runtime_c__uint8__Sequence__init(&sequence, 0u));
+  sequence.is_rosidl_buffer = true;
+  sequence.owns_rosidl_buffer = false;
+  sequence.data = reinterpret_cast<uint8_t *>(0x1);
+  sequence.size = 1u;
+  sequence.capacity = 1u;
+  rosidl_runtime_c__uint8__Sequence__fini(&sequence);
+  EXPECT_EQ(sequence.data, nullptr);
+  EXPECT_EQ(sequence.size, 0u);
+  EXPECT_EQ(sequence.capacity, 0u);
+  EXPECT_FALSE(sequence.is_rosidl_buffer);
+  EXPECT_FALSE(sequence.owns_rosidl_buffer);
+}

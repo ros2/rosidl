@@ -13,14 +13,37 @@
 // limitations under the License.
 
 #include <assert.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <rcutils/allocator.h>
 
-#include "rosidl_buffer/c_helpers.h"
 #include "rosidl_runtime_c/primitives_sequence_functions.h"
+
+#ifdef ROSIDL_RUNTIME_C_USE_ROSIDL_BUFFER
+#include "rosidl_buffer/c_helpers.h"
+#endif
+
+// Destroy a heap-allocated rosidl::Buffer<uint8_t> backing a sequence.
+// Kept outside the macro below because preprocessor directives cannot
+// appear inside a macro definition. When rosidl_buffer support is compiled
+// out (ROSIDL_RUNTIME_C_USE_ROSIDL_BUFFER=OFF), this is a no-op: a
+// buffer-backed sequence cannot be created in that configuration, and
+// fini() must never hand a Buffer pointer to the C allocator.
+static void
+rosidl_runtime_c__destroy_rosidl_buffer(void * data, bool owns_buffer)
+{
+#ifdef ROSIDL_RUNTIME_C_USE_ROSIDL_BUFFER
+  if (owns_buffer) {
+    rosidl_buffer_uint8_destroy(data);
+  }
+#else
+  (void)data;
+  (void)owns_buffer;
+#endif
+}
 
 #define ROSIDL_GENERATOR_C__DEFINE_PRIMITIVE_SEQUENCE_FUNCTIONS(STRUCT_NAME, TYPE_NAME) \
   bool rosidl_runtime_c__ ## STRUCT_NAME ## __Sequence__init( \
@@ -55,9 +78,8 @@
       return; \
     } \
     if (sequence->is_rosidl_buffer) { \
-      if (sequence->owns_rosidl_buffer) { \
-        rosidl_buffer_uint8_destroy(sequence->data); \
-      } \
+      rosidl_runtime_c__destroy_rosidl_buffer( \
+        sequence->data, sequence->owns_rosidl_buffer); \
       sequence->data = NULL; \
       sequence->size = 0; \
       sequence->capacity = 0; \

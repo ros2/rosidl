@@ -53,6 +53,26 @@ if(BUILD_TESTING)
     target_link_libraries(test_buffer ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
   endif()
 
+  if(NOT WIN32)
+    # Loaded with dlopen(RTLD_LOCAL) by test_buffer_dso. Hidden visibility keeps its
+    # CpuBufferImpl RTTI separate from the test executable's.
+    add_library(test_buffer_dso_plugin MODULE test/buffer_dso_plugin.cpp)
+    target_link_libraries(test_buffer_dso_plugin PRIVATE
+      ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)
+    set_target_properties(test_buffer_dso_plugin PROPERTIES
+      CXX_VISIBILITY_PRESET hidden
+      VISIBILITY_INLINES_HIDDEN ON)
+
+    ament_add_gtest(test_buffer_dso test/test_buffer_dso.cpp)
+    if(TARGET test_buffer_dso)
+      target_link_libraries(test_buffer_dso
+        ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard ${CMAKE_DL_LIBS})
+      target_compile_definitions(test_buffer_dso PRIVATE
+        "BUFFER_DSO_PLUGIN_PATH=\"$<TARGET_FILE:test_buffer_dso_plugin>\"")
+      add_dependencies(test_buffer_dso test_buffer_dso_plugin)
+    endif()
+  endif()
+
   ament_add_gtest(test_c_helpers test/test_c_helpers.cpp)
   if(TARGET test_c_helpers)
     target_link_libraries(test_c_helpers ${PROJECT_NAME} ament_cmake_ros_core::ament_ros_cxx_standard)

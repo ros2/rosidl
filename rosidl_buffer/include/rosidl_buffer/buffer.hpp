@@ -17,12 +17,14 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <cstring>
 #include <initializer_list>
 #include <iterator>
 #include <memory>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
+#include <typeinfo>
 #include <utility>
 #include <vector>
 
@@ -117,7 +119,8 @@ public:
   /// Move constructor — the moved-from buffer is left in a valid, empty state.
   Buffer(Buffer && other) noexcept
   {
-    set_impl(std::move(other.impl_));
+    impl_ = std::move(other.impl_);
+    cpu_impl_ = other.cpu_impl_;
     other.set_impl(std::make_unique<CpuBufferImpl<T, Allocator>>());
   }
 
@@ -134,7 +137,8 @@ public:
   Buffer & operator=(Buffer && other) noexcept
   {
     if (this != &other) {
-      set_impl(std::move(other.impl_));
+      impl_ = std::move(other.impl_);
+      cpu_impl_ = other.cpu_impl_;
       other.set_impl(std::make_unique<CpuBufferImpl<T, Allocator>>());
     }
     return *this;
@@ -497,13 +501,18 @@ public:
       return cpu_impl_->get_storage();
     }
     auto cpu_copy = impl_->to_cpu();
-    auto * cpu = static_cast<CpuBufferImpl<T> *>(cpu_copy.get());
-    if constexpr (std::is_same_v<Allocator, std::allocator<T>>) {
+    if (auto * cpu = as_cpu_impl<Allocator>(cpu_copy.get())) {
       return std::move(cpu->get_storage());
-    } else {
-      auto & src = cpu->get_storage();
-      return std::vector<T, Allocator>(src.begin(), src.end());
     }
+    if constexpr (!std::is_same_v<Allocator, std::allocator<T>>) {
+      if (auto * cpu = as_cpu_impl<std::allocator<T>>(cpu_copy.get())) {
+        auto & src = cpu->get_storage();
+        return std::vector<T, Allocator>(src.begin(), src.end());
+      }
+    }
+    throw std::runtime_error(
+            "to_cpu() for backend '" + impl_->get_backend_type() +
+            "' did not return a CpuBufferImpl compatible with this Buffer's allocator.");
   }
 
   // ========== Comparison Operators ==========
@@ -545,9 +554,14 @@ public:
   void throw_if_not_cpu_backend() const
   {
     if (!cpu_impl_) {
+      const std::string backend_type = impl_->get_backend_type();
+      if (backend_type == "cpu") {
+        throw std::runtime_error(
+                "Operation requires CPU backend. The backend reports 'cpu', but its "
+                "implementation is not a CpuBufferImpl with this Buffer's allocator type.");
+      }
       throw std::runtime_error(
-              "Operation requires CPU backend. Current backend: " +
-              impl_->get_backend_type() +
+              "Operation requires CPU backend. Current backend: " + backend_type +
               ". Use to_vector() for explicit conversion to CPU.");
     }
   }
@@ -558,14 +572,39 @@ private:
   std::unique_ptr<BufferImplBase<T>> impl_;
 
   /// Cached pointer for type-safe CPU backend detection.
-  /// Set by set_impl() via dynamic_cast; null for non-CPU backends.
+  /// Set by set_impl() via as_cpu_impl(); null for non-CPU backends.
   CpuBufferImpl<T, Allocator> * cpu_impl_ = nullptr;
+
+  /// Downcast to CpuBufferImpl<T, A>, or return nullptr if impl is not exactly that type.
+  ///
+  /// CpuBufferImpl is header-only, so every shared library that instantiates it
+  /// emits its own copy of its RTTI. When a library is loaded with RTLD_LOCAL
+  /// (as pluginlib/class_loader do for buffer backends), those copies are not
+  /// merged, and runtimes that compare type_info by address (e.g. libc++) make
+  /// dynamic_cast fail for an object created on the other side of the boundary.
+  /// Comparing the mangled type names identifies the exact type, including its
+  /// allocator, without depending on RTTI symbol identity. The backend-type
+  /// string is deliberately not used: it is a convention, not a type contract.
+  template<typename A>
+  static CpuBufferImpl<T, A> * as_cpu_impl(BufferImplBase<T> * impl) noexcept
+  {
+    if (!impl) {
+      return nullptr;
+    }
+    if (auto * cpu = dynamic_cast<CpuBufferImpl<T, A> *>(impl)) {
+      return cpu;
+    }
+    if (std::strcmp(typeid(*impl).name(), typeid(CpuBufferImpl<T, A>).name()) == 0) {
+      return static_cast<CpuBufferImpl<T, A> *>(impl);
+    }
+    return nullptr;
+  }
 
   /// Set the implementation and update the cached CPU pointer.
   void set_impl(std::unique_ptr<BufferImplBase<T>> impl)
   {
     impl_ = std::move(impl);
-    cpu_impl_ = dynamic_cast<CpuBufferImpl<T, Allocator> *>(impl_.get());
+    cpu_impl_ = as_cpu_impl<Allocator>(impl_.get());
   }
 
   /// Get CPU implementation (assumes throw_if_not_cpu_backend() was called)

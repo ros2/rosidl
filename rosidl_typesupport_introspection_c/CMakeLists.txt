@@ -2,11 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 
 project(rosidl_typesupport_introspection_c C)
 
-# Default to C11
-if(NOT CMAKE_C_STANDARD)
-  set(CMAKE_C_STANDARD 11)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -15,12 +10,17 @@ find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 find_package(ament_cmake_ros_core REQUIRED)
 
+ament_export_dependencies(ament_cmake_ros_core)
 ament_export_dependencies(rosidl_runtime_c)
 ament_export_dependencies(rosidl_typesupport_interface)
 
 ament_python_install_package(${PROJECT_NAME})
 
 add_library(${PROJECT_NAME} src/identifier.c)
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  ament_cmake_ros_core::ament_ros_defaults
+)
+
 if(WIN32)
   target_compile_definitions(${PROJECT_NAME}
     PRIVATE "ROSIDL_TYPESUPPORT_INTROSPECTION_C_BUILDING_DLL")

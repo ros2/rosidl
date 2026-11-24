@@ -98,7 +98,7 @@ rosidl_runtime_c__type_description__FieldType__copy(
 }
 
 rosidl_runtime_c__type_description__FieldType *
-rosidl_runtime_c__type_description__FieldType__create()
+rosidl_runtime_c__type_description__FieldType__create(void)
 {
   rcutils_allocator_t allocator = rcutils_get_default_allocator();
   rosidl_runtime_c__type_description__FieldType * msg = (rosidl_runtime_c__type_description__FieldType *)allocator.allocate(sizeof(rosidl_runtime_c__type_description__FieldType), allocator.state);
@@ -135,6 +135,9 @@ rosidl_runtime_c__type_description__FieldType__Sequence__init(rosidl_runtime_c__
   rosidl_runtime_c__type_description__FieldType * data = NULL;
 
   if (size) {
+    if (size > SIZE_MAX / sizeof(rosidl_runtime_c__type_description__FieldType)) {
+      return false;
+    }
     data = (rosidl_runtime_c__type_description__FieldType *)allocator.zero_allocate(size, sizeof(rosidl_runtime_c__type_description__FieldType), allocator.state);
     if (!data) {
       return false;
@@ -240,6 +243,9 @@ rosidl_runtime_c__type_description__FieldType__Sequence__copy(
     return false;
   }
   if (output->capacity < input->size) {
+    if (input->size > SIZE_MAX / sizeof(rosidl_runtime_c__type_description__FieldType)) {
+      return false;
+    }
     const size_t allocation_size =
       input->size * sizeof(rosidl_runtime_c__type_description__FieldType);
     rcutils_allocator_t allocator = rcutils_get_default_allocator();

@@ -25,8 +25,8 @@ rosidl_runtime_c__type_description__TypeDescription__get_type_hash(
 
 // Include directives for referenced types
 #include "rosidl_runtime_c/type_description/field__functions.h"
-#include "rosidl_runtime_c/type_description/individual_type_description__functions.h"
 #include "rosidl_runtime_c/type_description/field_type__functions.h"
+#include "rosidl_runtime_c/type_description/individual_type_description__functions.h"
 
 // Hashes for external referenced types
 #ifndef NDEBUG
@@ -157,9 +157,9 @@ rosidl_runtime_c__type_description__TypeDescription__get_type_description_source
   static bool constructed = false;
   if (!constructed) {
     sources[0] = *rosidl_runtime_c__type_description__TypeDescription__get_individual_type_description_source(NULL),
-    sources[0] = *rosidl_runtime_c__type_description__Field__get_individual_type_description_source(NULL);
-    sources[1] = *rosidl_runtime_c__type_description__FieldType__get_individual_type_description_source(NULL);
-    sources[2] = *rosidl_runtime_c__type_description__IndividualTypeDescription__get_individual_type_description_source(NULL);
+    sources[1] = *rosidl_runtime_c__type_description__Field__get_individual_type_description_source(NULL);
+    sources[2] = *rosidl_runtime_c__type_description__FieldType__get_individual_type_description_source(NULL);
+    sources[3] = *rosidl_runtime_c__type_description__IndividualTypeDescription__get_individual_type_description_source(NULL);
     constructed = true;
   }
   return &source_sequence;

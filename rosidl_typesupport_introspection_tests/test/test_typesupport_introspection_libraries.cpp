@@ -16,7 +16,7 @@
 
 #include "rosidl_typesupport_introspection_tests/gtest/typesupport_library_test.hpp"
 
-#include "introspection_libraries_under_test.hpp"
+#include "./introspection_libraries_under_test.hpp"
 
 namespace rosidl_typesupport_introspection_tests
 {

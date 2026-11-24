@@ -10,6 +10,16 @@ module test_msgs {
       const float INLINE_CONSTANT = 32.0;
       @optional
       const string OPTIONAL_STRING_CONST = "@optional";
+      @key
+      const float INLINE_CONSTANT_KEY = 32.0;
+      @key
+      const string KEY_STRING_CONST = "@key";
+      @optional
+      @key
+      const float INLINE_CONSTANT_OPTIONAL_KEY = 32.0;
+      @optional
+      @key
+      const string KEY_OPTIONAL_STRING_CONST = "@optional @key";
     };
     @verbatim (language="comment", text=
       "msg level doc")
@@ -60,6 +70,38 @@ module test_msgs {
       @optional
       @default (value="@optional")
       string optional_default_string;
+
+      @key
+      float multiline_key;
+
+      @key
+      float inline_key;
+
+      @key
+      @default (value=32.0)
+      float inline_default_key;
+
+      @key
+      @default (value="@key")
+      string key_default_string;
+
+      @optional
+      @key
+      float multiline_optional_key;
+
+      @optional
+      @key
+      float inline_optional_key;
+
+      @optional
+      @key
+      @default (value=32.0)
+      float inline_default_optional_key;
+
+      @optional
+      @key
+      @default (value="@key @optional")
+      string optional_key_default_string;
     };
   };
 };

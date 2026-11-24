@@ -134,6 +134,11 @@ macro(rosidl_generate_interfaces target)
         "${_adapter_arguments_file}"
         TARGET ${target}
       )
+    else()
+      message(WARNING
+        "rosidl_adapter not found, but non-IDL interface files were provided. "
+        "Please add 'find_package(rosidl_default_generators REQUIRED)' or "
+        "ensure rosidl_adapter is available.")
     endif()
   endif()
   # afterwards all remaining interface files are .idl files

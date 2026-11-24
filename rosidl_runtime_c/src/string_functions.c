@@ -106,16 +106,18 @@ rosidl_runtime_c__String__assignn(
   if (n == SIZE_MAX) {
     return false;
   }
-  rcutils_allocator_t allocator = rcutils_get_default_allocator();
-  char * data = allocator.reallocate(str->data, n + 1, allocator.state);
-  if (!data) {
-    return false;
+  if(str->capacity < n + 1) {
+    rcutils_allocator_t allocator = rcutils_get_default_allocator();
+    char * data = allocator.reallocate(str->data, n + 1, allocator.state);
+    if (!data) {
+      return false;
+    }
+    str->data = data;
+    str->capacity = n + 1;
   }
-  memcpy(data, value, n);
-  data[n] = '\0';
-  str->data = data;
+  memcpy(str->data, value, n);
+  str->data[n] = '\0';
   str->size = n;
-  str->capacity = n + 1;
   return true;
 }
 

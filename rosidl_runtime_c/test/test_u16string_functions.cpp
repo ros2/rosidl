@@ -117,7 +117,8 @@ TEST(u16string_functions, resize_assignn) {
   // Check assigning 0-length strings
   EXPECT_TRUE(rosidl_runtime_c__U16String__assignn(&s, &data[0], 0));
   EXPECT_EQ(s.size, 0u);
-  EXPECT_EQ(s.capacity, 1u);
+  // capacity shall only change if needed
+  EXPECT_EQ(s.capacity, s_size + 1u);
   EXPECT_EQ(s.data[0], 0u);
 
   constexpr size_t s8_size = 2 * s_size;

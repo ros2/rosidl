@@ -43,6 +43,7 @@ Example usage::
 """
 
 from rosidl_buffer._rosidl_buffer_py import _get_buffer_ptr  # noqa: F401
+from rosidl_buffer._rosidl_buffer_py import _share_buffer_from_capsule  # noqa: F401
 from rosidl_buffer._rosidl_buffer_py import _take_buffer_from_ptr  # noqa: F401
 from rosidl_buffer._rosidl_buffer_py import Buffer
 

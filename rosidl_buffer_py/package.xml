@@ -23,6 +23,7 @@
   <build_depend>pybind11-dev</build_depend>
   <build_depend>python3-dev</build_depend>
 
+  <test_depend>ament_cmake_pytest</test_depend>
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 

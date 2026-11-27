@@ -317,7 +317,7 @@ struct Example<rosidl_typesupport_introspection_tests__msg__Arrays>
         rosidl_typesupport_introspection_tests__msg__Arrays__fini(message);
         delete message;
       };
-    ReturnT message{new rosidl_typesupport_introspection_tests__msg__Arrays, deleter};
+    ReturnT message{new rosidl_typesupport_introspection_tests__msg__Arrays(), deleter};
     if (!rosidl_typesupport_introspection_tests__msg__Arrays__init(message.get())) {
       throw std::runtime_error(rcutils_get_error_string().str);
     }
@@ -340,7 +340,7 @@ struct Example<rosidl_typesupport_introspection_tests__msg__BasicTypes>
         rosidl_typesupport_introspection_tests__msg__BasicTypes__fini(message);
         delete message;
       };
-    ReturnT message{new rosidl_typesupport_introspection_tests__msg__BasicTypes, deleter};
+    ReturnT message{new rosidl_typesupport_introspection_tests__msg__BasicTypes(), deleter};
     if (!rosidl_typesupport_introspection_tests__msg__BasicTypes__init(message.get())) {
       throw std::runtime_error(rcutils_get_error_string().str);
     }
@@ -363,7 +363,7 @@ struct Example<rosidl_typesupport_introspection_tests__msg__BoundedSequences>
         rosidl_typesupport_introspection_tests__msg__BoundedSequences__fini(message);
         delete message;
       };
-    ReturnT message{new rosidl_typesupport_introspection_tests__msg__BoundedSequences, deleter};
+    ReturnT message{new rosidl_typesupport_introspection_tests__msg__BoundedSequences(), deleter};
     if (
       !rosidl_typesupport_introspection_tests__msg__BoundedSequences__init(message.get()) ||
       !rosidl_runtime_c__boolean__Sequence__init(&message->bool_values, 1u) ||
@@ -415,7 +415,7 @@ struct Example<rosidl_typesupport_introspection_tests__msg__Defaults>
         rosidl_typesupport_introspection_tests__msg__Defaults__fini(message);
         delete message;
       };
-    ReturnT message{new rosidl_typesupport_introspection_tests__msg__Defaults, deleter};
+    ReturnT message{new rosidl_typesupport_introspection_tests__msg__Defaults(), deleter};
     if (!rosidl_typesupport_introspection_tests__msg__Defaults__init(message.get())) {
       throw std::runtime_error(rcutils_get_error_string().str);
     }
@@ -438,7 +438,7 @@ struct Example<rosidl_typesupport_introspection_tests__msg__MultiNested>
         rosidl_typesupport_introspection_tests__msg__MultiNested__fini(message);
         delete message;
       };
-    ReturnT message{new rosidl_typesupport_introspection_tests__msg__MultiNested, deleter};
+    ReturnT message{new rosidl_typesupport_introspection_tests__msg__MultiNested(), deleter};
     if (!rosidl_typesupport_introspection_tests__msg__MultiNested__init(message.get())) {
       throw std::runtime_error(rcutils_get_error_string().str);
     }
@@ -475,7 +475,7 @@ struct Example<rosidl_typesupport_introspection_tests__msg__Nested>
         rosidl_typesupport_introspection_tests__msg__Nested__fini(message);
         delete message;
       };
-    ReturnT message{new rosidl_typesupport_introspection_tests__msg__Nested, deleter};
+    ReturnT message{new rosidl_typesupport_introspection_tests__msg__Nested(), deleter};
     if (!rosidl_typesupport_introspection_tests__msg__Nested__init(message.get())) {
       throw std::runtime_error(rcutils_get_error_string().str);
     }
@@ -498,7 +498,7 @@ struct Example<rosidl_typesupport_introspection_tests__msg__Strings>
         rosidl_typesupport_introspection_tests__msg__Strings__fini(message);
         delete message;
       };
-    ReturnT message{new rosidl_typesupport_introspection_tests__msg__Strings, deleter};
+    ReturnT message{new rosidl_typesupport_introspection_tests__msg__Strings(), deleter};
     if (
       !rosidl_typesupport_introspection_tests__msg__Strings__init(message.get()) ||
       !rosidl_runtime_c__String__assign(&message->string_value, "foo") ||
@@ -522,7 +522,7 @@ struct Example<rosidl_typesupport_introspection_tests__msg__UnboundedSequences>
         rosidl_typesupport_introspection_tests__msg__UnboundedSequences__fini(message);
         delete message;
       };
-    ReturnT message{new rosidl_typesupport_introspection_tests__msg__UnboundedSequences, deleter};
+    ReturnT message{new rosidl_typesupport_introspection_tests__msg__UnboundedSequences(), deleter};
     if (
       !rosidl_typesupport_introspection_tests__msg__UnboundedSequences__init(message.get()) ||
       !rosidl_runtime_c__boolean__Sequence__init(&message->bool_values, 1u) ||
@@ -575,7 +575,7 @@ struct Example<rosidl_typesupport_introspection_tests__msg__WStrings>
         delete message;
       };
 
-    ReturnT message{new rosidl_typesupport_introspection_tests__msg__WStrings, deleter};
+    ReturnT message{new rosidl_typesupport_introspection_tests__msg__WStrings(), deleter};
     const uint16_t wstring_value[] = {50097u, 117u, 0u};
     if (
       !rosidl_typesupport_introspection_tests__msg__WStrings__init(message.get()) ||
@@ -598,7 +598,7 @@ struct Example<rosidl_typesupport_introspection_tests__srv__Arrays>
         delete message;
       };
     using ReturnT = std::unique_ptr<MessageT, std::function<void (MessageT *)>>;
-    ReturnT message{new MessageT, deleter};
+    ReturnT message{new MessageT(), deleter};
     if (!rosidl_typesupport_introspection_tests__srv__Arrays_Request__init(message.get())) {
       throw std::runtime_error(rcutils_get_error_string().str);
     }
@@ -616,7 +616,7 @@ struct Example<rosidl_typesupport_introspection_tests__srv__Arrays>
         delete message;
       };
     using ReturnT = std::unique_ptr<MessageT, std::function<void (MessageT *)>>;
-    ReturnT message{new MessageT, deleter};
+    ReturnT message{new MessageT(), deleter};
     if (!rosidl_typesupport_introspection_tests__srv__Arrays_Response__init(message.get())) {
       throw std::runtime_error(rcutils_get_error_string().str);
     }
@@ -639,7 +639,7 @@ struct Example<rosidl_typesupport_introspection_tests__srv__BasicTypes>
         delete message;
       };
     using ReturnT = std::unique_ptr<MessageT, std::function<void (MessageT *)>>;
-    ReturnT message{new MessageT, deleter};
+    ReturnT message{new MessageT(), deleter};
     if (!rosidl_typesupport_introspection_tests__srv__BasicTypes_Request__init(message.get())) {
       throw std::runtime_error(rcutils_get_error_string().str);
     }
@@ -661,7 +661,7 @@ struct Example<rosidl_typesupport_introspection_tests__srv__BasicTypes>
         delete message;
       };
     using ReturnT = std::unique_ptr<MessageT, std::function<void (MessageT *)>>;
-    ReturnT message{new MessageT, deleter};
+    ReturnT message{new MessageT(), deleter};
     if (!rosidl_typesupport_introspection_tests__srv__BasicTypes_Response__init(message.get())) {
       throw std::runtime_error(rcutils_get_error_string().str);
     }

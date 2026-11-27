@@ -279,21 +279,6 @@ macro(rosidl_generate_interfaces target)
 
   ament_execute_extensions("rosidl_generate_idl_interfaces")
 
-  # check for extensions registered with the previous extension point
-  set(obsolete_extension_point "rosidl_generate_interfaces")
-  if(AMENT_EXTENSIONS_${obsolete_extension_point})
-    foreach(_extension ${AMENT_EXTENSIONS_${obsolete_extension_point}})
-      string(REPLACE ":" ";" _extension_list "${_extension}")
-      list(GET _extension_list 0 _pkg_name)
-      message(WARNING "Package '${_pkg_name}' registered an extension for the "
-        "obsolete extension point '${obsolete_extension_point}'. "
-        "It is being skipped and needs to be updated to the new extension "
-        "point 'rosidl_generate_idl_interfaces'."
-        "Please refer to the migration steps on the Dashing release page for "
-        "more details.")
-    endforeach()
-  endif()
-
   if(NOT _ARG_SKIP_INSTALL)
     foreach(_idl_tuple ${_idl_tuples})
       string(REGEX REPLACE ":([^:]*)$" ";\\1" _idl_list "${_idl_tuple}")

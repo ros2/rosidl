@@ -144,6 +144,13 @@ void resize_function__@(message.structure.namespaced_type.name)__@(member.name)(
   member->throw_if_not_cpu_backend();
   member->resize(size);
 }
+
+const void * get_buffer_impl_function__@(message.structure.namespaced_type.name)__@(member.name)(const void * untyped_member)
+{
+  const auto & member =
+    *reinterpret_cast<const rosidl::Buffer<uint8_t> *>(untyped_member);
+  return member.get_impl();
+}
 @[    else]@
 size_t size_function__@(message.structure.namespaced_type.name)__@(member.name)(const void * untyped_member)
 {
@@ -237,6 +244,8 @@ for index, member in enumerate(message.structure.members):
 
     print('  {')
 
+    # uint32_t abi_version_
+    print('    ROSIDL_TYPESUPPORT_INTROSPECTION_CPP_MESSAGE_MEMBER_ABI_VERSION,  // MessageMember ABI generation')
     # const char * name_
     print('    "%s",  // name' % member.name)
     if isinstance(type_, BasicType):
@@ -293,7 +302,9 @@ for index, member in enumerate(message.structure.members):
     # void(void *, size_t) resize_function
     print('    %s,  // resize(index) function pointer' % ('resize_function__%s' % function_suffix if isinstance(member.type, AbstractSequence) else 'nullptr'))
     # bool is_rosidl_buffer_
-    print('    %s  // is_rosidl_buffer' % ('true' if member.name in buffer_field_names else 'false'))
+    print('    %s,  // is_rosidl_buffer' % ('true' if member.name in buffer_field_names else 'false'))
+    # const void *(const void *) get_buffer_impl_function
+    print('    %s  // get_buffer_impl(void) function pointer' % ('get_buffer_impl_function__%s' % function_suffix if member.name in buffer_field_names else 'nullptr'))
 
     if index < len(message.structure.members) - 1:
         print('  },')

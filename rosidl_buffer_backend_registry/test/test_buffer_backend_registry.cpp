@@ -17,10 +17,12 @@
 #include <memory>
 #include <vector>
 
+#include "rosidl_buffer_backend_registry/backend_utils.hpp"
 #include "rosidl_buffer_backend_registry/buffer_backend_registry.hpp"
 #include "dummy_buffer_backend.hpp"
 
 using rosidl_buffer_backend_registry::BufferBackendRegistry;
+using rosidl_buffer_backend_registry::find_backend_by_type;
 using rosidl_buffer_backend_registry::test::DummyBufferImpl;
 
 // Test registries are ordinary context-owned objects.
@@ -38,6 +40,21 @@ TEST(TestBufferBackendRegistry, create_nonexistent_backend_instance) {
   BufferBackendRegistry registry;
   auto backend = registry.create_backend_instance("nonexistent_backend_12345");
   EXPECT_EQ(nullptr, backend);
+}
+
+// find_backend_by_type() resolves a backend TYPE string (what a peer
+// actually advertises) rather than the pluginlib class name
+// create_backend_instance() itself needs. This environment has no
+// BufferBackend plugin registered at all (this test binary links the
+// registry directly, per this file's own established pattern -- see the
+// file comment above), so every type lookup here is correctly nullptr; a
+// real match against a genuinely registered plugin is a downstream
+// consumer's own test to make, not this repository's.
+TEST(TestBufferBackendRegistry, find_backend_by_type_no_plugins_registered) {
+  BufferBackendRegistry registry;
+  EXPECT_EQ(nullptr, find_backend_by_type(registry, "cuda"));
+  EXPECT_EQ(nullptr, find_backend_by_type(registry, "cpu"));
+  EXPECT_EQ(nullptr, find_backend_by_type(registry, ""));
 }
 
 // Test DummyBufferImpl to_cpu() conversion

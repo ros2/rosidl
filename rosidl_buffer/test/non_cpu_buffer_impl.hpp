@@ -45,6 +45,8 @@ public:
     return std::make_unique<NonCpuBufferImpl<T>>(size_);
   }
 
+  const void * descriptor() const override {return &size_;}
+
 private:
   size_t size_;
 };
